@@ -76,7 +76,7 @@ public final class Months implements Comparable<Months> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of months in this instance to another instance.
      * 
      * @param otherMonths  the other number of months, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Months implements Comparable<Months> {
     }
 
     /**
-     * Is this months instance greater than the specified number of months.
+     * Is the number of months in this instance greater than that in
+     * another instance.
      * 
      * @param otherMonths  the other number of months, not null
      * @return true if this number of months is greater
@@ -100,7 +101,8 @@ public final class Months implements Comparable<Months> {
     }
 
     /**
-     * Is this months instance less than the specified number of months.
+     * Is the number of months in this instance less than that in
+     * another instance.
      * 
      * @param otherMonths  the other number of months, not null
      * @return true if this number of months is less

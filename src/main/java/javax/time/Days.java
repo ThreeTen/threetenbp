@@ -76,7 +76,7 @@ public final class Days implements Comparable<Days> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of days in this instance to another instance.
      * 
      * @param otherDays  the other number of days, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Days implements Comparable<Days> {
     }
 
     /**
-     * Is this days instance greater than the specified number of days.
+     * Is the number of days in this instance greater than that in
+     * another instance.
      * 
      * @param otherDays  the other number of days, not null
      * @return true if this number of days is greater
@@ -100,7 +101,8 @@ public final class Days implements Comparable<Days> {
     }
 
     /**
-     * Is this days instance less than the specified number of days.
+     * Is the number of days in this instance less than that in
+     * another instance.
      * 
      * @param otherDays  the other number of days, not null
      * @return true if this number of days is less

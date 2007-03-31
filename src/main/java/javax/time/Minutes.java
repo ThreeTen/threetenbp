@@ -76,7 +76,7 @@ public final class Minutes implements Comparable<Minutes> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of minutes in this instance to another instance.
      * 
      * @param otherMinutes  the other number of minutes, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Minutes implements Comparable<Minutes> {
     }
 
     /**
-     * Is this minutes instance greater than the specified number of minutes.
+     * Is the number of minutes in this instance greater than that in
+     * another instance.
      * 
      * @param otherMinutes  the other number of minutes, not null
      * @return true if this number of minutes is greater
@@ -100,7 +101,8 @@ public final class Minutes implements Comparable<Minutes> {
     }
 
     /**
-     * Is this minutes instance less than the specified number of minutes.
+     * Is the number of minutes in this instance less than that in
+     * another instance.
      * 
      * @param otherMinutes  the other number of minutes, not null
      * @return true if this number of minutes is less

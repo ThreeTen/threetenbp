@@ -76,7 +76,7 @@ public final class Hours implements Comparable<Hours> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of hours in this instance to another instance.
      * 
      * @param otherHours  the other number of hours, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Hours implements Comparable<Hours> {
     }
 
     /**
-     * Is this hours instance greater than the specified number of hours.
+     * Is the number of hours in this instance greater than that in
+     * another instance.
      * 
      * @param otherHours  the other number of hours, not null
      * @return true if this number of hours is greater
@@ -100,7 +101,8 @@ public final class Hours implements Comparable<Hours> {
     }
 
     /**
-     * Is this hours instance less than the specified number of hours.
+     * Is the number of hours in this instance less than that in
+     * another instance.
      * 
      * @param otherHours  the other number of hours, not null
      * @return true if this number of hours is less

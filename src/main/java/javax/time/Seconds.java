@@ -76,7 +76,7 @@ public final class Seconds implements Comparable<Seconds> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of seconds in this instance to another instance.
      * 
      * @param otherSeconds  the other number of seconds, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Seconds implements Comparable<Seconds> {
     }
 
     /**
-     * Is this seconds instance greater than the specified number of seconds.
+     * Is the number of seconds in this instance greater than that in
+     * another instance.
      * 
      * @param otherSeconds  the other number of seconds, not null
      * @return true if this number of seconds is greater
@@ -100,7 +101,8 @@ public final class Seconds implements Comparable<Seconds> {
     }
 
     /**
-     * Is this seconds instance less than the specified number of seconds.
+     * Is the number of seconds in this instance less than that in
+     * another instance.
      * 
      * @param otherSeconds  the other number of seconds, not null
      * @return true if this number of seconds is less

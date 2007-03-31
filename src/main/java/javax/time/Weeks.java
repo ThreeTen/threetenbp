@@ -76,7 +76,7 @@ public final class Weeks implements Comparable<Weeks> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of weeks in this instance to another instance.
      * 
      * @param otherWeeks  the other number of weeks, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Weeks implements Comparable<Weeks> {
     }
 
     /**
-     * Is this weeks instance greater than the specified number of weeks.
+     * Is the number of weeks in this instance greater than that in
+     * another instance.
      * 
      * @param otherWeeks  the other number of weeks, not null
      * @return true if this number of weeks is greater
@@ -100,7 +101,8 @@ public final class Weeks implements Comparable<Weeks> {
     }
 
     /**
-     * Is this weeks instance less than the specified number of weeks.
+     * Is the number of weeks in this instance less than that in
+     * another instance.
      * 
      * @param otherWeeks  the other number of weeks, not null
      * @return true if this number of weeks is less

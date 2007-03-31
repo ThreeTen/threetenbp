@@ -76,7 +76,7 @@ public final class Years implements Comparable<Years> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of years in this instance to another instance.
      * 
      * @param otherYears  the other number of years, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class Years implements Comparable<Years> {
     }
 
     /**
-     * Is this years instance greater than the specified number of years.
+     * Is the number of years in this instance greater than that in
+     * another instance.
      * 
      * @param otherYears  the other number of years, not null
      * @return true if this number of years is greater
@@ -100,7 +101,8 @@ public final class Years implements Comparable<Years> {
     }
 
     /**
-     * Is this years instance less than the specified number of years.
+     * Is the number of years in this instance less than that in
+     * another instance.
      * 
      * @param otherYears  the other number of years, not null
      * @return true if this number of years is less

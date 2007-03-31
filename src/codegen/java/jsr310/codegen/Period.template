@@ -76,7 +76,7 @@ public final class ${Type} implements Comparable<${Type}> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares the number of ${type} in this instance to another instance.
      * 
      * @param other${Type}  the other number of ${type}, not null
      * @return the comparator value, negative if less, postive if greater
@@ -89,7 +89,8 @@ public final class ${Type} implements Comparable<${Type}> {
     }
 
     /**
-     * Is this ${type} instance greater than the specified number of ${type}.
+     * Is the number of ${type} in this instance greater than that in
+     * another instance.
      * 
      * @param other${Type}  the other number of ${type}, not null
      * @return true if this number of ${type} is greater
@@ -100,7 +101,8 @@ public final class ${Type} implements Comparable<${Type}> {
     }
 
     /**
-     * Is this ${type} instance less than the specified number of ${type}.
+     * Is the number of ${type} in this instance less than that in
+     * another instance.
      * 
      * @param other${Type}  the other number of ${type}, not null
      * @return true if this number of ${type} is less
