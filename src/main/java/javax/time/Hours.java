@@ -116,7 +116,7 @@ public final class Hours implements Comparable<Hours> {
     /**
      * Is this instance equal to that specified, evaluating the number of hours.
      * 
-     * @param otherHours  the other number of hours, null return false
+     * @param otherHours  the other number of hours, null returns false
      * @return true if this number of hours is the same as that specified
      */
     public boolean equals(Object otherHours) {

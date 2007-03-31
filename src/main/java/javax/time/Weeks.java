@@ -116,7 +116,7 @@ public final class Weeks implements Comparable<Weeks> {
     /**
      * Is this instance equal to that specified, evaluating the number of weeks.
      * 
-     * @param otherWeeks  the other number of weeks, null return false
+     * @param otherWeeks  the other number of weeks, null returns false
      * @return true if this number of weeks is the same as that specified
      */
     public boolean equals(Object otherWeeks) {

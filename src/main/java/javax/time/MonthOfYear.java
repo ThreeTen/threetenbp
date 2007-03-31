@@ -54,7 +54,7 @@ public final class MonthOfYear implements Comparable<MonthOfYear> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month of year represented by this instance.
+     * Compares this month of year instance to another.
      * 
      * @param otherMonthOfYear  the other month of year instance, not null
      * @return the comparator value, negative if less, postive if greater
@@ -92,7 +92,7 @@ public final class MonthOfYear implements Comparable<MonthOfYear> {
     /**
      * Is this instance equal to that specified, evaluating the month of year.
      * 
-     * @param otherMonthOfYear  the other month of year instance, null return false
+     * @param otherMonthOfYear  the other month of year instance, null returns false
      * @return true if the month of year is the same
      */
     public boolean equals(Object otherMonthOfYear) {

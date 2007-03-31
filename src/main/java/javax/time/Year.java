@@ -54,7 +54,7 @@ public final class Year implements Comparable<Year> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year represented by this instance.
+     * Compares this year instance to another.
      * 
      * @param otherYear  the other year instance, not null
      * @return the comparator value, negative if less, postive if greater
@@ -92,7 +92,7 @@ public final class Year implements Comparable<Year> {
     /**
      * Is this instance equal to that specified, evaluating the year.
      * 
-     * @param otherYear  the other year instance, null return false
+     * @param otherYear  the other year instance, null returns false
      * @return true if the year is the same
      */
     public boolean equals(Object otherYear) {

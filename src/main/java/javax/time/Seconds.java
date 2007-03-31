@@ -116,7 +116,7 @@ public final class Seconds implements Comparable<Seconds> {
     /**
      * Is this instance equal to that specified, evaluating the number of seconds.
      * 
-     * @param otherSeconds  the other number of seconds, null return false
+     * @param otherSeconds  the other number of seconds, null returns false
      * @return true if this number of seconds is the same as that specified
      */
     public boolean equals(Object otherSeconds) {

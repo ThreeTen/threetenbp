@@ -54,7 +54,7 @@ public final class DayOfWeek implements Comparable<DayOfWeek> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of week represented by this instance.
+     * Compares this day of week instance to another.
      * 
      * @param otherDayOfWeek  the other day of week instance, not null
      * @return the comparator value, negative if less, postive if greater
@@ -92,7 +92,7 @@ public final class DayOfWeek implements Comparable<DayOfWeek> {
     /**
      * Is this instance equal to that specified, evaluating the day of week.
      * 
-     * @param otherDayOfWeek  the other day of week instance, null return false
+     * @param otherDayOfWeek  the other day of week instance, null returns false
      * @return true if the day of week is the same
      */
     public boolean equals(Object otherDayOfWeek) {

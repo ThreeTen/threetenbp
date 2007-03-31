@@ -116,7 +116,7 @@ public final class Years implements Comparable<Years> {
     /**
      * Is this instance equal to that specified, evaluating the number of years.
      * 
-     * @param otherYears  the other number of years, null return false
+     * @param otherYears  the other number of years, null returns false
      * @return true if this number of years is the same as that specified
      */
     public boolean equals(Object otherYears) {

@@ -54,7 +54,7 @@ public final class DayOfMonth implements Comparable<DayOfMonth> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of month represented by this instance.
+     * Compares this day of month instance to another.
      * 
      * @param otherDayOfMonth  the other day of month instance, not null
      * @return the comparator value, negative if less, postive if greater
@@ -92,7 +92,7 @@ public final class DayOfMonth implements Comparable<DayOfMonth> {
     /**
      * Is this instance equal to that specified, evaluating the day of month.
      * 
-     * @param otherDayOfMonth  the other day of month instance, null return false
+     * @param otherDayOfMonth  the other day of month instance, null returns false
      * @return true if the day of month is the same
      */
     public boolean equals(Object otherDayOfMonth) {

@@ -116,7 +116,7 @@ public final class Minutes implements Comparable<Minutes> {
     /**
      * Is this instance equal to that specified, evaluating the number of minutes.
      * 
-     * @param otherMinutes  the other number of minutes, null return false
+     * @param otherMinutes  the other number of minutes, null returns false
      * @return true if this number of minutes is the same as that specified
      */
     public boolean equals(Object otherMinutes) {

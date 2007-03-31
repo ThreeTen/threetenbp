@@ -54,7 +54,7 @@ public final class ${Type} implements Comparable<${Type}> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ${desc} represented by this instance.
+     * Compares this ${desc} instance to another.
      * 
      * @param other${Type}  the other ${desc} instance, not null
      * @return the comparator value, negative if less, postive if greater
@@ -92,7 +92,7 @@ public final class ${Type} implements Comparable<${Type}> {
     /**
      * Is this instance equal to that specified, evaluating the ${desc}.
      * 
-     * @param other${Type}  the other ${desc} instance, null return false
+     * @param other${Type}  the other ${desc} instance, null returns false
      * @return true if the ${desc} is the same
      */
     public boolean equals(Object other${Type}) {

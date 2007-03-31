@@ -54,7 +54,7 @@ public final class DayOfYear implements Comparable<DayOfYear> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of year represented by this instance.
+     * Compares this day of year instance to another.
      * 
      * @param otherDayOfYear  the other day of year instance, not null
      * @return the comparator value, negative if less, postive if greater
@@ -92,7 +92,7 @@ public final class DayOfYear implements Comparable<DayOfYear> {
     /**
      * Is this instance equal to that specified, evaluating the day of year.
      * 
-     * @param otherDayOfYear  the other day of year instance, null return false
+     * @param otherDayOfYear  the other day of year instance, null returns false
      * @return true if the day of year is the same
      */
     public boolean equals(Object otherDayOfYear) {

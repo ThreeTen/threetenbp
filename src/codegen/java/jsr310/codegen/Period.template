@@ -116,7 +116,7 @@ public final class ${Type} implements Comparable<${Type}> {
     /**
      * Is this instance equal to that specified, evaluating the number of ${type}.
      * 
-     * @param other${Type}  the other number of ${type}, null return false
+     * @param other${Type}  the other number of ${type}, null returns false
      * @return true if this number of ${type} is the same as that specified
      */
     public boolean equals(Object other${Type}) {

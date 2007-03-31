@@ -116,7 +116,7 @@ public final class Months implements Comparable<Months> {
     /**
      * Is this instance equal to that specified, evaluating the number of months.
      * 
-     * @param otherMonths  the other number of months, null return false
+     * @param otherMonths  the other number of months, null returns false
      * @return true if this number of months is the same as that specified
      */
     public boolean equals(Object otherMonths) {

@@ -116,7 +116,7 @@ public final class Days implements Comparable<Days> {
     /**
      * Is this instance equal to that specified, evaluating the number of days.
      * 
-     * @param otherDays  the other number of days, null return false
+     * @param otherDays  the other number of days, null returns false
      * @return true if this number of days is the same as that specified
      */
     public boolean equals(Object otherDays) {
