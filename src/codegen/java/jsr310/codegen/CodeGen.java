@@ -29,6 +29,8 @@ public class CodeGen {
         try {
             CodeGen cg = new CodeGen();
             cg.processPeriod();
+            cg.processField();
+            System.out.println("Done");
             
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -66,6 +68,50 @@ public class CodeGen {
             line = line.replaceAll("[$][{]type[}]", classname.toLowerCase());
             line = line.replaceAll("[$][{]stringPrefix[}]", date ? "" : "T");
             line = line.replaceAll("[$][{]stringSuffix[}]", classname.substring(0, 1));
+            if (line.equals("${Methods}")) {
+                insertPoint = it.previousIndex();
+                it.remove();
+            } else {
+                it.set(line);
+            }
+        }
+        
+        // add in custom methods
+        lines.addAll(insertPoint, methodLines);
+        
+        // save
+        writeFile(file, lines);
+    }
+
+    //-----------------------------------------------------------------------
+    public void processField() throws Exception {
+        File templateFile = new File(TEMPLATE_DIR, "Field.template");
+        List<String> templateLines = Collections.unmodifiableList(readFile(templateFile));
+        processField(templateLines, "Year", "year");
+        processField(templateLines, "MonthOfYear", "month of year");
+        processField(templateLines, "DayOfYear", "day of year");
+        processField(templateLines, "DayOfMonth", "day of month");
+        processField(templateLines, "DayOfWeek", "day of week");
+    }
+
+    public void processField(List<String> templateLines, String classname, String desc) throws Exception {
+        File file = new File(GENERATED_DIR, classname + ".java");
+        
+        // find the part of the file that has been customised
+        List<String> origLines = Collections.unmodifiableList(readFile(file, templateLines));
+        int startToStringPos = indexOfLineContaining(origLines, "public int hashCode() {", 0);
+        int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
+        List<String> methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
+        
+        // loop around template inserting data
+        String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
+        List<String> lines = new ArrayList<String>(templateLines);
+        int insertPoint = -1;
+        for (ListIterator<String> it = lines.listIterator(); it.hasNext(); ) {
+            String line = it.next();
+            line = line.replaceAll("[$][{]Type[}]", classname);
+            line = line.replaceAll("[$][{]type[}]", mixedType);
+            line = line.replaceAll("[$][{]desc[}]", desc);
             if (line.equals("${Methods}")) {
                 insertPoint = it.previousIndex();
                 it.remove();

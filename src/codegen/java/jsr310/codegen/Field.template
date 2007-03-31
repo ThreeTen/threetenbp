@@ -1,0 +1,115 @@
+/*
+ * Written by the members of JCP JSR-310 Expert Group and
+ * released to the public domain, as explained at
+ * http://creativecommons.org/licenses/publicdomain
+ */
+package javax.time;
+
+/**
+ * A time field representing a ${desc}.
+ * <p>
+ * ${Type} is an immutable time field that can only store a ${desc}.
+ * It is a type-safe way of representing a ${desc} in an application.
+ * <p>
+ * Static factory methods allow you to constuct instances.
+ * The ${desc} may be queried using get${Type}().
+ * <p>
+ * ${Type} is thread-safe and immutable. 
+ * 
+ * @author Stephen Colebourne
+ */
+public final class ${Type} implements Comparable<${Type}> {
+
+    /**
+     * The ${desc} being represented.
+     */
+    private final int ${type};
+
+    /**
+     * Obtains an instance of <code>${Type}</code>.
+     *
+     * @param ${type}  the ${desc} to represent
+     */
+    public static ${Type} ${type}(int ${type}) {
+        return new ${Type}(${type});
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Constructs an instance with the specified ${desc}.
+     */
+    private ${Type}(int ${type}) {
+        this.${type} = ${type};
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the ${desc} value.
+     *
+     * @return the ${desc}
+     */
+    public int get${Type}() {
+        return ${type};
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the ${desc} represented by this instance.
+     * 
+     * @param other${Type}  the other ${desc} instance, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if other${Type} is null
+     */
+    public int compareTo(${Type} other${Type}) {
+        int thisValue = this.${type};
+        int otherValue = other${Type}.${type};
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is this ${desc} instance greater than the specified ${desc}.
+     * 
+     * @param other${Type}  the other ${desc} instance, not null
+     * @return true if this ${desc} is greater
+     * @throws NullPointerException if other${Type} is null
+     */
+    public boolean isGreaterThan(${Type} other${Type}) {
+        return compareTo(other${Type}) > 0;
+    }
+
+    /**
+     * Is this ${desc} instance less than the specified ${desc}.
+     * 
+     * @param other${Type}  the other ${desc} instance, not null
+     * @return true if this ${desc} is less
+     * @throws NullPointerException if other${Type} is null
+     */
+    public boolean isLessThan(${Type} other${Type}) {
+        return compareTo(other${Type}) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the ${desc}.
+     * 
+     * @param other${Type}  the other ${desc} instance, null return false
+     * @return true if the ${desc} is the same
+     */
+    public boolean equals(Object other${Type}) {
+        if (other${Type} instanceof ${Type}) {
+            return ${type} == ((${Type}) other${Type}).${type};
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the ${desc} object.
+     * 
+     * @return a suitable hashcode
+     */
+    public int hashCode() {
+        return ${type};
+    }
+
+${Methods}
+}
