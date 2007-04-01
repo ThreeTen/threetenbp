@@ -20,18 +20,20 @@ package javax.time;
  */
 public final class ${Type} implements Comparable<${Type}> {
 
+${Constants}
     /**
      * The ${desc} being represented.
      */
     private final int ${type};
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>${Type}</code>.
      *
      * @param ${type}  the ${desc} to represent
      */
     public static ${Type} ${type}(int ${type}) {
-        return new ${Type}(${type});
+${Singletons}        return new ${Type}(${type});
     }
 
     //-----------------------------------------------------------------------

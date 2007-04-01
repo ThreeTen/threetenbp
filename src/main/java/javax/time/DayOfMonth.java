@@ -25,6 +25,7 @@ public final class DayOfMonth implements Comparable<DayOfMonth> {
      */
     private final int dayOfMonth;
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>DayOfMonth</code>.
      *

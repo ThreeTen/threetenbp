@@ -21,17 +21,64 @@ package javax.time;
 public final class DayOfWeek implements Comparable<DayOfWeek> {
 
     /**
+     * The singleton instance for the day of week of Monday.
+     */
+    public static final DayOfWeek MONDAY = new DayOfWeek(1);
+    /**
+     * The singleton instance for the day of week of Tuesday.
+     */
+    public static final DayOfWeek TUESDAY = new DayOfWeek(2);
+    /**
+     * The singleton instance for the day of week of Wednesday.
+     */
+    public static final DayOfWeek WEDNESDAY = new DayOfWeek(3);
+    /**
+     * The singleton instance for the day of week of Thursday.
+     */
+    public static final DayOfWeek THURSDAY = new DayOfWeek(4);
+    /**
+     * The singleton instance for the day of week of Friday.
+     */
+    public static final DayOfWeek FRIDAY = new DayOfWeek(5);
+    /**
+     * The singleton instance for the day of week of Saturday.
+     */
+    public static final DayOfWeek SATURDAY = new DayOfWeek(6);
+    /**
+     * The singleton instance for the day of week of Sunday.
+     */
+    public static final DayOfWeek SUNDAY = new DayOfWeek(7);
+
+    /**
      * The day of week being represented.
      */
     private final int dayOfWeek;
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>DayOfWeek</code>.
      *
      * @param dayOfWeek  the day of week to represent
      */
     public static DayOfWeek dayOfWeek(int dayOfWeek) {
-        return new DayOfWeek(dayOfWeek);
+        switch (dayOfWeek) {
+            case 1:
+                return MONDAY;
+            case 2:
+                return TUESDAY;
+            case 3:
+                return WEDNESDAY;
+            case 4:
+                return THURSDAY;
+            case 5:
+                return FRIDAY;
+            case 6:
+                return SATURDAY;
+            case 7:
+                return SUNDAY;
+            default:
+                throw new IllegalArgumentException("DayOfWeek cannot have the value " + dayOfWeek);
+        }
     }
 
     //-----------------------------------------------------------------------

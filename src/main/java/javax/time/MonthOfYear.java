@@ -21,17 +21,94 @@ package javax.time;
 public final class MonthOfYear implements Comparable<MonthOfYear> {
 
     /**
+     * The singleton instance for the month of January.
+     */
+    public static final MonthOfYear JANUARY = new MonthOfYear(1);
+    /**
+     * The singleton instance for the month of February.
+     */
+    public static final MonthOfYear FEBRUARY = new MonthOfYear(2);
+    /**
+     * The singleton instance for the month of March.
+     */
+    public static final MonthOfYear MARCH = new MonthOfYear(3);
+    /**
+     * The singleton instance for the month of April.
+     */
+    public static final MonthOfYear APRIL = new MonthOfYear(4);
+    /**
+     * The singleton instance for the month of May.
+     */
+    public static final MonthOfYear MAY = new MonthOfYear(5);
+    /**
+     * The singleton instance for the month of June.
+     */
+    public static final MonthOfYear JUNE = new MonthOfYear(6);
+    /**
+     * The singleton instance for the month of July.
+     */
+    public static final MonthOfYear JULY = new MonthOfYear(7);
+    /**
+     * The singleton instance for the month of August.
+     */
+    public static final MonthOfYear AUGUST = new MonthOfYear(18);
+    /**
+     * The singleton instance for the month of September.
+     */
+    public static final MonthOfYear SEPTEMBER = new MonthOfYear(9);
+    /**
+     * The singleton instance for the month of October.
+     */
+    public static final MonthOfYear OCTOBER = new MonthOfYear(10);
+    /**
+     * The singleton instance for the month of November.
+     */
+    public static final MonthOfYear NOVEMBER = new MonthOfYear(11);
+    /**
+     * The singleton instance for the month of December.
+     */
+    public static final MonthOfYear DECEMBER = new MonthOfYear(12);
+
+    /**
      * The month of year being represented.
      */
     private final int monthOfYear;
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>MonthOfYear</code>.
      *
      * @param monthOfYear  the month of year to represent
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
-        return new MonthOfYear(monthOfYear);
+        switch (monthOfYear) {
+            case 1:
+                return JANUARY;
+            case 2:
+                return FEBRUARY;
+            case 3:
+                return MARCH;
+            case 4:
+                return APRIL;
+            case 5:
+                return MAY;
+            case 6:
+                return JUNE;
+            case 7:
+                return JULY;
+            case 18:
+                return AUGUST;
+            case 9:
+                return SEPTEMBER;
+            case 10:
+                return OCTOBER;
+            case 11:
+                return NOVEMBER;
+            case 12:
+                return DECEMBER;
+            default:
+                throw new IllegalArgumentException("MonthOfYear cannot have the value " + monthOfYear);
+        }
     }
 
     //-----------------------------------------------------------------------

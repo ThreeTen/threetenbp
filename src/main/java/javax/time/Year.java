@@ -25,6 +25,7 @@ public final class Year implements Comparable<Year> {
      */
     private final int year;
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>Year</code>.
      *
