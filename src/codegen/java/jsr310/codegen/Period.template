@@ -247,5 +247,7 @@ public final class ${Type} implements Comparable<${Type}> {
         return "P${stringPrefix}" + ${type} + "${stringSuffix}";
     }
 
-${Methods}
+#foreach ($line in $methods)
+${line}
+#end
 }

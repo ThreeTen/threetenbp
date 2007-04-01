@@ -20,7 +20,15 @@ package javax.time;
  */
 public final class ${Type} implements Comparable<${Type}> {
 
-${Constants}
+#if ($singletons.size() > 0)
+#foreach ($singleton in $singletons)
+    /**
+     * ${singleton.desc}
+     */
+    public static final ${Type} ${singleton.type} = new ${Type}(${singleton.value});
+#end
+
+#end
     /**
      * The ${desc} being represented.
      */
@@ -33,7 +41,18 @@ ${Constants}
      * @param ${type}  the ${desc} to represent
      */
     public static ${Type} ${type}(int ${type}) {
-${Singletons}        return new ${Type}(${type});
+#if ($singletons.size() > 0)
+        switch (${type}) {
+#foreach ($singleton in $singletons)
+            case ${singleton.value}:
+                return ${singleton.type};
+#end
+            default:
+                throw new IllegalArgumentException("${Type} cannot have the value " + ${type});
+        }
+#else
+        return new ${Type}(${type});
+#end
     }
 
     //-----------------------------------------------------------------------
@@ -113,5 +132,7 @@ ${Singletons}        return new ${Type}(${type});
         return ${type};
     }
 
-${Methods}
+#foreach ($line in $methods)
+${line}
+#end
 }

@@ -11,9 +11,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 
 /**
  * Code generates the repetitive parts of the JSR code.
@@ -27,6 +32,8 @@ public class CodeGen {
 
     public static void main(String[] args) {
         try {
+            Velocity.init();
+            
             CodeGen cg = new CodeGen();
             cg.processPeriod();
             cg.processField();
@@ -38,137 +45,88 @@ public class CodeGen {
     }
 
     //-----------------------------------------------------------------------
-    public void processPeriod() throws Exception {
-        File templateFile = new File(TEMPLATE_DIR, "Period.template");
-        List<String> templateLines = Collections.unmodifiableList(readFile(templateFile));
-        processPeriod(templateLines, "Years", true);
-        processPeriod(templateLines, "Months", true);
-        processPeriod(templateLines, "Weeks", true);
-        processPeriod(templateLines, "Days", true);
-        processPeriod(templateLines, "Hours", false);
-        processPeriod(templateLines, "Minutes", false);
-        processPeriod(templateLines, "Seconds", false);
+    void processPeriod() throws Exception {
+        Template template = Velocity.getTemplate("src/codegen/java/jsr310/codegen/Period.template");
+        
+        processPeriod(template, "Years", true);
+        processPeriod(template, "Months", true);
+        processPeriod(template, "Weeks", true);
+        processPeriod(template, "Days", true);
+        processPeriod(template, "Hours", false);
+        processPeriod(template, "Minutes", false);
+        processPeriod(template, "Seconds", false);
     }
 
-    public void processPeriod(List<String> templateLines, String classname, boolean date) throws Exception {
+    void processPeriod(Template template, String classname, boolean date) throws Exception {
         File file = new File(GENERATED_DIR, classname + ".java");
         
         // find the part of the file that has been customised
-        List<String> origLines = Collections.unmodifiableList(readFile(file, templateLines));
-        int startToStringPos = indexOfLineContaining(origLines, "public String toString() {", 0);
-        int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
-        List<String> methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
-        
-        // loop around template inserting data
-        List<String> lines = new ArrayList<String>(templateLines);
-        int insertPoint = -1;
-        for (ListIterator<String> it = lines.listIterator(); it.hasNext(); ) {
-            String line = it.next();
-            line = line.replaceAll("[$][{]Type[}]", classname);
-            line = line.replaceAll("[$][{]type[}]", classname.toLowerCase());
-            line = line.replaceAll("[$][{]stringPrefix[}]", date ? "" : "T");
-            line = line.replaceAll("[$][{]stringSuffix[}]", classname.substring(0, 1));
-            if (line.equals("${Methods}")) {
-                insertPoint = it.previousIndex();
-                it.remove();
-            } else {
-                it.set(line);
-            }
+        List<String> methodLines = Collections.emptyList();
+        if (file.exists()) {
+            List<String> origLines = readFile(file);
+            int startToStringPos = indexOfLineContaining(origLines, "public String toString() {", 0);
+            int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
+            methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
         }
         
-        // add in custom methods
-        lines.addAll(insertPoint, methodLines);
+        // setup data to insert
+        VelocityContext vc = new VelocityContext();
+        vc.put("Type", classname);
+        vc.put("type", classname.toLowerCase());
+        vc.put("stringPrefix", date ? "" : "T");
+        vc.put("stringSuffix", classname.substring(0, 1));
+        vc.put("methods", methodLines);
         
-        // save
-        writeFile(file, lines);
+        // write output
+        FileWriter out = new FileWriter(file);
+        template.merge(vc, out);
+        out.close();
     }
 
     //-----------------------------------------------------------------------
-    public void processField() throws Exception {
-        File templateFile = new File(TEMPLATE_DIR, "Field.template");
-        List<String> templateLines = Collections.unmodifiableList(readFile(templateFile));
-        processField(templateLines, "Year", "year", null);
-        processField(templateLines, "MonthOfYear", "month of year", MONTH_OF_YEARS);
-        processField(templateLines, "DayOfYear", "day of year", null);
-        processField(templateLines, "DayOfMonth", "day of month", null);
-        processField(templateLines, "DayOfWeek", "day of week", DAY_OF_WEEKS);
+    void processField() throws Exception {
+        Template template = Velocity.getTemplate("src/codegen/java/jsr310/codegen/Field.template");
+        
+        processField(template, "Year", "year", null);
+        processField(template, "MonthOfYear", "month of year", MONTH_OF_YEARS);
+        processField(template, "DayOfYear", "day of year", null);
+        processField(template, "DayOfMonth", "day of month", null);
+        processField(template, "DayOfWeek", "day of week", DAY_OF_WEEKS);
     }
 
-    public void processField(
-            List<String> templateLines,
+    void processField(
+            Template template,
             String classname,
             String desc,
-            String[][] singletons) throws Exception {
+            FieldSingleton[] singletons) throws Exception {
         File file = new File(GENERATED_DIR, classname + ".java");
         
         // find the part of the file that has been customised
-        List<String> origLines = Collections.unmodifiableList(readFile(file, templateLines));
-        int startToStringPos = indexOfLineContaining(origLines, "public int hashCode() {", 0);
-        int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
-        List<String> methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
-        
-        // loop around template inserting data
-        String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
-        List<String> lines = new ArrayList<String>(templateLines);
-        int insertPoint = -1;
-        for (ListIterator<String> it = lines.listIterator(); it.hasNext(); ) {
-            String line = it.next();
-            line = line.replaceAll("[$][{]Type[}]", classname);
-            line = line.replaceAll("[$][{]type[}]", mixedType);
-            line = line.replaceAll("[$][{]desc[}]", desc);
-            if (line.equals("${Constants}")) {
-                it.remove();
-                if (singletons != null) {
-                    for (String[] singleton : singletons) {
-                        it.add("    /**");
-                        it.add("     * " + singleton[1]);
-                        it.add("     */");
-                        it.add("    public static final " + classname + " " + singleton[0] +
-                                " = new " + classname + "(" + singleton[2] + ");");
-                    }
-                    it.add("");
-                }
-            } else if (line.startsWith("${Singletons}")) {
-                if (singletons != null) {
-                    it.remove();
-                    it.add("        switch (" + mixedType + ") {");
-                    for (String[] singleton : singletons) {
-                        it.add("            case " + singleton[2] + ":");
-                        it.add("                return " + singleton[0] + ";");
-                    }
-                    it.add("            default:");
-                    it.add("                throw new IllegalArgumentException(\"" + classname + " cannot have the value \" + " + mixedType + ");");
-                    it.add("        }");
-                } else {
-                    it.set(line.substring(13));
-                }
-            } else if (line.equals("${Methods}")) {
-                insertPoint = it.previousIndex();
-                it.remove();
-            } else {
-                it.set(line);
-            }
+        List<String> methodLines = Collections.emptyList();
+        if (file.exists()) {
+            List<String> origLines = readFile(file);
+            int startToStringPos = indexOfLineContaining(origLines, "public int hashCode() {", 0);
+            int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
+            methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
         }
         
-        // add in custom methods
-        lines.addAll(insertPoint, methodLines);
+        // setup data to insert
+        VelocityContext vc = new VelocityContext();
+        vc.put("Type", classname);
+        String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
+        vc.put("type", mixedType);
+        vc.put("desc", desc);
+        vc.put("singletons", singletons == null ? Collections.EMPTY_LIST : Arrays.asList(singletons));
+        vc.put("methods", methodLines);
         
-        // save
-        writeFile(file, lines);
+        // write output
+        FileWriter out = new FileWriter(file);
+        template.merge(vc, out);
+        out.close();
     }
 
     //-----------------------------------------------------------------------
-    public List<String> readFile(File file, List<String> defaultLines) throws Exception {
-        if (file.exists() == false) {
-            List<String> lines = new ArrayList<String>(defaultLines);
-            int pos = indexOfLineContaining(lines, "${Methods}", 0);
-            lines.remove(pos);
-            return lines;
-        }
-        return readFile(file);
-    }
-
-    public List<String> readFile(File file) throws Exception {
+    List<String> readFile(File file) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         List<String> lines = new ArrayList<String>();
         String line = reader.readLine();
@@ -180,7 +138,7 @@ public class CodeGen {
         return lines;
     }
 
-    public void writeFile(File file, List<String> lines) throws Exception {
+    void writeFile(File file, List<String> lines) throws Exception {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         for (String line : lines) {
             writer.write(line);
@@ -189,7 +147,7 @@ public class CodeGen {
         writer.close();
     }
 
-    public int indexOfEmptyLine(List<String> lines, int start) throws Exception {
+    int indexOfEmptyLine(List<String> lines, int start) throws Exception {
         for (int i = start; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.length() == 0) {
@@ -199,7 +157,7 @@ public class CodeGen {
         return -1;
     }
 
-    public int indexOfLineContaining(List<String> lines, String part, int start) throws Exception {
+    int indexOfLineContaining(List<String> lines, String part, int start) throws Exception {
         for (int i = start; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.contains(part)) {
@@ -210,29 +168,50 @@ public class CodeGen {
     }
 
     //-----------------------------------------------------------------------
-    private static final String[][] MONTH_OF_YEARS = new String[][] {
-        {"JANUARY", "The singleton instance for the month of January.", "1"},
-        {"FEBRUARY", "The singleton instance for the month of February.", "2"},
-        {"MARCH", "The singleton instance for the month of March.", "3"},
-        {"APRIL", "The singleton instance for the month of April.", "4"},
-        {"MAY", "The singleton instance for the month of May.", "5"},
-        {"JUNE", "The singleton instance for the month of June.", "6"},
-        {"JULY", "The singleton instance for the month of July.", "7"},
-        {"AUGUST", "The singleton instance for the month of August.", "18"},
-        {"SEPTEMBER", "The singleton instance for the month of September.", "9"},
-        {"OCTOBER", "The singleton instance for the month of October.", "10"},
-        {"NOVEMBER", "The singleton instance for the month of November.", "11"},
-        {"DECEMBER", "The singleton instance for the month of December.", "12"},
+    private static final FieldSingleton[] MONTH_OF_YEARS = new FieldSingleton[] {
+        new FieldSingleton("JANUARY", "The singleton instance for the month of January.", "1"),
+        new FieldSingleton("FEBRUARY", "The singleton instance for the month of February.", "2"),
+        new FieldSingleton("MARCH", "The singleton instance for the month of March.", "3"),
+        new FieldSingleton("APRIL", "The singleton instance for the month of April.", "4"),
+        new FieldSingleton("MAY", "The singleton instance for the month of May.", "5"),
+        new FieldSingleton("JUNE", "The singleton instance for the month of June.", "6"),
+        new FieldSingleton("JULY", "The singleton instance for the month of July.", "7"),
+        new FieldSingleton("AUGUST", "The singleton instance for the month of August.", "18"),
+        new FieldSingleton("SEPTEMBER", "The singleton instance for the month of September.", "9"),
+        new FieldSingleton("OCTOBER", "The singleton instance for the month of October.", "10"),
+        new FieldSingleton("NOVEMBER", "The singleton instance for the month of November.", "11"),
+        new FieldSingleton("DECEMBER", "The singleton instance for the month of December.", "12"),
     };
 
-    private static final String[][] DAY_OF_WEEKS = new String[][] {
-        {"MONDAY", "The singleton instance for the day of week of Monday.", "1"},
-        {"TUESDAY", "The singleton instance for the day of week of Tuesday.", "2"},
-        {"WEDNESDAY", "The singleton instance for the day of week of Wednesday.", "3"},
-        {"THURSDAY", "The singleton instance for the day of week of Thursday.", "4"},
-        {"FRIDAY", "The singleton instance for the day of week of Friday.", "5"},
-        {"SATURDAY", "The singleton instance for the day of week of Saturday.", "6"},
-        {"SUNDAY", "The singleton instance for the day of week of Sunday.", "7"},
+    private static final FieldSingleton[] DAY_OF_WEEKS = new FieldSingleton[] {
+        new FieldSingleton("MONDAY", "The singleton instance for the day of week of Monday.", "1"),
+        new FieldSingleton("TUESDAY", "The singleton instance for the day of week of Tuesday.", "2"),
+        new FieldSingleton("WEDNESDAY", "The singleton instance for the day of week of Wednesday.", "3"),
+        new FieldSingleton("THURSDAY", "The singleton instance for the day of week of Thursday.", "4"),
+        new FieldSingleton("FRIDAY", "The singleton instance for the day of week of Friday.", "5"),
+        new FieldSingleton("SATURDAY", "The singleton instance for the day of week of Saturday.", "6"),
+        new FieldSingleton("SUNDAY", "The singleton instance for the day of week of Sunday.", "7"),
     };
+
+    public static class FieldSingleton {
+        private String type;
+        private String desc;
+        private String value;
+        public FieldSingleton(String type, String desc, String value) {
+            super();
+            this.type = type;
+            this.desc = desc;
+            this.value = value;
+        }
+        public String getDesc() {
+            return desc;
+        }
+        public String getType() {
+            return type;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
 
 }
