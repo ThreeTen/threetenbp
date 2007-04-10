@@ -146,6 +146,9 @@ public final class Minutes implements Comparable<Minutes> {
      * @return true if this number of minutes is the same as that specified
      */
     public boolean equals(Object otherMinutes) {
+        if (this == otherMinutes) {
+           return true;
+        }
         if (otherMinutes instanceof Minutes) {
             return minutes == ((Minutes) otherMinutes).minutes;
         }
@@ -265,7 +268,7 @@ public final class Minutes implements Comparable<Minutes> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of minutes.
-     * This will be in the format 'PnD' where n is the number of minutes.
+     * This will be in the format 'PTnM' where n is the number of minutes.
      * 
      * @return the number of minutes in ISO8601 string format
      */

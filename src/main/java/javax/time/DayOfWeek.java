@@ -115,6 +115,15 @@ public final class DayOfWeek implements Comparable<DayOfWeek> {
         this.dayOfWeek = dayOfWeek;
     }
 
+    /**
+     * Resolves singletons.
+     * 
+     * @return the singleton instance
+     */
+    private Object readResolve() {
+        return DayOfWeek.dayOfWeek(dayOfWeek);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the day of week value.
@@ -169,6 +178,9 @@ public final class DayOfWeek implements Comparable<DayOfWeek> {
      * @return true if the day of week is the same
      */
     public boolean equals(Object otherDayOfWeek) {
+        if (this == otherDayOfWeek) {
+            return true;
+        }
         if (otherDayOfWeek instanceof DayOfWeek) {
             return dayOfWeek == ((DayOfWeek) otherDayOfWeek).dayOfWeek;
         }

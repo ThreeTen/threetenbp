@@ -145,6 +145,15 @@ public final class MonthOfYear implements Comparable<MonthOfYear> {
         this.monthOfYear = monthOfYear;
     }
 
+    /**
+     * Resolves singletons.
+     * 
+     * @return the singleton instance
+     */
+    private Object readResolve() {
+        return MonthOfYear.monthOfYear(monthOfYear);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the month of year value.
@@ -199,6 +208,9 @@ public final class MonthOfYear implements Comparable<MonthOfYear> {
      * @return true if the month of year is the same
      */
     public boolean equals(Object otherMonthOfYear) {
+        if (this == otherMonthOfYear) {
+            return true;
+        }
         if (otherMonthOfYear instanceof MonthOfYear) {
             return monthOfYear == ((MonthOfYear) otherMonthOfYear).monthOfYear;
         }

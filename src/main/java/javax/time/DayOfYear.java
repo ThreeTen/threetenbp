@@ -123,6 +123,9 @@ public final class DayOfYear implements Comparable<DayOfYear> {
      * @return true if the day of year is the same
      */
     public boolean equals(Object otherDayOfYear) {
+        if (this == otherDayOfYear) {
+            return true;
+        }
         if (otherDayOfYear instanceof DayOfYear) {
             return dayOfYear == ((DayOfYear) otherDayOfYear).dayOfYear;
         }

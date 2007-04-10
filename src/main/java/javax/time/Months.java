@@ -146,6 +146,9 @@ public final class Months implements Comparable<Months> {
      * @return true if this number of months is the same as that specified
      */
     public boolean equals(Object otherMonths) {
+        if (this == otherMonths) {
+           return true;
+        }
         if (otherMonths instanceof Months) {
             return months == ((Months) otherMonths).months;
         }
@@ -265,7 +268,7 @@ public final class Months implements Comparable<Months> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of months.
-     * This will be in the format 'PnD' where n is the number of months.
+     * This will be in the format 'PnM' where n is the number of months.
      * 
      * @return the number of months in ISO8601 string format
      */

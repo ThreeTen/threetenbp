@@ -123,6 +123,9 @@ public final class DayOfMonth implements Comparable<DayOfMonth> {
      * @return true if the day of month is the same
      */
     public boolean equals(Object otherDayOfMonth) {
+        if (this == otherDayOfMonth) {
+            return true;
+        }
         if (otherDayOfMonth instanceof DayOfMonth) {
             return dayOfMonth == ((DayOfMonth) otherDayOfMonth).dayOfMonth;
         }

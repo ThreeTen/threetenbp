@@ -146,6 +146,9 @@ public final class Seconds implements Comparable<Seconds> {
      * @return true if this number of seconds is the same as that specified
      */
     public boolean equals(Object otherSeconds) {
+        if (this == otherSeconds) {
+           return true;
+        }
         if (otherSeconds instanceof Seconds) {
             return seconds == ((Seconds) otherSeconds).seconds;
         }
@@ -265,7 +268,7 @@ public final class Seconds implements Comparable<Seconds> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of seconds.
-     * This will be in the format 'PnD' where n is the number of seconds.
+     * This will be in the format 'PTnS' where n is the number of seconds.
      * 
      * @return the number of seconds in ISO8601 string format
      */

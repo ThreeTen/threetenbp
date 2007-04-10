@@ -146,6 +146,9 @@ public final class Weeks implements Comparable<Weeks> {
      * @return true if this number of weeks is the same as that specified
      */
     public boolean equals(Object otherWeeks) {
+        if (this == otherWeeks) {
+           return true;
+        }
         if (otherWeeks instanceof Weeks) {
             return weeks == ((Weeks) otherWeeks).weeks;
         }
@@ -265,7 +268,7 @@ public final class Weeks implements Comparable<Weeks> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of weeks.
-     * This will be in the format 'PnD' where n is the number of weeks.
+     * This will be in the format 'PnW' where n is the number of weeks.
      * 
      * @return the number of weeks in ISO8601 string format
      */

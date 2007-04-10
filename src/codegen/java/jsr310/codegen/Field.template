@@ -88,6 +88,17 @@ public final class ${Type} implements Comparable<${Type}> {
     private ${Type}(int ${type}) {
         this.${type} = ${type};
     }
+#if ($singletons.size() > 0)
+
+    /**
+     * Resolves singletons.
+     * 
+     * @return the singleton instance
+     */
+    private Object readResolve() {
+        return ${Type}.${type}(${type});
+    }
+#end
 
     //-----------------------------------------------------------------------
     /**
@@ -143,6 +154,9 @@ public final class ${Type} implements Comparable<${Type}> {
      * @return true if the ${desc} is the same
      */
     public boolean equals(Object other${Type}) {
+        if (this == other${Type}) {
+            return true;
+        }
         if (other${Type} instanceof ${Type}) {
             return ${type} == ((${Type}) other${Type}).${type};
         }

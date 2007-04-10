@@ -146,6 +146,9 @@ public final class Days implements Comparable<Days> {
      * @return true if this number of days is the same as that specified
      */
     public boolean equals(Object otherDays) {
+        if (this == otherDays) {
+           return true;
+        }
         if (otherDays instanceof Days) {
             return days == ((Days) otherDays).days;
         }

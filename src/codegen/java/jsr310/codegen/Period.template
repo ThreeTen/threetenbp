@@ -146,6 +146,9 @@ public final class ${Type} implements Comparable<${Type}> {
      * @return true if this number of ${type} is the same as that specified
      */
     public boolean equals(Object other${Type}) {
+        if (this == other${Type}) {
+           return true;
+        }
         if (other${Type} instanceof ${Type}) {
             return ${type} == ((${Type}) other${Type}).${type};
         }
@@ -265,7 +268,7 @@ public final class ${Type} implements Comparable<${Type}> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of ${type}.
-     * This will be in the format 'PnD' where n is the number of ${type}.
+     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
      * 
      * @return the number of ${type} in ISO8601 string format
      */

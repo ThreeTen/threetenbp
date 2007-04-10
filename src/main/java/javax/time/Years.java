@@ -146,6 +146,9 @@ public final class Years implements Comparable<Years> {
      * @return true if this number of years is the same as that specified
      */
     public boolean equals(Object otherYears) {
+        if (this == otherYears) {
+           return true;
+        }
         if (otherYears instanceof Years) {
             return years == ((Years) otherYears).years;
         }
@@ -265,7 +268,7 @@ public final class Years implements Comparable<Years> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of years.
-     * This will be in the format 'PnD' where n is the number of years.
+     * This will be in the format 'PnY' where n is the number of years.
      * 
      * @return the number of years in ISO8601 string format
      */

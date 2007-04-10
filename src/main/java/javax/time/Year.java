@@ -123,6 +123,9 @@ public final class Year implements Comparable<Year> {
      * @return true if the year is the same
      */
     public boolean equals(Object otherYear) {
+        if (this == otherYear) {
+            return true;
+        }
         if (otherYear instanceof Year) {
             return year == ((Year) otherYear).year;
         }

@@ -151,6 +151,9 @@ public final class Month implements Comparable<Month> {
      * @return true if the month of year is the same
      */
     public boolean equals(Object otherMonth) {
+        if (this == otherMonth) {
+            return true;
+        }
         if (otherMonth instanceof Month) {
             return monthOfYear == ((Month) otherMonth).monthOfYear;
         }

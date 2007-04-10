@@ -185,6 +185,9 @@ public final class Day implements Comparable<Day> {
      * @return true if the month of year is the same
      */
     public boolean equals(Object otherDay) {
+        if (this == otherDay) {
+            return true;
+        }
         if (otherDay instanceof Day) {
             return monthOfYear == ((Day) otherDay).monthOfYear;
         }

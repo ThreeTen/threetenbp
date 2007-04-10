@@ -146,6 +146,9 @@ public final class Hours implements Comparable<Hours> {
      * @return true if this number of hours is the same as that specified
      */
     public boolean equals(Object otherHours) {
+        if (this == otherHours) {
+           return true;
+        }
         if (otherHours instanceof Hours) {
             return hours == ((Hours) otherHours).hours;
         }
@@ -265,7 +268,7 @@ public final class Hours implements Comparable<Hours> {
     //-----------------------------------------------------------------------
     /**
      * Returns a string representation of the number of hours.
-     * This will be in the format 'PnD' where n is the number of hours.
+     * This will be in the format 'PTnH' where n is the number of hours.
      * 
      * @return the number of hours in ISO8601 string format
      */
