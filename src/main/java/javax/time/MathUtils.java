@@ -50,16 +50,54 @@ public class MathUtils {
         return -value;
     }
 
+    /**
+     * Safely adds two int values.
+     * 
+     * @param a  the first value
+     * @param b  the second value
+     * @return the result
+     * @throws ArithmeticException if the result overflows an int
+     */
     public static int safeAdd(int a, int b) {
-        return a + b;  // TODO
+        int sum = a + b;
+        // check for a change of sign in the result when the inputs have the same sign
+        if ((a ^ sum) < 0 && (a ^ b) >= 0) {
+            throw new ArithmeticException("Addition overflows an int: " + a + " + " + b);
+        }
+        return sum;
     }
 
+    /**
+     * Safely subtracts one int from another.
+     * 
+     * @param a  the first value
+     * @param b  the second value to subtract from the first
+     * @return the result
+     * @throws ArithmeticException if the result overflows an int
+     */
     public static int safeSubtract(int a, int b) {
-        return a - b;  // TODO
+        int sum = a - b;
+        // check for a change of sign in the result when the inputs have the different signs
+        if ((a ^ sum) < 0 && (a ^ b) < 0) {
+            throw new ArithmeticException("Subtraction overflows an int: " + a + " - " + b);
+        }
+        return sum;
     }
 
+    /**
+     * Safely multiply one int by another.
+     * 
+     * @param a  the first value
+     * @param b  the second value
+     * @return the result
+     * @throws ArithmeticException if the result overflows an int
+     */
     public static int safeMultiply(int a, int b) {
-        return a * b;  // TODO
+        long total = (long) a * (long) b;
+        if (total < Integer.MIN_VALUE || total > Integer.MAX_VALUE) {
+            throw new ArithmeticException("Multiplication overflows an int: " + a + " * " + b);
+        }
+        return (int) total;
     }
 
 }
