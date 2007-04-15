@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of hours.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Hours implements Comparable<Hours> {
+public final class Hours implements Comparable<Hours>, Serializable {
 
     /**
      * A constant for zero hours.
      */
-    private static final Hours ZERO = new Hours(0);
+    public static final Hours ZERO = new Hours(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of hours in the period.

@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of seconds.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Seconds implements Comparable<Seconds> {
+public final class Seconds implements Comparable<Seconds>, Serializable {
 
     /**
      * A constant for zero seconds.
      */
-    private static final Seconds ZERO = new Seconds(0);
+    public static final Seconds ZERO = new Seconds(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of seconds in the period.

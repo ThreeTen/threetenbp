@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of weeks.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Weeks implements Comparable<Weeks> {
+public final class Weeks implements Comparable<Weeks>, Serializable {
 
     /**
      * A constant for zero weeks.
      */
-    private static final Weeks ZERO = new Weeks(0);
+    public static final Weeks ZERO = new Weeks(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of weeks in the period.

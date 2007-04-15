@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of years.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Years implements Comparable<Years> {
+public final class Years implements Comparable<Years>, Serializable {
 
     /**
      * A constant for zero years.
      */
-    private static final Years ZERO = new Years(0);
+    public static final Years ZERO = new Years(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of years in the period.

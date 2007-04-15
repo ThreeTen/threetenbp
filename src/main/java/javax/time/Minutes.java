@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of minutes.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Minutes implements Comparable<Minutes> {
+public final class Minutes implements Comparable<Minutes>, Serializable {
 
     /**
      * A constant for zero minutes.
      */
-    private static final Minutes ZERO = new Minutes(0);
+    public static final Minutes ZERO = new Minutes(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of minutes in the period.

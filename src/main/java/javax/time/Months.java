@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of months.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Months implements Comparable<Months> {
+public final class Months implements Comparable<Months>, Serializable {
 
     /**
      * A constant for zero months.
      */
-    private static final Months ZERO = new Months(0);
+    public static final Months ZERO = new Months(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of months in the period.

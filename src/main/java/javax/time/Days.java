@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of days.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Days implements Comparable<Days> {
+public final class Days implements Comparable<Days>, Serializable {
 
     /**
      * A constant for zero days.
      */
-    private static final Days ZERO = new Days(0);
+    public static final Days ZERO = new Days(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of days in the period.
