@@ -32,7 +32,6 @@
 package jsr310.codegen;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -52,8 +51,9 @@ import org.apache.velocity.app.Velocity;
  */
 public class CodeGen {
 
-    private static final File TEMPLATE_DIR = new File("src/codegen/java/jsr310/codegen");
-    private static final File GENERATED_DIR = new File("src/main/java/javax/time");
+    private static final String TEMPLATE_DIR = "src/codegen/java/jsr310/codegen/";
+    private static final File MAIN_DIR = new File("src/main/java/javax/time");
+    private static final File TEST_DIR = new File("src/test/java/javax/time");
 
     public static void main(String[] args) {
         try {
@@ -61,6 +61,7 @@ public class CodeGen {
             
             CodeGen cg = new CodeGen();
             cg.processPeriod();
+            cg.processTestPeriod();
             cg.processField();
             System.out.println("Done");
             
@@ -70,8 +71,13 @@ public class CodeGen {
     }
 
     //-----------------------------------------------------------------------
-    void processPeriod() throws Exception {
-        Template template = Velocity.getTemplate("src/codegen/java/jsr310/codegen/Period.template");
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    /**
+     * Code generate single field period classes.
+     */
+    private void processPeriod() throws Exception {
+        Template template = Velocity.getTemplate(TEMPLATE_DIR + "Period.vm");
         
         processPeriod(template, "Years", true);
         processPeriod(template, "Months", true);
@@ -82,35 +88,49 @@ public class CodeGen {
         processPeriod(template, "Seconds", false);
     }
 
-    void processPeriod(Template template, String classname, boolean date) throws Exception {
-        File file = new File(GENERATED_DIR, classname + ".java");
+    private void processPeriod(Template template, String classname, boolean date) throws Exception {
+        File file = new File(MAIN_DIR, classname + ".java");
+        List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
+        VelocityContext vc = createPeriodContext(classname, date, methodLines);
+        generate(file, template, vc);
+    }
+
+    //-----------------------------------------------------------------------
+    private void processTestPeriod() throws Exception {
+        Template template = Velocity.getTemplate(TEMPLATE_DIR + "TestPeriod.vm");
         
-        // find the part of the file that has been customised
-        List<String> methodLines = Collections.emptyList();
-        if (file.exists()) {
-            List<String> origLines = readFile(file);
-            int startToStringPos = indexOfLineContaining(origLines, "public String toString() {", 0);
-            int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
-            methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
-        }
-        
-        // setup data to insert
+        processTestPeriod(template, "Years", true);
+        processTestPeriod(template, "Months", true);
+        processTestPeriod(template, "Weeks", true);
+        processTestPeriod(template, "Days", true);
+        processTestPeriod(template, "Hours", false);
+        processTestPeriod(template, "Minutes", false);
+        processTestPeriod(template, "Seconds", false);
+    }
+
+    private void processTestPeriod(Template template, String classname, boolean date) throws Exception {
+        File file = new File(TEST_DIR, "Test" + classname + ".java");
+        List<String> methodLines = findAdditionalMethods(file, "public void test_toString() {");
+        VelocityContext vc = createPeriodContext(classname, date, methodLines);
+        generate(file, template, vc);
+    }
+
+    //-----------------------------------------------------------------------
+    private VelocityContext createPeriodContext(String classname, boolean date, List<String> methodLines) {
         VelocityContext vc = new VelocityContext();
         vc.put("Type", classname);
         vc.put("type", classname.toLowerCase());
         vc.put("stringPrefix", date ? "" : "T");
         vc.put("stringSuffix", classname.substring(0, 1));
         vc.put("methods", methodLines);
-        
-        // write output
-        FileWriter out = new FileWriter(file);
-        template.merge(vc, out);
-        out.close();
+        return vc;
     }
 
     //-----------------------------------------------------------------------
-    void processField() throws Exception {
-        Template template = Velocity.getTemplate("src/codegen/java/jsr310/codegen/Field.template");
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    private void processField() throws Exception {
+        Template template = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         
         processField(template, "Year", "year", null);
         processField(template, "MonthOfYear", "month of year", MONTH_OF_YEARS);
@@ -119,23 +139,15 @@ public class CodeGen {
         processField(template, "DayOfWeek", "day of week", DAY_OF_WEEKS);
     }
 
-    void processField(
-            Template template,
-            String classname,
-            String desc,
-            FieldSingleton[] singletons) throws Exception {
-        File file = new File(GENERATED_DIR, classname + ".java");
-        
-        // find the part of the file that has been customised
-        List<String> methodLines = Collections.emptyList();
-        if (file.exists()) {
-            List<String> origLines = readFile(file);
-            int startToStringPos = indexOfLineContaining(origLines, "public int hashCode() {", 0);
-            int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
-            methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
-        }
-        
-        // setup data to insert
+    private void processField(Template template, String classname, String desc, FieldSingleton[] singletons) throws Exception {
+        File file = new File(MAIN_DIR, classname + ".java");
+        List<String> methodLines = findAdditionalMethods(file, "public int hashCode() {");
+        VelocityContext vc = createFieldContext(classname, desc, singletons, methodLines);
+        generate(file, template, vc);
+    }
+
+    //-----------------------------------------------------------------------
+    private VelocityContext createFieldContext(String classname, String desc, FieldSingleton[] singletons, List<String> methodLines) {
         VelocityContext vc = new VelocityContext();
         vc.put("Type", classname);
         String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
@@ -143,15 +155,39 @@ public class CodeGen {
         vc.put("desc", desc);
         vc.put("singletons", singletons == null ? Collections.EMPTY_LIST : Arrays.asList(singletons));
         vc.put("methods", methodLines);
-        
-        // write output
+        return vc;
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    private List<String> findAdditionalMethods(File file, String lastMethodSig) throws Exception {
+        List<String> methodLines = Collections.emptyList();
+        if (file.exists()) {
+            List<String> origLines = readFile(file);
+            int startToStringPos = indexOfLineContaining(origLines, lastMethodSig, 0);
+            int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
+            methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
+        }
+        return methodLines;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Generate the output file using the template and context.
+     * 
+     * @param file  the file to output to
+     * @param template  the velocity template
+     * @param vc  the velocity context
+     */
+    private void generate(File file, Template template, VelocityContext vc) throws Exception {
         FileWriter out = new FileWriter(file);
         template.merge(vc, out);
         out.close();
     }
 
     //-----------------------------------------------------------------------
-    List<String> readFile(File file) throws Exception {
+    private List<String> readFile(File file) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         List<String> lines = new ArrayList<String>();
         String line = reader.readLine();
@@ -163,16 +199,16 @@ public class CodeGen {
         return lines;
     }
 
-    void writeFile(File file, List<String> lines) throws Exception {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        for (String line : lines) {
-            writer.write(line);
-            writer.newLine();
-        }
-        writer.close();
-    }
+//    private void writeFile(File file, List<String> lines) throws Exception {
+//        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//        for (String line : lines) {
+//            writer.write(line);
+//            writer.newLine();
+//        }
+//        writer.close();
+//    }
 
-    int indexOfEmptyLine(List<String> lines, int start) throws Exception {
+    private int indexOfEmptyLine(List<String> lines, int start) throws Exception {
         for (int i = start; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.length() == 0) {
@@ -182,7 +218,7 @@ public class CodeGen {
         return -1;
     }
 
-    int indexOfLineContaining(List<String> lines, String part, int start) throws Exception {
+    private int indexOfLineContaining(List<String> lines, String part, int start) throws Exception {
         for (int i = start; i < lines.size(); i++) {
             String line = lines.get(i);
             if (line.contains(part)) {
