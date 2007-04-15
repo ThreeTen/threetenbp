@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time period representing a number of ${type}.
  * <p>
@@ -46,12 +48,17 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Comparable<${Type}> {
+public final class ${Type} implements Comparable<${Type}>, Serializable {
 
     /**
      * A constant for zero ${type}.
      */
-    private static final ${Type} ZERO = new ${Type}(0);
+    public static final ${Type} ZERO = new ${Type}(0);
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The number of ${type} in the period.
