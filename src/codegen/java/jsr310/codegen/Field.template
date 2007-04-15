@@ -88,8 +88,8 @@ public final class ${Type} implements Comparable<${Type}> {
     private ${Type}(int ${type}) {
         this.${type} = ${type};
     }
-#if ($singletons.size() > 0)
 
+#if ($singletons.size() > 0)
     /**
      * Resolves singletons.
      * 
@@ -98,8 +98,8 @@ public final class ${Type} implements Comparable<${Type}> {
     private Object readResolve() {
         return ${Type}.${type}(${type});
     }
-#end
 
+#end
     //-----------------------------------------------------------------------
     /**
      * Gets the ${desc} value.
