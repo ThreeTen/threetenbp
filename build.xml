@@ -1,7 +1,7 @@
 <!--
   @author Fabio Kung (fabio.kung@gmail.com)
 -->
-<project name="jsr-310-ri">
+<project name="jsr-310-ri" default="dist">
 	<description>
 		Reference Implementation for the JSR 310 - Date and Time API
 	</description>
