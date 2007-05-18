@@ -44,7 +44,7 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class Year implements Comparable<Year> {
+public final class Year implements Moment, Comparable<Year> {
 
     /**
      * The year being represented.

@@ -44,7 +44,7 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Comparable<${Type}> {
+public final class ${Type} implements Moment, Comparable<${Type}> {
 
 #if ($singletons.size() > 0)
 #foreach ($singleton in $singletons)

@@ -44,7 +44,7 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class DayOfMonth implements Comparable<DayOfMonth> {
+public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
 
     /**
      * The day of month being represented.

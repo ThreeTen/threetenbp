@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class Days implements Comparable<Days>, Serializable {
+public final class Days implements Period, Comparable<Days>, Serializable {
 
     /**
      * A constant for zero days.

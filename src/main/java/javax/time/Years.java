@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class Years implements Comparable<Years>, Serializable {
+public final class Years implements Period, Comparable<Years>, Serializable {
 
     /**
      * A constant for zero years.

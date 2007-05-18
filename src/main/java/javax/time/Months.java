@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class Months implements Comparable<Months>, Serializable {
+public final class Months implements Period, Comparable<Months>, Serializable {
 
     /**
      * A constant for zero months.

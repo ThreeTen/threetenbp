@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Comparable<${Type}>, Serializable {
+public final class ${Type} implements Period, Comparable<${Type}>, Serializable {
 
     /**
      * A constant for zero ${type}.

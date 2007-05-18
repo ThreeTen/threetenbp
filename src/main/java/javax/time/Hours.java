@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class Hours implements Comparable<Hours>, Serializable {
+public final class Hours implements Period, Comparable<Hours>, Serializable {
 
     /**
      * A constant for zero hours.

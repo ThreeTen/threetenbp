@@ -32,113 +32,113 @@
 package javax.time;
 
 /**
- * A time field representing a day of year.
+ * A time field representing a hour of day.
  * <p>
- * DayOfYear is an immutable time field that can only store a day of year.
- * It is a type-safe way of representing a day of year in an application.
+ * HourOfDay is an immutable time field that can only store a hour of day.
+ * It is a type-safe way of representing a hour of day in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The day of year may be queried using getDayOfYear().
+ * The hour of day may be queried using getHourOfDay().
  * <p>
- * DayOfYear is thread-safe and immutable. 
+ * HourOfDay is thread-safe and immutable. 
  * 
  * @author Stephen Colebourne
  */
-public final class DayOfYear implements Moment, Comparable<DayOfYear> {
+public final class HourOfDay implements Moment, Comparable<HourOfDay> {
 
     /**
-     * The day of year being represented.
+     * The hour of day being represented.
      */
-    private final int dayOfYear;
+    private final int hourOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfYear</code>.
+     * Obtains an instance of <code>HourOfDay</code>.
      *
-     * @param dayOfYear  the day of year to represent
+     * @param hourOfDay  the hour of day to represent
      */
-    public static DayOfYear dayOfYear(int dayOfYear) {
-        return new DayOfYear(dayOfYear);
+    public static HourOfDay hourOfDay(int hourOfDay) {
+        return new HourOfDay(hourOfDay);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified day of year.
+     * Constructs an instance with the specified hour of day.
      */
-    private DayOfYear(int dayOfYear) {
-        this.dayOfYear = dayOfYear;
+    private HourOfDay(int hourOfDay) {
+        this.hourOfDay = hourOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of year value.
+     * Gets the hour of day value.
      *
-     * @return the day of year
+     * @return the hour of day
      */
-    public int getDayOfYear() {
-        return dayOfYear;
+    public int getHourOfDay() {
+        return hourOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this day of year instance to another.
+     * Compares this hour of day instance to another.
      * 
-     * @param otherDayOfYear  the other day of year instance, not null
+     * @param otherHourOfDay  the other hour of day instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherDayOfYear is null
+     * @throws NullPointerException if otherHourOfDay is null
      */
-    public int compareTo(DayOfYear otherDayOfYear) {
-        int thisValue = this.dayOfYear;
-        int otherValue = otherDayOfYear.dayOfYear;
+    public int compareTo(HourOfDay otherHourOfDay) {
+        int thisValue = this.hourOfDay;
+        int otherValue = otherHourOfDay.hourOfDay;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this day of year instance greater than the specified day of year.
+     * Is this hour of day instance greater than the specified hour of day.
      * 
-     * @param otherDayOfYear  the other day of year instance, not null
-     * @return true if this day of year is greater
-     * @throws NullPointerException if otherDayOfYear is null
+     * @param otherHourOfDay  the other hour of day instance, not null
+     * @return true if this hour of day is greater
+     * @throws NullPointerException if otherHourOfDay is null
      */
-    public boolean isGreaterThan(DayOfYear otherDayOfYear) {
-        return compareTo(otherDayOfYear) > 0;
+    public boolean isGreaterThan(HourOfDay otherHourOfDay) {
+        return compareTo(otherHourOfDay) > 0;
     }
 
     /**
-     * Is this day of year instance less than the specified day of year.
+     * Is this hour of day instance less than the specified hour of day.
      * 
-     * @param otherDayOfYear  the other day of year instance, not null
-     * @return true if this day of year is less
-     * @throws NullPointerException if otherDayOfYear is null
+     * @param otherHourOfDay  the other hour of day instance, not null
+     * @return true if this hour of day is less
+     * @throws NullPointerException if otherHourOfDay is null
      */
-    public boolean isLessThan(DayOfYear otherDayOfYear) {
-        return compareTo(otherDayOfYear) < 0;
+    public boolean isLessThan(HourOfDay otherHourOfDay) {
+        return compareTo(otherHourOfDay) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the day of year.
+     * Is this instance equal to that specified, evaluating the hour of day.
      * 
-     * @param otherDayOfYear  the other day of year instance, null returns false
-     * @return true if the day of year is the same
+     * @param otherHourOfDay  the other hour of day instance, null returns false
+     * @return true if the hour of day is the same
      */
-    public boolean equals(Object otherDayOfYear) {
-        if (this == otherDayOfYear) {
+    public boolean equals(Object otherHourOfDay) {
+        if (this == otherHourOfDay) {
             return true;
         }
-        if (otherDayOfYear instanceof DayOfYear) {
-            return dayOfYear == ((DayOfYear) otherDayOfYear).dayOfYear;
+        if (otherHourOfDay instanceof HourOfDay) {
+            return hourOfDay == ((HourOfDay) otherHourOfDay).hourOfDay;
         }
         return false;
     }
 
     /**
-     * A hashcode for the day of year object.
+     * A hashcode for the hour of day object.
      * 
      * @return a suitable hashcode
      */
     public int hashCode() {
-        return dayOfYear;
+        return hourOfDay;
     }
 
 }

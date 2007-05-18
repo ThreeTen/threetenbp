@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class Weeks implements Comparable<Weeks>, Serializable {
+public final class Weeks implements Period, Comparable<Weeks>, Serializable {
 
     /**
      * A constant for zero weeks.

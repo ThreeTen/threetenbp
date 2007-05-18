@@ -32,113 +32,113 @@
 package javax.time;
 
 /**
- * A time field representing a day of year.
+ * A time field representing a minute of hour.
  * <p>
- * DayOfYear is an immutable time field that can only store a day of year.
- * It is a type-safe way of representing a day of year in an application.
+ * MinuteOfHour is an immutable time field that can only store a minute of hour.
+ * It is a type-safe way of representing a minute of hour in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The day of year may be queried using getDayOfYear().
+ * The minute of hour may be queried using getMinuteOfHour().
  * <p>
- * DayOfYear is thread-safe and immutable. 
+ * MinuteOfHour is thread-safe and immutable. 
  * 
  * @author Stephen Colebourne
  */
-public final class DayOfYear implements Moment, Comparable<DayOfYear> {
+public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
 
     /**
-     * The day of year being represented.
+     * The minute of hour being represented.
      */
-    private final int dayOfYear;
+    private final int minuteOfHour;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfYear</code>.
+     * Obtains an instance of <code>MinuteOfHour</code>.
      *
-     * @param dayOfYear  the day of year to represent
+     * @param minuteOfHour  the minute of hour to represent
      */
-    public static DayOfYear dayOfYear(int dayOfYear) {
-        return new DayOfYear(dayOfYear);
+    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
+        return new MinuteOfHour(minuteOfHour);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified day of year.
+     * Constructs an instance with the specified minute of hour.
      */
-    private DayOfYear(int dayOfYear) {
-        this.dayOfYear = dayOfYear;
+    private MinuteOfHour(int minuteOfHour) {
+        this.minuteOfHour = minuteOfHour;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of year value.
+     * Gets the minute of hour value.
      *
-     * @return the day of year
+     * @return the minute of hour
      */
-    public int getDayOfYear() {
-        return dayOfYear;
+    public int getMinuteOfHour() {
+        return minuteOfHour;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this day of year instance to another.
+     * Compares this minute of hour instance to another.
      * 
-     * @param otherDayOfYear  the other day of year instance, not null
+     * @param otherMinuteOfHour  the other minute of hour instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherDayOfYear is null
+     * @throws NullPointerException if otherMinuteOfHour is null
      */
-    public int compareTo(DayOfYear otherDayOfYear) {
-        int thisValue = this.dayOfYear;
-        int otherValue = otherDayOfYear.dayOfYear;
+    public int compareTo(MinuteOfHour otherMinuteOfHour) {
+        int thisValue = this.minuteOfHour;
+        int otherValue = otherMinuteOfHour.minuteOfHour;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this day of year instance greater than the specified day of year.
+     * Is this minute of hour instance greater than the specified minute of hour.
      * 
-     * @param otherDayOfYear  the other day of year instance, not null
-     * @return true if this day of year is greater
-     * @throws NullPointerException if otherDayOfYear is null
+     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @return true if this minute of hour is greater
+     * @throws NullPointerException if otherMinuteOfHour is null
      */
-    public boolean isGreaterThan(DayOfYear otherDayOfYear) {
-        return compareTo(otherDayOfYear) > 0;
+    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
+        return compareTo(otherMinuteOfHour) > 0;
     }
 
     /**
-     * Is this day of year instance less than the specified day of year.
+     * Is this minute of hour instance less than the specified minute of hour.
      * 
-     * @param otherDayOfYear  the other day of year instance, not null
-     * @return true if this day of year is less
-     * @throws NullPointerException if otherDayOfYear is null
+     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @return true if this minute of hour is less
+     * @throws NullPointerException if otherMinuteOfHour is null
      */
-    public boolean isLessThan(DayOfYear otherDayOfYear) {
-        return compareTo(otherDayOfYear) < 0;
+    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
+        return compareTo(otherMinuteOfHour) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the day of year.
+     * Is this instance equal to that specified, evaluating the minute of hour.
      * 
-     * @param otherDayOfYear  the other day of year instance, null returns false
-     * @return true if the day of year is the same
+     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
+     * @return true if the minute of hour is the same
      */
-    public boolean equals(Object otherDayOfYear) {
-        if (this == otherDayOfYear) {
+    public boolean equals(Object otherMinuteOfHour) {
+        if (this == otherMinuteOfHour) {
             return true;
         }
-        if (otherDayOfYear instanceof DayOfYear) {
-            return dayOfYear == ((DayOfYear) otherDayOfYear).dayOfYear;
+        if (otherMinuteOfHour instanceof MinuteOfHour) {
+            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
         }
         return false;
     }
 
     /**
-     * A hashcode for the day of year object.
+     * A hashcode for the minute of hour object.
      * 
      * @return a suitable hashcode
      */
     public int hashCode() {
-        return dayOfYear;
+        return minuteOfHour;
     }
 
 }

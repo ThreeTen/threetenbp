@@ -48,7 +48,7 @@ import java.io.Serializable;
  * 
  * @author Stephen Colebourne
  */
-public final class Seconds implements Comparable<Seconds>, Serializable {
+public final class Seconds implements Period, Comparable<Seconds>, Serializable {
 
     /**
      * A constant for zero seconds.

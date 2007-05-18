@@ -44,7 +44,7 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class DayOfWeek implements Comparable<DayOfWeek> {
+public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
 
     /**
      * The singleton instance for the day of week of Monday.

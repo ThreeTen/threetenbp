@@ -44,7 +44,7 @@ package javax.time;
  * 
  * @author Stephen Colebourne
  */
-public final class MonthOfYear implements Comparable<MonthOfYear> {
+public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
 
     /**
      * The singleton instance for the month of January.

@@ -137,6 +137,9 @@ public class CodeGen {
         processField(template, "DayOfYear", "day of year", null);
         processField(template, "DayOfMonth", "day of month", null);
         processField(template, "DayOfWeek", "day of week", DAY_OF_WEEKS);
+        processField(template, "HourOfDay", "hour of day", null);
+        processField(template, "MinuteOfHour", "minute of hour", null);
+        processField(template, "SecondOfMinute", "second of minute", null);
     }
 
     private void processField(Template template, String classname, String desc, FieldSingleton[] singletons) throws Exception {
