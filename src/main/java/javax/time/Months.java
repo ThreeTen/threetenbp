@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
  * A time period representing a number of months.
  * <p>
@@ -44,11 +42,11 @@ import java.io.Serializable;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Months is thread-safe and immutable. 
- * 
+ * Months is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Months implements Period, Comparable<Months>, Serializable {
+public final class Months implements Period, Comparable<Months> {
 
     /**
      * A constant for zero months.
@@ -67,7 +65,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
 
     /**
      * Obtains an instance of <code>Months</code>.
-     * 
+     *
      * @param months  the number of months the instance will represent
      */
     public static Months months(int months) {
@@ -80,7 +78,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific numbr of months.
-     * 
+     *
      * @param months  the months to use
      */
     private Months(int months) {
@@ -90,7 +88,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -100,7 +98,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the number of months held in this period.
-     * 
+     *
      * @return the number of months
      */
     public int getMonths() {
@@ -110,7 +108,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Compares the number of months in this instance to another instance.
-     * 
+     *
      * @param otherMonths  the other number of months, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherMonths is null
@@ -124,7 +122,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     /**
      * Is the number of months in this instance greater than that in
      * another instance.
-     * 
+     *
      * @param otherMonths  the other number of months, not null
      * @return true if this number of months is greater
      * @throws NullPointerException if otherMonths is null
@@ -136,7 +134,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     /**
      * Is the number of months in this instance less than that in
      * another instance.
-     * 
+     *
      * @param otherMonths  the other number of months, not null
      * @return true if this number of months is less
      * @throws NullPointerException if otherMonths is null
@@ -148,7 +146,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the number of months.
-     * 
+     *
      * @param otherMonths  the other number of months, null returns false
      * @return true if this number of months is the same as that specified
      */
@@ -164,7 +162,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
 
     /**
      * A hashcode for the months object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {
@@ -176,7 +174,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
      * Returns a new instance with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param months  the amount of months to add, may be negative
      * @return the new period plus the specified number of months
      * @throws ArithmeticException if the result overflows an int
@@ -192,7 +190,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
      * Returns a new instance with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param months  the amount of months to add, may be negative, not null
      * @return the new period plus the specified number of months
      * @throws NullPointerException if the months to add is null
@@ -207,7 +205,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
      * Returns a new instance with the specified number of months taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param months  the amount of months to take away, may be negative
      * @return the new period minus the specified number of months
      * @throws ArithmeticException if the result overflows an int
@@ -220,7 +218,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
      * Returns a new instance with the specified number of months taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param months  the amount of months to take away, may be negative, not null
      * @return the new period minus the specified number of months
      * @throws NullPointerException if the months to add is null
@@ -235,7 +233,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
      * Returns a new instance with the months multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param scalar  the amount to multiply by, may be negative
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
@@ -249,7 +247,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param divisor  the amount to divide by, may be negative
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
@@ -264,7 +262,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Returns a new instance with the months value negated.
-     * 
+     *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
@@ -276,7 +274,7 @@ public final class Months implements Period, Comparable<Months>, Serializable {
     /**
      * Returns a string representation of the number of months.
      * This will be in the format 'PnM' where n is the number of months.
-     * 
+     *
      * @return the number of months in ISO8601 string format
      */
     public String toString() {

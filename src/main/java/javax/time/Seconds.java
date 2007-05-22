@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
  * A time period representing a number of seconds.
  * <p>
@@ -44,11 +42,11 @@ import java.io.Serializable;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Seconds is thread-safe and immutable. 
- * 
+ * Seconds is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Seconds implements Period, Comparable<Seconds>, Serializable {
+public final class Seconds implements Period, Comparable<Seconds> {
 
     /**
      * A constant for zero seconds.
@@ -67,7 +65,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
 
     /**
      * Obtains an instance of <code>Seconds</code>.
-     * 
+     *
      * @param seconds  the number of seconds the instance will represent
      */
     public static Seconds seconds(int seconds) {
@@ -80,7 +78,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific numbr of seconds.
-     * 
+     *
      * @param seconds  the seconds to use
      */
     private Seconds(int seconds) {
@@ -90,7 +88,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -100,7 +98,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Gets the number of seconds held in this period.
-     * 
+     *
      * @return the number of seconds
      */
     public int getSeconds() {
@@ -110,7 +108,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Compares the number of seconds in this instance to another instance.
-     * 
+     *
      * @param otherSeconds  the other number of seconds, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherSeconds is null
@@ -124,7 +122,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     /**
      * Is the number of seconds in this instance greater than that in
      * another instance.
-     * 
+     *
      * @param otherSeconds  the other number of seconds, not null
      * @return true if this number of seconds is greater
      * @throws NullPointerException if otherSeconds is null
@@ -136,7 +134,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     /**
      * Is the number of seconds in this instance less than that in
      * another instance.
-     * 
+     *
      * @param otherSeconds  the other number of seconds, not null
      * @return true if this number of seconds is less
      * @throws NullPointerException if otherSeconds is null
@@ -148,7 +146,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the number of seconds.
-     * 
+     *
      * @param otherSeconds  the other number of seconds, null returns false
      * @return true if this number of seconds is the same as that specified
      */
@@ -164,7 +162,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
 
     /**
      * A hashcode for the seconds object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {
@@ -176,7 +174,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
      * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param seconds  the amount of seconds to add, may be negative
      * @return the new period plus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
@@ -192,7 +190,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
      * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param seconds  the amount of seconds to add, may be negative, not null
      * @return the new period plus the specified number of seconds
      * @throws NullPointerException if the seconds to add is null
@@ -207,7 +205,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
      * Returns a new instance with the specified number of seconds taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param seconds  the amount of seconds to take away, may be negative
      * @return the new period minus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
@@ -220,7 +218,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
      * Returns a new instance with the specified number of seconds taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param seconds  the amount of seconds to take away, may be negative, not null
      * @return the new period minus the specified number of seconds
      * @throws NullPointerException if the seconds to add is null
@@ -235,7 +233,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
      * Returns a new instance with the seconds multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param scalar  the amount to multiply by, may be negative
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
@@ -249,7 +247,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param divisor  the amount to divide by, may be negative
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
@@ -264,7 +262,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Returns a new instance with the seconds value negated.
-     * 
+     *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
@@ -276,7 +274,7 @@ public final class Seconds implements Period, Comparable<Seconds>, Serializable 
     /**
      * Returns a string representation of the number of seconds.
      * This will be in the format 'PTnS' where n is the number of seconds.
-     * 
+     *
      * @return the number of seconds in ISO8601 string format
      */
     public String toString() {

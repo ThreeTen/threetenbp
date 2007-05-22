@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The day of week may be queried using getDayOfWeek().
  * <p>
- * DayOfWeek is thread-safe and immutable. 
- * 
+ * DayOfWeek is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The singleton instance for the day of week of Monday.
@@ -117,7 +122,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -137,7 +142,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
     //-----------------------------------------------------------------------
     /**
      * Compares this day of week instance to another.
-     * 
+     *
      * @param otherDayOfWeek  the other day of week instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDayOfWeek is null
@@ -150,7 +155,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
 
     /**
      * Is this day of week instance greater than the specified day of week.
-     * 
+     *
      * @param otherDayOfWeek  the other day of week instance, not null
      * @return true if this day of week is greater
      * @throws NullPointerException if otherDayOfWeek is null
@@ -161,7 +166,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
 
     /**
      * Is this day of week instance less than the specified day of week.
-     * 
+     *
      * @param otherDayOfWeek  the other day of week instance, not null
      * @return true if this day of week is less
      * @throws NullPointerException if otherDayOfWeek is null
@@ -173,7 +178,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the day of week.
-     * 
+     *
      * @param otherDayOfWeek  the other day of week instance, null returns false
      * @return true if the day of week is the same
      */
@@ -189,7 +194,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
 
     /**
      * A hashcode for the day of week object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

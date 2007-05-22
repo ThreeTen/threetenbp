@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A moment of a month.
  * <p>
@@ -39,13 +41,18 @@ package javax.time;
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * Month is thread-safe and immutable. 
- * 
+ * Month is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Month implements Comparable<Month> {
+public final class Month implements Comparable<Month>, Serializable {
 
     /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
+
+	/**
      * The year being represented.
      */
     private final Year year;
@@ -57,7 +64,7 @@ public final class Month implements Comparable<Month> {
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>Month</code>.
-     * 
+     *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      */
@@ -67,7 +74,7 @@ public final class Month implements Comparable<Month> {
 
     /**
      * Obtains an instance of <code>Month</code> representing this month.
-     * 
+     *
      * @return a Month object representing this month
      */
     public static Month thisMonth() {
@@ -77,7 +84,7 @@ public final class Month implements Comparable<Month> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
-     * 
+     *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      */
@@ -108,7 +115,7 @@ public final class Month implements Comparable<Month> {
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
-     * 
+     *
      * @param otherMonth  the other month instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherMonth is null
@@ -123,7 +130,7 @@ public final class Month implements Comparable<Month> {
 
     /**
      * Is this instance after the specified one.
-     * 
+     *
      * @param otherMonth  the other month instance, not null
      * @return true if this month of year is greater
      * @throws NullPointerException if otherMonth is null
@@ -134,7 +141,7 @@ public final class Month implements Comparable<Month> {
 
     /**
      * Is this instance before the specified one.
-     * 
+     *
      * @param otherMonth  the other month instance, not null
      * @return true if this month of year is less
      * @throws NullPointerException if otherMonth is null
@@ -146,7 +153,7 @@ public final class Month implements Comparable<Month> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
-     * 
+     *
      * @param otherMonth  the other month instance, null returns false
      * @return true if the month of year is the same
      */
@@ -162,7 +169,7 @@ public final class Month implements Comparable<Month> {
 
     /**
      * A hashcode for the month object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

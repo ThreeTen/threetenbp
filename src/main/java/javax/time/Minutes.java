@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
  * A time period representing a number of minutes.
  * <p>
@@ -44,11 +42,11 @@ import java.io.Serializable;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Minutes is thread-safe and immutable. 
- * 
+ * Minutes is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Minutes implements Period, Comparable<Minutes>, Serializable {
+public final class Minutes implements Period, Comparable<Minutes> {
 
     /**
      * A constant for zero minutes.
@@ -67,7 +65,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
 
     /**
      * Obtains an instance of <code>Minutes</code>.
-     * 
+     *
      * @param minutes  the number of minutes the instance will represent
      */
     public static Minutes minutes(int minutes) {
@@ -80,7 +78,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific numbr of minutes.
-     * 
+     *
      * @param minutes  the minutes to use
      */
     private Minutes(int minutes) {
@@ -90,7 +88,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -100,7 +98,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Gets the number of minutes held in this period.
-     * 
+     *
      * @return the number of minutes
      */
     public int getMinutes() {
@@ -110,7 +108,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Compares the number of minutes in this instance to another instance.
-     * 
+     *
      * @param otherMinutes  the other number of minutes, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherMinutes is null
@@ -124,7 +122,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     /**
      * Is the number of minutes in this instance greater than that in
      * another instance.
-     * 
+     *
      * @param otherMinutes  the other number of minutes, not null
      * @return true if this number of minutes is greater
      * @throws NullPointerException if otherMinutes is null
@@ -136,7 +134,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     /**
      * Is the number of minutes in this instance less than that in
      * another instance.
-     * 
+     *
      * @param otherMinutes  the other number of minutes, not null
      * @return true if this number of minutes is less
      * @throws NullPointerException if otherMinutes is null
@@ -148,7 +146,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the number of minutes.
-     * 
+     *
      * @param otherMinutes  the other number of minutes, null returns false
      * @return true if this number of minutes is the same as that specified
      */
@@ -164,7 +162,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
 
     /**
      * A hashcode for the minutes object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {
@@ -176,7 +174,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
      * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param minutes  the amount of minutes to add, may be negative
      * @return the new period plus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
@@ -192,7 +190,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
      * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param minutes  the amount of minutes to add, may be negative, not null
      * @return the new period plus the specified number of minutes
      * @throws NullPointerException if the minutes to add is null
@@ -207,7 +205,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
      * Returns a new instance with the specified number of minutes taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param minutes  the amount of minutes to take away, may be negative
      * @return the new period minus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
@@ -220,7 +218,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
      * Returns a new instance with the specified number of minutes taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param minutes  the amount of minutes to take away, may be negative, not null
      * @return the new period minus the specified number of minutes
      * @throws NullPointerException if the minutes to add is null
@@ -235,7 +233,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
      * Returns a new instance with the minutes multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param scalar  the amount to multiply by, may be negative
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
@@ -249,7 +247,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param divisor  the amount to divide by, may be negative
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
@@ -264,7 +262,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     //-----------------------------------------------------------------------
     /**
      * Returns a new instance with the minutes value negated.
-     * 
+     *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
@@ -276,7 +274,7 @@ public final class Minutes implements Period, Comparable<Minutes>, Serializable 
     /**
      * Returns a string representation of the number of minutes.
      * This will be in the format 'PTnM' where n is the number of minutes.
-     * 
+     *
      * @return the number of minutes in ISO8601 string format
      */
     public String toString() {

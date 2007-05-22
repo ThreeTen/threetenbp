@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The ${desc} may be queried using get${Type}().
  * <p>
- * ${Type} is thread-safe and immutable. 
- * 
+ * ${Type} is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class ${Type} implements Moment, Comparable<${Type}> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
 #if ($singletons.size() > 0)
 #foreach ($singleton in $singletons)
@@ -92,7 +97,7 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
 #if ($singletons.size() > 0)
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -113,7 +118,7 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
     //-----------------------------------------------------------------------
     /**
      * Compares this ${desc} instance to another.
-     * 
+     *
      * @param other${Type}  the other ${desc} instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if other${Type} is null
@@ -126,7 +131,7 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
 
     /**
      * Is this ${desc} instance greater than the specified ${desc}.
-     * 
+     *
      * @param other${Type}  the other ${desc} instance, not null
      * @return true if this ${desc} is greater
      * @throws NullPointerException if other${Type} is null
@@ -137,7 +142,7 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
 
     /**
      * Is this ${desc} instance less than the specified ${desc}.
-     * 
+     *
      * @param other${Type}  the other ${desc} instance, not null
      * @return true if this ${desc} is less
      * @throws NullPointerException if other${Type} is null
@@ -149,7 +154,7 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the ${desc}.
-     * 
+     *
      * @param other${Type}  the other ${desc} instance, null returns false
      * @return true if the ${desc} is the same
      */
@@ -165,7 +170,7 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
 
     /**
      * A hashcode for the ${desc} object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

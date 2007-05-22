@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The year may be queried using getYear().
  * <p>
- * Year is thread-safe and immutable. 
- * 
+ * Year is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class Year implements Moment, Comparable<Year> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The year being represented.
@@ -82,7 +87,7 @@ public final class Year implements Moment, Comparable<Year> {
     //-----------------------------------------------------------------------
     /**
      * Compares this year instance to another.
-     * 
+     *
      * @param otherYear  the other year instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherYear is null
@@ -95,7 +100,7 @@ public final class Year implements Moment, Comparable<Year> {
 
     /**
      * Is this year instance greater than the specified year.
-     * 
+     *
      * @param otherYear  the other year instance, not null
      * @return true if this year is greater
      * @throws NullPointerException if otherYear is null
@@ -106,7 +111,7 @@ public final class Year implements Moment, Comparable<Year> {
 
     /**
      * Is this year instance less than the specified year.
-     * 
+     *
      * @param otherYear  the other year instance, not null
      * @return true if this year is less
      * @throws NullPointerException if otherYear is null
@@ -118,7 +123,7 @@ public final class Year implements Moment, Comparable<Year> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the year.
-     * 
+     *
      * @param otherYear  the other year instance, null returns false
      * @return true if the year is the same
      */
@@ -134,7 +139,7 @@ public final class Year implements Moment, Comparable<Year> {
 
     /**
      * A hashcode for the year object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

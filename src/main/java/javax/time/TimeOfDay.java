@@ -40,12 +40,17 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * <p>
  * TimeOfDay is thread-safe and immutable.
- * 
+ *
  * @author Stephen Colebourne
  */
 public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
+
+	/**
      * The second within the day that this TimeOfDay represents.
      */
     private final int secondOfDay;
@@ -53,7 +58,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>TimeOfDay</code>.
-     * 
+     *
      * @param hourOfDay  the hour of day to represent
      * @param minuteOfHour  the minute of hour to represent
      * @return a TimeOfDay object representing the specified time
@@ -65,7 +70,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * Obtains an instance of <code>TimeOfDay</code>.
-     * 
+     *
      * @param hourOfDay  the hour of day to represent
      * @param minuteOfHour  the minute of hour to represent
      * @param secondOfMinute  the second of minute to represent
@@ -78,7 +83,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * Obtains an instance of <code>TimeOfDay</code> representing this month.
-     * 
+     *
      * @return a TimeOfDay object representing the current time
      */
     public static TimeOfDay currentTime() {
@@ -87,7 +92,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * Obtains an instance of <code>TimeOfDay</code> representing this month.
-     * 
+     *
      * @return a TimeOfDay object representing the current time
      */
     public static TimeOfDay currentHour() {
@@ -96,7 +101,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * Obtains an instance of <code>TimeOfDay</code> representing this month.
-     * 
+     *
      * @return a TimeOfDay object representing the current time
      */
     public static TimeOfDay currentMinute() {
@@ -106,7 +111,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
-     * 
+     *
      * @param secondOfDay  the second of day to represent
      */
     private TimeOfDay(int secondOfDay) {
@@ -322,7 +327,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
-     * 
+     *
      * @param otherTimeOfDay  the other instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if other value is null
@@ -339,7 +344,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * Is this instance after the specified one.
-     * 
+     *
      * @param otherTimeOfDay  the other time of day instance, not null
      * @return true if this time of day is later
      * @throws NullPointerException if otherTimeOfDay is null
@@ -350,7 +355,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * Is this instance before the specified one.
-     * 
+     *
      * @param otherTimeOfDay  the other time of day instance, not null
      * @return true if this time of day is earlier
      * @throws NullPointerException if otherTimeOfDay is null
@@ -362,7 +367,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
-     * 
+     *
      * @param otherTimeOfDay  the other time of day instance, null returns false
      * @return true if the time of day is the same
      */
@@ -378,7 +383,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     /**
      * A hashcode for the time of day object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

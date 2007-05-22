@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A moment of a day.
  * <p>
@@ -39,11 +41,16 @@ package javax.time;
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * Day is thread-safe and immutable. 
- * 
+ * Day is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Day implements Comparable<Day> {
+public final class Day implements Comparable<Day>, Serializable {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The year being represented.
@@ -61,7 +68,7 @@ public final class Day implements Comparable<Day> {
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>Day</code>.
-     * 
+     *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
@@ -72,7 +79,7 @@ public final class Day implements Comparable<Day> {
 
     /**
      * Obtains an instance of <code>Day</code> representing today.
-     * 
+     *
      * @return a Day object representing today
      */
     public static Day today() {
@@ -81,7 +88,7 @@ public final class Day implements Comparable<Day> {
 
     /**
      * Obtains an instance of <code>Day</code> representing yesterday.
-     * 
+     *
      * @return a Day object representing yesterday
      */
     public static Day yesterday() {
@@ -90,7 +97,7 @@ public final class Day implements Comparable<Day> {
 
     /**
      * Obtains an instance of <code>Day</code> representing tomorrow.
-     * 
+     *
      * @return a Day object representing tomorrow
      */
     public static Day tomorrow() {
@@ -100,7 +107,7 @@ public final class Day implements Comparable<Day> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
-     * 
+     *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
@@ -142,7 +149,7 @@ public final class Day implements Comparable<Day> {
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
-     * 
+     *
      * @param otherDay  the other day instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDay is null
@@ -157,7 +164,7 @@ public final class Day implements Comparable<Day> {
 
     /**
      * Is this instance after the specified one.
-     * 
+     *
      * @param otherDay  the other day instance, not null
      * @return true if this month of year is greater
      * @throws NullPointerException if otherDay is null
@@ -168,7 +175,7 @@ public final class Day implements Comparable<Day> {
 
     /**
      * Is this instance before the specified one.
-     * 
+     *
      * @param otherDay  the other day instance, not null
      * @return true if this month of year is less
      * @throws NullPointerException if otherDay is null
@@ -180,7 +187,7 @@ public final class Day implements Comparable<Day> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
-     * 
+     *
      * @param otherDay  the other month instance, null returns false
      * @return true if the month of year is the same
      */
@@ -196,7 +203,7 @@ public final class Day implements Comparable<Day> {
 
     /**
      * A hashcode for the day object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

@@ -31,16 +31,18 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * Represents a moment in time that may be fully or partially defined.
  * <p>
  * Moment is the interface that is shared amongst many other classes in
  * the Java Date Framework. Many low level APIs are defined to accept a
  * Moment, however it is less common that you will hold instances directly.
- * 
+ *
  * @author Stephen Colebourne
  */
-public interface Moment {
+public interface Moment extends Serializable {
 
 //    public DateTimeField minimumField();
 //

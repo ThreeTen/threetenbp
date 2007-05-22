@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The second of minute may be queried using getSecondOfMinute().
  * <p>
- * SecondOfMinute is thread-safe and immutable. 
- * 
+ * SecondOfMinute is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The second of minute being represented.
@@ -82,7 +87,7 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
     //-----------------------------------------------------------------------
     /**
      * Compares this second of minute instance to another.
-     * 
+     *
      * @param otherSecondOfMinute  the other second of minute instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherSecondOfMinute is null
@@ -95,7 +100,7 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
 
     /**
      * Is this second of minute instance greater than the specified second of minute.
-     * 
+     *
      * @param otherSecondOfMinute  the other second of minute instance, not null
      * @return true if this second of minute is greater
      * @throws NullPointerException if otherSecondOfMinute is null
@@ -106,7 +111,7 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
 
     /**
      * Is this second of minute instance less than the specified second of minute.
-     * 
+     *
      * @param otherSecondOfMinute  the other second of minute instance, not null
      * @return true if this second of minute is less
      * @throws NullPointerException if otherSecondOfMinute is null
@@ -118,7 +123,7 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the second of minute.
-     * 
+     *
      * @param otherSecondOfMinute  the other second of minute instance, null returns false
      * @return true if the second of minute is the same
      */
@@ -134,7 +139,7 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
 
     /**
      * A hashcode for the second of minute object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

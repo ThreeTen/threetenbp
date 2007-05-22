@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The day of month may be queried using getDayOfMonth().
  * <p>
- * DayOfMonth is thread-safe and immutable. 
- * 
+ * DayOfMonth is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The day of month being represented.
@@ -82,7 +87,7 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
     //-----------------------------------------------------------------------
     /**
      * Compares this day of month instance to another.
-     * 
+     *
      * @param otherDayOfMonth  the other day of month instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDayOfMonth is null
@@ -95,7 +100,7 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
 
     /**
      * Is this day of month instance greater than the specified day of month.
-     * 
+     *
      * @param otherDayOfMonth  the other day of month instance, not null
      * @return true if this day of month is greater
      * @throws NullPointerException if otherDayOfMonth is null
@@ -106,7 +111,7 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
 
     /**
      * Is this day of month instance less than the specified day of month.
-     * 
+     *
      * @param otherDayOfMonth  the other day of month instance, not null
      * @return true if this day of month is less
      * @throws NullPointerException if otherDayOfMonth is null
@@ -118,7 +123,7 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the day of month.
-     * 
+     *
      * @param otherDayOfMonth  the other day of month instance, null returns false
      * @return true if the day of month is the same
      */
@@ -134,7 +139,7 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
 
     /**
      * A hashcode for the day of month object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

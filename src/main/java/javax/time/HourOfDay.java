@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The hour of day may be queried using getHourOfDay().
  * <p>
- * HourOfDay is thread-safe and immutable. 
- * 
+ * HourOfDay is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class HourOfDay implements Moment, Comparable<HourOfDay> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The hour of day being represented.
@@ -82,7 +87,7 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Compares this hour of day instance to another.
-     * 
+     *
      * @param otherHourOfDay  the other hour of day instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherHourOfDay is null
@@ -95,7 +100,7 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
 
     /**
      * Is this hour of day instance greater than the specified hour of day.
-     * 
+     *
      * @param otherHourOfDay  the other hour of day instance, not null
      * @return true if this hour of day is greater
      * @throws NullPointerException if otherHourOfDay is null
@@ -106,7 +111,7 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
 
     /**
      * Is this hour of day instance less than the specified hour of day.
-     * 
+     *
      * @param otherHourOfDay  the other hour of day instance, not null
      * @return true if this hour of day is less
      * @throws NullPointerException if otherHourOfDay is null
@@ -118,7 +123,7 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the hour of day.
-     * 
+     *
      * @param otherHourOfDay  the other hour of day instance, null returns false
      * @return true if the hour of day is the same
      */
@@ -134,7 +139,7 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
 
     /**
      * A hashcode for the hour of day object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

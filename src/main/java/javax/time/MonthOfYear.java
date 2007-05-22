@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The month of year may be queried using getMonthOfYear().
  * <p>
- * MonthOfYear is thread-safe and immutable. 
- * 
+ * MonthOfYear is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The singleton instance for the month of January.
@@ -147,7 +152,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -167,7 +172,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
     //-----------------------------------------------------------------------
     /**
      * Compares this month of year instance to another.
-     * 
+     *
      * @param otherMonthOfYear  the other month of year instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherMonthOfYear is null
@@ -180,7 +185,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
 
     /**
      * Is this month of year instance greater than the specified month of year.
-     * 
+     *
      * @param otherMonthOfYear  the other month of year instance, not null
      * @return true if this month of year is greater
      * @throws NullPointerException if otherMonthOfYear is null
@@ -191,7 +196,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
 
     /**
      * Is this month of year instance less than the specified month of year.
-     * 
+     *
      * @param otherMonthOfYear  the other month of year instance, not null
      * @return true if this month of year is less
      * @throws NullPointerException if otherMonthOfYear is null
@@ -203,7 +208,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the month of year.
-     * 
+     *
      * @param otherMonthOfYear  the other month of year instance, null returns false
      * @return true if the month of year is the same
      */
@@ -219,7 +224,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
 
     /**
      * A hashcode for the month of year object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

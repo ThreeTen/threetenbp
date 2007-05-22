@@ -16,7 +16,7 @@
  *  * Neither the name of JSR-310 nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- 
+
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -31,15 +31,17 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * Represents a period of time defined using human-scale units.
  * <p>
  * Period is the interface that is shared amongst many other classes in
  * the Java Date Framework. Many low level APIs are defined to accept a
  * Period, however it is less common that you will hold instances directly.
- * 
+ *
  * @author Stephen Colebourne
  */
-public interface Period {
+public interface Period extends Serializable {
 
 }

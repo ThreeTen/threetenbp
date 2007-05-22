@@ -40,11 +40,16 @@ package javax.time;
  * Static factory methods allow you to constuct instances.
  * The minute of hour may be queried using getMinuteOfHour().
  * <p>
- * MinuteOfHour is thread-safe and immutable. 
- * 
+ * MinuteOfHour is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The minute of hour being represented.
@@ -82,7 +87,7 @@ public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
     //-----------------------------------------------------------------------
     /**
      * Compares this minute of hour instance to another.
-     * 
+     *
      * @param otherMinuteOfHour  the other minute of hour instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherMinuteOfHour is null
@@ -95,7 +100,7 @@ public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
 
     /**
      * Is this minute of hour instance greater than the specified minute of hour.
-     * 
+     *
      * @param otherMinuteOfHour  the other minute of hour instance, not null
      * @return true if this minute of hour is greater
      * @throws NullPointerException if otherMinuteOfHour is null
@@ -106,7 +111,7 @@ public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
 
     /**
      * Is this minute of hour instance less than the specified minute of hour.
-     * 
+     *
      * @param otherMinuteOfHour  the other minute of hour instance, not null
      * @return true if this minute of hour is less
      * @throws NullPointerException if otherMinuteOfHour is null
@@ -118,7 +123,7 @@ public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the minute of hour.
-     * 
+     *
      * @param otherMinuteOfHour  the other minute of hour instance, null returns false
      * @return true if the minute of hour is the same
      */
@@ -134,7 +139,7 @@ public final class MinuteOfHour implements Moment, Comparable<MinuteOfHour> {
 
     /**
      * A hashcode for the minute of hour object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

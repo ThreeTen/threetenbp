@@ -39,11 +39,16 @@ package javax.time;
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * Day is thread-safe and immutable. 
- * 
+ * Day is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
 public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> {
+
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The year being represented.
@@ -61,7 +66,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>CalendarDay</code>.
-     * 
+     *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
@@ -73,7 +78,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
 
     /**
      * Obtains an instance of <code>CalendarDay</code> representing today.
-     * 
+     *
      * @return a CalendarDay object representing today
      */
     public static CalendarDay today() {
@@ -82,7 +87,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
 
     /**
      * Obtains an instance of <code>CalendarDay</code> representing yesterday.
-     * 
+     *
      * @return a CalendarDay object representing yesterday
      */
     public static CalendarDay yesterday() {
@@ -91,7 +96,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
 
     /**
      * Obtains an instance of <code>CalendarDay</code> representing tomorrow.
-     * 
+     *
      * @return a CalendarDay object representing tomorrow
      */
     public static CalendarDay tomorrow() {
@@ -101,7 +106,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
-     * 
+     *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
@@ -207,7 +212,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
-     * 
+     *
      * @param otherDay  the other day instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDay is null
@@ -222,7 +227,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
 
     /**
      * Is this instance after the specified one.
-     * 
+     *
      * @param otherDay  the other day instance, not null
      * @return true if this month of year is greater
      * @throws NullPointerException if otherDay is null
@@ -233,7 +238,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
 
     /**
      * Is this instance before the specified one.
-     * 
+     *
      * @param otherDay  the other day instance, not null
      * @return true if this month of year is less
      * @throws NullPointerException if otherDay is null
@@ -245,7 +250,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
-     * 
+     *
      * @param otherDay  the other month instance, null returns false
      * @return true if the month of year is the same
      */
@@ -261,7 +266,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
 
     /**
      * A hashcode for the day object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {

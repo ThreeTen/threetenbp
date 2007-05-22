@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
  * A time period representing a number of hours.
  * <p>
@@ -44,11 +42,11 @@ import java.io.Serializable;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Hours is thread-safe and immutable. 
- * 
+ * Hours is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Hours implements Period, Comparable<Hours>, Serializable {
+public final class Hours implements Period, Comparable<Hours> {
 
     /**
      * A constant for zero hours.
@@ -67,7 +65,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
 
     /**
      * Obtains an instance of <code>Hours</code>.
-     * 
+     *
      * @param hours  the number of hours the instance will represent
      */
     public static Hours hours(int hours) {
@@ -80,7 +78,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific numbr of hours.
-     * 
+     *
      * @param hours  the hours to use
      */
     private Hours(int hours) {
@@ -90,7 +88,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -100,7 +98,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the number of hours held in this period.
-     * 
+     *
      * @return the number of hours
      */
     public int getHours() {
@@ -110,7 +108,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Compares the number of hours in this instance to another instance.
-     * 
+     *
      * @param otherHours  the other number of hours, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherHours is null
@@ -124,7 +122,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     /**
      * Is the number of hours in this instance greater than that in
      * another instance.
-     * 
+     *
      * @param otherHours  the other number of hours, not null
      * @return true if this number of hours is greater
      * @throws NullPointerException if otherHours is null
@@ -136,7 +134,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     /**
      * Is the number of hours in this instance less than that in
      * another instance.
-     * 
+     *
      * @param otherHours  the other number of hours, not null
      * @return true if this number of hours is less
      * @throws NullPointerException if otherHours is null
@@ -148,7 +146,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the number of hours.
-     * 
+     *
      * @param otherHours  the other number of hours, null returns false
      * @return true if this number of hours is the same as that specified
      */
@@ -164,7 +162,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
 
     /**
      * A hashcode for the hours object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {
@@ -176,7 +174,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
      * Returns a new instance with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param hours  the amount of hours to add, may be negative
      * @return the new period plus the specified number of hours
      * @throws ArithmeticException if the result overflows an int
@@ -192,7 +190,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
      * Returns a new instance with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param hours  the amount of hours to add, may be negative, not null
      * @return the new period plus the specified number of hours
      * @throws NullPointerException if the hours to add is null
@@ -207,7 +205,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
      * Returns a new instance with the specified number of hours taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param hours  the amount of hours to take away, may be negative
      * @return the new period minus the specified number of hours
      * @throws ArithmeticException if the result overflows an int
@@ -220,7 +218,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
      * Returns a new instance with the specified number of hours taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param hours  the amount of hours to take away, may be negative, not null
      * @return the new period minus the specified number of hours
      * @throws NullPointerException if the hours to add is null
@@ -235,7 +233,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
      * Returns a new instance with the hours multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param scalar  the amount to multiply by, may be negative
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
@@ -249,7 +247,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param divisor  the amount to divide by, may be negative
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
@@ -264,7 +262,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Returns a new instance with the hours value negated.
-     * 
+     *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
@@ -276,7 +274,7 @@ public final class Hours implements Period, Comparable<Hours>, Serializable {
     /**
      * Returns a string representation of the number of hours.
      * This will be in the format 'PTnH' where n is the number of hours.
-     * 
+     *
      * @return the number of hours in ISO8601 string format
      */
     public String toString() {

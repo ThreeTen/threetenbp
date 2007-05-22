@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
  * A time period representing a number of days.
  * <p>
@@ -44,11 +42,11 @@ import java.io.Serializable;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Days is thread-safe and immutable. 
- * 
+ * Days is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Days implements Period, Comparable<Days>, Serializable {
+public final class Days implements Period, Comparable<Days> {
 
     /**
      * A constant for zero days.
@@ -67,7 +65,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
 
     /**
      * Obtains an instance of <code>Days</code>.
-     * 
+     *
      * @param days  the number of days the instance will represent
      */
     public static Days days(int days) {
@@ -80,7 +78,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific numbr of days.
-     * 
+     *
      * @param days  the days to use
      */
     private Days(int days) {
@@ -90,7 +88,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -100,7 +98,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the number of days held in this period.
-     * 
+     *
      * @return the number of days
      */
     public int getDays() {
@@ -110,7 +108,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Compares the number of days in this instance to another instance.
-     * 
+     *
      * @param otherDays  the other number of days, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDays is null
@@ -124,7 +122,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     /**
      * Is the number of days in this instance greater than that in
      * another instance.
-     * 
+     *
      * @param otherDays  the other number of days, not null
      * @return true if this number of days is greater
      * @throws NullPointerException if otherDays is null
@@ -136,7 +134,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     /**
      * Is the number of days in this instance less than that in
      * another instance.
-     * 
+     *
      * @param otherDays  the other number of days, not null
      * @return true if this number of days is less
      * @throws NullPointerException if otherDays is null
@@ -148,7 +146,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the number of days.
-     * 
+     *
      * @param otherDays  the other number of days, null returns false
      * @return true if this number of days is the same as that specified
      */
@@ -164,7 +162,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
 
     /**
      * A hashcode for the days object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {
@@ -176,7 +174,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
      * Returns a new instance with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param days  the amount of days to add, may be negative
      * @return the new period plus the specified number of days
      * @throws ArithmeticException if the result overflows an int
@@ -192,7 +190,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
      * Returns a new instance with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param days  the amount of days to add, may be negative, not null
      * @return the new period plus the specified number of days
      * @throws NullPointerException if the days to add is null
@@ -207,7 +205,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
      * Returns a new instance with the specified number of days taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param days  the amount of days to take away, may be negative
      * @return the new period minus the specified number of days
      * @throws ArithmeticException if the result overflows an int
@@ -220,7 +218,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
      * Returns a new instance with the specified number of days taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param days  the amount of days to take away, may be negative, not null
      * @return the new period minus the specified number of days
      * @throws NullPointerException if the days to add is null
@@ -235,7 +233,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
      * Returns a new instance with the days multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param scalar  the amount to multiply by, may be negative
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
@@ -249,7 +247,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param divisor  the amount to divide by, may be negative
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
@@ -264,7 +262,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Returns a new instance with the days value negated.
-     * 
+     *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
@@ -276,7 +274,7 @@ public final class Days implements Period, Comparable<Days>, Serializable {
     /**
      * Returns a string representation of the number of days.
      * This will be in the format 'PnD' where n is the number of days.
-     * 
+     *
      * @return the number of days in ISO8601 string format
      */
     public String toString() {

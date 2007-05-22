@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
  * A time period representing a number of weeks.
  * <p>
@@ -44,11 +42,11 @@ import java.io.Serializable;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Weeks is thread-safe and immutable. 
- * 
+ * Weeks is thread-safe and immutable.
+ *
  * @author Stephen Colebourne
  */
-public final class Weeks implements Period, Comparable<Weeks>, Serializable {
+public final class Weeks implements Period, Comparable<Weeks> {
 
     /**
      * A constant for zero weeks.
@@ -67,7 +65,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
 
     /**
      * Obtains an instance of <code>Weeks</code>.
-     * 
+     *
      * @param weeks  the number of weeks the instance will represent
      */
     public static Weeks weeks(int weeks) {
@@ -80,7 +78,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using a specific numbr of weeks.
-     * 
+     *
      * @param weeks  the weeks to use
      */
     private Weeks(int weeks) {
@@ -90,7 +88,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
 
     /**
      * Resolves singletons.
-     * 
+     *
      * @return the singleton instance
      */
     private Object readResolve() {
@@ -100,7 +98,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the number of weeks held in this period.
-     * 
+     *
      * @return the number of weeks
      */
     public int getWeeks() {
@@ -110,7 +108,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Compares the number of weeks in this instance to another instance.
-     * 
+     *
      * @param otherWeeks  the other number of weeks, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherWeeks is null
@@ -124,7 +122,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     /**
      * Is the number of weeks in this instance greater than that in
      * another instance.
-     * 
+     *
      * @param otherWeeks  the other number of weeks, not null
      * @return true if this number of weeks is greater
      * @throws NullPointerException if otherWeeks is null
@@ -136,7 +134,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     /**
      * Is the number of weeks in this instance less than that in
      * another instance.
-     * 
+     *
      * @param otherWeeks  the other number of weeks, not null
      * @return true if this number of weeks is less
      * @throws NullPointerException if otherWeeks is null
@@ -148,7 +146,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the number of weeks.
-     * 
+     *
      * @param otherWeeks  the other number of weeks, null returns false
      * @return true if this number of weeks is the same as that specified
      */
@@ -164,7 +162,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
 
     /**
      * A hashcode for the weeks object.
-     * 
+     *
      * @return a suitable hashcode
      */
     public int hashCode() {
@@ -176,7 +174,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
      * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param weeks  the amount of weeks to add, may be negative
      * @return the new period plus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
@@ -192,7 +190,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
      * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param weeks  the amount of weeks to add, may be negative, not null
      * @return the new period plus the specified number of weeks
      * @throws NullPointerException if the weeks to add is null
@@ -207,7 +205,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
      * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param weeks  the amount of weeks to take away, may be negative
      * @return the new period minus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
@@ -220,7 +218,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
      * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param weeks  the amount of weeks to take away, may be negative, not null
      * @return the new period minus the specified number of weeks
      * @throws NullPointerException if the weeks to add is null
@@ -235,7 +233,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
      * Returns a new instance with the weeks multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param scalar  the amount to multiply by, may be negative
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
@@ -249,7 +247,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
-     * 
+     *
      * @param divisor  the amount to divide by, may be negative
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
@@ -264,7 +262,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Returns a new instance with the weeks value negated.
-     * 
+     *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
@@ -276,7 +274,7 @@ public final class Weeks implements Period, Comparable<Weeks>, Serializable {
     /**
      * Returns a string representation of the number of weeks.
      * This will be in the format 'PnW' where n is the number of weeks.
-     * 
+     *
      * @return the number of weeks in ISO8601 string format
      */
     public String toString() {
