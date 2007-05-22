@@ -35,17 +35,23 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 /**
  * Test class.
- * 
+ *
  * @author Stephen Colebourne
  */
 @Test
 public class TestYears {
+
+    //-----------------------------------------------------------------------
+    public void test_isSerializable() {
+        assertTrue(Serializable.class.isAssignableFrom(Years.class));
+    }
 
     //-----------------------------------------------------------------------
     public void test_factoryZeroSingleton() {
