@@ -33,7 +33,7 @@ package javax.time;
 
 /**
  * An instantaneous point on the time-line.
- * 
+ *
  * @author Stephen Colebourne
  */
 public final class Instant {
@@ -51,7 +51,7 @@ public final class Instant {
     /**
      * Factory method to create an instance of Instant using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
-     * 
+     *
      * @param seconds  the number of seconds from the epoch
      * @param nanos  the nanoseconds within the second, must be positive
      * @return the created Instant
@@ -63,7 +63,7 @@ public final class Instant {
     /**
      * Constructs an instance of Instant using seconds from the epoch of
      * 1970-01-01T00:00:00Z and nanosecond fraction of second.
-     * 
+     *
      * @param seconds  the number of seconds from the epoch
      * @param nanos  the nanoseconds within the second, must be positive
      */
@@ -76,7 +76,7 @@ public final class Instant {
     /**
      * Gets the number of seconds from the epoch.
      * Points in time after the epoch are positive, earlier are negative.
-     * 
+     *
      * @return the seconds from the epoch
      */
     public long getSeconds() {
@@ -86,7 +86,7 @@ public final class Instant {
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the second returned by {@link #getSeconds()}.
-     * 
+     *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
     public int getNanos() {

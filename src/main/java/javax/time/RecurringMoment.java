@@ -37,7 +37,7 @@ package javax.time;
  * RecurringMoment is the interface that is shared amongst many other classes in
  * the Java Date Framework. Many low level APIs are defined to accept a
  * RecurringMoment, however it is less common that you will hold instances directly.
- * 
+ *
  * @author Stephen Colebourne
  */
 public interface RecurringMoment extends Moment {

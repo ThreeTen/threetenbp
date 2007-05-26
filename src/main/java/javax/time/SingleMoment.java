@@ -38,7 +38,7 @@ package javax.time;
  * SingleMoment is the interface that is shared amongst many other classes in
  * the Java Date Framework. Many low level APIs are defined to accept a
  * SingleMoment, however it is less common that you will hold instances directly.
- * 
+ *
  * @author Stephen Colebourne
  */
 public interface SingleMoment extends Moment {

@@ -40,7 +40,7 @@ public class MathUtils {
 
     /**
      * Negates the input value, throwing an exception if an overflow occurs.
-     * 
+     *
      * @param value  the value to negate
      * @return the negated value
      * @throws ArithmeticException if the value cannot be negated
@@ -54,7 +54,7 @@ public class MathUtils {
 
     /**
      * Safely adds two int values.
-     * 
+     *
      * @param a  the first value
      * @param b  the second value
      * @return the result
@@ -71,7 +71,7 @@ public class MathUtils {
 
     /**
      * Safely subtracts one int from another.
-     * 
+     *
      * @param a  the first value
      * @param b  the second value to subtract from the first
      * @return the result
@@ -88,7 +88,7 @@ public class MathUtils {
 
     /**
      * Safely multiply one int by another.
-     * 
+     *
      * @param a  the first value
      * @param b  the second value
      * @return the result
