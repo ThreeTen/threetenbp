@@ -31,8 +31,10 @@
  */
 package javax.time;
 
-/*
+/**
  * These methods are proposed for java.lang.Math.
+ *
+ * @author Stephen Colebourne
  */
 public class MathUtils {
 
