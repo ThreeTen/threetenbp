@@ -50,7 +50,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      */
     private static final long serialVersionUID = 1L;
 
-	/**
+    /**
      * The second within the day that this TimeOfDay represents.
      */
     private final int secondOfDay;
