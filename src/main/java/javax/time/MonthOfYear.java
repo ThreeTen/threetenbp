@@ -110,6 +110,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
      * Obtains an instance of <code>MonthOfYear</code>.
      *
      * @param monthOfYear  the month of year to represent
+     * @return the created MonthOfYear
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
         switch (monthOfYear) {
@@ -145,6 +146,8 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
+     *
+     * @param monthOfYear  the month of year to represent
      */
     private MonthOfYear(int monthOfYear) {
         this.monthOfYear = monthOfYear;

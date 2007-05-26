@@ -67,6 +67,7 @@ public final class ${Type} implements Period, Comparable<${Type}> {
      * Obtains an instance of <code>${Type}</code>.
      *
      * @param ${type}  the number of ${type} the instance will represent
+     * @return the created ${Type}
      */
     public static ${Type} ${type}(int ${type}) {
         if (${type} == 0) {

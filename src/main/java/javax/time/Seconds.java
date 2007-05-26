@@ -67,6 +67,7 @@ public final class Seconds implements Period, Comparable<Seconds> {
      * Obtains an instance of <code>Seconds</code>.
      *
      * @param seconds  the number of seconds the instance will represent
+     * @return the created Seconds
      */
     public static Seconds seconds(int seconds) {
         if (seconds == 0) {

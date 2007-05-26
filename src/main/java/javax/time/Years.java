@@ -67,6 +67,7 @@ public final class Years implements Period, Comparable<Years> {
      * Obtains an instance of <code>Years</code>.
      *
      * @param years  the number of years the instance will represent
+     * @return the created Years
      */
     public static Years years(int years) {
         if (years == 0) {

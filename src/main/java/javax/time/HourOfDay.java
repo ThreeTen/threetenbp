@@ -61,6 +61,7 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
      * Obtains an instance of <code>HourOfDay</code>.
      *
      * @param hourOfDay  the hour of day to represent
+     * @return the created HourOfDay
      */
     public static HourOfDay hourOfDay(int hourOfDay) {
         return new HourOfDay(hourOfDay);
@@ -69,6 +70,8 @@ public final class HourOfDay implements Moment, Comparable<HourOfDay> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified hour of day.
+     *
+     * @param hourOfDay  the hour of day to represent
      */
     private HourOfDay(int hourOfDay) {
         this.hourOfDay = hourOfDay;

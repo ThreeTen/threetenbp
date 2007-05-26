@@ -67,6 +67,7 @@ public final class Weeks implements Period, Comparable<Weeks> {
      * Obtains an instance of <code>Weeks</code>.
      *
      * @param weeks  the number of weeks the instance will represent
+     * @return the created Weeks
      */
     public static Weeks weeks(int weeks) {
         if (weeks == 0) {

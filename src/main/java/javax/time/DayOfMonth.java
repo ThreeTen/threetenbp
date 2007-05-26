@@ -61,6 +61,7 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
      * Obtains an instance of <code>DayOfMonth</code>.
      *
      * @param dayOfMonth  the day of month to represent
+     * @return the created DayOfMonth
      */
     public static DayOfMonth dayOfMonth(int dayOfMonth) {
         return new DayOfMonth(dayOfMonth);
@@ -69,6 +70,8 @@ public final class DayOfMonth implements Moment, Comparable<DayOfMonth> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified day of month.
+     *
+     * @param dayOfMonth  the day of month to represent
      */
     private DayOfMonth(int dayOfMonth) {
         this.dayOfMonth = dayOfMonth;

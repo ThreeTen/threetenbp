@@ -61,6 +61,7 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
      * Obtains an instance of <code>SecondOfMinute</code>.
      *
      * @param secondOfMinute  the second of minute to represent
+     * @return the created SecondOfMinute
      */
     public static SecondOfMinute secondOfMinute(int secondOfMinute) {
         return new SecondOfMinute(secondOfMinute);
@@ -69,6 +70,8 @@ public final class SecondOfMinute implements Moment, Comparable<SecondOfMinute> 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified second of minute.
+     *
+     * @param secondOfMinute  the second of minute to represent
      */
     private SecondOfMinute(int secondOfMinute) {
         this.secondOfMinute = secondOfMinute;

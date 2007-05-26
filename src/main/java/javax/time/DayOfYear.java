@@ -61,6 +61,7 @@ public final class DayOfYear implements Moment, Comparable<DayOfYear> {
      * Obtains an instance of <code>DayOfYear</code>.
      *
      * @param dayOfYear  the day of year to represent
+     * @return the created DayOfYear
      */
     public static DayOfYear dayOfYear(int dayOfYear) {
         return new DayOfYear(dayOfYear);
@@ -69,6 +70,8 @@ public final class DayOfYear implements Moment, Comparable<DayOfYear> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified day of year.
+     *
+     * @param dayOfYear  the day of year to represent
      */
     private DayOfYear(int dayOfYear) {
         this.dayOfYear = dayOfYear;

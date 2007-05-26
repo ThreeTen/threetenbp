@@ -67,6 +67,7 @@ public final class Days implements Period, Comparable<Days> {
      * Obtains an instance of <code>Days</code>.
      *
      * @param days  the number of days the instance will represent
+     * @return the created Days
      */
     public static Days days(int days) {
         if (days == 0) {

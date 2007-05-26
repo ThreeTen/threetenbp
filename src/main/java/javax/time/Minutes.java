@@ -67,6 +67,7 @@ public final class Minutes implements Period, Comparable<Minutes> {
      * Obtains an instance of <code>Minutes</code>.
      *
      * @param minutes  the number of minutes the instance will represent
+     * @return the created Minutes
      */
     public static Minutes minutes(int minutes) {
         if (minutes == 0) {

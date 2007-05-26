@@ -67,6 +67,7 @@ public final class Months implements Period, Comparable<Months> {
      * Obtains an instance of <code>Months</code>.
      *
      * @param months  the number of months the instance will represent
+     * @return the created Months
      */
     public static Months months(int months) {
         if (months == 0) {

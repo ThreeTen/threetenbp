@@ -61,6 +61,7 @@ public final class Year implements Moment, Comparable<Year> {
      * Obtains an instance of <code>Year</code>.
      *
      * @param year  the year to represent
+     * @return the created Year
      */
     public static Year year(int year) {
         return new Year(year);
@@ -69,6 +70,8 @@ public final class Year implements Moment, Comparable<Year> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified year.
+     *
+     * @param year  the year to represent
      */
     private Year(int year) {
         this.year = year;

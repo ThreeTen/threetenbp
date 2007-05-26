@@ -90,6 +90,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
      * Obtains an instance of <code>DayOfWeek</code>.
      *
      * @param dayOfWeek  the day of week to represent
+     * @return the created DayOfWeek
      */
     public static DayOfWeek dayOfWeek(int dayOfWeek) {
         switch (dayOfWeek) {
@@ -115,6 +116,8 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified day of week.
+     *
+     * @param dayOfWeek  the day of week to represent
      */
     private DayOfWeek(int dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
