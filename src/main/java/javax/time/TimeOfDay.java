@@ -120,8 +120,9 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day value.
+     * Gets the value for a specific type.
      *
+     * @param cls  the field type to obtain, not null
      * @return the hour of day
      */
     public int get(Class<? extends Moment> cls) {
@@ -258,7 +259,8 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay plusHours(int hours) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(getHourOfDay(), hours, getMinuteOfHour(), 0, getSecondOfMinute(), 0);
+        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(
+                getHourOfDay(), hours, getMinuteOfHour(), 0, getSecondOfMinute(), 0);
         return new TimeOfDay(secondOfDay);
     }
 
@@ -283,7 +285,8 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay plusMinutes(int minutes) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(getHourOfDay(), 0, getMinuteOfHour(), minutes, getSecondOfMinute(), 0);
+        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(
+                getHourOfDay(), 0, getMinuteOfHour(), minutes, getSecondOfMinute(), 0);
         return new TimeOfDay(secondOfDay);
     }
 
@@ -308,7 +311,8 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay plusSeconds(int seconds) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(getHourOfDay(), 0, getMinuteOfHour(), 0, getSecondOfMinute(), seconds);
+        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(
+                getHourOfDay(), 0, getMinuteOfHour(), 0, getSecondOfMinute(), seconds);
         return new TimeOfDay(secondOfDay);
     }
 

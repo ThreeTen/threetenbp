@@ -39,7 +39,7 @@ package javax.time;
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * Month is thread-safe and immutable.
+ * CalendarMonth is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
@@ -65,6 +65,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
+     * @return the created CalendarMonth
      */
     public static CalendarMonth month(Year year, MonthOfYear monthOfYear) {
         return new CalendarMonth(year, monthOfYear);

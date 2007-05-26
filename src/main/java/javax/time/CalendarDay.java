@@ -39,7 +39,7 @@ package javax.time;
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * Day is thread-safe and immutable.
+ * CalendarDay is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
@@ -152,7 +152,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated TimeOfDay
+     * @return a new updated CalendarDay
      */
     public CalendarDay plus(Period period) {
         // TODO
@@ -165,7 +165,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * This instance is immutable and unaffected by this method call.
      *
      * @param periods  the periods to add, not null
-     * @return a new updated TimeOfDay
+     * @return a new updated CalendarDay
      */
     public CalendarDay plus(Period... periods) {
         // TODO

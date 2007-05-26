@@ -33,23 +33,6 @@ package javax.time;
 
 import java.util.TimeZone;
 
-import javax.time.CalendarDay;
-import javax.time.CalendarMonth;
-import javax.time.DayOfMonth;
-import javax.time.Days;
-import javax.time.HourOfDay;
-import javax.time.Hours;
-import javax.time.MinuteOfHour;
-import javax.time.Minutes;
-import javax.time.MonthOfYear;
-import javax.time.Months;
-import javax.time.SecondOfMinute;
-import javax.time.Seconds;
-import javax.time.TimeOfDay;
-import javax.time.Weeks;
-import javax.time.Year;
-import javax.time.Years;
-
 /**
  * A set of utility methods for working with moments in the Java Date Framework.
  * 
