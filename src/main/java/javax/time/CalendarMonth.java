@@ -53,22 +53,35 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     /**
      * The year being represented.
      */
-    private final Year year;
+    private final int year;
     /**
      * The month of year being represented.
      */
-    private final MonthOfYear monthOfYear;
+    private final int monthOfYear;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Month</code>.
+     * Obtains an instance of <code>CalendarMonth</code>.
      *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @return the created CalendarMonth
      */
-    public static CalendarMonth month(Year year, MonthOfYear monthOfYear) {
+    public static CalendarMonth yearMonth(int year, int monthOfYear) {
         return new CalendarMonth(year, monthOfYear);
+    }
+
+    /**
+     * Obtains an instance of <code>CalendarMonth</code> from a set of moments.
+     * <p>
+     * This can be used to pass in any combination of moments that fully specify
+     * a calendar month. For example, Year + MonthOfYear.
+     *
+     * @param moments  a set of moments that fully represent a calendar month
+     * @return a CalendarMonth object
+     */
+    public static CalendarMonth calendarMonth(Moment... moments) {
+        return new CalendarMonth(0, 0);
     }
 
     /**
@@ -76,7 +89,25 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      *
      * @return a Month object representing this month
      */
-    public static CalendarMonth thisMonth() {
+    public static CalendarMonth currentMonth() {
+        return null;
+    }
+
+    /**
+     * Obtains an instance of <code>Month</code> representing this month.
+     *
+     * @return a Month object representing this month
+     */
+    public static CalendarMonth previousMonth() {
+        return null;
+    }
+
+    /**
+     * Obtains an instance of <code>Month</code> representing this month.
+     *
+     * @return a Month object representing this month
+     */
+    public static CalendarMonth nextMonth() {
         return null;
     }
 
@@ -87,18 +118,18 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      */
-    private CalendarMonth(Year year, MonthOfYear monthOfYear) {
+    private CalendarMonth(int year, int monthOfYear) {
         this.year = year;
         this.monthOfYear = monthOfYear;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month of year value.
+     * Gets the year value.
      *
-     * @return the month of year
+     * @return the year
      */
-    public Year getYear() {
+    public int getYear() {
         return year;
     }
 
@@ -107,8 +138,110 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      *
      * @return the month of year
      */
-    public MonthOfYear getMonthOfYear() {
+    public int getMonthOfYear() {
         return monthOfYear;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this CalendarMonth with the specified values altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param moment  the moment to update to, not null
+     * @return a new updated CalendarMonth
+     */
+    public CalendarMonth with(Moment moment) {
+        return null;
+    }
+
+    /**
+     * Returns a copy of this CalendarMonth with the specified values altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param moments  the moments to update to, not null
+     * @return a new updated CalendarMonth
+     */
+    public CalendarMonth with(Moment... moments) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this CalendarMonth with the year value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent
+     * @return a new updated CalendarMonth
+     */
+    public CalendarMonth withYear(int year) {
+        return new CalendarMonth(0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarMonth with the month of year value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to represent
+     * @return a new updated CalendarMonth
+     */
+    public CalendarMonth withMonthOfYear(int monthOfYear) {
+        return new CalendarMonth(0, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this CalendarMonth with the specified period added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return a new updated CalendarMonth
+     */
+    public CalendarMonth plus(Period period) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Returns a copy of this CalendarMonth with the specified periods added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periods  the periods to add, not null
+     * @return a new updated CalendarMonth
+     */
+    public CalendarMonth plus(Period... periods) {
+        // TODO
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this CalendarDay with the specified number of years added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to add
+     * @return a new updated CalendarDay
+     */
+    public CalendarMonth plusYears(int years) {
+        return new CalendarMonth(year + years, monthOfYear);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the specified number of months added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to add
+     * @return a new updated CalendarDay
+     */
+    public CalendarMonth plusMonths(int months) {
+        return new CalendarMonth(year, monthOfYear + months);
     }
 
     //-----------------------------------------------------------------------
@@ -120,11 +253,11 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @throws NullPointerException if otherMonth is null
      */
     public int compareTo(CalendarMonth otherMonth) {
-        int cmp = year.compareTo(otherMonth.year);
+        int cmp = MathUtils.safeCompare(year, otherMonth.year);
         if (cmp != 0) {
             return cmp;
         }
-        return monthOfYear.compareTo(otherMonth.monthOfYear);
+        return MathUtils.safeCompare(monthOfYear, otherMonth.monthOfYear);
     }
 
     /**
@@ -172,7 +305,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @return a suitable hashcode
      */
     public int hashCode() {
-        return year.hashCode() + 37 * monthOfYear.hashCode();
+        return year + 37 * monthOfYear;
     }
 
 }

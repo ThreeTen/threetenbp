@@ -53,15 +53,15 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     /**
      * The year being represented.
      */
-    private final Year year;
+    private final int year;
     /**
      * The month of year being represented.
      */
-    private final MonthOfYear monthOfYear;
+    private final int monthOfYear;
     /**
      * The day of month being represented.
      */
-    private final DayOfMonth dayOfMonth;
+    private final int dayOfMonth;
 
     //-----------------------------------------------------------------------
     /**
@@ -70,10 +70,24 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
-     * @return a CalendarDay object representing yesterday
+     * @return a CalendarDay object
      */
-    public static CalendarDay day(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+    public static CalendarDay yearMonthDay(int year, int monthOfYear, int dayOfMonth) {
         return new CalendarDay(year, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Obtains an instance of <code>CalendarDay</code> from a set of moments.
+     * <p>
+     * This can be used to pass in any combination of moments that fully specify
+     * a calendar day. For example, Year + MonthOfYear + DayOfMonth, or
+     * CalendarMonth + DayOfMonth.
+     *
+     * @param moments  a set of moments that fully represent a calendar day
+     * @return a CalendarDay object
+     */
+    public static CalendarDay calendarDay(Moment... moments) {
+        return new CalendarDay(0, 0, 0);
     }
 
     /**
@@ -111,7 +125,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
      */
-    private CalendarDay(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+    private CalendarDay(int year, int monthOfYear, int dayOfMonth) {
         this.year = year;
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
@@ -123,7 +137,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      *
      * @return the year
      */
-    public Year getYear() {
+    public int getYear() {
         return year;
     }
 
@@ -132,7 +146,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      *
      * @return the month of year
      */
-    public MonthOfYear getMonthOfYear() {
+    public int getMonthOfYear() {
         return monthOfYear;
     }
 
@@ -141,8 +155,134 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      *
      * @return the month of year
      */
-    public DayOfMonth getDayOfMonth() {
+    public int getDayOfMonth() {
         return dayOfMonth;
+    }
+
+    /**
+     * Gets the month of year value.
+     *
+     * @return the month of year
+     */
+    public int getDayOfYear() {
+        return dayOfMonth;
+    }
+
+    /**
+     * Gets the month of year value.
+     *
+     * @return the month of year
+     */
+    public int getDayOfWeek() {
+        return dayOfMonth;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this CalendarDay with the specified values altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param moment  the moment to update to, not null
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay with(Moment moment) {
+        return null;
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the specified values altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param moments  the moments to update to, not null
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay with(Moment... moments) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this CalendarDay with the year value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withYear(int year) {
+        return new CalendarDay(0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the month of year value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to represent
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withMonthOfYear(int monthOfYear) {
+        return new CalendarDay(0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the day of month value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to represent
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withDayOfMonth(int dayOfMonth) {
+        return new CalendarDay(0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the date set to the last day of month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withLastDayOfMonth() {
+        return new CalendarDay(0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the day of yeare value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the day of year to represent
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withDayOfYear(int dayOfYear) {
+        return new CalendarDay(0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the date set to the last day of year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withLastDayOfYear() {
+        return new CalendarDay(0, 0, 0);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the day of week value altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfWeek  the day of week to represent
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay withDayOfWeek(int dayOfWeek) {
+        return new CalendarDay(0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -182,7 +322,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @return a new updated CalendarDay
      */
     public CalendarDay plusYears(int years) {
-        return new CalendarDay(null, null, null);
+        return new CalendarDay(year + years, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -194,7 +334,19 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @return a new updated CalendarDay
      */
     public CalendarDay plusMonths(int months) {
-        return new CalendarDay(null, null, null);
+        return new CalendarDay(year, monthOfYear + months, dayOfMonth);
+    }
+
+    /**
+     * Returns a copy of this CalendarDay with the specified number of weeks added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to add
+     * @return a new updated CalendarDay
+     */
+    public CalendarDay plusWeeks(int weeks) {
+        return new CalendarDay(year, monthOfYear, dayOfMonth + weeks * 7);
     }
 
     /**
@@ -206,7 +358,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @return a new updated CalendarDay
      */
     public CalendarDay plusDays(int days) {
-        return new CalendarDay(null, null, null);
+        return new CalendarDay(year, monthOfYear, dayOfMonth + days);
     }
 
     //-----------------------------------------------------------------------
@@ -218,11 +370,15 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @throws NullPointerException if otherDay is null
      */
     public int compareTo(CalendarDay otherDay) {
-        int cmp = year.compareTo(otherDay.year);
+        int cmp = MathUtils.safeCompare(year, otherDay.year);
         if (cmp != 0) {
             return cmp;
         }
-        return monthOfYear.compareTo(otherDay.monthOfYear);
+        cmp = MathUtils.safeCompare(monthOfYear, otherDay.monthOfYear);
+        if (cmp != 0) {
+            return cmp;
+        }
+        return MathUtils.safeCompare(dayOfMonth, otherDay.dayOfMonth);
     }
 
     /**
@@ -270,9 +426,9 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @return a suitable hashcode
      */
     public int hashCode() {
-        return year.hashCode()
-            + 37 * monthOfYear.hashCode()
-            + 37 * dayOfMonth.hashCode();
+        return year
+            + 37 * monthOfYear
+            + 37 * dayOfMonth;
     }
 
 }

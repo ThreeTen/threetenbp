@@ -159,14 +159,14 @@ public final class Moments {
      * Gets an instance of CalendarDay.
      */
     public static CalendarDay calendarDay(int year, int monthOfYear, int dayOfMonth) {
-        return null; //CalendarDay.day(year, monthOfYear, dayOfMonth);
+        return CalendarDay.yearMonthDay(year, monthOfYear, dayOfMonth);
     }
 
     /**
      * Gets an instance of CalendarDay.
      */
     public static CalendarDay calendarDay(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        return CalendarDay.day(year, monthOfYear, dayOfMonth);
+        return CalendarDay.calendarDay(year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -174,6 +174,27 @@ public final class Moments {
      */
     public static CalendarDay today() {
         return CalendarDay.today();
+    }
+
+    /**
+     * Gets an instance of CalendarDay.
+     */
+    public static CalendarDay yesterday() {
+        return CalendarDay.yesterday();
+    }
+
+    /**
+     * Gets an instance of CalendarDay.
+     */
+    public static CalendarDay tomorrow() {
+        return CalendarDay.tomorrow();
+    }
+
+    /**
+     * Gets an instance of CalendarMonth.
+     */
+    public static CalendarMonth currentMonth() {
+        return CalendarMonth.currentMonth();
     }
 
     /**
@@ -262,10 +283,10 @@ public final class Moments {
             return new MomentWithYearMonthDayBuilder();
         }
         public CalendarMonth resolve() {
-            return CalendarMonth.thisMonth();
+            return CalendarMonth.currentMonth();
         }
         public CalendarMonth resolveLenient() {
-            return CalendarMonth.thisMonth();
+            return CalendarMonth.currentMonth();
         }
     }
     public static class MomentWithYearMonthDayBuilder {

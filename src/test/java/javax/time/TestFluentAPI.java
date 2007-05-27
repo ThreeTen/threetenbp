@@ -60,6 +60,8 @@ public class TestFluentAPI {
         date = moment().zoneID("America/New_York").year(2007).march().dayOfMonth(20).resolveLenient();
         date = moment().defaultZone().year(2007).march().dayOfMonth(20).resolveLenient();
         
+        date = CalendarDay.calendarDay(currentMonth(), dayOfMonth(6));
+        
         tod.with(hourOfDay(12), minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
         //int q = date.get(QuarterOfYear.class);

@@ -102,4 +102,22 @@ public class MathUtils {
         return (int) total;
     }
 
+    /**
+     * Safely compare one int with another.
+     *
+     * @param a  the first value
+     * @param b  the second value
+     * @return negative if a is less than b, positive if a is greater than b, zero if equal
+     * @throws ArithmeticException if the result overflows an int
+     */
+    public static int safeCompare(int a, int b) {
+        if (a < b) {
+            return -1;
+        }
+        if (a > b) {
+            return 1;
+        }
+        return 0;
+    }
+
 }
