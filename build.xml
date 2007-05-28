@@ -65,6 +65,14 @@
 		<mkdir dir="${build.main}" />
 		<javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
 	</target>
+   
+   <target name="javadoc" depends="init" description="generates javadoc for the api">
+      <mkdir dir="${build.javadoc}"/>
+      <javadoc sourcepath="${src.main}" destdir="${build.javadoc}" 
+                classpathref="main.path"
+               windowtitle="JSR-310 - Date and Time API" 
+               failonerror="true" packagenames="javax.time**" />
+   </target>
 
 	<target name="compile-codegen">
 		<mkdir dir="${build.codegen}" />
@@ -101,6 +109,6 @@
 	</target>
 
     <target name="codegen" depends="compile-codegen">
-		<java classname="jsr310.codegen.CodeGen" classpathref="codegen.path" />
+		<java classname="jsr310.codegen.CodeGen" classpathref="codegen.path" fork="true"/>
     </target>
 </project>
