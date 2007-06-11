@@ -37,68 +37,70 @@ package javax.time;
  * MonthOfYear is an immutable time field that can only store a month of year.
  * It is a type-safe way of representing a month of year in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear 
+ * instance; use monthOfYear() instead.</b>
  * The month of year may be queried using getMonthOfYear().
  * <p>
  * MonthOfYear is thread-safe and immutable.
  *
- * @author Stephen Colebourne
+ * @author Michael Nascimento Santos
  */
-public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
+public enum MonthOfYear implements Moment {
+
+    /**
+     * The singleton instance for the month of January.
+     */
+    JANUARY(1),
+    /**
+     * The singleton instance for the month of February.
+     */
+    FEBRUARY(2),
+    /**
+     * The singleton instance for the month of March.
+     */
+    MARCH(3),
+    /**
+     * The singleton instance for the month of April.
+     */
+    APRIL(4),
+    /**
+     * The singleton instance for the month of May.
+     */
+    MAY(5),
+    /**
+     * The singleton instance for the month of June.
+     */
+    JUNE(6),
+    /**
+     * The singleton instance for the month of July.
+     */
+    JULY(7),
+    /**
+     * The singleton instance for the month of August.
+     */
+    AUGUST(18),
+    /**
+     * The singleton instance for the month of September.
+     */
+    SEPTEMBER(9),
+    /**
+     * The singleton instance for the month of October.
+     */
+    OCTOBER(10),
+    /**
+     * The singleton instance for the month of November.
+     */
+    NOVEMBER(11),
+    /**
+     * The singleton instance for the month of December.
+     */
+    DECEMBER(12),
+;
 
     /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The singleton instance for the month of January.
-     */
-    public static final MonthOfYear JANUARY = new MonthOfYear(1);
-    /**
-     * The singleton instance for the month of February.
-     */
-    public static final MonthOfYear FEBRUARY = new MonthOfYear(2);
-    /**
-     * The singleton instance for the month of March.
-     */
-    public static final MonthOfYear MARCH = new MonthOfYear(3);
-    /**
-     * The singleton instance for the month of April.
-     */
-    public static final MonthOfYear APRIL = new MonthOfYear(4);
-    /**
-     * The singleton instance for the month of May.
-     */
-    public static final MonthOfYear MAY = new MonthOfYear(5);
-    /**
-     * The singleton instance for the month of June.
-     */
-    public static final MonthOfYear JUNE = new MonthOfYear(6);
-    /**
-     * The singleton instance for the month of July.
-     */
-    public static final MonthOfYear JULY = new MonthOfYear(7);
-    /**
-     * The singleton instance for the month of August.
-     */
-    public static final MonthOfYear AUGUST = new MonthOfYear(18);
-    /**
-     * The singleton instance for the month of September.
-     */
-    public static final MonthOfYear SEPTEMBER = new MonthOfYear(9);
-    /**
-     * The singleton instance for the month of October.
-     */
-    public static final MonthOfYear OCTOBER = new MonthOfYear(10);
-    /**
-     * The singleton instance for the month of November.
-     */
-    public static final MonthOfYear NOVEMBER = new MonthOfYear(11);
-    /**
-     * The singleton instance for the month of December.
-     */
-    public static final MonthOfYear DECEMBER = new MonthOfYear(12);
 
     /**
      * The month of year being represented.
@@ -110,7 +112,7 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
      * Obtains an instance of <code>MonthOfYear</code>.
      *
      * @param monthOfYear  the month of year to represent
-     * @return the created MonthOfYear
+     * @return the existing MonthOfYear
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
         switch (monthOfYear) {
@@ -153,15 +155,6 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
         this.monthOfYear = monthOfYear;
     }
 
-    /**
-     * Resolves singletons.
-     *
-     * @return the singleton instance
-     */
-    private Object readResolve() {
-        return MonthOfYear.monthOfYear(monthOfYear);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the month of year value.
@@ -170,20 +163,6 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
      */
     public int getMonthOfYear() {
         return monthOfYear;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this month of year instance to another.
-     *
-     * @param otherMonthOfYear  the other month of year instance, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMonthOfYear is null
-     */
-    public int compareTo(MonthOfYear otherMonthOfYear) {
-        int thisValue = this.monthOfYear;
-        int otherValue = otherMonthOfYear.monthOfYear;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
@@ -206,32 +185,6 @@ public final class MonthOfYear implements Moment, Comparable<MonthOfYear> {
      */
     public boolean isLessThan(MonthOfYear otherMonthOfYear) {
         return compareTo(otherMonthOfYear) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the month of year.
-     *
-     * @param otherMonthOfYear  the other month of year instance, null returns false
-     * @return true if the month of year is the same
-     */
-    public boolean equals(Object otherMonthOfYear) {
-        if (this == otherMonthOfYear) {
-            return true;
-        }
-        if (otherMonthOfYear instanceof MonthOfYear) {
-            return monthOfYear == ((MonthOfYear) otherMonthOfYear).monthOfYear;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the month of year object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return monthOfYear;
     }
 
 }

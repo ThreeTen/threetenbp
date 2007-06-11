@@ -130,21 +130,23 @@ public class CodeGen {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     private void processField() throws Exception {
-        Template template = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
+        Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
+        Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
-        processField(template, "Year", "year", null);
-        processField(template, "MonthOfYear", "month of year", MONTH_OF_YEARS);
-        processField(template, "DayOfYear", "day of year", null);
-        processField(template, "DayOfMonth", "day of month", null);
-        processField(template, "DayOfWeek", "day of week", DAY_OF_WEEKS);
-        processField(template, "HourOfDay", "hour of day", null);
-        processField(template, "MinuteOfHour", "minute of hour", null);
-        processField(template, "SecondOfMinute", "second of minute", null);
+        processField(regularTemplate, "Year", "year", null);
+        processField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS);
+        processField(regularTemplate, "DayOfYear", "day of year", null);
+        processField(regularTemplate, "DayOfMonth", "day of month", null);
+        processField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS);
+        processField(regularTemplate, "HourOfDay", "hour of day", null);
+        processField(regularTemplate, "MinuteOfHour", "minute of hour", null);
+        processField(regularTemplate, "SecondOfMinute", "second of minute", null);
     }
 
     private void processField(Template template, String classname, String desc, FieldSingleton[] singletons) throws Exception {
         File file = new File(MAIN_DIR, classname + ".java");
-        List<String> methodLines = findAdditionalMethods(file, "public int hashCode() {");
+        List<String> methodLines = findAdditionalMethods(file, 
+              singletons == null ? "public int hashCode() {" : "public boolean isLessThan(");
         VelocityContext vc = createFieldContext(classname, desc, singletons, methodLines);
         generate(file, template, vc);
     }

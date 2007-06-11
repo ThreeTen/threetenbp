@@ -37,48 +37,50 @@ package javax.time;
  * DayOfWeek is an immutable time field that can only store a day of week.
  * It is a type-safe way of representing a day of week in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * <b>Do not use ordinal() to obtain the numeric representation of a DayOfWeek 
+ * instance; use dayOfWeek() instead.</b>
  * The day of week may be queried using getDayOfWeek().
  * <p>
  * DayOfWeek is thread-safe and immutable.
  *
- * @author Stephen Colebourne
+ * @author Michael Nascimento Santos
  */
-public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
+public enum DayOfWeek implements Moment {
+
+    /**
+     * The singleton instance for the day of week of Monday.
+     */
+    MONDAY(1),
+    /**
+     * The singleton instance for the day of week of Tuesday.
+     */
+    TUESDAY(2),
+    /**
+     * The singleton instance for the day of week of Wednesday.
+     */
+    WEDNESDAY(3),
+    /**
+     * The singleton instance for the day of week of Thursday.
+     */
+    THURSDAY(4),
+    /**
+     * The singleton instance for the day of week of Friday.
+     */
+    FRIDAY(5),
+    /**
+     * The singleton instance for the day of week of Saturday.
+     */
+    SATURDAY(6),
+    /**
+     * The singleton instance for the day of week of Sunday.
+     */
+    SUNDAY(7),
+;
 
     /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The singleton instance for the day of week of Monday.
-     */
-    public static final DayOfWeek MONDAY = new DayOfWeek(1);
-    /**
-     * The singleton instance for the day of week of Tuesday.
-     */
-    public static final DayOfWeek TUESDAY = new DayOfWeek(2);
-    /**
-     * The singleton instance for the day of week of Wednesday.
-     */
-    public static final DayOfWeek WEDNESDAY = new DayOfWeek(3);
-    /**
-     * The singleton instance for the day of week of Thursday.
-     */
-    public static final DayOfWeek THURSDAY = new DayOfWeek(4);
-    /**
-     * The singleton instance for the day of week of Friday.
-     */
-    public static final DayOfWeek FRIDAY = new DayOfWeek(5);
-    /**
-     * The singleton instance for the day of week of Saturday.
-     */
-    public static final DayOfWeek SATURDAY = new DayOfWeek(6);
-    /**
-     * The singleton instance for the day of week of Sunday.
-     */
-    public static final DayOfWeek SUNDAY = new DayOfWeek(7);
 
     /**
      * The day of week being represented.
@@ -90,7 +92,7 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
      * Obtains an instance of <code>DayOfWeek</code>.
      *
      * @param dayOfWeek  the day of week to represent
-     * @return the created DayOfWeek
+     * @return the existing DayOfWeek
      */
     public static DayOfWeek dayOfWeek(int dayOfWeek) {
         switch (dayOfWeek) {
@@ -123,15 +125,6 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
         this.dayOfWeek = dayOfWeek;
     }
 
-    /**
-     * Resolves singletons.
-     *
-     * @return the singleton instance
-     */
-    private Object readResolve() {
-        return DayOfWeek.dayOfWeek(dayOfWeek);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets the day of week value.
@@ -140,20 +133,6 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
      */
     public int getDayOfWeek() {
         return dayOfWeek;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this day of week instance to another.
-     *
-     * @param otherDayOfWeek  the other day of week instance, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherDayOfWeek is null
-     */
-    public int compareTo(DayOfWeek otherDayOfWeek) {
-        int thisValue = this.dayOfWeek;
-        int otherValue = otherDayOfWeek.dayOfWeek;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
@@ -176,32 +155,6 @@ public final class DayOfWeek implements Moment, Comparable<DayOfWeek> {
      */
     public boolean isLessThan(DayOfWeek otherDayOfWeek) {
         return compareTo(otherDayOfWeek) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the day of week.
-     *
-     * @param otherDayOfWeek  the other day of week instance, null returns false
-     * @return true if the day of week is the same
-     */
-    public boolean equals(Object otherDayOfWeek) {
-        if (this == otherDayOfWeek) {
-            return true;
-        }
-        if (otherDayOfWeek instanceof DayOfWeek) {
-            return dayOfWeek == ((DayOfWeek) otherDayOfWeek).dayOfWeek;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the day of week object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return dayOfWeek;
     }
 
 }

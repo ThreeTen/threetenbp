@@ -37,7 +37,7 @@ package javax.time;
  * DayOfYear is an immutable time field that can only store a day of year.
  * It is a type-safe way of representing a day of year in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The day of year may be queried using getDayOfYear().
  * <p>
  * DayOfYear is thread-safe and immutable.

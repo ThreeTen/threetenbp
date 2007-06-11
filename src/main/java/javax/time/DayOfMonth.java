@@ -37,7 +37,7 @@ package javax.time;
  * DayOfMonth is an immutable time field that can only store a day of month.
  * It is a type-safe way of representing a day of month in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The day of month may be queried using getDayOfMonth().
  * <p>
  * DayOfMonth is thread-safe and immutable.

@@ -37,7 +37,7 @@ package javax.time;
  * Year is an immutable time field that can only store a year.
  * It is a type-safe way of representing a year in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The year may be queried using getYear().
  * <p>
  * Year is thread-safe and immutable.

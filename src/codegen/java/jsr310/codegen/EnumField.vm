@@ -37,19 +37,26 @@ package javax.time;
  * ${Type} is an immutable time field that can only store a ${desc}.
  * It is a type-safe way of representing a ${desc} in an application.
  * <p>
- * Static factory methods allow you to construct instances.
+ * <b>Do not use ordinal() to obtain the numeric representation of a ${Type} 
+ * instance; use ${type}() instead.</b>
  * The ${desc} may be queried using get${Type}().
  * <p>
  * ${Type} is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Moment, Comparable<${Type}> {
+public enum ${Type} implements Moment {
 
+#if ($singletons.size() > 0)
+#foreach ($singleton in $singletons)
     /**
-     * A serialization identifier for this instance.
+     * ${singleton.desc}
      */
-    private static final long serialVersionUID = 1L;
+    ${singleton.type}(${singleton.value}),
+#end
+    ;
+#end
 
     /**
      * The ${desc} being represented.
@@ -61,10 +68,21 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
      * Obtains an instance of <code>${Type}</code>.
      *
      * @param ${type}  the ${desc} to represent
-     * @return the created ${Type}
+     * @return the existing ${Type}
      */
     public static ${Type} ${type}(int ${type}) {
+#if ($singletons.size() > 0)
+        switch (${type}) {
+#foreach ($singleton in $singletons)
+            case ${singleton.value}:
+                return ${singleton.type};
+#end
+            default:
+                throw new IllegalArgumentException("${Type} cannot have the value " + ${type});
+        }
+#else
         return new ${Type}(${type});
+#end
     }
 
     //-----------------------------------------------------------------------
@@ -87,20 +105,6 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
         return ${type};
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this ${desc} instance to another.
-     *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
-     */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
     /**
      * Is this ${desc} instance greater than the specified ${desc}.
      *
@@ -121,32 +125,6 @@ public final class ${Type} implements Moment, Comparable<${Type}> {
      */
     public boolean isLessThan(${Type} other${Type}) {
         return compareTo(other${Type}) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the ${desc}.
-     *
-     * @param other${Type}  the other ${desc} instance, null returns false
-     * @return true if the ${desc} is the same
-     */
-    public boolean equals(Object other${Type}) {
-        if (this == other${Type}) {
-            return true;
-        }
-        if (other${Type} instanceof ${Type}) {
-            return ${type} == ((${Type}) other${Type}).${type};
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the ${desc} object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return ${type};
     }
 
 #foreach ($line in $methods)

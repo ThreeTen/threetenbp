@@ -37,7 +37,7 @@ package javax.time;
  * HourOfDay is an immutable time field that can only store a hour of day.
  * It is a type-safe way of representing a hour of day in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The hour of day may be queried using getHourOfDay().
  * <p>
  * HourOfDay is thread-safe and immutable.
