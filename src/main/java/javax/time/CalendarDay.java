@@ -365,7 +365,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     /**
      * Compares this instance to another.
      *
-     * @param otherDay  the other day instance, not null
+     * @param otherDay  the other day instance to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDay is null
      */
@@ -384,8 +384,8 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     /**
      * Is this instance after the specified one.
      *
-     * @param otherDay  the other day instance, not null
-     * @return true if this month of year is greater
+     * @param otherDay  the other day instance to compare to, not null
+     * @return true if this day is after the specified day
      * @throws NullPointerException if otherDay is null
      */
     public boolean isAfter(CalendarDay otherDay) {
@@ -395,8 +395,8 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     /**
      * Is this instance before the specified one.
      *
-     * @param otherDay  the other day instance, not null
-     * @return true if this month of year is less
+     * @param otherDay  the other day instance to compare to, not null
+     * @return true if this day is before the specified day
      * @throws NullPointerException if otherDay is null
      */
     public boolean isBefore(CalendarDay otherDay) {
@@ -407,8 +407,8 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     /**
      * Is this instance equal to that specified.
      *
-     * @param otherDay  the other month instance, null returns false
-     * @return true if the month of year is the same
+     * @param otherDay  the other day instance to compare to, null returns false
+     * @return true if this day is equal to the specified day
      */
     public boolean equals(Object otherDay) {
         if (this == otherDay) {

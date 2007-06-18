@@ -248,7 +248,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     /**
      * Compares this instance to another.
      *
-     * @param otherMonth  the other month instance, not null
+     * @param otherMonth  the other month instance to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherMonth is null
      */
@@ -263,8 +263,8 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     /**
      * Is this instance after the specified one.
      *
-     * @param otherMonth  the other month instance, not null
-     * @return true if this month of year is greater
+     * @param otherMonth  the other month instance to compare to, not null
+     * @return true if this month is after the specified month
      * @throws NullPointerException if otherMonth is null
      */
     public boolean isAfter(CalendarMonth otherMonth) {
@@ -274,8 +274,8 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     /**
      * Is this instance before the specified one.
      *
-     * @param otherMonth  the other month instance, not null
-     * @return true if this month of year is less
+     * @param otherMonth  the other month instance to compare to, not null
+     * @return true if this month is before the specified month
      * @throws NullPointerException if otherMonth is null
      */
     public boolean isBefore(CalendarMonth otherMonth) {
@@ -286,8 +286,8 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     /**
      * Is this instance equal to that specified.
      *
-     * @param otherMonth  the other month instance, null returns false
-     * @return true if the month of year is the same
+     * @param otherMonth  the other month instance to compare to, null returns false
+     * @return true if this month is equal to the specified month
      */
     public boolean equals(Object otherMonth) {
         if (this == otherMonth) {
