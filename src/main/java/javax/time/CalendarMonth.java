@@ -34,8 +34,8 @@ package javax.time;
 /**
  * A moment of a month.
  * <p>
- * Month is an immutable moment that records time information to the precision
- * of a month. For example, the value "September 2007" can be stored in a Month.
+ * CalendarMonth is an immutable moment that records time information to the precision
+ * of a month. For example, the value "September 2007" can be stored in a CalendarMonth.
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
@@ -85,27 +85,27 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     }
 
     /**
-     * Obtains an instance of <code>Month</code> representing this month.
+     * Obtains an instance of <code>CalendarMonth</code> representing this month.
      *
-     * @return a Month object representing this month
+     * @return a CalendarMonth object representing this month
      */
     public static CalendarMonth currentMonth() {
         return null;
     }
 
     /**
-     * Obtains an instance of <code>Month</code> representing this month.
+     * Obtains an instance of <code>CalendarMonth</code> representing this month.
      *
-     * @return a Month object representing this month
+     * @return a CalendarMonth object representing this month
      */
     public static CalendarMonth previousMonth() {
         return null;
     }
 
     /**
-     * Obtains an instance of <code>Month</code> representing this month.
+     * Obtains an instance of <code>CalendarMonth</code> representing this month.
      *
-     * @return a Month object representing this month
+     * @return a CalendarMonth object representing this month
      */
     public static CalendarMonth nextMonth() {
         return null;
