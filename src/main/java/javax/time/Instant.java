@@ -56,7 +56,7 @@ public final class Instant {
      * @param nanos  the nanoseconds within the second, must be positive
      * @return the created Instant
      */
-    public Instant instant(final long seconds, final int nanos) {
+    public static Instant instant(final long seconds, final int nanos) {
         return new Instant(seconds, nanos);
     }
 
