@@ -36,7 +36,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Instant {
+public final class Instant implements Comparable<Instant> {
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -91,6 +91,71 @@ public final class Instant {
      */
     public int getNanos() {
         return nanos;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this Instant to another.
+     *
+     * @param otherInstant  the other instant to compare to, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherInstant is null
+     */
+    public int compareTo(Instant otherInstant) {
+        int cmp = MathUtils.safeCompare(seconds, otherInstant.seconds);
+        if (cmp != 0) {
+            return cmp;
+        }
+        return MathUtils.safeCompare(nanos, otherInstant.nanos);
+    }
+
+    /**
+     * Is this Instant after the specified one.
+     *
+     * @param otherInstant  the other instant to compare to, not null
+     * @return true if this instant is after the specified instant
+     * @throws NullPointerException if otherInstant is null
+     */
+    public boolean isAfter(Instant otherInstant) {
+        return compareTo(otherInstant) > 0;
+    }
+
+    /**
+     * Is this Instant before the specified one.
+     *
+     * @param otherInstant  the other instant to compare to, not null
+     * @return true if this instant is before the specified instant
+     * @throws NullPointerException if otherInstant is null
+     */
+    public boolean isBefore(Instant otherInstant) {
+        return compareTo(otherInstant) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this Instant equal to that specified.
+     *
+     * @param otherInstant  the other instant, null returns false
+     * @return true if the other instant is equal to this one
+     */
+    public boolean equals(Object otherInstant) {
+        if (this == otherInstant) {
+            return true;
+        }
+        if (otherInstant instanceof Instant) {
+            Instant other = (Instant) otherInstant;
+            return this.seconds == other.seconds && this.nanos == other.nanos;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for this Instant.
+     *
+     * @return a suitable hashcode
+     */
+    public int hashCode() {
+        return ((int) (seconds ^ (seconds >>> 32))) + 51 * nanos;
     }
 
 }
