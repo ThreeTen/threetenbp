@@ -41,12 +41,12 @@ public final class Instant implements Comparable<Instant> {
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
      */
-    private final long seconds;
+    private final long epochSeconds;
     /**
      * The number of nanoseconds, later along the time-line, from the seconds field.
      * This is always positive, and never exceeds 999,999,999.
      */
-    private final int nanos;
+    private final int nanoOfSecond;
 
     /**
      * Factory method to create an instance of Instant using seconds from the
@@ -60,37 +60,39 @@ public final class Instant implements Comparable<Instant> {
         return new Instant(seconds, nanos);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Constructs an instance of Instant using seconds from the epoch of
      * 1970-01-01T00:00:00Z and nanosecond fraction of second.
      *
-     * @param seconds  the number of seconds from the epoch
-     * @param nanos  the nanoseconds within the second, must be positive
+     * @param epochSeconds  the number of seconds from the epoch
+     * @param nanoOfSecond  the nanoseconds within the second, must be positive
      */
-    private Instant(final long seconds, final int nanos) {
+    private Instant(final long epochSeconds, final int nanoOfSecond) {
         super();
-        this.seconds = seconds;
-        this.nanos = nanos;
+        this.epochSeconds = epochSeconds;
+        this.nanoOfSecond = nanoOfSecond;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds from the epoch.
+     * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.
      * Points in time after the epoch are positive, earlier are negative.
      *
      * @return the seconds from the epoch
      */
-    public long getSeconds() {
-        return seconds;
+    public long getEpochSecond() {
+        return epochSeconds;
     }
 
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
-     * of the second returned by {@link #getSeconds()}.
+     * of the second returned by {@link #getEpochSecond()}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
-    public int getNanos() {
-        return nanos;
+    public int getNanoOfSecond() {
+        return nanoOfSecond;
     }
 
     //-----------------------------------------------------------------------
@@ -102,11 +104,11 @@ public final class Instant implements Comparable<Instant> {
      * @throws NullPointerException if otherInstant is null
      */
     public int compareTo(Instant otherInstant) {
-        int cmp = MathUtils.safeCompare(seconds, otherInstant.seconds);
+        int cmp = MathUtils.safeCompare(epochSeconds, otherInstant.epochSeconds);
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanos, otherInstant.nanos);
+        return MathUtils.safeCompare(nanoOfSecond, otherInstant.nanoOfSecond);
     }
 
     /**
@@ -144,7 +146,8 @@ public final class Instant implements Comparable<Instant> {
         }
         if (otherInstant instanceof Instant) {
             Instant other = (Instant) otherInstant;
-            return this.seconds == other.seconds && this.nanos == other.nanos;
+            return this.epochSeconds == other.epochSeconds &&
+                   this.nanoOfSecond == other.nanoOfSecond;
         }
         return false;
     }
@@ -155,7 +158,7 @@ public final class Instant implements Comparable<Instant> {
      * @return a suitable hashcode
      */
     public int hashCode() {
-        return ((int) (seconds ^ (seconds >>> 32))) + 51 * nanos;
+        return ((int) (epochSeconds ^ (epochSeconds >>> 32))) + 51 * nanoOfSecond;
     }
 
 }
