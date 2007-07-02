@@ -37,7 +37,7 @@ package javax.time;
  * ${Type} is an immutable time field that can only store a ${desc}.
  * It is a type-safe way of representing a ${desc} in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a ${Type} 
+ * <b>Do not use ordinal() to obtain the numeric representation of a ${Type}
  * instance; use ${type}() instead.</b>
  * The ${desc} may be queried using get${Type}().
  * <p>

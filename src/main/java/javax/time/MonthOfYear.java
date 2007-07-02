@@ -37,7 +37,7 @@ package javax.time;
  * MonthOfYear is an immutable time field that can only store a month of year.
  * It is a type-safe way of representing a month of year in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear 
+ * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear
  * instance; use monthOfYear() instead.</b>
  * The month of year may be queried using getMonthOfYear().
  * <p>

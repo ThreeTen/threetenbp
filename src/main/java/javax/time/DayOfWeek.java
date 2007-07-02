@@ -37,7 +37,7 @@ package javax.time;
  * DayOfWeek is an immutable time field that can only store a day of week.
  * It is a type-safe way of representing a day of week in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a DayOfWeek 
+ * <b>Do not use ordinal() to obtain the numeric representation of a DayOfWeek
  * instance; use dayOfWeek() instead.</b>
  * The day of week may be queried using getDayOfWeek().
  * <p>
