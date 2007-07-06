@@ -70,6 +70,23 @@ public class MathUtils {
     }
 
     /**
+     * Safely adds two long values.
+     *
+     * @param a  the first value
+     * @param b  the second value
+     * @return the result
+     * @throws ArithmeticException if the result overflows an int
+     */
+    public static long safeAdd(long a, long b) {
+        long sum = a + b;
+        // check for a change of sign in the result when the inputs have the same sign
+        if ((a ^ sum) < 0 && (a ^ b) >= 0) {
+            throw new ArithmeticException("Addition overflows an long: " + a + " + " + b);
+        }
+        return sum;
+    }
+
+    /**
      * Safely subtracts one int from another.
      *
      * @param a  the first value
