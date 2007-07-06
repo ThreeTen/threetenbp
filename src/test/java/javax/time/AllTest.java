@@ -45,6 +45,9 @@ public class AllTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
+            // main classes
+            TestInstant.class,
+            // period fields
             TestDays.class,
             TestHours.class,
             TestMinutes.class,

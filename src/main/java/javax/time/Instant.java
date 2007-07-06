@@ -31,12 +31,37 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * An instantaneous point on the time-line.
+ * <p>
+ * The Java Time Framework models time as a series of instantaneous events,
+ * known as instants, along a single time-line. This class represents one
+ * of those instants.
+ * <p>
+ * Each instant is theoretically an instantaneous event, however for practicality
+ * a precision of nanoseconds has been chosen.
+ * <p>
+ * An instant is always defined with respect to a well-defined fixed point in time,
+ * known as the epoch. The Java Time Framework uses the standard Java epoch of
+ * 1970-01-01T00:00:00Z.
  *
  * @author Stephen Colebourne
  */
-public final class Instant implements Comparable<Instant> {
+public final class Instant implements Comparable<Instant>, Serializable {
+    // TODO: Minus methods (as per plus methods)
+    // TODO: Duration class integration
+    // TODO: Leap seconds (document or implement)
+    // TODO: Serialized format
+    // TODO: Evaluate hashcode
+    // TODO: Optimise to 2 private subclasses (second/nano & millis)
+    // TODO: Consider BigDecimal
+
+    /**
+     * Serialization version id.
+     */
+    private static final long serialVersionUID = -9114640809030911667L;
 
     /**
      * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -48,16 +73,81 @@ public final class Instant implements Comparable<Instant> {
      */
     private final int nanoOfSecond;
 
+    //-----------------------------------------------------------------------
+    /**
+     * Factory method to create an instance of Instant using seconds from the
+     * epoch of 1970-01-01T00:00:00Z with a zero nanosecond fraction.
+     *
+     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @return the created Instant
+     */
+    public static Instant instant(long epochSeconds) {
+        return new Instant(epochSeconds, 0);
+    }
+
     /**
      * Factory method to create an instance of Instant using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
      *
-     * @param seconds  the number of seconds from the epoch
-     * @param nanos  the nanoseconds within the second, must be positive
+     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfSecond  the nanoseconds within the second, must be positive
      * @return the created Instant
+     * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
      */
-    public static Instant instant(final long seconds, final int nanos) {
-        return new Instant(seconds, nanos);
+    public static Instant instant(long epochSeconds, int nanoOfSecond) {
+        if (nanoOfSecond < 0) {
+            throw new IllegalArgumentException("NanoOfSecond must be positive but was " + nanoOfSecond);
+        }
+        if (nanoOfSecond > 999999999) {
+            throw new IllegalArgumentException("NanoOfSecond must not be more than 999,999,999 but was " + nanoOfSecond);
+        }
+        return new Instant(epochSeconds, nanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Factory method to create an instance of Instant using milliseconds from the
+     * epoch of 1970-01-01T00:00:00Z with no further fraction of a second.
+     *
+     * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
+     * @return the created Instant
+     * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
+     */
+    public static Instant millisInstant(long epochMillis) {
+        if (epochMillis < 0) {
+            epochMillis++;
+            long epochSeconds = epochMillis / 1000;
+            int millis = ((int) (epochMillis % 1000));  // 0 to -999
+            millis = 999 + millis;  // 0 to 999
+            return new Instant(epochSeconds - 1, millis * 1000000);
+        }
+        return new Instant(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000);
+    }
+
+    /**
+     * Factory method to create an instance of Instant using milliseconds from the
+     * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of millisecond.
+     *
+     * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
+     * @param nanoOfMillisecond  the nanoseconds within the millisecond, must be positive
+     * @return the created Instant
+     * @throws IllegalArgumentException if nanoOfMillisecond is not in the range 0 to 999,999
+     */
+    public static Instant millisInstant(long epochMillis, int nanoOfMillisecond) {
+        if (nanoOfMillisecond < 0) {
+            throw new IllegalArgumentException("NanoOfMillisecond must be positive but was " + nanoOfMillisecond);
+        }
+        if (nanoOfMillisecond > 999999) {
+            throw new IllegalArgumentException("NanoOfMillisecond must not be more than 999,999 but was " + nanoOfMillisecond);
+        }
+        if (epochMillis < 0) {
+            epochMillis++;
+            long epochSeconds = epochMillis / 1000;
+            int millis = ((int) (epochMillis % 1000));  // 0 to -999
+            millis = 999 + millis;  // 0 to 999
+            return new Instant(epochSeconds - 1, millis * 1000000 + nanoOfMillisecond);
+        }
+        return new Instant(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000 + nanoOfMillisecond);
     }
 
     //-----------------------------------------------------------------------
@@ -68,7 +158,7 @@ public final class Instant implements Comparable<Instant> {
      * @param epochSeconds  the number of seconds from the epoch
      * @param nanoOfSecond  the nanoseconds within the second, must be positive
      */
-    private Instant(final long epochSeconds, final int nanoOfSecond) {
+    private Instant(long epochSeconds, int nanoOfSecond) {
         super();
         this.epochSeconds = epochSeconds;
         this.nanoOfSecond = nanoOfSecond;
@@ -77,22 +167,109 @@ public final class Instant implements Comparable<Instant> {
     //-----------------------------------------------------------------------
     /**
      * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.
-     * Points in time after the epoch are positive, earlier are negative.
+     * <p>
+     * Instants on the time-line after the epoch are positive, earlier are negative.
      *
      * @return the seconds from the epoch
      */
-    public long getEpochSecond() {
+    public long getEpochSeconds() {
         return epochSeconds;
     }
 
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
-     * of the second returned by {@link #getEpochSecond()}.
+     * of the second returned by {@link #getEpochSeconds()}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
     public int getNanoOfSecond() {
         return nanoOfSecond;
+    }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this Instant with the specified duration added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param duration  the duration to add, not null
+//     * @return a new updated Instant
+//     */
+//    public Instant plus(Duration duration) {
+//        // TODO
+//        return null;
+//    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Instant with the specified number of seconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param secondsToAdd  the seconds to add
+     * @return a new updated Instant
+     */
+    public Instant plusSeconds(long secondsToAdd) {
+        if (secondsToAdd == 0) {
+            return this;
+        }
+        return Instant.instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Instant with the specified number of nanoseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param millisToAdd  the milliseconds to add
+     * @return a new updated Instant
+     */
+    public Instant plusMillis(long millisToAdd) {
+        if (millisToAdd == 0) {
+            return this;
+        }
+        long secondsToAdd = millisToAdd / 1000;
+        // add: 0 to 999,000,000, subtract: 0 to -999,000,000
+        int nos = ((int) (millisToAdd % 1000)) * 1000000;
+        // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
+        nos += nanoOfSecond;
+        if (nos < 0) {
+            nos += 1000000000;  // subtract: 1,000,000 to 999,999,999
+            secondsToAdd--;
+        } else if (nos >= 1000000000) {
+            nos -= 1000000000;  // add: 1 to 998,999,999
+            secondsToAdd++;
+        }
+        return Instant.instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Instant with the specified number of nanoseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanosToAdd  the nanoseconds to add
+     * @return a new updated Instant
+     */
+    public Instant plusNanos(long nanosToAdd) {
+        if (nanosToAdd == 0) {
+            return this;
+        }
+        long secondsToAdd = nanosToAdd / 1000000000;
+        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
+        int nos = (int) (nanosToAdd % 1000000000);
+        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
+        nos += nanoOfSecond;
+        if (nos < 0) {
+            nos += 1000000000;  // subtract: 1 to 999,999,999
+            secondsToAdd--;
+        } else if (nos >= 1000000000) {
+            nos -= 1000000000;  // add: 1 to 999,999,999
+            secondsToAdd++;
+        }
+        return Instant.instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
     }
 
     //-----------------------------------------------------------------------
@@ -140,6 +317,7 @@ public final class Instant implements Comparable<Instant> {
      * @param otherInstant  the other instant, null returns false
      * @return true if the other instant is equal to this one
      */
+    @Override
     public boolean equals(Object otherInstant) {
         if (this == otherInstant) {
             return true;
@@ -157,8 +335,23 @@ public final class Instant implements Comparable<Instant> {
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return ((int) (epochSeconds ^ (epochSeconds >>> 32))) + 51 * nanoOfSecond;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * A string representation of this Instant using ISO-8601 representation.
+     * <p>
+     * The format of the returned string will be <code>yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ</code>.
+     *
+     * @return an ISO-8601 represntation of this Instant
+     */
+    @Override
+    public String toString() {
+        // TODO
+        return "TODO";
     }
 
 }
