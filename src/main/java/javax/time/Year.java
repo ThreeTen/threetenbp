@@ -44,7 +44,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Year implements Moment, Comparable<Year> {
+public final class Year implements RecurringMoment, Comparable<Year> {
 
     /**
      * A serialization identifier for this instance.

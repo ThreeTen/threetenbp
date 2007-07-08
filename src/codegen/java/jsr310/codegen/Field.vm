@@ -44,7 +44,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Moment, Comparable<${Type}> {
+public final class ${Type} implements RecurringMoment, Comparable<${Type}> {
 
     /**
      * A serialization identifier for this instance.

@@ -44,7 +44,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class DayOfYear implements Moment, Comparable<DayOfYear> {
+public final class DayOfYear implements RecurringMoment, Comparable<DayOfYear> {
 
     /**
      * A serialization identifier for this instance.

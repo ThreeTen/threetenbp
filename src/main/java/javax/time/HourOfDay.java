@@ -44,7 +44,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class HourOfDay implements Moment, Comparable<HourOfDay> {
+public final class HourOfDay implements RecurringMoment, Comparable<HourOfDay> {
 
     /**
      * A serialization identifier for this instance.
