@@ -38,14 +38,14 @@ package javax.time;
  * It is a type-safe way of representing a month of year in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear
- * instance; use monthOfYear() instead.</b>
- * The month of year may be queried using getMonthOfYear().
+ * instance. Use getMonthOfYear() instead.</b>
  * <p>
  * MonthOfYear is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
+ * @author Stephen Colebourne
  */
-public enum MonthOfYear implements Moment {
+public enum MonthOfYear implements RecurringMoment {
 
     /**
      * The singleton instance for the month of January.
@@ -95,12 +95,7 @@ public enum MonthOfYear implements Moment {
      * The singleton instance for the month of December.
      */
     DECEMBER(12),
-;
-
-    /**
-     * A serialization identifier for this instance.
-     */
-    private static final long serialVersionUID = 1L;
+    ;
 
     /**
      * The month of year being represented.
@@ -165,6 +160,28 @@ public enum MonthOfYear implements Moment {
         return monthOfYear;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the next month of year wrapping so that the next month of year
+     * is always returned.
+     *
+     * @return the next month of year, never null
+     */
+    public MonthOfYear next() {
+        return values()[(ordinal() + 1) % 12];
+    }
+
+    /**
+     * Gets the previous month of year wrapping so that the previous month of year
+     * is always returned.
+     *
+     * @return the previous month of year, never null
+     */
+    public MonthOfYear previous() {
+        return values()[(ordinal() + 12 - 1) % 12];
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Is this month of year instance greater than the specified month of year.
      *

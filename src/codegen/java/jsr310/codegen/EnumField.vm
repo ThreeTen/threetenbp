@@ -38,17 +38,15 @@ package javax.time;
  * It is a type-safe way of representing a ${desc} in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a ${Type}
- * instance; use ${type}() instead.</b>
- * The ${desc} may be queried using get${Type}().
+ * instance. Use get${Type}() instead.</b>
  * <p>
  * ${Type} is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum ${Type} implements Moment {
+public enum ${Type} implements RecurringMoment {
 
-#if ($singletons.size() > 0)
 #foreach ($singleton in $singletons)
     /**
      * ${singleton.desc}
@@ -56,7 +54,6 @@ public enum ${Type} implements Moment {
     ${singleton.type}(${singleton.value}),
 #end
     ;
-#end
 
     /**
      * The ${desc} being represented.
@@ -71,7 +68,6 @@ public enum ${Type} implements Moment {
      * @return the existing ${Type}
      */
     public static ${Type} ${type}(int ${type}) {
-#if ($singletons.size() > 0)
         switch (${type}) {
 #foreach ($singleton in $singletons)
             case ${singleton.value}:
@@ -80,9 +76,6 @@ public enum ${Type} implements Moment {
             default:
                 throw new IllegalArgumentException("${Type} cannot have the value " + ${type});
         }
-#else
-        return new ${Type}(${type});
-#end
     }
 
     //-----------------------------------------------------------------------
@@ -105,6 +98,28 @@ public enum ${Type} implements Moment {
         return ${type};
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the next ${desc} wrapping so that the next ${desc}
+     * is always returned.
+     *
+     * @return the next ${desc}, never null
+     */
+    public ${Type} next() {
+        return values()[(ordinal() + 1) % ${singletons.size()}];
+    }
+
+    /**
+     * Gets the previous ${desc} wrapping so that the previous ${desc}
+     * is always returned.
+     *
+     * @return the previous ${desc}, never null
+     */
+    public ${Type} previous() {
+        return values()[(ordinal() + ${singletons.size()} - 1) % ${singletons.size()}];
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Is this ${desc} instance greater than the specified ${desc}.
      *

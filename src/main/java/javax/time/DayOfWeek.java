@@ -38,14 +38,14 @@ package javax.time;
  * It is a type-safe way of representing a day of week in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a DayOfWeek
- * instance; use dayOfWeek() instead.</b>
- * The day of week may be queried using getDayOfWeek().
+ * instance. Use getDayOfWeek() instead.</b>
  * <p>
  * DayOfWeek is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
+ * @author Stephen Colebourne
  */
-public enum DayOfWeek implements Moment {
+public enum DayOfWeek implements RecurringMoment {
 
     /**
      * The singleton instance for the day of week of Monday.
@@ -75,12 +75,7 @@ public enum DayOfWeek implements Moment {
      * The singleton instance for the day of week of Sunday.
      */
     SUNDAY(7),
-;
-
-    /**
-     * A serialization identifier for this instance.
-     */
-    private static final long serialVersionUID = 1L;
+    ;
 
     /**
      * The day of week being represented.
@@ -135,6 +130,28 @@ public enum DayOfWeek implements Moment {
         return dayOfWeek;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the next day of week wrapping so that the next day of week
+     * is always returned.
+     *
+     * @return the next day of week, never null
+     */
+    public DayOfWeek next() {
+        return values()[(ordinal() + 1) % 7];
+    }
+
+    /**
+     * Gets the previous day of week wrapping so that the previous day of week
+     * is always returned.
+     *
+     * @return the previous day of week, never null
+     */
+    public DayOfWeek previous() {
+        return values()[(ordinal() + 7 - 1) % 7];
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Is this day of week instance greater than the specified day of week.
      *
