@@ -57,7 +57,7 @@ public final class Now {
      * @return a month object represnting the current month, never null
      */
     public static CalendarMonth currentMonth() {
-        return CalendarMonth.currentMonth();
+        return CalendarMonth.yearMonth(2007, 6);
     }
 
     //-----------------------------------------------------------------------
@@ -68,7 +68,7 @@ public final class Now {
      * @return a day object represnting today, never null
      */
     public static CalendarDay today() {
-        return CalendarDay.today();
+        return CalendarDay.yearMonthDay(2007, 6, 1);
     }
 
     /**
@@ -78,7 +78,7 @@ public final class Now {
      * @return a day object represnting yesterday, never null
      */
     public static CalendarDay yesterday() {
-        return CalendarDay.yesterday();
+        return CalendarDay.yearMonthDay(2007, 6, 1);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class Now {
      * @return a day object represnting tommorrow, never null
      */
     public static CalendarDay tomorrow() {
-        return CalendarDay.tomorrow();
+        return CalendarDay.yearMonthDay(2007, 6, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -99,7 +99,7 @@ public final class Now {
      * @return a time object represnting the current time of day, never null
      */
     public static TimeOfDay currentTime() {
-        return TimeOfDay.currentTime();
+        return TimeOfDay.timeOfDay(12, 30);
     }
 
 }

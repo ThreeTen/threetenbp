@@ -84,33 +84,6 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
         return new CalendarMonth(0, 0);
     }
 
-    /**
-     * Obtains an instance of <code>CalendarMonth</code> representing this month.
-     *
-     * @return a CalendarMonth object representing this month
-     */
-    public static CalendarMonth currentMonth() {
-        return null;
-    }
-
-    /**
-     * Obtains an instance of <code>CalendarMonth</code> representing this month.
-     *
-     * @return a CalendarMonth object representing this month
-     */
-    public static CalendarMonth previousMonth() {
-        return null;
-    }
-
-    /**
-     * Obtains an instance of <code>CalendarMonth</code> representing this month.
-     *
-     * @return a CalendarMonth object representing this month
-     */
-    public static CalendarMonth nextMonth() {
-        return null;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
@@ -289,6 +262,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param otherMonth  the other month instance to compare to, null returns false
      * @return true if this month is equal to the specified month
      */
+    @Override
     public boolean equals(Object otherMonth) {
         if (this == otherMonth) {
             return true;
@@ -304,6 +278,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return year + 37 * monthOfYear;
     }

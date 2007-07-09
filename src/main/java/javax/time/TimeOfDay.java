@@ -81,33 +81,6 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
         return new TimeOfDay(secondOfDay);
     }
 
-    /**
-     * Obtains an instance of <code>TimeOfDay</code> representing this month.
-     *
-     * @return a TimeOfDay object representing the current time
-     */
-    public static TimeOfDay currentTime() {
-        return null;  // TODO
-    }
-
-    /**
-     * Obtains an instance of <code>TimeOfDay</code> representing this month.
-     *
-     * @return a TimeOfDay object representing the current time
-     */
-    public static TimeOfDay currentHour() {
-        return null;  // TODO
-    }
-
-    /**
-     * Obtains an instance of <code>TimeOfDay</code> representing this month.
-     *
-     * @return a TimeOfDay object representing the current time
-     */
-    public static TimeOfDay currentMinute() {
-        return null;  // TODO
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
@@ -375,6 +348,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @param otherTimeOfDay  the other time of day instance, null returns false
      * @return true if the time of day is the same
      */
+    @Override
     public boolean equals(Object otherTimeOfDay) {
         if (this == otherTimeOfDay) {
             return true;
@@ -390,6 +364,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return secondOfDay;
     }

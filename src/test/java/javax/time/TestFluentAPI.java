@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import static javax.time.DayOfWeek.*;
 import static javax.time.Moments.*;
 
 /**
@@ -48,7 +49,7 @@ public class TestFluentAPI {
         CalendarDay date = null;
         date = today().plusDays(3);
         date = today().plus(days(3));
-        date = CalendarDay.today().plus(Days.days(3));
+        date = Now.today().plus(Days.days(3));
         
         date = calendarDay(2007, 3, 20);
         date = calendarDay(year(2007), march(), dayOfMonth(20));
@@ -66,6 +67,21 @@ public class TestFluentAPI {
         tod.withHourOfDay(12).withMinuteOfHour(30);
         //int q = date.get(QuarterOfYear.class);
         //int hourOfDay = HourOfDay.of(tod).get();
+        
+        DayOfWeek dow = MONDAY;
+        dow = dow.next();
+        dow = dow.plusDays(3);
+        dow = dow.plusDaysSkipping(3, SATURDAY, SUNDAY);
+        
+//        day = day.plusSkipping(days(3), WEDNESDAY_PM, SATURDAY, SUNDAY, FOURTH_JULY, XMAS_BREAK);
+//        
+//        int dayIndex = day.value();
+//        int dayIndex = day.value(Territory.US);
+//        int dayIndex = day.valueIndexedFrom(SUNDAY);
+////        SundayBasedDayOfWeek.MONDAY != DayOfWeek.MONDAY;
+//        Territory.US.dayOfWeekComparator();
+//        
+//        date.dayOfMonth().value();
     }
 
 }
