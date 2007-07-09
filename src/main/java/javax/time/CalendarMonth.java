@@ -268,7 +268,8 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
             return true;
         }
         if (otherMonth instanceof CalendarMonth) {
-            return monthOfYear == ((CalendarMonth) otherMonth).monthOfYear;
+            CalendarMonth other = (CalendarMonth) otherMonth;
+            return monthOfYear == other.monthOfYear && year == other.year;
         }
         return false;
     }

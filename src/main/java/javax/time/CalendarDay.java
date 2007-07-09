@@ -389,7 +389,10 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
             return true;
         }
         if (otherDay instanceof CalendarDay) {
-            return monthOfYear == ((CalendarDay) otherDay).monthOfYear;
+            CalendarDay other = (CalendarDay) otherDay;
+            return  dayOfMonth == other.dayOfMonth &&
+                    monthOfYear == other.monthOfYear &&
+                    year == other.year;
         }
         return false;
     }
