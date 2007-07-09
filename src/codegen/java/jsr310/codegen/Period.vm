@@ -108,70 +108,6 @@ public final class ${Type} implements Period, Comparable<${Type}> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of ${type} in this instance to another instance.
-     *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
-     */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of ${type} in this instance greater than that in
-     * another instance.
-     *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is greater
-     * @throws NullPointerException if other${Type} is null
-     */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
-    }
-
-    /**
-     * Is the number of ${type} in this instance less than that in
-     * another instance.
-     *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is less
-     * @throws NullPointerException if other${Type} is null
-     */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of ${type}.
-     *
-     * @param other${Type}  the other number of ${type}, null returns false
-     * @return true if this number of ${type} is the same as that specified
-     */
-    public boolean equals(Object other${Type}) {
-        if (this == other${Type}) {
-           return true;
-        }
-        if (other${Type} instanceof ${Type}) {
-            return ${type} == ((${Type}) other${Type}).${type};
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the ${type} object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return ${type};
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of ${type} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class ${Type} implements Period, Comparable<${Type}> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of ${type} in this instance to another instance.
+     *
+     * @param other${Type}  the other number of ${type}, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if other${Type} is null
+     */
+    public int compareTo(${Type} other${Type}) {
+        int thisValue = this.${type};
+        int otherValue = other${Type}.${type};
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of ${type} in this instance greater than that in
+     * another instance.
+     *
+     * @param other${Type}  the other number of ${type}, not null
+     * @return true if this number of ${type} is greater
+     * @throws NullPointerException if other${Type} is null
+     */
+    public boolean isGreaterThan(${Type} other${Type}) {
+        return compareTo(other${Type}) > 0;
+    }
+
+    /**
+     * Is the number of ${type} in this instance less than that in
+     * another instance.
+     *
+     * @param other${Type}  the other number of ${type}, not null
+     * @return true if this number of ${type} is less
+     * @throws NullPointerException if other${Type} is null
+     */
+    public boolean isLessThan(${Type} other${Type}) {
+        return compareTo(other${Type}) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of ${type}.
+     *
+     * @param other${Type}  the other number of ${type}, null returns false
+     * @return true if this number of ${type} is the same as that specified
+     */
+    @Override
+    public boolean equals(Object other${Type}) {
+        if (this == other${Type}) {
+           return true;
+        }
+        if (other${Type} instanceof ${Type}) {
+            return ${type} == ((${Type}) other${Type}).${type};
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the ${type} object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return ${type};
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of ${type}.
      * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
      *
      * @return the number of ${type} in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "P${stringPrefix}" + ${type} + "${stringSuffix}";
     }

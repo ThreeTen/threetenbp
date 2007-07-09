@@ -130,6 +130,7 @@ public final class MinuteOfHour implements RecurringMoment, Comparable<MinuteOfH
      * @param otherMinuteOfHour  the other minute of hour instance, null returns false
      * @return true if the minute of hour is the same
      */
+    @Override
     public boolean equals(Object otherMinuteOfHour) {
         if (this == otherMinuteOfHour) {
             return true;
@@ -145,6 +146,7 @@ public final class MinuteOfHour implements RecurringMoment, Comparable<MinuteOfH
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return minuteOfHour;
     }

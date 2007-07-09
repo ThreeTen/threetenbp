@@ -108,70 +108,6 @@ public final class Years implements Period, Comparable<Years> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of years in this instance to another instance.
-     *
-     * @param otherYears  the other number of years, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherYears is null
-     */
-    public int compareTo(Years otherYears) {
-        int thisValue = this.years;
-        int otherValue = otherYears.years;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of years in this instance greater than that in
-     * another instance.
-     *
-     * @param otherYears  the other number of years, not null
-     * @return true if this number of years is greater
-     * @throws NullPointerException if otherYears is null
-     */
-    public boolean isGreaterThan(Years otherYears) {
-        return compareTo(otherYears) > 0;
-    }
-
-    /**
-     * Is the number of years in this instance less than that in
-     * another instance.
-     *
-     * @param otherYears  the other number of years, not null
-     * @return true if this number of years is less
-     * @throws NullPointerException if otherYears is null
-     */
-    public boolean isLessThan(Years otherYears) {
-        return compareTo(otherYears) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of years.
-     *
-     * @param otherYears  the other number of years, null returns false
-     * @return true if this number of years is the same as that specified
-     */
-    public boolean equals(Object otherYears) {
-        if (this == otherYears) {
-           return true;
-        }
-        if (otherYears instanceof Years) {
-            return years == ((Years) otherYears).years;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the years object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return years;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class Years implements Period, Comparable<Years> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of years in this instance to another instance.
+     *
+     * @param otherYears  the other number of years, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherYears is null
+     */
+    public int compareTo(Years otherYears) {
+        int thisValue = this.years;
+        int otherValue = otherYears.years;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of years in this instance greater than that in
+     * another instance.
+     *
+     * @param otherYears  the other number of years, not null
+     * @return true if this number of years is greater
+     * @throws NullPointerException if otherYears is null
+     */
+    public boolean isGreaterThan(Years otherYears) {
+        return compareTo(otherYears) > 0;
+    }
+
+    /**
+     * Is the number of years in this instance less than that in
+     * another instance.
+     *
+     * @param otherYears  the other number of years, not null
+     * @return true if this number of years is less
+     * @throws NullPointerException if otherYears is null
+     */
+    public boolean isLessThan(Years otherYears) {
+        return compareTo(otherYears) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of years.
+     *
+     * @param otherYears  the other number of years, null returns false
+     * @return true if this number of years is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherYears) {
+        if (this == otherYears) {
+           return true;
+        }
+        if (otherYears instanceof Years) {
+            return years == ((Years) otherYears).years;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the years object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return years;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of years.
      * This will be in the format 'PnY' where n is the number of years.
      *
      * @return the number of years in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "P" + years + "Y";
     }

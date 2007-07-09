@@ -108,70 +108,6 @@ public final class Months implements Period, Comparable<Months> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of months in this instance to another instance.
-     *
-     * @param otherMonths  the other number of months, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMonths is null
-     */
-    public int compareTo(Months otherMonths) {
-        int thisValue = this.months;
-        int otherValue = otherMonths.months;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of months in this instance greater than that in
-     * another instance.
-     *
-     * @param otherMonths  the other number of months, not null
-     * @return true if this number of months is greater
-     * @throws NullPointerException if otherMonths is null
-     */
-    public boolean isGreaterThan(Months otherMonths) {
-        return compareTo(otherMonths) > 0;
-    }
-
-    /**
-     * Is the number of months in this instance less than that in
-     * another instance.
-     *
-     * @param otherMonths  the other number of months, not null
-     * @return true if this number of months is less
-     * @throws NullPointerException if otherMonths is null
-     */
-    public boolean isLessThan(Months otherMonths) {
-        return compareTo(otherMonths) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of months.
-     *
-     * @param otherMonths  the other number of months, null returns false
-     * @return true if this number of months is the same as that specified
-     */
-    public boolean equals(Object otherMonths) {
-        if (this == otherMonths) {
-           return true;
-        }
-        if (otherMonths instanceof Months) {
-            return months == ((Months) otherMonths).months;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the months object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return months;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class Months implements Period, Comparable<Months> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of months in this instance to another instance.
+     *
+     * @param otherMonths  the other number of months, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherMonths is null
+     */
+    public int compareTo(Months otherMonths) {
+        int thisValue = this.months;
+        int otherValue = otherMonths.months;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of months in this instance greater than that in
+     * another instance.
+     *
+     * @param otherMonths  the other number of months, not null
+     * @return true if this number of months is greater
+     * @throws NullPointerException if otherMonths is null
+     */
+    public boolean isGreaterThan(Months otherMonths) {
+        return compareTo(otherMonths) > 0;
+    }
+
+    /**
+     * Is the number of months in this instance less than that in
+     * another instance.
+     *
+     * @param otherMonths  the other number of months, not null
+     * @return true if this number of months is less
+     * @throws NullPointerException if otherMonths is null
+     */
+    public boolean isLessThan(Months otherMonths) {
+        return compareTo(otherMonths) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of months.
+     *
+     * @param otherMonths  the other number of months, null returns false
+     * @return true if this number of months is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherMonths) {
+        if (this == otherMonths) {
+           return true;
+        }
+        if (otherMonths instanceof Months) {
+            return months == ((Months) otherMonths).months;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the months object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return months;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of months.
      * This will be in the format 'PnM' where n is the number of months.
      *
      * @return the number of months in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "P" + months + "M";
     }

@@ -130,6 +130,7 @@ public final class Year implements RecurringMoment, Comparable<Year> {
      * @param otherYear  the other year instance, null returns false
      * @return true if the year is the same
      */
+    @Override
     public boolean equals(Object otherYear) {
         if (this == otherYear) {
             return true;
@@ -145,6 +146,7 @@ public final class Year implements RecurringMoment, Comparable<Year> {
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return year;
     }

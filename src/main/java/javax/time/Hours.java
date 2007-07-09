@@ -108,70 +108,6 @@ public final class Hours implements Period, Comparable<Hours> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of hours in this instance to another instance.
-     *
-     * @param otherHours  the other number of hours, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherHours is null
-     */
-    public int compareTo(Hours otherHours) {
-        int thisValue = this.hours;
-        int otherValue = otherHours.hours;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of hours in this instance greater than that in
-     * another instance.
-     *
-     * @param otherHours  the other number of hours, not null
-     * @return true if this number of hours is greater
-     * @throws NullPointerException if otherHours is null
-     */
-    public boolean isGreaterThan(Hours otherHours) {
-        return compareTo(otherHours) > 0;
-    }
-
-    /**
-     * Is the number of hours in this instance less than that in
-     * another instance.
-     *
-     * @param otherHours  the other number of hours, not null
-     * @return true if this number of hours is less
-     * @throws NullPointerException if otherHours is null
-     */
-    public boolean isLessThan(Hours otherHours) {
-        return compareTo(otherHours) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of hours.
-     *
-     * @param otherHours  the other number of hours, null returns false
-     * @return true if this number of hours is the same as that specified
-     */
-    public boolean equals(Object otherHours) {
-        if (this == otherHours) {
-           return true;
-        }
-        if (otherHours instanceof Hours) {
-            return hours == ((Hours) otherHours).hours;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the hours object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return hours;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class Hours implements Period, Comparable<Hours> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of hours in this instance to another instance.
+     *
+     * @param otherHours  the other number of hours, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherHours is null
+     */
+    public int compareTo(Hours otherHours) {
+        int thisValue = this.hours;
+        int otherValue = otherHours.hours;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of hours in this instance greater than that in
+     * another instance.
+     *
+     * @param otherHours  the other number of hours, not null
+     * @return true if this number of hours is greater
+     * @throws NullPointerException if otherHours is null
+     */
+    public boolean isGreaterThan(Hours otherHours) {
+        return compareTo(otherHours) > 0;
+    }
+
+    /**
+     * Is the number of hours in this instance less than that in
+     * another instance.
+     *
+     * @param otherHours  the other number of hours, not null
+     * @return true if this number of hours is less
+     * @throws NullPointerException if otherHours is null
+     */
+    public boolean isLessThan(Hours otherHours) {
+        return compareTo(otherHours) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of hours.
+     *
+     * @param otherHours  the other number of hours, null returns false
+     * @return true if this number of hours is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherHours) {
+        if (this == otherHours) {
+           return true;
+        }
+        if (otherHours instanceof Hours) {
+            return hours == ((Hours) otherHours).hours;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the hours object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return hours;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of hours.
      * This will be in the format 'PTnH' where n is the number of hours.
      *
      * @return the number of hours in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "PT" + hours + "H";
     }

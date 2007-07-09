@@ -90,33 +90,6 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
         return new CalendarDay(0, 0, 0);
     }
 
-    /**
-     * Obtains an instance of <code>CalendarDay</code> representing today.
-     *
-     * @return a CalendarDay object representing today
-     */
-    public static CalendarDay today() {
-        return null;  // TODO
-    }
-
-    /**
-     * Obtains an instance of <code>CalendarDay</code> representing yesterday.
-     *
-     * @return a CalendarDay object representing yesterday
-     */
-    public static CalendarDay yesterday() {
-        return null;  // TODO
-    }
-
-    /**
-     * Obtains an instance of <code>CalendarDay</code> representing tomorrow.
-     *
-     * @return a CalendarDay object representing tomorrow
-     */
-    public static CalendarDay tomorrow() {
-        return null;  // TODO
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
@@ -410,6 +383,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param otherDay  the other day instance to compare to, null returns false
      * @return true if this day is equal to the specified day
      */
+    @Override
     public boolean equals(Object otherDay) {
         if (this == otherDay) {
             return true;
@@ -425,6 +399,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return year
             + 37 * monthOfYear

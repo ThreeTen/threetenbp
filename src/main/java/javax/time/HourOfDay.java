@@ -130,6 +130,7 @@ public final class HourOfDay implements RecurringMoment, Comparable<HourOfDay> {
      * @param otherHourOfDay  the other hour of day instance, null returns false
      * @return true if the hour of day is the same
      */
+    @Override
     public boolean equals(Object otherHourOfDay) {
         if (this == otherHourOfDay) {
             return true;
@@ -145,6 +146,7 @@ public final class HourOfDay implements RecurringMoment, Comparable<HourOfDay> {
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return hourOfDay;
     }

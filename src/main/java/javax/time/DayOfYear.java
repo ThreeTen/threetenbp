@@ -130,6 +130,7 @@ public final class DayOfYear implements RecurringMoment, Comparable<DayOfYear> {
      * @param otherDayOfYear  the other day of year instance, null returns false
      * @return true if the day of year is the same
      */
+    @Override
     public boolean equals(Object otherDayOfYear) {
         if (this == otherDayOfYear) {
             return true;
@@ -145,6 +146,7 @@ public final class DayOfYear implements RecurringMoment, Comparable<DayOfYear> {
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return dayOfYear;
     }

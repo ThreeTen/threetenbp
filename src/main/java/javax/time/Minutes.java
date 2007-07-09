@@ -108,70 +108,6 @@ public final class Minutes implements Period, Comparable<Minutes> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of minutes in this instance to another instance.
-     *
-     * @param otherMinutes  the other number of minutes, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinutes is null
-     */
-    public int compareTo(Minutes otherMinutes) {
-        int thisValue = this.minutes;
-        int otherValue = otherMinutes.minutes;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of minutes in this instance greater than that in
-     * another instance.
-     *
-     * @param otherMinutes  the other number of minutes, not null
-     * @return true if this number of minutes is greater
-     * @throws NullPointerException if otherMinutes is null
-     */
-    public boolean isGreaterThan(Minutes otherMinutes) {
-        return compareTo(otherMinutes) > 0;
-    }
-
-    /**
-     * Is the number of minutes in this instance less than that in
-     * another instance.
-     *
-     * @param otherMinutes  the other number of minutes, not null
-     * @return true if this number of minutes is less
-     * @throws NullPointerException if otherMinutes is null
-     */
-    public boolean isLessThan(Minutes otherMinutes) {
-        return compareTo(otherMinutes) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of minutes.
-     *
-     * @param otherMinutes  the other number of minutes, null returns false
-     * @return true if this number of minutes is the same as that specified
-     */
-    public boolean equals(Object otherMinutes) {
-        if (this == otherMinutes) {
-           return true;
-        }
-        if (otherMinutes instanceof Minutes) {
-            return minutes == ((Minutes) otherMinutes).minutes;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the minutes object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return minutes;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class Minutes implements Period, Comparable<Minutes> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of minutes in this instance to another instance.
+     *
+     * @param otherMinutes  the other number of minutes, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherMinutes is null
+     */
+    public int compareTo(Minutes otherMinutes) {
+        int thisValue = this.minutes;
+        int otherValue = otherMinutes.minutes;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of minutes in this instance greater than that in
+     * another instance.
+     *
+     * @param otherMinutes  the other number of minutes, not null
+     * @return true if this number of minutes is greater
+     * @throws NullPointerException if otherMinutes is null
+     */
+    public boolean isGreaterThan(Minutes otherMinutes) {
+        return compareTo(otherMinutes) > 0;
+    }
+
+    /**
+     * Is the number of minutes in this instance less than that in
+     * another instance.
+     *
+     * @param otherMinutes  the other number of minutes, not null
+     * @return true if this number of minutes is less
+     * @throws NullPointerException if otherMinutes is null
+     */
+    public boolean isLessThan(Minutes otherMinutes) {
+        return compareTo(otherMinutes) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of minutes.
+     *
+     * @param otherMinutes  the other number of minutes, null returns false
+     * @return true if this number of minutes is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherMinutes) {
+        if (this == otherMinutes) {
+           return true;
+        }
+        if (otherMinutes instanceof Minutes) {
+            return minutes == ((Minutes) otherMinutes).minutes;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the minutes object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return minutes;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of minutes.
      * This will be in the format 'PTnM' where n is the number of minutes.
      *
      * @return the number of minutes in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "PT" + minutes + "M";
     }

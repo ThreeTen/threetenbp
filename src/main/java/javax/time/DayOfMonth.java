@@ -130,6 +130,7 @@ public final class DayOfMonth implements RecurringMoment, Comparable<DayOfMonth>
      * @param otherDayOfMonth  the other day of month instance, null returns false
      * @return true if the day of month is the same
      */
+    @Override
     public boolean equals(Object otherDayOfMonth) {
         if (this == otherDayOfMonth) {
             return true;
@@ -145,6 +146,7 @@ public final class DayOfMonth implements RecurringMoment, Comparable<DayOfMonth>
      *
      * @return a suitable hashcode
      */
+    @Override
     public int hashCode() {
         return dayOfMonth;
     }

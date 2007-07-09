@@ -108,70 +108,6 @@ public final class Weeks implements Period, Comparable<Weeks> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of weeks in this instance to another instance.
-     *
-     * @param otherWeeks  the other number of weeks, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherWeeks is null
-     */
-    public int compareTo(Weeks otherWeeks) {
-        int thisValue = this.weeks;
-        int otherValue = otherWeeks.weeks;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of weeks in this instance greater than that in
-     * another instance.
-     *
-     * @param otherWeeks  the other number of weeks, not null
-     * @return true if this number of weeks is greater
-     * @throws NullPointerException if otherWeeks is null
-     */
-    public boolean isGreaterThan(Weeks otherWeeks) {
-        return compareTo(otherWeeks) > 0;
-    }
-
-    /**
-     * Is the number of weeks in this instance less than that in
-     * another instance.
-     *
-     * @param otherWeeks  the other number of weeks, not null
-     * @return true if this number of weeks is less
-     * @throws NullPointerException if otherWeeks is null
-     */
-    public boolean isLessThan(Weeks otherWeeks) {
-        return compareTo(otherWeeks) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of weeks.
-     *
-     * @param otherWeeks  the other number of weeks, null returns false
-     * @return true if this number of weeks is the same as that specified
-     */
-    public boolean equals(Object otherWeeks) {
-        if (this == otherWeeks) {
-           return true;
-        }
-        if (otherWeeks instanceof Weeks) {
-            return weeks == ((Weeks) otherWeeks).weeks;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the weeks object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return weeks;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class Weeks implements Period, Comparable<Weeks> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of weeks in this instance to another instance.
+     *
+     * @param otherWeeks  the other number of weeks, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherWeeks is null
+     */
+    public int compareTo(Weeks otherWeeks) {
+        int thisValue = this.weeks;
+        int otherValue = otherWeeks.weeks;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of weeks in this instance greater than that in
+     * another instance.
+     *
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is greater
+     * @throws NullPointerException if otherWeeks is null
+     */
+    public boolean isGreaterThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) > 0;
+    }
+
+    /**
+     * Is the number of weeks in this instance less than that in
+     * another instance.
+     *
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is less
+     * @throws NullPointerException if otherWeeks is null
+     */
+    public boolean isLessThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of weeks.
+     *
+     * @param otherWeeks  the other number of weeks, null returns false
+     * @return true if this number of weeks is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherWeeks) {
+        if (this == otherWeeks) {
+           return true;
+        }
+        if (otherWeeks instanceof Weeks) {
+            return weeks == ((Weeks) otherWeeks).weeks;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the weeks object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return weeks;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of weeks.
      * This will be in the format 'PnW' where n is the number of weeks.
      *
      * @return the number of weeks in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "P" + weeks + "W";
     }

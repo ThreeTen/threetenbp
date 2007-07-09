@@ -108,70 +108,6 @@ public final class Seconds implements Period, Comparable<Seconds> {
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of seconds in this instance to another instance.
-     *
-     * @param otherSeconds  the other number of seconds, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherSeconds is null
-     */
-    public int compareTo(Seconds otherSeconds) {
-        int thisValue = this.seconds;
-        int otherValue = otherSeconds.seconds;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    /**
-     * Is the number of seconds in this instance greater than that in
-     * another instance.
-     *
-     * @param otherSeconds  the other number of seconds, not null
-     * @return true if this number of seconds is greater
-     * @throws NullPointerException if otherSeconds is null
-     */
-    public boolean isGreaterThan(Seconds otherSeconds) {
-        return compareTo(otherSeconds) > 0;
-    }
-
-    /**
-     * Is the number of seconds in this instance less than that in
-     * another instance.
-     *
-     * @param otherSeconds  the other number of seconds, not null
-     * @return true if this number of seconds is less
-     * @throws NullPointerException if otherSeconds is null
-     */
-    public boolean isLessThan(Seconds otherSeconds) {
-        return compareTo(otherSeconds) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of seconds.
-     *
-     * @param otherSeconds  the other number of seconds, null returns false
-     * @return true if this number of seconds is the same as that specified
-     */
-    public boolean equals(Object otherSeconds) {
-        if (this == otherSeconds) {
-           return true;
-        }
-        if (otherSeconds instanceof Seconds) {
-            return seconds == ((Seconds) otherSeconds).seconds;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the seconds object.
-     *
-     * @return a suitable hashcode
-     */
-    public int hashCode() {
-        return seconds;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -273,11 +209,78 @@ public final class Seconds implements Period, Comparable<Seconds> {
 
     //-----------------------------------------------------------------------
     /**
+     * Compares the number of seconds in this instance to another instance.
+     *
+     * @param otherSeconds  the other number of seconds, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherSeconds is null
+     */
+    public int compareTo(Seconds otherSeconds) {
+        int thisValue = this.seconds;
+        int otherValue = otherSeconds.seconds;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    /**
+     * Is the number of seconds in this instance greater than that in
+     * another instance.
+     *
+     * @param otherSeconds  the other number of seconds, not null
+     * @return true if this number of seconds is greater
+     * @throws NullPointerException if otherSeconds is null
+     */
+    public boolean isGreaterThan(Seconds otherSeconds) {
+        return compareTo(otherSeconds) > 0;
+    }
+
+    /**
+     * Is the number of seconds in this instance less than that in
+     * another instance.
+     *
+     * @param otherSeconds  the other number of seconds, not null
+     * @return true if this number of seconds is less
+     * @throws NullPointerException if otherSeconds is null
+     */
+    public boolean isLessThan(Seconds otherSeconds) {
+        return compareTo(otherSeconds) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the number of seconds.
+     *
+     * @param otherSeconds  the other number of seconds, null returns false
+     * @return true if this number of seconds is the same as that specified
+     */
+    @Override
+    public boolean equals(Object otherSeconds) {
+        if (this == otherSeconds) {
+           return true;
+        }
+        if (otherSeconds instanceof Seconds) {
+            return seconds == ((Seconds) otherSeconds).seconds;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the seconds object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return seconds;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a string representation of the number of seconds.
      * This will be in the format 'PTnS' where n is the number of seconds.
      *
      * @return the number of seconds in ISO8601 string format
      */
+    @Override
     public String toString() {
         return "PT" + seconds + "S";
     }
