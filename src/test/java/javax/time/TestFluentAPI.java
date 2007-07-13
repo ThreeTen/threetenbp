@@ -71,7 +71,7 @@ public class TestFluentAPI {
         DayOfWeek dow = MONDAY;
         dow = dow.next();
         dow = dow.plusDays(3);
-        dow = dow.plusDaysSkipping(3, SATURDAY, SUNDAY);
+//        dow = dow.plusDaysSkipping(3, SATURDAY, SUNDAY);
         
 //        day = day.plusSkipping(days(3), WEDNESDAY_PM, SATURDAY, SUNDAY, FOURTH_JULY, XMAS_BREAK);
 //        
