@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import java.util.Arrays;
-import java.util.EnumSet;
 
 /**
  * A time field representing a day of week.
@@ -194,41 +192,6 @@ public enum DayOfWeek implements RecurringMoment {
         return values()[(ordinal() + (days % 7)) % 7];
     }
 
-    /**
-     * Returns the DayOfWeek which is the specified number of days after
-     * this DayOfWeek skipping over the specified days.
-     * <p>
-     * This method provides a simple mechansm for finding a day of week relative
-     * to this one where certain days of the week are invalid. One use case is
-     * to skip weekends:
-     * <pre>
-     *   DayOfWeek current = ...;
-     *   DayOfWeek plusFive = current.plusDaysSkipping(5, SATURDAY, SUNDAY);
-     * </pre>
-     * The calculation wraps around the end of the week from Sunday to Monday.
-     * The days to add may be negative.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, positive or negative
-     * @param skip  the list of days to skip, not null, must contain no nulls, may contain duplicates
-     * @return the resulting DayOfWeek, never null
-     * @throws IllegalArgumentException if the skip list contains all day of week values
-     * @throws NullPointerException if the skip list is or contains null
-     */
-    public DayOfWeek plusDaysSkipping(int days, DayOfWeek... skip) {
-        EnumSet<DayOfWeek> set = EnumSet.copyOf(Arrays.asList(skip));
-        if (set.size() == 7) {
-            throw new IllegalArgumentException("Unable to add days when all days are to be skipped");
-        }
-        days = days % (7 - set.size());
-        DayOfWeek dow = values()[(ordinal() + days) % 7];
-        while (set.contains(dow)) {
-            dow = dow.plusDays(days < 0 ? -1 : 1);
-        }
-        return dow;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns the DayOfWeek which is the specified number of days before
@@ -244,41 +207,6 @@ public enum DayOfWeek implements RecurringMoment {
      */
     public DayOfWeek minusDays(int days) {
         return values()[(ordinal() + (days % 7)) % 7];
-    }
-
-    /**
-     * Returns the DayOfWeek which is the specified number of days before
-     * this DayOfWeek skipping over the specified days.
-     * <p>
-     * This method provides a simple mechansm for finding a day of week relative
-     * to this one where certain days of the week are invalid. One use case is
-     * to skip weekends:
-     * <pre>
-     *   DayOfWeek current = ...;
-     *   DayOfWeek minusThree = current.minusDaysSkipping(3, SATURDAY, SUNDAY);
-     * </pre>
-     * The calculation wraps around the end of the week from Monday to Sunday.
-     * The days to subtract may be negative.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, positive or negative
-     * @param skip  the list of days to skip, not null, must contain no nulls, may contain duplicates
-     * @return the resulting DayOfWeek, never null
-     * @throws IllegalArgumentException if the skip list contains all day of week values
-     * @throws NullPointerException if the skip list is or contains null
-     */
-    public DayOfWeek minusDaysSkipping(int days, DayOfWeek... skip) {
-        EnumSet<DayOfWeek> set = EnumSet.copyOf(Arrays.asList(skip));
-        if (set.size() == 7) {
-            throw new IllegalArgumentException("Unable to add days when all days are to be skipped");
-        }
-        days = days % (7 - set.size());
-        DayOfWeek dow = values()[(ordinal() + days) % 7];
-        while (set.contains(dow)) {
-            dow = dow.plusDays(days < 0 ? -1 : 1);
-        }
-        return dow;
     }
 
 }
