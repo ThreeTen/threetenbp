@@ -35,10 +35,19 @@ import java.util.TimeZone;
 
 /**
  * A set of utility methods for working with moments in the Java Date Framework.
- * 
+ *
  * @author Stephen Colebourne
  */
 public final class Moments {
+
+    /**
+     * Provides access to the current time.
+     *
+     * @return the current time, never null
+     */
+    public static Now now() {
+        return Now.system();
+    }
 
     //-----------------------------------------------------------------------
     /**
