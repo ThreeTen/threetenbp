@@ -32,10 +32,12 @@
 package javax.time;
 
 /**
- * A calendar day which represents a moment with a precision of a day.
+ * An immutable time point, with day precision, operating without a time zone.
  * <p>
- * CalendarDay is an immutable moment that records time information to the precision
- * of a day. For example, the value "21st September 2007" can be stored in a CalendarDay.
+ * CalendarDay is an immutable time point that records time information to the
+ * precision of a day.
+ * <p>
+ * As an example, the value "21st September 2007" can be stored in a CalendarDay.
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
@@ -48,7 +50,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3005141082690272399L;
 
     /**
      * The year being represented.
@@ -81,7 +83,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * <p>
      * This can be used to pass in any combination of moments that fully specify
      * a calendar day. For example, Year + MonthOfYear + DayOfMonth, or
-     * CalendarMonth + DayOfMonth.
+     * Year + DayOfYear.
      *
      * @param moments  a set of moments that fully represent a calendar day
      * @return a CalendarDay object
@@ -124,27 +126,27 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the day of month value.
      *
-     * @return the month of year
+     * @return the day of month
      */
     public int getDayOfMonth() {
         return dayOfMonth;
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the day of year value.
      *
-     * @return the month of year
+     * @return the day of year
      */
     public int getDayOfYear() {
         return dayOfMonth;
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the day of week value.
      *
-     * @return the month of year
+     * @return the day of week
      */
     public int getDayOfWeek() {
         return dayOfMonth;
@@ -398,7 +400,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
     }
 
     /**
-     * A hashcode for the day object.
+     * A suitable hashcode for this object.
      *
      * @return a suitable hashcode
      */
