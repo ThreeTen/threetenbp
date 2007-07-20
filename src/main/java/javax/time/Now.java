@@ -32,11 +32,31 @@
 package javax.time;
 
 /**
- * A set of utility methods for accessing the current time in the Java Date Framework.
+ * A facade for accessing the current time in the Java Date Framework.
  *
  * @author Stephen Colebourne
  */
-public final class Now {
+public abstract class Now {
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>Now</code> that obtains the current datetime
+     * using the system millisecond clock - {@link System#currentTimeMillis()}.
+     *
+     * @return an instance of now that uses the system clock
+     */
+    public static Now system() {
+        return SystemMillis.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>Instant</code> representing the current
+     * instant on the time line.
+     *
+     * @return a Instant represnting the current instant, never null
+     */
+    public abstract Instant instant();
 
     //-----------------------------------------------------------------------
     /**
@@ -45,7 +65,7 @@ public final class Now {
      *
      * @return a year object represnting the current year, never null
      */
-    public static Year currentYear() {
+    public Year currentYear() {
         return null; //Year.currentYear();
     }
 
@@ -56,7 +76,7 @@ public final class Now {
      *
      * @return a month object represnting the current month, never null
      */
-    public static CalendarMonth currentMonth() {
+    public CalendarMonth currentMonth() {
         return CalendarMonth.yearMonth(2007, 6);
     }
 
@@ -67,7 +87,7 @@ public final class Now {
      *
      * @return a day object represnting today, never null
      */
-    public static CalendarDay today() {
+    public CalendarDay today() {
         return CalendarDay.yearMonthDay(2007, 6, 1);
     }
 
@@ -77,7 +97,7 @@ public final class Now {
      *
      * @return a day object represnting yesterday, never null
      */
-    public static CalendarDay yesterday() {
+    public CalendarDay yesterday() {
         return CalendarDay.yearMonthDay(2007, 6, 1);
     }
 
@@ -87,7 +107,7 @@ public final class Now {
      *
      * @return a day object represnting tommorrow, never null
      */
-    public static CalendarDay tomorrow() {
+    public CalendarDay tomorrow() {
         return CalendarDay.yearMonthDay(2007, 6, 1);
     }
 
@@ -98,8 +118,32 @@ public final class Now {
      *
      * @return a time object represnting the current time of day, never null
      */
-    public static TimeOfDay currentTime() {
+    public TimeOfDay currentTime() {
         return TimeOfDay.timeOfDay(12, 30);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of Now that always returns the latest time from
+     * {@link System#currentTimeMillis()}.
+     */
+    private static class SystemMillis extends Now {
+        /** The singleton instance. */
+        private static final SystemMillis INSTANCE = new SystemMillis();
+
+        /** Restricted constructor. */
+        private SystemMillis() {
+            super();
+        }
+
+        /**
+         * Gets the current instant.
+         * @return the current instant
+         */
+        @Override
+        public Instant instant() {
+            return Instant.millisInstant(System.currentTimeMillis());
+        }
     }
 
 }
