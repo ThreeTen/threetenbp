@@ -65,7 +65,7 @@ public abstract class Now {
      *
      * @return a year object represnting the current year, never null
      */
-    public Year currentYear() {
+    public CalendarYear currentYear() {
         return null; //Year.currentYear();
     }
 

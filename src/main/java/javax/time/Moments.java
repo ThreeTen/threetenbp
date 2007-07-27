@@ -53,8 +53,8 @@ public final class Moments {
     /**
      * Gets an instance of Year.
      */
-    public static Year year(int year) {
-        return Year.year(year);
+    public static CalendarYear year(int year) {
+        return CalendarYear.year(year);
     }
 
     /**
@@ -174,7 +174,7 @@ public final class Moments {
     /**
      * Gets an instance of CalendarDay.
      */
-    public static CalendarDay calendarDay(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+    public static CalendarDay calendarDay(CalendarYear year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
         return CalendarDay.calendarDay(year, monthOfYear, dayOfMonth);
     }
 
