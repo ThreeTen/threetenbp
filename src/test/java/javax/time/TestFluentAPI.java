@@ -49,7 +49,7 @@ public class TestFluentAPI {
         CalendarDay date = null;
         date = today().plusDays(3);
         date = today().plus(days(3));
-        date = Now.today().plus(Days.days(3));
+        date = now().today().plus(Days.days(3));
         
         date = calendarDay(2007, 3, 20);
         date = calendarDay(year(2007), march(), dayOfMonth(20));
