@@ -120,6 +120,19 @@ public class MathUtils {
     }
 
     /**
+     * Safely convert a long to an int.
+     *
+     * @param value  the value to convert
+     * @return the int value
+     */
+    public static int safeToInt(long value) {
+        if (value >>> 32 > 0) {
+            throw new ArithmeticException("Calculation overflows an int: " + value);
+        }
+        return (int) value;
+    }
+
+    /**
      * Safely compare one int with another.
      *
      * @param a  the first value
