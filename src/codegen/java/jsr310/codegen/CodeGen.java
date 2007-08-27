@@ -242,7 +242,7 @@ public class CodeGen {
         new FieldSingleton("MAY", "The singleton instance for the month of May.", "5"),
         new FieldSingleton("JUNE", "The singleton instance for the month of June.", "6"),
         new FieldSingleton("JULY", "The singleton instance for the month of July.", "7"),
-        new FieldSingleton("AUGUST", "The singleton instance for the month of August.", "18"),
+        new FieldSingleton("AUGUST", "The singleton instance for the month of August.", "8"),
         new FieldSingleton("SEPTEMBER", "The singleton instance for the month of September.", "9"),
         new FieldSingleton("OCTOBER", "The singleton instance for the month of October.", "10"),
         new FieldSingleton("NOVEMBER", "The singleton instance for the month of November.", "11"),

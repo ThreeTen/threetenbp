@@ -78,7 +78,7 @@ public enum MonthOfYear implements RecurringMoment {
     /**
      * The singleton instance for the month of August.
      */
-    AUGUST(18),
+    AUGUST(8),
     /**
      * The singleton instance for the month of September.
      */
@@ -125,7 +125,7 @@ public enum MonthOfYear implements RecurringMoment {
                 return JUNE;
             case 7:
                 return JULY;
-            case 18:
+            case 8:
                 return AUGUST;
             case 9:
                 return SEPTEMBER;
