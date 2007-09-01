@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * An immutable time point, with nanosecond precision, operating without a time zone.
  * <p>
@@ -47,7 +49,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoint> {
+public final class CalendarPoint implements Calendrical, Comparable<CalendarPoint>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -99,7 +101,7 @@ public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoi
      * @param moments  a set of moments that fully represent a calendar day
      * @return a CalendarPoint object
      */
-    public static CalendarPoint calendarPoint(Moment... moments) {
+    public static CalendarPoint calendarPoint(Calendrical... moments) {
         return null;
     }
 
@@ -119,6 +121,18 @@ public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoi
         this.dayOfMonth = dayOfMonth;
         this.secondOfDay = secondOfDay;
         this.nanoOfSecond = nanoOfSecond;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -212,7 +226,7 @@ public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoi
      * @param moment  the moment to update to, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint with(Moment moment) {
+    public CalendarPoint with(Calendrical moment) {
         return null;
     }
 
@@ -224,7 +238,7 @@ public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoi
      * @param moments  the moments to update to, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint with(Moment... moments) {
+    public CalendarPoint with(Calendrical... moments) {
         return null;
     }
 
@@ -368,7 +382,7 @@ public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoi
      * @param period  the period to add, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint plus(Period period) {
+    public CalendarPoint plus(Durational period) {
         // TODO
         return null;
     }
@@ -381,7 +395,7 @@ public final class CalendarPoint implements SingleMoment, Comparable<CalendarPoi
      * @param periods  the periods to add, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint plus(Period... periods) {
+    public CalendarPoint plus(Durational... periods) {
         // TODO
         return null;
     }

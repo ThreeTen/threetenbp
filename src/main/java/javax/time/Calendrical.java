@@ -32,15 +32,25 @@
 package javax.time;
 
 /**
- * Represents a moment in time that only occurs once on the timeline.
- * Implementations of this interface must include an element that covers the timeline.
+ * Interface implemented by all objects that can provide calendrical information.
  * <p>
- * SingleMoment is the interface that is shared amongst many other classes in
+ * Calendrical is the interface that is shared amongst many other classes in
  * the Java Date Framework. Many low level APIs are defined to accept a
- * SingleMoment, however it is less common that you will hold instances directly.
+ * Calendrical, however it is less common that you will hold instances directly.
+ * <p>
+ * Calendrical is an interface and must be implemented with care to ensure
+ * other classes in the framework operate correctly.
+ * All instantiable subclasses must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public interface SingleMoment extends Moment {
+public interface Calendrical {
+
+    /**
+     * Gets the durational state which provides internal access to the duration.
+     *
+     * @return the duration state for the duration implementing Durational, never null
+     */
+    CalendricalState getCalendricalState() ;
 
 }

@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A moment of a month.
  * <p>
@@ -43,7 +45,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class CalendarMonth implements SingleMoment, Comparable<CalendarMonth> {
+public final class CalendarMonth implements Calendrical, Comparable<CalendarMonth>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -80,7 +82,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param moments  a set of moments that fully represent a calendar month
      * @return a CalendarMonth object
      */
-    public static CalendarMonth calendarMonth(Moment... moments) {
+    public static CalendarMonth calendarMonth(Calendrical... moments) {
         return new CalendarMonth(0, 0);
     }
 
@@ -94,6 +96,18 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
     private CalendarMonth(int year, int monthOfYear) {
         this.year = year;
         this.monthOfYear = monthOfYear;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -124,7 +138,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param moment  the moment to update to, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth with(Moment moment) {
+    public CalendarMonth with(Calendrical moment) {
         return null;
     }
 
@@ -136,7 +150,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param moments  the moments to update to, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth with(Moment... moments) {
+    public CalendarMonth with(Calendrical... moments) {
         return null;
     }
 
@@ -174,7 +188,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param period  the period to add, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth plus(Period period) {
+    public CalendarMonth plus(Durational period) {
         // TODO
         return null;
     }
@@ -187,7 +201,7 @@ public final class CalendarMonth implements SingleMoment, Comparable<CalendarMon
      * @param periods  the periods to add, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth plus(Period... periods) {
+    public CalendarMonth plus(Durational... periods) {
         // TODO
         return null;
     }

@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * An immutable time point, with day precision, operating without a time zone.
  * <p>
@@ -45,7 +47,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> {
+public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -88,7 +90,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param moments  a set of moments that fully represent a calendar day
      * @return a CalendarDay object
      */
-    public static CalendarDay calendarDay(Moment... moments) {
+    public static CalendarDay calendarDay(Calendrical... moments) {
         return new CalendarDay(0, 0, 0);
     }
 
@@ -104,6 +106,18 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
         this.year = year;
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -161,7 +175,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param moment  the moment to update to, not null
      * @return a new updated CalendarDay
      */
-    public CalendarDay with(Moment moment) {
+    public CalendarDay with(Calendrical moment) {
         return null;
     }
 
@@ -173,7 +187,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param moments  the moments to update to, not null
      * @return a new updated CalendarDay
      */
-    public CalendarDay with(Moment... moments) {
+    public CalendarDay with(Calendrical... moments) {
         return null;
     }
 
@@ -269,7 +283,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param period  the period to add, not null
      * @return a new updated CalendarDay
      */
-    public CalendarDay plus(Period period) {
+    public CalendarDay plus(Durational period) {
         // TODO
         return null;
     }
@@ -282,7 +296,7 @@ public final class CalendarDay implements SingleMoment, Comparable<CalendarDay> 
      * @param periods  the periods to add, not null
      * @return a new updated CalendarDay
      */
-    public CalendarDay plus(Period... periods) {
+    public CalendarDay plus(Durational... periods) {
         // TODO
         return null;
     }

@@ -45,7 +45,7 @@ package javax.time;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum ${Type} implements RecurringMoment {
+public enum ${Type} implements Calendrical {
 
 #foreach ($singleton in $singletons)
     /**
@@ -54,6 +54,10 @@ public enum ${Type} implements RecurringMoment {
     ${singleton.type}(${singleton.value}),
 #end
     ;
+    /**
+     * The rule implementation that defines how the ${desc} field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
 
     /**
      * The ${desc} being represented.
@@ -96,6 +100,18 @@ public enum ${Type} implements RecurringMoment {
      */
     public int get${Type}() {
         return ${type};
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * ${Type} instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -145,4 +161,19 @@ public enum ${Type} implements RecurringMoment {
 #foreach ($line in $methods)
 ${line}
 #end
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the ${desc} field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("${Type}", null, null, ${minValue}, ${maxValue});
+        }
+#foreach ($line in $ruleMethods)
+${line}
+#end
+    }
+
 }

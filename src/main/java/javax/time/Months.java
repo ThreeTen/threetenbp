@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
- * A time period representing a number of months.
+ * A duration representing a number of months.
  * <p>
- * Months is an immutable period that can only store months.
+ * Months is an immutable duration that can only store months.
  * It is a type-safe way of representing a number of months in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
@@ -46,8 +48,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Months implements Period, Comparable<Months> {
+public final class Months implements Durational, Comparable<Months>, Serializable {
 
+    /**
+     * The rule implementation that defines how the months field operates.
+     */
+    public static final DurationFieldRule RULE = new Rule();
     /**
      * A constant for zero months.
      */
@@ -104,6 +110,18 @@ public final class Months implements Period, Comparable<Months> {
      */
     public int getMonths() {
         return months;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the durational state which provides internal access to this
+     * Months instance.
+     *
+     * @return the duration state for this instance, never null
+     */
+    @Override
+    public DurationalState getDurationalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -283,6 +301,18 @@ public final class Months implements Period, Comparable<Months> {
     @Override
     public String toString() {
         return "P" + months + "M";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the months field.
+     */
+    private static class Rule extends DurationFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Months", null, 0);
+        }
     }
 
 }

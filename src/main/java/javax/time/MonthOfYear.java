@@ -45,7 +45,7 @@ package javax.time;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear implements RecurringMoment {
+public enum MonthOfYear implements Calendrical {
 
     /**
      * The singleton instance for the month of January.
@@ -96,6 +96,10 @@ public enum MonthOfYear implements RecurringMoment {
      */
     DECEMBER(12),
     ;
+    /**
+     * The rule implementation that defines how the month of year field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
 
     /**
      * The month of year being represented.
@@ -162,6 +166,18 @@ public enum MonthOfYear implements RecurringMoment {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the calendrical state which provides internal access to this
+     * MonthOfYear instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the next month of year wrapping so that the next month of year
      * is always returned.
      *
@@ -202,6 +218,18 @@ public enum MonthOfYear implements RecurringMoment {
      */
     public boolean isLessThan(MonthOfYear otherMonthOfYear) {
         return compareTo(otherMonthOfYear) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the month of year field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("MonthOfYear", null, null, 1, 12);
+        }
     }
 
 }

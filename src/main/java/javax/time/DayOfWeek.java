@@ -31,7 +31,6 @@
  */
 package javax.time;
 
-
 /**
  * A time field representing a day of week.
  * <p>
@@ -46,7 +45,7 @@ package javax.time;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek implements RecurringMoment {
+public enum DayOfWeek implements Calendrical {
 
     /**
      * The singleton instance for the day of week of Monday.
@@ -77,6 +76,10 @@ public enum DayOfWeek implements RecurringMoment {
      */
     SUNDAY(7),
     ;
+    /**
+     * The rule implementation that defines how the day of week field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
 
     /**
      * The day of week being represented.
@@ -129,6 +132,18 @@ public enum DayOfWeek implements RecurringMoment {
      */
     public int getDayOfWeek() {
         return dayOfWeek;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * DayOfWeek instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -207,6 +222,24 @@ public enum DayOfWeek implements RecurringMoment {
      */
     public DayOfWeek minusDays(int days) {
         return values()[(ordinal() + (days % 7)) % 7];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the day of week field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("DayOfWeek", null, null, 1, 7);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(Durational epochDuration) {
+            return ((super.getValue(epochDuration) + 3) % 7) + 1;
+        }
     }
 
 }

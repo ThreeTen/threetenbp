@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time field representing a day of year.
  * <p>
@@ -44,8 +46,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class DayOfYear implements RecurringMoment, Comparable<DayOfYear> {
+public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Serializable {
 
+    /**
+     * The rule implementation that defines how the day of year field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -85,6 +91,18 @@ public final class DayOfYear implements RecurringMoment, Comparable<DayOfYear> {
      */
     public int getDayOfYear() {
         return dayOfYear;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * DayOfYear instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -149,6 +167,24 @@ public final class DayOfYear implements RecurringMoment, Comparable<DayOfYear> {
     @Override
     public int hashCode() {
         return dayOfYear;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the day of year field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("DayOfYear", null, null, 1, 366);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(Durational epochDuration) {
+            return super.getValue(epochDuration) + 1;
+        }
     }
 
 }

@@ -79,19 +79,26 @@ public class CodeGen {
     private void processPeriod() throws Exception {
         Template template = Velocity.getTemplate(TEMPLATE_DIR + "Period.vm");
         
-        processPeriod(template, "Years", true);
-        processPeriod(template, "Months", true);
-        processPeriod(template, "Weeks", true);
-        processPeriod(template, "Days", true);
-        processPeriod(template, "Hours", false);
-        processPeriod(template, "Minutes", false);
-        processPeriod(template, "Seconds", false);
+        processPeriod(template, "Years", true, "Months.RULE", "12");
+        processPeriod(template, "Months", true, "null", "0");
+        processPeriod(template, "Weeks", true, "Days.RULE", "7");
+        processPeriod(template, "Days", true, "Hours.RULE", "24");
+        processPeriod(template, "Hours", false, "Minutes.RULE", "60");
+        processPeriod(template, "Minutes", false, "Seconds.RULE", "60");
+        processPeriod(template, "Seconds", false, "null", "0");
     }
 
-    private void processPeriod(Template template, String classname, boolean date) throws Exception {
+    private void processPeriod(
+            Template template,
+            String classname, boolean date,
+            String relativeField, String relativeAmount) throws Exception {
         File file = new File(MAIN_DIR, classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
-        VelocityContext vc = createPeriodContext(classname, date, methodLines);
+        int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
+        if (pos >= 4) {
+            methodLines = methodLines.subList(0, pos - 4);
+        }
+        VelocityContext vc = createPeriodContext(classname, date, methodLines, relativeField, relativeAmount);
         generate(file, template, vc);
     }
 
@@ -111,17 +118,21 @@ public class CodeGen {
     private void processTestPeriod(Template template, String classname, boolean date) throws Exception {
         File file = new File(TEST_DIR, "Test" + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public void test_toString() {");
-        VelocityContext vc = createPeriodContext(classname, date, methodLines);
+        VelocityContext vc = createPeriodContext(classname, date, methodLines, "", "");
         generate(file, template, vc);
     }
 
     //-----------------------------------------------------------------------
-    private VelocityContext createPeriodContext(String classname, boolean date, List<String> methodLines) {
+    private VelocityContext createPeriodContext(
+            String classname, boolean date, List<String> methodLines,
+            String relativeField, String relativeAmount) {
         VelocityContext vc = new VelocityContext();
         vc.put("Type", classname);
         vc.put("type", classname.toLowerCase());
         vc.put("stringPrefix", date ? "" : "T");
         vc.put("stringSuffix", classname.substring(0, 1));
+        vc.put("relativeField", relativeField);
+        vc.put("relativeAmount", relativeAmount);
         vc.put("methods", methodLines);
         return vc;
     }
@@ -133,34 +144,39 @@ public class CodeGen {
         Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
-        processField(regularTemplate, "Year", "year", null);
-        processField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS);
-        processField(regularTemplate, "DayOfYear", "day of year", null);
-        processField(regularTemplate, "DayOfMonth", "day of month", null);
-        processField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS);
-        processField(regularTemplate, "HourOfDay", "hour of day", null);
-        processField(regularTemplate, "MinuteOfHour", "minute of hour", null);
-        processField(regularTemplate, "SecondOfMinute", "second of minute", null);
+        processField(regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
+        processField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
+        processField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
+        processField(regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
+        processField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
+        processField(regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
+        processField(regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
+        processField(regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
     }
 
-    private void processField(Template template, String classname, String desc, FieldSingleton[] singletons) throws Exception {
+    private void processField(
+            Template template,
+            String classname, String desc, FieldSingleton[] singletons,
+            String minValue, String maxValue) throws Exception {
         File file = new File(MAIN_DIR, classname + ".java");
-        List<String> methodLines = findAdditionalMethods(file, 
+        List<String> methodLines = findAdditionalMethods(file,
               singletons == null ? "public int hashCode() {" : "public boolean isLessThan(");
-        VelocityContext vc = createFieldContext(classname, desc, singletons, methodLines);
-        generate(file, template, vc);
-    }
-
-    //-----------------------------------------------------------------------
-    private VelocityContext createFieldContext(String classname, String desc, FieldSingleton[] singletons, List<String> methodLines) {
+        int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
         VelocityContext vc = new VelocityContext();
         vc.put("Type", classname);
         String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
         vc.put("type", mixedType);
         vc.put("desc", desc);
         vc.put("singletons", singletons == null ? Collections.EMPTY_LIST : Arrays.asList(singletons));
+        vc.put("minValue", minValue);
+        vc.put("maxValue", maxValue);
         vc.put("methods", methodLines);
-        return vc;
+        vc.put("ruleMethods", new ArrayList<String>());
+        if (pos >= 4) {
+            vc.put("methods", methodLines.subList(0, pos - 4));
+            vc.put("ruleMethods", methodLines.subList(pos + 6, methodLines.size() - 2));
+        }
+        generate(file, template, vc);
     }
 
     //-----------------------------------------------------------------------

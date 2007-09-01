@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * Recurring moment representing the time of day.
  * <p>
@@ -43,7 +45,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
+public final class TimeOfDay implements Calendrical, Comparable<TimeOfDay>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -64,8 +66,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a TimeOfDay object representing the specified time
      */
     public static TimeOfDay timeOfDay(int hourOfDay, int minuteOfHour) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDay(hourOfDay, minuteOfHour, 0);
-        return new TimeOfDay(secondOfDay);
+        return new TimeOfDay(0);
     }
 
     /**
@@ -77,8 +78,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a TimeOfDay object representing the specified time
      */
     public static TimeOfDay timeOfDay(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDay(hourOfDay, minuteOfHour, secondOfMinute);
-        return new TimeOfDay(secondOfDay);
+        return new TimeOfDay(0);
     }
 
     //-----------------------------------------------------------------------
@@ -93,13 +93,14 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value for a specific type.
+     * Gets the calendrical state which provides internal access to this
+     * TimeOfDay instance.
      *
-     * @param cls  the field type to obtain, not null
-     * @return the hour of day
+     * @return the calendar state for this instance, never null
      */
-    public int get(Class<? extends Moment> cls) {
-        return 0;
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -109,7 +110,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return the hour of day
      */
     public int getHourOfDay() {
-        return ISOChronology.instance().secondOfDayToHourOfDay(secondOfDay);
+        return 0;
     }
 
     /**
@@ -118,7 +119,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return the minute of hour
      */
     public int getMinuteOfHour() {
-        return ISOChronology.instance().secondOfDayToMinuteOfHour(secondOfDay);
+        return 0;
     }
 
     /**
@@ -127,7 +128,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return the second of minute
      */
     public int getSecondOfMinute() {
-        return ISOChronology.instance().secondOfDayToSecondOfMinute(secondOfDay);
+        return 0;
     }
 
     //-----------------------------------------------------------------------
@@ -139,7 +140,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @param moment  the moment to update to, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay with(Moment moment) {
+    public TimeOfDay with(Calendrical moment) {
         return null;
     }
 
@@ -151,7 +152,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @param moments  the moments to update to, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay with(Moment... moments) {
+    public TimeOfDay with(Calendrical... moments) {
         return null;
     }
 
@@ -165,7 +166,6 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay withHourOfDay(int hourOfDay) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDay(hourOfDay, getMinuteOfHour(), getSecondOfMinute());
         return new TimeOfDay(secondOfDay);
     }
 
@@ -178,7 +178,6 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay withMinuteOfHour(int minuteOfHour) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDay(getHourOfDay(), minuteOfHour, getSecondOfMinute());
         return new TimeOfDay(secondOfDay);
     }
 
@@ -191,7 +190,6 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay withSecondOfMinute(int secondOfMinute) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDay(getHourOfDay(), getMinuteOfHour(), secondOfMinute);
         return new TimeOfDay(secondOfDay);
     }
 
@@ -204,7 +202,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @param period  the period to add, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay plus(Period period) {
+    public TimeOfDay plus(Durational period) {
         // TODO
         return null;
     }
@@ -217,7 +215,7 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @param periods  the periods to add, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay plus(Period... periods) {
+    public TimeOfDay plus(Durational... periods) {
         // TODO
         return null;
     }
@@ -232,22 +230,8 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay plusHours(int hours) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(
-                getHourOfDay(), hours, getMinuteOfHour(), 0, getSecondOfMinute(), 0);
         return new TimeOfDay(secondOfDay);
     }
-
-//    /**
-//     * Returns a copy of this TimeOfDay with the specified number of hours added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param hours  the hours to add, not null
-//     * @return a new updated TimeOfDay
-//     */
-//    public TimeOfDay plusHours(Hours hours) {
-//        return plusHours(hours.getHours());
-//    }
 
     /**
      * Returns a copy of this TimeOfDay with the specified number of minutes added.
@@ -258,22 +242,8 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay plusMinutes(int minutes) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(
-                getHourOfDay(), 0, getMinuteOfHour(), minutes, getSecondOfMinute(), 0);
         return new TimeOfDay(secondOfDay);
     }
-
-//    /**
-//     * Returns a copy of this TimeOfDay with the specified number of minutes added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param minutes  the minutes to add, not null
-//     * @return a new updated TimeOfDay
-//     */
-//    public TimeOfDay plusMinutes(Minutes minutes) {
-//        return plusMinutes(minutes.getMinutes());
-//    }
 
     /**
      * Returns a copy of this TimeOfDay with the specified number of seconds added.
@@ -284,22 +254,8 @@ public final class TimeOfDay implements RecurringMoment, Comparable<TimeOfDay> {
      * @return a new updated TimeOfDay
      */
     public TimeOfDay plusSeconds(int seconds) {
-        int secondOfDay = ISOChronology.instance().toSecondOfDayPlusWrapped(
-                getHourOfDay(), 0, getMinuteOfHour(), 0, getSecondOfMinute(), seconds);
         return new TimeOfDay(secondOfDay);
     }
-
-//    /**
-//     * Returns a copy of this TimeOfDay with the specified number of seconds added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param seconds  the secondsto add, not null
-//     * @return a new updated TimeOfDay
-//     */
-//    public TimeOfDay plusSeconds(Seconds seconds) {
-//        return plusSeconds(seconds.getSeconds());
-//    }
 
     //-----------------------------------------------------------------------
     /**

@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
- * A time period representing a number of years.
+ * A duration representing a number of years.
  * <p>
- * Years is an immutable period that can only store years.
+ * Years is an immutable duration that can only store years.
  * It is a type-safe way of representing a number of years in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
@@ -46,8 +48,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Years implements Period, Comparable<Years> {
+public final class Years implements Durational, Comparable<Years>, Serializable {
 
+    /**
+     * The rule implementation that defines how the years field operates.
+     */
+    public static final DurationFieldRule RULE = new Rule();
     /**
      * A constant for zero years.
      */
@@ -104,6 +110,18 @@ public final class Years implements Period, Comparable<Years> {
      */
     public int getYears() {
         return years;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the durational state which provides internal access to this
+     * Years instance.
+     *
+     * @return the duration state for this instance, never null
+     */
+    @Override
+    public DurationalState getDurationalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -283,6 +301,18 @@ public final class Years implements Period, Comparable<Years> {
     @Override
     public String toString() {
         return "P" + years + "Y";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the years field.
+     */
+    private static class Rule extends DurationFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Years", Months.RULE, 12);
+        }
     }
 
 }

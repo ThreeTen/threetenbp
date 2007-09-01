@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
- * A time period representing a number of days.
+ * A duration representing a number of days.
  * <p>
- * Days is an immutable period that can only store days.
+ * Days is an immutable duration that can only store days.
  * It is a type-safe way of representing a number of days in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
@@ -46,8 +48,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Days implements Period, Comparable<Days> {
+public final class Days implements Durational, Comparable<Days>, Serializable {
 
+    /**
+     * The rule implementation that defines how the days field operates.
+     */
+    public static final DurationFieldRule RULE = new Rule();
     /**
      * A constant for zero days.
      */
@@ -104,6 +110,18 @@ public final class Days implements Period, Comparable<Days> {
      */
     public int getDays() {
         return days;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the durational state which provides internal access to this
+     * Days instance.
+     *
+     * @return the duration state for this instance, never null
+     */
+    @Override
+    public DurationalState getDurationalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -283,6 +301,18 @@ public final class Days implements Period, Comparable<Days> {
     @Override
     public String toString() {
         return "P" + days + "D";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the days field.
+     */
+    private static class Rule extends DurationFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Days", Hours.RULE, 24);
+        }
     }
 
 }

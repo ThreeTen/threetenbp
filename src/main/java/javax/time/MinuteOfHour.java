@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time field representing a minute of hour.
  * <p>
@@ -44,8 +46,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements RecurringMoment, Comparable<MinuteOfHour> {
+public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
 
+    /**
+     * The rule implementation that defines how the minute of hour field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -85,6 +91,18 @@ public final class MinuteOfHour implements RecurringMoment, Comparable<MinuteOfH
      */
     public int getMinuteOfHour() {
         return minuteOfHour;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * MinuteOfHour instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -149,6 +167,18 @@ public final class MinuteOfHour implements RecurringMoment, Comparable<MinuteOfH
     @Override
     public int hashCode() {
         return minuteOfHour;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the minute of hour field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("MinuteOfHour", null, null, 0, 59);
+        }
     }
 
 }

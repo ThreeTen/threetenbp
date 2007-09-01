@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time field representing a second of minute.
  * <p>
@@ -44,8 +46,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class SecondOfMinute implements RecurringMoment, Comparable<SecondOfMinute> {
+public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMinute>, Serializable {
 
+    /**
+     * The rule implementation that defines how the second of minute field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -85,6 +91,18 @@ public final class SecondOfMinute implements RecurringMoment, Comparable<SecondO
      */
     public int getSecondOfMinute() {
         return secondOfMinute;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * SecondOfMinute instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -149,6 +167,18 @@ public final class SecondOfMinute implements RecurringMoment, Comparable<SecondO
     @Override
     public int hashCode() {
         return secondOfMinute;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the second of minute field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("SecondOfMinute", null, null, 0, 59);
+        }
     }
 
 }

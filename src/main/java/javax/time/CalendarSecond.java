@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * An immutable time point, with second precision, operating without a time zone.
  * <p>
@@ -46,7 +48,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class CalendarSecond implements SingleMoment, Comparable<CalendarSecond> {
+public final class CalendarSecond implements Calendrical, Comparable<CalendarSecond>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -93,7 +95,7 @@ public final class CalendarSecond implements SingleMoment, Comparable<CalendarSe
      * @param moments  a set of moments that fully represent a calendar second
      * @return a CalendarSecond object
      */
-    public static CalendarSecond calendarSecond(Moment... moments) {
+    public static CalendarSecond calendarSecond(Calendrical... moments) {
         return null;
     }
 
@@ -111,6 +113,18 @@ public final class CalendarSecond implements SingleMoment, Comparable<CalendarSe
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
         this.secondOfDay = secondOfDay;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -195,7 +209,7 @@ public final class CalendarSecond implements SingleMoment, Comparable<CalendarSe
      * @param moment  the moment to update to, not null
      * @return a new updated CalendarSecond
      */
-    public CalendarSecond with(Moment moment) {
+    public CalendarSecond with(Calendrical moment) {
         return null;
     }
 
@@ -207,7 +221,7 @@ public final class CalendarSecond implements SingleMoment, Comparable<CalendarSe
      * @param moments  the moments to update to, not null
      * @return a new updated CalendarSecond
      */
-    public CalendarSecond with(Moment... moments) {
+    public CalendarSecond with(Calendrical... moments) {
         return null;
     }
 
@@ -367,7 +381,7 @@ public final class CalendarSecond implements SingleMoment, Comparable<CalendarSe
      * @param period  the period to add, not null
      * @return a new updated CalendarSecond
      */
-    public CalendarSecond plus(Period period) {
+    public CalendarSecond plus(Durational period) {
         // TODO
         return null;
     }
@@ -380,7 +394,7 @@ public final class CalendarSecond implements SingleMoment, Comparable<CalendarSe
      * @param periods  the periods to add, not null
      * @return a new updated CalendarSecond
      */
-    public CalendarSecond plus(Period... periods) {
+    public CalendarSecond plus(Durational... periods) {
         // TODO
         return null;
     }

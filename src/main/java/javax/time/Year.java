@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time field representing a year.
  * <p>
@@ -44,8 +46,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Year implements RecurringMoment, Comparable<Year> {
+public final class Year implements Calendrical, Comparable<Year>, Serializable {
 
+    /**
+     * The rule implementation that defines how the year field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -85,6 +91,18 @@ public final class Year implements RecurringMoment, Comparable<Year> {
      */
     public int getYear() {
         return year;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * Year instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -149,6 +167,46 @@ public final class Year implements RecurringMoment, Comparable<Year> {
     @Override
     public int hashCode() {
         return year;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified year is a leap year, according to the ISO
+     * calendar system rules.
+     *
+     * @return true if the year is leap, false otherwise
+     */
+    public boolean isLeap() {
+        return isLeap(getYear());
+    }
+
+    /**
+     * Checks if the specified year is a leap year, according to the ISO
+     * calendar system rules.
+     *
+     * @param year  the year to check
+     * @return true if the year is leap, false otherwise
+     */
+    public static boolean isLeap(int year) {
+        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the year field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Year", null, null, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(Durational epochDuration) {
+            return super.getValue(epochDuration) + 1970;
+        }
     }
 
 }

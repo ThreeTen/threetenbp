@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time point of a year.
  * <p>
@@ -43,7 +45,7 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class CalendarYear implements SingleMoment, Comparable<CalendarYear> {
+public final class CalendarYear implements Calendrical, Comparable<CalendarYear>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -75,7 +77,7 @@ public final class CalendarYear implements SingleMoment, Comparable<CalendarYear
      * @param moments  a set of moments that fully represent a calendar year
      * @return a CalendarYear object
      */
-    public static CalendarYear calendarMonth(Moment... moments) {
+    public static CalendarYear calendarMonth(Calendrical... moments) {
         return new CalendarYear(0);
     }
 
@@ -87,6 +89,18 @@ public final class CalendarYear implements SingleMoment, Comparable<CalendarYear
      */
     private CalendarYear(int year) {
         this.year = year;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -108,7 +122,7 @@ public final class CalendarYear implements SingleMoment, Comparable<CalendarYear
      * @param moment  the moment to update to, not null
      * @return a new updated CalendarYear
      */
-    public CalendarYear with(Moment moment) {
+    public CalendarYear with(Calendrical moment) {
         return null;
     }
 
@@ -120,7 +134,7 @@ public final class CalendarYear implements SingleMoment, Comparable<CalendarYear
      * @param moments  the moments to update to, not null
      * @return a new updated CalendarYear
      */
-    public CalendarYear with(Moment... moments) {
+    public CalendarYear with(Calendrical... moments) {
         return null;
     }
 
@@ -146,7 +160,7 @@ public final class CalendarYear implements SingleMoment, Comparable<CalendarYear
      * @param period  the period to add, not null
      * @return a new updated CalendarYear
      */
-    public CalendarYear plus(Period period) {
+    public CalendarYear plus(Durational period) {
         // TODO
         return null;
     }
@@ -159,7 +173,7 @@ public final class CalendarYear implements SingleMoment, Comparable<CalendarYear
      * @param periods  the periods to add, not null
      * @return a new updated CalendarYear
      */
-    public CalendarYear plus(Period... periods) {
+    public CalendarYear plus(Durational... periods) {
         // TODO
         return null;
     }

@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time field representing a day of month.
  * <p>
@@ -44,8 +46,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class DayOfMonth implements RecurringMoment, Comparable<DayOfMonth> {
+public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Serializable {
 
+    /**
+     * The rule implementation that defines how the day of month field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -85,6 +91,18 @@ public final class DayOfMonth implements RecurringMoment, Comparable<DayOfMonth>
      */
     public int getDayOfMonth() {
         return dayOfMonth;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * DayOfMonth instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -149,6 +167,120 @@ public final class DayOfMonth implements RecurringMoment, Comparable<DayOfMonth>
     @Override
     public int hashCode() {
         return dayOfMonth;
+    }
+
+//  /**
+//  * A map holding the maximum number of days per month.
+//  */
+// private static final Map<MonthOfYear, Days> STANDARD_DAYS_IN_MONTH = new EnumMap<MonthOfYear, Days>(MonthOfYear.class);
+// /**
+//  * A map holding the maximum number of days per month.
+//  */
+// private static final Map<MonthOfYear, Days> LEAP_YEAR_DAYS_IN_MONTH = new EnumMap<MonthOfYear, Days>(MonthOfYear.class);
+// static {
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.JANUARY, days(31));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.FEBRUARY, days(28));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.MARCH, days(31));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.APRIL, days(30));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.MAY, days(31));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.JUNE, days(30));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.JULY, days(31));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.AUGUST, days(31));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.SEPTEMBER, days(30));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.OCTOBER, days(31));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.NOVEMBER, days(30));
+//     STANDARD_DAYS_IN_MONTH.put(MonthOfYear.DECEMBER, days(31));
+//     LEAP_YEAR_DAYS_IN_MONTH.putAll(STANDARD_DAYS_IN_MONTH);
+//     LEAP_YEAR_DAYS_IN_MONTH.put(MonthOfYear.FEBRUARY, days(29));
+// }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the day of month field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("DayOfMonth", null, null, 1, 31);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(Durational epochDuration) {
+            return super.getValue(epochDuration) + 1;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isFixedValueSet() {
+            return false;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue() {
+            return 28;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getMaximumValue(Calendrical calendricalContext) {
+            if (calendricalContext != null) {
+                if (calendricalContext.getCalendricalState().isSupported(MonthOfYear.RULE)) {
+                    int month = calendricalContext.getCalendricalState().get(MonthOfYear.RULE);
+                    switch (month) {
+                        case 2:
+                            if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
+                                int year = calendricalContext.getCalendricalState().get(Year.RULE);
+                                if (Year.isLeap(year)) {
+                                    return 29;
+                                }
+                            }
+                            return 28;
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11:
+                            return 30;
+                        default:
+                            return 31;
+                    }
+                }
+            }
+            return 31;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue(Calendrical calendricalContext) {
+            if (calendricalContext == null) {
+                return 28;
+            }
+            if (calendricalContext.getCalendricalState().isSupported(MonthOfYear.RULE)) {
+                int month = calendricalContext.getCalendricalState().get(MonthOfYear.RULE);
+                switch (month) {
+                    case 2:
+                        if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
+                            int year = calendricalContext.getCalendricalState().get(Year.RULE);
+                            if (Year.isLeap(year)) {
+                                return 29;
+                            }
+                        }
+                        return 28;
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:
+                        return 30;
+                    default:
+                        return 31;
+                }
+            }
+            if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
+                int year = calendricalContext.getCalendricalState().get(Year.RULE);
+                if (Year.isLeap(year)) {
+                    return 29;
+                }
+            }
+            return 28;
+        }
     }
 
 }

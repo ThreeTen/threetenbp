@@ -68,6 +68,10 @@ public class TestFluentAPI {
         //int q = date.get(QuarterOfYear.class);
         //int hourOfDay = HourOfDay.of(tod).get();
         
+        DayOfMonth.RULE.getMaximumValue();
+        DayOfMonth.RULE.getMaximumValue(date);
+        DayOfMonth.RULE.getMaximumValue(february());
+        
         DayOfWeek dow = MONDAY;
         dow = dow.next();
         dow = dow.plusDays(3);

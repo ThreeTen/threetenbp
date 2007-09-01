@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
- * A time period representing a number of weeks.
+ * A duration representing a number of weeks.
  * <p>
- * Weeks is an immutable period that can only store weeks.
+ * Weeks is an immutable duration that can only store weeks.
  * It is a type-safe way of representing a number of weeks in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
@@ -46,8 +48,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Weeks implements Period, Comparable<Weeks> {
+public final class Weeks implements Durational, Comparable<Weeks>, Serializable {
 
+    /**
+     * The rule implementation that defines how the weeks field operates.
+     */
+    public static final DurationFieldRule RULE = new Rule();
     /**
      * A constant for zero weeks.
      */
@@ -104,6 +110,18 @@ public final class Weeks implements Period, Comparable<Weeks> {
      */
     public int getWeeks() {
         return weeks;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the durational state which provides internal access to this
+     * Weeks instance.
+     *
+     * @return the duration state for this instance, never null
+     */
+    @Override
+    public DurationalState getDurationalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -283,6 +301,18 @@ public final class Weeks implements Period, Comparable<Weeks> {
     @Override
     public String toString() {
         return "P" + weeks + "W";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the weeks field.
+     */
+    private static class Rule extends DurationFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Weeks", Days.RULE, 7);
+        }
     }
 
 }

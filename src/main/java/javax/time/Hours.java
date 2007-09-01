@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
- * A time period representing a number of hours.
+ * A duration representing a number of hours.
  * <p>
- * Hours is an immutable period that can only store hours.
+ * Hours is an immutable duration that can only store hours.
  * It is a type-safe way of representing a number of hours in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
@@ -46,8 +48,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Hours implements Period, Comparable<Hours> {
+public final class Hours implements Durational, Comparable<Hours>, Serializable {
 
+    /**
+     * The rule implementation that defines how the hours field operates.
+     */
+    public static final DurationFieldRule RULE = new Rule();
     /**
      * A constant for zero hours.
      */
@@ -104,6 +110,18 @@ public final class Hours implements Period, Comparable<Hours> {
      */
     public int getHours() {
         return hours;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the durational state which provides internal access to this
+     * Hours instance.
+     *
+     * @return the duration state for this instance, never null
+     */
+    @Override
+    public DurationalState getDurationalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -283,6 +301,18 @@ public final class Hours implements Period, Comparable<Hours> {
     @Override
     public String toString() {
         return "PT" + hours + "H";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the hours field.
+     */
+    private static class Rule extends DurationFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Hours", Minutes.RULE, 60);
+        }
     }
 
 }

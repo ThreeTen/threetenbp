@@ -31,25 +31,26 @@
  */
 package javax.time;
 
-import java.io.Serializable;
-
 /**
- * Represents a moment in time that may be fully or partially defined.
+ * Interface implemented by all objects that can provide durational information.
  * <p>
- * Moment is the interface that is shared amongst many other classes in
+ * Durational is the interface that is shared amongst many other classes in
  * the Java Date Framework. Many low level APIs are defined to accept a
- * Moment, however it is less common that you will hold instances directly.
+ * Durational, however it is less common that you will hold instances directly.
+ * <p>
+ * Durational is an interface and must be implemented with care to ensure
+ * other classes in the framework operate correctly.
+ * All instantiable subclasses must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public interface Moment extends Serializable {
+public interface Durational {
 
-//    public DateTimeField minimumField();
-//
-//    public DateTimeField maximumField();
-
-//    public boolean isSupported(Class<? extends DateTimeField>);
-//
-//    public DateTimeField valueOf(Class<? extends DateTimeField>);
+    /**
+     * Gets the durational state which provides internal access to the duration.
+     *
+     * @return the duration state for the duration implementing Durational, never null
+     */
+    DurationalState getDurationalState() ;
 
 }

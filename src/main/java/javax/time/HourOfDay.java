@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
  * A time field representing a hour of day.
  * <p>
@@ -44,8 +46,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class HourOfDay implements RecurringMoment, Comparable<HourOfDay> {
+public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Serializable {
 
+    /**
+     * The rule implementation that defines how the hour of day field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -85,6 +91,18 @@ public final class HourOfDay implements RecurringMoment, Comparable<HourOfDay> {
      */
     public int getHourOfDay() {
         return hourOfDay;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state which provides internal access to this
+     * HourOfDay instance.
+     *
+     * @return the calendar state for this instance, never null
+     */
+    @Override
+    public CalendricalState getCalendricalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -149,6 +167,18 @@ public final class HourOfDay implements RecurringMoment, Comparable<HourOfDay> {
     @Override
     public int hashCode() {
         return hourOfDay;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the hour of day field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("HourOfDay", null, null, 0, 23);
+        }
     }
 
 }

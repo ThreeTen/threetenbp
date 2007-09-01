@@ -31,10 +31,12 @@
  */
 package javax.time;
 
+import java.io.Serializable;
+
 /**
- * A time period representing a number of seconds.
+ * A duration representing a number of seconds.
  * <p>
- * Seconds is an immutable period that can only store seconds.
+ * Seconds is an immutable duration that can only store seconds.
  * It is a type-safe way of representing a number of seconds in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
@@ -46,8 +48,12 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public final class Seconds implements Period, Comparable<Seconds> {
+public final class Seconds implements Durational, Comparable<Seconds>, Serializable {
 
+    /**
+     * The rule implementation that defines how the seconds field operates.
+     */
+    public static final DurationFieldRule RULE = new Rule();
     /**
      * A constant for zero seconds.
      */
@@ -104,6 +110,18 @@ public final class Seconds implements Period, Comparable<Seconds> {
      */
     public int getSeconds() {
         return seconds;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the durational state which provides internal access to this
+     * Seconds instance.
+     *
+     * @return the duration state for this instance, never null
+     */
+    @Override
+    public DurationalState getDurationalState() {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -283,6 +301,18 @@ public final class Seconds implements Period, Comparable<Seconds> {
     @Override
     public String toString() {
         return "PT" + seconds + "S";
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the seconds field.
+     */
+    private static class Rule extends DurationFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Seconds", null, 0);
+        }
     }
 
 }
