@@ -84,7 +84,7 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of ${type}.
+     * Constructs an instance using a specific number of ${type}.
      *
      * @param ${type}  the ${type} to use
      */
