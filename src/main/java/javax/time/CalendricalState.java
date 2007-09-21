@@ -48,7 +48,7 @@ public abstract class CalendricalState {
      * Is the state contiguous, which is true if it defines time from a base
      * unit within a fixed range.
      * <p>
-     * For example, time of day is contiguous as all points in tim ecan be
+     * For example, time of day is contiguous as all points in time can be
      * determined within its boundaries. However, a calendrical object
      * representing 'Friday the Thirteenth' is not contiguous, as day of week
      * overlaps day of month.
