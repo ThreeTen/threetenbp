@@ -177,15 +177,15 @@ public class TestInstant {
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        Years orginal = Years.ZERO;
+        Instant orginal = Instant.instant(2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        Years ser = (Years) in.readObject();
-        assertSame(Years.ZERO, ser);
+        Instant ser = (Instant) in.readObject();
+        assertEquals(Instant.instant(2), ser);
     }
 
     //-----------------------------------------------------------------------

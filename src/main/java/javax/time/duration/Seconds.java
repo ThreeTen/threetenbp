@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of seconds.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Seconds implements Durational, Comparable<Seconds>, Serializable {
+public final class Seconds extends DurationField implements Comparable<Seconds>, Serializable {
 
     /**
      * The rule implementation that defines how the seconds field operates.
@@ -84,7 +87,7 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of seconds.
+     * Constructs an instance using a specific number of seconds.
      *
      * @param seconds  the seconds to use
      */
@@ -104,24 +107,35 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds held in this period.
+     * Gets the durational state.
      *
-     * @return the number of seconds
+     * @return the durational state
      */
-    public int getSeconds() {
-        return seconds;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Seconds instance.
+     * Gets the number of seconds held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of seconds
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return seconds;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of seconds.
+     *
+     * @param amount  the number of seconds to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Seconds withAmount(int amount) {
+        return Seconds.seconds(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @return the new period plus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Seconds plus(int seconds) {
-        if (seconds == 0) {
-            return this;
-        }
-        return Seconds.seconds(MathUtils.safeAdd(this.seconds, seconds));
+        return (Seconds) super.plus(seconds);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @throws ArithmeticException if the result overflows an int
      */
     public Seconds plus(Seconds seconds) {
-        return Seconds.seconds(MathUtils.safeAdd(this.seconds, seconds.seconds));
+        return plus(seconds.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @return the new period minus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Seconds minus(int seconds) {
-        return Seconds.seconds(MathUtils.safeSubtract(this.seconds, seconds));
+        return (Seconds) super.minus(seconds);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @throws ArithmeticException if the result overflows an int
      */
     public Seconds minus(Seconds seconds) {
-        return Seconds.seconds(MathUtils.safeSubtract(this.seconds, seconds.seconds));
+        return minus(seconds.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Seconds multipliedBy(int scalar) {
-        return Seconds.seconds(MathUtils.safeMultiply(seconds, scalar));
+        return (Seconds) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Seconds dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Seconds.seconds(seconds / divisor);
+        return (Seconds) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Seconds negated() {
-        return Seconds.seconds(MathUtils.safeNegate(seconds));
+        return (Seconds) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Seconds implements Durational, Comparable<Seconds>, Serializa
      */
     public boolean isLessThan(Seconds otherSeconds) {
         return compareTo(otherSeconds) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of seconds.
-     *
-     * @param otherSeconds  the other number of seconds, null returns false
-     * @return true if this number of seconds is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherSeconds) {
-        if (this == otherSeconds) {
-           return true;
-        }
-        if (otherSeconds instanceof Seconds) {
-            return seconds == ((Seconds) otherSeconds).seconds;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the seconds object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return seconds;
     }
 
     //-----------------------------------------------------------------------

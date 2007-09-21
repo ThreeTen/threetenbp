@@ -34,6 +34,8 @@ package javax.time;
 import static javax.time.DayOfWeek.*;
 import static javax.time.Moments.*;
 
+import javax.time.duration.Days;
+
 /**
  * Test class.
  * 

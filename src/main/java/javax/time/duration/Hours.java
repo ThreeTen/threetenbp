@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of hours.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Hours implements Durational, Comparable<Hours>, Serializable {
+public final class Hours extends DurationField implements Comparable<Hours>, Serializable {
 
     /**
      * The rule implementation that defines how the hours field operates.
@@ -84,7 +87,7 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of hours.
+     * Constructs an instance using a specific number of hours.
      *
      * @param hours  the hours to use
      */
@@ -104,24 +107,35 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of hours held in this period.
+     * Gets the durational state.
      *
-     * @return the number of hours
+     * @return the durational state
      */
-    public int getHours() {
-        return hours;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Hours instance.
+     * Gets the number of hours held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of hours
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return hours;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of hours.
+     *
+     * @param amount  the number of hours to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Hours withAmount(int amount) {
+        return Hours.hours(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @return the new period plus the specified number of hours
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Hours plus(int hours) {
-        if (hours == 0) {
-            return this;
-        }
-        return Hours.hours(MathUtils.safeAdd(this.hours, hours));
+        return (Hours) super.plus(hours);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @throws ArithmeticException if the result overflows an int
      */
     public Hours plus(Hours hours) {
-        return Hours.hours(MathUtils.safeAdd(this.hours, hours.hours));
+        return plus(hours.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @return the new period minus the specified number of hours
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Hours minus(int hours) {
-        return Hours.hours(MathUtils.safeSubtract(this.hours, hours));
+        return (Hours) super.minus(hours);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @throws ArithmeticException if the result overflows an int
      */
     public Hours minus(Hours hours) {
-        return Hours.hours(MathUtils.safeSubtract(this.hours, hours.hours));
+        return minus(hours.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Hours multipliedBy(int scalar) {
-        return Hours.hours(MathUtils.safeMultiply(hours, scalar));
+        return (Hours) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Hours dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Hours.hours(hours / divisor);
+        return (Hours) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Hours negated() {
-        return Hours.hours(MathUtils.safeNegate(hours));
+        return (Hours) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Hours implements Durational, Comparable<Hours>, Serializable 
      */
     public boolean isLessThan(Hours otherHours) {
         return compareTo(otherHours) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of hours.
-     *
-     * @param otherHours  the other number of hours, null returns false
-     * @return true if this number of hours is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherHours) {
-        if (this == otherHours) {
-           return true;
-        }
-        if (otherHours instanceof Hours) {
-            return hours == ((Hours) otherHours).hours;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the hours object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return hours;
     }
 
     //-----------------------------------------------------------------------

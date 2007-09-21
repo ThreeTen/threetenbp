@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of years.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Years implements Durational, Comparable<Years>, Serializable {
+public final class Years extends DurationField implements Comparable<Years>, Serializable {
 
     /**
      * The rule implementation that defines how the years field operates.
@@ -84,7 +87,7 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of years.
+     * Constructs an instance using a specific number of years.
      *
      * @param years  the years to use
      */
@@ -104,24 +107,35 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of years held in this period.
+     * Gets the durational state.
      *
-     * @return the number of years
+     * @return the durational state
      */
-    public int getYears() {
-        return years;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Years instance.
+     * Gets the number of years held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of years
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return years;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of years.
+     *
+     * @param amount  the number of years to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Years withAmount(int amount) {
+        return Years.years(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @return the new period plus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Years plus(int years) {
-        if (years == 0) {
-            return this;
-        }
-        return Years.years(MathUtils.safeAdd(this.years, years));
+        return (Years) super.plus(years);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @throws ArithmeticException if the result overflows an int
      */
     public Years plus(Years years) {
-        return Years.years(MathUtils.safeAdd(this.years, years.years));
+        return plus(years.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @return the new period minus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Years minus(int years) {
-        return Years.years(MathUtils.safeSubtract(this.years, years));
+        return (Years) super.minus(years);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @throws ArithmeticException if the result overflows an int
      */
     public Years minus(Years years) {
-        return Years.years(MathUtils.safeSubtract(this.years, years.years));
+        return minus(years.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Years multipliedBy(int scalar) {
-        return Years.years(MathUtils.safeMultiply(years, scalar));
+        return (Years) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Years dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Years.years(years / divisor);
+        return (Years) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Years negated() {
-        return Years.years(MathUtils.safeNegate(years));
+        return (Years) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Years implements Durational, Comparable<Years>, Serializable 
      */
     public boolean isLessThan(Years otherYears) {
         return compareTo(otherYears) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of years.
-     *
-     * @param otherYears  the other number of years, null returns false
-     * @return true if this number of years is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherYears) {
-        if (this == otherYears) {
-           return true;
-        }
-        if (otherYears instanceof Years) {
-            return years == ((Years) otherYears).years;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the years object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return years;
     }
 
     //-----------------------------------------------------------------------

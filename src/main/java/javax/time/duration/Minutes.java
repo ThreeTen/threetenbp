@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of minutes.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Minutes implements Durational, Comparable<Minutes>, Serializable {
+public final class Minutes extends DurationField implements Comparable<Minutes>, Serializable {
 
     /**
      * The rule implementation that defines how the minutes field operates.
@@ -84,7 +87,7 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of minutes.
+     * Constructs an instance using a specific number of minutes.
      *
      * @param minutes  the minutes to use
      */
@@ -104,24 +107,35 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of minutes held in this period.
+     * Gets the durational state.
      *
-     * @return the number of minutes
+     * @return the durational state
      */
-    public int getMinutes() {
-        return minutes;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Minutes instance.
+     * Gets the number of minutes held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of minutes
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return minutes;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of minutes.
+     *
+     * @param amount  the number of minutes to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Minutes withAmount(int amount) {
+        return Minutes.minutes(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @return the new period plus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Minutes plus(int minutes) {
-        if (minutes == 0) {
-            return this;
-        }
-        return Minutes.minutes(MathUtils.safeAdd(this.minutes, minutes));
+        return (Minutes) super.plus(minutes);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @throws ArithmeticException if the result overflows an int
      */
     public Minutes plus(Minutes minutes) {
-        return Minutes.minutes(MathUtils.safeAdd(this.minutes, minutes.minutes));
+        return plus(minutes.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @return the new period minus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Minutes minus(int minutes) {
-        return Minutes.minutes(MathUtils.safeSubtract(this.minutes, minutes));
+        return (Minutes) super.minus(minutes);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @throws ArithmeticException if the result overflows an int
      */
     public Minutes minus(Minutes minutes) {
-        return Minutes.minutes(MathUtils.safeSubtract(this.minutes, minutes.minutes));
+        return minus(minutes.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Minutes multipliedBy(int scalar) {
-        return Minutes.minutes(MathUtils.safeMultiply(minutes, scalar));
+        return (Minutes) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Minutes dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Minutes.minutes(minutes / divisor);
+        return (Minutes) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Minutes negated() {
-        return Minutes.minutes(MathUtils.safeNegate(minutes));
+        return (Minutes) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Minutes implements Durational, Comparable<Minutes>, Serializa
      */
     public boolean isLessThan(Minutes otherMinutes) {
         return compareTo(otherMinutes) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of minutes.
-     *
-     * @param otherMinutes  the other number of minutes, null returns false
-     * @return true if this number of minutes is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherMinutes) {
-        if (this == otherMinutes) {
-           return true;
-        }
-        if (otherMinutes instanceof Minutes) {
-            return minutes == ((Minutes) otherMinutes).minutes;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the minutes object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return minutes;
     }
 
     //-----------------------------------------------------------------------

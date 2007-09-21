@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,17 +57,17 @@ public class TestYears {
     public void test_factoryZeroSingleton() {
         assertSame(Years.ZERO, Years.years(0));
         assertSame(Years.ZERO, Years.years(0));
-        assertEquals(0, Years.ZERO.getYears());
+        assertEquals(0, Years.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryGetYears() {
-        assertEquals(1,  Years.years(1).getYears());
-        assertEquals(2,  Years.years(2).getYears());
-        assertEquals(Integer.MAX_VALUE,  Years.years(Integer.MAX_VALUE).getYears());
-        assertEquals(-1,  Years.years(-1).getYears());
-        assertEquals(-2,  Years.years(-2).getYears());
-        assertEquals(Integer.MIN_VALUE,  Years.years(Integer.MIN_VALUE).getYears());
+        assertEquals(1,  Years.years(1).getAmount());
+        assertEquals(2,  Years.years(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Years.years(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Years.years(-1).getAmount());
+        assertEquals(-2,  Years.years(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Years.years(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------

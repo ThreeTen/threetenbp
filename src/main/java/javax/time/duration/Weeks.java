@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of weeks.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Weeks implements Durational, Comparable<Weeks>, Serializable {
+public final class Weeks extends DurationField implements Comparable<Weeks>, Serializable {
 
     /**
      * The rule implementation that defines how the weeks field operates.
@@ -84,7 +87,7 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of weeks.
+     * Constructs an instance using a specific number of weeks.
      *
      * @param weeks  the weeks to use
      */
@@ -104,24 +107,35 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of weeks held in this period.
+     * Gets the durational state.
      *
-     * @return the number of weeks
+     * @return the durational state
      */
-    public int getWeeks() {
-        return weeks;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Weeks instance.
+     * Gets the number of weeks held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of weeks
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return weeks;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of weeks.
+     *
+     * @param amount  the number of weeks to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Weeks withAmount(int amount) {
+        return Weeks.weeks(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @return the new period plus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Weeks plus(int weeks) {
-        if (weeks == 0) {
-            return this;
-        }
-        return Weeks.weeks(MathUtils.safeAdd(this.weeks, weeks));
+        return (Weeks) super.plus(weeks);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @throws ArithmeticException if the result overflows an int
      */
     public Weeks plus(Weeks weeks) {
-        return Weeks.weeks(MathUtils.safeAdd(this.weeks, weeks.weeks));
+        return plus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @return the new period minus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Weeks minus(int weeks) {
-        return Weeks.weeks(MathUtils.safeSubtract(this.weeks, weeks));
+        return (Weeks) super.minus(weeks);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @throws ArithmeticException if the result overflows an int
      */
     public Weeks minus(Weeks weeks) {
-        return Weeks.weeks(MathUtils.safeSubtract(this.weeks, weeks.weeks));
+        return minus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Weeks multipliedBy(int scalar) {
-        return Weeks.weeks(MathUtils.safeMultiply(weeks, scalar));
+        return (Weeks) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Weeks dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Weeks.weeks(weeks / divisor);
+        return (Weeks) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Weeks negated() {
-        return Weeks.weeks(MathUtils.safeNegate(weeks));
+        return (Weeks) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Weeks implements Durational, Comparable<Weeks>, Serializable 
      */
     public boolean isLessThan(Weeks otherWeeks) {
         return compareTo(otherWeeks) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of weeks.
-     *
-     * @param otherWeeks  the other number of weeks, null returns false
-     * @return true if this number of weeks is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherWeeks) {
-        if (this == otherWeeks) {
-           return true;
-        }
-        if (otherWeeks instanceof Weeks) {
-            return weeks == ((Weeks) otherWeeks).weeks;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the weeks object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return weeks;
     }
 
     //-----------------------------------------------------------------------

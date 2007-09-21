@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of months.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Months implements Durational, Comparable<Months>, Serializable {
+public final class Months extends DurationField implements Comparable<Months>, Serializable {
 
     /**
      * The rule implementation that defines how the months field operates.
@@ -84,7 +87,7 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of months.
+     * Constructs an instance using a specific number of months.
      *
      * @param months  the months to use
      */
@@ -104,24 +107,35 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of months held in this period.
+     * Gets the durational state.
      *
-     * @return the number of months
+     * @return the durational state
      */
-    public int getMonths() {
-        return months;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Months instance.
+     * Gets the number of months held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of months
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return months;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of months.
+     *
+     * @param amount  the number of months to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Months withAmount(int amount) {
+        return Months.months(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @return the new period plus the specified number of months
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Months plus(int months) {
-        if (months == 0) {
-            return this;
-        }
-        return Months.months(MathUtils.safeAdd(this.months, months));
+        return (Months) super.plus(months);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @throws ArithmeticException if the result overflows an int
      */
     public Months plus(Months months) {
-        return Months.months(MathUtils.safeAdd(this.months, months.months));
+        return plus(months.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @return the new period minus the specified number of months
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Months minus(int months) {
-        return Months.months(MathUtils.safeSubtract(this.months, months));
+        return (Months) super.minus(months);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @throws ArithmeticException if the result overflows an int
      */
     public Months minus(Months months) {
-        return Months.months(MathUtils.safeSubtract(this.months, months.months));
+        return minus(months.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Months multipliedBy(int scalar) {
-        return Months.months(MathUtils.safeMultiply(months, scalar));
+        return (Months) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Months dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Months.months(months / divisor);
+        return (Months) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Months negated() {
-        return Months.months(MathUtils.safeNegate(months));
+        return (Months) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Months implements Durational, Comparable<Months>, Serializabl
      */
     public boolean isLessThan(Months otherMonths) {
         return compareTo(otherMonths) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of months.
-     *
-     * @param otherMonths  the other number of months, null returns false
-     * @return true if this number of months is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherMonths) {
-        if (this == otherMonths) {
-           return true;
-        }
-        if (otherMonths instanceof Months) {
-            return months == ((Months) otherMonths).months;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the months object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return months;
     }
 
     //-----------------------------------------------------------------------

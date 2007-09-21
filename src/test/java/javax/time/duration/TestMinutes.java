@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,17 +57,17 @@ public class TestMinutes {
     public void test_factoryZeroSingleton() {
         assertSame(Minutes.ZERO, Minutes.minutes(0));
         assertSame(Minutes.ZERO, Minutes.minutes(0));
-        assertEquals(0, Minutes.ZERO.getMinutes());
+        assertEquals(0, Minutes.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryGetMinutes() {
-        assertEquals(1,  Minutes.minutes(1).getMinutes());
-        assertEquals(2,  Minutes.minutes(2).getMinutes());
-        assertEquals(Integer.MAX_VALUE,  Minutes.minutes(Integer.MAX_VALUE).getMinutes());
-        assertEquals(-1,  Minutes.minutes(-1).getMinutes());
-        assertEquals(-2,  Minutes.minutes(-2).getMinutes());
-        assertEquals(Integer.MIN_VALUE,  Minutes.minutes(Integer.MIN_VALUE).getMinutes());
+        assertEquals(1,  Minutes.minutes(1).getAmount());
+        assertEquals(2,  Minutes.minutes(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Minutes.minutes(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Minutes.minutes(-1).getAmount());
+        assertEquals(-2,  Minutes.minutes(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Minutes.minutes(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------

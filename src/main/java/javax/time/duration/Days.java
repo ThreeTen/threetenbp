@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of days.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Days implements Durational, Comparable<Days>, Serializable {
+public final class Days extends DurationField implements Comparable<Days>, Serializable {
 
     /**
      * The rule implementation that defines how the days field operates.
@@ -84,7 +87,7 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific numbr of days.
+     * Constructs an instance using a specific number of days.
      *
      * @param days  the days to use
      */
@@ -104,24 +107,35 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of days held in this period.
+     * Gets the durational state.
      *
-     * @return the number of days
+     * @return the durational state
      */
-    public int getDays() {
-        return days;
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * Days instance.
+     * Gets the number of days held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of days
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return days;
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of days.
+     *
+     * @param amount  the number of days to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public Days withAmount(int amount) {
+        return Days.days(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @return the new period plus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Days plus(int days) {
-        if (days == 0) {
-            return this;
-        }
-        return Days.days(MathUtils.safeAdd(this.days, days));
+        return (Days) super.plus(days);
     }
 
     /**
@@ -152,7 +164,7 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @throws ArithmeticException if the result overflows an int
      */
     public Days plus(Days days) {
-        return Days.days(MathUtils.safeAdd(this.days, days.days));
+        return plus(days.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @return the new period minus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Days minus(int days) {
-        return Days.days(MathUtils.safeSubtract(this.days, days));
+        return (Days) super.minus(days);
     }
 
     /**
@@ -180,7 +193,7 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @throws ArithmeticException if the result overflows an int
      */
     public Days minus(Days days) {
-        return Days.days(MathUtils.safeSubtract(this.days, days.days));
+        return minus(days.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Days multipliedBy(int scalar) {
-        return Days.days(MathUtils.safeMultiply(days, scalar));
+        return (Days) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public Days dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return Days.days(days / divisor);
+        return (Days) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public Days negated() {
-        return Days.days(MathUtils.safeNegate(days));
+        return (Days) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class Days implements Durational, Comparable<Days>, Serializable {
      */
     public boolean isLessThan(Days otherDays) {
         return compareTo(otherDays) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of days.
-     *
-     * @param otherDays  the other number of days, null returns false
-     * @return true if this number of days is the same as that specified
-     */
-    @Override
-    public boolean equals(Object otherDays) {
-        if (this == otherDays) {
-           return true;
-        }
-        if (otherDays instanceof Days) {
-            return days == ((Days) otherDays).days;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the days object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return days;
     }
 
     //-----------------------------------------------------------------------

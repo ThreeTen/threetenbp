@@ -31,6 +31,14 @@
  */
 package javax.time;
 
+import javax.time.duration.TestDays;
+import javax.time.duration.TestHours;
+import javax.time.duration.TestMinutes;
+import javax.time.duration.TestMonths;
+import javax.time.duration.TestSeconds;
+import javax.time.duration.TestWeeks;
+import javax.time.duration.TestYears;
+
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 

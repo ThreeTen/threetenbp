@@ -29,9 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.duration;
 
 import java.io.Serializable;
+
+import javax.time.DurationFieldRule;
+import javax.time.DurationalState;
 
 /**
  * A duration representing a number of ${type}.
@@ -48,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Durational, Comparable<${Type}>, Serializable {
+public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
 
     /**
      * The rule implementation that defines how the ${type} field operates.
@@ -104,24 +107,35 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of ${type} held in this period.
+     * Gets the durational state.
      *
-     * @return the number of ${type}
+     * @return the durational state
      */
-    public int get${Type}() {
-        return ${type};
+    @Override
+    public DurationalState getDurationalState() {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * ${Type} instance.
+     * Gets the number of ${type} held in this duration.
      *
-     * @return the duration state for this instance, never null
+     * @return the number of ${type}
      */
     @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public int getAmount() {
+        return ${type};
+    }
+
+    /**
+     * Returns a new instance of the subclass with a different number of ${type}.
+     *
+     * @param amount  the number of ${type} to set in the new instance, may be negative
+     * @return a new duration element, never null
+     */
+    @Override
+    public ${Type} withAmount(int amount) {
+        return ${Type}.${type}(amount);
     }
 
     //-----------------------------------------------------------------------
@@ -134,11 +148,9 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @return the new period plus the specified number of ${type}
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public ${Type} plus(int ${type}) {
-        if (${type} == 0) {
-            return this;
-        }
-        return ${Type}.${type}(MathUtils.safeAdd(this.${type}, ${type}));
+        return (${Type}) super.plus(${type});
     }
 
     /**
@@ -152,7 +164,7 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @throws ArithmeticException if the result overflows an int
      */
     public ${Type} plus(${Type} ${type}) {
-        return ${Type}.${type}(MathUtils.safeAdd(this.${type}, ${type}.${type}));
+        return plus(${type}.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -165,8 +177,9 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @return the new period minus the specified number of ${type}
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public ${Type} minus(int ${type}) {
-        return ${Type}.${type}(MathUtils.safeSubtract(this.${type}, ${type}));
+        return (${Type}) super.minus(${type});
     }
 
     /**
@@ -180,7 +193,7 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @throws ArithmeticException if the result overflows an int
      */
     public ${Type} minus(${Type} ${type}) {
-        return ${Type}.${type}(MathUtils.safeSubtract(this.${type}, ${type}.${type}));
+        return minus(${type}.getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -193,8 +206,9 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @return the new period multiplied by the specified scalar
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public ${Type} multipliedBy(int scalar) {
-        return ${Type}.${type}(MathUtils.safeMultiply(${type}, scalar));
+        return (${Type}) super.multipliedBy(scalar);
     }
 
     /**
@@ -207,11 +221,9 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @return the new period divided by the specified divisor
      * @throws ArithmeticException if the divisor is zero
      */
+    @Override
     public ${Type} dividedBy(int divisor) {
-        if (divisor == 1) {
-            return this;
-        }
-        return ${Type}.${type}(${type} / divisor);
+        return (${Type}) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
@@ -221,8 +233,9 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
+    @Override
     public ${Type} negated() {
-        return ${Type}.${type}(MathUtils.safeNegate(${type}));
+        return (${Type}) super.negated();
     }
 
     //-----------------------------------------------------------------------
@@ -261,34 +274,6 @@ public final class ${Type} implements Durational, Comparable<${Type}>, Serializa
      */
     public boolean isLessThan(${Type} other${Type}) {
         return compareTo(other${Type}) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the number of ${type}.
-     *
-     * @param other${Type}  the other number of ${type}, null returns false
-     * @return true if this number of ${type} is the same as that specified
-     */
-    @Override
-    public boolean equals(Object other${Type}) {
-        if (this == other${Type}) {
-           return true;
-        }
-        if (other${Type} instanceof ${Type}) {
-            return ${type} == ((${Type}) other${Type}).${type};
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the ${type} object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return ${type};
     }
 
     //-----------------------------------------------------------------------

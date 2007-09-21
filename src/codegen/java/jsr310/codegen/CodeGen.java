@@ -53,16 +53,18 @@ public class CodeGen {
 
     private static final String TEMPLATE_DIR = "src/codegen/java/jsr310/codegen/";
     private static final File MAIN_DIR = new File("src/main/java/javax/time");
+    private static final File MAIN_DURATION_DIR = new File("src/main/java/javax/time/duration");
     private static final File TEST_DIR = new File("src/test/java/javax/time");
+    private static final File TEST_DURATION_DIR = new File("src/test/java/javax/time/duration");
 
     public static void main(String[] args) {
         try {
             Velocity.init();
             
             CodeGen cg = new CodeGen();
-            cg.processPeriod();
-            cg.processTestPeriod();
-            cg.processField();
+            cg.processDurationField();
+            cg.processTestDurationField();
+            cg.processTimeField();
             System.out.println("Done");
             
         } catch (Exception ex) {
@@ -76,23 +78,23 @@ public class CodeGen {
     /**
      * Code generate single field period classes.
      */
-    private void processPeriod() throws Exception {
-        Template template = Velocity.getTemplate(TEMPLATE_DIR + "Period.vm");
+    private void processDurationField() throws Exception {
+        Template template = Velocity.getTemplate(TEMPLATE_DIR + "DurationField.vm");
         
-        processPeriod(template, "Years", true, "Months.RULE", "12");
-        processPeriod(template, "Months", true, "null", "0");
-        processPeriod(template, "Weeks", true, "Days.RULE", "7");
-        processPeriod(template, "Days", true, "Hours.RULE", "24");
-        processPeriod(template, "Hours", false, "Minutes.RULE", "60");
-        processPeriod(template, "Minutes", false, "Seconds.RULE", "60");
-        processPeriod(template, "Seconds", false, "null", "0");
+        processDurationField(template, "Years", true, "Months.RULE", "12");
+        processDurationField(template, "Months", true, "null", "0");
+        processDurationField(template, "Weeks", true, "Days.RULE", "7");
+        processDurationField(template, "Days", true, "Hours.RULE", "24");
+        processDurationField(template, "Hours", false, "Minutes.RULE", "60");
+        processDurationField(template, "Minutes", false, "Seconds.RULE", "60");
+        processDurationField(template, "Seconds", false, "null", "0");
     }
 
-    private void processPeriod(
+    private void processDurationField(
             Template template,
             String classname, boolean date,
             String relativeField, String relativeAmount) throws Exception {
-        File file = new File(MAIN_DIR, classname + ".java");
+        File file = new File(MAIN_DURATION_DIR, classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
         int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
         if (pos >= 4) {
@@ -103,20 +105,20 @@ public class CodeGen {
     }
 
     //-----------------------------------------------------------------------
-    private void processTestPeriod() throws Exception {
-        Template template = Velocity.getTemplate(TEMPLATE_DIR + "TestPeriod.vm");
+    private void processTestDurationField() throws Exception {
+        Template template = Velocity.getTemplate(TEMPLATE_DIR + "TestDurationField.vm");
         
-        processTestPeriod(template, "Years", true);
-        processTestPeriod(template, "Months", true);
-        processTestPeriod(template, "Weeks", true);
-        processTestPeriod(template, "Days", true);
-        processTestPeriod(template, "Hours", false);
-        processTestPeriod(template, "Minutes", false);
-        processTestPeriod(template, "Seconds", false);
+        processTestDurationField(template, "Years", true);
+        processTestDurationField(template, "Months", true);
+        processTestDurationField(template, "Weeks", true);
+        processTestDurationField(template, "Days", true);
+        processTestDurationField(template, "Hours", false);
+        processTestDurationField(template, "Minutes", false);
+        processTestDurationField(template, "Seconds", false);
     }
 
-    private void processTestPeriod(Template template, String classname, boolean date) throws Exception {
-        File file = new File(TEST_DIR, "Test" + classname + ".java");
+    private void processTestDurationField(Template template, String classname, boolean date) throws Exception {
+        File file = new File(TEST_DURATION_DIR, "Test" + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public void test_toString() {");
         VelocityContext vc = createPeriodContext(classname, date, methodLines, "", "");
         generate(file, template, vc);
@@ -140,21 +142,21 @@ public class CodeGen {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    private void processField() throws Exception {
+    private void processTimeField() throws Exception {
         Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
-        processField(regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
-        processField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
-        processField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
-        processField(regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
-        processField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
-        processField(regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
-        processField(regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
-        processField(regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
+        processTimeField(regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
+        processTimeField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
+        processTimeField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
+        processTimeField(regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
+        processTimeField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
+        processTimeField(regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
+        processTimeField(regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
+        processTimeField(regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
     }
 
-    private void processField(
+    private void processTimeField(
             Template template,
             String classname, String desc, FieldSingleton[] singletons,
             String minValue, String maxValue) throws Exception {
