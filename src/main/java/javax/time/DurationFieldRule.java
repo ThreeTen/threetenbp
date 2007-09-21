@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import javax.time.duration.DurationField;
+
 /**
  * The rule defining how a measurable duration of time operates.
  * <p>
@@ -43,28 +45,24 @@ package javax.time;
  *
  * @author Stephen Colebourne
  */
-public abstract class DurationFieldRule {
+public abstract class DurationFieldRule implements Comparable<DurationFieldRule> {
 
     /** The name of the rule, not null. */
     private final String name;
     /** The relative field, expressing this field in terms of another. */
-    private final DurationFieldRule relativeField;
-    /** The relative amount, expressing this field in terms of another. */
-    private final int relativeAmount;
+    private final DurationField relativeField;
 
     /**
      * Constructor.
      *
      * @param name  the name of the rule, not null
      * @param relativeField  alternate field that this field can be expressed in, null if none
-     * @param relativeAmount  amount in alternate field, zero if no alternate field
      */
-    protected DurationFieldRule(String name, DurationFieldRule relativeField, int relativeAmount) {
+    protected DurationFieldRule(String name, DurationField relativeField) {
         super();
         // TODO: Check not null
         this.name = name;
         this.relativeField = relativeField;
-        this.relativeAmount = relativeAmount;
     }
 
     //-----------------------------------------------------------------------
@@ -79,25 +77,17 @@ public abstract class DurationFieldRule {
 
     /**
      * Gets the alternate field that this field can be expressed as.
+     * For example, a day can be represented as 24 hours.
      *
      * @return the relative field, null if none
      */
-    public DurationFieldRule getRelativeField() {
+    public DurationField getRelativeField() {
         return relativeField;
-    }
-
-    /**
-     * Gets the amount in the alternate field that this field can be expressed as.
-     *
-     * @return the relative field amount, zero if none
-     */
-    public int getRelativeFieldAmount() {
-        return relativeAmount;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this TimeFieldType to another based on the average duration
+     * Compares this DurationFieldRule to another based on the average duration
      * of the field.
      *
      * @param other  the other type to compare to, not null

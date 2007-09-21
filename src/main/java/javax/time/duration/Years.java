@@ -296,7 +296,7 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
 
         /** Constructor. */
         protected Rule() {
-            super("Years", Months.RULE, 12);
+            super("Years", Months.months(12));
         }
     }
 

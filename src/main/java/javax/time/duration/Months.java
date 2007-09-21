@@ -296,7 +296,7 @@ public final class Months extends DurationField implements Comparable<Months>, S
 
         /** Constructor. */
         protected Rule() {
-            super("Months", null, 0);
+            super("Months", null);
         }
     }
 

@@ -296,7 +296,7 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
 
         /** Constructor. */
         protected Rule() {
-            super("Days", Hours.RULE, 24);
+            super("Days", Hours.hours(24));
         }
     }
 

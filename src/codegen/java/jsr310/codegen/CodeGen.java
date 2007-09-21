@@ -81,26 +81,26 @@ public class CodeGen {
     private void processDurationField() throws Exception {
         Template template = Velocity.getTemplate(TEMPLATE_DIR + "DurationField.vm");
         
-        processDurationField(template, "Years", true, "Months.RULE", "12");
-        processDurationField(template, "Months", true, "null", "0");
-        processDurationField(template, "Weeks", true, "Days.RULE", "7");
-        processDurationField(template, "Days", true, "Hours.RULE", "24");
-        processDurationField(template, "Hours", false, "Minutes.RULE", "60");
-        processDurationField(template, "Minutes", false, "Seconds.RULE", "60");
-        processDurationField(template, "Seconds", false, "null", "0");
+        processDurationField(template, "Years", true, "Months.months(12)");
+        processDurationField(template, "Months", true, "null");
+        processDurationField(template, "Weeks", true, "Days.days(7)");
+        processDurationField(template, "Days", true, "Hours.hours(24)");
+        processDurationField(template, "Hours", false, "Minutes.minutes(60)");
+        processDurationField(template, "Minutes", false, "Seconds.seconds(60)");
+        processDurationField(template, "Seconds", false, "null");
     }
 
     private void processDurationField(
             Template template,
             String classname, boolean date,
-            String relativeField, String relativeAmount) throws Exception {
+            String relativeField) throws Exception {
         File file = new File(MAIN_DURATION_DIR, classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
         int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
         if (pos >= 4) {
             methodLines = methodLines.subList(0, pos - 4);
         }
-        VelocityContext vc = createPeriodContext(classname, date, methodLines, relativeField, relativeAmount);
+        VelocityContext vc = createPeriodContext(classname, date, methodLines, relativeField);
         generate(file, template, vc);
     }
 
@@ -120,21 +120,20 @@ public class CodeGen {
     private void processTestDurationField(Template template, String classname, boolean date) throws Exception {
         File file = new File(TEST_DURATION_DIR, "Test" + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public void test_toString() {");
-        VelocityContext vc = createPeriodContext(classname, date, methodLines, "", "");
+        VelocityContext vc = createPeriodContext(classname, date, methodLines, "");
         generate(file, template, vc);
     }
 
     //-----------------------------------------------------------------------
     private VelocityContext createPeriodContext(
             String classname, boolean date, List<String> methodLines,
-            String relativeField, String relativeAmount) {
+            String relativeField) {
         VelocityContext vc = new VelocityContext();
         vc.put("Type", classname);
         vc.put("type", classname.toLowerCase());
         vc.put("stringPrefix", date ? "" : "T");
         vc.put("stringSuffix", classname.substring(0, 1));
         vc.put("relativeField", relativeField);
-        vc.put("relativeAmount", relativeAmount);
         vc.put("methods", methodLines);
         return vc;
     }

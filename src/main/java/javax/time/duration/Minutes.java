@@ -296,7 +296,7 @@ public final class Minutes extends DurationField implements Comparable<Minutes>,
 
         /** Constructor. */
         protected Rule() {
-            super("Minutes", Seconds.RULE, 60);
+            super("Minutes", Seconds.seconds(60));
         }
     }
 

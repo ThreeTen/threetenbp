@@ -299,7 +299,7 @@ ${line}
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", ${relativeField}, ${relativeAmount});
+            super("${Type}", ${relativeField});
         }
     }
 

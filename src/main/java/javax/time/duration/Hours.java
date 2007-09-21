@@ -296,7 +296,7 @@ public final class Hours extends DurationField implements Comparable<Hours>, Ser
 
         /** Constructor. */
         protected Rule() {
-            super("Hours", Minutes.RULE, 60);
+            super("Hours", Minutes.minutes(60));
         }
     }
 

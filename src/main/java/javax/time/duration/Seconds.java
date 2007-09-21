@@ -296,7 +296,7 @@ public final class Seconds extends DurationField implements Comparable<Seconds>,
 
         /** Constructor. */
         protected Rule() {
-            super("Seconds", null, 0);
+            super("Seconds", null);
         }
     }
 

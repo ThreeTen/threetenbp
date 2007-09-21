@@ -296,7 +296,7 @@ public final class Weeks extends DurationField implements Comparable<Weeks>, Ser
 
         /** Constructor. */
         protected Rule() {
-            super("Weeks", Days.RULE, 7);
+            super("Weeks", Days.days(7));
         }
     }
 
