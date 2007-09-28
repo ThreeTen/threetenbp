@@ -39,22 +39,22 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.duration.Durational;
 
 /**
- * A time field representing a ${desc}.
+ * A time field representing a hour of day.
  * <p>
- * ${Type} is an immutable time field that can only store a ${desc}.
- * It is a type-safe way of representing a ${desc} in an application.
+ * HourOfDay is an immutable time field that can only store a hour of day.
+ * It is a type-safe way of representing a hour of day in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The ${desc} may be queried using get${Type}().
+ * The hour of day may be queried using getHourOfDay().
  * <p>
- * ${Type} is thread-safe and immutable.
+ * HourOfDay is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializable {
+public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${desc} field operates.
+     * The rule implementation that defines how the hour of day field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -63,45 +63,45 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
     private static final long serialVersionUID = 1L;
 
     /**
-     * The ${desc} being represented.
+     * The hour of day being represented.
      */
-    private final int ${type};
+    private final int hourOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>HourOfDay</code>.
      *
-     * @param ${type}  the ${desc} to represent
-     * @return the created ${Type}
+     * @param hourOfDay  the hour of day to represent
+     * @return the created HourOfDay
      */
-    public static ${Type} ${type}(int ${type}) {
-        return new ${Type}(${type});
+    public static HourOfDay hourOfDay(int hourOfDay) {
+        return new HourOfDay(hourOfDay);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified ${desc}.
+     * Constructs an instance with the specified hour of day.
      *
-     * @param ${type}  the ${desc} to represent
+     * @param hourOfDay  the hour of day to represent
      */
-    private ${Type}(int ${type}) {
-        this.${type} = ${type};
+    private HourOfDay(int hourOfDay) {
+        this.hourOfDay = hourOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ${desc} value.
+     * Gets the hour of day value.
      *
-     * @return the ${desc}
+     * @return the hour of day
      */
-    public int get${Type}() {
-        return ${type};
+    public int getHourOfDay() {
+        return hourOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * ${Type} instance.
+     * HourOfDay instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -112,84 +112,78 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this ${desc} instance to another.
+     * Compares this hour of day instance to another.
      *
-     * @param other${Type}  the other ${desc} instance, not null
+     * @param otherHourOfDay  the other hour of day instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherHourOfDay is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(HourOfDay otherHourOfDay) {
+        int thisValue = this.hourOfDay;
+        int otherValue = otherHourOfDay.hourOfDay;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this ${desc} instance greater than the specified ${desc}.
+     * Is this hour of day instance greater than the specified hour of day.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherHourOfDay  the other hour of day instance, not null
+     * @return true if this hour of day is greater
+     * @throws NullPointerException if otherHourOfDay is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(HourOfDay otherHourOfDay) {
+        return compareTo(otherHourOfDay) > 0;
     }
 
     /**
-     * Is this ${desc} instance less than the specified ${desc}.
+     * Is this hour of day instance less than the specified hour of day.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherHourOfDay  the other hour of day instance, not null
+     * @return true if this hour of day is less
+     * @throws NullPointerException if otherHourOfDay is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(HourOfDay otherHourOfDay) {
+        return compareTo(otherHourOfDay) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the ${desc}.
+     * Is this instance equal to that specified, evaluating the hour of day.
      *
-     * @param other${Type}  the other ${desc} instance, null returns false
-     * @return true if the ${desc} is the same
+     * @param otherHourOfDay  the other hour of day instance, null returns false
+     * @return true if the hour of day is the same
      */
     @Override
-    public boolean equals(Object other${Type}) {
-        if (this == other${Type}) {
+    public boolean equals(Object otherHourOfDay) {
+        if (this == otherHourOfDay) {
             return true;
         }
-        if (other${Type} instanceof ${Type}) {
-            return ${type} == ((${Type}) other${Type}).${type};
+        if (otherHourOfDay instanceof HourOfDay) {
+            return hourOfDay == ((HourOfDay) otherHourOfDay).hourOfDay;
         }
         return false;
     }
 
     /**
-     * A hashcode for the ${desc} object.
+     * A hashcode for the hour of day object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return ${type};
+        return hourOfDay;
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${desc} field.
+     * Implementation of the rules for the hour of day field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", null, null, ${minValue}, ${maxValue});
+            super("HourOfDay", null, null, 0, 23);
         }
-#foreach ($line in $ruleMethods)
-${line}
-#end
     }
 
 }

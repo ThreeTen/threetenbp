@@ -38,30 +38,30 @@ import javax.time.duration.DurationFieldRule;
 import javax.time.duration.DurationalState;
 
 /**
- * A duration representing a number of ${type}.
+ * A duration representing a number of seconds.
  * <p>
- * ${Type} is an immutable duration that can only store ${type}.
- * It is a type-safe way of representing a number of ${type} in an application.
+ * Seconds is an immutable duration that can only store seconds.
+ * It is a type-safe way of representing a number of seconds in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of ${type} may be queried using get${Type}().
+ * The number of seconds may be queried using getSeconds().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * ${Type} is thread-safe and immutable.
+ * Seconds is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
+public final class Seconds extends DurationField implements Comparable<Seconds>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${type} field operates.
+     * The rule implementation that defines how the seconds field operates.
      */
     public static final DurationFieldRule RULE = new Rule();
     /**
-     * A constant for zero ${type}.
+     * A constant for zero seconds.
      */
-    public static final ${Type} ZERO = new ${Type}(0);
+    public static final Seconds ZERO = new Seconds(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of ${type} in the period.
+     * The number of seconds in the period.
      */
-    private final int ${type};
+    private final int seconds;
 
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>Seconds</code>.
      *
-     * @param ${type}  the number of ${type} the instance will represent
-     * @return the created ${Type}
+     * @param seconds  the number of seconds the instance will represent
+     * @return the created Seconds
      */
-    public static ${Type} ${type}(int ${type}) {
-        if (${type} == 0) {
+    public static Seconds seconds(int seconds) {
+        if (seconds == 0) {
             return ZERO;
         }
-        return new ${Type}(${type});
+        return new Seconds(seconds);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of ${type}.
+     * Constructs an instance using a specific number of seconds.
      *
-     * @param ${type}  the ${type} to use
+     * @param seconds  the seconds to use
      */
-    private ${Type}(int ${type}) {
+    private Seconds(int seconds) {
         super();
-        this.${type} = ${type};
+        this.seconds = seconds;
     }
 
     /**
@@ -103,7 +103,7 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ${Type}.${type}(${type});
+        return Seconds.seconds(seconds);
     }
 
     //-----------------------------------------------------------------------
@@ -119,87 +119,87 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of ${type} held in this duration.
+     * Gets the number of seconds held in this duration.
      *
-     * @return the number of ${type}
+     * @return the number of seconds
      */
     @Override
     public int getAmount() {
-        return ${type};
+        return seconds;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of ${type}.
+     * Returns a new instance of the subclass with a different number of seconds.
      *
-     * @param amount  the number of ${type} to set in the new instance, may be negative
+     * @param amount  the number of seconds to set in the new instance, may be negative
      * @return a new duration element, never null
      */
     @Override
-    public ${Type} withAmount(int amount) {
-        return ${Type}.${type}(amount);
+    public Seconds withAmount(int amount) {
+        return Seconds.seconds(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative
-     * @return the new period plus the specified number of ${type}
+     * @param seconds  the amount of seconds to add, may be negative
+     * @return the new period plus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} plus(int ${type}) {
-        return (${Type}) super.plus(${type});
+    public Seconds plus(int seconds) {
+        return (Seconds) super.plus(seconds);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative, not null
-     * @return the new period plus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param seconds  the amount of seconds to add, may be negative, not null
+     * @return the new period plus the specified number of seconds
+     * @throws NullPointerException if the seconds to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} plus(${Type} ${type}) {
-        return plus(${type}.getAmount());
+    public Seconds plus(Seconds seconds) {
+        return plus(seconds.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of seconds taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative
-     * @return the new period minus the specified number of ${type}
+     * @param seconds  the amount of seconds to take away, may be negative
+     * @return the new period minus the specified number of seconds
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} minus(int ${type}) {
-        return (${Type}) super.minus(${type});
+    public Seconds minus(int seconds) {
+        return (Seconds) super.minus(seconds);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of seconds taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative, not null
-     * @return the new period minus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param seconds  the amount of seconds to take away, may be negative, not null
+     * @return the new period minus the specified number of seconds
+     * @throws NullPointerException if the seconds to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} minus(${Type} ${type}) {
-        return minus(${type}.getAmount());
+    public Seconds minus(Seconds seconds) {
+        return minus(seconds.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} multiplied by the specified scalar.
+     * Returns a new instance with the seconds multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -208,12 +208,12 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} multipliedBy(int scalar) {
-        return (${Type}) super.multipliedBy(scalar);
+    public Seconds multipliedBy(int scalar) {
+        return (Seconds) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the ${type} divided by the specified divisor.
+     * Returns a new instance with the seconds divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -223,84 +223,81 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public ${Type} dividedBy(int divisor) {
-        return (${Type}) super.dividedBy(divisor);
+    public Seconds dividedBy(int divisor) {
+        return (Seconds) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} value negated.
+     * Returns a new instance with the seconds value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} negated() {
-        return (${Type}) super.negated();
+    public Seconds negated() {
+        return (Seconds) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of ${type} in this instance to another instance.
+     * Compares the number of seconds in this instance to another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
+     * @param otherSeconds  the other number of seconds, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherSeconds is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(Seconds otherSeconds) {
+        int thisValue = this.seconds;
+        int otherValue = otherSeconds.seconds;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of ${type} in this instance greater than that in
+     * Is the number of seconds in this instance greater than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherSeconds  the other number of seconds, not null
+     * @return true if this number of seconds is greater
+     * @throws NullPointerException if otherSeconds is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(Seconds otherSeconds) {
+        return compareTo(otherSeconds) > 0;
     }
 
     /**
-     * Is the number of ${type} in this instance less than that in
+     * Is the number of seconds in this instance less than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherSeconds  the other number of seconds, not null
+     * @return true if this number of seconds is less
+     * @throws NullPointerException if otherSeconds is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(Seconds otherSeconds) {
+        return compareTo(otherSeconds) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of ${type}.
-     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
+     * Returns a string representation of the number of seconds.
+     * This will be in the format 'PTnS' where n is the number of seconds.
      *
-     * @return the number of ${type} in ISO8601 string format
+     * @return the number of seconds in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P${stringPrefix}" + ${type} + "${stringSuffix}";
+        return "PT" + seconds + "S";
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${type} field.
+     * Implementation of the rules for the seconds field.
      */
     private static class Rule extends DurationFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", ${relativeField});
+            super("Seconds", null);
         }
     }
 

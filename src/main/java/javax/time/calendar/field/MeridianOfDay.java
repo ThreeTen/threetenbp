@@ -37,80 +37,82 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.duration.Durational;
 
 /**
- * A time field representing a ${desc}.
+ * A time field representing a meridian of day.
  * <p>
- * ${Type} is an immutable time field that can only store a ${desc}.
- * It is a type-safe way of representing a ${desc} in an application.
+ * MeridianOfDay is an immutable time field that can only store a meridian of day.
+ * It is a type-safe way of representing a meridian of day in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a ${Type}
- * instance. Use get${Type}() instead.</b>
+ * <b>Do not use ordinal() to obtain the numeric representation of a MeridianOfDay
+ * instance. Use getMeridianOfDay() instead.</b>
  * <p>
- * ${Type} is thread-safe and immutable.
+ * MeridianOfDay is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum ${Type} implements Calendrical {
+public enum MeridianOfDay implements Calendrical {
 
-#foreach ($singleton in $singletons)
     /**
-     * ${singleton.desc}
+     * The singleton instance for the morning (ante meridian).
      */
-    ${singleton.type}(${singleton.value}),
-#end
+    AM(0),
+    /**
+     * The singleton instance for the afternoon (post meridian).
+     */
+    PM(1),
     ;
     /**
-     * The rule implementation that defines how the ${desc} field operates.
+     * The rule implementation that defines how the meridian of day field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
 
     /**
-     * The ${desc} being represented.
+     * The meridian of day being represented.
      */
-    private final int ${type};
+    private final int meridianOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>MeridianOfDay</code>.
      *
-     * @param ${type}  the ${desc} to represent
-     * @return the existing ${Type}
+     * @param meridianOfDay  the meridian of day to represent
+     * @return the existing MeridianOfDay
      */
-    public static ${Type} ${type}(int ${type}) {
-        switch (${type}) {
-#foreach ($singleton in $singletons)
-            case ${singleton.value}:
-                return ${singleton.type};
-#end
+    public static MeridianOfDay meridianOfDay(int meridianOfDay) {
+        switch (meridianOfDay) {
+            case 0:
+                return AM;
+            case 1:
+                return PM;
             default:
-                throw new IllegalArgumentException("${Type} cannot have the value " + ${type});
+                throw new IllegalArgumentException("MeridianOfDay cannot have the value " + meridianOfDay);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified ${desc}.
+     * Constructs an instance with the specified meridian of day.
      *
-     * @param ${type}  the ${desc} to represent
+     * @param meridianOfDay  the meridian of day to represent
      */
-    private ${Type}(int ${type}) {
-        this.${type} = ${type};
+    private MeridianOfDay(int meridianOfDay) {
+        this.meridianOfDay = meridianOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ${desc} value.
+     * Gets the meridian of day value.
      *
-     * @return the ${desc}
+     * @return the meridian of day
      */
-    public int get${Type}() {
-        return ${type};
+    public int getMeridianOfDay() {
+        return meridianOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * ${Type} instance.
+     * MeridianOfDay instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -121,64 +123,58 @@ public enum ${Type} implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next ${desc} wrapping so that the next ${desc}
+     * Gets the next meridian of day wrapping so that the next meridian of day
      * is always returned.
      *
-     * @return the next ${desc}, never null
+     * @return the next meridian of day, never null
      */
-    public ${Type} next() {
-        return values()[(ordinal() + 1) % ${singletons.size()}];
+    public MeridianOfDay next() {
+        return values()[(ordinal() + 1) % 2];
     }
 
     /**
-     * Gets the previous ${desc} wrapping so that the previous ${desc}
+     * Gets the previous meridian of day wrapping so that the previous meridian of day
      * is always returned.
      *
-     * @return the previous ${desc}, never null
+     * @return the previous meridian of day, never null
      */
-    public ${Type} previous() {
-        return values()[(ordinal() + ${singletons.size()} - 1) % ${singletons.size()}];
+    public MeridianOfDay previous() {
+        return values()[(ordinal() + 2 - 1) % 2];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this ${desc} instance greater than the specified ${desc}.
+     * Is this meridian of day instance greater than the specified meridian of day.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherMeridianOfDay  the other meridian of day instance, not null
+     * @return true if this meridian of day is greater
+     * @throws NullPointerException if otherMeridianOfDay is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(MeridianOfDay otherMeridianOfDay) {
+        return compareTo(otherMeridianOfDay) > 0;
     }
 
     /**
-     * Is this ${desc} instance less than the specified ${desc}.
+     * Is this meridian of day instance less than the specified meridian of day.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherMeridianOfDay  the other meridian of day instance, not null
+     * @return true if this meridian of day is less
+     * @throws NullPointerException if otherMeridianOfDay is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(MeridianOfDay otherMeridianOfDay) {
+        return compareTo(otherMeridianOfDay) < 0;
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${desc} field.
+     * Implementation of the rules for the meridian of day field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", null, null, ${minValue}, ${maxValue});
+            super("MeridianOfDay", null, null, 0, 1);
         }
-#foreach ($line in $ruleMethods)
-${line}
-#end
     }
 
 }

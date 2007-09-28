@@ -38,30 +38,30 @@ import javax.time.duration.DurationFieldRule;
 import javax.time.duration.DurationalState;
 
 /**
- * A duration representing a number of ${type}.
+ * A duration representing a number of days.
  * <p>
- * ${Type} is an immutable duration that can only store ${type}.
- * It is a type-safe way of representing a number of ${type} in an application.
+ * Days is an immutable duration that can only store days.
+ * It is a type-safe way of representing a number of days in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of ${type} may be queried using get${Type}().
+ * The number of days may be queried using getDays().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * ${Type} is thread-safe and immutable.
+ * Days is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
+public final class Days extends DurationField implements Comparable<Days>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${type} field operates.
+     * The rule implementation that defines how the days field operates.
      */
     public static final DurationFieldRule RULE = new Rule();
     /**
-     * A constant for zero ${type}.
+     * A constant for zero days.
      */
-    public static final ${Type} ZERO = new ${Type}(0);
+    public static final Days ZERO = new Days(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of ${type} in the period.
+     * The number of days in the period.
      */
-    private final int ${type};
+    private final int days;
 
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>Days</code>.
      *
-     * @param ${type}  the number of ${type} the instance will represent
-     * @return the created ${Type}
+     * @param days  the number of days the instance will represent
+     * @return the created Days
      */
-    public static ${Type} ${type}(int ${type}) {
-        if (${type} == 0) {
+    public static Days days(int days) {
+        if (days == 0) {
             return ZERO;
         }
-        return new ${Type}(${type});
+        return new Days(days);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of ${type}.
+     * Constructs an instance using a specific number of days.
      *
-     * @param ${type}  the ${type} to use
+     * @param days  the days to use
      */
-    private ${Type}(int ${type}) {
+    private Days(int days) {
         super();
-        this.${type} = ${type};
+        this.days = days;
     }
 
     /**
@@ -103,7 +103,7 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ${Type}.${type}(${type});
+        return Days.days(days);
     }
 
     //-----------------------------------------------------------------------
@@ -119,87 +119,87 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of ${type} held in this duration.
+     * Gets the number of days held in this duration.
      *
-     * @return the number of ${type}
+     * @return the number of days
      */
     @Override
     public int getAmount() {
-        return ${type};
+        return days;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of ${type}.
+     * Returns a new instance of the subclass with a different number of days.
      *
-     * @param amount  the number of ${type} to set in the new instance, may be negative
+     * @param amount  the number of days to set in the new instance, may be negative
      * @return a new duration element, never null
      */
     @Override
-    public ${Type} withAmount(int amount) {
-        return ${Type}.${type}(amount);
+    public Days withAmount(int amount) {
+        return Days.days(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative
-     * @return the new period plus the specified number of ${type}
+     * @param days  the amount of days to add, may be negative
+     * @return the new period plus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} plus(int ${type}) {
-        return (${Type}) super.plus(${type});
+    public Days plus(int days) {
+        return (Days) super.plus(days);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative, not null
-     * @return the new period plus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param days  the amount of days to add, may be negative, not null
+     * @return the new period plus the specified number of days
+     * @throws NullPointerException if the days to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} plus(${Type} ${type}) {
-        return plus(${type}.getAmount());
+    public Days plus(Days days) {
+        return plus(days.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of days taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative
-     * @return the new period minus the specified number of ${type}
+     * @param days  the amount of days to take away, may be negative
+     * @return the new period minus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} minus(int ${type}) {
-        return (${Type}) super.minus(${type});
+    public Days minus(int days) {
+        return (Days) super.minus(days);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of days taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative, not null
-     * @return the new period minus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param days  the amount of days to take away, may be negative, not null
+     * @return the new period minus the specified number of days
+     * @throws NullPointerException if the days to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} minus(${Type} ${type}) {
-        return minus(${type}.getAmount());
+    public Days minus(Days days) {
+        return minus(days.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} multiplied by the specified scalar.
+     * Returns a new instance with the days multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -208,12 +208,12 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} multipliedBy(int scalar) {
-        return (${Type}) super.multipliedBy(scalar);
+    public Days multipliedBy(int scalar) {
+        return (Days) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the ${type} divided by the specified divisor.
+     * Returns a new instance with the days divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -223,84 +223,81 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public ${Type} dividedBy(int divisor) {
-        return (${Type}) super.dividedBy(divisor);
+    public Days dividedBy(int divisor) {
+        return (Days) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} value negated.
+     * Returns a new instance with the days value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} negated() {
-        return (${Type}) super.negated();
+    public Days negated() {
+        return (Days) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of ${type} in this instance to another instance.
+     * Compares the number of days in this instance to another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
+     * @param otherDays  the other number of days, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherDays is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(Days otherDays) {
+        int thisValue = this.days;
+        int otherValue = otherDays.days;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of ${type} in this instance greater than that in
+     * Is the number of days in this instance greater than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherDays  the other number of days, not null
+     * @return true if this number of days is greater
+     * @throws NullPointerException if otherDays is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(Days otherDays) {
+        return compareTo(otherDays) > 0;
     }
 
     /**
-     * Is the number of ${type} in this instance less than that in
+     * Is the number of days in this instance less than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherDays  the other number of days, not null
+     * @return true if this number of days is less
+     * @throws NullPointerException if otherDays is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(Days otherDays) {
+        return compareTo(otherDays) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of ${type}.
-     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
+     * Returns a string representation of the number of days.
+     * This will be in the format 'PnD' where n is the number of days.
      *
-     * @return the number of ${type} in ISO8601 string format
+     * @return the number of days in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P${stringPrefix}" + ${type} + "${stringSuffix}";
+        return "P" + days + "D";
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${type} field.
+     * Implementation of the rules for the days field.
      */
     private static class Rule extends DurationFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", ${relativeField});
+            super("Days", Hours.hours(24));
         }
     }
 

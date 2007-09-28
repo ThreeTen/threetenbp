@@ -38,30 +38,30 @@ import javax.time.duration.DurationFieldRule;
 import javax.time.duration.DurationalState;
 
 /**
- * A duration representing a number of ${type}.
+ * A duration representing a number of years.
  * <p>
- * ${Type} is an immutable duration that can only store ${type}.
- * It is a type-safe way of representing a number of ${type} in an application.
+ * Years is an immutable duration that can only store years.
+ * It is a type-safe way of representing a number of years in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of ${type} may be queried using get${Type}().
+ * The number of years may be queried using getYears().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * ${Type} is thread-safe and immutable.
+ * Years is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
+public final class Years extends DurationField implements Comparable<Years>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${type} field operates.
+     * The rule implementation that defines how the years field operates.
      */
     public static final DurationFieldRule RULE = new Rule();
     /**
-     * A constant for zero ${type}.
+     * A constant for zero years.
      */
-    public static final ${Type} ZERO = new ${Type}(0);
+    public static final Years ZERO = new Years(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of ${type} in the period.
+     * The number of years in the period.
      */
-    private final int ${type};
+    private final int years;
 
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>Years</code>.
      *
-     * @param ${type}  the number of ${type} the instance will represent
-     * @return the created ${Type}
+     * @param years  the number of years the instance will represent
+     * @return the created Years
      */
-    public static ${Type} ${type}(int ${type}) {
-        if (${type} == 0) {
+    public static Years years(int years) {
+        if (years == 0) {
             return ZERO;
         }
-        return new ${Type}(${type});
+        return new Years(years);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of ${type}.
+     * Constructs an instance using a specific number of years.
      *
-     * @param ${type}  the ${type} to use
+     * @param years  the years to use
      */
-    private ${Type}(int ${type}) {
+    private Years(int years) {
         super();
-        this.${type} = ${type};
+        this.years = years;
     }
 
     /**
@@ -103,7 +103,7 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ${Type}.${type}(${type});
+        return Years.years(years);
     }
 
     //-----------------------------------------------------------------------
@@ -119,87 +119,87 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of ${type} held in this duration.
+     * Gets the number of years held in this duration.
      *
-     * @return the number of ${type}
+     * @return the number of years
      */
     @Override
     public int getAmount() {
-        return ${type};
+        return years;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of ${type}.
+     * Returns a new instance of the subclass with a different number of years.
      *
-     * @param amount  the number of ${type} to set in the new instance, may be negative
+     * @param amount  the number of years to set in the new instance, may be negative
      * @return a new duration element, never null
      */
     @Override
-    public ${Type} withAmount(int amount) {
-        return ${Type}.${type}(amount);
+    public Years withAmount(int amount) {
+        return Years.years(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative
-     * @return the new period plus the specified number of ${type}
+     * @param years  the amount of years to add, may be negative
+     * @return the new period plus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} plus(int ${type}) {
-        return (${Type}) super.plus(${type});
+    public Years plus(int years) {
+        return (Years) super.plus(years);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative, not null
-     * @return the new period plus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param years  the amount of years to add, may be negative, not null
+     * @return the new period plus the specified number of years
+     * @throws NullPointerException if the years to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} plus(${Type} ${type}) {
-        return plus(${type}.getAmount());
+    public Years plus(Years years) {
+        return plus(years.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of years taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative
-     * @return the new period minus the specified number of ${type}
+     * @param years  the amount of years to take away, may be negative
+     * @return the new period minus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} minus(int ${type}) {
-        return (${Type}) super.minus(${type});
+    public Years minus(int years) {
+        return (Years) super.minus(years);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of years taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative, not null
-     * @return the new period minus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param years  the amount of years to take away, may be negative, not null
+     * @return the new period minus the specified number of years
+     * @throws NullPointerException if the years to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} minus(${Type} ${type}) {
-        return minus(${type}.getAmount());
+    public Years minus(Years years) {
+        return minus(years.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} multiplied by the specified scalar.
+     * Returns a new instance with the years multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -208,12 +208,12 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} multipliedBy(int scalar) {
-        return (${Type}) super.multipliedBy(scalar);
+    public Years multipliedBy(int scalar) {
+        return (Years) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the ${type} divided by the specified divisor.
+     * Returns a new instance with the years divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -223,84 +223,81 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public ${Type} dividedBy(int divisor) {
-        return (${Type}) super.dividedBy(divisor);
+    public Years dividedBy(int divisor) {
+        return (Years) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} value negated.
+     * Returns a new instance with the years value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} negated() {
-        return (${Type}) super.negated();
+    public Years negated() {
+        return (Years) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of ${type} in this instance to another instance.
+     * Compares the number of years in this instance to another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
+     * @param otherYears  the other number of years, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherYears is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(Years otherYears) {
+        int thisValue = this.years;
+        int otherValue = otherYears.years;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of ${type} in this instance greater than that in
+     * Is the number of years in this instance greater than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherYears  the other number of years, not null
+     * @return true if this number of years is greater
+     * @throws NullPointerException if otherYears is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(Years otherYears) {
+        return compareTo(otherYears) > 0;
     }
 
     /**
-     * Is the number of ${type} in this instance less than that in
+     * Is the number of years in this instance less than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherYears  the other number of years, not null
+     * @return true if this number of years is less
+     * @throws NullPointerException if otherYears is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(Years otherYears) {
+        return compareTo(otherYears) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of ${type}.
-     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
+     * Returns a string representation of the number of years.
+     * This will be in the format 'PnY' where n is the number of years.
      *
-     * @return the number of ${type} in ISO8601 string format
+     * @return the number of years in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P${stringPrefix}" + ${type} + "${stringSuffix}";
+        return "P" + years + "Y";
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${type} field.
+     * Implementation of the rules for the years field.
      */
     private static class Rule extends DurationFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", ${relativeField});
+            super("Years", Months.months(12));
         }
     }
 

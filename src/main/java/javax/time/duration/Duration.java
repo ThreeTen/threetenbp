@@ -34,9 +34,12 @@ package javax.time.duration;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import javax.time.DurationFieldRule;
-import javax.time.Durational;
-import javax.time.DurationalState;
+import javax.time.duration.field.Days;
+import javax.time.duration.field.Hours;
+import javax.time.duration.field.Minutes;
+import javax.time.duration.field.Months;
+import javax.time.duration.field.Seconds;
+import javax.time.duration.field.Years;
 
 /**
  * An immutable duration consisting of a number of duration fields.

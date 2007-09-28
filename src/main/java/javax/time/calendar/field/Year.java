@@ -39,22 +39,22 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.duration.Durational;
 
 /**
- * A time field representing a ${desc}.
+ * A time field representing a year.
  * <p>
- * ${Type} is an immutable time field that can only store a ${desc}.
- * It is a type-safe way of representing a ${desc} in an application.
+ * Year is an immutable time field that can only store a year.
+ * It is a type-safe way of representing a year in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The ${desc} may be queried using get${Type}().
+ * The year may be queried using getYear().
  * <p>
- * ${Type} is thread-safe and immutable.
+ * Year is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializable {
+public final class Year implements Calendrical, Comparable<Year>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${desc} field operates.
+     * The rule implementation that defines how the year field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -63,45 +63,45 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
     private static final long serialVersionUID = 1L;
 
     /**
-     * The ${desc} being represented.
+     * The year being represented.
      */
-    private final int ${type};
+    private final int year;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>Year</code>.
      *
-     * @param ${type}  the ${desc} to represent
-     * @return the created ${Type}
+     * @param year  the year to represent
+     * @return the created Year
      */
-    public static ${Type} ${type}(int ${type}) {
-        return new ${Type}(${type});
+    public static Year year(int year) {
+        return new Year(year);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified ${desc}.
+     * Constructs an instance with the specified year.
      *
-     * @param ${type}  the ${desc} to represent
+     * @param year  the year to represent
      */
-    private ${Type}(int ${type}) {
-        this.${type} = ${type};
+    private Year(int year) {
+        this.year = year;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ${desc} value.
+     * Gets the year value.
      *
-     * @return the ${desc}
+     * @return the year
      */
-    public int get${Type}() {
-        return ${type};
+    public int getYear() {
+        return year;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * ${Type} instance.
+     * Year instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -112,84 +112,106 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this ${desc} instance to another.
+     * Compares this year instance to another.
      *
-     * @param other${Type}  the other ${desc} instance, not null
+     * @param otherYear  the other year instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherYear is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(Year otherYear) {
+        int thisValue = this.year;
+        int otherValue = otherYear.year;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this ${desc} instance greater than the specified ${desc}.
+     * Is this year instance greater than the specified year.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherYear  the other year instance, not null
+     * @return true if this year is greater
+     * @throws NullPointerException if otherYear is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(Year otherYear) {
+        return compareTo(otherYear) > 0;
     }
 
     /**
-     * Is this ${desc} instance less than the specified ${desc}.
+     * Is this year instance less than the specified year.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherYear  the other year instance, not null
+     * @return true if this year is less
+     * @throws NullPointerException if otherYear is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(Year otherYear) {
+        return compareTo(otherYear) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the ${desc}.
+     * Is this instance equal to that specified, evaluating the year.
      *
-     * @param other${Type}  the other ${desc} instance, null returns false
-     * @return true if the ${desc} is the same
+     * @param otherYear  the other year instance, null returns false
+     * @return true if the year is the same
      */
     @Override
-    public boolean equals(Object other${Type}) {
-        if (this == other${Type}) {
+    public boolean equals(Object otherYear) {
+        if (this == otherYear) {
             return true;
         }
-        if (other${Type} instanceof ${Type}) {
-            return ${type} == ((${Type}) other${Type}).${type};
+        if (otherYear instanceof Year) {
+            return year == ((Year) otherYear).year;
         }
         return false;
     }
 
     /**
-     * A hashcode for the ${desc} object.
+     * A hashcode for the year object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return ${type};
+        return year;
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${desc} field.
+     * Checks if the specified year is a leap year, according to the ISO
+     * calendar system rules.
+     *
+     * @return true if the year is leap, false otherwise
+     */
+    public boolean isLeap() {
+        return isLeap(getYear());
+    }
+
+    /**
+     * Checks if the specified year is a leap year, according to the ISO
+     * calendar system rules.
+     *
+     * @param year  the year to check
+     * @return true if the year is leap, false otherwise
+     */
+    public static boolean isLeap(int year) {
+        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the year field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", null, null, ${minValue}, ${maxValue});
+            super("Year", null, null, Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
-#foreach ($line in $ruleMethods)
-${line}
-#end
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(Durational epochDuration) {
+            return super.getValue(epochDuration) + 1970;
+        }
     }
 
 }

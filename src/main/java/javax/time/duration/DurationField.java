@@ -32,7 +32,6 @@
 package javax.time.duration;
 
 import javax.time.MathUtils;
-import javax.time.Durational;
 
 /**
  * A duration measured in terms of a single field, such as days or seconds.

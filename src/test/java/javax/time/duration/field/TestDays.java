@@ -46,47 +46,47 @@ import static org.testng.Assert.*;
  * @author Stephen Colebourne
  */
 @Test
-public class Test${Type} {
+public class TestDays {
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() {
-        assertTrue(Serializable.class.isAssignableFrom(${Type}.class));
+        assertTrue(Serializable.class.isAssignableFrom(Days.class));
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryZeroSingleton() {
-        assertSame(${Type}.ZERO, ${Type}.${type}(0));
-        assertSame(${Type}.ZERO, ${Type}.${type}(0));
-        assertEquals(0, ${Type}.ZERO.getAmount());
+        assertSame(Days.ZERO, Days.days(0));
+        assertSame(Days.ZERO, Days.days(0));
+        assertEquals(0, Days.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
-    public void test_factoryGet${Type}() {
-        assertEquals(1,  ${Type}.${type}(1).getAmount());
-        assertEquals(2,  ${Type}.${type}(2).getAmount());
-        assertEquals(Integer.MAX_VALUE,  ${Type}.${type}(Integer.MAX_VALUE).getAmount());
-        assertEquals(-1,  ${Type}.${type}(-1).getAmount());
-        assertEquals(-2,  ${Type}.${type}(-2).getAmount());
-        assertEquals(Integer.MIN_VALUE,  ${Type}.${type}(Integer.MIN_VALUE).getAmount());
+    public void test_factoryGetDays() {
+        assertEquals(1,  Days.days(1).getAmount());
+        assertEquals(2,  Days.days(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Days.days(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Days.days(-1).getAmount());
+        assertEquals(-2,  Days.days(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Days.days(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        ${Type} orginal = ${Type}.ZERO;
+        Days orginal = Days.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        ${Type} ser = (${Type}) in.readObject();
-        assertSame(${Type}.ZERO, ser);
+        Days ser = (Days) in.readObject();
+        assertSame(Days.ZERO, ser);
     }
 
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Days test5 = Days.days(5);
+        Days test6 = Days.days(6);
         assertEquals(0, test5.compareTo(test5));
         assertEquals(-1, test5.compareTo(test6));
         assertEquals(1, test6.compareTo(test5));
@@ -94,14 +94,14 @@ public class Test${Type} {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Days test5 = Days.days(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isGreaterThan() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Days test5 = Days.days(5);
+        Days test6 = Days.days(6);
         assertEquals(false, test5.isGreaterThan(test5));
         assertEquals(false, test5.isGreaterThan(test6));
         assertEquals(true, test6.isGreaterThan(test5));
@@ -109,14 +109,14 @@ public class Test${Type} {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isGreaterThan_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Days test5 = Days.days(5);
         test5.isGreaterThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isLessThan() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Days test5 = Days.days(5);
+        Days test6 = Days.days(6);
         assertEquals(false, test5.isLessThan(test5));
         assertEquals(true, test5.isLessThan(test6));
         assertEquals(false, test6.isLessThan(test5));
@@ -124,197 +124,197 @@ public class Test${Type} {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isLessThan_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Days test5 = Days.days(5);
         test5.isLessThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_equals() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Days test5 = Days.days(5);
+        Days test6 = Days.days(6);
         assertEquals(true, test5.equals(test5));
         assertEquals(false, test5.equals(test6));
         assertEquals(false, test6.equals(test5));
     }
 
     public void test_equals_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Days test5 = Days.days(5);
         assertEquals(false, test5.equals(null));
     }
 
     public void test_equals_otherClass() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Days test5 = Days.days(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Days test5 = Days.days(5);
+        Days test6 = Days.days(6);
         assertEquals(true, test5.hashCode() == test5.hashCode());
         assertEquals(false, test5.hashCode() == test6.hashCode());
     }
 
     //-----------------------------------------------------------------------
     public void test_plus() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.plus(0));
-        assertEquals(${Type}.${type}(7), test5.plus(2));
-        assertEquals(${Type}.${type}(3), test5.plus(-2));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE), ${Type}.${type}(Integer.MAX_VALUE - 1).plus(1));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE), ${Type}.${type}(Integer.MIN_VALUE + 1).plus(-1));
+        Days test5 = Days.days(5);
+        assertEquals(Days.days(5), test5.plus(0));
+        assertEquals(Days.days(7), test5.plus(2));
+        assertEquals(Days.days(3), test5.plus(-2));
+        assertEquals(Days.days(Integer.MAX_VALUE), Days.days(Integer.MAX_VALUE - 1).plus(1));
+        assertEquals(Days.days(Integer.MIN_VALUE), Days.days(Integer.MIN_VALUE + 1).plus(-1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).plus(2);
+        Days.days(Integer.MAX_VALUE - 1).plus(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).plus(-2);
+        Days.days(Integer.MIN_VALUE + 1).plus(-2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_plus_${Type}() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.plus(${Type}.${type}(0)));
-        assertEquals(${Type}.${type}(7), test5.plus(${Type}.${type}(2)));
-        assertEquals(${Type}.${type}(3), test5.plus(${Type}.${type}(-2)));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE),
-                ${Type}.${type}(Integer.MAX_VALUE - 1).plus(${Type}.${type}(1)));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE),
-                ${Type}.${type}(Integer.MIN_VALUE + 1).plus(${Type}.${type}(-1)));
+    public void test_plus_Days() {
+        Days test5 = Days.days(5);
+        assertEquals(Days.days(5), test5.plus(Days.days(0)));
+        assertEquals(Days.days(7), test5.plus(Days.days(2)));
+        assertEquals(Days.days(3), test5.plus(Days.days(-2)));
+        assertEquals(Days.days(Integer.MAX_VALUE),
+                Days.days(Integer.MAX_VALUE - 1).plus(Days.days(1)));
+        assertEquals(Days.days(Integer.MIN_VALUE),
+                Days.days(Integer.MIN_VALUE + 1).plus(Days.days(-1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_${Type}_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).plus(${Type}.${type}(2));
+    public void test_plus_Days_overflowTooBig() {
+        Days.days(Integer.MAX_VALUE - 1).plus(Days.days(2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_${Type}_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).plus(${Type}.${type}(-2));
+    public void test_plus_Days_overflowTooSmall() {
+        Days.days(Integer.MIN_VALUE + 1).plus(Days.days(-2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_plus_${Type}_null() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).plus(null);
+    public void test_plus_Days_null() {
+        Days.days(Integer.MIN_VALUE + 1).plus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_minus() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.minus(0));
-        assertEquals(${Type}.${type}(3), test5.minus(2));
-        assertEquals(${Type}.${type}(7), test5.minus(-2));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE), ${Type}.${type}(Integer.MAX_VALUE - 1).minus(-1));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE), ${Type}.${type}(Integer.MIN_VALUE + 1).minus(1));
+        Days test5 = Days.days(5);
+        assertEquals(Days.days(5), test5.minus(0));
+        assertEquals(Days.days(3), test5.minus(2));
+        assertEquals(Days.days(7), test5.minus(-2));
+        assertEquals(Days.days(Integer.MAX_VALUE), Days.days(Integer.MAX_VALUE - 1).minus(-1));
+        assertEquals(Days.days(Integer.MIN_VALUE), Days.days(Integer.MIN_VALUE + 1).minus(1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).minus(-2);
+        Days.days(Integer.MAX_VALUE - 1).minus(-2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).minus(2);
+        Days.days(Integer.MIN_VALUE + 1).minus(2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_minus_${Type}() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.minus(${Type}.${type}(0)));
-        assertEquals(${Type}.${type}(3), test5.minus(${Type}.${type}(2)));
-        assertEquals(${Type}.${type}(7), test5.minus(${Type}.${type}(-2)));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE),
-                ${Type}.${type}(Integer.MAX_VALUE - 1).minus(${Type}.${type}(-1)));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE),
-                ${Type}.${type}(Integer.MIN_VALUE + 1).minus(${Type}.${type}(1)));
+    public void test_minus_Days() {
+        Days test5 = Days.days(5);
+        assertEquals(Days.days(5), test5.minus(Days.days(0)));
+        assertEquals(Days.days(3), test5.minus(Days.days(2)));
+        assertEquals(Days.days(7), test5.minus(Days.days(-2)));
+        assertEquals(Days.days(Integer.MAX_VALUE),
+                Days.days(Integer.MAX_VALUE - 1).minus(Days.days(-1)));
+        assertEquals(Days.days(Integer.MIN_VALUE),
+                Days.days(Integer.MIN_VALUE + 1).minus(Days.days(1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_${Type}_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).minus(${Type}.${type}(-2));
+    public void test_minus_Days_overflowTooBig() {
+        Days.days(Integer.MAX_VALUE - 1).minus(Days.days(-2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_${Type}_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).minus(${Type}.${type}(2));
+    public void test_minus_Days_overflowTooSmall() {
+        Days.days(Integer.MIN_VALUE + 1).minus(Days.days(2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_minus_${Type}_null() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).minus(null);
+    public void test_minus_Days_null() {
+        Days.days(Integer.MIN_VALUE + 1).minus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_multipliedBy() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(0), test5.multipliedBy(0));
-        assertEquals(${Type}.${type}(5), test5.multipliedBy(1));
-        assertEquals(${Type}.${type}(10), test5.multipliedBy(2));
-        assertEquals(${Type}.${type}(15), test5.multipliedBy(3));
-        assertEquals(${Type}.${type}(-15), test5.multipliedBy(-3));
+        Days test5 = Days.days(5);
+        assertEquals(Days.days(0), test5.multipliedBy(0));
+        assertEquals(Days.days(5), test5.multipliedBy(1));
+        assertEquals(Days.days(10), test5.multipliedBy(2));
+        assertEquals(Days.days(15), test5.multipliedBy(3));
+        assertEquals(Days.days(-15), test5.multipliedBy(-3));
     }
 
     public void test_multipliedBy_negate() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(-15), test5.multipliedBy(-3));
+        Days test5 = Days.days(5);
+        assertEquals(Days.days(-15), test5.multipliedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
+        Days.days(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
+        Days.days(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        ${Type} test12 = ${Type}.${type}(12);
-        assertEquals(${Type}.${type}(12), test12.dividedBy(1));
-        assertEquals(${Type}.${type}(6), test12.dividedBy(2));
-        assertEquals(${Type}.${type}(4), test12.dividedBy(3));
-        assertEquals(${Type}.${type}(3), test12.dividedBy(4));
-        assertEquals(${Type}.${type}(2), test12.dividedBy(5));
-        assertEquals(${Type}.${type}(2), test12.dividedBy(6));
-        assertEquals(${Type}.${type}(-4), test12.dividedBy(-3));
+        Days test12 = Days.days(12);
+        assertEquals(Days.days(12), test12.dividedBy(1));
+        assertEquals(Days.days(6), test12.dividedBy(2));
+        assertEquals(Days.days(4), test12.dividedBy(3));
+        assertEquals(Days.days(3), test12.dividedBy(4));
+        assertEquals(Days.days(2), test12.dividedBy(5));
+        assertEquals(Days.days(2), test12.dividedBy(6));
+        assertEquals(Days.days(-4), test12.dividedBy(-3));
     }
 
     public void test_dividedBy_negate() {
-        ${Type} test12 = ${Type}.${type}(12);
-        assertEquals(${Type}.${type}(-4), test12.dividedBy(-3));
+        Days test12 = Days.days(12);
+        assertEquals(Days.days(-4), test12.dividedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_dividedBy_divideByZero() {
-        ${Type}.${type}(1).dividedBy(0);
+        Days.days(1).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
     public void test_negated() {
-        assertEquals(${Type}.${type}(0), ${Type}.${type}(0).negated());
-        assertEquals(${Type}.${type}(-12), ${Type}.${type}(12).negated());
-        assertEquals(${Type}.${type}(12), ${Type}.${type}(-12).negated());
-        assertEquals(${Type}.${type}(-Integer.MAX_VALUE), ${Type}.${type}(Integer.MAX_VALUE).negated());
+        assertEquals(Days.days(0), Days.days(0).negated());
+        assertEquals(Days.days(-12), Days.days(12).negated());
+        assertEquals(Days.days(12), Days.days(-12).negated());
+        assertEquals(Days.days(-Integer.MAX_VALUE), Days.days(Integer.MAX_VALUE).negated());
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
-        ${Type}.${type}(Integer.MIN_VALUE).negated();
+        Days.days(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals("P${stringPrefix}5${stringSuffix}", test5.toString());
-        ${Type} testM1 = ${Type}.${type}(-1);
-        assertEquals("P${stringPrefix}-1${stringSuffix}", testM1.toString());
+        Days test5 = Days.days(5);
+        assertEquals("P5D", test5.toString());
+        Days testM1 = Days.days(-1);
+        assertEquals("P-1D", testM1.toString());
     }
 
 }

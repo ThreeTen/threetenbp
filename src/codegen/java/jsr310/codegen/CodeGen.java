@@ -53,9 +53,11 @@ public class CodeGen {
 
     private static final String TEMPLATE_DIR = "src/codegen/java/jsr310/codegen/";
     private static final File MAIN_DIR = new File("src/main/java/javax/time");
-    private static final File MAIN_DURATION_DIR = new File("src/main/java/javax/time/duration");
+    private static final File MAIN_CALENDAR_DIR = new File("src/main/java/javax/time/calendar/field");
+    private static final File MAIN_DURATION_DIR = new File("src/main/java/javax/time/duration/field");
     private static final File TEST_DIR = new File("src/test/java/javax/time");
-    private static final File TEST_DURATION_DIR = new File("src/test/java/javax/time/duration");
+    private static final File TEST_CALENDAR_DIR = new File("src/test/java/javax/time/calendar/field");
+    private static final File TEST_DURATION_DIR = new File("src/test/java/javax/time/duration/field");
 
     public static void main(String[] args) {
         try {
@@ -150,6 +152,7 @@ public class CodeGen {
         processTimeField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
         processTimeField(regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
         processTimeField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
+        processTimeField(enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
         processTimeField(regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
         processTimeField(regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
         processTimeField(regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
@@ -159,7 +162,7 @@ public class CodeGen {
             Template template,
             String classname, String desc, FieldSingleton[] singletons,
             String minValue, String maxValue) throws Exception {
-        File file = new File(MAIN_DIR, classname + ".java");
+        File file = new File(MAIN_CALENDAR_DIR, classname + ".java");
         List<String> methodLines = findAdditionalMethods(file,
               singletons == null ? "public int hashCode() {" : "public boolean isLessThan(");
         int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
@@ -274,6 +277,11 @@ public class CodeGen {
         new FieldSingleton("FRIDAY", "The singleton instance for the day of week of Friday.", "5"),
         new FieldSingleton("SATURDAY", "The singleton instance for the day of week of Saturday.", "6"),
         new FieldSingleton("SUNDAY", "The singleton instance for the day of week of Sunday.", "7"),
+    };
+
+    private static final FieldSingleton[] MERIDIAN_OF_DAY = new FieldSingleton[] {
+        new FieldSingleton("AM", "The singleton instance for the morning (ante meridian).", "0"),
+        new FieldSingleton("PM", "The singleton instance for the afternoon (post meridian).", "1"),
     };
 
     public static class FieldSingleton {

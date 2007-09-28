@@ -38,30 +38,30 @@ import javax.time.duration.DurationFieldRule;
 import javax.time.duration.DurationalState;
 
 /**
- * A duration representing a number of ${type}.
+ * A duration representing a number of weeks.
  * <p>
- * ${Type} is an immutable duration that can only store ${type}.
- * It is a type-safe way of representing a number of ${type} in an application.
+ * Weeks is an immutable duration that can only store weeks.
+ * It is a type-safe way of representing a number of weeks in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of ${type} may be queried using get${Type}().
+ * The number of weeks may be queried using getWeeks().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * ${Type} is thread-safe and immutable.
+ * Weeks is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
+public final class Weeks extends DurationField implements Comparable<Weeks>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${type} field operates.
+     * The rule implementation that defines how the weeks field operates.
      */
     public static final DurationFieldRule RULE = new Rule();
     /**
-     * A constant for zero ${type}.
+     * A constant for zero weeks.
      */
-    public static final ${Type} ZERO = new ${Type}(0);
+    public static final Weeks ZERO = new Weeks(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of ${type} in the period.
+     * The number of weeks in the period.
      */
-    private final int ${type};
+    private final int weeks;
 
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>Weeks</code>.
      *
-     * @param ${type}  the number of ${type} the instance will represent
-     * @return the created ${Type}
+     * @param weeks  the number of weeks the instance will represent
+     * @return the created Weeks
      */
-    public static ${Type} ${type}(int ${type}) {
-        if (${type} == 0) {
+    public static Weeks weeks(int weeks) {
+        if (weeks == 0) {
             return ZERO;
         }
-        return new ${Type}(${type});
+        return new Weeks(weeks);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of ${type}.
+     * Constructs an instance using a specific number of weeks.
      *
-     * @param ${type}  the ${type} to use
+     * @param weeks  the weeks to use
      */
-    private ${Type}(int ${type}) {
+    private Weeks(int weeks) {
         super();
-        this.${type} = ${type};
+        this.weeks = weeks;
     }
 
     /**
@@ -103,7 +103,7 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ${Type}.${type}(${type});
+        return Weeks.weeks(weeks);
     }
 
     //-----------------------------------------------------------------------
@@ -119,87 +119,87 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of ${type} held in this duration.
+     * Gets the number of weeks held in this duration.
      *
-     * @return the number of ${type}
+     * @return the number of weeks
      */
     @Override
     public int getAmount() {
-        return ${type};
+        return weeks;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of ${type}.
+     * Returns a new instance of the subclass with a different number of weeks.
      *
-     * @param amount  the number of ${type} to set in the new instance, may be negative
+     * @param amount  the number of weeks to set in the new instance, may be negative
      * @return a new duration element, never null
      */
     @Override
-    public ${Type} withAmount(int amount) {
-        return ${Type}.${type}(amount);
+    public Weeks withAmount(int amount) {
+        return Weeks.weeks(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative
-     * @return the new period plus the specified number of ${type}
+     * @param weeks  the amount of weeks to add, may be negative
+     * @return the new period plus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} plus(int ${type}) {
-        return (${Type}) super.plus(${type});
+    public Weeks plus(int weeks) {
+        return (Weeks) super.plus(weeks);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative, not null
-     * @return the new period plus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param weeks  the amount of weeks to add, may be negative, not null
+     * @return the new period plus the specified number of weeks
+     * @throws NullPointerException if the weeks to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} plus(${Type} ${type}) {
-        return plus(${type}.getAmount());
+    public Weeks plus(Weeks weeks) {
+        return plus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative
-     * @return the new period minus the specified number of ${type}
+     * @param weeks  the amount of weeks to take away, may be negative
+     * @return the new period minus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} minus(int ${type}) {
-        return (${Type}) super.minus(${type});
+    public Weeks minus(int weeks) {
+        return (Weeks) super.minus(weeks);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative, not null
-     * @return the new period minus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param weeks  the amount of weeks to take away, may be negative, not null
+     * @return the new period minus the specified number of weeks
+     * @throws NullPointerException if the weeks to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} minus(${Type} ${type}) {
-        return minus(${type}.getAmount());
+    public Weeks minus(Weeks weeks) {
+        return minus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} multiplied by the specified scalar.
+     * Returns a new instance with the weeks multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -208,12 +208,12 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} multipliedBy(int scalar) {
-        return (${Type}) super.multipliedBy(scalar);
+    public Weeks multipliedBy(int scalar) {
+        return (Weeks) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the ${type} divided by the specified divisor.
+     * Returns a new instance with the weeks divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -223,84 +223,81 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public ${Type} dividedBy(int divisor) {
-        return (${Type}) super.dividedBy(divisor);
+    public Weeks dividedBy(int divisor) {
+        return (Weeks) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} value negated.
+     * Returns a new instance with the weeks value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} negated() {
-        return (${Type}) super.negated();
+    public Weeks negated() {
+        return (Weeks) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of ${type} in this instance to another instance.
+     * Compares the number of weeks in this instance to another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
+     * @param otherWeeks  the other number of weeks, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherWeeks is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(Weeks otherWeeks) {
+        int thisValue = this.weeks;
+        int otherValue = otherWeeks.weeks;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of ${type} in this instance greater than that in
+     * Is the number of weeks in this instance greater than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is greater
+     * @throws NullPointerException if otherWeeks is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) > 0;
     }
 
     /**
-     * Is the number of ${type} in this instance less than that in
+     * Is the number of weeks in this instance less than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is less
+     * @throws NullPointerException if otherWeeks is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of ${type}.
-     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
+     * Returns a string representation of the number of weeks.
+     * This will be in the format 'PnW' where n is the number of weeks.
      *
-     * @return the number of ${type} in ISO8601 string format
+     * @return the number of weeks in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P${stringPrefix}" + ${type} + "${stringSuffix}";
+        return "P" + weeks + "W";
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${type} field.
+     * Implementation of the rules for the weeks field.
      */
     private static class Rule extends DurationFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", ${relativeField});
+            super("Weeks", Days.days(7));
         }
     }
 

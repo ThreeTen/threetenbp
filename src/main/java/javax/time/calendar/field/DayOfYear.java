@@ -39,22 +39,22 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.duration.Durational;
 
 /**
- * A time field representing a ${desc}.
+ * A time field representing a day of year.
  * <p>
- * ${Type} is an immutable time field that can only store a ${desc}.
- * It is a type-safe way of representing a ${desc} in an application.
+ * DayOfYear is an immutable time field that can only store a day of year.
+ * It is a type-safe way of representing a day of year in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The ${desc} may be queried using get${Type}().
+ * The day of year may be queried using getDayOfYear().
  * <p>
- * ${Type} is thread-safe and immutable.
+ * DayOfYear is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializable {
+public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${desc} field operates.
+     * The rule implementation that defines how the day of year field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -63,45 +63,45 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
     private static final long serialVersionUID = 1L;
 
     /**
-     * The ${desc} being represented.
+     * The day of year being represented.
      */
-    private final int ${type};
+    private final int dayOfYear;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>DayOfYear</code>.
      *
-     * @param ${type}  the ${desc} to represent
-     * @return the created ${Type}
+     * @param dayOfYear  the day of year to represent
+     * @return the created DayOfYear
      */
-    public static ${Type} ${type}(int ${type}) {
-        return new ${Type}(${type});
+    public static DayOfYear dayOfYear(int dayOfYear) {
+        return new DayOfYear(dayOfYear);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified ${desc}.
+     * Constructs an instance with the specified day of year.
      *
-     * @param ${type}  the ${desc} to represent
+     * @param dayOfYear  the day of year to represent
      */
-    private ${Type}(int ${type}) {
-        this.${type} = ${type};
+    private DayOfYear(int dayOfYear) {
+        this.dayOfYear = dayOfYear;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ${desc} value.
+     * Gets the day of year value.
      *
-     * @return the ${desc}
+     * @return the day of year
      */
-    public int get${Type}() {
-        return ${type};
+    public int getDayOfYear() {
+        return dayOfYear;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * ${Type} instance.
+     * DayOfYear instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -112,84 +112,84 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this ${desc} instance to another.
+     * Compares this day of year instance to another.
      *
-     * @param other${Type}  the other ${desc} instance, not null
+     * @param otherDayOfYear  the other day of year instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherDayOfYear is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(DayOfYear otherDayOfYear) {
+        int thisValue = this.dayOfYear;
+        int otherValue = otherDayOfYear.dayOfYear;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this ${desc} instance greater than the specified ${desc}.
+     * Is this day of year instance greater than the specified day of year.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherDayOfYear  the other day of year instance, not null
+     * @return true if this day of year is greater
+     * @throws NullPointerException if otherDayOfYear is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(DayOfYear otherDayOfYear) {
+        return compareTo(otherDayOfYear) > 0;
     }
 
     /**
-     * Is this ${desc} instance less than the specified ${desc}.
+     * Is this day of year instance less than the specified day of year.
      *
-     * @param other${Type}  the other ${desc} instance, not null
-     * @return true if this ${desc} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherDayOfYear  the other day of year instance, not null
+     * @return true if this day of year is less
+     * @throws NullPointerException if otherDayOfYear is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(DayOfYear otherDayOfYear) {
+        return compareTo(otherDayOfYear) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the ${desc}.
+     * Is this instance equal to that specified, evaluating the day of year.
      *
-     * @param other${Type}  the other ${desc} instance, null returns false
-     * @return true if the ${desc} is the same
+     * @param otherDayOfYear  the other day of year instance, null returns false
+     * @return true if the day of year is the same
      */
     @Override
-    public boolean equals(Object other${Type}) {
-        if (this == other${Type}) {
+    public boolean equals(Object otherDayOfYear) {
+        if (this == otherDayOfYear) {
             return true;
         }
-        if (other${Type} instanceof ${Type}) {
-            return ${type} == ((${Type}) other${Type}).${type};
+        if (otherDayOfYear instanceof DayOfYear) {
+            return dayOfYear == ((DayOfYear) otherDayOfYear).dayOfYear;
         }
         return false;
     }
 
     /**
-     * A hashcode for the ${desc} object.
+     * A hashcode for the day of year object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return ${type};
+        return dayOfYear;
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${desc} field.
+     * Implementation of the rules for the day of year field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("${Type}", null, null, ${minValue}, ${maxValue});
+            super("DayOfYear", null, null, 1, 366);
         }
-#foreach ($line in $ruleMethods)
-${line}
-#end
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(Durational epochDuration) {
+            return super.getValue(epochDuration) + 1;
+        }
     }
 
 }

@@ -46,47 +46,47 @@ import static org.testng.Assert.*;
  * @author Stephen Colebourne
  */
 @Test
-public class Test${Type} {
+public class TestYears {
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() {
-        assertTrue(Serializable.class.isAssignableFrom(${Type}.class));
+        assertTrue(Serializable.class.isAssignableFrom(Years.class));
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryZeroSingleton() {
-        assertSame(${Type}.ZERO, ${Type}.${type}(0));
-        assertSame(${Type}.ZERO, ${Type}.${type}(0));
-        assertEquals(0, ${Type}.ZERO.getAmount());
+        assertSame(Years.ZERO, Years.years(0));
+        assertSame(Years.ZERO, Years.years(0));
+        assertEquals(0, Years.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
-    public void test_factoryGet${Type}() {
-        assertEquals(1,  ${Type}.${type}(1).getAmount());
-        assertEquals(2,  ${Type}.${type}(2).getAmount());
-        assertEquals(Integer.MAX_VALUE,  ${Type}.${type}(Integer.MAX_VALUE).getAmount());
-        assertEquals(-1,  ${Type}.${type}(-1).getAmount());
-        assertEquals(-2,  ${Type}.${type}(-2).getAmount());
-        assertEquals(Integer.MIN_VALUE,  ${Type}.${type}(Integer.MIN_VALUE).getAmount());
+    public void test_factoryGetYears() {
+        assertEquals(1,  Years.years(1).getAmount());
+        assertEquals(2,  Years.years(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Years.years(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Years.years(-1).getAmount());
+        assertEquals(-2,  Years.years(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Years.years(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        ${Type} orginal = ${Type}.ZERO;
+        Years orginal = Years.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        ${Type} ser = (${Type}) in.readObject();
-        assertSame(${Type}.ZERO, ser);
+        Years ser = (Years) in.readObject();
+        assertSame(Years.ZERO, ser);
     }
 
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(0, test5.compareTo(test5));
         assertEquals(-1, test5.compareTo(test6));
         assertEquals(1, test6.compareTo(test5));
@@ -94,14 +94,14 @@ public class Test${Type} {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Years test5 = Years.years(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isGreaterThan() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(false, test5.isGreaterThan(test5));
         assertEquals(false, test5.isGreaterThan(test6));
         assertEquals(true, test6.isGreaterThan(test5));
@@ -109,14 +109,14 @@ public class Test${Type} {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isGreaterThan_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Years test5 = Years.years(5);
         test5.isGreaterThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isLessThan() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(false, test5.isLessThan(test5));
         assertEquals(true, test5.isLessThan(test6));
         assertEquals(false, test6.isLessThan(test5));
@@ -124,197 +124,197 @@ public class Test${Type} {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isLessThan_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Years test5 = Years.years(5);
         test5.isLessThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_equals() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(true, test5.equals(test5));
         assertEquals(false, test5.equals(test6));
         assertEquals(false, test6.equals(test5));
     }
 
     public void test_equals_null() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Years test5 = Years.years(5);
         assertEquals(false, test5.equals(null));
     }
 
     public void test_equals_otherClass() {
-        ${Type} test5 = ${Type}.${type}(5);
+        Years test5 = Years.years(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        ${Type} test5 = ${Type}.${type}(5);
-        ${Type} test6 = ${Type}.${type}(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(true, test5.hashCode() == test5.hashCode());
         assertEquals(false, test5.hashCode() == test6.hashCode());
     }
 
     //-----------------------------------------------------------------------
     public void test_plus() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.plus(0));
-        assertEquals(${Type}.${type}(7), test5.plus(2));
-        assertEquals(${Type}.${type}(3), test5.plus(-2));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE), ${Type}.${type}(Integer.MAX_VALUE - 1).plus(1));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE), ${Type}.${type}(Integer.MIN_VALUE + 1).plus(-1));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.plus(0));
+        assertEquals(Years.years(7), test5.plus(2));
+        assertEquals(Years.years(3), test5.plus(-2));
+        assertEquals(Years.years(Integer.MAX_VALUE), Years.years(Integer.MAX_VALUE - 1).plus(1));
+        assertEquals(Years.years(Integer.MIN_VALUE), Years.years(Integer.MIN_VALUE + 1).plus(-1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).plus(2);
+        Years.years(Integer.MAX_VALUE - 1).plus(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).plus(-2);
+        Years.years(Integer.MIN_VALUE + 1).plus(-2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_plus_${Type}() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.plus(${Type}.${type}(0)));
-        assertEquals(${Type}.${type}(7), test5.plus(${Type}.${type}(2)));
-        assertEquals(${Type}.${type}(3), test5.plus(${Type}.${type}(-2)));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE),
-                ${Type}.${type}(Integer.MAX_VALUE - 1).plus(${Type}.${type}(1)));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE),
-                ${Type}.${type}(Integer.MIN_VALUE + 1).plus(${Type}.${type}(-1)));
+    public void test_plus_Years() {
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.plus(Years.years(0)));
+        assertEquals(Years.years(7), test5.plus(Years.years(2)));
+        assertEquals(Years.years(3), test5.plus(Years.years(-2)));
+        assertEquals(Years.years(Integer.MAX_VALUE),
+                Years.years(Integer.MAX_VALUE - 1).plus(Years.years(1)));
+        assertEquals(Years.years(Integer.MIN_VALUE),
+                Years.years(Integer.MIN_VALUE + 1).plus(Years.years(-1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_${Type}_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).plus(${Type}.${type}(2));
+    public void test_plus_Years_overflowTooBig() {
+        Years.years(Integer.MAX_VALUE - 1).plus(Years.years(2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_${Type}_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).plus(${Type}.${type}(-2));
+    public void test_plus_Years_overflowTooSmall() {
+        Years.years(Integer.MIN_VALUE + 1).plus(Years.years(-2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_plus_${Type}_null() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).plus(null);
+    public void test_plus_Years_null() {
+        Years.years(Integer.MIN_VALUE + 1).plus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_minus() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.minus(0));
-        assertEquals(${Type}.${type}(3), test5.minus(2));
-        assertEquals(${Type}.${type}(7), test5.minus(-2));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE), ${Type}.${type}(Integer.MAX_VALUE - 1).minus(-1));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE), ${Type}.${type}(Integer.MIN_VALUE + 1).minus(1));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.minus(0));
+        assertEquals(Years.years(3), test5.minus(2));
+        assertEquals(Years.years(7), test5.minus(-2));
+        assertEquals(Years.years(Integer.MAX_VALUE), Years.years(Integer.MAX_VALUE - 1).minus(-1));
+        assertEquals(Years.years(Integer.MIN_VALUE), Years.years(Integer.MIN_VALUE + 1).minus(1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).minus(-2);
+        Years.years(Integer.MAX_VALUE - 1).minus(-2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).minus(2);
+        Years.years(Integer.MIN_VALUE + 1).minus(2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_minus_${Type}() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(5), test5.minus(${Type}.${type}(0)));
-        assertEquals(${Type}.${type}(3), test5.minus(${Type}.${type}(2)));
-        assertEquals(${Type}.${type}(7), test5.minus(${Type}.${type}(-2)));
-        assertEquals(${Type}.${type}(Integer.MAX_VALUE),
-                ${Type}.${type}(Integer.MAX_VALUE - 1).minus(${Type}.${type}(-1)));
-        assertEquals(${Type}.${type}(Integer.MIN_VALUE),
-                ${Type}.${type}(Integer.MIN_VALUE + 1).minus(${Type}.${type}(1)));
+    public void test_minus_Years() {
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.minus(Years.years(0)));
+        assertEquals(Years.years(3), test5.minus(Years.years(2)));
+        assertEquals(Years.years(7), test5.minus(Years.years(-2)));
+        assertEquals(Years.years(Integer.MAX_VALUE),
+                Years.years(Integer.MAX_VALUE - 1).minus(Years.years(-1)));
+        assertEquals(Years.years(Integer.MIN_VALUE),
+                Years.years(Integer.MIN_VALUE + 1).minus(Years.years(1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_${Type}_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE - 1).minus(${Type}.${type}(-2));
+    public void test_minus_Years_overflowTooBig() {
+        Years.years(Integer.MAX_VALUE - 1).minus(Years.years(-2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_${Type}_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).minus(${Type}.${type}(2));
+    public void test_minus_Years_overflowTooSmall() {
+        Years.years(Integer.MIN_VALUE + 1).minus(Years.years(2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_minus_${Type}_null() {
-        ${Type}.${type}(Integer.MIN_VALUE + 1).minus(null);
+    public void test_minus_Years_null() {
+        Years.years(Integer.MIN_VALUE + 1).minus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_multipliedBy() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(0), test5.multipliedBy(0));
-        assertEquals(${Type}.${type}(5), test5.multipliedBy(1));
-        assertEquals(${Type}.${type}(10), test5.multipliedBy(2));
-        assertEquals(${Type}.${type}(15), test5.multipliedBy(3));
-        assertEquals(${Type}.${type}(-15), test5.multipliedBy(-3));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(0), test5.multipliedBy(0));
+        assertEquals(Years.years(5), test5.multipliedBy(1));
+        assertEquals(Years.years(10), test5.multipliedBy(2));
+        assertEquals(Years.years(15), test5.multipliedBy(3));
+        assertEquals(Years.years(-15), test5.multipliedBy(-3));
     }
 
     public void test_multipliedBy_negate() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals(${Type}.${type}(-15), test5.multipliedBy(-3));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(-15), test5.multipliedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooBig() {
-        ${Type}.${type}(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
+        Years.years(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooSmall() {
-        ${Type}.${type}(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
+        Years.years(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        ${Type} test12 = ${Type}.${type}(12);
-        assertEquals(${Type}.${type}(12), test12.dividedBy(1));
-        assertEquals(${Type}.${type}(6), test12.dividedBy(2));
-        assertEquals(${Type}.${type}(4), test12.dividedBy(3));
-        assertEquals(${Type}.${type}(3), test12.dividedBy(4));
-        assertEquals(${Type}.${type}(2), test12.dividedBy(5));
-        assertEquals(${Type}.${type}(2), test12.dividedBy(6));
-        assertEquals(${Type}.${type}(-4), test12.dividedBy(-3));
+        Years test12 = Years.years(12);
+        assertEquals(Years.years(12), test12.dividedBy(1));
+        assertEquals(Years.years(6), test12.dividedBy(2));
+        assertEquals(Years.years(4), test12.dividedBy(3));
+        assertEquals(Years.years(3), test12.dividedBy(4));
+        assertEquals(Years.years(2), test12.dividedBy(5));
+        assertEquals(Years.years(2), test12.dividedBy(6));
+        assertEquals(Years.years(-4), test12.dividedBy(-3));
     }
 
     public void test_dividedBy_negate() {
-        ${Type} test12 = ${Type}.${type}(12);
-        assertEquals(${Type}.${type}(-4), test12.dividedBy(-3));
+        Years test12 = Years.years(12);
+        assertEquals(Years.years(-4), test12.dividedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_dividedBy_divideByZero() {
-        ${Type}.${type}(1).dividedBy(0);
+        Years.years(1).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
     public void test_negated() {
-        assertEquals(${Type}.${type}(0), ${Type}.${type}(0).negated());
-        assertEquals(${Type}.${type}(-12), ${Type}.${type}(12).negated());
-        assertEquals(${Type}.${type}(12), ${Type}.${type}(-12).negated());
-        assertEquals(${Type}.${type}(-Integer.MAX_VALUE), ${Type}.${type}(Integer.MAX_VALUE).negated());
+        assertEquals(Years.years(0), Years.years(0).negated());
+        assertEquals(Years.years(-12), Years.years(12).negated());
+        assertEquals(Years.years(12), Years.years(-12).negated());
+        assertEquals(Years.years(-Integer.MAX_VALUE), Years.years(Integer.MAX_VALUE).negated());
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
-        ${Type}.${type}(Integer.MIN_VALUE).negated();
+        Years.years(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        ${Type} test5 = ${Type}.${type}(5);
-        assertEquals("P${stringPrefix}5${stringSuffix}", test5.toString());
-        ${Type} testM1 = ${Type}.${type}(-1);
-        assertEquals("P${stringPrefix}-1${stringSuffix}", testM1.toString());
+        Years test5 = Years.years(5);
+        assertEquals("P5Y", test5.toString());
+        Years testM1 = Years.years(-1);
+        assertEquals("P-1Y", testM1.toString());
     }
 
 }

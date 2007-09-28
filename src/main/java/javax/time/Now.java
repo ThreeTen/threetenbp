@@ -31,8 +31,13 @@
  */
 package javax.time;
 
+import javax.time.calendar.CalendarDay;
+import javax.time.calendar.CalendarMonth;
+import javax.time.calendar.CalendarYear;
+import javax.time.calendar.TimeOfDay;
+
 /**
- * A facade for accessing the current time in the Java Date Framework.
+ * A facade for accessing the current time in the Java Time Framework.
  *
  * @author Stephen Colebourne
  */

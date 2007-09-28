@@ -31,10 +31,14 @@
  */
 package javax.time;
 
-import static javax.time.DayOfWeek.*;
-import static javax.time.Moments.*;
+import static javax.time.Times.*;
+import static javax.time.calendar.field.DayOfWeek.*;
 
-import javax.time.duration.Days;
+import javax.time.calendar.CalendarDay;
+import javax.time.calendar.TimeOfDay;
+import javax.time.calendar.field.DayOfMonth;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.duration.field.Days;
 
 /**
  * Test class.
@@ -55,13 +59,13 @@ public class TestFluentAPI {
         
         date = calendarDay(2007, 3, 20);
         date = calendarDay(year(2007), march(), dayOfMonth(20));
-        date = moment().year(2007).december().dayOfMonth(20).resolveLenient();
-        date = moment().year(1972).december().dayOfMonth(3).resolve();
-        date = moment().currentYear().december().dayOfMonth(20).resolveLenient();
-        date = moment().zoneID("Europe/London").year(2007).august().dayOfMonth(2).resolve();
+        date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
+        date = calendar().year(1972).december().dayOfMonth(3).build();
+        date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
+        date = calendar().zoneID("Europe/London").year(2007).august().dayOfMonth(2).build();
         
-        date = moment().zoneID("America/New_York").year(2007).march().dayOfMonth(20).resolveLenient();
-        date = moment().defaultZone().year(2007).march().dayOfMonth(20).resolveLenient();
+        date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
+        date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
         date = CalendarDay.calendarDay(currentMonth(), dayOfMonth(6));
         

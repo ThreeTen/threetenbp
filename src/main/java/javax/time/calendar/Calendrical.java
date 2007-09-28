@@ -29,43 +29,28 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
-
-import javax.time.duration.field.TestDays;
-import javax.time.duration.field.TestHours;
-import javax.time.duration.field.TestMinutes;
-import javax.time.duration.field.TestMonths;
-import javax.time.duration.field.TestSeconds;
-import javax.time.duration.field.TestWeeks;
-import javax.time.duration.field.TestYears;
-
-import org.testng.TestListenerAdapter;
-import org.testng.TestNG;
+package javax.time.calendar;
 
 /**
- * Test class.
- * 
+ * Interface implemented by all objects that can provide calendrical information.
+ * <p>
+ * Calendrical is the interface that is shared amongst many other classes in
+ * the Java Time Framework. Many low level APIs are defined to accept a
+ * Calendrical, however it is less common that you will hold instances directly.
+ * <p>
+ * Calendrical is an interface and must be implemented with care to ensure
+ * other classes in the framework operate correctly.
+ * All instantiable subclasses must be final, immutable and thread-safe.
+ *
  * @author Stephen Colebourne
  */
-public class AllTest {
+public interface Calendrical {
 
-    public static void main(String[] args) {
-        TestListenerAdapter tla = new TestListenerAdapter();
-        TestNG testng = new TestNG();
-        testng.setTestClasses(new Class[] {
-            // main classes
-            TestInstant.class,
-            // period fields
-            TestDays.class,
-            TestHours.class,
-            TestMinutes.class,
-            TestMonths.class,
-            TestSeconds.class,
-            TestWeeks.class,
-            TestYears.class,
-        });
-        testng.addListener(tla);
-        testng.run();
-    }
+    /**
+     * Gets the calendrical state which provides internal access to the calendar.
+     *
+     * @return the calendar state, never null
+     */
+    CalendricalState getCalendricalState() ;
 
 }
