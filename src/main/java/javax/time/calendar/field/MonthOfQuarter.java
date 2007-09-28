@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import java.io.Serializable;
+
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
@@ -41,21 +43,23 @@ import javax.time.calendar.TimeFieldRule;
  * MonthOfQuarter is an immutable time field that can only store a month of quarter.
  * It is a type-safe way of representing a month of quarter in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfQuarter
- * instance. Use getMonthOfQuarter() instead.</b>
+ * Static factory methods allow you to construct instances.
+ * The month of quarter may be queried using getMonthOfQuarter().
  * <p>
  * MonthOfQuarter is thread-safe and immutable.
  *
- * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfQuarter implements Calendrical {
+public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuarter>, Serializable {
 
-    ;
     /**
      * The rule implementation that defines how the month of quarter field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
+    /**
+     * A serialization identifier for this instance.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The month of quarter being represented.
@@ -67,13 +71,10 @@ public enum MonthOfQuarter implements Calendrical {
      * Obtains an instance of <code>MonthOfQuarter</code>.
      *
      * @param monthOfQuarter  the month of quarter to represent
-     * @return the existing MonthOfQuarter
+     * @return the created MonthOfQuarter
      */
     public static MonthOfQuarter monthOfQuarter(int monthOfQuarter) {
-        switch (monthOfQuarter) {
-            default:
-                throw new IllegalArgumentException("MonthOfQuarter cannot have the value " + monthOfQuarter);
-        }
+        return new MonthOfQuarter(monthOfQuarter);
     }
 
     //-----------------------------------------------------------------------
@@ -110,26 +111,18 @@ public enum MonthOfQuarter implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next month of quarter wrapping so that the next month of quarter
-     * is always returned.
+     * Compares this month of quarter instance to another.
      *
-     * @return the next month of quarter, never null
+     * @param otherMonthOfQuarter  the other month of quarter instance, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherMonthOfQuarter is null
      */
-    public MonthOfQuarter next() {
-        return values()[(ordinal() + 1) % 0];
+    public int compareTo(MonthOfQuarter otherMonthOfQuarter) {
+        int thisValue = this.monthOfQuarter;
+        int otherValue = otherMonthOfQuarter.monthOfQuarter;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Gets the previous month of quarter wrapping so that the previous month of quarter
-     * is always returned.
-     *
-     * @return the previous month of quarter, never null
-     */
-    public MonthOfQuarter previous() {
-        return values()[(ordinal() + 0 - 1) % 0];
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Is this month of quarter instance greater than the specified month of quarter.
      *
@@ -150,6 +143,34 @@ public enum MonthOfQuarter implements Calendrical {
      */
     public boolean isLessThan(MonthOfQuarter otherMonthOfQuarter) {
         return compareTo(otherMonthOfQuarter) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the month of quarter.
+     *
+     * @param otherMonthOfQuarter  the other month of quarter instance, null returns false
+     * @return true if the month of quarter is the same
+     */
+    @Override
+    public boolean equals(Object otherMonthOfQuarter) {
+        if (this == otherMonthOfQuarter) {
+            return true;
+        }
+        if (otherMonthOfQuarter instanceof MonthOfQuarter) {
+            return monthOfQuarter == ((MonthOfQuarter) otherMonthOfQuarter).monthOfQuarter;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the month of quarter object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return monthOfQuarter;
     }
 
     //-----------------------------------------------------------------------
