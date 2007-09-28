@@ -122,27 +122,6 @@ public enum Era implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next era wrapping so that the next era
-     * is always returned.
-     *
-     * @return the next era, never null
-     */
-    public Era next() {
-        return values()[(ordinal() + 1) % 2];
-    }
-
-    /**
-     * Gets the previous era wrapping so that the previous era
-     * is always returned.
-     *
-     * @return the previous era, never null
-     */
-    public Era previous() {
-        return values()[(ordinal() + 2 - 1) % 2];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Is this era instance greater than the specified era.
      *
      * @param otherEra  the other era instance, not null

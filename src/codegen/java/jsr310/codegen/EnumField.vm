@@ -119,6 +119,7 @@ public enum ${Type} implements Calendrical {
         return null;  // TODO
     }
 
+#if (${bound})
     //-----------------------------------------------------------------------
     /**
      * Gets the next ${desc} wrapping so that the next ${desc}
@@ -140,6 +141,7 @@ public enum ${Type} implements Calendrical {
         return values()[(ordinal() + ${singletons.size()} - 1) % ${singletons.size()}];
     }
 
+#end
     //-----------------------------------------------------------------------
     /**
      * Is this ${desc} instance greater than the specified ${desc}.

@@ -156,7 +156,7 @@ public class CodeGen {
         processTimeField(regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
         processTimeField(enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
         processTimeField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
-        processTimeField(enumTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
+        processTimeField(regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
         processTimeField(regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
         processTimeField(regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
         processTimeField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
@@ -187,6 +187,7 @@ public class CodeGen {
         vc.put("singletons", singletons == null ? Collections.EMPTY_LIST : Arrays.asList(singletons));
         vc.put("minValue", minValue);
         vc.put("maxValue", maxValue);
+        vc.put("bound", classname.contains("Of"));
         vc.put("methods", methodLines);
         vc.put("ruleMethods", new ArrayList<String>());
         if (pos >= 4) {
