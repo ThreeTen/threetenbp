@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
-import javax.time.duration.Durational;
 
 /**
  * A time field representing a hour of day.

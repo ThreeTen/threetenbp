@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A time field representing a decade of century.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * DecadeOfCentury is an immutable time field that can only store a decade of century.
+ * It is a type-safe way of representing a decade of century in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The decade of century may be queried using getDecadeOfCentury().
  * <p>
- * MinuteOfHour is thread-safe and immutable.
+ * DecadeOfCentury is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
+public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCentury>, Serializable {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
+     * The rule implementation that defines how the decade of century field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The minute of hour being represented.
+     * The decade of century being represented.
      */
-    private final int minuteOfHour;
+    private final int decadeOfCentury;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of <code>DecadeOfCentury</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
-     * @return the created MinuteOfHour
+     * @param decadeOfCentury  the decade of century to represent
+     * @return the created DecadeOfCentury
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        return new MinuteOfHour(minuteOfHour);
+    public static DecadeOfCentury decadeOfCentury(int decadeOfCentury) {
+        return new DecadeOfCentury(decadeOfCentury);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified decade of century.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param decadeOfCentury  the decade of century to represent
      */
-    private MinuteOfHour(int minuteOfHour) {
-        this.minuteOfHour = minuteOfHour;
+    private DecadeOfCentury(int decadeOfCentury) {
+        this.decadeOfCentury = decadeOfCentury;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the decade of century value.
      *
-     * @return the minute of hour
+     * @return the decade of century
      */
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public int getDecadeOfCentury() {
+        return decadeOfCentury;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MinuteOfHour instance.
+     * DecadeOfCentury instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this decade of century instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherDecadeOfCentury  the other decade of century instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @throws NullPointerException if otherDecadeOfCentury is null
      */
-    public int compareTo(MinuteOfHour otherMinuteOfHour) {
-        int thisValue = this.minuteOfHour;
-        int otherValue = otherMinuteOfHour.minuteOfHour;
+    public int compareTo(DecadeOfCentury otherDecadeOfCentury) {
+        int thisValue = this.decadeOfCentury;
+        int otherValue = otherDecadeOfCentury.decadeOfCentury;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this minute of hour instance greater than the specified minute of hour.
+     * Is this decade of century instance greater than the specified decade of century.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherDecadeOfCentury  the other decade of century instance, not null
+     * @return true if this decade of century is greater
+     * @throws NullPointerException if otherDecadeOfCentury is null
      */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
+    public boolean isGreaterThan(DecadeOfCentury otherDecadeOfCentury) {
+        return compareTo(otherDecadeOfCentury) > 0;
     }
 
     /**
-     * Is this minute of hour instance less than the specified minute of hour.
+     * Is this decade of century instance less than the specified decade of century.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherDecadeOfCentury  the other decade of century instance, not null
+     * @return true if this decade of century is less
+     * @throws NullPointerException if otherDecadeOfCentury is null
      */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
+    public boolean isLessThan(DecadeOfCentury otherDecadeOfCentury) {
+        return compareTo(otherDecadeOfCentury) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the decade of century.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherDecadeOfCentury  the other decade of century instance, null returns false
+     * @return true if the decade of century is the same
      */
     @Override
-    public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
+    public boolean equals(Object otherDecadeOfCentury) {
+        if (this == otherDecadeOfCentury) {
             return true;
         }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
+        if (otherDecadeOfCentury instanceof DecadeOfCentury) {
+            return decadeOfCentury == ((DecadeOfCentury) otherDecadeOfCentury).decadeOfCentury;
         }
         return false;
     }
 
     /**
-     * A hashcode for the minute of hour object.
+     * A hashcode for the decade of century object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return minuteOfHour;
+        return decadeOfCentury;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minute of hour field.
+     * Implementation of the rules for the decade of century field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+            super("DecadeOfCentury", null, null, 0, 9);
         }
     }
 

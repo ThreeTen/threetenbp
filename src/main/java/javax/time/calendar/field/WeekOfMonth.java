@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A time field representing a week of month.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * WeekOfMonth is an immutable time field that can only store a week of month.
+ * It is a type-safe way of representing a week of month in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The week of month may be queried using getWeekOfMonth().
  * <p>
- * MinuteOfHour is thread-safe and immutable.
+ * WeekOfMonth is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
+public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, Serializable {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
+     * The rule implementation that defines how the week of month field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The minute of hour being represented.
+     * The week of month being represented.
      */
-    private final int minuteOfHour;
+    private final int weekOfMonth;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of <code>WeekOfMonth</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
-     * @return the created MinuteOfHour
+     * @param weekOfMonth  the week of month to represent
+     * @return the created WeekOfMonth
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        return new MinuteOfHour(minuteOfHour);
+    public static WeekOfMonth weekOfMonth(int weekOfMonth) {
+        return new WeekOfMonth(weekOfMonth);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified week of month.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param weekOfMonth  the week of month to represent
      */
-    private MinuteOfHour(int minuteOfHour) {
-        this.minuteOfHour = minuteOfHour;
+    private WeekOfMonth(int weekOfMonth) {
+        this.weekOfMonth = weekOfMonth;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the week of month value.
      *
-     * @return the minute of hour
+     * @return the week of month
      */
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public int getWeekOfMonth() {
+        return weekOfMonth;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MinuteOfHour instance.
+     * WeekOfMonth instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this week of month instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherWeekOfMonth  the other week of month instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @throws NullPointerException if otherWeekOfMonth is null
      */
-    public int compareTo(MinuteOfHour otherMinuteOfHour) {
-        int thisValue = this.minuteOfHour;
-        int otherValue = otherMinuteOfHour.minuteOfHour;
+    public int compareTo(WeekOfMonth otherWeekOfMonth) {
+        int thisValue = this.weekOfMonth;
+        int otherValue = otherWeekOfMonth.weekOfMonth;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this minute of hour instance greater than the specified minute of hour.
+     * Is this week of month instance greater than the specified week of month.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherWeekOfMonth  the other week of month instance, not null
+     * @return true if this week of month is greater
+     * @throws NullPointerException if otherWeekOfMonth is null
      */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
+    public boolean isGreaterThan(WeekOfMonth otherWeekOfMonth) {
+        return compareTo(otherWeekOfMonth) > 0;
     }
 
     /**
-     * Is this minute of hour instance less than the specified minute of hour.
+     * Is this week of month instance less than the specified week of month.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherWeekOfMonth  the other week of month instance, not null
+     * @return true if this week of month is less
+     * @throws NullPointerException if otherWeekOfMonth is null
      */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
+    public boolean isLessThan(WeekOfMonth otherWeekOfMonth) {
+        return compareTo(otherWeekOfMonth) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the week of month.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherWeekOfMonth  the other week of month instance, null returns false
+     * @return true if the week of month is the same
      */
     @Override
-    public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
+    public boolean equals(Object otherWeekOfMonth) {
+        if (this == otherWeekOfMonth) {
             return true;
         }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
+        if (otherWeekOfMonth instanceof WeekOfMonth) {
+            return weekOfMonth == ((WeekOfMonth) otherWeekOfMonth).weekOfMonth;
         }
         return false;
     }
 
     /**
-     * A hashcode for the minute of hour object.
+     * A hashcode for the week of month object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return minuteOfHour;
+        return weekOfMonth;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minute of hour field.
+     * Implementation of the rules for the week of month field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+            super("WeekOfMonth", null, null, 1, 5);
         }
     }
 

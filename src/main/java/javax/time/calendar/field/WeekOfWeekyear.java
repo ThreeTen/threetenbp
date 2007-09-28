@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A time field representing a week of week-based year.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * WeekOfWeekyear is an immutable time field that can only store a week of week-based year.
+ * It is a type-safe way of representing a week of week-based year in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The week of week-based year may be queried using getWeekOfWeekyear().
  * <p>
- * MinuteOfHour is thread-safe and immutable.
+ * WeekOfWeekyear is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
+public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeekyear>, Serializable {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
+     * The rule implementation that defines how the week of week-based year field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The minute of hour being represented.
+     * The week of week-based year being represented.
      */
-    private final int minuteOfHour;
+    private final int weekOfWeekyear;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of <code>WeekOfWeekyear</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
-     * @return the created MinuteOfHour
+     * @param weekOfWeekyear  the week of week-based year to represent
+     * @return the created WeekOfWeekyear
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        return new MinuteOfHour(minuteOfHour);
+    public static WeekOfWeekyear weekOfWeekyear(int weekOfWeekyear) {
+        return new WeekOfWeekyear(weekOfWeekyear);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified week of week-based year.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param weekOfWeekyear  the week of week-based year to represent
      */
-    private MinuteOfHour(int minuteOfHour) {
-        this.minuteOfHour = minuteOfHour;
+    private WeekOfWeekyear(int weekOfWeekyear) {
+        this.weekOfWeekyear = weekOfWeekyear;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the week of week-based year value.
      *
-     * @return the minute of hour
+     * @return the week of week-based year
      */
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public int getWeekOfWeekyear() {
+        return weekOfWeekyear;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MinuteOfHour instance.
+     * WeekOfWeekyear instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this week of week-based year instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @throws NullPointerException if otherWeekOfWeekyear is null
      */
-    public int compareTo(MinuteOfHour otherMinuteOfHour) {
-        int thisValue = this.minuteOfHour;
-        int otherValue = otherMinuteOfHour.minuteOfHour;
+    public int compareTo(WeekOfWeekyear otherWeekOfWeekyear) {
+        int thisValue = this.weekOfWeekyear;
+        int otherValue = otherWeekOfWeekyear.weekOfWeekyear;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this minute of hour instance greater than the specified minute of hour.
+     * Is this week of week-based year instance greater than the specified week of week-based year.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
+     * @return true if this week of week-based year is greater
+     * @throws NullPointerException if otherWeekOfWeekyear is null
      */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
+    public boolean isGreaterThan(WeekOfWeekyear otherWeekOfWeekyear) {
+        return compareTo(otherWeekOfWeekyear) > 0;
     }
 
     /**
-     * Is this minute of hour instance less than the specified minute of hour.
+     * Is this week of week-based year instance less than the specified week of week-based year.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
+     * @return true if this week of week-based year is less
+     * @throws NullPointerException if otherWeekOfWeekyear is null
      */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
+    public boolean isLessThan(WeekOfWeekyear otherWeekOfWeekyear) {
+        return compareTo(otherWeekOfWeekyear) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the week of week-based year.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherWeekOfWeekyear  the other week of week-based year instance, null returns false
+     * @return true if the week of week-based year is the same
      */
     @Override
-    public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
+    public boolean equals(Object otherWeekOfWeekyear) {
+        if (this == otherWeekOfWeekyear) {
             return true;
         }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
+        if (otherWeekOfWeekyear instanceof WeekOfWeekyear) {
+            return weekOfWeekyear == ((WeekOfWeekyear) otherWeekOfWeekyear).weekOfWeekyear;
         }
         return false;
     }
 
     /**
-     * A hashcode for the minute of hour object.
+     * A hashcode for the week of week-based year object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return minuteOfHour;
+        return weekOfWeekyear;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minute of hour field.
+     * Implementation of the rules for the week of week-based year field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+            super("WeekOfWeekyear", null, null, 1, 53);
         }
     }
 

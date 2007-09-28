@@ -36,82 +36,70 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a meridian of day.
+ * A time field representing a month of quarter.
  * <p>
- * MeridianOfDay is an immutable time field that can only store a meridian of day.
- * It is a type-safe way of representing a meridian of day in an application.
+ * MonthOfQuarter is an immutable time field that can only store a month of quarter.
+ * It is a type-safe way of representing a month of quarter in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MeridianOfDay
- * instance. Use getMeridianOfDay() instead.</b>
+ * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfQuarter
+ * instance. Use getMonthOfQuarter() instead.</b>
  * <p>
- * MeridianOfDay is thread-safe and immutable.
+ * MonthOfQuarter is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MeridianOfDay implements Calendrical {
+public enum MonthOfQuarter implements Calendrical {
 
-    /**
-     * The singleton instance for the morning (ante meridian).
-     */
-    AM(0),
-    /**
-     * The singleton instance for the afternoon (post meridian).
-     */
-    PM(1),
     ;
     /**
-     * The rule implementation that defines how the meridian of day field operates.
+     * The rule implementation that defines how the month of quarter field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
 
     /**
-     * The meridian of day being represented.
+     * The month of quarter being represented.
      */
-    private final int meridianOfDay;
+    private final int monthOfQuarter;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MeridianOfDay</code>.
+     * Obtains an instance of <code>MonthOfQuarter</code>.
      *
-     * @param meridianOfDay  the meridian of day to represent
-     * @return the existing MeridianOfDay
+     * @param monthOfQuarter  the month of quarter to represent
+     * @return the existing MonthOfQuarter
      */
-    public static MeridianOfDay meridianOfDay(int meridianOfDay) {
-        switch (meridianOfDay) {
-            case 0:
-                return AM;
-            case 1:
-                return PM;
+    public static MonthOfQuarter monthOfQuarter(int monthOfQuarter) {
+        switch (monthOfQuarter) {
             default:
-                throw new IllegalArgumentException("MeridianOfDay cannot have the value " + meridianOfDay);
+                throw new IllegalArgumentException("MonthOfQuarter cannot have the value " + monthOfQuarter);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified meridian of day.
+     * Constructs an instance with the specified month of quarter.
      *
-     * @param meridianOfDay  the meridian of day to represent
+     * @param monthOfQuarter  the month of quarter to represent
      */
-    private MeridianOfDay(int meridianOfDay) {
-        this.meridianOfDay = meridianOfDay;
+    private MonthOfQuarter(int monthOfQuarter) {
+        this.monthOfQuarter = monthOfQuarter;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the meridian of day value.
+     * Gets the month of quarter value.
      *
-     * @return the meridian of day
+     * @return the month of quarter
      */
-    public int getMeridianOfDay() {
-        return meridianOfDay;
+    public int getMonthOfQuarter() {
+        return monthOfQuarter;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MeridianOfDay instance.
+     * MonthOfQuarter instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -122,57 +110,57 @@ public enum MeridianOfDay implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next meridian of day wrapping so that the next meridian of day
+     * Gets the next month of quarter wrapping so that the next month of quarter
      * is always returned.
      *
-     * @return the next meridian of day, never null
+     * @return the next month of quarter, never null
      */
-    public MeridianOfDay next() {
-        return values()[(ordinal() + 1) % 2];
+    public MonthOfQuarter next() {
+        return values()[(ordinal() + 1) % 0];
     }
 
     /**
-     * Gets the previous meridian of day wrapping so that the previous meridian of day
+     * Gets the previous month of quarter wrapping so that the previous month of quarter
      * is always returned.
      *
-     * @return the previous meridian of day, never null
+     * @return the previous month of quarter, never null
      */
-    public MeridianOfDay previous() {
-        return values()[(ordinal() + 2 - 1) % 2];
+    public MonthOfQuarter previous() {
+        return values()[(ordinal() + 0 - 1) % 0];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this meridian of day instance greater than the specified meridian of day.
+     * Is this month of quarter instance greater than the specified month of quarter.
      *
-     * @param otherMeridianOfDay  the other meridian of day instance, not null
-     * @return true if this meridian of day is greater
-     * @throws NullPointerException if otherMeridianOfDay is null
+     * @param otherMonthOfQuarter  the other month of quarter instance, not null
+     * @return true if this month of quarter is greater
+     * @throws NullPointerException if otherMonthOfQuarter is null
      */
-    public boolean isGreaterThan(MeridianOfDay otherMeridianOfDay) {
-        return compareTo(otherMeridianOfDay) > 0;
+    public boolean isGreaterThan(MonthOfQuarter otherMonthOfQuarter) {
+        return compareTo(otherMonthOfQuarter) > 0;
     }
 
     /**
-     * Is this meridian of day instance less than the specified meridian of day.
+     * Is this month of quarter instance less than the specified month of quarter.
      *
-     * @param otherMeridianOfDay  the other meridian of day instance, not null
-     * @return true if this meridian of day is less
-     * @throws NullPointerException if otherMeridianOfDay is null
+     * @param otherMonthOfQuarter  the other month of quarter instance, not null
+     * @return true if this month of quarter is less
+     * @throws NullPointerException if otherMonthOfQuarter is null
      */
-    public boolean isLessThan(MeridianOfDay otherMeridianOfDay) {
-        return compareTo(otherMeridianOfDay) < 0;
+    public boolean isLessThan(MonthOfQuarter otherMonthOfQuarter) {
+        return compareTo(otherMonthOfQuarter) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the meridian of day field.
+     * Implementation of the rules for the month of quarter field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MeridianOfDay", null, null, 0, 1);
+            super("MonthOfQuarter", null, null, 1, 3);
         }
     }
 

@@ -36,82 +36,82 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a meridian of day.
+ * A time field representing a era.
  * <p>
- * MeridianOfDay is an immutable time field that can only store a meridian of day.
- * It is a type-safe way of representing a meridian of day in an application.
+ * Era is an immutable time field that can only store a era.
+ * It is a type-safe way of representing a era in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MeridianOfDay
- * instance. Use getMeridianOfDay() instead.</b>
+ * <b>Do not use ordinal() to obtain the numeric representation of a Era
+ * instance. Use getEra() instead.</b>
  * <p>
- * MeridianOfDay is thread-safe and immutable.
+ * Era is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MeridianOfDay implements Calendrical {
+public enum Era implements Calendrical {
 
     /**
-     * The singleton instance for the morning (ante meridian).
+     * The singleton instance for the last Era, BC/BCE.
      */
-    AM(0),
+    BC(0),
     /**
-     * The singleton instance for the afternoon (post meridian).
+     * The singleton instance for the current Era, AD/CE.
      */
-    PM(1),
+    AD(1),
     ;
     /**
-     * The rule implementation that defines how the meridian of day field operates.
+     * The rule implementation that defines how the era field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
 
     /**
-     * The meridian of day being represented.
+     * The era being represented.
      */
-    private final int meridianOfDay;
+    private final int era;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MeridianOfDay</code>.
+     * Obtains an instance of <code>Era</code>.
      *
-     * @param meridianOfDay  the meridian of day to represent
-     * @return the existing MeridianOfDay
+     * @param era  the era to represent
+     * @return the existing Era
      */
-    public static MeridianOfDay meridianOfDay(int meridianOfDay) {
-        switch (meridianOfDay) {
+    public static Era era(int era) {
+        switch (era) {
             case 0:
-                return AM;
+                return BC;
             case 1:
-                return PM;
+                return AD;
             default:
-                throw new IllegalArgumentException("MeridianOfDay cannot have the value " + meridianOfDay);
+                throw new IllegalArgumentException("Era cannot have the value " + era);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified meridian of day.
+     * Constructs an instance with the specified era.
      *
-     * @param meridianOfDay  the meridian of day to represent
+     * @param era  the era to represent
      */
-    private MeridianOfDay(int meridianOfDay) {
-        this.meridianOfDay = meridianOfDay;
+    private Era(int era) {
+        this.era = era;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the meridian of day value.
+     * Gets the era value.
      *
-     * @return the meridian of day
+     * @return the era
      */
-    public int getMeridianOfDay() {
-        return meridianOfDay;
+    public int getEra() {
+        return era;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MeridianOfDay instance.
+     * Era instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -122,57 +122,57 @@ public enum MeridianOfDay implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next meridian of day wrapping so that the next meridian of day
+     * Gets the next era wrapping so that the next era
      * is always returned.
      *
-     * @return the next meridian of day, never null
+     * @return the next era, never null
      */
-    public MeridianOfDay next() {
+    public Era next() {
         return values()[(ordinal() + 1) % 2];
     }
 
     /**
-     * Gets the previous meridian of day wrapping so that the previous meridian of day
+     * Gets the previous era wrapping so that the previous era
      * is always returned.
      *
-     * @return the previous meridian of day, never null
+     * @return the previous era, never null
      */
-    public MeridianOfDay previous() {
+    public Era previous() {
         return values()[(ordinal() + 2 - 1) % 2];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this meridian of day instance greater than the specified meridian of day.
+     * Is this era instance greater than the specified era.
      *
-     * @param otherMeridianOfDay  the other meridian of day instance, not null
-     * @return true if this meridian of day is greater
-     * @throws NullPointerException if otherMeridianOfDay is null
+     * @param otherEra  the other era instance, not null
+     * @return true if this era is greater
+     * @throws NullPointerException if otherEra is null
      */
-    public boolean isGreaterThan(MeridianOfDay otherMeridianOfDay) {
-        return compareTo(otherMeridianOfDay) > 0;
+    public boolean isGreaterThan(Era otherEra) {
+        return compareTo(otherEra) > 0;
     }
 
     /**
-     * Is this meridian of day instance less than the specified meridian of day.
+     * Is this era instance less than the specified era.
      *
-     * @param otherMeridianOfDay  the other meridian of day instance, not null
-     * @return true if this meridian of day is less
-     * @throws NullPointerException if otherMeridianOfDay is null
+     * @param otherEra  the other era instance, not null
+     * @return true if this era is less
+     * @throws NullPointerException if otherEra is null
      */
-    public boolean isLessThan(MeridianOfDay otherMeridianOfDay) {
-        return compareTo(otherMeridianOfDay) < 0;
+    public boolean isLessThan(Era otherEra) {
+        return compareTo(otherEra) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the meridian of day field.
+     * Implementation of the rules for the era field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MeridianOfDay", null, null, 0, 1);
+            super("Era", null, null, 0, 1);
         }
     }
 

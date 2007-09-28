@@ -64,8 +64,8 @@ public class CodeGen {
             Velocity.init();
             
             CodeGen cg = new CodeGen();
-            cg.processDurationField();
-            cg.processTestDurationField();
+//            cg.processDurationField();
+//            cg.processTestDurationField();
             cg.processTimeField();
             System.out.println("Done");
             
@@ -147,14 +147,27 @@ public class CodeGen {
         Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
+        processTimeField(enumTemplate, "Era", "era", ERA, "0", "1");
+        processTimeField(regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
+        processTimeField(regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
+        processTimeField(regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
         processTimeField(regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
+        processTimeField(regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
+        processTimeField(regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
+        processTimeField(enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
         processTimeField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
+        processTimeField(enumTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
+        processTimeField(regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
+        processTimeField(regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
         processTimeField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
         processTimeField(regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
         processTimeField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
         processTimeField(enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
         processTimeField(regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
+        processTimeField(regularTemplate, "HourOfMeridian", "hour of meridian", null, "0", "11");
+        processTimeField(regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
         processTimeField(regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
+        processTimeField(regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
         processTimeField(regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
     }
 
@@ -282,6 +295,18 @@ public class CodeGen {
     private static final FieldSingleton[] MERIDIAN_OF_DAY = new FieldSingleton[] {
         new FieldSingleton("AM", "The singleton instance for the morning (ante meridian).", "0"),
         new FieldSingleton("PM", "The singleton instance for the afternoon (post meridian).", "1"),
+    };
+
+    private static final FieldSingleton[] QUARTER_OF_YEAR = new FieldSingleton[] {
+        new FieldSingleton("Q1", "The singleton instance for the first quarter of year, from January to March.", "1"),
+        new FieldSingleton("Q2", "The singleton instance for the second quarter of year, from April to June.", "2"),
+        new FieldSingleton("Q3", "The singleton instance for the third quarter of year, from July to September.", "3"),
+        new FieldSingleton("Q4", "The singleton instance for the fourth quarter of year, from October to December.", "4"),
+    };
+
+    private static final FieldSingleton[] ERA = new FieldSingleton[] {
+        new FieldSingleton("BC", "The singleton instance for the last Era, BC/BCE.", "0"),
+        new FieldSingleton("AD", "The singleton instance for the current Era, AD/CE.", "1"),
     };
 
     public static class FieldSingleton {

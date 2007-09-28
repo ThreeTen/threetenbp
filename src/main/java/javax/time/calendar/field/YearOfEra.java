@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A time field representing a year of era.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * YearOfEra is an immutable time field that can only store a year of era.
+ * It is a type-safe way of representing a year of era in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The year of era may be queried using getYearOfEra().
  * <p>
- * MinuteOfHour is thread-safe and immutable.
+ * YearOfEra is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
+public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Serializable {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
+     * The rule implementation that defines how the year of era field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The minute of hour being represented.
+     * The year of era being represented.
      */
-    private final int minuteOfHour;
+    private final int yearOfEra;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of <code>YearOfEra</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
-     * @return the created MinuteOfHour
+     * @param yearOfEra  the year of era to represent
+     * @return the created YearOfEra
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        return new MinuteOfHour(minuteOfHour);
+    public static YearOfEra yearOfEra(int yearOfEra) {
+        return new YearOfEra(yearOfEra);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified year of era.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param yearOfEra  the year of era to represent
      */
-    private MinuteOfHour(int minuteOfHour) {
-        this.minuteOfHour = minuteOfHour;
+    private YearOfEra(int yearOfEra) {
+        this.yearOfEra = yearOfEra;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the year of era value.
      *
-     * @return the minute of hour
+     * @return the year of era
      */
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public int getYearOfEra() {
+        return yearOfEra;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MinuteOfHour instance.
+     * YearOfEra instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this year of era instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherYearOfEra  the other year of era instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @throws NullPointerException if otherYearOfEra is null
      */
-    public int compareTo(MinuteOfHour otherMinuteOfHour) {
-        int thisValue = this.minuteOfHour;
-        int otherValue = otherMinuteOfHour.minuteOfHour;
+    public int compareTo(YearOfEra otherYearOfEra) {
+        int thisValue = this.yearOfEra;
+        int otherValue = otherYearOfEra.yearOfEra;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this minute of hour instance greater than the specified minute of hour.
+     * Is this year of era instance greater than the specified year of era.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherYearOfEra  the other year of era instance, not null
+     * @return true if this year of era is greater
+     * @throws NullPointerException if otherYearOfEra is null
      */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
+    public boolean isGreaterThan(YearOfEra otherYearOfEra) {
+        return compareTo(otherYearOfEra) > 0;
     }
 
     /**
-     * Is this minute of hour instance less than the specified minute of hour.
+     * Is this year of era instance less than the specified year of era.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherYearOfEra  the other year of era instance, not null
+     * @return true if this year of era is less
+     * @throws NullPointerException if otherYearOfEra is null
      */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
+    public boolean isLessThan(YearOfEra otherYearOfEra) {
+        return compareTo(otherYearOfEra) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the year of era.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherYearOfEra  the other year of era instance, null returns false
+     * @return true if the year of era is the same
      */
     @Override
-    public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
+    public boolean equals(Object otherYearOfEra) {
+        if (this == otherYearOfEra) {
             return true;
         }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
+        if (otherYearOfEra instanceof YearOfEra) {
+            return yearOfEra == ((YearOfEra) otherYearOfEra).yearOfEra;
         }
         return false;
     }
 
     /**
-     * A hashcode for the minute of hour object.
+     * A hashcode for the year of era object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return minuteOfHour;
+        return yearOfEra;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minute of hour field.
+     * Implementation of the rules for the year of era field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+            super("YearOfEra", null, null, 1, Integer.MAX_VALUE);
         }
     }
 

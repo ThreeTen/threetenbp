@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A time field representing a century of era.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * CenturyOfEra is an immutable time field that can only store a century of era.
+ * It is a type-safe way of representing a century of era in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The century of era may be queried using getCenturyOfEra().
  * <p>
- * MinuteOfHour is thread-safe and immutable.
+ * CenturyOfEra is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
+public final class CenturyOfEra implements Calendrical, Comparable<CenturyOfEra>, Serializable {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
+     * The rule implementation that defines how the century of era field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The minute of hour being represented.
+     * The century of era being represented.
      */
-    private final int minuteOfHour;
+    private final int centuryOfEra;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of <code>CenturyOfEra</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
-     * @return the created MinuteOfHour
+     * @param centuryOfEra  the century of era to represent
+     * @return the created CenturyOfEra
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        return new MinuteOfHour(minuteOfHour);
+    public static CenturyOfEra centuryOfEra(int centuryOfEra) {
+        return new CenturyOfEra(centuryOfEra);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified century of era.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param centuryOfEra  the century of era to represent
      */
-    private MinuteOfHour(int minuteOfHour) {
-        this.minuteOfHour = minuteOfHour;
+    private CenturyOfEra(int centuryOfEra) {
+        this.centuryOfEra = centuryOfEra;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the century of era value.
      *
-     * @return the minute of hour
+     * @return the century of era
      */
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public int getCenturyOfEra() {
+        return centuryOfEra;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MinuteOfHour instance.
+     * CenturyOfEra instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this century of era instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherCenturyOfEra  the other century of era instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @throws NullPointerException if otherCenturyOfEra is null
      */
-    public int compareTo(MinuteOfHour otherMinuteOfHour) {
-        int thisValue = this.minuteOfHour;
-        int otherValue = otherMinuteOfHour.minuteOfHour;
+    public int compareTo(CenturyOfEra otherCenturyOfEra) {
+        int thisValue = this.centuryOfEra;
+        int otherValue = otherCenturyOfEra.centuryOfEra;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this minute of hour instance greater than the specified minute of hour.
+     * Is this century of era instance greater than the specified century of era.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherCenturyOfEra  the other century of era instance, not null
+     * @return true if this century of era is greater
+     * @throws NullPointerException if otherCenturyOfEra is null
      */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
+    public boolean isGreaterThan(CenturyOfEra otherCenturyOfEra) {
+        return compareTo(otherCenturyOfEra) > 0;
     }
 
     /**
-     * Is this minute of hour instance less than the specified minute of hour.
+     * Is this century of era instance less than the specified century of era.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherCenturyOfEra  the other century of era instance, not null
+     * @return true if this century of era is less
+     * @throws NullPointerException if otherCenturyOfEra is null
      */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
+    public boolean isLessThan(CenturyOfEra otherCenturyOfEra) {
+        return compareTo(otherCenturyOfEra) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the century of era.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherCenturyOfEra  the other century of era instance, null returns false
+     * @return true if the century of era is the same
      */
     @Override
-    public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
+    public boolean equals(Object otherCenturyOfEra) {
+        if (this == otherCenturyOfEra) {
             return true;
         }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
+        if (otherCenturyOfEra instanceof CenturyOfEra) {
+            return centuryOfEra == ((CenturyOfEra) otherCenturyOfEra).centuryOfEra;
         }
         return false;
     }
 
     /**
-     * A hashcode for the minute of hour object.
+     * A hashcode for the century of era object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return minuteOfHour;
+        return centuryOfEra;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minute of hour field.
+     * Implementation of the rules for the century of era field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+            super("CenturyOfEra", null, null, 0, Integer.MAX_VALUE / 100);
         }
     }
 

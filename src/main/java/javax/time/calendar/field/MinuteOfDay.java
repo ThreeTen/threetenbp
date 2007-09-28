@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A time field representing a minute of day.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * MinuteOfDay is an immutable time field that can only store a minute of day.
+ * It is a type-safe way of representing a minute of day in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The minute of day may be queried using getMinuteOfDay().
  * <p>
- * MinuteOfHour is thread-safe and immutable.
+ * MinuteOfDay is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>, Serializable {
+public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, Serializable {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
+     * The rule implementation that defines how the minute of day field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     private static final long serialVersionUID = 1L;
 
     /**
-     * The minute of hour being represented.
+     * The minute of day being represented.
      */
-    private final int minuteOfHour;
+    private final int minuteOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code>.
+     * Obtains an instance of <code>MinuteOfDay</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
-     * @return the created MinuteOfHour
+     * @param minuteOfDay  the minute of day to represent
+     * @return the created MinuteOfDay
      */
-    public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        return new MinuteOfHour(minuteOfHour);
+    public static MinuteOfDay minuteOfDay(int minuteOfDay) {
+        return new MinuteOfDay(minuteOfDay);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified minute of day.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param minuteOfDay  the minute of day to represent
      */
-    private MinuteOfHour(int minuteOfHour) {
-        this.minuteOfHour = minuteOfHour;
+    private MinuteOfDay(int minuteOfDay) {
+        this.minuteOfDay = minuteOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the minute of day value.
      *
-     * @return the minute of hour
+     * @return the minute of day
      */
-    public int getMinuteOfHour() {
-        return minuteOfHour;
+    public int getMinuteOfDay() {
+        return minuteOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MinuteOfHour instance.
+     * MinuteOfDay instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this minute of day instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherMinuteOfDay  the other minute of day instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @throws NullPointerException if otherMinuteOfDay is null
      */
-    public int compareTo(MinuteOfHour otherMinuteOfHour) {
-        int thisValue = this.minuteOfHour;
-        int otherValue = otherMinuteOfHour.minuteOfHour;
+    public int compareTo(MinuteOfDay otherMinuteOfDay) {
+        int thisValue = this.minuteOfDay;
+        int otherValue = otherMinuteOfDay.minuteOfDay;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this minute of hour instance greater than the specified minute of hour.
+     * Is this minute of day instance greater than the specified minute of day.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherMinuteOfDay  the other minute of day instance, not null
+     * @return true if this minute of day is greater
+     * @throws NullPointerException if otherMinuteOfDay is null
      */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
+    public boolean isGreaterThan(MinuteOfDay otherMinuteOfDay) {
+        return compareTo(otherMinuteOfDay) > 0;
     }
 
     /**
-     * Is this minute of hour instance less than the specified minute of hour.
+     * Is this minute of day instance less than the specified minute of day.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
+     * @param otherMinuteOfDay  the other minute of day instance, not null
+     * @return true if this minute of day is less
+     * @throws NullPointerException if otherMinuteOfDay is null
      */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
+    public boolean isLessThan(MinuteOfDay otherMinuteOfDay) {
+        return compareTo(otherMinuteOfDay) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the minute of day.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherMinuteOfDay  the other minute of day instance, null returns false
+     * @return true if the minute of day is the same
      */
     @Override
-    public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
+    public boolean equals(Object otherMinuteOfDay) {
+        if (this == otherMinuteOfDay) {
             return true;
         }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
+        if (otherMinuteOfDay instanceof MinuteOfDay) {
+            return minuteOfDay == ((MinuteOfDay) otherMinuteOfDay).minuteOfDay;
         }
         return false;
     }
 
     /**
-     * A hashcode for the minute of hour object.
+     * A hashcode for the minute of day object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return minuteOfHour;
+        return minuteOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minute of hour field.
+     * Implementation of the rules for the minute of day field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+            super("MinuteOfDay", null, null, 0, 1439);
         }
     }
 
