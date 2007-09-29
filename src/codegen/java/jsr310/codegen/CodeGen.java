@@ -46,7 +46,7 @@ import org.apache.velocity.app.Velocity;
 
 /**
  * Code generates the repetitive parts of the JSR code.
- * 
+ *
  * @author Stephen Colebourne
  */
 public class CodeGen {
@@ -66,7 +66,7 @@ public class CodeGen {
             CodeGen cg = new CodeGen();
 //            cg.processDurationField();
 //            cg.processTestDurationField();
-            cg.processTimeField();
+//            cg.processTimeField();
             System.out.println("Done");
             
         } catch (Exception ex) {
@@ -98,7 +98,7 @@ public class CodeGen {
             String relativeField) throws Exception {
         File file = new File(MAIN_DURATION_DIR, classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
-        int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
+        int pos = indexOfLineContaining(methodLines, "private static class Unit", 0);
         if (pos >= 4) {
             methodLines = methodLines.subList(0, pos - 4);
         }

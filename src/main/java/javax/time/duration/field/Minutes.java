@@ -34,7 +34,7 @@ package javax.time.duration.field;
 import java.io.Serializable;
 
 import javax.time.duration.DurationField;
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 import javax.time.duration.DurationalState;
 
 /**
@@ -55,9 +55,9 @@ import javax.time.duration.DurationalState;
 public final class Minutes extends DurationField implements Comparable<Minutes>, Serializable {
 
     /**
-     * The rule implementation that defines how the minutes field operates.
+     * The unit that defines how the minutes field operates.
      */
-    public static final DurationFieldRule RULE = new Rule();
+    public static final DurationUnit UNIT = new Unit();
     /**
      * A constant for zero minutes.
      */
@@ -137,6 +137,17 @@ public final class Minutes extends DurationField implements Comparable<Minutes>,
     @Override
     public Minutes withAmount(int amount) {
         return Minutes.minutes(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the unit defining the amount of time.
+     *
+     * @return the minutes unit, never null
+     */
+    @Override
+    public DurationUnit getUnit() {
+        return UNIT;
     }
 
     //-----------------------------------------------------------------------
@@ -291,12 +302,12 @@ public final class Minutes extends DurationField implements Comparable<Minutes>,
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the minutes field.
+     * Implementation of the unit for minutes.
      */
-    private static class Rule extends DurationFieldRule {
+    private static class Unit extends DurationUnit {
 
         /** Constructor. */
-        protected Rule() {
+        protected Unit() {
             super("Minutes", Seconds.seconds(60));
         }
     }

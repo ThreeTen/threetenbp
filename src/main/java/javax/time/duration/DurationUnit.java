@@ -44,7 +44,7 @@ package javax.time.duration;
  *
  * @author Stephen Colebourne
  */
-public abstract class DurationFieldRule implements Comparable<DurationFieldRule> {
+public abstract class DurationUnit implements Comparable<DurationUnit> {
 
     /** The name of the rule, not null. */
     private final String name;
@@ -57,7 +57,7 @@ public abstract class DurationFieldRule implements Comparable<DurationFieldRule>
      * @param name  the name of the rule, not null
      * @param relativeField  alternate field that this field can be expressed in, null if none
      */
-    protected DurationFieldRule(String name, DurationField relativeField) {
+    protected DurationUnit(String name, DurationField relativeField) {
         super();
         // TODO: Check not null
         this.name = name;
@@ -93,7 +93,7 @@ public abstract class DurationFieldRule implements Comparable<DurationFieldRule>
      * @return the comparator result, negative if less, postive if greater, zero if equal
      * @throws NullPointerException if other is null
      */
-    public int compareTo(DurationFieldRule other) {
+    public int compareTo(DurationUnit other) {
         return 0;
     }
 

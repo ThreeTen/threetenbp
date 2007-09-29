@@ -34,7 +34,7 @@ package javax.time.duration.field;
 import java.io.Serializable;
 
 import javax.time.duration.DurationField;
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 import javax.time.duration.DurationalState;
 
 /**
@@ -55,9 +55,9 @@ import javax.time.duration.DurationalState;
 public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
 
     /**
-     * The rule implementation that defines how the ${type} field operates.
+     * The unit that defines how the ${type} field operates.
      */
-    public static final DurationFieldRule RULE = new Rule();
+    public static final DurationUnit UNIT = new Unit();
     /**
      * A constant for zero ${type}.
      */
@@ -137,6 +137,17 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
     @Override
     public ${Type} withAmount(int amount) {
         return ${Type}.${type}(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the unit defining the amount of time.
+     *
+     * @return the ${type} unit, never null
+     */
+    @Override
+    public DurationUnit getUnit() {
+        return UNIT;
     }
 
     //-----------------------------------------------------------------------
@@ -294,12 +305,12 @@ ${line}
 #end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the ${type} field.
+     * Implementation of the unit for ${type}.
      */
-    private static class Rule extends DurationFieldRule {
+    private static class Unit extends DurationUnit {
 
         /** Constructor. */
-        protected Rule() {
+        protected Unit() {
             super("${Type}", ${relativeField});
         }
     }

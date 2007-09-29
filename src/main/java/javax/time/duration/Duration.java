@@ -58,7 +58,7 @@ public final class Duration implements Durational, Serializable {
     /**
      * A constant for a duration of zero.
      */
-    public static final Duration ZERO = new Duration(new HashMap<DurationFieldRule, DurationField>(0));
+    public static final Duration ZERO = new Duration(new HashMap<DurationUnit, DurationField>(0));
 
     /**
      * A serialization identifier for this instance.
@@ -66,9 +66,9 @@ public final class Duration implements Durational, Serializable {
     private static final long serialVersionUID = 986187548716897689L;
 
     /**
-     * The year being represented.
+     * The map of duration fields.
      */
-    private final HashMap<DurationFieldRule, DurationField> durationMap;
+    private final HashMap<DurationUnit, DurationField> durationMap;
 
     //-----------------------------------------------------------------------
     /**
@@ -105,7 +105,7 @@ public final class Duration implements Durational, Serializable {
      *
      * @param durationMap  the map of durations to represent, not null and safe to assign
      */
-    private Duration(HashMap<DurationFieldRule, DurationField> durationMap) {
+    private Duration(HashMap<DurationUnit, DurationField> durationMap) {
         this.durationMap = durationMap;
     }
 
@@ -123,14 +123,14 @@ public final class Duration implements Durational, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the amount of the duration for the specified field, returning
-     * zero if this duration does not define the field.
+     * Gets the amount of the duration for the specified unit, returning
+     * zero if this duration does not define the unit.
      *
-     * @param rule  the field to query, not null
-     * @return the duration amount, zero if the field is not present
+     * @param unit  the unit to query, not null
+     * @return the duration amount, zero if the unit is not present
      */
-    public int getAmount(DurationFieldRule rule) {
-        DurationField field = durationMap.get(rule);
+    public int getAmount(DurationUnit unit) {
+        DurationField field = durationMap.get(unit);
         if (field == null) {
             return 0;
         }
@@ -156,7 +156,7 @@ public final class Duration implements Durational, Serializable {
      * @return the years field of the overall duration
      */
     public int getYears() {
-        return getAmount(Years.RULE);
+        return getAmount(Years.UNIT);
     }
 
     /**
@@ -165,7 +165,7 @@ public final class Duration implements Durational, Serializable {
      * @return the months field of the overall duration
      */
     public int getMonths() {
-        return getAmount(Months.RULE);
+        return getAmount(Months.UNIT);
     }
 
     /**
@@ -174,7 +174,7 @@ public final class Duration implements Durational, Serializable {
      * @return the days field of the overall duration
      */
     public int getDays() {
-        return getAmount(Days.RULE);
+        return getAmount(Days.UNIT);
     }
 
     /**
@@ -183,7 +183,7 @@ public final class Duration implements Durational, Serializable {
      * @return the hours field of the overall duration
      */
     public int getHours() {
-        return getAmount(Hours.RULE);
+        return getAmount(Hours.UNIT);
     }
 
     /**
@@ -192,7 +192,7 @@ public final class Duration implements Durational, Serializable {
      * @return the minutes field of the overall duration
      */
     public int getMinutes() {
-        return getAmount(Minutes.RULE);
+        return getAmount(Minutes.UNIT);
     }
 
     /**
@@ -201,7 +201,7 @@ public final class Duration implements Durational, Serializable {
      * @return the seconds field of the overall duration
      */
     public int getSeconds() {
-        return getAmount(Seconds.RULE);
+        return getAmount(Seconds.UNIT);
     }
 
     //-----------------------------------------------------------------------
@@ -238,18 +238,18 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param rule  the field to update, not null
      * @param amount  the amount to update the new instance with
+     * @param unit  the unit to update, not null
      * @return a new updated Duration
      */
     @SuppressWarnings("unchecked")
-    private Duration with(DurationFieldRule rule, int amount) {
-        if (getAmount(rule) == amount) {
+    private Duration with(int amount, DurationUnit unit) {
+        if (getAmount(unit) == amount) {
             return this;
         }
-        HashMap<DurationFieldRule, DurationField> copy = (HashMap) durationMap.clone();
+        HashMap<DurationUnit, DurationField> copy = (HashMap) durationMap.clone();
         if (amount == 0) {
-            copy.remove(rule);
+            copy.remove(unit);
 //        } else {  // TODO
 //            copy.put(rule, rule.createInstance(amount));
         }
@@ -266,7 +266,7 @@ public final class Duration implements Durational, Serializable {
      * @return a new updated Duration
      */
     public Duration withYears(int years) {
-        return with(Years.RULE, years);
+        return with(years, Years.UNIT);
     }
 
     /**
@@ -278,7 +278,7 @@ public final class Duration implements Durational, Serializable {
      * @return a new updated Duration
      */
     public Duration withMonths(int months) {
-        return with(Months.RULE, months);
+        return with(months, Months.UNIT);
     }
 
     /**
@@ -290,7 +290,7 @@ public final class Duration implements Durational, Serializable {
      * @return a new updated Duration
      */
     public Duration withDays(int days) {
-        return with(Days.RULE, days);
+        return with(days, Days.UNIT);
     }
 
     /**
@@ -302,7 +302,7 @@ public final class Duration implements Durational, Serializable {
      * @return a new updated Duration
      */
     public Duration withHours(int hours) {
-        return with(Hours.RULE, hours);
+        return with(hours, Hours.UNIT);
     }
 
     /**
@@ -314,7 +314,7 @@ public final class Duration implements Durational, Serializable {
      * @return a new updated Duration
      */
     public Duration withMinutes(int minutes) {
-        return with(Minutes.RULE, minutes);
+        return with(minutes, Minutes.UNIT);
     }
 
     /**
@@ -326,7 +326,7 @@ public final class Duration implements Durational, Serializable {
      * @return a new updated Duration
      */
     public Duration withSeconds(int seconds) {
-        return with(Seconds.RULE, seconds);
+        return with(seconds, Seconds.UNIT);
     }
 
     //-----------------------------------------------------------------------

@@ -78,6 +78,14 @@ public abstract class DurationField implements Durational {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the unit defining the amount of time.
+     *
+     * @return the duration unit, never null
+     */
+    public abstract DurationUnit getUnit();
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a new instance with the specified amount of time added.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -148,6 +156,39 @@ public abstract class DurationField implements Durational {
     public DurationField negated() {
         return withAmount(MathUtils.safeNegate(getAmount()));
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Converts this instance to another type of duration.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param <T> the type to be converted to
+//     * @param durationType  the duration type to convert to, not null
+//     * @return the new converted duration field, never null
+//     * @throws IllegalArgumentException if the conversion is not possible
+//     * @throws ArithmeticException if the result overflows an int
+//     */
+//    public <T extends DurationField> T convertTo(Class<T> durationType) {
+//        DurationUnit unit = null;
+//        try {
+//            Field field = durationType.getField("UNIT");
+//            unit = (DurationUnit) field.get(null);
+//        } catch (NoSuchFieldException ex) {
+//            throw new IllegalArgumentException("UNIT field missing on " + durationType, ex);
+//        } catch (SecurityException ex) {
+//            throw new IllegalArgumentException("UNIT field not public on " + durationType, ex);
+//        } catch (IllegalArgumentException ex) {
+//            throw new IllegalArgumentException("UNIT field access error on " + durationType, ex);
+//        } catch (IllegalAccessException ex) {
+//            throw new IllegalArgumentException("UNIT field not public on " + durationType, ex);
+//        } catch (NullPointerException ex) {
+//            throw new IllegalArgumentException("UNIT field not static on " + durationType, ex);
+//        } catch (ClassCastException ex) {
+//            throw new IllegalArgumentException("UNIT field not a DurationUnit on " + durationType, ex);
+//        }
+//        return null; //getUnit().convert(this);
+//    }
 
     //-----------------------------------------------------------------------
     /**

@@ -34,7 +34,7 @@ package javax.time.duration.field;
 import java.io.Serializable;
 
 import javax.time.duration.DurationField;
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 import javax.time.duration.DurationalState;
 
 /**
@@ -55,9 +55,9 @@ import javax.time.duration.DurationalState;
 public final class Weeks extends DurationField implements Comparable<Weeks>, Serializable {
 
     /**
-     * The rule implementation that defines how the weeks field operates.
+     * The unit that defines how the weeks field operates.
      */
-    public static final DurationFieldRule RULE = new Rule();
+    public static final DurationUnit UNIT = new Unit();
     /**
      * A constant for zero weeks.
      */
@@ -137,6 +137,17 @@ public final class Weeks extends DurationField implements Comparable<Weeks>, Ser
     @Override
     public Weeks withAmount(int amount) {
         return Weeks.weeks(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the unit defining the amount of time.
+     *
+     * @return the weeks unit, never null
+     */
+    @Override
+    public DurationUnit getUnit() {
+        return UNIT;
     }
 
     //-----------------------------------------------------------------------
@@ -291,12 +302,12 @@ public final class Weeks extends DurationField implements Comparable<Weeks>, Ser
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the weeks field.
+     * Implementation of the unit for weeks.
      */
-    private static class Rule extends DurationFieldRule {
+    private static class Unit extends DurationUnit {
 
         /** Constructor. */
-        protected Rule() {
+        protected Unit() {
             super("Weeks", Days.days(7));
         }
     }

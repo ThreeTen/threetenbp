@@ -51,7 +51,7 @@ public abstract class DurationalState {
      * @param fieldRule  the field rule to check, null returns false
      * @return true if the field is supported, false if not
      */
-    public abstract boolean isSupported(DurationFieldRule fieldRule);
+    public abstract boolean isSupported(DurationUnit fieldRule);
 
     /**
      * Gets the duration amount of the specified field.
@@ -61,7 +61,7 @@ public abstract class DurationalState {
      * @throws NullPointerException if the specified field rule is null
      * @throws UnsupportedOperationException if the field is not supported
      */
-    public abstract int get(DurationFieldRule fieldRule);
+    public abstract int get(DurationUnit fieldRule);
 
     /**
      * Gets the duration amount of the specified field.
@@ -70,7 +70,7 @@ public abstract class DurationalState {
      * @throws NullPointerException if the specified field rule is null
      * @throws UnsupportedOperationException if the field is not supported
      */
-    public abstract Set<DurationFieldRule> getSupportedFields();
+    public abstract Set<DurationUnit> getSupportedFields();
 
     /**
      * Derive the duration amount of the specified field.
@@ -80,6 +80,6 @@ public abstract class DurationalState {
      * @throws NullPointerException if the specified field rule is null
      * @throws UnsupportedOperationException if the field cannot be derived
      */
-    public abstract int getDerived(DurationFieldRule fieldRule);
+    public abstract int getDerived(DurationUnit fieldRule);
 
 }

@@ -34,7 +34,7 @@ package javax.time.duration.field;
 import java.io.Serializable;
 
 import javax.time.duration.DurationField;
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 import javax.time.duration.DurationalState;
 
 /**
@@ -55,9 +55,9 @@ import javax.time.duration.DurationalState;
 public final class Days extends DurationField implements Comparable<Days>, Serializable {
 
     /**
-     * The rule implementation that defines how the days field operates.
+     * The unit that defines how the days field operates.
      */
-    public static final DurationFieldRule RULE = new Rule();
+    public static final DurationUnit UNIT = new Unit();
     /**
      * A constant for zero days.
      */
@@ -137,6 +137,17 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
     @Override
     public Days withAmount(int amount) {
         return Days.days(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the unit defining the amount of time.
+     *
+     * @return the days unit, never null
+     */
+    @Override
+    public DurationUnit getUnit() {
+        return UNIT;
     }
 
     //-----------------------------------------------------------------------
@@ -291,12 +302,12 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the days field.
+     * Implementation of the unit for days.
      */
-    private static class Rule extends DurationFieldRule {
+    private static class Unit extends DurationUnit {
 
         /** Constructor. */
-        protected Rule() {
+        protected Unit() {
             super("Days", Hours.hours(24));
         }
     }

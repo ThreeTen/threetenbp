@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 import javax.time.duration.Durational;
 
 /**
@@ -50,10 +50,10 @@ public abstract class TimeFieldRule {
 
     /** The name of the rule, not null. */
     private final String name;
-    /** The duration unit rule, not null. */
-    private final DurationFieldRule durationUnitRule;
-    /** The duration range rule, not null. */
-    private final DurationFieldRule durationRangeRule;
+    /** The duration unit, not null. */
+    private final DurationUnit durationUnit;
+    /** The duration range, not null. */
+    private final DurationUnit durationRange;
     /** The minimum value for the field. */
     private final int minimumValue;
     /** The maximum value for the field. */
@@ -63,22 +63,22 @@ public abstract class TimeFieldRule {
      * Constructor.
      *
      * @param name  the name of the type, not null
-     * @param durationUnitRule  the duration unit rule, not null
-     * @param durationRangeRule  the duration range rule, not null
+     * @param durationUnit  the duration unit, not null
+     * @param durationRange  the duration range, not null
      * @param minimumValue  the minimum value
      * @param maximumValue  the minimum value
      */
     protected TimeFieldRule(
             String name,
-            DurationFieldRule durationUnitRule,
-            DurationFieldRule durationRangeRule,
+            DurationUnit durationUnit,
+            DurationUnit durationRange,
             int minimumValue,
             int maximumValue) {
         super();
         // TODO: Validate not null
         this.name = name;
-        this.durationUnitRule = durationUnitRule;
-        this.durationRangeRule = durationRangeRule;
+        this.durationUnit = durationUnit;
+        this.durationRange = durationRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
     }
@@ -96,25 +96,25 @@ public abstract class TimeFieldRule {
     }
 
     /**
-     * Gets the unit duration rule, which the element which alters within the range.
+     * Gets the duration unit, which the element which alters within the range.
      * <p>
      * In the phrase 'hour of day', the unit is the hour.
      *
      * @return the rule for the unit duration, never null
      */
-    public DurationFieldRule getDurationUnit() {
-        return durationUnitRule;
+    public DurationUnit getDurationUnit() {
+        return durationUnit;
     }
 
     /**
-     * Gets the range duration rule, which the field is bound by.
+     * Gets the duration range, which the field is bound by.
      * <p>
      * In the phrase 'hour of day', the range is the day.
      *
      * @return the rule for the range duration, never null
      */
-    public DurationFieldRule getDurationRange() {
-        return durationRangeRule;
+    public DurationUnit getDurationRange() {
+        return durationRange;
     }
 
 //    /**

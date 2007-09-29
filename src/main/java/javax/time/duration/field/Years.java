@@ -34,7 +34,7 @@ package javax.time.duration.field;
 import java.io.Serializable;
 
 import javax.time.duration.DurationField;
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 import javax.time.duration.DurationalState;
 
 /**
@@ -55,9 +55,9 @@ import javax.time.duration.DurationalState;
 public final class Years extends DurationField implements Comparable<Years>, Serializable {
 
     /**
-     * The rule implementation that defines how the years field operates.
+     * The unit that defines how the years field operates.
      */
-    public static final DurationFieldRule RULE = new Rule();
+    public static final DurationUnit UNIT = new Unit();
     /**
      * A constant for zero years.
      */
@@ -137,6 +137,17 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
     @Override
     public Years withAmount(int amount) {
         return Years.years(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the unit defining the amount of time.
+     *
+     * @return the years unit, never null
+     */
+    @Override
+    public DurationUnit getUnit() {
+        return UNIT;
     }
 
     //-----------------------------------------------------------------------
@@ -291,12 +302,12 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the years field.
+     * Implementation of the unit for years.
      */
-    private static class Rule extends DurationFieldRule {
+    private static class Unit extends DurationUnit {
 
         /** Constructor. */
-        protected Rule() {
+        protected Unit() {
             super("Years", Months.months(12));
         }
     }

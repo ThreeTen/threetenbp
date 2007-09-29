@@ -33,7 +33,7 @@ package javax.time.calendar;
 
 import java.util.Set;
 
-import javax.time.duration.DurationFieldRule;
+import javax.time.duration.DurationUnit;
 
 /**
  * Internal state class providing calendrical information and calculations.
@@ -66,7 +66,7 @@ public abstract class CalendricalState {
      *
      * @return the smallest duration unit, never null
      */
-    public abstract DurationFieldRule getSmallestDurationUnit();
+    public abstract DurationUnit getSmallestDurationUnit();
 
     /**
      * Gets the largest duration range of any of the contained fields.
@@ -75,7 +75,7 @@ public abstract class CalendricalState {
      *
      * @return the largest duration range, never null
      */
-    public abstract DurationFieldRule getLargestDurationRange();
+    public abstract DurationUnit getLargestDurationRange();
 
     /**
      * Checks is the specified field is supported.
