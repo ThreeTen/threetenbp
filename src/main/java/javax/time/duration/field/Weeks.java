@@ -32,10 +32,10 @@
 package javax.time.duration.field;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
 
-import javax.time.duration.DurationField;
 import javax.time.duration.DurationUnit;
-import javax.time.duration.DurationalState;
 
 /**
  * A duration representing a number of weeks.
@@ -108,13 +108,24 @@ public final class Weeks extends DurationField implements Comparable<Weeks>, Ser
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state.
+     * Checks whether a given unit is supported -
+     * <code>Weeks</code> only supports the Weeks unit.
      *
-     * @return the durational state
+     * @param unit  the unit to check for, null returns false
+     * @return true only if the Weeks unit, otherwise false
      */
-    @Override
-    public DurationalState getDurationalState() {
-        return null;
+    public boolean isSupported(DurationUnit unit)  {
+        return (unit == UNIT);
+    }
+
+    /**
+     * Gets the map of duration unit to amount which defines the duration.
+     * This instance returns a map of size one where the key is the Weeks unit.
+     *
+     * @return the map of duration amounts, never null, never contains null
+     */
+    public Map<DurationUnit, Integer> getDurationalMap() {
+        return Collections.singletonMap(UNIT, weeks);
     }
 
     //-----------------------------------------------------------------------

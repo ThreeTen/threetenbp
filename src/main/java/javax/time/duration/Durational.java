@@ -31,6 +31,7 @@
  */
 package javax.time.duration;
 
+import java.util.Map;
 
 /**
  * Interface implemented by all objects that can provide durational information.
@@ -48,10 +49,145 @@ package javax.time.duration;
 public interface Durational {
 
     /**
-     * Gets the durational state which provides internal access to the duration.
+     * Checks whether a given unit is supported.
+     * <p>
+     * Not all implementations of <code>Durational</code> support storage of
+     * all duration units. This method allows you to determine which units
+     * are supported by this instance.
      *
-     * @return the duration state, never null
+     * @param unit  the unit to check for, null returns false
+     * @return whether the unit is supported
      */
-    DurationalState getDurationalState() ;
+    boolean isSupported(DurationUnit unit) ;
+
+    /**
+     * Gets the map of duration unit to amount which defines the duration.
+     * The map iterators are sorted by duration unit, returning the largest first.
+     * <p>
+     * Implementations must ensure that the map never contains null.
+     * Implementations should return an unmodifiable map from this method.
+     *
+     * @return the map of duration amounts, never null, never contains null
+     */
+    Map<DurationUnit, Integer> getDurationalMap() ;
+
+//    /**
+//     * Gets the amount in the specified unit.
+//     *
+//     * @param unit  the unit to update, not null
+//     * @return the amount in the specified unit, never null
+//     * @throws IllegalArgumentException if the unit is unsupported
+//     */
+//    Integer getAmount(DurationUnit unit) ;
+//
+////    /**
+////     * Returns a new instance with the specified unit updated.
+////     * <p>
+////     * Implementations must ensure that they return their own type instead of
+////     * <code>Durational</code>.
+////     *
+////     * @param amount  the amount to update to
+////     * @param unit  the unit to update, not null
+////     * @return the new updated durational instance, never null
+////     * @throws IllegalArgumentException if the unit is unsupported
+////     */
+////    Durational with(Integer amount, DurationUnit unit) ;
+//
+//    /**
+//     * Returns a new instance with the duration updated as per the specified duration.
+//     * <p>
+//     * Implementations must ensure that they return their own type instead of
+//     * <code>Durational</code>.
+//     *
+//     * @param duration  the duration to update to, not null
+//     * @return the new updated durational instance, never null
+//     * @throws IllegalArgumentException if any unit is unsupported
+//     */
+//    Durational with(Durational duration) ;
+//
+////    /**
+////     * Returns a new instance with the specified duration added.
+////     * <p>
+////     * Implementations must ensure that they return their own type instead of
+////     * <code>Durational</code>.
+////     *
+////     * @param amount  the amount to add
+////     * @param unit  the unit to update, not null
+////     * @return the new updated durational instance, never null
+////     * @throws IllegalArgumentException if the unit is unsupported
+////     */
+////    Durational plus(Integer amount, DurationUnit unit) ;
+//
+//    /**
+//     * Returns a new instance with the specified duration added.
+//     * <p>
+//     * Implementations must ensure that they return their own type instead of
+//     * <code>Durational</code>.
+//     *
+//     * @param durationToAdd  the duration to add, not null
+//     * @return the new updated durational instance, never null
+//     * @throws IllegalArgumentException if any unit is unsupported
+//     * @throws ArithmeticException if the calculation result overflows
+//     */
+//    Durational plus(Durational durationToAdd) ;
+//
+//    /**
+//     * Returns a new instance with the specified duration subtracted.
+//     * <p>
+//     * Implementations must ensure that they return their own type instead of
+//     * <code>Durational</code>.
+//     *
+//     * @param durationToSubtract  the duration to subtract, not null
+//     * @return the new updated durational instance, never null
+//     * @throws IllegalArgumentException if any unit is unsupported
+//     * @throws ArithmeticException if the calculation result overflows
+//     */
+//    Durational minus(Durational durationToSubtract) ;
+//
+//    /**
+//     * Returns a new instance with each element in this duration multiplied
+//     * by the specified scalar.
+//     * <p>
+//     * Implementations must ensure that they return their own type instead of
+//     * <code>Durational</code>.
+//     *
+//     * @param scalar  the scalar to multiply by, not null
+//     * @return the new updated durational instance, never null
+//     * @throws ArithmeticException if the calculation result overflows
+//     */
+//    Durational multipliedBy(int scalar) ;
+//
+//    /**
+//     * Returns a new instance with each element in this duration multiplied
+//     * by the specified scalar.
+//     * <p>
+//     * Implementations must ensure that they return their own type instead of
+//     * <code>Durational</code>.
+//     *
+//     * @param scalar  the scalar to multiply by, not null
+//     * @return the new updated durational instance, never null
+//     * @throws ArithmeticException if the calculation result overflows
+//     */
+//    Durational dividedBy(int scalar) ;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified.
+     * <p>
+     * The comparison is defined as a comparison of the two duration maps.
+     *
+     * @param other  the other point instance to compare to, null returns false
+     * @return true if this point is equal to the specified second
+     */
+    boolean equals(Object other);
+
+    /**
+     * Returns the hash code for this duration.
+     * <p>
+     * The hash code is defined as the hash code of the duration map.
+     *
+     * @return the hash code of the duration
+     */
+    int hashCode();
 
 }

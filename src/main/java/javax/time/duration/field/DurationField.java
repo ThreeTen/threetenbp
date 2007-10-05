@@ -29,9 +29,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration;
+package javax.time.duration.field;
 
 import javax.time.MathUtils;
+import javax.time.duration.DurationUnit;
+import javax.time.duration.Durational;
 
 /**
  * A duration measured in terms of a single field, such as days or seconds.
@@ -192,7 +194,7 @@ public abstract class DurationField implements Durational {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the amount of time.
+     * Is this instance equal to that specified, as defined by <code>Durational</code>.
      *
      * @param other  the other amount of time, null returns false
      * @return true if this amount of time is the same as that specified
@@ -202,20 +204,21 @@ public abstract class DurationField implements Durational {
         if (this == other) {
            return true;
         }
-        if (other != null && other.getClass() == this.getClass()) {
-            return getAmount() == ((DurationField) other).getAmount();
+        if (other instanceof Durational) {
+            Durational otherDuraton = (Durational) other;
+            return getDurationalMap().equals(otherDuraton);
         }
         return false;
     }
 
     /**
-     * A hashcode for the duration field object.
+     * Returns the hash code for this duration.
      *
-     * @return a suitable hashcode
+     * @return the hash code defined by <code>Durational</code>
      */
     @Override
     public int hashCode() {
-        return getAmount();
+        return getDurationalMap().hashCode();
     }
 
     //-----------------------------------------------------------------------

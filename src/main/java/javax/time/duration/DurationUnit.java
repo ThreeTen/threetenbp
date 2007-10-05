@@ -31,37 +31,84 @@
  */
 package javax.time.duration;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- * The rule defining how a measurable duration of time operates.
+ * The unit defining how a measurable duration of time operates.
  * <p>
- * Duration field rule implementations define how a field like 'days' operates.
+ * Duration unit implementations define how a field like 'days' operates.
  * This includes the duration name and relationship to other durations like hour.
  * <p>
- * DurationFieldRule is an abstract class and must be implemented with care to
+ * DurationUnit is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public abstract class DurationUnit implements Comparable<DurationUnit> {
+public class DurationUnit implements Comparable<DurationUnit> {
+
+    /**
+     * Map of all instances of <code>DurationUnit</code>.
+     */
+    private static final ConcurrentMap<String, DurationUnit> INSTANCES =
+        new ConcurrentHashMap<String, DurationUnit>();
 
     /** The name of the rule, not null. */
     private final String name;
-    /** The relative field, expressing this field in terms of another. */
-    private final DurationField relativeField;
+    /** The alternate duration, expressing this field in terms of another. */
+    private final Durational alternateDuration;
 
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a duration unit.
+     *
+     * @param name  the name of the unit, not null
+     * @return the created duration unit, never null
+     * @throws IllegalArgumentException if there is already a unit with the specified name
+     */
+    public static DurationUnit createUnit(String name) {
+        if (name == null) {
+            throw new NullPointerException("Duration unit name must not be null");
+        }
+        DurationUnit unit = new DurationUnit(name, null);
+        unit = INSTANCES.putIfAbsent(name, unit);
+        if (unit != null) {
+            throw new IllegalArgumentException("Duration unit '" + name + "' already exists");
+        }
+        return unit;
+    }
+
+    /**
+     * Gets a unit from a name.
+     *
+     * @param name  the name of the unit, not null
+     * @return the previously created duration unit, never null
+     * @throws IllegalArgumentException if there is no unit with the specified name
+     */
+    public static DurationUnit unitForName(String name) {
+        if (name == null) {
+            throw new NullPointerException("Duration unit name must not be null");
+        }
+        DurationUnit unit = INSTANCES.get(name);
+        if (unit == null) {
+            throw new IllegalArgumentException("Duration unit '" + name + "' not found");
+        }
+        return unit;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
      * @param name  the name of the rule, not null
-     * @param relativeField  alternate field that this field can be expressed in, null if none
+     * @param alternateDuration  alternate duration that this field can be expressed in, null if none
      */
-    protected DurationUnit(String name, DurationField relativeField) {
+    protected DurationUnit(String name, Durational alternateDuration) {
         super();
         // TODO: Check not null
         this.name = name;
-        this.relativeField = relativeField;
+        this.alternateDuration = alternateDuration;
     }
 
     //-----------------------------------------------------------------------
@@ -75,13 +122,13 @@ public abstract class DurationUnit implements Comparable<DurationUnit> {
     }
 
     /**
-     * Gets the alternate field that this field can be expressed as.
+     * Gets the alternate duration that this field can be expressed as.
      * For example, a day can be represented as 24 hours.
      *
-     * @return the relative field, null if none
+     * @return the alternate duration, null if none
      */
-    public DurationField getRelativeField() {
-        return relativeField;
+    public Durational getAlternateDuration() {
+        return alternateDuration;
     }
 
     //-----------------------------------------------------------------------

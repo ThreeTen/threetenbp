@@ -33,11 +33,13 @@ package javax.time;
 
 import static javax.time.Times.*;
 import static javax.time.calendar.field.DayOfWeek.*;
+import static javax.time.duration.Durations.*;
 
 import javax.time.calendar.CalendarDay;
 import javax.time.calendar.TimeOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.duration.Duration;
 import javax.time.duration.field.Days;
 
 /**
@@ -69,6 +71,14 @@ public class TestFluentAPI {
         
         date = CalendarDay.calendarDay(currentMonth(), dayOfMonth(6));
         
+        // different ways to build/use durations
+        date = date.plus(yearsMonthsDays(2, 3, 1));
+//        date = date.plus(3, YEARS).plus(2, MONTHS).plus(1, DAYS);
+        date = date.plus(years(3), months(2), days(1));
+        Duration d1 = durationBuilder().hours(2).seconds(3).build();
+        Duration d2 = hours(2).withSeconds(3);
+        Duration d3 = Duration.durationOf(hours(2), seconds(3));
+        
         tod.with(hourOfDay(12), minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
         //int q = date.get(QuarterOfYear.class);
@@ -92,6 +102,25 @@ public class TestFluentAPI {
 //        Territory.US.dayOfWeekComparator();
 //        
 //        date.dayOfMonth().value();
+        
+//        {
+//            Days days = days(3);
+//            Seconds secs = days.convertTo(Seconds.class);
+//            int amount = secs.getAmount();
+//        }
+//        {
+//            Duration days = days(3);
+//            int amount = days.getTotalAmount(SECOND);
+//        }
+//        {
+//            Measure<Integer, Duration> days = days(3);
+//            Measure<Integer, Duration> secs = days.to(SECOND);
+//            int secs = days.intValue(SECOND);
+//            secs.toString();
+//        }
+        d1 = d2;
+        d2 = d1;
+        d1 = d3;
     }
 
 }

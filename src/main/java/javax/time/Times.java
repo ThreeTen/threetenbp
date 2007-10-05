@@ -42,13 +42,6 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.SecondOfMinute;
-import javax.time.duration.field.Days;
-import javax.time.duration.field.Hours;
-import javax.time.duration.field.Minutes;
-import javax.time.duration.field.Months;
-import javax.time.duration.field.Seconds;
-import javax.time.duration.field.Weeks;
-import javax.time.duration.field.Years;
 
 /**
  * A set of utility methods for working with dates, times and durations in
@@ -131,55 +124,6 @@ public final class Times {
         return SecondOfMinute.secondOfMinute(secondOfMinute);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets an instance of Years.
-     */
-    public static Years years(int years) {
-        return Years.years(years);
-    }
-
-    /**
-     * Gets an instance of Months.
-     */
-    public static Months months(int months) {
-        return Months.months(months);
-    }
-
-    /**
-     * Gets an instance of Weeks.
-     */
-    public static Weeks weeks(int weeks) {
-        return Weeks.weeks(weeks);
-    }
-
-    /**
-     * Gets an instance of Days.
-     */
-    public static Days days(int days) {
-        return Days.days(days);
-    }
-
-    /**
-     * Gets an instance of Hours.
-     */
-    public static Hours hours(int hours) {
-        return Hours.hours(hours);
-    }
-
-    /**
-     * Gets an instance of Minutes.
-     */
-    public static Minutes minutes(int minutes) {
-        return Minutes.minutes(minutes);
-    }
-
-    /**
-     * Gets an instance of Seconds.
-     */
-    public static Seconds seconds(int seconds) {
-        return Seconds.seconds(seconds);
-    }
 
     //-----------------------------------------------------------------------
     /**

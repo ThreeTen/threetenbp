@@ -32,13 +32,19 @@
 package javax.time.duration;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
+import javax.time.MathUtils;
 import javax.time.duration.field.Days;
 import javax.time.duration.field.Hours;
 import javax.time.duration.field.Minutes;
 import javax.time.duration.field.Months;
 import javax.time.duration.field.Seconds;
+import javax.time.duration.field.Weeks;
 import javax.time.duration.field.Years;
 
 /**
@@ -58,7 +64,7 @@ public final class Duration implements Durational, Serializable {
     /**
      * A constant for a duration of zero.
      */
-    public static final Duration ZERO = new Duration(new HashMap<DurationUnit, DurationField>(0));
+    public static final Duration ZERO = new Duration(new TreeMap<DurationUnit, Integer>());
 
     /**
      * A serialization identifier for this instance.
@@ -68,19 +74,32 @@ public final class Duration implements Durational, Serializable {
     /**
      * The map of duration fields.
      */
-    private final HashMap<DurationUnit, DurationField> durationMap;
+    private final TreeMap<DurationUnit, Integer> durationMap;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from years, months and days.
+     * Obtains an instance of <code>Duration</code> from a set of durations.
+     * <p>
+     * This method is typically used to pass in one instance of each of the
+     * duration fields in the duration. However, it is possible to pass in
+     * any Durational instance and the resulting duration will be a simple
+     * field addition of each.
      *
-     * @param years  the years to represent
-     * @param months  the months to represent
-     * @param days  the days to represent
-     * @return the created Duration
+     * @param durationMap  a map of durations that will be used to create this
+     *  duration, not null, contains no nulls, may be immutable
+     * @return the created Duration, never null
+     * @throws NullPointerException if the map is null or contains nulls
      */
-    public static Duration yearsMonthsDays(int years, int months, int days) {
-        return null;
+    public static Duration durationOf(Map<DurationUnit, Integer> durationMap) {
+        if (durationMap == null) {
+            throw new NullPointerException("Duration map must not be null");
+        }
+        if (durationMap.containsKey(null) || durationMap.containsValue(null)) {
+            throw new NullPointerException("Duration map must not contain null");
+        }
+        TreeMap<DurationUnit, Integer> internalMap = new TreeMap<DurationUnit, Integer>(Collections.reverseOrder());
+        internalMap.putAll(durationMap);
+        return new Duration(internalMap);
     }
 
     /**
@@ -105,20 +124,30 @@ public final class Duration implements Durational, Serializable {
      *
      * @param durationMap  the map of durations to represent, not null and safe to assign
      */
-    private Duration(HashMap<DurationUnit, DurationField> durationMap) {
+    private Duration(TreeMap<DurationUnit, Integer> durationMap) {
         this.durationMap = durationMap;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the durational state which provides internal access to this
-     * instance.
+     * Checks whether a given unit is supported -
+     * <code>Duration</code> supports all units.
      *
-     * @return the duration state for this instance, never null
+     * @param unit  the unit to check for, null returns false
+     * @return true, unless unit specified was null
      */
-    @Override
-    public DurationalState getDurationalState() {
-        return null;  // TODO
+    public boolean isSupported(DurationUnit unit)  {
+        return (unit != null);
+    }
+
+    /**
+     * Gets the map of duration unit to amount which defines the duration.
+     * The map iterators are sorted by duration unit, returning the largest first.
+     *
+     * @return the map of duration amounts, never null, never contains null
+     */
+    public Map<DurationUnit, Integer> getDurationalMap() {
+        return Collections.unmodifiableMap(durationMap);
     }
 
     //-----------------------------------------------------------------------
@@ -129,25 +158,24 @@ public final class Duration implements Durational, Serializable {
      * @param unit  the unit to query, not null
      * @return the duration amount, zero if the unit is not present
      */
-    public int getAmount(DurationUnit unit) {
-        DurationField field = durationMap.get(unit);
-        if (field == null) {
-            return 0;
+    public Integer getAmount(DurationUnit unit) {
+        Integer amount = durationMap.get(unit);
+        if (amount == null) {
+            return Integer.valueOf(0);
         }
-        return field.getAmount();
+        return amount;
     }
 
-    /**
-     * Gets the amount of the duration for the specified field, returning
-     * zero if this duration does not define the field.
-     *
-     * @param <T>  the type of the durational field to be returned
-     * @param durationType  the field to query, not null
-     * @return the duration amount, returned using the specified type
-     */
-    public <T extends DurationField> T getAmount(Class<T> durationType) {
-        return (T) durationMap.get(null);
-    }
+//    /**
+//     * Extracts the fields from this duration into another.
+//     *
+//     * @param <T>  the type of the durational instance to be returned
+//     * @param durationType  the duration type, not null
+//     * @return the duration amount, returned using the specified type
+//     */
+//    public <T extends DurationField> T get(DurationalType<T> durationType) {
+//        return durationType.extractFrom(this);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -215,22 +243,62 @@ public final class Duration implements Durational, Serializable {
      * @throws NullPointerException if the duration is null
      */
     public Duration with(Durational duration) {
-        // TODO
-        return null;
+        Map<DurationUnit, Integer> durationalMap = duration.getDurationalMap();
+        if (durationalMap.isEmpty()) {
+            return this;
+        }
+        TreeMap<DurationUnit, Integer> copy = cloneMap();
+        for (DurationUnit unit : durationalMap.keySet()) {
+            Integer amount = durationalMap.get(unit);
+            if (amount == 0) {
+                copy.remove(unit);
+            } else {
+                copy.put(unit, amount);
+            }
+        }
+        return new Duration(copy);
     }
 
     /**
      * Returns a copy of this Duration with the specified values altered.
+     * The list of durations must contain no duplicate units.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param durations  the duration fields to update, not null
      * @return a new updated Duration
      * @throws NullPointerException if any duration is null
+     * @throws IllegalArgumentException if any unit is duplicated
      */
     public Duration with(Durational... durations) {
-        // TODO
-        return null;
+        if (durations.length == 0) {
+            return this;
+        }
+        TreeMap<DurationUnit, Integer> copy = null;
+        Set<DurationUnit> set = new HashSet<DurationUnit>();
+        for (Durational durational : durations) {
+            Map<DurationUnit, Integer> durationalMap = durational.getDurationalMap();
+            if (durationalMap.size() > 0) {
+                if (copy == null) {
+                    copy = cloneMap();
+                }
+                for (DurationUnit unit : durationalMap.keySet()) {
+                    if (!set.add(unit)) {
+                        throw new IllegalArgumentException("Input Durational array contains duplicate unit " + unit.getName());
+                    }
+                    Integer amount = durationalMap.get(unit);
+                    if (amount == 0) {
+                        copy.remove(unit);
+                    } else {
+                        copy.put(unit, amount);
+                    }
+                }
+            }
+        }
+        if (copy == null) {
+            return this;
+        }
+        return new Duration(copy);
     }
 
     /**
@@ -242,16 +310,15 @@ public final class Duration implements Durational, Serializable {
      * @param unit  the unit to update, not null
      * @return a new updated Duration
      */
-    @SuppressWarnings("unchecked")
     private Duration with(int amount, DurationUnit unit) {
         if (getAmount(unit) == amount) {
             return this;
         }
-        HashMap<DurationUnit, DurationField> copy = (HashMap) durationMap.clone();
+        TreeMap<DurationUnit, Integer> copy = cloneMap();
         if (amount == 0) {
             copy.remove(unit);
-//        } else {  // TODO
-//            copy.put(rule, rule.createInstance(amount));
+        } else {
+            copy.put(unit, amount);
         }
         return new Duration(copy);
     }
@@ -340,8 +407,17 @@ public final class Duration implements Durational, Serializable {
      * @throws NullPointerException if the duration is null
      */
     public Duration plus(Durational duration) {
-        // TODO
-        return null;
+        Map<DurationUnit, Integer> durationalMap = duration.getDurationalMap();
+        if (durationalMap.isEmpty()) {
+            return this;
+        }
+        TreeMap<DurationUnit, Integer> copy = cloneMap();
+        for (DurationUnit unit : durationalMap.keySet()) {
+            int amount = durationalMap.get(unit);
+            int current = copy.get(unit);
+            copy.put(unit, MathUtils.safeAdd(amount, current));
+        }
+        return new Duration(copy);
     }
 
     /**
@@ -364,11 +440,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add
+     * @param years  the years to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusYears(int years) {
-        return null;
+        int current = getAmount(Years.UNIT);
+        return with(MathUtils.safeAdd(years, current), Years.UNIT);
     }
 
     /**
@@ -376,11 +453,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add
+     * @param months  the months to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusMonths(int months) {
-        return null;
+        int current = getAmount(Months.UNIT);
+        return with(MathUtils.safeAdd(months, current), Months.UNIT);
     }
 
     /**
@@ -388,11 +466,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param weeks  the weeks to add
+     * @param weeks  the weeks to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusWeeks(int weeks) {
-        return null;
+        int current = getAmount(Weeks.UNIT);
+        return with(MathUtils.safeAdd(weeks, current), Weeks.UNIT);
     }
 
     /**
@@ -400,11 +479,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add
+     * @param days  the days to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusDays(int days) {
-        return null;
+        int current = getAmount(Days.UNIT);
+        return with(MathUtils.safeAdd(days, current), Days.UNIT);
     }
 
     /**
@@ -412,11 +492,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add
+     * @param hours  the hours to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusHours(int hours) {
-        return null;
+        int current = getAmount(Hours.UNIT);
+        return with(MathUtils.safeAdd(hours, current), Hours.UNIT);
     }
 
     /**
@@ -424,11 +505,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to add
+     * @param minutes  the minutes to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusMinutes(int minutes) {
-        return null;
+        int current = getAmount(Minutes.UNIT);
+        return with(MathUtils.safeAdd(minutes, current), Minutes.UNIT);
     }
 
     /**
@@ -436,11 +518,12 @@ public final class Duration implements Durational, Serializable {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to add
+     * @param seconds  the seconds to add, positive or negative
      * @return a new updated Duration
      */
     public Duration plusSeconds(int seconds) {
-        return null;
+        int current = getAmount(Seconds.UNIT);
+        return with(MathUtils.safeAdd(seconds, current), Seconds.UNIT);
     }
 
     //-----------------------------------------------------------------------
@@ -559,7 +642,51 @@ public final class Duration implements Durational, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified.
+     * Returns a new instance with each element in this duration multiplied
+     * by the specified scalar.
+     *
+     * @param scalar  the scalar to multiply by, not null
+     * @return the new updated durational instance, never null
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public Duration multipliedBy(int scalar) {
+        if (durationMap.isEmpty()) {
+            return this;
+        }
+        TreeMap<DurationUnit, Integer> copy = cloneMap();
+        for (DurationUnit unit : durationMap.keySet()) {
+            int amount = durationMap.get(unit);
+            copy.put(unit, MathUtils.safeMultiply(amount, scalar));
+        }
+        return new Duration(copy);
+    }
+
+    /**
+     * Returns a new instance with each element in this duration multiplied
+     * by the specified scalar.
+     *
+     * @param scalar  the scalar to multiply by, not null
+     * @return the new updated durational instance, never null
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public Duration dividedBy(int scalar) {
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Clone the internal data storage map.
+     *
+     * @return the cloned map, never null
+     */
+    @SuppressWarnings("unchecked")
+    private TreeMap<DurationUnit, Integer> cloneMap() {
+        return (TreeMap) durationMap.clone();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, as defined by <code>Durational</code>.
      *
      * @param other  the other point instance to compare to, null returns false
      * @return true if this point is equal to the specified second
@@ -569,21 +696,32 @@ public final class Duration implements Durational, Serializable {
         if (this == other) {
             return true;
         }
-        if (other instanceof Duration) {
-//            Duration otherSecond = (Duration) other;
-            return false;
+        if (other instanceof Durational) {
+            Durational otherDuraton = (Durational) other;
+            return getDurationalMap().equals(otherDuraton);
         }
         return false;
     }
 
     /**
-     * A suitable hashcode for this object.
+     * Returns the hash code for this duration.
      *
-     * @return a suitable hashcode
+     * @return the hash code defined by <code>Durational</code>
      */
     @Override
     public int hashCode() {
-        return getDurationalState().hashCode() + 1;
+        return getDurationalMap().hashCode();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a string representation of the amount of time.
+     *
+     * @return the amount of time in ISO8601 string format
+     */
+    @Override
+    public String toString() {
+        return null;
     }
 
 }

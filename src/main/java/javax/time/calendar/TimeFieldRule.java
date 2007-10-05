@@ -136,7 +136,7 @@ public abstract class TimeFieldRule {
      * @throws UnsupportedOperationException if the field cannot be calculated
      */
     public int getValue(Durational epochDuration) {
-        return epochDuration.getDurationalState().getDerived(getDurationUnit());
+        return 0;  //epochDuration.getDurationalState().getDerived(getDurationUnit());
     }
 
     //-----------------------------------------------------------------------
