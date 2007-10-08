@@ -52,8 +52,9 @@ import org.apache.velocity.app.Velocity;
 public class CodeGen {
 
     private static final String TEMPLATE_DIR = "src/codegen/java/jsr310/codegen/";
-    private static final File MAIN_DIR = new File("src/main/java/javax/time");
-    private static final File MAIN_CALENDAR_DIR = new File("src/main/java/javax/time/calendar/field");
+    private static final File BASE_DIR = new File("src/main/java");
+    private static final String MAIN_CALENDAR_PKG = "javax.time.calendar.field";
+    private static final String I18N_CALENDAR_PKG = "javax.time.i18n";
     private static final File MAIN_DURATION_DIR = new File("src/main/java/javax/time/duration/field");
     private static final File TEST_DIR = new File("src/test/java/javax/time");
     private static final File TEST_CALENDAR_DIR = new File("src/test/java/javax/time/calendar/field");
@@ -147,39 +148,43 @@ public class CodeGen {
         Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
-        processTimeField(enumTemplate, "Era", "era", ERA, "0", "1");
-        processTimeField(regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
-        processTimeField(regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
-        processTimeField(regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
-        processTimeField(regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
-        processTimeField(regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
-        processTimeField(regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
-        processTimeField(enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
-        processTimeField(enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
-        processTimeField(regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
-        processTimeField(regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
-        processTimeField(regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
-        processTimeField(regularTemplate, "DayOfYear", "day of year", null, "1", "366");
-        processTimeField(regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
-        processTimeField(enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
-        processTimeField(enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
-        processTimeField(regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
-        processTimeField(regularTemplate, "HourOfMeridian", "hour of meridian", null, "0", "11");
-        processTimeField(regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
-        processTimeField(regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
-        processTimeField(regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
-        processTimeField(regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
+        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "Era", "era", ERA, "0", "1");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
+        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
+        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "DayOfYear", "day of year", null, "1", "366");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
+        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
+        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "HourOfMeridian", "hour of meridian", null, "0", "11");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
+        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
+
+        processTimeField(I18N_CALENDAR_PKG, enumTemplate, "CopticMonthOfYear", "Coptic month of year", COPTIC_MONTH_OF_YEARS, "1", "13");
+        processTimeField(I18N_CALENDAR_PKG, enumTemplate, "CopticSeasonOfYear", "Coptic season of year", COPTIC_SEASON, "1", "3");
     }
 
     private void processTimeField(
-            Template template,
+            String pkg, Template template,
             String classname, String desc, FieldSingleton[] singletons,
             String minValue, String maxValue) throws Exception {
-        File file = new File(MAIN_CALENDAR_DIR, classname + ".java");
+        File file = new File(BASE_DIR, pkg.replace('.', '/') + '/' + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file,
               singletons == null ? "public int hashCode() {" : "public boolean isLessThan(");
         int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
         VelocityContext vc = new VelocityContext();
+        vc.put("package", pkg);
         vc.put("Type", classname);
         String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
         vc.put("type", mixedType);
@@ -308,6 +313,28 @@ public class CodeGen {
     private static final FieldSingleton[] ERA = new FieldSingleton[] {
         new FieldSingleton("BC", "The singleton instance for the last Era, BC/BCE.", "0"),
         new FieldSingleton("AD", "The singleton instance for the current Era, AD/CE.", "1"),
+    };
+
+    private static final FieldSingleton[] COPTIC_MONTH_OF_YEARS = new FieldSingleton[] {
+        new FieldSingleton("THOUT", "The singleton instance for the month of Thout.", "1"),
+        new FieldSingleton("PAOPI", "The singleton instance for the month of Paopi.", "2"),
+        new FieldSingleton("HATHOR", "The singleton instance for the month of Hathor.", "3"),
+        new FieldSingleton("KOIAK", "The singleton instance for the month of Koiak.", "4"),
+        new FieldSingleton("TOBI", "The singleton instance for the month of Tobi.", "5"),
+        new FieldSingleton("MESHIR", "The singleton instance for the month of Meshir.", "6"),
+        new FieldSingleton("PAREMHAT", "The singleton instance for the month of Paremhat.", "7"),
+        new FieldSingleton("PAREMOUDE", "The singleton instance for the month of Paremoude.", "8"),
+        new FieldSingleton("PASHONS", "The singleton instance for the month of Pashons.", "9"),
+        new FieldSingleton("PAONI", "The singleton instance for the month of Paoni.", "10"),
+        new FieldSingleton("EPIP", "The singleton instance for the month of Epip.", "11"),
+        new FieldSingleton("MESORI", "The singleton instance for the month of Mesori.", "12"),
+        new FieldSingleton("PI_KOGI_ENAVOT", "The singleton instance for the month of Pi Kogi Enavot.", "13"),
+    };
+
+    private static final FieldSingleton[] COPTIC_SEASON = new FieldSingleton[] {
+        new FieldSingleton("AKHET", "The singleton instance for the first season Akhet, the season of innundation (floods of the River Nile).", "1"),
+        new FieldSingleton("PROYET", "The singleton instance for the second season Proyet, the season of growth.", "2"),
+        new FieldSingleton("SHOMU", "The singleton instance for the third season Shomu, the season of harvest.", "3"),
     };
 
     public static class FieldSingleton {
