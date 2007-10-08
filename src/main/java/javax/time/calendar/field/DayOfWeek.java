@@ -34,7 +34,6 @@ package javax.time.calendar.field;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
-import javax.time.duration.Durational;
 
 /**
  * A time field representing a day of week.
@@ -242,8 +241,8 @@ public enum DayOfWeek implements Calendrical {
 
         /** {@inheritDoc} */
         @Override
-        public int getValue(Durational epochDuration) {
-            return ((super.getValue(epochDuration) + 3) % 7) + 1;
+        public int getValue(CalendricalState calState) {
+            return ((super.getValue(calState) + 3) % 7) + 1;
         }
     }
 

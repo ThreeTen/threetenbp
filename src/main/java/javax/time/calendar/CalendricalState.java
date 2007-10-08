@@ -31,8 +31,6 @@
  */
 package javax.time.calendar;
 
-import java.util.Set;
-
 import javax.time.duration.DurationUnit;
 
 /**
@@ -47,35 +45,24 @@ import javax.time.duration.DurationUnit;
 public abstract class CalendricalState {
 
     /**
-     * Is the state contiguous, which is true if it defines time from a base
-     * unit within a fixed range.
+     * Gets the duration unit that this state represents.
      * <p>
-     * For example, time of day is contiguous as all points in time can be
-     * determined within its boundaries. However, a calendrical object
-     * representing 'Friday the Thirteenth' is not contiguous, as day of week
-     * overlaps day of month.
+     * For example, if this represents a time in minutes of the day, then the
+     * range is 'minute'.
      *
-     * @return true if the field is contiguous
+     * @return the duration unit, never null
      */
-    public abstract boolean isContiguous();
+    public abstract DurationUnit getDurationUnit();
 
     /**
-     * Gets the smallest duration unit of any of the contained fields.
+     * Gets the duration range that this state represents.
      * <p>
-     * If the calendrical is contiguous, this will be unambiguous.
+     * For example, if this represents a time in minutes of the day, then the
+     * range is 'day'.
      *
-     * @return the smallest duration unit, never null
+     * @return the duration range, never null
      */
-    public abstract DurationUnit getSmallestDurationUnit();
-
-    /**
-     * Gets the largest duration range of any of the contained fields.
-     * <p>
-     * If the calendrical is contiguous, this will be unambiguous.
-     *
-     * @return the largest duration range, never null
-     */
-    public abstract DurationUnit getLargestDurationRange();
+    public abstract DurationUnit getDurationRange();
 
     /**
      * Checks is the specified field is supported.
@@ -94,24 +81,5 @@ public abstract class CalendricalState {
      * @throws UnsupportedOperationException if the field is not supported
      */
     public abstract int get(TimeFieldRule fieldRule);
-
-    /**
-     * Gets the value of the specified field.
-     *
-     * @return the set of supported fields, never null
-     * @throws NullPointerException if the specified field rule is null
-     * @throws UnsupportedOperationException if the field is not supported
-     */
-    public abstract Set<TimeFieldRule> getSupportedFields();
-
-    /**
-     * Derive the value of the specified field.
-     *
-     * @param fieldRule  the field rule to query, not null
-     * @return the value for the requested field
-     * @throws NullPointerException if the specified field rule is null
-     * @throws UnsupportedOperationException if the field cannot be derived
-     */
-    public abstract int getDerived(TimeFieldRule fieldRule);
 
 }

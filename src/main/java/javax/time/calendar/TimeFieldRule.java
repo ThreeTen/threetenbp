@@ -32,7 +32,6 @@
 package javax.time.calendar;
 
 import javax.time.duration.DurationUnit;
-import javax.time.duration.Durational;
 
 /**
  * The rule defining how a measurable field of time operates.
@@ -117,26 +116,26 @@ public abstract class TimeFieldRule {
         return durationRange;
     }
 
-//    /**
-//     * Creates a new instance of the associated time amount using the
-//     * specified value.
-//     *
-//     * @param value  the value of the field to represent
-//     * @return the time amount, never null
-//     */
-//    public abstract TimeField<U, R> createInstance(int value);
-
     //-----------------------------------------------------------------------
     /**
      * Gets the value of this field.
      *
-     * @param epochDuration  the duration from the epoch, not null
+     * @param calState  the calendrical state, not null
      * @return the value of the field
-     * @throws NullPointerException if the duration is null
-     * @throws UnsupportedOperationException if the field cannot be calculated
      */
-    public int getValue(Durational epochDuration) {
+    public int getValue(CalendricalState calState) {
         return 0;  //epochDuration.getDurationalState().getDerived(getDurationUnit());
+    }
+
+    /**
+     * Sets the value of this field.
+     *
+     * @param calState  the calendrical state, not null
+     * @param newValue  the new value of the field
+     * @return the new calendrical state, never null
+     */
+    public CalendricalState setValue(CalendricalState calState, int newValue) {
+        return calState;
     }
 
     //-----------------------------------------------------------------------

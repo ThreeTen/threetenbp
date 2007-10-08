@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
-import javax.time.duration.Durational;
 
 /**
  * A time field representing a day of year.
@@ -187,8 +186,8 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
 
         /** {@inheritDoc} */
         @Override
-        public int getValue(Durational epochDuration) {
-            return super.getValue(epochDuration) + 1;
+        public int getValue(CalendricalState calState) {
+            return super.getValue(calState) + 1;
         }
     }
 
