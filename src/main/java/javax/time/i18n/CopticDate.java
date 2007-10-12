@@ -272,7 +272,8 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return a new updated CopticDate
      */
     public CopticDate withLastDayOfYear() {
-        return null;  //new CopticDate(0, 0);
+        int lastDOY = CopticChronology.INSTANCE.dayOfYearRule().getMaximumValue(this);
+        return withDayOfYear(lastDOY);
     }
 
     /**
@@ -296,8 +297,8 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return a new updated CopticDate
      */
     public CopticDate withLastDayOfMonth() {
-        int currentYear = getYear();
-        return new CopticDate(currentYear, getMonthOfYear(), getMonthOfYear().length(currentYear));
+        int lastDOM = CopticChronology.INSTANCE.dayOfMonthRule().getMaximumValue(this);
+        return withDayOfYear(lastDOM);
     }
 
     /**

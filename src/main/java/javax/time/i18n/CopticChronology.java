@@ -34,8 +34,10 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.duration.DurationUnit;
 import javax.time.duration.Durations;
 
@@ -113,6 +115,19 @@ public final class CopticChronology implements Serializable {
         epochMonths *= 13 + month;
         long epochSeconds = ((long) day) * 24 * 60 * 60;
         return new State(epochMonths, epochSeconds);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the calendrical state from year, month, day.
+     *
+     * @param year  the year
+     * @param month  the month of year
+     * @param day  the day of month
+     * @return the state, never null
+     */
+    public long convert(long amount, DurationUnit fromUnit, DurationUnit toUnit) {
+        return 0;
     }
 
     //-----------------------------------------------------------------------
@@ -209,14 +224,17 @@ public final class CopticChronology implements Serializable {
 
         /** {@inheritDoc} */
         @Override
-        public int get(TimeFieldRule fieldRule) {
-            return 0; //fieldRule.getValue(this);
+        public boolean isSupported(TimeFieldRule fieldRule) {
+            return false;
         }
 
         /** {@inheritDoc} */
         @Override
-        public boolean isSupported(TimeFieldRule fieldRule) {
-            return false;
+        public int get(TimeFieldRule fieldRule) {
+            if (false) {
+                throw new UnsupportedCalendarFieldException();
+            }
+            return 0; //fieldRule.getValue(this);
         }
 
         /**
@@ -242,7 +260,7 @@ public final class CopticChronology implements Serializable {
     /** Singleton instance of year rule. */
     private static final TimeFieldRule YEAR_RULE = new YearRule();
     /** Class implementing year rule. */
-    static class YearRule extends TimeFieldRule implements Serializable {
+    static final class YearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public YearRule() {
             super("Year", Durations.YEARS, null, 1, Integer.MAX_VALUE);
@@ -259,6 +277,7 @@ public final class CopticChronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         public int getValue(CalendricalState calState) {
+            checkSupported(calState);
             State state = (State) calState;
             long epochMonths0 = state.getEpochMonths();
             return MathUtils.safeToInt((epochMonths0 / 13) + 1);
@@ -282,7 +301,7 @@ public final class CopticChronology implements Serializable {
     /** Singleton instance of month of year rule. */
     private static final TimeFieldRule MONTH_OF_YEAR_RULE = new MonthOfYearRule();
     /** Class implementing month of year rule. */
-    static class MonthOfYearRule extends TimeFieldRule implements Serializable {
+    static final class MonthOfYearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public MonthOfYearRule() {
             super("MonthOfYear", Durations.MONTHS, Durations.YEARS, 1, 13);
@@ -299,6 +318,7 @@ public final class CopticChronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         public int getValue(CalendricalState calState) {
+            checkSupported(calState);
             State state = (State) calState;
             long epochMonths0 = state.getEpochMonths();
             return ((int) (epochMonths0 % 13)) + 1;
@@ -322,10 +342,10 @@ public final class CopticChronology implements Serializable {
     /** Singleton instance of day of year rule. */
     private static final TimeFieldRule DAY_OF_YEAR_RULE = new DayOfYearRule();
     /** Class implementing day of year rule. */
-    static class DayOfYearRule extends TimeFieldRule implements Serializable {
+    static final class DayOfYearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public DayOfYearRule() {
-            super("DayOfYear", Durations.DAYS, Durations.YEARS, 1, 30);
+            super("DayOfYear", Durations.DAYS, Durations.YEARS, 1, 366);
         }
 
         /**
@@ -339,6 +359,7 @@ public final class CopticChronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         public int getValue(CalendricalState calState) {
+            checkSupported(calState);
             int monthOfYear1 = MONTH_OF_YEAR_RULE.getValue(calState);
             int dayOfMonth1 = DAY_OF_MONTH_RULE.getValue(calState);
             return (monthOfYear1 - 1) * 30 + dayOfMonth1;
@@ -361,7 +382,7 @@ public final class CopticChronology implements Serializable {
     /** Singleton instance of day of month rule. */
     private static final TimeFieldRule DAY_OF_MONTH_RULE = new DayOfMonthRule();
     /** Class implementing day of month rule. */
-    static class DayOfMonthRule extends TimeFieldRule implements Serializable {
+    static final class DayOfMonthRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public DayOfMonthRule() {
             super("DayOfMonth", Durations.DAYS, Durations.MONTHS, 1, 30);
@@ -378,6 +399,7 @@ public final class CopticChronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         public int getValue(CalendricalState calState) {
+            checkSupported(calState);
             State state = (State) calState;
             return ((int) (state.getEpochSeconds() % (24 * 60 * 60))) + 1;
         }
@@ -393,6 +415,50 @@ public final class CopticChronology implements Serializable {
             State newState = new State(state.getEpochMonths(), epochSeconds0);
             // TODO: resolve day of month
             return newState;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue() {
+            return 5;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue(Calendrical context) {
+            // TODO: Need better algorithm
+            if (context.getCalendricalState().isSupported(MONTH_OF_YEAR_RULE)) {
+                int month = context.getCalendricalState().get(MONTH_OF_YEAR_RULE);
+                if (month < 13) {
+                    return 30;
+                }
+                if (context.getCalendricalState().isSupported(YEAR_RULE)) {
+                    int year = context.getCalendricalState().get(YEAR_RULE);
+                    return (INSTANCE.isLeapYear(year) ? 6 : 5);
+                } else {
+                    return 5;
+                }
+            }
+            return 5;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getMaximumValue(Calendrical context) {
+            // TODO: Need better algorithm
+            if (context.getCalendricalState().isSupported(MONTH_OF_YEAR_RULE)) {
+                int month = context.getCalendricalState().get(MONTH_OF_YEAR_RULE);
+                if (month < 13) {
+                    return 30;
+                }
+                if (context.getCalendricalState().isSupported(YEAR_RULE)) {
+                    int year = context.getCalendricalState().get(YEAR_RULE);
+                    return (INSTANCE.isLeapYear(year) ? 6 : 5);
+                } else {
+                    return 6;
+                }
+            }
+            return 30;
         }
     }
 

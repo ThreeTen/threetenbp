@@ -31,55 +31,47 @@
  */
 package javax.time.calendar;
 
-import javax.time.duration.DurationUnit;
-
 /**
- * Internal state class providing calendrical information and calculations.
- * <p>
- * CalendricalState is an abstract class and must be implemented with care to
- * ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe.
+ * An exception used when querying a calendar with a field that is not supported.
  *
  * @author Stephen Colebourne
  */
-public abstract class CalendricalState {
+public class UnsupportedCalendarFieldException extends RuntimeException {
 
     /**
-     * Gets the duration unit that this state represents.
-     * <p>
-     * For example, if this represents a time in minutes of the day, then the
-     * range is 'minute'.
-     *
-     * @return the duration unit, never null
+     * Constructs a new unsupported field exception with no message.
      */
-    public abstract DurationUnit getDurationUnit();
+    public UnsupportedCalendarFieldException() {
+        super();
+    }
 
     /**
-     * Gets the duration range that this state represents.
-     * <p>
-     * For example, if this represents a time in minutes of the day, then the
-     * range is 'day'.
+     * Constructs a new unsupported field exception with the specified message.
      *
-     * @return the duration range, never null
+     * @param message  the message to use for this exception, may be null
      */
-    public abstract DurationUnit getDurationRange();
+    public UnsupportedCalendarFieldException(String message) {
+        super(message);
+    }
 
     /**
-     * Checks is the specified field is supported.
+     * Constructs a new unsupported field exception with the specified message and cause.
      *
-     * @param fieldRule  the field rule to check, null returns false
-     * @return true if the field is supported, false if not
+     * @param message  the message to use for this exception, may be null
+     * @param cause  the underlying cause of this exception, may be null
      */
-    public abstract boolean isSupported(TimeFieldRule fieldRule);
+    public UnsupportedCalendarFieldException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
     /**
-     * Gets the value of the specified field.
+     * Constructs a new unsupported field exception with the specified cause,
+     * extracting the message from the cause if possible.
      *
-     * @param fieldRule  the field rule to query, not null
-     * @return the value for the requested field
-     * @throws NullPointerException if the specified field rule is null
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @param cause  the underlying cause of this exception, may be null
      */
-    public abstract int get(TimeFieldRule fieldRule);
+    public UnsupportedCalendarFieldException(Throwable cause) {
+        super(cause);
+    }
 
 }

@@ -240,6 +240,20 @@ public abstract class TimeFieldRule {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks whether a given calendrical is supported or not.
+     *
+     * @param calState  the calendar state to check, not null
+     * @throws UnsupportedCalendarFieldException if the field is unsupported
+     */
+    protected void checkSupported(CalendricalState calState) {
+        if (calState.getDurationUnit().compareTo(getDurationUnit()) > 0 ||
+                calState.getDurationRange().compareTo(getDurationRange()) < 0) {
+            throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this TimeFieldRule to another based on the duration unit
      * followed by the duration range.
      * <p>
