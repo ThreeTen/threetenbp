@@ -142,6 +142,14 @@ public abstract class Now {
         }
 
         /**
+         * Resolves singleton.
+         * @return the singleton instance
+         */
+        private Object readResolve() {
+            return INSTANCE;
+        }
+
+        /**
          * Gets the current instant.
          * @return the current instant
          */
