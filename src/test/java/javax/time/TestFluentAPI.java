@@ -35,7 +35,7 @@ import static javax.time.Times.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.duration.Durations.*;
 
-import javax.time.calendar.CalendarDay;
+import javax.time.calendar.CalendarDate;
 import javax.time.calendar.TimeOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -50,17 +50,17 @@ import javax.time.duration.field.Days;
 public class TestFluentAPI {
 
     public static void main(String[] args) {
-        TimeOfDay tod = currentTime();
+        TimeOfDay tod = now().currentTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
         
-        CalendarDay date = null;
-        date = today().plusDays(3);
-        date = today().plus(days(3));
+        CalendarDate date = null;
+        date = now().today().plusDays(3);
+        date = now().today().plus(days(3));
         date = now().today().plus(Days.days(3));
         
-        date = calendarDay(2007, 3, 20);
-        date = calendarDay(year(2007), march(), dayOfMonth(20));
+        date = calendarDate(2007, 3, 20);
+        date = calendarDate(year(2007), march(), dayOfMonth(20));
         date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
         date = calendar().year(1972).december().dayOfMonth(3).build();
         date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
@@ -69,7 +69,7 @@ public class TestFluentAPI {
         date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
         date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
-        date = CalendarDay.calendarDay(currentMonth(), dayOfMonth(6));
+        date = CalendarDate.calendarDate(now().currentMonth(), dayOfMonth(6));
         
         // different ways to build/use durations
         date = date.plus(yearsMonthsDays(2, 3, 1));

@@ -33,10 +33,9 @@ package javax.time;
 
 import java.util.TimeZone;
 
-import javax.time.calendar.CalendarDay;
+import javax.time.calendar.CalendarDate;
 import javax.time.calendar.CalendarMonth;
 import javax.time.calendar.CalendarYear;
-import javax.time.calendar.TimeOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
@@ -52,9 +51,9 @@ import javax.time.calendar.field.SecondOfMinute;
 public final class Times {
 
     /**
-     * Provides access to the current time.
+     * Provides access to the current date and time using the default time zone.
      *
-     * @return the current time, never null
+     * @return an accessor to the current time using the default time zone, never null
      */
     public static Now now() {
         return Now.system();
@@ -127,53 +126,53 @@ public final class Times {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of CalendarDay.
+     * Gets an instance of CalendarDate.
      */
-    public static CalendarDay calendarDay(int year, int monthOfYear, int dayOfMonth) {
-        return CalendarDay.yearMonthDay(year, monthOfYear, dayOfMonth);
+    public static CalendarDate calendarDate(int year, int monthOfYear, int dayOfMonth) {
+        return CalendarDate.yearMonthDay(year, monthOfYear, dayOfMonth);
     }
 
     /**
-     * Gets an instance of CalendarDay.
+     * Gets an instance of CalendarDate.
      */
-    public static CalendarDay calendarDay(CalendarYear year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        return CalendarDay.calendarDay(year, monthOfYear, dayOfMonth);
+    public static CalendarDate calendarDate(CalendarYear year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        return CalendarDate.calendarDate(year, monthOfYear, dayOfMonth);
     }
 
-    /**
-     * Gets an instance of CalendarDay.
-     */
-    public static CalendarDay today() {
-        return CalendarDay.yearMonthDay(2007, 6, 1);
-    }
-
-    /**
-     * Gets an instance of CalendarDay.
-     */
-    public static CalendarDay yesterday() {
-        return CalendarDay.yearMonthDay(2007, 6, 1);
-    }
-
-    /**
-     * Gets an instance of CalendarDay.
-     */
-    public static CalendarDay tomorrow() {
-        return CalendarDay.yearMonthDay(2007, 6, 1);
-    }
-
-    /**
-     * Gets an instance of CalendarMonth.
-     */
-    public static CalendarMonth currentMonth() {
-        return CalendarMonth.yearMonth(2007, 6);
-    }
-
-    /**
-     * Gets an instance of TimeOfDay.
-     */
-    public static TimeOfDay currentTime() {
-        return TimeOfDay.timeOfDay(12, 30);
-    }
+//    /**
+//     * Gets an instance of CalendarDate.
+//     */
+//    public static CalendarDate today() {
+//        return CalendarDate.yearMonthDay(2007, 6, 1);
+//    }
+//
+//    /**
+//     * Gets an instance of CalendarDate.
+//     */
+//    public static CalendarDate yesterday() {
+//        return CalendarDate.yearMonthDay(2007, 6, 1);
+//    }
+//
+//    /**
+//     * Gets an instance of CalendarDate.
+//     */
+//    public static CalendarDate tomorrow() {
+//        return CalendarDate.yearMonthDay(2007, 6, 1);
+//    }
+//
+//    /**
+//     * Gets an instance of CalendarMonth.
+//     */
+//    public static CalendarMonth currentMonth() {
+//        return CalendarMonth.yearMonth(2007, 6);
+//    }
+//
+//    /**
+//     * Gets an instance of TimeOfDay.
+//     */
+//    public static TimeOfDay currentTime() {
+//        return TimeOfDay.timeOfDay(12, 30);
+//    }
 
     /**
      * Gets a builder.
@@ -261,11 +260,11 @@ public final class Times {
         }
     }
     public static class CalendarWithYearMonthDayBuilder {
-        public CalendarDay build() {
-            return CalendarDay.yearMonthDay(2007, 6, 1);
+        public CalendarDate build() {
+            return CalendarDate.yearMonthDay(2007, 6, 1);
         }
-        public CalendarDay buildLenient() {
-            return CalendarDay.yearMonthDay(2007, 6, 1);
+        public CalendarDate buildLenient() {
+            return CalendarDate.yearMonthDay(2007, 6, 1);
         }
     }
 }

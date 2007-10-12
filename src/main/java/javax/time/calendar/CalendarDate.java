@@ -39,18 +39,18 @@ import javax.time.duration.Durational;
 /**
  * An immutable time point, with day precision, operating without a time zone.
  * <p>
- * CalendarDay is an immutable time point that records time information to the
+ * CalendarDate is an immutable time point that records time information to the
  * precision of a day.
  * <p>
- * As an example, the value "21st September 2007" can be stored in a CalendarDay.
+ * As an example, the value "21st September 2007" can be stored in a CalendarDate.
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * CalendarDay is thread-safe and immutable.
+ * CalendarDate is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, Serializable {
+public final class CalendarDate implements Calendrical, Comparable<CalendarDate>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -72,29 +72,29 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CalendarDay</code>.
+     * Obtains an instance of <code>CalendarDate</code>.
      *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
-     * @return a CalendarDay object
+     * @return a CalendarDate object
      */
-    public static CalendarDay yearMonthDay(int year, int monthOfYear, int dayOfMonth) {
-        return new CalendarDay(year, monthOfYear, dayOfMonth);
+    public static CalendarDate yearMonthDay(int year, int monthOfYear, int dayOfMonth) {
+        return new CalendarDate(year, monthOfYear, dayOfMonth);
     }
 
     /**
-     * Obtains an instance of <code>CalendarDay</code> from a set of moments.
+     * Obtains an instance of <code>CalendarDate</code> from a set of moments.
      * <p>
      * This can be used to pass in any combination of moments that fully specify
      * a calendar day. For example, Year + MonthOfYear + DayOfMonth, or
      * Year + DayOfYear.
      *
      * @param moments  a set of moments that fully represent a calendar day
-     * @return a CalendarDay object
+     * @return a CalendarDate object
      */
-    public static CalendarDay calendarDay(Calendrical... moments) {
-        return new CalendarDay(0, 0, 0);
+    public static CalendarDate calendarDate(Calendrical... moments) {
+        return new CalendarDate(0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -105,7 +105,7 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
      */
-    private CalendarDay(int year, int monthOfYear, int dayOfMonth) {
+    private CalendarDate(int year, int monthOfYear, int dayOfMonth) {
         this.year = year;
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
@@ -171,186 +171,186 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarDay with the specified values altered.
+     * Returns a copy of this CalendarDate with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param moment  the moment to update to, not null
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay with(Calendrical moment) {
+    public CalendarDate with(Calendrical moment) {
         return null;
     }
 
     /**
-     * Returns a copy of this CalendarDay with the specified values altered.
+     * Returns a copy of this CalendarDate with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param moments  the moments to update to, not null
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay with(Calendrical... moments) {
+    public CalendarDate with(Calendrical... moments) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarDay with the year value altered.
+     * Returns a copy of this CalendarDate with the year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withYear(int year) {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withYear(int year) {
+        return new CalendarDate(0, 0, 0);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the month of year value altered.
+     * Returns a copy of this CalendarDate with the month of year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withMonthOfYear(int monthOfYear) {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withMonthOfYear(int monthOfYear) {
+        return new CalendarDate(0, 0, 0);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the day of month value altered.
+     * Returns a copy of this CalendarDate with the day of month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day of month to represent
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withDayOfMonth(int dayOfMonth) {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withDayOfMonth(int dayOfMonth) {
+        return new CalendarDate(0, 0, 0);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the date set to the last day of month.
+     * Returns a copy of this CalendarDate with the date set to the last day of month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withLastDayOfMonth() {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withLastDayOfMonth() {
+        return new CalendarDate(0, 0, 0);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the day of yeare value altered.
+     * Returns a copy of this CalendarDate with the day of yeare value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day of year to represent
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withDayOfYear(int dayOfYear) {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withDayOfYear(int dayOfYear) {
+        return new CalendarDate(0, 0, 0);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the date set to the last day of year.
+     * Returns a copy of this CalendarDate with the date set to the last day of year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withLastDayOfYear() {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withLastDayOfYear() {
+        return new CalendarDate(0, 0, 0);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the day of week value altered.
+     * Returns a copy of this CalendarDate with the day of week value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfWeek  the day of week to represent
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay withDayOfWeek(int dayOfWeek) {
-        return new CalendarDay(0, 0, 0);
+    public CalendarDate withDayOfWeek(int dayOfWeek) {
+        return new CalendarDate(0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarDay with the specified period added.
+     * Returns a copy of this CalendarDate with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay plus(Durational period) {
+    public CalendarDate plus(Durational period) {
         // TODO
         return null;
     }
 
     /**
-     * Returns a copy of this CalendarDay with the specified periods added.
+     * Returns a copy of this CalendarDate with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periods  the periods to add, not null
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay plus(Durational... periods) {
+    public CalendarDate plus(Durational... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarDay with the specified number of years added.
+     * Returns a copy of this CalendarDate with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay plusYears(int years) {
-        return new CalendarDay(year + years, monthOfYear, dayOfMonth);
+    public CalendarDate plusYears(int years) {
+        return new CalendarDate(year + years, monthOfYear, dayOfMonth);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the specified number of months added.
+     * Returns a copy of this CalendarDate with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay plusMonths(int months) {
-        return new CalendarDay(year, monthOfYear + months, dayOfMonth);
+    public CalendarDate plusMonths(int months) {
+        return new CalendarDate(year, monthOfYear + months, dayOfMonth);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the specified number of weeks added.
+     * Returns a copy of this CalendarDate with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay plusWeeks(int weeks) {
-        return new CalendarDay(year, monthOfYear, dayOfMonth + weeks * 7);
+    public CalendarDate plusWeeks(int weeks) {
+        return new CalendarDate(year, monthOfYear, dayOfMonth + weeks * 7);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the specified number of days added.
+     * Returns a copy of this CalendarDate with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarDate
      */
-    public CalendarDay plusDays(int days) {
-        return new CalendarDay(year, monthOfYear, dayOfMonth + days);
+    public CalendarDate plusDays(int days) {
+        return new CalendarDate(year, monthOfYear, dayOfMonth + days);
     }
 
     //-----------------------------------------------------------------------
@@ -361,7 +361,7 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDay is null
      */
-    public int compareTo(CalendarDay otherDay) {
+    public int compareTo(CalendarDate otherDay) {
         int cmp = MathUtils.safeCompare(year, otherDay.year);
         if (cmp != 0) {
             return cmp;
@@ -380,7 +380,7 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
      * @return true if this day is after the specified day
      * @throws NullPointerException if otherDay is null
      */
-    public boolean isAfter(CalendarDay otherDay) {
+    public boolean isAfter(CalendarDate otherDay) {
         return compareTo(otherDay) > 0;
     }
 
@@ -391,7 +391,7 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
      * @return true if this day is before the specified day
      * @throws NullPointerException if otherDay is null
      */
-    public boolean isBefore(CalendarDay otherDay) {
+    public boolean isBefore(CalendarDate otherDay) {
         return compareTo(otherDay) < 0;
     }
 
@@ -407,8 +407,8 @@ public final class CalendarDay implements Calendrical, Comparable<CalendarDay>, 
         if (this == otherDay) {
             return true;
         }
-        if (otherDay instanceof CalendarDay) {
-            CalendarDay other = (CalendarDay) otherDay;
+        if (otherDay instanceof CalendarDate) {
+            CalendarDate other = (CalendarDate) otherDay;
             return  dayOfMonth == other.dayOfMonth &&
                     monthOfYear == other.monthOfYear &&
                     year == other.year;

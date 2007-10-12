@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import javax.time.calendar.CalendarDay;
+import javax.time.calendar.CalendarDate;
 import javax.time.calendar.CalendarMonth;
 import javax.time.calendar.CalendarYear;
 import javax.time.calendar.TimeOfDay;
@@ -87,33 +87,33 @@ public abstract class Now {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of CalendarDay representing today
+     * Gets an instance of CalendarDate representing today
      * using the system clock in the default time zone.
      *
      * @return a day object represnting today, never null
      */
-    public CalendarDay today() {
-        return CalendarDay.yearMonthDay(2007, 6, 1);
+    public CalendarDate today() {
+        return CalendarDate.yearMonthDay(2007, 6, 1);
     }
 
     /**
-     * Gets an instance of CalendarDay representing yesterday
+     * Gets an instance of CalendarDate representing yesterday
      * using the system clock in the default time zone.
      *
      * @return a day object represnting yesterday, never null
      */
-    public CalendarDay yesterday() {
-        return CalendarDay.yearMonthDay(2007, 6, 1);
+    public CalendarDate yesterday() {
+        return CalendarDate.yearMonthDay(2007, 6, 1);
     }
 
     /**
-     * Gets an instance of CalendarDay representing tomorrow
+     * Gets an instance of CalendarDate representing tomorrow
      * using the system clock in the default time zone.
      *
      * @return a day object represnting tommorrow, never null
      */
-    public CalendarDay tomorrow() {
-        return CalendarDay.yearMonthDay(2007, 6, 1);
+    public CalendarDate tomorrow() {
+        return CalendarDate.yearMonthDay(2007, 6, 1);
     }
 
     //-----------------------------------------------------------------------
