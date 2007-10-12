@@ -66,7 +66,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CalendarDay</code>.
+     * Obtains an instance of <code>CopticDate</code>.
      *
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
@@ -87,7 +87,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @param moments  a set of moments that fully represent a calendar day
      * @return a CopticDate object
      */
-    public static CopticDate calendarDay(Calendrical... moments) {
+    public static CopticDate copticDate(Calendrical... moments) {
         return null;
     }
 
