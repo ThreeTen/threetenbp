@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.Times.*;
+import static javax.time.calendar.Calendars.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.duration.Durations.*;
 
@@ -39,6 +39,7 @@ import javax.time.calendar.CalendarDate;
 import javax.time.calendar.TimeOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.Era;
 import javax.time.duration.Duration;
 import javax.time.duration.field.Days;
 
@@ -60,7 +61,7 @@ public class TestFluentAPI {
         date = now().today().plus(Days.days(3));
         
         date = calendarDate(2007, 3, 20);
-        date = calendarDate(year(2007), march(), dayOfMonth(20));
+        date = calendarDate(year(Era.AD, 2007), march(), dayOfMonth(20));
         date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
         date = calendar().year(1972).december().dayOfMonth(3).build();
         date = calendar().currentYear().december().dayOfMonth(20).buildLenient();

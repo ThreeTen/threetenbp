@@ -29,14 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
+package javax.time.calendar;
 
 import java.util.TimeZone;
 
-import javax.time.calendar.CalendarDate;
-import javax.time.calendar.CalendarMonth;
-import javax.time.calendar.CalendarYear;
+import javax.time.Now;
 import javax.time.calendar.field.DayOfMonth;
+import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
@@ -48,7 +47,7 @@ import javax.time.calendar.field.SecondOfMinute;
  *
  * @author Stephen Colebourne
  */
-public final class Times {
+public final class Calendars {
 
     /**
      * Provides access to the current date and time using the default time zone.
@@ -62,13 +61,41 @@ public final class Times {
     //-----------------------------------------------------------------------
     /**
      * Gets an instance of Year.
+     * <p>
+     * This method accepts a year value from the ISO proleptic calendar system.
+     * <p>
+     * The year 1AD is represented by 1.<br />
+     * The year 1BC is represented by 0.<br />
+     * The year 2BC is represented by -1.<br />
+     *
+     * @param year  the proleptic ISO year to represent
+     * @return the year object, never null
      */
     public static CalendarYear year(int year) {
         return CalendarYear.year(year);
     }
 
     /**
+     * Gets an instance of Year using an era.
+     * <p>
+     * This method accepts a year and era to create a year object.
+     *
+     * @param era  the era to represent, either BC or AD, not null
+     * @param yearOfEra  the year within the era to represent, from 1 to MAX_VALUE
+     * @return the year object, never null
+     */
+    public static CalendarYear year(Era era, int yearOfEra) {
+        return CalendarYear.year(era, yearOfEra);
+    }
+
+    /**
      * Gets an instance of MonthOfYear.
+     * <p>
+     * This method accepts a year value from the proleptic ISO calendar system.
+     *
+     * @param monthOfYear  the ISO month of year value, 1 (January) to 12 (December)
+     * @return the month of year object, never null
+     * @throws IllegalArgumentException if the month of year value is invalid
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
         return MonthOfYear.monthOfYear(monthOfYear);
