@@ -93,7 +93,7 @@ public final class CalendarMinute implements Calendrical, Comparable<CalendarMin
      * Obtains an instance of <code>CalendarMinute</code> from a set of moments.
      * <p>
      * This can be used to pass in any combination of moments that fully specify
-     * a calendar day. For example, CalendarDay + HourOfDay + MinuteOfHour.
+     * a calendar day. For example, CalendarDate + HourOfDay + MinuteOfHour.
      *
      * @param moments  a set of moments that fully represent a calendar minute
      * @return a CalendarMinute object

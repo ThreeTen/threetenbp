@@ -211,24 +211,24 @@ public final class CalendarMonth implements Calendrical, Comparable<CalendarMont
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarDay with the specified number of years added.
+     * Returns a copy of this CalendarMonth with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarMonth
      */
     public CalendarMonth plusYears(int years) {
         return new CalendarMonth(year + years, monthOfYear);
     }
 
     /**
-     * Returns a copy of this CalendarDay with the specified number of months added.
+     * Returns a copy of this CalendarMonth with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarMonth
      */
     public CalendarMonth plusMonths(int months) {
         return new CalendarMonth(year, monthOfYear + months);

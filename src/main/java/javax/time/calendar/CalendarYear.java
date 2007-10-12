@@ -183,12 +183,12 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarDay with the specified number of years added.
+     * Returns a copy of this CalendarYear with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add
-     * @return a new updated CalendarDay
+     * @return a new updated CalendarYear
      */
     public CalendarYear plusYears(int years) {
         return new CalendarYear(year + years);
