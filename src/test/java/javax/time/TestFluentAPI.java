@@ -36,6 +36,7 @@ import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.duration.Durations.*;
 
 import javax.time.calendar.CalendarDate;
+import javax.time.calendar.CalendarDateTime;
 import javax.time.calendar.TimeOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -84,6 +85,16 @@ public class TestFluentAPI {
         tod.withHourOfDay(12).withMinuteOfHour(30);
         //int q = date.get(QuarterOfYear.class);
         //int hourOfDay = HourOfDay.of(tod).get();
+        
+        CalendarDateTime dt = CalendarDateTime.calendarDateTime(2007, february(), 21, 12, 30);
+        dt = dt.withPrecisionAtLeastSeconds();
+//        if (!dt.isPrecisionAtLeastSeconds()) {
+//            dt = dt.withPrecisionSeconds();
+//        }
+        int sec = dt.getSecondOfMinute();
+        sec = dt.withPrecisionAtLeastSeconds().getSecondOfMinute();
+        secondOfMinute(sec);
+        
         
         DayOfMonth.RULE.getMaximumValue();
         DayOfMonth.RULE.getMaximumValue(date);
