@@ -77,6 +77,10 @@ public final class Durations {
      * Duration unit for seconds.
      */
     public static final DurationUnit SECONDS = DurationUnit.createUnit("Seconds");
+    /**
+     * Duration unit for nanoseconds.
+     */
+    public static final DurationUnit NANOS = DurationUnit.createUnit("Nanos");
 
     //-----------------------------------------------------------------------
     /**
