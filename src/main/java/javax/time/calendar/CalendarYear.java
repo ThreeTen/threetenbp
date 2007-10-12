@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
+import javax.time.calendar.field.Era;
 import javax.time.duration.Durational;
 
 /**
@@ -63,12 +64,38 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>CalendarYear</code>.
+     * <p>
+     * This method accepts a year value from the proleptic ISO calendar system.
+     * <p>
+     * The year 1AD is represented by 1.<br />
+     * The year 1BC is represented by 0.<br />
+     * The year 2BC is represented by -1.<br />
      *
-     * @param year  the year to represent
+     * @param isoYear  the ISO proleptic year to represent
      * @return the created CalendarYear
      */
-    public static CalendarYear year(int year) {
-        return new CalendarYear(year);
+    public static CalendarYear year(int isoYear) {
+        return new CalendarYear(isoYear);
+    }
+
+    /**
+     * Obtains an instance of <code>CalendarYear</code> using an era.
+     * <p>
+     * This method accepts a year and era to create a year object.
+     *
+     * @param era  the era to represent, either BC or AD, not null
+     * @param yearOfEra  the year within the era to represent, from 1 to MAX_VALUE
+     * @return the year object, never null
+     */
+    public static CalendarYear year(Era era, int yearOfEra) {
+        if (yearOfEra < 1) {
+            throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, Integer.MAX_VALUE);
+        }
+        if (era == Era.AD) {
+            return CalendarYear.year(yearOfEra);
+        } else {
+            return CalendarYear.year((-yearOfEra) + 1);
+        }
     }
 
     /**
@@ -80,7 +107,7 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @param moments  a set of moments that fully represent a calendar year
      * @return a CalendarYear object
      */
-    public static CalendarYear calendarMonth(Calendrical... moments) {
+    public static CalendarYear calendarYear(Calendrical... moments) {
         return new CalendarYear(0);
     }
 
@@ -254,6 +281,166 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
     @Override
     public int hashCode() {
         return year;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the year is a leap year, according to the ISO proleptic
+     * calendar system rules.
+     * <p>
+     * This method follows the current standard rules for leap years.
+     * In general, a year is a leap year if it is divisible by four without
+     * remainder. However, years divisible by 100, are not leap years, with
+     * the exception of years divisible by 400 which are.
+     * <p>
+     * For example, 1904 is a leap year it is divisble by 4.
+     * 1900 was not a leap year as it is divisble by 100, however 2000 was a
+     * leap year as it is divisible by 400.
+     * <p>
+     * This calculation is proleptic - applying the same rules into prehistory.
+     * This is historically inaccurate, but is correct for the ISO8601 standard.
+     *
+     * @return true if the year is leap, false otherwise
+     */
+    public boolean isLeap() {
+        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+    }
+
+    /**
+     * Returns the next year.
+     *
+     * @return the next year, never null
+     * @throws IllegalCalendarFieldValueException if the maximum year is reached
+     */
+    public CalendarYear next() {
+        if (year == Integer.MAX_VALUE) {
+            throw new IllegalCalendarFieldValueException("year is already at the maximum value");
+        }
+        return year(year + 1);
+    }
+
+    /**
+     * Returns the next leap year after the current year.
+     * The definition of a leap year is specified in {@link #isLeap()}.
+     *
+     * @return the next leap year after this year
+     * @throws IllegalCalendarFieldValueException if the maximum year is reached
+     */
+    public CalendarYear nextLeap() {
+        CalendarYear temp = next();
+        while (!temp.isLeap()) {
+            temp = temp.next();
+        }
+        return temp;
+    }
+
+    /**
+     * Returns the previous year.
+     *
+     * @return the previous year, never null
+     * @throws IllegalCalendarFieldValueException if the maximum year is reached
+     */
+    public CalendarYear previous() {
+        if (year == (Integer.MIN_VALUE + 1)) {
+            throw new IllegalCalendarFieldValueException("year is already at the minimum value");
+        }
+        return year(year - 1);
+    }
+
+    /**
+     * Returns the previous leap year before the current year.
+     * The definition of a leap year is specified in {@link #isLeap()}.
+     *
+     * @return the previous leap year after this year
+     * @throws IllegalCalendarFieldValueException if the minimum year is reached
+     */
+    public CalendarYear previousLeap() {
+        CalendarYear temp = previous();
+        while (!temp.isLeap()) {
+            temp = temp.previous();
+        }
+        return temp;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the ISO proleptic year, from MIN_VALUE+1 to MAX_VALUE.
+     *
+     * @return the ISO proleptic year, from MIN_VALUE+1 to MAX_VALUE
+     */
+    public int getISOYear() {
+        return year;
+    }
+
+    /**
+     * Gets the year of era, from 1 to MAX_VALUE.
+     *
+     * @return the year of era, from 1 to MAX_VALUE.
+     */
+    public int getYearOfEra() {
+        return (year > 0 ? year : -(year - 1));
+    }
+
+    /**
+     * Gets the century of era, from 0 to MAX_VALUE / 100.
+     * <p>
+     * This method uses a simple definition of century, being the
+     * year of era divided by 100.
+     * <p>
+     * The value 20 will be returned from 2000AD to 2099AD.<br/>
+     * The value 19 will be returned from 1900AD to 1999AD.<br/>
+     * The value 0 will be returned from 1AD to 99AD.<br/>
+     * The value 0 will be returned from 99BC to 1BC.<br/>
+     * The value 1 will be returned from 1000BC to 1999BC.<br/>
+     *
+     * @return the century of era, from 0 to MAX_VALUE / 100.
+     */
+    public int getCenturyOfEra() {
+        return getYearOfEra() / 100;
+    }
+
+    /**
+     * Gets the millenium of era, from 0 to MAX_VALUE / 1000.
+     * <p>
+     * This method uses a simple definition of millenium, being the
+     * year of era divided by 100.
+     * <p>
+     * The value 2 will be returned from 2000AD to 2999AD.<br/>
+     * The value 1 will be returned from 1000AD to 1999AD.<br/>
+     * The value 0 will be returned from 1AD to 999AD.<br/>
+     * The value 0 will be returned from 999BC to 1BC.<br/>
+     * The value 1 will be returned from 1000BC to 1999BC.<br/>
+     *
+     * @return the millenium of era, from 0 to MAX_VALUE / 1000.
+     */
+    public int getMilleniumOfEra() {
+        return getYearOfEra() / 1000;
+    }
+
+    /**
+     * Gets the era.
+     *
+     * @return the era, never null
+     */
+    public Era getEra() {
+        return (year > 0 ? Era.AD : Era.BC);
+    }
+
+    /**
+     * Gets the decade of century, from 0 to 9.
+     * <p>
+     * This method uses a simple definition of decade, being the
+     * remainder of the year of era divided by 10.
+     * <p>
+     * The value 2 will be returned from 2020AD to 2029AD.<br/>
+     * The value 1 will be returned from 2010AD to 2019AD.<br/>
+     * The value 0 will be returned from 2000AD to 2009AD.<br/>
+     * The value 9 will be returned from 1990AD to 1999AD.<br/>
+     *
+     * @return the decade of era, from 0 to 9.
+     */
+    public int getDecadeOfCentury() {
+        return (Math.abs(getYearOfEra()) % 100) / 10;
     }
 
 }
