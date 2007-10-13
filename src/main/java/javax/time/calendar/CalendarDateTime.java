@@ -35,9 +35,9 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.duration.DurationUnit;
-import javax.time.duration.Durational;
-import javax.time.duration.Durations;
+import javax.time.period.PeriodUnit;
+import javax.time.period.PeriodView;
+import javax.time.period.Periods;
 
 /**
  * Represnts a date and time without a time zone.
@@ -88,7 +88,7 @@ public final class CalendarDateTime
     /**
      * The precision being represented.
      */
-    private final DurationUnit precision;
+    private final PeriodUnit precision;
 
     //-----------------------------------------------------------------------
     /**
@@ -222,7 +222,7 @@ public final class CalendarDateTime
      *
      * @return the precision of this instance
      */
-    public DurationUnit getPrecision() {
+    public PeriodUnit getPrecision() {
         return precision;
     }
 
@@ -232,7 +232,7 @@ public final class CalendarDateTime
      * @return true if the precision is at least hours
      */
     public boolean isPrecisionAtLeastHours() {
-        return precision.compareTo(Durations.HOURS) <= 0;
+        return precision.compareTo(Periods.HOURS) <= 0;
     }
 
     /**
@@ -241,7 +241,7 @@ public final class CalendarDateTime
      * @return true if the precision is at least minutes
      */
     public boolean isPrecisionAtLeastMinutes() {
-        return precision.compareTo(Durations.MINUTES) <= 0;
+        return precision.compareTo(Periods.MINUTES) <= 0;
     }
 
     /**
@@ -250,7 +250,7 @@ public final class CalendarDateTime
      * @return true if the precision is at least seconds
      */
     public boolean isPrecisionAtLeastSeconds() {
-        return precision.compareTo(Durations.SECONDS) <= 0;
+        return precision.compareTo(Periods.SECONDS) <= 0;
     }
 
     /**
@@ -259,7 +259,7 @@ public final class CalendarDateTime
      * @return true if the precision is nanos
      */
     public boolean isPrecisionNanos() {
-        return precision.compareTo(Durations.NANOS) <= 0;
+        return precision.compareTo(Periods.NANOS) <= 0;
     }
 
     //-----------------------------------------------------------------------
@@ -271,7 +271,7 @@ public final class CalendarDateTime
      * @param newPrecision  the new precision to use, not null
      * @return a new updated CalendarDateTime
      */
-    public CalendarDateTime withPrecision(DurationUnit newPrecision) {
+    public CalendarDateTime withPrecision(PeriodUnit newPrecision) {
         if (newPrecision == precision) {
             return this;
         }
@@ -286,7 +286,7 @@ public final class CalendarDateTime
      * @return a new updated CalendarDateTime
      */
     public CalendarDateTime withPrecisionHours() {
-        return withPrecision(Durations.HOURS);
+        return withPrecision(Periods.HOURS);
     }
 
     /**
@@ -307,7 +307,7 @@ public final class CalendarDateTime
         if (isPrecisionAtLeastHours()) {
             return this;
         }
-        return withPrecision(Durations.HOURS);
+        return withPrecision(Periods.HOURS);
     }
 
     /**
@@ -318,7 +318,7 @@ public final class CalendarDateTime
      * @return a new updated CalendarDateTime
      */
     public CalendarDateTime withPrecisionMinutes() {
-        return withPrecision(Durations.MINUTES);
+        return withPrecision(Periods.MINUTES);
     }
 
     /**
@@ -338,7 +338,7 @@ public final class CalendarDateTime
         if (isPrecisionAtLeastMinutes()) {
             return this;
         }
-        return withPrecision(Durations.MINUTES);
+        return withPrecision(Periods.MINUTES);
     }
 
     /**
@@ -349,7 +349,7 @@ public final class CalendarDateTime
      * @return a new updated CalendarDateTime
      */
     public CalendarDateTime withPrecisionSeconds() {
-        return withPrecision(Durations.SECONDS);
+        return withPrecision(Periods.SECONDS);
     }
 
     /**
@@ -369,7 +369,7 @@ public final class CalendarDateTime
         if (isPrecisionAtLeastSeconds()) {
             return this;
         }
-        return withPrecision(Durations.SECONDS);
+        return withPrecision(Periods.SECONDS);
     }
 
     /**
@@ -380,7 +380,7 @@ public final class CalendarDateTime
      * @return a new updated CalendarDateTime
      */
     public CalendarDateTime withPrecisionNanos() {
-        return withPrecision(Durations.NANOS);
+        return withPrecision(Periods.NANOS);
     }
 
     //-----------------------------------------------------------------------
@@ -650,7 +650,7 @@ public final class CalendarDateTime
      * @param period  the period to add, not null
      * @return a new updated CalendarDateTime
      */
-    public CalendarDateTime plus(Durational period) {
+    public CalendarDateTime plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -663,7 +663,7 @@ public final class CalendarDateTime
      * @param periods  the periods to add, not null
      * @return a new updated CalendarDateTime
      */
-    public CalendarDateTime plus(Durational... periods) {
+    public CalendarDateTime plus(PeriodView... periods) {
         // TODO
         return null;
     }

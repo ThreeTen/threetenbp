@@ -29,47 +29,47 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration;
+package javax.time.period;
 
 import java.util.Map;
 
 /**
- * Interface implemented by all objects that can provide durational information.
+ * Interface implemented by all objects that can provide period information.
  * <p>
- * Durational is the interface that is shared amongst many other classes in
+ * PeriodView is the interface that is shared amongst many other classes in
  * the Java Time Framework. Many low level APIs are defined to accept a
- * Durational, however it is less common that you will hold instances directly.
+ * PeriodView, however it is less common that you will hold instances directly.
  * <p>
- * Durational is an interface and must be implemented with care to ensure
+ * PeriodView is an interface and must be implemented with care to ensure
  * other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public interface Durational {
+public interface PeriodView {
 
     /**
      * Checks whether a given unit is supported.
      * <p>
-     * Not all implementations of <code>Durational</code> support storage of
-     * all duration units. This method allows you to determine which units
+     * Not all implementations of <code>PeriodView</code> support storage of
+     * all period units. This method allows you to determine which units
      * are supported by this instance.
      *
      * @param unit  the unit to check for, null returns false
      * @return whether the unit is supported
      */
-    boolean isSupported(DurationUnit unit) ;
+    boolean isSupported(PeriodUnit unit) ;
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * The map iterators are sorted by duration unit, returning the largest first.
+     * Gets the map of period unit to amount which defines the period.
+     * The map iterators are sorted by period unit, returning the largest first.
      * <p>
      * Implementations must ensure that the map never contains null.
      * Implementations should return an unmodifiable map from this method.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    Map<DurationUnit, Integer> getDurationalMap() ;
+    Map<PeriodUnit, Integer> getPeriodViewMap() ;
 
 //    /**
 //     * Gets the amount in the specified unit.
@@ -78,103 +78,103 @@ public interface Durational {
 //     * @return the amount in the specified unit, never null
 //     * @throws IllegalArgumentException if the unit is unsupported
 //     */
-//    Integer getAmount(DurationUnit unit) ;
+//    Integer getAmount(PeriodUnit unit) ;
 //
 ////    /**
 ////     * Returns a new instance with the specified unit updated.
 ////     * <p>
 ////     * Implementations must ensure that they return their own type instead of
-////     * <code>Durational</code>.
+////     * <code>PeriodView</code>.
 ////     *
 ////     * @param amount  the amount to update to
 ////     * @param unit  the unit to update, not null
-////     * @return the new updated durational instance, never null
+////     * @return the new updated period instance, never null
 ////     * @throws IllegalArgumentException if the unit is unsupported
 ////     */
-////    Durational with(Integer amount, DurationUnit unit) ;
+////    PeriodView with(Integer amount, PeriodUnit unit) ;
 //
 //    /**
-//     * Returns a new instance with the duration updated as per the specified duration.
+//     * Returns a new instance with the period updated as per the specified period.
 //     * <p>
 //     * Implementations must ensure that they return their own type instead of
-//     * <code>Durational</code>.
+//     * <code>PeriodView</code>.
 //     *
-//     * @param duration  the duration to update to, not null
-//     * @return the new updated durational instance, never null
+//     * @param period  the period to update to, not null
+//     * @return the new updated period instance, never null
 //     * @throws IllegalArgumentException if any unit is unsupported
 //     */
-//    Durational with(Durational duration) ;
+//    PeriodView with(PeriodView period) ;
 //
 ////    /**
-////     * Returns a new instance with the specified duration added.
+////     * Returns a new instance with the specified period added.
 ////     * <p>
 ////     * Implementations must ensure that they return their own type instead of
-////     * <code>Durational</code>.
+////     * <code>PeriodView</code>.
 ////     *
 ////     * @param amount  the amount to add
 ////     * @param unit  the unit to update, not null
-////     * @return the new updated durational instance, never null
+////     * @return the new updated period instance, never null
 ////     * @throws IllegalArgumentException if the unit is unsupported
 ////     */
-////    Durational plus(Integer amount, DurationUnit unit) ;
+////    PeriodView plus(Integer amount, PeriodUnit unit) ;
 //
 //    /**
-//     * Returns a new instance with the specified duration added.
+//     * Returns a new instance with the specified period added.
 //     * <p>
 //     * Implementations must ensure that they return their own type instead of
-//     * <code>Durational</code>.
+//     * <code>PeriodView</code>.
 //     *
-//     * @param durationToAdd  the duration to add, not null
-//     * @return the new updated durational instance, never null
+//     * @param periodToAdd  the period to add, not null
+//     * @return the new updated period instance, never null
 //     * @throws IllegalArgumentException if any unit is unsupported
 //     * @throws ArithmeticException if the calculation result overflows
 //     */
-//    Durational plus(Durational durationToAdd) ;
+//    PeriodView plus(PeriodView periodToAdd) ;
 //
 //    /**
-//     * Returns a new instance with the specified duration subtracted.
+//     * Returns a new instance with the specified period subtracted.
 //     * <p>
 //     * Implementations must ensure that they return their own type instead of
-//     * <code>Durational</code>.
+//     * <code>PeriodView</code>.
 //     *
-//     * @param durationToSubtract  the duration to subtract, not null
-//     * @return the new updated durational instance, never null
+//     * @param periodToSubtract  the period to subtract, not null
+//     * @return the new updated period instance, never null
 //     * @throws IllegalArgumentException if any unit is unsupported
 //     * @throws ArithmeticException if the calculation result overflows
 //     */
-//    Durational minus(Durational durationToSubtract) ;
+//    PeriodView minus(PeriodView periodToSubtract) ;
 //
 //    /**
-//     * Returns a new instance with each element in this duration multiplied
+//     * Returns a new instance with each element in this period multiplied
 //     * by the specified scalar.
 //     * <p>
 //     * Implementations must ensure that they return their own type instead of
-//     * <code>Durational</code>.
+//     * <code>PeriodView</code>.
 //     *
 //     * @param scalar  the scalar to multiply by, not null
-//     * @return the new updated durational instance, never null
+//     * @return the new updated period instance, never null
 //     * @throws ArithmeticException if the calculation result overflows
 //     */
-//    Durational multipliedBy(int scalar) ;
+//    PeriodView multipliedBy(int scalar) ;
 //
 //    /**
-//     * Returns a new instance with each element in this duration multiplied
+//     * Returns a new instance with each element in this period multiplied
 //     * by the specified scalar.
 //     * <p>
 //     * Implementations must ensure that they return their own type instead of
-//     * <code>Durational</code>.
+//     * <code>PeriodView</code>.
 //     *
 //     * @param scalar  the scalar to multiply by, not null
-//     * @return the new updated durational instance, never null
+//     * @return the new updated period instance, never null
 //     * @throws ArithmeticException if the calculation result overflows
 //     */
-//    Durational dividedBy(int scalar) ;
+//    PeriodView dividedBy(int scalar) ;
 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
      * <p>
-     * The comparison is defined as a comparison of the two duration maps.
+     * The comparison is defined as a comparison of the two period maps.
      *
      * @param other  the other point instance to compare to, null returns false
      * @return true if this point is equal to the specified second
@@ -182,11 +182,11 @@ public interface Durational {
     boolean equals(Object other);
 
     /**
-     * Returns the hash code for this duration.
+     * Returns the hash code for this period.
      * <p>
-     * The hash code is defined as the hash code of the duration map.
+     * The hash code is defined as the hash code of the period map.
      *
-     * @return the hash code of the duration
+     * @return the hash code of the period
      */
     int hashCode();
 

@@ -33,7 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.duration.Durational;
+import javax.time.period.PeriodView;
 
 /**
  * Recurring moment representing the time of day.
@@ -204,7 +204,7 @@ public final class TimeOfDay implements Calendrical, Comparable<TimeOfDay>, Seri
      * @param period  the period to add, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay plus(Durational period) {
+    public TimeOfDay plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -217,7 +217,7 @@ public final class TimeOfDay implements Calendrical, Comparable<TimeOfDay>, Seri
      * @param periods  the periods to add, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay plus(Durational... periods) {
+    public TimeOfDay plus(PeriodView... periods) {
         // TODO
         return null;
     }

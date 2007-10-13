@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration;
+package javax.time.period;
 
 import static java.util.Collections.*;
 
@@ -37,187 +37,187 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility class providing constants and factories for working with durations.
+ * Utility class providing constants and factories for working with periods.
  * <p>
- * Durations is non-instantiable.
+ * Periods is non-instantiable.
  *
  * @author Stephen Colebourne
  */
-public final class Durations {
+public final class Periods {
 
     /**
-     * Duration unit for years.
+     * Period unit for years.
      */
-    public static final DurationUnit YEARS = DurationUnit.createUnit("Years");
+    public static final PeriodUnit YEARS = PeriodUnit.createUnit("Years");
     /**
-     * Duration unit for quarters.
+     * Period unit for quarters.
      */
-    public static final DurationUnit QUARTERS = DurationUnit.createUnit("Quarters");
+    public static final PeriodUnit QUARTERS = PeriodUnit.createUnit("Quarters");
     /**
-     * Duration unit for months.
+     * Period unit for months.
      */
-    public static final DurationUnit MONTHS = DurationUnit.createUnit("Months");
+    public static final PeriodUnit MONTHS = PeriodUnit.createUnit("Months");
     /**
-     * Duration unit for weeks.
+     * Period unit for weeks.
      */
-    public static final DurationUnit WEEKS = DurationUnit.createUnit("Weeks");
+    public static final PeriodUnit WEEKS = PeriodUnit.createUnit("Weeks");
     /**
-     * Duration unit for days.
+     * Period unit for days.
      */
-    public static final DurationUnit DAYS = DurationUnit.createUnit("Days");
+    public static final PeriodUnit DAYS = PeriodUnit.createUnit("Days");
     /**
-     * Duration unit for hours.
+     * Period unit for hours.
      */
-    public static final DurationUnit HOURS = DurationUnit.createUnit("Hours");
+    public static final PeriodUnit HOURS = PeriodUnit.createUnit("Hours");
     /**
-     * Duration unit for minutes.
+     * Period unit for minutes.
      */
-    public static final DurationUnit MINUTES = DurationUnit.createUnit("Minutes");
+    public static final PeriodUnit MINUTES = PeriodUnit.createUnit("Minutes");
     /**
-     * Duration unit for seconds.
+     * Period unit for seconds.
      */
-    public static final DurationUnit SECONDS = DurationUnit.createUnit("Seconds");
+    public static final PeriodUnit SECONDS = PeriodUnit.createUnit("Seconds");
     /**
-     * Duration unit for nanoseconds.
+     * Period unit for nanoseconds.
      */
-    public static final DurationUnit NANOS = DurationUnit.createUnit("Nanos");
+    public static final PeriodUnit NANOS = PeriodUnit.createUnit("Nanos");
 
     //-----------------------------------------------------------------------
     /**
      * Restrictive constructor.
      */
-    private Durations() {
+    private Periods() {
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from years, months and days.
+     * Obtains an instance of <code>Period</code> from years, months and days.
      *
      * @param years  the years to represent
      * @param months  the months to represent
      * @param days  the days to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration yearsMonthsDays(int years, int months, int days) {
-        Map<DurationUnit, Integer> map = new HashMap<DurationUnit, Integer>();
+    public static Period yearsMonthsDays(int years, int months, int days) {
+        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
         map.put(YEARS, years);
         map.put(MONTHS, months);
         map.put(DAYS, days);
-        return Duration.durationOf(map);
+        return Period.periodOf(map);
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from hours, minutes and seconds.
+     * Obtains an instance of <code>Period</code> from hours, minutes and seconds.
      *
      * @param hours  the hours to represent
      * @param minutes  the minutes to represent
      * @param seconds  the seconds to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration hoursMinutesSeconds(int hours, int minutes, int seconds) {
-        Map<DurationUnit, Integer> map = new HashMap<DurationUnit, Integer>();
+    public static Period hoursMinutesSeconds(int hours, int minutes, int seconds) {
+        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
         map.put(HOURS, hours);
         map.put(MINUTES, minutes);
         map.put(SECONDS, seconds);
-        return Duration.durationOf(map);
+        return Period.periodOf(map);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a duration of years.
+     * Creates a period of years.
      *
      * @param years  the years to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration years(int years) {
-        Map<DurationUnit, Integer> map = singletonMap(YEARS, years);
-        return Duration.durationOf(map);
+    public static Period years(int years) {
+        Map<PeriodUnit, Integer> map = singletonMap(YEARS, years);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of quarters.
+     * Creates a period of quarters.
      *
      * @param quarters  the quarters to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration quarters(int quarters) {
-        Map<DurationUnit, Integer> map = singletonMap(QUARTERS, quarters);
-        return Duration.durationOf(map);
+    public static Period quarters(int quarters) {
+        Map<PeriodUnit, Integer> map = singletonMap(QUARTERS, quarters);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of months.
+     * Creates a period of months.
      *
      * @param months  the months to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration months(int months) {
-        Map<DurationUnit, Integer> map = singletonMap(MONTHS, months);
-        return Duration.durationOf(map);
+    public static Period months(int months) {
+        Map<PeriodUnit, Integer> map = singletonMap(MONTHS, months);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of weeks.
+     * Creates a period of weeks.
      *
      * @param weeks  the weeks to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration weeks(int weeks) {
-        Map<DurationUnit, Integer> map = singletonMap(WEEKS, weeks);
-        return Duration.durationOf(map);
+    public static Period weeks(int weeks) {
+        Map<PeriodUnit, Integer> map = singletonMap(WEEKS, weeks);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of days.
+     * Creates a period of days.
      *
      * @param days  the days to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration days(int days) {
-        Map<DurationUnit, Integer> map = singletonMap(DAYS, days);
-        return Duration.durationOf(map);
+    public static Period days(int days) {
+        Map<PeriodUnit, Integer> map = singletonMap(DAYS, days);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of hours.
+     * Creates a period of hours.
      *
      * @param hours  the hours to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration hours(int hours) {
-        Map<DurationUnit, Integer> map = singletonMap(HOURS, hours);
-        return Duration.durationOf(map);
+    public static Period hours(int hours) {
+        Map<PeriodUnit, Integer> map = singletonMap(HOURS, hours);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of minutes.
+     * Creates a period of minutes.
      *
      * @param minutes  the minutes to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration minutes(int minutes) {
-        Map<DurationUnit, Integer> map = singletonMap(MINUTES, minutes);
-        return Duration.durationOf(map);
+    public static Period minutes(int minutes) {
+        Map<PeriodUnit, Integer> map = singletonMap(MINUTES, minutes);
+        return Period.periodOf(map);
     }
 
     /**
-     * Creates a duration of seconds.
+     * Creates a period of seconds.
      *
      * @param seconds  the seconds to represent
-     * @return the created Duration, never null
+     * @return the created Period, never null
      */
-    public static Duration seconds(int seconds) {
-        Map<DurationUnit, Integer> map = singletonMap(SECONDS, seconds);
-        return Duration.durationOf(map);
+    public static Period seconds(int seconds) {
+        Map<PeriodUnit, Integer> map = singletonMap(SECONDS, seconds);
+        return Period.periodOf(map);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a builder suitable for creating a duration.
+     * Creates a builder suitable for creating a period.
      *
      * @return the builder, never null
      */
-    public static YearsBuilder durationBuilder() {
+    public static YearsBuilder periodBuilder() {
         return new YearsBuilder();
     }
 
@@ -226,14 +226,14 @@ public final class Durations {
      * Class that can add seconds to the current state of the builder.
      */
     public static class Builder {
-        /** The state of the duration being built. */
-        protected Map<DurationUnit, Integer> map = new HashMap<DurationUnit, Integer>();
+        /** The state of the period being built. */
+        protected Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
         /**
-         * Builds the duration into a <code>Duration</code>.
-         * @return the created Duration, never null
+         * Builds the period into a <code>Period</code>.
+         * @return the created Period, never null
          */
-        public Duration build() {
-            return Duration.durationOf(map);
+        public Period build() {
+            return Period.periodOf(map);
         }
     }
 

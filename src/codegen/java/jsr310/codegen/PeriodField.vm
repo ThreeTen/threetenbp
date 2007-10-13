@@ -29,39 +29,39 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
- * A duration representing a number of hours.
+ * A period representing a number of ${type}.
  * <p>
- * Hours is an immutable duration that can only store hours.
- * It is a type-safe way of representing a number of hours in an application.
+ * ${Type} is an immutable period that can only store ${type}.
+ * It is a type-safe way of representing a number of ${type} in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of hours may be queried using getHours().
+ * The number of ${type} may be queried using get${Type}().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Hours is thread-safe and immutable.
+ * ${Type} is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class Hours extends DurationField implements Comparable<Hours>, Serializable {
+public final class ${Type} extends PeriodField implements Comparable<${Type}>, Serializable {
 
     /**
-     * The unit that defines how the hours field operates.
+     * The unit that defines how the ${type} field operates.
      */
-    public static final DurationUnit UNIT = new Unit();
+    public static final PeriodUnit UNIT = new Unit();
     /**
-     * A constant for zero hours.
+     * A constant for zero ${type}.
      */
-    public static final Hours ZERO = new Hours(0);
+    public static final ${Type} ZERO = new ${Type}(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class Hours extends DurationField implements Comparable<Hours>, Ser
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of hours in the period.
+     * The number of ${type} in the period.
      */
-    private final int hours;
+    private final int ${type};
 
     /**
-     * Obtains an instance of <code>Hours</code>.
+     * Obtains an instance of <code>${Type}</code>.
      *
-     * @param hours  the number of hours the instance will represent
-     * @return the created Hours
+     * @param ${type}  the number of ${type} the instance will represent
+     * @return the created ${Type}
      */
-    public static Hours hours(int hours) {
-        if (hours == 0) {
+    public static ${Type} ${type}(int ${type}) {
+        if (${type} == 0) {
             return ZERO;
         }
-        return new Hours(hours);
+        return new ${Type}(${type});
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of hours.
+     * Constructs an instance using a specific number of ${type}.
      *
-     * @param hours  the hours to use
+     * @param ${type}  the ${type} to use
      */
-    private Hours(int hours) {
+    private ${Type}(int ${type}) {
         super();
-        this.hours = hours;
+        this.${type} = ${type};
     }
 
     /**
@@ -103,125 +103,125 @@ public final class Hours extends DurationField implements Comparable<Hours>, Ser
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Hours.hours(hours);
+        return ${Type}.${type}(${type});
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>Hours</code> only supports the Hours unit.
+     * <code>${Type}</code> only supports the ${Type} unit.
      *
      * @param unit  the unit to check for, null returns false
-     * @return true only if the Hours unit, otherwise false
+     * @return true only if the ${Type} unit, otherwise false
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit == UNIT);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * This instance returns a map of size one where the key is the Hours unit.
+     * Gets the map of period unit to amount which defines the period.
+     * This instance returns a map of size one where the key is the ${Type} unit.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.singletonMap(UNIT, hours);
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.singletonMap(UNIT, ${type});
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of hours held in this duration.
+     * Gets the number of ${type} held in this period.
      *
-     * @return the number of hours
+     * @return the number of ${type}
      */
     @Override
     public int getAmount() {
-        return hours;
+        return ${type};
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of hours.
+     * Returns a new instance of the subclass with a different number of ${type}.
      *
-     * @param amount  the number of hours to set in the new instance, may be negative
-     * @return a new duration element, never null
+     * @param amount  the number of ${type} to set in the new instance, may be negative
+     * @return a new period element, never null
      */
     @Override
-    public Hours withAmount(int amount) {
-        return Hours.hours(amount);
+    public ${Type} withAmount(int amount) {
+        return ${Type}.${type}(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the hours unit, never null
+     * @return the ${type} unit, never null
      */
     @Override
-    public DurationUnit getUnit() {
+    public PeriodUnit getUnit() {
         return UNIT;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of hours added.
+     * Returns a new instance with the specified number of ${type} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to add, may be negative
-     * @return the new period plus the specified number of hours
+     * @param ${type}  the amount of ${type} to add, may be negative
+     * @return the new period plus the specified number of ${type}
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours plus(int hours) {
-        return (Hours) super.plus(hours);
+    public ${Type} plus(int ${type}) {
+        return (${Type}) super.plus(${type});
     }
 
     /**
-     * Returns a new instance with the specified number of hours added.
+     * Returns a new instance with the specified number of ${type} added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to add, may be negative, not null
-     * @return the new period plus the specified number of hours
-     * @throws NullPointerException if the hours to add is null
+     * @param ${type}  the amount of ${type} to add, may be negative, not null
+     * @return the new period plus the specified number of ${type}
+     * @throws NullPointerException if the ${type} to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Hours plus(Hours hours) {
-        return plus(hours.getAmount());
+    public ${Type} plus(${Type} ${type}) {
+        return plus(${type}.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of hours taken away.
+     * Returns a new instance with the specified number of ${type} taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to take away, may be negative
-     * @return the new period minus the specified number of hours
+     * @param ${type}  the amount of ${type} to take away, may be negative
+     * @return the new period minus the specified number of ${type}
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours minus(int hours) {
-        return (Hours) super.minus(hours);
+    public ${Type} minus(int ${type}) {
+        return (${Type}) super.minus(${type});
     }
 
     /**
-     * Returns a new instance with the specified number of hours taken away.
+     * Returns a new instance with the specified number of ${type} taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the amount of hours to take away, may be negative, not null
-     * @return the new period minus the specified number of hours
-     * @throws NullPointerException if the hours to add is null
+     * @param ${type}  the amount of ${type} to take away, may be negative, not null
+     * @return the new period minus the specified number of ${type}
+     * @throws NullPointerException if the ${type} to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Hours minus(Hours hours) {
-        return minus(hours.getAmount());
+    public ${Type} minus(${Type} ${type}) {
+        return minus(${type}.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the hours multiplied by the specified scalar.
+     * Returns a new instance with the ${type} multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -230,12 +230,12 @@ public final class Hours extends DurationField implements Comparable<Hours>, Ser
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours multipliedBy(int scalar) {
-        return (Hours) super.multipliedBy(scalar);
+    public ${Type} multipliedBy(int scalar) {
+        return (${Type}) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the hours divided by the specified divisor.
+     * Returns a new instance with the ${type} divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -245,81 +245,84 @@ public final class Hours extends DurationField implements Comparable<Hours>, Ser
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Hours dividedBy(int divisor) {
-        return (Hours) super.dividedBy(divisor);
+    public ${Type} dividedBy(int divisor) {
+        return (${Type}) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the hours value negated.
+     * Returns a new instance with the ${type} value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Hours negated() {
-        return (Hours) super.negated();
+    public ${Type} negated() {
+        return (${Type}) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of hours in this instance to another instance.
+     * Compares the number of ${type} in this instance to another instance.
      *
-     * @param otherHours  the other number of hours, not null
+     * @param other${Type}  the other number of ${type}, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherHours is null
+     * @throws NullPointerException if other${Type} is null
      */
-    public int compareTo(Hours otherHours) {
-        int thisValue = this.hours;
-        int otherValue = otherHours.hours;
+    public int compareTo(${Type} other${Type}) {
+        int thisValue = this.${type};
+        int otherValue = other${Type}.${type};
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of hours in this instance greater than that in
+     * Is the number of ${type} in this instance greater than that in
      * another instance.
      *
-     * @param otherHours  the other number of hours, not null
-     * @return true if this number of hours is greater
-     * @throws NullPointerException if otherHours is null
+     * @param other${Type}  the other number of ${type}, not null
+     * @return true if this number of ${type} is greater
+     * @throws NullPointerException if other${Type} is null
      */
-    public boolean isGreaterThan(Hours otherHours) {
-        return compareTo(otherHours) > 0;
+    public boolean isGreaterThan(${Type} other${Type}) {
+        return compareTo(other${Type}) > 0;
     }
 
     /**
-     * Is the number of hours in this instance less than that in
+     * Is the number of ${type} in this instance less than that in
      * another instance.
      *
-     * @param otherHours  the other number of hours, not null
-     * @return true if this number of hours is less
-     * @throws NullPointerException if otherHours is null
+     * @param other${Type}  the other number of ${type}, not null
+     * @return true if this number of ${type} is less
+     * @throws NullPointerException if other${Type} is null
      */
-    public boolean isLessThan(Hours otherHours) {
-        return compareTo(otherHours) < 0;
+    public boolean isLessThan(${Type} other${Type}) {
+        return compareTo(other${Type}) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of hours.
-     * This will be in the format 'PTnH' where n is the number of hours.
+     * Returns a string representation of the number of ${type}.
+     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
      *
-     * @return the number of hours in ISO8601 string format
+     * @return the number of ${type} in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "PT" + hours + "H";
+        return "P${stringPrefix}" + ${type} + "${stringSuffix}";
     }
 
+#foreach ($line in $methods)
+${line}
+#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit for hours.
+     * Implementation of the unit for ${type}.
      */
-    private static class Unit extends DurationUnit {
+    private static class Unit extends PeriodUnit {
 
         /** Constructor. */
         protected Unit() {
-            super("Hours", Minutes.minutes(60));
+            super("${Type}", ${relativeField});
         }
     }
 

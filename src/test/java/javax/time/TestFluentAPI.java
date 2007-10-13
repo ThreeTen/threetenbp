@@ -33,7 +33,7 @@ package javax.time;
 
 import static javax.time.calendar.Calendars.*;
 import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.duration.Durations.*;
+import static javax.time.period.Periods.*;
 
 import javax.time.calendar.CalendarDate;
 import javax.time.calendar.CalendarDateTime;
@@ -41,8 +41,8 @@ import javax.time.calendar.TimeOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
-import javax.time.duration.Duration;
-import javax.time.duration.field.Days;
+import javax.time.period.Period;
+import javax.time.period.field.Days;
 
 /**
  * Test class.
@@ -73,13 +73,13 @@ public class TestFluentAPI {
         
         date = CalendarDate.calendarDate(now().currentMonth(), dayOfMonth(6));
         
-        // different ways to build/use durations
+        // different ways to build/use periods
         date = date.plus(yearsMonthsDays(2, 3, 1));
 //        date = date.plus(3, YEARS).plus(2, MONTHS).plus(1, DAYS);
         date = date.plus(years(3), months(2), days(1));
-        Duration d1 = durationBuilder().hours(2).seconds(3).build();
-        Duration d2 = hours(2).withSeconds(3);
-        Duration d3 = Duration.durationOf(hours(2), seconds(3));
+        Period d1 = periodBuilder().hours(2).seconds(3).build();
+        Period d2 = hours(2).withSeconds(3);
+        Period d3 = Period.periodOf(hours(2), seconds(3));
         
         tod.with(hourOfDay(12), minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);

@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
  * The rule defining how a measurable field of time operates.
@@ -49,10 +49,10 @@ public abstract class TimeFieldRule {
 
     /** The name of the rule, not null. */
     private final String name;
-    /** The duration unit, not null. */
-    private final DurationUnit durationUnit;
-    /** The duration range, not null. */
-    private final DurationUnit durationRange;
+    /** The period unit, not null. */
+    private final PeriodUnit periodUnit;
+    /** The period range, not null. */
+    private final PeriodUnit periodRange;
     /** The minimum value for the field. */
     private final int minimumValue;
     /** The maximum value for the field. */
@@ -62,22 +62,22 @@ public abstract class TimeFieldRule {
      * Constructor.
      *
      * @param name  the name of the type, not null
-     * @param durationUnit  the duration unit, not null
-     * @param durationRange  the duration range, not null
+     * @param periodUnit  the period unit, not null
+     * @param periodRange  the period range, not null
      * @param minimumValue  the minimum value
      * @param maximumValue  the minimum value
      */
     protected TimeFieldRule(
             String name,
-            DurationUnit durationUnit,
-            DurationUnit durationRange,
+            PeriodUnit periodUnit,
+            PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
         super();
         // TODO: Validate not null
         this.name = name;
-        this.durationUnit = durationUnit;
-        this.durationRange = durationRange;
+        this.periodUnit = periodUnit;
+        this.periodRange = periodRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
     }
@@ -95,25 +95,25 @@ public abstract class TimeFieldRule {
     }
 
     /**
-     * Gets the duration unit, which the element which alters within the range.
+     * Gets the period unit, which the element which alters within the range.
      * <p>
      * In the phrase 'hour of day', the unit is the hour.
      *
-     * @return the rule for the unit duration, never null
+     * @return the rule for the unit period, never null
      */
-    public DurationUnit getDurationUnit() {
-        return durationUnit;
+    public PeriodUnit getPeriodUnit() {
+        return periodUnit;
     }
 
     /**
-     * Gets the duration range, which the field is bound by.
+     * Gets the period range, which the field is bound by.
      * <p>
      * In the phrase 'hour of day', the range is the day.
      *
-     * @return the rule for the range duration, never null
+     * @return the rule for the range period, never null
      */
-    public DurationUnit getDurationRange() {
-        return durationRange;
+    public PeriodUnit getPeriodRange() {
+        return periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -124,7 +124,7 @@ public abstract class TimeFieldRule {
      * @return the value of the field
      */
     public int getValue(CalendricalState calState) {
-        return 0;  //epochDuration.getDurationalState().getDerived(getDurationUnit());
+        return 0;  //epochPeriod.getPeriodalState().getDerived(getPeriodUnit());
     }
 
     /**
@@ -246,20 +246,20 @@ public abstract class TimeFieldRule {
      * @throws UnsupportedCalendarFieldException if the field is unsupported
      */
     protected void checkSupported(CalendricalState calState) {
-        if (calState.getDurationUnit().compareTo(getDurationUnit()) > 0 ||
-                calState.getDurationRange().compareTo(getDurationRange()) < 0) {
+        if (calState.getPeriodUnit().compareTo(getPeriodUnit()) > 0 ||
+                calState.getPeriodRange().compareTo(getPeriodRange()) < 0) {
             throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this TimeFieldRule to another based on the duration unit
-     * followed by the duration range.
+     * Compares this TimeFieldRule to another based on the period unit
+     * followed by the period range.
      * <p>
-     * The duration unit is compared first, so MinuteOfHour will be less than
-     * HourOfDay, which will be less than DayOfWeek. When the duration unit is
-     * the same, the duration range is compared, so DayOfWeek is less than
+     * The period unit is compared first, so MinuteOfHour will be less than
+     * HourOfDay, which will be less than DayOfWeek. When the period unit is
+     * the same, the period range is compared, so DayOfWeek is less than
      * DayOfMonth, which is less than DayOfYear.
      *
      * @param other  the other type to compare to, not null
@@ -267,11 +267,11 @@ public abstract class TimeFieldRule {
      * @throws NullPointerException if other is null
      */
     public int compareTo(TimeFieldRule other) {
-        int cmp = this.getDurationUnit().compareTo(other.getDurationUnit());
+        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
         if (cmp != 0) {
             return cmp;
         }
-        return this.getDurationRange().compareTo(other.getDurationRange());
+        return this.getPeriodRange().compareTo(other.getPeriodRange());
     }
 
     //-----------------------------------------------------------------------

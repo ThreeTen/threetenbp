@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.duration.Durational;
+import javax.time.period.PeriodView;
 
 /**
  * An immutable time point, with nanosecond precision, operating without a time zone.
@@ -385,7 +385,7 @@ public final class CalendarPoint implements Calendrical, Comparable<CalendarPoin
      * @param period  the period to add, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint plus(Durational period) {
+    public CalendarPoint plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -398,7 +398,7 @@ public final class CalendarPoint implements Calendrical, Comparable<CalendarPoin
      * @param periods  the periods to add, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint plus(Durational... periods) {
+    public CalendarPoint plus(PeriodView... periods) {
         // TODO
         return null;
     }

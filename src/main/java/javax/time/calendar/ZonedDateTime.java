@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.duration.Durational;
+import javax.time.period.PeriodView;
 
 /**
  * An immutable time point, with second precision, operating with a time zone.
@@ -385,7 +385,7 @@ public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTim
      * @param period  the period to add, not null
      * @return a new updated ZonedDateTime
      */
-    public ZonedDateTime plus(Durational period) {
+    public ZonedDateTime plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -398,7 +398,7 @@ public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTim
      * @param periods  the periods to add, not null
      * @return a new updated ZonedDateTime
      */
-    public ZonedDateTime plus(Durational... periods) {
+    public ZonedDateTime plus(PeriodView... periods) {
         // TODO
         return null;
     }

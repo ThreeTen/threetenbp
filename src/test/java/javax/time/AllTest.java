@@ -31,13 +31,13 @@
  */
 package javax.time;
 
-import javax.time.duration.field.TestDays;
-import javax.time.duration.field.TestHours;
-import javax.time.duration.field.TestMinutes;
-import javax.time.duration.field.TestMonths;
-import javax.time.duration.field.TestSeconds;
-import javax.time.duration.field.TestWeeks;
-import javax.time.duration.field.TestYears;
+import javax.time.period.field.TestDays;
+import javax.time.period.field.TestHours;
+import javax.time.period.field.TestMinutes;
+import javax.time.period.field.TestMonths;
+import javax.time.period.field.TestSeconds;
+import javax.time.period.field.TestWeeks;
+import javax.time.period.field.TestYears;
 
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;

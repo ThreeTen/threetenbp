@@ -29,39 +29,39 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
- * A duration representing a number of ${type}.
+ * A period representing a number of months.
  * <p>
- * ${Type} is an immutable duration that can only store ${type}.
- * It is a type-safe way of representing a number of ${type} in an application.
+ * Months is an immutable period that can only store months.
+ * It is a type-safe way of representing a number of months in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of ${type} may be queried using get${Type}().
+ * The number of months may be queried using getMonths().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * ${Type} is thread-safe and immutable.
+ * Months is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type} extends DurationField implements Comparable<${Type}>, Serializable {
+public final class Months extends PeriodField implements Comparable<Months>, Serializable {
 
     /**
-     * The unit that defines how the ${type} field operates.
+     * The unit that defines how the months field operates.
      */
-    public static final DurationUnit UNIT = new Unit();
+    public static final PeriodUnit UNIT = new Unit();
     /**
-     * A constant for zero ${type}.
+     * A constant for zero months.
      */
-    public static final ${Type} ZERO = new ${Type}(0);
+    public static final Months ZERO = new Months(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of ${type} in the period.
+     * The number of months in the period.
      */
-    private final int ${type};
+    private final int months;
 
     /**
-     * Obtains an instance of <code>${Type}</code>.
+     * Obtains an instance of <code>Months</code>.
      *
-     * @param ${type}  the number of ${type} the instance will represent
-     * @return the created ${Type}
+     * @param months  the number of months the instance will represent
+     * @return the created Months
      */
-    public static ${Type} ${type}(int ${type}) {
-        if (${type} == 0) {
+    public static Months months(int months) {
+        if (months == 0) {
             return ZERO;
         }
-        return new ${Type}(${type});
+        return new Months(months);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of ${type}.
+     * Constructs an instance using a specific number of months.
      *
-     * @param ${type}  the ${type} to use
+     * @param months  the months to use
      */
-    private ${Type}(int ${type}) {
+    private Months(int months) {
         super();
-        this.${type} = ${type};
+        this.months = months;
     }
 
     /**
@@ -103,125 +103,125 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @return the singleton instance
      */
     private Object readResolve() {
-        return ${Type}.${type}(${type});
+        return Months.months(months);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>${Type}</code> only supports the ${Type} unit.
+     * <code>Months</code> only supports the Months unit.
      *
      * @param unit  the unit to check for, null returns false
-     * @return true only if the ${Type} unit, otherwise false
+     * @return true only if the Months unit, otherwise false
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit == UNIT);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * This instance returns a map of size one where the key is the ${Type} unit.
+     * Gets the map of period unit to amount which defines the period.
+     * This instance returns a map of size one where the key is the Months unit.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.singletonMap(UNIT, ${type});
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.singletonMap(UNIT, months);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of ${type} held in this duration.
+     * Gets the number of months held in this period.
      *
-     * @return the number of ${type}
+     * @return the number of months
      */
     @Override
     public int getAmount() {
-        return ${type};
+        return months;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of ${type}.
+     * Returns a new instance of the subclass with a different number of months.
      *
-     * @param amount  the number of ${type} to set in the new instance, may be negative
-     * @return a new duration element, never null
+     * @param amount  the number of months to set in the new instance, may be negative
+     * @return a new period element, never null
      */
     @Override
-    public ${Type} withAmount(int amount) {
-        return ${Type}.${type}(amount);
+    public Months withAmount(int amount) {
+        return Months.months(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the ${type} unit, never null
+     * @return the months unit, never null
      */
     @Override
-    public DurationUnit getUnit() {
+    public PeriodUnit getUnit() {
         return UNIT;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative
-     * @return the new period plus the specified number of ${type}
+     * @param months  the amount of months to add, may be negative
+     * @return the new period plus the specified number of months
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} plus(int ${type}) {
-        return (${Type}) super.plus(${type});
+    public Months plus(int months) {
+        return (Months) super.plus(months);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} added.
+     * Returns a new instance with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to add, may be negative, not null
-     * @return the new period plus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param months  the amount of months to add, may be negative, not null
+     * @return the new period plus the specified number of months
+     * @throws NullPointerException if the months to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} plus(${Type} ${type}) {
-        return plus(${type}.getAmount());
+    public Months plus(Months months) {
+        return plus(months.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of months taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative
-     * @return the new period minus the specified number of ${type}
+     * @param months  the amount of months to take away, may be negative
+     * @return the new period minus the specified number of months
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} minus(int ${type}) {
-        return (${Type}) super.minus(${type});
+    public Months minus(int months) {
+        return (Months) super.minus(months);
     }
 
     /**
-     * Returns a new instance with the specified number of ${type} taken away.
+     * Returns a new instance with the specified number of months taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param ${type}  the amount of ${type} to take away, may be negative, not null
-     * @return the new period minus the specified number of ${type}
-     * @throws NullPointerException if the ${type} to add is null
+     * @param months  the amount of months to take away, may be negative, not null
+     * @return the new period minus the specified number of months
+     * @throws NullPointerException if the months to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public ${Type} minus(${Type} ${type}) {
-        return minus(${type}.getAmount());
+    public Months minus(Months months) {
+        return minus(months.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} multiplied by the specified scalar.
+     * Returns a new instance with the months multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -230,12 +230,12 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} multipliedBy(int scalar) {
-        return (${Type}) super.multipliedBy(scalar);
+    public Months multipliedBy(int scalar) {
+        return (Months) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the ${type} divided by the specified divisor.
+     * Returns a new instance with the months divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -245,84 +245,81 @@ public final class ${Type} extends DurationField implements Comparable<${Type}>,
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public ${Type} dividedBy(int divisor) {
-        return (${Type}) super.dividedBy(divisor);
+    public Months dividedBy(int divisor) {
+        return (Months) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the ${type} value negated.
+     * Returns a new instance with the months value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public ${Type} negated() {
-        return (${Type}) super.negated();
+    public Months negated() {
+        return (Months) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of ${type} in this instance to another instance.
+     * Compares the number of months in this instance to another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
+     * @param otherMonths  the other number of months, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if other${Type} is null
+     * @throws NullPointerException if otherMonths is null
      */
-    public int compareTo(${Type} other${Type}) {
-        int thisValue = this.${type};
-        int otherValue = other${Type}.${type};
+    public int compareTo(Months otherMonths) {
+        int thisValue = this.months;
+        int otherValue = otherMonths.months;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of ${type} in this instance greater than that in
+     * Is the number of months in this instance greater than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is greater
-     * @throws NullPointerException if other${Type} is null
+     * @param otherMonths  the other number of months, not null
+     * @return true if this number of months is greater
+     * @throws NullPointerException if otherMonths is null
      */
-    public boolean isGreaterThan(${Type} other${Type}) {
-        return compareTo(other${Type}) > 0;
+    public boolean isGreaterThan(Months otherMonths) {
+        return compareTo(otherMonths) > 0;
     }
 
     /**
-     * Is the number of ${type} in this instance less than that in
+     * Is the number of months in this instance less than that in
      * another instance.
      *
-     * @param other${Type}  the other number of ${type}, not null
-     * @return true if this number of ${type} is less
-     * @throws NullPointerException if other${Type} is null
+     * @param otherMonths  the other number of months, not null
+     * @return true if this number of months is less
+     * @throws NullPointerException if otherMonths is null
      */
-    public boolean isLessThan(${Type} other${Type}) {
-        return compareTo(other${Type}) < 0;
+    public boolean isLessThan(Months otherMonths) {
+        return compareTo(otherMonths) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of ${type}.
-     * This will be in the format 'P${stringPrefix}n${stringSuffix}' where n is the number of ${type}.
+     * Returns a string representation of the number of months.
+     * This will be in the format 'PnM' where n is the number of months.
      *
-     * @return the number of ${type} in ISO8601 string format
+     * @return the number of months in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P${stringPrefix}" + ${type} + "${stringSuffix}";
+        return "P" + months + "M";
     }
 
-#foreach ($line in $methods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit for ${type}.
+     * Implementation of the unit for months.
      */
-    private static class Unit extends DurationUnit {
+    private static class Unit extends PeriodUnit {
 
         /** Constructor. */
         protected Unit() {
-            super("${Type}", ${relativeField});
+            super("Months", null);
         }
     }
 

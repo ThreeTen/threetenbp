@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.duration.Durational;
+import javax.time.period.PeriodView;
 
 /**
  * A moment of a month.
@@ -191,7 +191,7 @@ public final class CalendarMonth implements Calendrical, Comparable<CalendarMont
      * @param period  the period to add, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth plus(Durational period) {
+    public CalendarMonth plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -204,7 +204,7 @@ public final class CalendarMonth implements Calendrical, Comparable<CalendarMont
      * @param periods  the periods to add, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth plus(Durational... periods) {
+    public CalendarMonth plus(PeriodView... periods) {
         // TODO
         return null;
     }

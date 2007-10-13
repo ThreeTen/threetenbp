@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration;
+package javax.time.period;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -39,32 +39,32 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.time.MathUtils;
-import javax.time.duration.field.Days;
-import javax.time.duration.field.Hours;
-import javax.time.duration.field.Minutes;
-import javax.time.duration.field.Months;
-import javax.time.duration.field.Seconds;
-import javax.time.duration.field.Weeks;
-import javax.time.duration.field.Years;
+import javax.time.period.field.Days;
+import javax.time.period.field.Hours;
+import javax.time.period.field.Minutes;
+import javax.time.period.field.Months;
+import javax.time.period.field.Seconds;
+import javax.time.period.field.Weeks;
+import javax.time.period.field.Years;
 
 /**
- * An immutable duration consisting of a number of duration fields.
+ * An immutable period consisting of a number of period fields.
  * <p>
- * As an example, the duration "3 months, 4 days and 7 hours" can be stored
- * in a Duration.
+ * As an example, the period "3 months, 4 days and 7 hours" can be stored
+ * in a Period.
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * Duration is thread-safe and immutable.
+ * Period is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class Duration implements Durational, Serializable {
+public final class Period implements PeriodView, Serializable {
 
     /**
-     * A constant for a duration of zero.
+     * A constant for a period of zero.
      */
-    public static final Duration ZERO = new Duration(new TreeMap<DurationUnit, Integer>());
+    public static final Period ZERO = new Period(new TreeMap<PeriodUnit, Integer>());
 
     /**
      * A serialization identifier for this instance.
@@ -72,48 +72,48 @@ public final class Duration implements Durational, Serializable {
     private static final long serialVersionUID = 986187548716897689L;
 
     /**
-     * The map of duration fields.
+     * The map of period fields.
      */
-    private final TreeMap<DurationUnit, Integer> durationMap;
+    private final TreeMap<PeriodUnit, Integer> periodMap;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Duration</code> from a set of durations.
+     * Obtains an instance of <code>Period</code> from a set of periods.
      * <p>
      * This method is typically used to pass in one instance of each of the
-     * duration fields in the duration. However, it is possible to pass in
-     * any Durational instance and the resulting duration will be a simple
+     * period fields in the period. However, it is possible to pass in
+     * any PeriodView instance and the resulting period will be a simple
      * field addition of each.
      *
-     * @param durationMap  a map of durations that will be used to create this
-     *  duration, not null, contains no nulls, may be immutable
-     * @return the created Duration, never null
+     * @param periodMap  a map of periods that will be used to create this
+     *  period, not null, contains no nulls, may be immutable
+     * @return the created Period, never null
      * @throws NullPointerException if the map is null or contains nulls
      */
-    public static Duration durationOf(Map<DurationUnit, Integer> durationMap) {
-        if (durationMap == null) {
-            throw new NullPointerException("Duration map must not be null");
+    public static Period periodOf(Map<PeriodUnit, Integer> periodMap) {
+        if (periodMap == null) {
+            throw new NullPointerException("Period map must not be null");
         }
-        if (durationMap.containsKey(null) || durationMap.containsValue(null)) {
-            throw new NullPointerException("Duration map must not contain null");
+        if (periodMap.containsKey(null) || periodMap.containsValue(null)) {
+            throw new NullPointerException("Period map must not contain null");
         }
-        TreeMap<DurationUnit, Integer> internalMap = new TreeMap<DurationUnit, Integer>(Collections.reverseOrder());
-        internalMap.putAll(durationMap);
-        return new Duration(internalMap);
+        TreeMap<PeriodUnit, Integer> internalMap = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
+        internalMap.putAll(periodMap);
+        return new Period(internalMap);
     }
 
     /**
-     * Obtains an instance of <code>Duration</code> from a set of durations.
+     * Obtains an instance of <code>Period</code> from a set of periods.
      * <p>
      * This method is typically used to pass in one instance of each of the
-     * duration fields in the duration. However, it is possible to pass in
-     * any Durational instance and the resulting duration will be a simple
+     * period fields in the period. However, it is possible to pass in
+     * any PeriodView instance and the resulting period will be a simple
      * field addition of each.
      *
-     * @param durations  a set of durations that will be added together to form the duration
-     * @return the created Duration
+     * @param periods  a set of periods that will be added together to form the period
+     * @return the created Period
      */
-    public static Duration durationOf(Durational... durations) {
+    public static Period periodOf(PeriodView... periods) {
         return null;
     }
 
@@ -122,44 +122,44 @@ public final class Duration implements Durational, Serializable {
      * Constructs an instance using a pre-built map.
      * The map must not be used by the calling code after calling the constructor.
      *
-     * @param durationMap  the map of durations to represent, not null and safe to assign
+     * @param periodMap  the map of periods to represent, not null and safe to assign
      */
-    private Duration(TreeMap<DurationUnit, Integer> durationMap) {
-        this.durationMap = durationMap;
+    private Period(TreeMap<PeriodUnit, Integer> periodMap) {
+        this.periodMap = periodMap;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>Duration</code> supports all units.
+     * <code>Period</code> supports all units.
      *
      * @param unit  the unit to check for, null returns false
      * @return true, unless unit specified was null
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit != null);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * The map iterators are sorted by duration unit, returning the largest first.
+     * Gets the map of period unit to amount which defines the period.
+     * The map iterators are sorted by period unit, returning the largest first.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.unmodifiableMap(durationMap);
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.unmodifiableMap(periodMap);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the amount of the duration for the specified unit, returning
-     * zero if this duration does not define the unit.
+     * Gets the amount of the period for the specified unit, returning
+     * zero if this period does not define the unit.
      *
      * @param unit  the unit to query, not null
-     * @return the duration amount, zero if the unit is not present
+     * @return the period amount, zero if the unit is not present
      */
-    public Integer getAmount(DurationUnit unit) {
-        Integer amount = durationMap.get(unit);
+    public Integer getAmount(PeriodUnit unit) {
+        Integer amount = periodMap.get(unit);
         if (amount == null) {
             return Integer.valueOf(0);
         }
@@ -167,66 +167,66 @@ public final class Duration implements Durational, Serializable {
     }
 
 //    /**
-//     * Extracts the fields from this duration into another.
+//     * Extracts the fields from this period into another.
 //     *
-//     * @param <T>  the type of the durational instance to be returned
-//     * @param durationType  the duration type, not null
-//     * @return the duration amount, returned using the specified type
+//     * @param <T>  the type of the period instance to be returned
+//     * @param periodType  the period type, not null
+//     * @return the period amount, returned using the specified type
 //     */
-//    public <T extends DurationField> T get(DurationalType<T> durationType) {
-//        return durationType.extractFrom(this);
+//    public <T extends PeriodField> T get(PeriodViewType<T> periodType) {
+//        return periodType.extractFrom(this);
 //    }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the years field of the overall duration, if any.
+     * Gets the years field of the overall period, if any.
      *
-     * @return the years field of the overall duration
+     * @return the years field of the overall period
      */
     public int getYears() {
         return getAmount(Years.UNIT);
     }
 
     /**
-     * Gets the months field of the overall duration, if any.
+     * Gets the months field of the overall period, if any.
      *
-     * @return the months field of the overall duration
+     * @return the months field of the overall period
      */
     public int getMonths() {
         return getAmount(Months.UNIT);
     }
 
     /**
-     * Gets the days field of the overall duration, if any.
+     * Gets the days field of the overall period, if any.
      *
-     * @return the days field of the overall duration
+     * @return the days field of the overall period
      */
     public int getDays() {
         return getAmount(Days.UNIT);
     }
 
     /**
-     * Gets the hours field of the overall duration, if any.
+     * Gets the hours field of the overall period, if any.
      *
-     * @return the hours field of the overall duration
+     * @return the hours field of the overall period
      */
     public int getHours() {
         return getAmount(Hours.UNIT);
     }
 
     /**
-     * Gets the minutes field of the overall duration, if any.
+     * Gets the minutes field of the overall period, if any.
      *
-     * @return the minutes field of the overall duration
+     * @return the minutes field of the overall period
      */
     public int getMinutes() {
         return getAmount(Minutes.UNIT);
     }
 
     /**
-     * Gets the seconds field of the overall duration, if any.
+     * Gets the seconds field of the overall period, if any.
      *
-     * @return the seconds field of the overall duration
+     * @return the seconds field of the overall period
      */
     public int getSeconds() {
         return getAmount(Seconds.UNIT);
@@ -234,59 +234,59 @@ public final class Duration implements Durational, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified values altered.
+     * Returns a copy of this Period with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration field to update, not null
-     * @return a new updated Duration
-     * @throws NullPointerException if the duration is null
+     * @param period  the period field to update, not null
+     * @return a new updated Period
+     * @throws NullPointerException if the period is null
      */
-    public Duration with(Durational duration) {
-        Map<DurationUnit, Integer> durationalMap = duration.getDurationalMap();
-        if (durationalMap.isEmpty()) {
+    public Period with(PeriodView period) {
+        Map<PeriodUnit, Integer> periodViewMap = period.getPeriodViewMap();
+        if (periodViewMap.isEmpty()) {
             return this;
         }
-        TreeMap<DurationUnit, Integer> copy = cloneMap();
-        for (DurationUnit unit : durationalMap.keySet()) {
-            Integer amount = durationalMap.get(unit);
+        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        for (PeriodUnit unit : periodViewMap.keySet()) {
+            Integer amount = periodViewMap.get(unit);
             if (amount == 0) {
                 copy.remove(unit);
             } else {
                 copy.put(unit, amount);
             }
         }
-        return new Duration(copy);
+        return new Period(copy);
     }
 
     /**
-     * Returns a copy of this Duration with the specified values altered.
-     * The list of durations must contain no duplicate units.
+     * Returns a copy of this Period with the specified values altered.
+     * The list of periods must contain no duplicate units.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param durations  the duration fields to update, not null
-     * @return a new updated Duration
-     * @throws NullPointerException if any duration is null
+     * @param periods  the period fields to update, not null
+     * @return a new updated Period
+     * @throws NullPointerException if any period is null
      * @throws IllegalArgumentException if any unit is duplicated
      */
-    public Duration with(Durational... durations) {
-        if (durations.length == 0) {
+    public Period with(PeriodView... periods) {
+        if (periods.length == 0) {
             return this;
         }
-        TreeMap<DurationUnit, Integer> copy = null;
-        Set<DurationUnit> set = new HashSet<DurationUnit>();
-        for (Durational durational : durations) {
-            Map<DurationUnit, Integer> durationalMap = durational.getDurationalMap();
-            if (durationalMap.size() > 0) {
+        TreeMap<PeriodUnit, Integer> copy = null;
+        Set<PeriodUnit> set = new HashSet<PeriodUnit>();
+        for (PeriodView periodView : periods) {
+            Map<PeriodUnit, Integer> periodViewMap = periodView.getPeriodViewMap();
+            if (periodViewMap.size() > 0) {
                 if (copy == null) {
                     copy = cloneMap();
                 }
-                for (DurationUnit unit : durationalMap.keySet()) {
+                for (PeriodUnit unit : periodViewMap.keySet()) {
                     if (!set.add(unit)) {
-                        throw new IllegalArgumentException("Input Durational array contains duplicate unit " + unit.getName());
+                        throw new IllegalArgumentException("Input PeriodView array contains duplicate unit " + unit.getName());
                     }
-                    Integer amount = durationalMap.get(unit);
+                    Integer amount = periodViewMap.get(unit);
                     if (amount == 0) {
                         copy.remove(unit);
                     } else {
@@ -298,378 +298,378 @@ public final class Duration implements Durational, Serializable {
         if (copy == null) {
             return this;
         }
-        return new Duration(copy);
+        return new Period(copy);
     }
 
     /**
-     * Returns a copy of this Duration with the specified years field value.
+     * Returns a copy of this Period with the specified years field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param amount  the amount to update the new instance with
      * @param unit  the unit to update, not null
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    private Duration with(int amount, DurationUnit unit) {
+    private Period with(int amount, PeriodUnit unit) {
         if (getAmount(unit) == amount) {
             return this;
         }
-        TreeMap<DurationUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Integer> copy = cloneMap();
         if (amount == 0) {
             copy.remove(unit);
         } else {
             copy.put(unit, amount);
         }
-        return new Duration(copy);
+        return new Period(copy);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified years field value.
+     * Returns a copy of this Period with the specified years field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to represent
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration withYears(int years) {
+    public Period withYears(int years) {
         return with(years, Years.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified months field value.
+     * Returns a copy of this Period with the specified months field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to represent
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration withMonths(int months) {
+    public Period withMonths(int months) {
         return with(months, Months.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified days field value.
+     * Returns a copy of this Period with the specified days field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to represent
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration withDays(int days) {
+    public Period withDays(int days) {
         return with(days, Days.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified days field value.
+     * Returns a copy of this Period with the specified days field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to represent
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration withHours(int hours) {
+    public Period withHours(int hours) {
         return with(hours, Hours.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified days field value.
+     * Returns a copy of this Period with the specified days field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to represent
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration withMinutes(int minutes) {
+    public Period withMinutes(int minutes) {
         return with(minutes, Minutes.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified days field value.
+     * Returns a copy of this Period with the specified days field value.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to represent
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration withSeconds(int seconds) {
+    public Period withSeconds(int seconds) {
         return with(seconds, Seconds.UNIT);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified duration added.
+     * Returns a copy of this Period with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to add, not null
-     * @return a new updated Duration
-     * @throws NullPointerException if the duration is null
+     * @param period  the period to add, not null
+     * @return a new updated Period
+     * @throws NullPointerException if the period is null
      */
-    public Duration plus(Durational duration) {
-        Map<DurationUnit, Integer> durationalMap = duration.getDurationalMap();
-        if (durationalMap.isEmpty()) {
+    public Period plus(PeriodView period) {
+        Map<PeriodUnit, Integer> periodViewMap = period.getPeriodViewMap();
+        if (periodViewMap.isEmpty()) {
             return this;
         }
-        TreeMap<DurationUnit, Integer> copy = cloneMap();
-        for (DurationUnit unit : durationalMap.keySet()) {
-            int amount = durationalMap.get(unit);
+        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        for (PeriodUnit unit : periodViewMap.keySet()) {
+            int amount = periodViewMap.get(unit);
             int current = copy.get(unit);
             copy.put(unit, MathUtils.safeAdd(amount, current));
         }
-        return new Duration(copy);
+        return new Period(copy);
     }
 
     /**
-     * Returns a copy of this Duration with the specified durations added.
+     * Returns a copy of this Period with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param durations  the durations to add, not null
-     * @return a new updated Duration
-     * @throws NullPointerException if any duration is null
+     * @param periods  the periods to add, not null
+     * @return a new updated Period
+     * @throws NullPointerException if any period is null
      */
-    public Duration plus(Durational... durations) {
+    public Period plus(PeriodView... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified number of years added.
+     * Returns a copy of this Period with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusYears(int years) {
+    public Period plusYears(int years) {
         int current = getAmount(Years.UNIT);
         return with(MathUtils.safeAdd(years, current), Years.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of months added.
+     * Returns a copy of this Period with the specified number of months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusMonths(int months) {
+    public Period plusMonths(int months) {
         int current = getAmount(Months.UNIT);
         return with(MathUtils.safeAdd(months, current), Months.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of weeks added.
+     * Returns a copy of this Period with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusWeeks(int weeks) {
+    public Period plusWeeks(int weeks) {
         int current = getAmount(Weeks.UNIT);
         return with(MathUtils.safeAdd(weeks, current), Weeks.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of days added.
+     * Returns a copy of this Period with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusDays(int days) {
+    public Period plusDays(int days) {
         int current = getAmount(Days.UNIT);
         return with(MathUtils.safeAdd(days, current), Days.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of hours added.
+     * Returns a copy of this Period with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusHours(int hours) {
+    public Period plusHours(int hours) {
         int current = getAmount(Hours.UNIT);
         return with(MathUtils.safeAdd(hours, current), Hours.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of minutes added.
+     * Returns a copy of this Period with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusMinutes(int minutes) {
+    public Period plusMinutes(int minutes) {
         int current = getAmount(Minutes.UNIT);
         return with(MathUtils.safeAdd(minutes, current), Minutes.UNIT);
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of seconds added.
+     * Returns a copy of this Period with the specified number of seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, positive or negative
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration plusSeconds(int seconds) {
+    public Period plusSeconds(int seconds) {
         int current = getAmount(Seconds.UNIT);
         return with(MathUtils.safeAdd(seconds, current), Seconds.UNIT);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified duration subtracted.
+     * Returns a copy of this Period with the specified period subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param duration  the duration to subtract, not null
-     * @return a new updated Duration
-     * @throws NullPointerException if the duration is null
+     * @param period  the period to subtract, not null
+     * @return a new updated Period
+     * @throws NullPointerException if the period is null
      */
-    public Duration minus(Durational duration) {
+    public Period minus(PeriodView period) {
         // TODO
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified durations subtracted.
+     * Returns a copy of this Period with the specified periods subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param durations  the durations to subtract, not null
-     * @return a new updated Duration
-     * @throws NullPointerException if any duration is null
+     * @param periods  the periods to subtract, not null
+     * @return a new updated Period
+     * @throws NullPointerException if any period is null
      */
-    public Duration minus(Durational... durations) {
+    public Period minus(PeriodView... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Duration with the specified number of years subtracted.
+     * Returns a copy of this Period with the specified number of years subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusYears(int years) {
+    public Period minusYears(int years) {
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of months subtracted.
+     * Returns a copy of this Period with the specified number of months subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusMonths(int months) {
+    public Period minusMonths(int months) {
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of weeks subtracted.
+     * Returns a copy of this Period with the specified number of weeks subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusWeeks(int weeks) {
+    public Period minusWeeks(int weeks) {
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of days subtracted.
+     * Returns a copy of this Period with the specified number of days subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusDays(int days) {
+    public Period minusDays(int days) {
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of hours subtracted.
+     * Returns a copy of this Period with the specified number of hours subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusHours(int hours) {
+    public Period minusHours(int hours) {
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of minutes subtracted.
+     * Returns a copy of this Period with the specified number of minutes subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusMinutes(int minutes) {
+    public Period minusMinutes(int minutes) {
         return null;
     }
 
     /**
-     * Returns a copy of this Duration with the specified number of seconds subtracted.
+     * Returns a copy of this Period with the specified number of seconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract
-     * @return a new updated Duration
+     * @return a new updated Period
      */
-    public Duration minusSeconds(int seconds) {
+    public Period minusSeconds(int seconds) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with each element in this duration multiplied
+     * Returns a new instance with each element in this period multiplied
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return the new updated durational instance, never null
+     * @return the new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
-    public Duration multipliedBy(int scalar) {
-        if (durationMap.isEmpty()) {
+    public Period multipliedBy(int scalar) {
+        if (periodMap.isEmpty()) {
             return this;
         }
-        TreeMap<DurationUnit, Integer> copy = cloneMap();
-        for (DurationUnit unit : durationMap.keySet()) {
-            int amount = durationMap.get(unit);
+        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        for (PeriodUnit unit : periodMap.keySet()) {
+            int amount = periodMap.get(unit);
             copy.put(unit, MathUtils.safeMultiply(amount, scalar));
         }
-        return new Duration(copy);
+        return new Period(copy);
     }
 
     /**
-     * Returns a new instance with each element in this duration multiplied
+     * Returns a new instance with each element in this period multiplied
      * by the specified scalar.
      *
      * @param scalar  the scalar to multiply by, not null
-     * @return the new updated durational instance, never null
+     * @return the new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
-    public Duration dividedBy(int scalar) {
+    public Period dividedBy(int scalar) {
         return null;
     }
 
@@ -680,13 +680,13 @@ public final class Duration implements Durational, Serializable {
      * @return the cloned map, never null
      */
     @SuppressWarnings("unchecked")
-    private TreeMap<DurationUnit, Integer> cloneMap() {
-        return (TreeMap) durationMap.clone();
+    private TreeMap<PeriodUnit, Integer> cloneMap() {
+        return (TreeMap) periodMap.clone();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, as defined by <code>Durational</code>.
+     * Is this instance equal to that specified, as defined by <code>PeriodView</code>.
      *
      * @param other  the other point instance to compare to, null returns false
      * @return true if this point is equal to the specified second
@@ -696,21 +696,21 @@ public final class Duration implements Durational, Serializable {
         if (this == other) {
             return true;
         }
-        if (other instanceof Durational) {
-            Durational otherDuraton = (Durational) other;
-            return getDurationalMap().equals(otherDuraton);
+        if (other instanceof PeriodView) {
+            PeriodView otherDuraton = (PeriodView) other;
+            return getPeriodViewMap().equals(otherDuraton);
         }
         return false;
     }
 
     /**
-     * Returns the hash code for this duration.
+     * Returns the hash code for this period.
      *
-     * @return the hash code defined by <code>Durational</code>
+     * @return the hash code defined by <code>PeriodView</code>
      */
     @Override
     public int hashCode() {
-        return getDurationalMap().hashCode();
+        return getPeriodViewMap().hashCode();
     }
 
     //-----------------------------------------------------------------------

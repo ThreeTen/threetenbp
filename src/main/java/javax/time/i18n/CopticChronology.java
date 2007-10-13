@@ -38,8 +38,8 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.duration.DurationUnit;
-import javax.time.duration.Durations;
+import javax.time.period.PeriodUnit;
+import javax.time.period.Periods;
 
 /**
  * The Coptic calendar system.
@@ -118,17 +118,17 @@ public final class CopticChronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the calendrical state from year, month, day.
-     *
-     * @param year  the year
-     * @param month  the month of year
-     * @param day  the day of month
-     * @return the state, never null
-     */
-    public long convert(long amount, DurationUnit fromUnit, DurationUnit toUnit) {
-        return 0;
-    }
+//    /**
+//     * Gets the calendrical state from year, month, day.
+//     *
+//     * @param year  the year
+//     * @param month  the month of year
+//     * @param day  the day of month
+//     * @return the state, never null
+//     */
+//    public long convert(long amount, PeriodUnit fromUnit, PeriodUnit toUnit) {
+//        return 0;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -212,13 +212,13 @@ public final class CopticChronology implements Serializable {
 
         /** {@inheritDoc} */
         @Override
-        public DurationUnit getDurationUnit() {
+        public PeriodUnit getPeriodUnit() {
             return null;
         }
 
         /** {@inheritDoc} */
         @Override
-        public DurationUnit getDurationRange() {
+        public PeriodUnit getPeriodRange() {
             return null;
         }
 
@@ -263,7 +263,7 @@ public final class CopticChronology implements Serializable {
     static final class YearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public YearRule() {
-            super("Year", Durations.YEARS, null, 1, Integer.MAX_VALUE);
+            super("Year", Periods.YEARS, null, 1, Integer.MAX_VALUE);
         }
 
         /**
@@ -304,7 +304,7 @@ public final class CopticChronology implements Serializable {
     static final class MonthOfYearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public MonthOfYearRule() {
-            super("MonthOfYear", Durations.MONTHS, Durations.YEARS, 1, 13);
+            super("MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 13);
         }
 
         /**
@@ -345,7 +345,7 @@ public final class CopticChronology implements Serializable {
     static final class DayOfYearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public DayOfYearRule() {
-            super("DayOfYear", Durations.DAYS, Durations.YEARS, 1, 366);
+            super("DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
         }
 
         /**
@@ -385,7 +385,7 @@ public final class CopticChronology implements Serializable {
     static final class DayOfMonthRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public DayOfMonthRule() {
-            super("DayOfMonth", Durations.DAYS, Durations.MONTHS, 1, 30);
+            super("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 30);
         }
 
         /**

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,47 +46,47 @@ import static org.testng.Assert.*;
  * @author Stephen Colebourne
  */
 @Test
-public class TestWeeks {
+public class TestYears {
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() {
-        assertTrue(Serializable.class.isAssignableFrom(Weeks.class));
+        assertTrue(Serializable.class.isAssignableFrom(Years.class));
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryZeroSingleton() {
-        assertSame(Weeks.ZERO, Weeks.weeks(0));
-        assertSame(Weeks.ZERO, Weeks.weeks(0));
-        assertEquals(0, Weeks.ZERO.getAmount());
+        assertSame(Years.ZERO, Years.years(0));
+        assertSame(Years.ZERO, Years.years(0));
+        assertEquals(0, Years.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
-    public void test_factoryGetWeeks() {
-        assertEquals(1,  Weeks.weeks(1).getAmount());
-        assertEquals(2,  Weeks.weeks(2).getAmount());
-        assertEquals(Integer.MAX_VALUE,  Weeks.weeks(Integer.MAX_VALUE).getAmount());
-        assertEquals(-1,  Weeks.weeks(-1).getAmount());
-        assertEquals(-2,  Weeks.weeks(-2).getAmount());
-        assertEquals(Integer.MIN_VALUE,  Weeks.weeks(Integer.MIN_VALUE).getAmount());
+    public void test_factoryGetYears() {
+        assertEquals(1,  Years.years(1).getAmount());
+        assertEquals(2,  Years.years(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Years.years(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Years.years(-1).getAmount());
+        assertEquals(-2,  Years.years(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Years.years(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
-        Weeks orginal = Weeks.ZERO;
+        Years orginal = Years.ZERO;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(orginal);
         out.close();
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream in = new ObjectInputStream(bais);
-        Weeks ser = (Weeks) in.readObject();
-        assertSame(Weeks.ZERO, ser);
+        Years ser = (Years) in.readObject();
+        assertSame(Years.ZERO, ser);
     }
 
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        Weeks test5 = Weeks.weeks(5);
-        Weeks test6 = Weeks.weeks(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(0, test5.compareTo(test5));
         assertEquals(-1, test5.compareTo(test6));
         assertEquals(1, test6.compareTo(test5));
@@ -94,14 +94,14 @@ public class TestWeeks {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        Weeks test5 = Weeks.weeks(5);
+        Years test5 = Years.years(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isGreaterThan() {
-        Weeks test5 = Weeks.weeks(5);
-        Weeks test6 = Weeks.weeks(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(false, test5.isGreaterThan(test5));
         assertEquals(false, test5.isGreaterThan(test6));
         assertEquals(true, test6.isGreaterThan(test5));
@@ -109,14 +109,14 @@ public class TestWeeks {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isGreaterThan_null() {
-        Weeks test5 = Weeks.weeks(5);
+        Years test5 = Years.years(5);
         test5.isGreaterThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isLessThan() {
-        Weeks test5 = Weeks.weeks(5);
-        Weeks test6 = Weeks.weeks(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(false, test5.isLessThan(test5));
         assertEquals(true, test5.isLessThan(test6));
         assertEquals(false, test6.isLessThan(test5));
@@ -124,197 +124,197 @@ public class TestWeeks {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isLessThan_null() {
-        Weeks test5 = Weeks.weeks(5);
+        Years test5 = Years.years(5);
         test5.isLessThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_equals() {
-        Weeks test5 = Weeks.weeks(5);
-        Weeks test6 = Weeks.weeks(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(true, test5.equals(test5));
         assertEquals(false, test5.equals(test6));
         assertEquals(false, test6.equals(test5));
     }
 
     public void test_equals_null() {
-        Weeks test5 = Weeks.weeks(5);
+        Years test5 = Years.years(5);
         assertEquals(false, test5.equals(null));
     }
 
     public void test_equals_otherClass() {
-        Weeks test5 = Weeks.weeks(5);
+        Years test5 = Years.years(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        Weeks test5 = Weeks.weeks(5);
-        Weeks test6 = Weeks.weeks(6);
+        Years test5 = Years.years(5);
+        Years test6 = Years.years(6);
         assertEquals(true, test5.hashCode() == test5.hashCode());
         assertEquals(false, test5.hashCode() == test6.hashCode());
     }
 
     //-----------------------------------------------------------------------
     public void test_plus() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals(Weeks.weeks(5), test5.plus(0));
-        assertEquals(Weeks.weeks(7), test5.plus(2));
-        assertEquals(Weeks.weeks(3), test5.plus(-2));
-        assertEquals(Weeks.weeks(Integer.MAX_VALUE), Weeks.weeks(Integer.MAX_VALUE - 1).plus(1));
-        assertEquals(Weeks.weeks(Integer.MIN_VALUE), Weeks.weeks(Integer.MIN_VALUE + 1).plus(-1));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.plus(0));
+        assertEquals(Years.years(7), test5.plus(2));
+        assertEquals(Years.years(3), test5.plus(-2));
+        assertEquals(Years.years(Integer.MAX_VALUE), Years.years(Integer.MAX_VALUE - 1).plus(1));
+        assertEquals(Years.years(Integer.MIN_VALUE), Years.years(Integer.MIN_VALUE + 1).plus(-1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooBig() {
-        Weeks.weeks(Integer.MAX_VALUE - 1).plus(2);
+        Years.years(Integer.MAX_VALUE - 1).plus(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooSmall() {
-        Weeks.weeks(Integer.MIN_VALUE + 1).plus(-2);
+        Years.years(Integer.MIN_VALUE + 1).plus(-2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_plus_Weeks() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals(Weeks.weeks(5), test5.plus(Weeks.weeks(0)));
-        assertEquals(Weeks.weeks(7), test5.plus(Weeks.weeks(2)));
-        assertEquals(Weeks.weeks(3), test5.plus(Weeks.weeks(-2)));
-        assertEquals(Weeks.weeks(Integer.MAX_VALUE),
-                Weeks.weeks(Integer.MAX_VALUE - 1).plus(Weeks.weeks(1)));
-        assertEquals(Weeks.weeks(Integer.MIN_VALUE),
-                Weeks.weeks(Integer.MIN_VALUE + 1).plus(Weeks.weeks(-1)));
+    public void test_plus_Years() {
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.plus(Years.years(0)));
+        assertEquals(Years.years(7), test5.plus(Years.years(2)));
+        assertEquals(Years.years(3), test5.plus(Years.years(-2)));
+        assertEquals(Years.years(Integer.MAX_VALUE),
+                Years.years(Integer.MAX_VALUE - 1).plus(Years.years(1)));
+        assertEquals(Years.years(Integer.MIN_VALUE),
+                Years.years(Integer.MIN_VALUE + 1).plus(Years.years(-1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_Weeks_overflowTooBig() {
-        Weeks.weeks(Integer.MAX_VALUE - 1).plus(Weeks.weeks(2));
+    public void test_plus_Years_overflowTooBig() {
+        Years.years(Integer.MAX_VALUE - 1).plus(Years.years(2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_plus_Weeks_overflowTooSmall() {
-        Weeks.weeks(Integer.MIN_VALUE + 1).plus(Weeks.weeks(-2));
+    public void test_plus_Years_overflowTooSmall() {
+        Years.years(Integer.MIN_VALUE + 1).plus(Years.years(-2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_plus_Weeks_null() {
-        Weeks.weeks(Integer.MIN_VALUE + 1).plus(null);
+    public void test_plus_Years_null() {
+        Years.years(Integer.MIN_VALUE + 1).plus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_minus() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals(Weeks.weeks(5), test5.minus(0));
-        assertEquals(Weeks.weeks(3), test5.minus(2));
-        assertEquals(Weeks.weeks(7), test5.minus(-2));
-        assertEquals(Weeks.weeks(Integer.MAX_VALUE), Weeks.weeks(Integer.MAX_VALUE - 1).minus(-1));
-        assertEquals(Weeks.weeks(Integer.MIN_VALUE), Weeks.weeks(Integer.MIN_VALUE + 1).minus(1));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.minus(0));
+        assertEquals(Years.years(3), test5.minus(2));
+        assertEquals(Years.years(7), test5.minus(-2));
+        assertEquals(Years.years(Integer.MAX_VALUE), Years.years(Integer.MAX_VALUE - 1).minus(-1));
+        assertEquals(Years.years(Integer.MIN_VALUE), Years.years(Integer.MIN_VALUE + 1).minus(1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooBig() {
-        Weeks.weeks(Integer.MAX_VALUE - 1).minus(-2);
+        Years.years(Integer.MAX_VALUE - 1).minus(-2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooSmall() {
-        Weeks.weeks(Integer.MIN_VALUE + 1).minus(2);
+        Years.years(Integer.MIN_VALUE + 1).minus(2);
     }
 
     //-----------------------------------------------------------------------
-    public void test_minus_Weeks() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals(Weeks.weeks(5), test5.minus(Weeks.weeks(0)));
-        assertEquals(Weeks.weeks(3), test5.minus(Weeks.weeks(2)));
-        assertEquals(Weeks.weeks(7), test5.minus(Weeks.weeks(-2)));
-        assertEquals(Weeks.weeks(Integer.MAX_VALUE),
-                Weeks.weeks(Integer.MAX_VALUE - 1).minus(Weeks.weeks(-1)));
-        assertEquals(Weeks.weeks(Integer.MIN_VALUE),
-                Weeks.weeks(Integer.MIN_VALUE + 1).minus(Weeks.weeks(1)));
+    public void test_minus_Years() {
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(5), test5.minus(Years.years(0)));
+        assertEquals(Years.years(3), test5.minus(Years.years(2)));
+        assertEquals(Years.years(7), test5.minus(Years.years(-2)));
+        assertEquals(Years.years(Integer.MAX_VALUE),
+                Years.years(Integer.MAX_VALUE - 1).minus(Years.years(-1)));
+        assertEquals(Years.years(Integer.MIN_VALUE),
+                Years.years(Integer.MIN_VALUE + 1).minus(Years.years(1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_Weeks_overflowTooBig() {
-        Weeks.weeks(Integer.MAX_VALUE - 1).minus(Weeks.weeks(-2));
+    public void test_minus_Years_overflowTooBig() {
+        Years.years(Integer.MAX_VALUE - 1).minus(Years.years(-2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
-    public void test_minus_Weeks_overflowTooSmall() {
-        Weeks.weeks(Integer.MIN_VALUE + 1).minus(Weeks.weeks(2));
+    public void test_minus_Years_overflowTooSmall() {
+        Years.years(Integer.MIN_VALUE + 1).minus(Years.years(2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
-    public void test_minus_Weeks_null() {
-        Weeks.weeks(Integer.MIN_VALUE + 1).minus(null);
+    public void test_minus_Years_null() {
+        Years.years(Integer.MIN_VALUE + 1).minus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_multipliedBy() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals(Weeks.weeks(0), test5.multipliedBy(0));
-        assertEquals(Weeks.weeks(5), test5.multipliedBy(1));
-        assertEquals(Weeks.weeks(10), test5.multipliedBy(2));
-        assertEquals(Weeks.weeks(15), test5.multipliedBy(3));
-        assertEquals(Weeks.weeks(-15), test5.multipliedBy(-3));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(0), test5.multipliedBy(0));
+        assertEquals(Years.years(5), test5.multipliedBy(1));
+        assertEquals(Years.years(10), test5.multipliedBy(2));
+        assertEquals(Years.years(15), test5.multipliedBy(3));
+        assertEquals(Years.years(-15), test5.multipliedBy(-3));
     }
 
     public void test_multipliedBy_negate() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals(Weeks.weeks(-15), test5.multipliedBy(-3));
+        Years test5 = Years.years(5);
+        assertEquals(Years.years(-15), test5.multipliedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooBig() {
-        Weeks.weeks(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
+        Years.years(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooSmall() {
-        Weeks.weeks(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
+        Years.years(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        Weeks test12 = Weeks.weeks(12);
-        assertEquals(Weeks.weeks(12), test12.dividedBy(1));
-        assertEquals(Weeks.weeks(6), test12.dividedBy(2));
-        assertEquals(Weeks.weeks(4), test12.dividedBy(3));
-        assertEquals(Weeks.weeks(3), test12.dividedBy(4));
-        assertEquals(Weeks.weeks(2), test12.dividedBy(5));
-        assertEquals(Weeks.weeks(2), test12.dividedBy(6));
-        assertEquals(Weeks.weeks(-4), test12.dividedBy(-3));
+        Years test12 = Years.years(12);
+        assertEquals(Years.years(12), test12.dividedBy(1));
+        assertEquals(Years.years(6), test12.dividedBy(2));
+        assertEquals(Years.years(4), test12.dividedBy(3));
+        assertEquals(Years.years(3), test12.dividedBy(4));
+        assertEquals(Years.years(2), test12.dividedBy(5));
+        assertEquals(Years.years(2), test12.dividedBy(6));
+        assertEquals(Years.years(-4), test12.dividedBy(-3));
     }
 
     public void test_dividedBy_negate() {
-        Weeks test12 = Weeks.weeks(12);
-        assertEquals(Weeks.weeks(-4), test12.dividedBy(-3));
+        Years test12 = Years.years(12);
+        assertEquals(Years.years(-4), test12.dividedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_dividedBy_divideByZero() {
-        Weeks.weeks(1).dividedBy(0);
+        Years.years(1).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
     public void test_negated() {
-        assertEquals(Weeks.weeks(0), Weeks.weeks(0).negated());
-        assertEquals(Weeks.weeks(-12), Weeks.weeks(12).negated());
-        assertEquals(Weeks.weeks(12), Weeks.weeks(-12).negated());
-        assertEquals(Weeks.weeks(-Integer.MAX_VALUE), Weeks.weeks(Integer.MAX_VALUE).negated());
+        assertEquals(Years.years(0), Years.years(0).negated());
+        assertEquals(Years.years(-12), Years.years(12).negated());
+        assertEquals(Years.years(12), Years.years(-12).negated());
+        assertEquals(Years.years(-Integer.MAX_VALUE), Years.years(Integer.MAX_VALUE).negated());
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
-        Weeks.weeks(Integer.MIN_VALUE).negated();
+        Years.years(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        Weeks test5 = Weeks.weeks(5);
-        assertEquals("P5W", test5.toString());
-        Weeks testM1 = Weeks.weeks(-1);
-        assertEquals("P-1W", testM1.toString());
+        Years test5 = Years.years(5);
+        assertEquals("P5Y", test5.toString());
+        Years testM1 = Years.years(-1);
+        assertEquals("P-1Y", testM1.toString());
     }
 
 }

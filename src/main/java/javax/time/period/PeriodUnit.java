@@ -29,52 +29,52 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration;
+package javax.time.period;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * The unit defining how a measurable duration of time operates.
+ * The unit defining how a measurable period of time operates.
  * <p>
- * Duration unit implementations define how a field like 'days' operates.
- * This includes the duration name and relationship to other durations like hour.
+ * Period unit implementations define how a field like 'days' operates.
+ * This includes the period name and relationship to other periods like hour.
  * <p>
- * DurationUnit is an abstract class and must be implemented with care to
+ * PeriodUnit is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public class DurationUnit implements Comparable<DurationUnit> {
+public class PeriodUnit implements Comparable<PeriodUnit> {
 
     /**
-     * Map of all instances of <code>DurationUnit</code>.
+     * Map of all instances of <code>PeriodUnit</code>.
      */
-    private static final ConcurrentMap<String, DurationUnit> INSTANCES =
-        new ConcurrentHashMap<String, DurationUnit>();
+    private static final ConcurrentMap<String, PeriodUnit> INSTANCES =
+        new ConcurrentHashMap<String, PeriodUnit>();
 
     /** The name of the rule, not null. */
     private final String name;
-    /** The alternate duration, expressing this field in terms of another. */
-    private final Durational alternateDuration;
+    /** The alternate period, expressing this field in terms of another. */
+    private final PeriodView alternatePeriod;
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a duration unit.
+     * Creates a period unit.
      *
      * @param name  the name of the unit, not null
-     * @return the created duration unit, never null
+     * @return the created period unit, never null
      * @throws IllegalArgumentException if there is already a unit with the specified name
      */
-    public static DurationUnit createUnit(String name) {
+    public static PeriodUnit createUnit(String name) {
         if (name == null) {
-            throw new NullPointerException("Duration unit name must not be null");
+            throw new NullPointerException("Period unit name must not be null");
         }
-        DurationUnit unit = new DurationUnit(name, null);
+        PeriodUnit unit = new PeriodUnit(name, null);
         unit = INSTANCES.putIfAbsent(name, unit);
         if (unit != null) {
-            throw new IllegalArgumentException("Duration unit '" + name + "' already exists");
+            throw new IllegalArgumentException("Period unit '" + name + "' already exists");
         }
         return unit;
     }
@@ -83,16 +83,16 @@ public class DurationUnit implements Comparable<DurationUnit> {
      * Gets a unit from a name.
      *
      * @param name  the name of the unit, not null
-     * @return the previously created duration unit, never null
+     * @return the previously created period unit, never null
      * @throws IllegalArgumentException if there is no unit with the specified name
      */
-    public static DurationUnit unitForName(String name) {
+    public static PeriodUnit unitForName(String name) {
         if (name == null) {
-            throw new NullPointerException("Duration unit name must not be null");
+            throw new NullPointerException("Period unit name must not be null");
         }
-        DurationUnit unit = INSTANCES.get(name);
+        PeriodUnit unit = INSTANCES.get(name);
         if (unit == null) {
-            throw new IllegalArgumentException("Duration unit '" + name + "' not found");
+            throw new IllegalArgumentException("Period unit '" + name + "' not found");
         }
         return unit;
     }
@@ -102,18 +102,18 @@ public class DurationUnit implements Comparable<DurationUnit> {
      * Constructor.
      *
      * @param name  the name of the rule, not null
-     * @param alternateDuration  alternate duration that this field can be expressed in, null if none
+     * @param alternatePeriod  alternate period that this field can be expressed in, null if none
      */
-    protected DurationUnit(String name, Durational alternateDuration) {
+    protected PeriodUnit(String name, PeriodView alternatePeriod) {
         super();
         // TODO: Check not null
         this.name = name;
-        this.alternateDuration = alternateDuration;
+        this.alternatePeriod = alternatePeriod;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the name of the time duration type.
+     * Gets the name of the time period type.
      *
      * @return the name of the time field type, never null
      */
@@ -122,25 +122,25 @@ public class DurationUnit implements Comparable<DurationUnit> {
     }
 
     /**
-     * Gets the alternate duration that this field can be expressed as.
+     * Gets the alternate period that this field can be expressed as.
      * For example, a day can be represented as 24 hours.
      *
-     * @return the alternate duration, null if none
+     * @return the alternate period, null if none
      */
-    public Durational getAlternateDuration() {
-        return alternateDuration;
+    public PeriodView getAlternatePeriod() {
+        return alternatePeriod;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this DurationFieldRule to another based on the average duration
+     * Compares this PeriodFieldRule to another based on the average period
      * of the field.
      *
      * @param other  the other type to compare to, not null
      * @return the comparator result, negative if less, postive if greater, zero if equal
      * @throws NullPointerException if other is null
      */
-    public int compareTo(DurationUnit other) {
+    public int compareTo(PeriodUnit other) {
         return 0;
     }
 

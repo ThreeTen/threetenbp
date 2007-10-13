@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.calendar.field.Era;
-import javax.time.duration.Durational;
+import javax.time.period.PeriodView;
 
 /**
  * A time point of a year.
@@ -190,7 +190,7 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @param period  the period to add, not null
      * @return a new updated CalendarYear
      */
-    public CalendarYear plus(Durational period) {
+    public CalendarYear plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -203,7 +203,7 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @param periods  the periods to add, not null
      * @return a new updated CalendarYear
      */
-    public CalendarYear plus(Durational... periods) {
+    public CalendarYear plus(PeriodView... periods) {
         // TODO
         return null;
     }

@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
  * Internal state class providing calendrical information and calculations.
@@ -45,24 +45,24 @@ import javax.time.duration.DurationUnit;
 public abstract class CalendricalState {
 
     /**
-     * Gets the duration unit that this state represents.
+     * Gets the period unit that this state represents.
      * <p>
      * For example, if this represents a time in minutes of the day, then the
      * range is 'minute'.
      *
-     * @return the duration unit, never null
+     * @return the period unit, never null
      */
-    public abstract DurationUnit getDurationUnit();
+    public abstract PeriodUnit getPeriodUnit();
 
     /**
-     * Gets the duration range that this state represents.
+     * Gets the period range that this state represents.
      * <p>
      * For example, if this represents a time in minutes of the day, then the
      * range is 'day'.
      *
-     * @return the duration range, never null
+     * @return the period range, never null
      */
-    public abstract DurationUnit getDurationRange();
+    public abstract PeriodUnit getPeriodRange();
 
     /**
      * Checks is the specified field is supported.

@@ -37,7 +37,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.duration.Durational;
+import javax.time.period.PeriodView;
 
 /**
  * A date in the Coptic calendar system.
@@ -323,7 +323,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @param period  the period to add, not null
      * @return a new updated CopticDate
      */
-    public CopticDate plus(Durational period) {
+    public CopticDate plus(PeriodView period) {
         // TODO
         return null;
     }
@@ -336,7 +336,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @param periods  the periods to add, not null
      * @return a new updated CopticDate
      */
-    public CopticDate plus(Durational... periods) {
+    public CopticDate plus(PeriodView... periods) {
         // TODO
         return null;
     }

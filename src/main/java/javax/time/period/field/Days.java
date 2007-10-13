@@ -29,39 +29,39 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
- * A duration representing a number of years.
+ * A period representing a number of days.
  * <p>
- * Years is an immutable duration that can only store years.
- * It is a type-safe way of representing a number of years in an application.
+ * Days is an immutable period that can only store days.
+ * It is a type-safe way of representing a number of days in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of years may be queried using getYears().
+ * The number of days may be queried using getDays().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Years is thread-safe and immutable.
+ * Days is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class Years extends DurationField implements Comparable<Years>, Serializable {
+public final class Days extends PeriodField implements Comparable<Days>, Serializable {
 
     /**
-     * The unit that defines how the years field operates.
+     * The unit that defines how the days field operates.
      */
-    public static final DurationUnit UNIT = new Unit();
+    public static final PeriodUnit UNIT = new Unit();
     /**
-     * A constant for zero years.
+     * A constant for zero days.
      */
-    public static final Years ZERO = new Years(0);
+    public static final Days ZERO = new Days(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of years in the period.
+     * The number of days in the period.
      */
-    private final int years;
+    private final int days;
 
     /**
-     * Obtains an instance of <code>Years</code>.
+     * Obtains an instance of <code>Days</code>.
      *
-     * @param years  the number of years the instance will represent
-     * @return the created Years
+     * @param days  the number of days the instance will represent
+     * @return the created Days
      */
-    public static Years years(int years) {
-        if (years == 0) {
+    public static Days days(int days) {
+        if (days == 0) {
             return ZERO;
         }
-        return new Years(years);
+        return new Days(days);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of years.
+     * Constructs an instance using a specific number of days.
      *
-     * @param years  the years to use
+     * @param days  the days to use
      */
-    private Years(int years) {
+    private Days(int days) {
         super();
-        this.years = years;
+        this.days = days;
     }
 
     /**
@@ -103,125 +103,125 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Years.years(years);
+        return Days.days(days);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>Years</code> only supports the Years unit.
+     * <code>Days</code> only supports the Days unit.
      *
      * @param unit  the unit to check for, null returns false
-     * @return true only if the Years unit, otherwise false
+     * @return true only if the Days unit, otherwise false
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit == UNIT);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * This instance returns a map of size one where the key is the Years unit.
+     * Gets the map of period unit to amount which defines the period.
+     * This instance returns a map of size one where the key is the Days unit.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.singletonMap(UNIT, years);
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.singletonMap(UNIT, days);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of years held in this duration.
+     * Gets the number of days held in this period.
      *
-     * @return the number of years
+     * @return the number of days
      */
     @Override
     public int getAmount() {
-        return years;
+        return days;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of years.
+     * Returns a new instance of the subclass with a different number of days.
      *
-     * @param amount  the number of years to set in the new instance, may be negative
-     * @return a new duration element, never null
+     * @param amount  the number of days to set in the new instance, may be negative
+     * @return a new period element, never null
      */
     @Override
-    public Years withAmount(int amount) {
-        return Years.years(amount);
+    public Days withAmount(int amount) {
+        return Days.days(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the years unit, never null
+     * @return the days unit, never null
      */
     @Override
-    public DurationUnit getUnit() {
+    public PeriodUnit getUnit() {
         return UNIT;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of years added.
+     * Returns a new instance with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to add, may be negative
-     * @return the new period plus the specified number of years
+     * @param days  the amount of days to add, may be negative
+     * @return the new period plus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years plus(int years) {
-        return (Years) super.plus(years);
+    public Days plus(int days) {
+        return (Days) super.plus(days);
     }
 
     /**
-     * Returns a new instance with the specified number of years added.
+     * Returns a new instance with the specified number of days added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to add, may be negative, not null
-     * @return the new period plus the specified number of years
-     * @throws NullPointerException if the years to add is null
+     * @param days  the amount of days to add, may be negative, not null
+     * @return the new period plus the specified number of days
+     * @throws NullPointerException if the days to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Years plus(Years years) {
-        return plus(years.getAmount());
+    public Days plus(Days days) {
+        return plus(days.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of years taken away.
+     * Returns a new instance with the specified number of days taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to take away, may be negative
-     * @return the new period minus the specified number of years
+     * @param days  the amount of days to take away, may be negative
+     * @return the new period minus the specified number of days
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years minus(int years) {
-        return (Years) super.minus(years);
+    public Days minus(int days) {
+        return (Days) super.minus(days);
     }
 
     /**
-     * Returns a new instance with the specified number of years taken away.
+     * Returns a new instance with the specified number of days taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the amount of years to take away, may be negative, not null
-     * @return the new period minus the specified number of years
-     * @throws NullPointerException if the years to add is null
+     * @param days  the amount of days to take away, may be negative, not null
+     * @return the new period minus the specified number of days
+     * @throws NullPointerException if the days to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Years minus(Years years) {
-        return minus(years.getAmount());
+    public Days minus(Days days) {
+        return minus(days.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the years multiplied by the specified scalar.
+     * Returns a new instance with the days multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -230,12 +230,12 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years multipliedBy(int scalar) {
-        return (Years) super.multipliedBy(scalar);
+    public Days multipliedBy(int scalar) {
+        return (Days) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the years divided by the specified divisor.
+     * Returns a new instance with the days divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -245,81 +245,81 @@ public final class Years extends DurationField implements Comparable<Years>, Ser
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Years dividedBy(int divisor) {
-        return (Years) super.dividedBy(divisor);
+    public Days dividedBy(int divisor) {
+        return (Days) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the years value negated.
+     * Returns a new instance with the days value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Years negated() {
-        return (Years) super.negated();
+    public Days negated() {
+        return (Days) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of years in this instance to another instance.
+     * Compares the number of days in this instance to another instance.
      *
-     * @param otherYears  the other number of years, not null
+     * @param otherDays  the other number of days, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherYears is null
+     * @throws NullPointerException if otherDays is null
      */
-    public int compareTo(Years otherYears) {
-        int thisValue = this.years;
-        int otherValue = otherYears.years;
+    public int compareTo(Days otherDays) {
+        int thisValue = this.days;
+        int otherValue = otherDays.days;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of years in this instance greater than that in
+     * Is the number of days in this instance greater than that in
      * another instance.
      *
-     * @param otherYears  the other number of years, not null
-     * @return true if this number of years is greater
-     * @throws NullPointerException if otherYears is null
+     * @param otherDays  the other number of days, not null
+     * @return true if this number of days is greater
+     * @throws NullPointerException if otherDays is null
      */
-    public boolean isGreaterThan(Years otherYears) {
-        return compareTo(otherYears) > 0;
+    public boolean isGreaterThan(Days otherDays) {
+        return compareTo(otherDays) > 0;
     }
 
     /**
-     * Is the number of years in this instance less than that in
+     * Is the number of days in this instance less than that in
      * another instance.
      *
-     * @param otherYears  the other number of years, not null
-     * @return true if this number of years is less
-     * @throws NullPointerException if otherYears is null
+     * @param otherDays  the other number of days, not null
+     * @return true if this number of days is less
+     * @throws NullPointerException if otherDays is null
      */
-    public boolean isLessThan(Years otherYears) {
-        return compareTo(otherYears) < 0;
+    public boolean isLessThan(Days otherDays) {
+        return compareTo(otherDays) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of years.
-     * This will be in the format 'PnY' where n is the number of years.
+     * Returns a string representation of the number of days.
+     * This will be in the format 'PnD' where n is the number of days.
      *
-     * @return the number of years in ISO8601 string format
+     * @return the number of days in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P" + years + "Y";
+        return "P" + days + "D";
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit for years.
+     * Implementation of the unit for days.
      */
-    private static class Unit extends DurationUnit {
+    private static class Unit extends PeriodUnit {
 
         /** Constructor. */
         protected Unit() {
-            super("Years", Months.months(12));
+            super("Days", Hours.hours(24));
         }
     }
 

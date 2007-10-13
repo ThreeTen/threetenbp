@@ -29,39 +29,39 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
- * A duration representing a number of seconds.
+ * A period representing a number of weeks.
  * <p>
- * Seconds is an immutable duration that can only store seconds.
- * It is a type-safe way of representing a number of seconds in an application.
+ * Weeks is an immutable period that can only store weeks.
+ * It is a type-safe way of representing a number of weeks in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of seconds may be queried using getSeconds().
+ * The number of weeks may be queried using getWeeks().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Seconds is thread-safe and immutable.
+ * Weeks is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class Seconds extends DurationField implements Comparable<Seconds>, Serializable {
+public final class Weeks extends PeriodField implements Comparable<Weeks>, Serializable {
 
     /**
-     * The unit that defines how the seconds field operates.
+     * The unit that defines how the weeks field operates.
      */
-    public static final DurationUnit UNIT = new Unit();
+    public static final PeriodUnit UNIT = new Unit();
     /**
-     * A constant for zero seconds.
+     * A constant for zero weeks.
      */
-    public static final Seconds ZERO = new Seconds(0);
+    public static final Weeks ZERO = new Weeks(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class Seconds extends DurationField implements Comparable<Seconds>,
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of seconds in the period.
+     * The number of weeks in the period.
      */
-    private final int seconds;
+    private final int weeks;
 
     /**
-     * Obtains an instance of <code>Seconds</code>.
+     * Obtains an instance of <code>Weeks</code>.
      *
-     * @param seconds  the number of seconds the instance will represent
-     * @return the created Seconds
+     * @param weeks  the number of weeks the instance will represent
+     * @return the created Weeks
      */
-    public static Seconds seconds(int seconds) {
-        if (seconds == 0) {
+    public static Weeks weeks(int weeks) {
+        if (weeks == 0) {
             return ZERO;
         }
-        return new Seconds(seconds);
+        return new Weeks(weeks);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of seconds.
+     * Constructs an instance using a specific number of weeks.
      *
-     * @param seconds  the seconds to use
+     * @param weeks  the weeks to use
      */
-    private Seconds(int seconds) {
+    private Weeks(int weeks) {
         super();
-        this.seconds = seconds;
+        this.weeks = weeks;
     }
 
     /**
@@ -103,125 +103,125 @@ public final class Seconds extends DurationField implements Comparable<Seconds>,
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Seconds.seconds(seconds);
+        return Weeks.weeks(weeks);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>Seconds</code> only supports the Seconds unit.
+     * <code>Weeks</code> only supports the Weeks unit.
      *
      * @param unit  the unit to check for, null returns false
-     * @return true only if the Seconds unit, otherwise false
+     * @return true only if the Weeks unit, otherwise false
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit == UNIT);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * This instance returns a map of size one where the key is the Seconds unit.
+     * Gets the map of period unit to amount which defines the period.
+     * This instance returns a map of size one where the key is the Weeks unit.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.singletonMap(UNIT, seconds);
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.singletonMap(UNIT, weeks);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of seconds held in this duration.
+     * Gets the number of weeks held in this period.
      *
-     * @return the number of seconds
+     * @return the number of weeks
      */
     @Override
     public int getAmount() {
-        return seconds;
+        return weeks;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of seconds.
+     * Returns a new instance of the subclass with a different number of weeks.
      *
-     * @param amount  the number of seconds to set in the new instance, may be negative
-     * @return a new duration element, never null
+     * @param amount  the number of weeks to set in the new instance, may be negative
+     * @return a new period element, never null
      */
     @Override
-    public Seconds withAmount(int amount) {
-        return Seconds.seconds(amount);
+    public Weeks withAmount(int amount) {
+        return Weeks.weeks(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the seconds unit, never null
+     * @return the weeks unit, never null
      */
     @Override
-    public DurationUnit getUnit() {
+    public PeriodUnit getUnit() {
         return UNIT;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of seconds added.
+     * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the amount of seconds to add, may be negative
-     * @return the new period plus the specified number of seconds
+     * @param weeks  the amount of weeks to add, may be negative
+     * @return the new period plus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Seconds plus(int seconds) {
-        return (Seconds) super.plus(seconds);
+    public Weeks plus(int weeks) {
+        return (Weeks) super.plus(weeks);
     }
 
     /**
-     * Returns a new instance with the specified number of seconds added.
+     * Returns a new instance with the specified number of weeks added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the amount of seconds to add, may be negative, not null
-     * @return the new period plus the specified number of seconds
-     * @throws NullPointerException if the seconds to add is null
+     * @param weeks  the amount of weeks to add, may be negative, not null
+     * @return the new period plus the specified number of weeks
+     * @throws NullPointerException if the weeks to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Seconds plus(Seconds seconds) {
-        return plus(seconds.getAmount());
+    public Weeks plus(Weeks weeks) {
+        return plus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of seconds taken away.
+     * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the amount of seconds to take away, may be negative
-     * @return the new period minus the specified number of seconds
+     * @param weeks  the amount of weeks to take away, may be negative
+     * @return the new period minus the specified number of weeks
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Seconds minus(int seconds) {
-        return (Seconds) super.minus(seconds);
+    public Weeks minus(int weeks) {
+        return (Weeks) super.minus(weeks);
     }
 
     /**
-     * Returns a new instance with the specified number of seconds taken away.
+     * Returns a new instance with the specified number of weeks taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the amount of seconds to take away, may be negative, not null
-     * @return the new period minus the specified number of seconds
-     * @throws NullPointerException if the seconds to add is null
+     * @param weeks  the amount of weeks to take away, may be negative, not null
+     * @return the new period minus the specified number of weeks
+     * @throws NullPointerException if the weeks to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Seconds minus(Seconds seconds) {
-        return minus(seconds.getAmount());
+    public Weeks minus(Weeks weeks) {
+        return minus(weeks.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the seconds multiplied by the specified scalar.
+     * Returns a new instance with the weeks multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -230,12 +230,12 @@ public final class Seconds extends DurationField implements Comparable<Seconds>,
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Seconds multipliedBy(int scalar) {
-        return (Seconds) super.multipliedBy(scalar);
+    public Weeks multipliedBy(int scalar) {
+        return (Weeks) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the seconds divided by the specified divisor.
+     * Returns a new instance with the weeks divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -245,81 +245,81 @@ public final class Seconds extends DurationField implements Comparable<Seconds>,
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Seconds dividedBy(int divisor) {
-        return (Seconds) super.dividedBy(divisor);
+    public Weeks dividedBy(int divisor) {
+        return (Weeks) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the seconds value negated.
+     * Returns a new instance with the weeks value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Seconds negated() {
-        return (Seconds) super.negated();
+    public Weeks negated() {
+        return (Weeks) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of seconds in this instance to another instance.
+     * Compares the number of weeks in this instance to another instance.
      *
-     * @param otherSeconds  the other number of seconds, not null
+     * @param otherWeeks  the other number of weeks, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherSeconds is null
+     * @throws NullPointerException if otherWeeks is null
      */
-    public int compareTo(Seconds otherSeconds) {
-        int thisValue = this.seconds;
-        int otherValue = otherSeconds.seconds;
+    public int compareTo(Weeks otherWeeks) {
+        int thisValue = this.weeks;
+        int otherValue = otherWeeks.weeks;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of seconds in this instance greater than that in
+     * Is the number of weeks in this instance greater than that in
      * another instance.
      *
-     * @param otherSeconds  the other number of seconds, not null
-     * @return true if this number of seconds is greater
-     * @throws NullPointerException if otherSeconds is null
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is greater
+     * @throws NullPointerException if otherWeeks is null
      */
-    public boolean isGreaterThan(Seconds otherSeconds) {
-        return compareTo(otherSeconds) > 0;
+    public boolean isGreaterThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) > 0;
     }
 
     /**
-     * Is the number of seconds in this instance less than that in
+     * Is the number of weeks in this instance less than that in
      * another instance.
      *
-     * @param otherSeconds  the other number of seconds, not null
-     * @return true if this number of seconds is less
-     * @throws NullPointerException if otherSeconds is null
+     * @param otherWeeks  the other number of weeks, not null
+     * @return true if this number of weeks is less
+     * @throws NullPointerException if otherWeeks is null
      */
-    public boolean isLessThan(Seconds otherSeconds) {
-        return compareTo(otherSeconds) < 0;
+    public boolean isLessThan(Weeks otherWeeks) {
+        return compareTo(otherWeeks) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of seconds.
-     * This will be in the format 'PTnS' where n is the number of seconds.
+     * Returns a string representation of the number of weeks.
+     * This will be in the format 'PnW' where n is the number of weeks.
      *
-     * @return the number of seconds in ISO8601 string format
+     * @return the number of weeks in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "PT" + seconds + "S";
+        return "P" + weeks + "W";
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit for seconds.
+     * Implementation of the unit for weeks.
      */
-    private static class Unit extends DurationUnit {
+    private static class Unit extends PeriodUnit {
 
         /** Constructor. */
         protected Unit() {
-            super("Seconds", null);
+            super("Weeks", Days.days(7));
         }
     }
 

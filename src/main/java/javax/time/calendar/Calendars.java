@@ -42,8 +42,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.SecondOfMinute;
 
 /**
- * A set of utility methods for working with dates, times and durations in
- * the Java Time Framework.
+ * A set of utility methods for working with calendar based dates and times
+ * in the Java Time Framework.
  *
  * @author Stephen Colebourne
  */

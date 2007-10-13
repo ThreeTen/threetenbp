@@ -29,39 +29,39 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
- * A duration representing a number of months.
+ * A period representing a number of years.
  * <p>
- * Months is an immutable duration that can only store months.
- * It is a type-safe way of representing a number of months in an application.
+ * Years is an immutable period that can only store years.
+ * It is a type-safe way of representing a number of years in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of months may be queried using getMonths().
+ * The number of years may be queried using getYears().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Months is thread-safe and immutable.
+ * Years is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class Months extends DurationField implements Comparable<Months>, Serializable {
+public final class Years extends PeriodField implements Comparable<Years>, Serializable {
 
     /**
-     * The unit that defines how the months field operates.
+     * The unit that defines how the years field operates.
      */
-    public static final DurationUnit UNIT = new Unit();
+    public static final PeriodUnit UNIT = new Unit();
     /**
-     * A constant for zero months.
+     * A constant for zero years.
      */
-    public static final Months ZERO = new Months(0);
+    public static final Years ZERO = new Years(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class Months extends DurationField implements Comparable<Months>, S
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of months in the period.
+     * The number of years in the period.
      */
-    private final int months;
+    private final int years;
 
     /**
-     * Obtains an instance of <code>Months</code>.
+     * Obtains an instance of <code>Years</code>.
      *
-     * @param months  the number of months the instance will represent
-     * @return the created Months
+     * @param years  the number of years the instance will represent
+     * @return the created Years
      */
-    public static Months months(int months) {
-        if (months == 0) {
+    public static Years years(int years) {
+        if (years == 0) {
             return ZERO;
         }
-        return new Months(months);
+        return new Years(years);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of months.
+     * Constructs an instance using a specific number of years.
      *
-     * @param months  the months to use
+     * @param years  the years to use
      */
-    private Months(int months) {
+    private Years(int years) {
         super();
-        this.months = months;
+        this.years = years;
     }
 
     /**
@@ -103,125 +103,125 @@ public final class Months extends DurationField implements Comparable<Months>, S
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Months.months(months);
+        return Years.years(years);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>Months</code> only supports the Months unit.
+     * <code>Years</code> only supports the Years unit.
      *
      * @param unit  the unit to check for, null returns false
-     * @return true only if the Months unit, otherwise false
+     * @return true only if the Years unit, otherwise false
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit == UNIT);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * This instance returns a map of size one where the key is the Months unit.
+     * Gets the map of period unit to amount which defines the period.
+     * This instance returns a map of size one where the key is the Years unit.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.singletonMap(UNIT, months);
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.singletonMap(UNIT, years);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of months held in this duration.
+     * Gets the number of years held in this period.
      *
-     * @return the number of months
+     * @return the number of years
      */
     @Override
     public int getAmount() {
-        return months;
+        return years;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of months.
+     * Returns a new instance of the subclass with a different number of years.
      *
-     * @param amount  the number of months to set in the new instance, may be negative
-     * @return a new duration element, never null
+     * @param amount  the number of years to set in the new instance, may be negative
+     * @return a new period element, never null
      */
     @Override
-    public Months withAmount(int amount) {
-        return Months.months(amount);
+    public Years withAmount(int amount) {
+        return Years.years(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the months unit, never null
+     * @return the years unit, never null
      */
     @Override
-    public DurationUnit getUnit() {
+    public PeriodUnit getUnit() {
         return UNIT;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of months added.
+     * Returns a new instance with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to add, may be negative
-     * @return the new period plus the specified number of months
+     * @param years  the amount of years to add, may be negative
+     * @return the new period plus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months plus(int months) {
-        return (Months) super.plus(months);
+    public Years plus(int years) {
+        return (Years) super.plus(years);
     }
 
     /**
-     * Returns a new instance with the specified number of months added.
+     * Returns a new instance with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to add, may be negative, not null
-     * @return the new period plus the specified number of months
-     * @throws NullPointerException if the months to add is null
+     * @param years  the amount of years to add, may be negative, not null
+     * @return the new period plus the specified number of years
+     * @throws NullPointerException if the years to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Months plus(Months months) {
-        return plus(months.getAmount());
+    public Years plus(Years years) {
+        return plus(years.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of months taken away.
+     * Returns a new instance with the specified number of years taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to take away, may be negative
-     * @return the new period minus the specified number of months
+     * @param years  the amount of years to take away, may be negative
+     * @return the new period minus the specified number of years
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months minus(int months) {
-        return (Months) super.minus(months);
+    public Years minus(int years) {
+        return (Years) super.minus(years);
     }
 
     /**
-     * Returns a new instance with the specified number of months taken away.
+     * Returns a new instance with the specified number of years taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the amount of months to take away, may be negative, not null
-     * @return the new period minus the specified number of months
-     * @throws NullPointerException if the months to add is null
+     * @param years  the amount of years to take away, may be negative, not null
+     * @return the new period minus the specified number of years
+     * @throws NullPointerException if the years to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Months minus(Months months) {
-        return minus(months.getAmount());
+    public Years minus(Years years) {
+        return minus(years.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the months multiplied by the specified scalar.
+     * Returns a new instance with the years multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -230,12 +230,12 @@ public final class Months extends DurationField implements Comparable<Months>, S
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months multipliedBy(int scalar) {
-        return (Months) super.multipliedBy(scalar);
+    public Years multipliedBy(int scalar) {
+        return (Years) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the months divided by the specified divisor.
+     * Returns a new instance with the years divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -245,81 +245,81 @@ public final class Months extends DurationField implements Comparable<Months>, S
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Months dividedBy(int divisor) {
-        return (Months) super.dividedBy(divisor);
+    public Years dividedBy(int divisor) {
+        return (Years) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the months value negated.
+     * Returns a new instance with the years value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Months negated() {
-        return (Months) super.negated();
+    public Years negated() {
+        return (Years) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of months in this instance to another instance.
+     * Compares the number of years in this instance to another instance.
      *
-     * @param otherMonths  the other number of months, not null
+     * @param otherYears  the other number of years, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherMonths is null
+     * @throws NullPointerException if otherYears is null
      */
-    public int compareTo(Months otherMonths) {
-        int thisValue = this.months;
-        int otherValue = otherMonths.months;
+    public int compareTo(Years otherYears) {
+        int thisValue = this.years;
+        int otherValue = otherYears.years;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of months in this instance greater than that in
+     * Is the number of years in this instance greater than that in
      * another instance.
      *
-     * @param otherMonths  the other number of months, not null
-     * @return true if this number of months is greater
-     * @throws NullPointerException if otherMonths is null
+     * @param otherYears  the other number of years, not null
+     * @return true if this number of years is greater
+     * @throws NullPointerException if otherYears is null
      */
-    public boolean isGreaterThan(Months otherMonths) {
-        return compareTo(otherMonths) > 0;
+    public boolean isGreaterThan(Years otherYears) {
+        return compareTo(otherYears) > 0;
     }
 
     /**
-     * Is the number of months in this instance less than that in
+     * Is the number of years in this instance less than that in
      * another instance.
      *
-     * @param otherMonths  the other number of months, not null
-     * @return true if this number of months is less
-     * @throws NullPointerException if otherMonths is null
+     * @param otherYears  the other number of years, not null
+     * @return true if this number of years is less
+     * @throws NullPointerException if otherYears is null
      */
-    public boolean isLessThan(Months otherMonths) {
-        return compareTo(otherMonths) < 0;
+    public boolean isLessThan(Years otherYears) {
+        return compareTo(otherYears) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of months.
-     * This will be in the format 'PnM' where n is the number of months.
+     * Returns a string representation of the number of years.
+     * This will be in the format 'PnY' where n is the number of years.
      *
-     * @return the number of months in ISO8601 string format
+     * @return the number of years in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P" + months + "M";
+        return "P" + years + "Y";
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit for months.
+     * Implementation of the unit for years.
      */
-    private static class Unit extends DurationUnit {
+    private static class Unit extends PeriodUnit {
 
         /** Constructor. */
         protected Unit() {
-            super("Months", null);
+            super("Years", Months.months(12));
         }
     }
 

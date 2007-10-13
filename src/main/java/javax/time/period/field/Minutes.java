@@ -29,39 +29,39 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.duration.field;
+package javax.time.period.field;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.time.duration.DurationUnit;
+import javax.time.period.PeriodUnit;
 
 /**
- * A duration representing a number of days.
+ * A period representing a number of minutes.
  * <p>
- * Days is an immutable duration that can only store days.
- * It is a type-safe way of representing a number of days in an application.
+ * Minutes is an immutable period that can only store minutes.
+ * It is a type-safe way of representing a number of minutes in an application.
  * <p>
  * Static factory methods allow you to constuct instances.
- * The number of days may be queried using getDays().
+ * The number of minutes may be queried using getMinutes().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Days is thread-safe and immutable.
+ * Minutes is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class Days extends DurationField implements Comparable<Days>, Serializable {
+public final class Minutes extends PeriodField implements Comparable<Minutes>, Serializable {
 
     /**
-     * The unit that defines how the days field operates.
+     * The unit that defines how the minutes field operates.
      */
-    public static final DurationUnit UNIT = new Unit();
+    public static final PeriodUnit UNIT = new Unit();
     /**
-     * A constant for zero days.
+     * A constant for zero minutes.
      */
-    public static final Days ZERO = new Days(0);
+    public static final Minutes ZERO = new Minutes(0);
 
     /**
      * A serialization identifier for this instance.
@@ -69,32 +69,32 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
     private static final long serialVersionUID = 1L;
 
     /**
-     * The number of days in the period.
+     * The number of minutes in the period.
      */
-    private final int days;
+    private final int minutes;
 
     /**
-     * Obtains an instance of <code>Days</code>.
+     * Obtains an instance of <code>Minutes</code>.
      *
-     * @param days  the number of days the instance will represent
-     * @return the created Days
+     * @param minutes  the number of minutes the instance will represent
+     * @return the created Minutes
      */
-    public static Days days(int days) {
-        if (days == 0) {
+    public static Minutes minutes(int minutes) {
+        if (minutes == 0) {
             return ZERO;
         }
-        return new Days(days);
+        return new Minutes(minutes);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance using a specific number of days.
+     * Constructs an instance using a specific number of minutes.
      *
-     * @param days  the days to use
+     * @param minutes  the minutes to use
      */
-    private Days(int days) {
+    private Minutes(int minutes) {
         super();
-        this.days = days;
+        this.minutes = minutes;
     }
 
     /**
@@ -103,125 +103,125 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Days.days(days);
+        return Minutes.minutes(minutes);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks whether a given unit is supported -
-     * <code>Days</code> only supports the Days unit.
+     * <code>Minutes</code> only supports the Minutes unit.
      *
      * @param unit  the unit to check for, null returns false
-     * @return true only if the Days unit, otherwise false
+     * @return true only if the Minutes unit, otherwise false
      */
-    public boolean isSupported(DurationUnit unit)  {
+    public boolean isSupported(PeriodUnit unit)  {
         return (unit == UNIT);
     }
 
     /**
-     * Gets the map of duration unit to amount which defines the duration.
-     * This instance returns a map of size one where the key is the Days unit.
+     * Gets the map of period unit to amount which defines the period.
+     * This instance returns a map of size one where the key is the Minutes unit.
      *
-     * @return the map of duration amounts, never null, never contains null
+     * @return the map of period amounts, never null, never contains null
      */
-    public Map<DurationUnit, Integer> getDurationalMap() {
-        return Collections.singletonMap(UNIT, days);
+    public Map<PeriodUnit, Integer> getPeriodViewMap() {
+        return Collections.singletonMap(UNIT, minutes);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the number of days held in this duration.
+     * Gets the number of minutes held in this period.
      *
-     * @return the number of days
+     * @return the number of minutes
      */
     @Override
     public int getAmount() {
-        return days;
+        return minutes;
     }
 
     /**
-     * Returns a new instance of the subclass with a different number of days.
+     * Returns a new instance of the subclass with a different number of minutes.
      *
-     * @param amount  the number of days to set in the new instance, may be negative
-     * @return a new duration element, never null
+     * @param amount  the number of minutes to set in the new instance, may be negative
+     * @return a new period element, never null
      */
     @Override
-    public Days withAmount(int amount) {
-        return Days.days(amount);
+    public Minutes withAmount(int amount) {
+        return Minutes.minutes(amount);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unit defining the amount of time.
      *
-     * @return the days unit, never null
+     * @return the minutes unit, never null
      */
     @Override
-    public DurationUnit getUnit() {
+    public PeriodUnit getUnit() {
         return UNIT;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of days added.
+     * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the amount of days to add, may be negative
-     * @return the new period plus the specified number of days
+     * @param minutes  the amount of minutes to add, may be negative
+     * @return the new period plus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Days plus(int days) {
-        return (Days) super.plus(days);
+    public Minutes plus(int minutes) {
+        return (Minutes) super.plus(minutes);
     }
 
     /**
-     * Returns a new instance with the specified number of days added.
+     * Returns a new instance with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the amount of days to add, may be negative, not null
-     * @return the new period plus the specified number of days
-     * @throws NullPointerException if the days to add is null
+     * @param minutes  the amount of minutes to add, may be negative, not null
+     * @return the new period plus the specified number of minutes
+     * @throws NullPointerException if the minutes to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Days plus(Days days) {
-        return plus(days.getAmount());
+    public Minutes plus(Minutes minutes) {
+        return plus(minutes.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the specified number of days taken away.
+     * Returns a new instance with the specified number of minutes taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the amount of days to take away, may be negative
-     * @return the new period minus the specified number of days
+     * @param minutes  the amount of minutes to take away, may be negative
+     * @return the new period minus the specified number of minutes
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Days minus(int days) {
-        return (Days) super.minus(days);
+    public Minutes minus(int minutes) {
+        return (Minutes) super.minus(minutes);
     }
 
     /**
-     * Returns a new instance with the specified number of days taken away.
+     * Returns a new instance with the specified number of minutes taken away.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the amount of days to take away, may be negative, not null
-     * @return the new period minus the specified number of days
-     * @throws NullPointerException if the days to add is null
+     * @param minutes  the amount of minutes to take away, may be negative, not null
+     * @return the new period minus the specified number of minutes
+     * @throws NullPointerException if the minutes to add is null
      * @throws ArithmeticException if the result overflows an int
      */
-    public Days minus(Days days) {
-        return minus(days.getAmount());
+    public Minutes minus(Minutes minutes) {
+        return minus(minutes.getAmount());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the days multiplied by the specified scalar.
+     * Returns a new instance with the minutes multiplied by the specified scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -230,12 +230,12 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Days multipliedBy(int scalar) {
-        return (Days) super.multipliedBy(scalar);
+    public Minutes multipliedBy(int scalar) {
+        return (Minutes) super.multipliedBy(scalar);
     }
 
     /**
-     * Returns a new instance with the days divided by the specified divisor.
+     * Returns a new instance with the minutes divided by the specified divisor.
      * The calculation uses integer division, thus 3 divided by 2 is 1.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -245,81 +245,81 @@ public final class Days extends DurationField implements Comparable<Days>, Seria
      * @throws ArithmeticException if the divisor is zero
      */
     @Override
-    public Days dividedBy(int divisor) {
-        return (Days) super.dividedBy(divisor);
+    public Minutes dividedBy(int divisor) {
+        return (Minutes) super.dividedBy(divisor);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new instance with the days value negated.
+     * Returns a new instance with the minutes value negated.
      *
      * @return the new period with a negated value
      * @throws ArithmeticException if the result overflows an int
      */
     @Override
-    public Days negated() {
-        return (Days) super.negated();
+    public Minutes negated() {
+        return (Minutes) super.negated();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares the number of days in this instance to another instance.
+     * Compares the number of minutes in this instance to another instance.
      *
-     * @param otherDays  the other number of days, not null
+     * @param otherMinutes  the other number of minutes, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherDays is null
+     * @throws NullPointerException if otherMinutes is null
      */
-    public int compareTo(Days otherDays) {
-        int thisValue = this.days;
-        int otherValue = otherDays.days;
+    public int compareTo(Minutes otherMinutes) {
+        int thisValue = this.minutes;
+        int otherValue = otherMinutes.minutes;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is the number of days in this instance greater than that in
+     * Is the number of minutes in this instance greater than that in
      * another instance.
      *
-     * @param otherDays  the other number of days, not null
-     * @return true if this number of days is greater
-     * @throws NullPointerException if otherDays is null
+     * @param otherMinutes  the other number of minutes, not null
+     * @return true if this number of minutes is greater
+     * @throws NullPointerException if otherMinutes is null
      */
-    public boolean isGreaterThan(Days otherDays) {
-        return compareTo(otherDays) > 0;
+    public boolean isGreaterThan(Minutes otherMinutes) {
+        return compareTo(otherMinutes) > 0;
     }
 
     /**
-     * Is the number of days in this instance less than that in
+     * Is the number of minutes in this instance less than that in
      * another instance.
      *
-     * @param otherDays  the other number of days, not null
-     * @return true if this number of days is less
-     * @throws NullPointerException if otherDays is null
+     * @param otherMinutes  the other number of minutes, not null
+     * @return true if this number of minutes is less
+     * @throws NullPointerException if otherMinutes is null
      */
-    public boolean isLessThan(Days otherDays) {
-        return compareTo(otherDays) < 0;
+    public boolean isLessThan(Minutes otherMinutes) {
+        return compareTo(otherMinutes) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the number of days.
-     * This will be in the format 'PnD' where n is the number of days.
+     * Returns a string representation of the number of minutes.
+     * This will be in the format 'PTnM' where n is the number of minutes.
      *
-     * @return the number of days in ISO8601 string format
+     * @return the number of minutes in ISO8601 string format
      */
     @Override
     public String toString() {
-        return "P" + days + "D";
+        return "PT" + minutes + "M";
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the unit for days.
+     * Implementation of the unit for minutes.
      */
-    private static class Unit extends DurationUnit {
+    private static class Unit extends PeriodUnit {
 
         /** Constructor. */
         protected Unit() {
-            super("Days", Hours.hours(24));
+            super("Minutes", Seconds.seconds(60));
         }
     }
 
