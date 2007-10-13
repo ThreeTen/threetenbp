@@ -206,7 +206,7 @@ public abstract class PeriodField implements PeriodView {
         }
         if (other instanceof PeriodView) {
             PeriodView otherPeriod = (PeriodView) other;
-            return getPeriodViewMap().equals(otherPeriod);
+            return getPeriodViewMap().equals(otherPeriod.getPeriodViewMap());
         }
         return false;
     }
