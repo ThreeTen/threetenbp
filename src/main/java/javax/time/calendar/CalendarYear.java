@@ -440,7 +440,7 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @return the decade of era, from 0 to 9.
      */
     public int getDecadeOfCentury() {
-        return (Math.abs(getYearOfEra()) % 100) / 10;
+        return (getYearOfEra() % 100) / 10;
     }
 
 }
