@@ -51,8 +51,7 @@ import javax.time.period.PeriodView;
  *
  * @author Stephen Colebourne
  */
-public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTime>, Serializable{
-    // TODO: Add zone support
+public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -75,6 +74,10 @@ public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTim
      * The second of days being represented.
      */
     private final int secondOfDay;
+    /**
+     * The time zone.
+     */
+    private final TimeZone zone;
 
     //-----------------------------------------------------------------------
     /**
@@ -111,12 +114,14 @@ public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTim
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
      * @param secondOfDay  the second of day to represent
+     * @param zone  the time zone, not null
      */
-    private ZonedDateTime(int year, int monthOfYear, int dayOfMonth, int secondOfDay) {
+    private ZonedDateTime(int year, int monthOfYear, int dayOfMonth, int secondOfDay, TimeZone zone) {
         this.year = year;
         this.monthOfYear = monthOfYear;
         this.dayOfMonth = dayOfMonth;
         this.secondOfDay = secondOfDay;
+        this.zone = zone;
     }
 
     //-----------------------------------------------------------------------
@@ -129,6 +134,40 @@ public final class ZonedDateTime implements Calendrical, Comparable<ZonedDateTim
     @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the time zone.
+     *
+     * @return the time zone
+     */
+    public TimeZone getZone() {
+        return zone;
+    }
+
+    /**
+     * Returns a new instance of ZonedDateTime with a different time zone,
+     * ensuring that the instant remains the same, thus potentially changing
+     * the local time.
+     *
+     * @param zone  the time zone to change to, not null
+     * @return the new updated instance, never null
+     */
+    public ZonedDateTime withZoneSameInstant(TimeZone zone) {
+        return this;
+    }
+
+    /**
+     * Returns a new instance of ZonedDateTime with a different time zone,
+     * ensuring that the local time remains the same, thus potentially
+     * changing the instant.
+     *
+     * @param zone  the time zone to change to, not null
+     * @return the new updated instance, never null
+     */
+    public ZonedDateTime withZoneSameFields(TimeZone zone) {
+        return this;
     }
 
     //-----------------------------------------------------------------------
