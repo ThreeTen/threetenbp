@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.period.PeriodView;
+import javax.time.period.Periods;
 
 /**
  * An immutable time point, with day precision, operating without a time zone.
@@ -121,6 +122,33 @@ public final class CalendarDate implements Calendrical, Comparable<CalendarDate>
     @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
+    }
+
+    /**
+     * Checks if the specified calendar field is supported.
+     * <p>
+     * This method queries the date for a calendar field such as day of week
+     * or month of year.
+     *
+     * @param field  the field to query, not null
+     * @return true if the field is supported
+     */
+    public boolean isSupported(TimeFieldRule field) {
+        return (field.getPeriodUnit().compareTo(Periods.DAYS) >= 0);
+    }
+
+    /**
+     * Gets the value of the specified calendar field.
+     * <p>
+     * This method queries the date for a calendar field such as day of week
+     * or month of year.
+     *
+     * @param field  the field to query, not null
+     * @return the value for the field
+     * @throws UnsupportedCalendarFieldException if the field is not supported
+     */
+    public int get(TimeFieldRule field) {
+        return 0; //field.getFromYMD(year, monthOfYear, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
