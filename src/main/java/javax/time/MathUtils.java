@@ -38,12 +38,13 @@ package javax.time;
  */
 public class MathUtils {
 
+    //-----------------------------------------------------------------------
     /**
      * Negates the input value, throwing an exception if an overflow occurs.
      *
      * @param value  the value to negate
      * @return the negated value
-     * @throws ArithmeticException if the value cannot be negated
+     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
      */
     public static int safeNegate(int value) {
         if (value == Integer.MIN_VALUE) {
@@ -52,6 +53,21 @@ public class MathUtils {
         return -value;
     }
 
+    /**
+     * Negates the input value, throwing an exception if an overflow occurs.
+     *
+     * @param value  the value to negate
+     * @return the negated value
+     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
+     */
+    public static long safeNegate(long value) {
+        if (value == Long.MIN_VALUE) {
+            throw new ArithmeticException("Long.MIN_VALUE cannot be negated");
+        }
+        return -value;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Safely adds two int values.
      *
@@ -75,17 +91,18 @@ public class MathUtils {
      * @param a  the first value
      * @param b  the second value
      * @return the result
-     * @throws ArithmeticException if the result overflows an int
+     * @throws ArithmeticException if the result overflows a long
      */
     public static long safeAdd(long a, long b) {
         long sum = a + b;
         // check for a change of sign in the result when the inputs have the same sign
         if ((a ^ sum) < 0 && (a ^ b) >= 0) {
-            throw new ArithmeticException("Addition overflows an long: " + a + " + " + b);
+            throw new ArithmeticException("Addition overflows a long: " + a + " + " + b);
         }
         return sum;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Safely subtracts one int from another.
      *
@@ -103,6 +120,7 @@ public class MathUtils {
         return sum;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Safely multiply one int by another.
      *
@@ -120,6 +138,56 @@ public class MathUtils {
     }
 
     /**
+     * Safely multiply a long by an int.
+     *
+     * @param val1  the first value
+     * @param scalar  the second value
+     * @return the new total
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeMultiply(long val1, int scalar) {
+        switch (scalar) {
+            case -1:
+                return -val1;
+            case 0:
+                return 0L;
+            case 1:
+                return val1;
+        }
+        long total = val1 * scalar;
+        if (total / scalar != val1) {
+            throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + scalar);
+        }
+        return total;
+    }
+
+    /**
+     * Multiply two values throwing an exception if overflow occurs.
+     *
+     * @param val1  the first value
+     * @param val2  the second value
+     * @return the new total
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeMultiply(long val1, long val2) {
+        if (val2 == 1) {
+            return val1;
+        }
+        if (val1 == 1) {
+            return val2;
+        }
+        if (val1 == 0 || val2 == 0) {
+            return 0;
+        }
+        long total = val1 * val2;
+        if (total / val2 != val1) {
+            throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+        }
+        return total;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Safely convert a long to an int.
      *
      * @param value  the value to convert
@@ -132,6 +200,7 @@ public class MathUtils {
         return (int) value;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Safely compare one int with another.
      *
