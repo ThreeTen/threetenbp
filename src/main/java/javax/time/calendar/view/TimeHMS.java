@@ -143,10 +143,10 @@ public final class TimeHMS
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated TimeHMS
      */
-    public TimeHMS with(Calendrical... moments) {
+    public TimeHMS with(Calendrical... calendricals) {
         return null;
     }
 

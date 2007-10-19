@@ -98,15 +98,15 @@ public final class CalendarPoint implements Calendrical, Comparable<CalendarPoin
     }
 
     /**
-     * Obtains an instance of <code>CalendarPoint</code> from a set of moments.
+     * Obtains an instance of <code>CalendarPoint</code> from a set of calendricals.
      * <p>
-     * This can be used to pass in any combination of moments that fully specify
+     * This can be used to pass in any combination of calendricals that fully specify
      * a calendar day. For example, Year + MonthOfYear + DayOfMonth + TimeOfDay.
      *
-     * @param moments  a set of moments that fully represent a calendar day
+     * @param calendricals  a set of calendricals that fully represent a calendar day
      * @return a CalendarPoint object
      */
-    public static CalendarPoint calendarPoint(Calendrical... moments) {
+    public static CalendarPoint calendarPoint(Calendrical... calendricals) {
         return null;
     }
 
@@ -240,10 +240,10 @@ public final class CalendarPoint implements Calendrical, Comparable<CalendarPoin
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated CalendarPoint
      */
-    public CalendarPoint with(Calendrical... moments) {
+    public CalendarPoint with(Calendrical... calendricals) {
         return null;
     }
 

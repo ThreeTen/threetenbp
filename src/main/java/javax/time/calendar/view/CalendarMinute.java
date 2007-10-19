@@ -92,15 +92,15 @@ public final class CalendarMinute implements Calendrical, Comparable<CalendarMin
     }
 
     /**
-     * Obtains an instance of <code>CalendarMinute</code> from a set of moments.
+     * Obtains an instance of <code>CalendarMinute</code> from a set of calendricals.
      * <p>
-     * This can be used to pass in any combination of moments that fully specify
+     * This can be used to pass in any combination of calendricals that fully specify
      * a calendar day. For example, CalendarDate + HourOfDay + MinuteOfHour.
      *
-     * @param moments  a set of moments that fully represent a calendar minute
+     * @param calendricals  a set of calendricals that fully represent a calendar minute
      * @return a CalendarMinute object
      */
-    public static CalendarMinute calendarMinute(Calendrical... moments) {
+    public static CalendarMinute calendarMinute(Calendrical... calendricals) {
         return null;
     }
 
@@ -214,10 +214,10 @@ public final class CalendarMinute implements Calendrical, Comparable<CalendarMin
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated CalendarMinute
      */
-    public CalendarMinute with(Calendrical... moments) {
+    public CalendarMinute with(Calendrical... calendricals) {
         return null;
     }
 

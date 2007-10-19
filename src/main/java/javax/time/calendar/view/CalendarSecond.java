@@ -92,15 +92,15 @@ public final class CalendarSecond implements Calendrical, Comparable<CalendarSec
     }
 
     /**
-     * Obtains an instance of <code>CalendarSecond</code> from a set of moments.
+     * Obtains an instance of <code>CalendarSecond</code> from a set of calendricals.
      * <p>
-     * This can be used to pass in any combination of moments that fully specify
+     * This can be used to pass in any combination of calendricals that fully specify
      * a calendar day. For example, Year + MonthOfYear + DayOfMonth + TimeOfDay.
      *
-     * @param moments  a set of moments that fully represent a calendar second
+     * @param calendricals  a set of calendricals that fully represent a calendar second
      * @return a CalendarSecond object
      */
-    public static CalendarSecond calendarSecond(Calendrical... moments) {
+    public static CalendarSecond calendarSecond(Calendrical... calendricals) {
         return null;
     }
 
@@ -223,10 +223,10 @@ public final class CalendarSecond implements Calendrical, Comparable<CalendarSec
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated CalendarSecond
      */
-    public CalendarSecond with(Calendrical... moments) {
+    public CalendarSecond with(Calendrical... calendricals) {
         return null;
     }
 

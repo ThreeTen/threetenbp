@@ -166,10 +166,10 @@ public final class TimeHMSN
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated TimeHMSN
      */
-    public TimeHMSN with(Calendrical... moments) {
+    public TimeHMSN with(Calendrical... calendricals) {
         return null;
     }
 
