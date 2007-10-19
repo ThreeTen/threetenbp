@@ -54,6 +54,7 @@ public class AllTest {
         TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
+            TestDuration.class,
             TestInstant.class,
             // period fields
             TestDays.class,

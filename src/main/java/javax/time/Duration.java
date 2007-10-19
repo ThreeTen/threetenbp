@@ -46,7 +46,7 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Duration implements Comparable<Duration>, Serializable {
+public class Duration implements Comparable<Duration>, Serializable {
     // TODO: Minus methods (as per plus methods)
     // TODO: Duration class integration
     // TODO: Leap seconds (document or implement)
@@ -55,6 +55,10 @@ public final class Duration implements Comparable<Duration>, Serializable {
     // TODO: Optimise to 2 private subclasses (second/nano & millis)
     // TODO: Consider BigDecimal
 
+    /**
+     * Constant for nanos per second.
+     */
+    private static final int NANOS_PER_SECOND = 1000000000;
     /**
      * Serialization version id.
      */
@@ -192,9 +196,22 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return a new updated Duration
      */
     public Duration plus(Duration duration) {
-        // TODO
-        return null;
-    }
+        long secsToAdd = duration.durationSeconds;
+        int nanosToAdd = duration.nanoOfSecond;
+        if (secsToAdd == 0 && nanosToAdd == 0) {
+            return this;
+        }
+        long secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
+        if (nanosToAdd == 0) {
+            return new Duration(secs, nanoOfSecond);
+        }
+        int nos = nanoOfSecond + nanosToAdd;
+        if (nos > NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;
+            MathUtils.safeAdd(secs, 1);
+        }
+        return new Duration(secs, nos);
+     }
 
     //-----------------------------------------------------------------------
     /**
@@ -209,7 +226,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (secondsToAdd == 0) {
             return this;
         }
-        return Duration.instant(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nanoOfSecond);
+        return new Duration(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -231,13 +248,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
         // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
         nos += nanoOfSecond;
         if (nos < 0) {
-            nos += 1000000000;  // subtract: 1,000,000 to 999,999,999
+            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
             secondsToAdd--;
-        } else if (nos >= 1000000000) {
-            nos -= 1000000000;  // add: 1 to 998,999,999
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
             secondsToAdd++;
         }
-        return Duration.instant(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nos);
+        return new Duration(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nos);
     }
 
     //-----------------------------------------------------------------------
@@ -253,19 +270,19 @@ public final class Duration implements Comparable<Duration>, Serializable {
         if (nanosToAdd == 0) {
             return this;
         }
-        long secondsToAdd = nanosToAdd / 1000000000;
+        long secondsToAdd = nanosToAdd / NANOS_PER_SECOND;
         // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToAdd % 1000000000);
+        int nos = (int) (nanosToAdd % NANOS_PER_SECOND);
         // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
         nos += nanoOfSecond;
         if (nos < 0) {
-            nos += 1000000000;  // subtract: 1 to 999,999,999
+            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
             secondsToAdd--;
-        } else if (nos >= 1000000000) {
-            nos -= 1000000000;  // add: 1 to 999,999,999
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
             secondsToAdd++;
         }
-        return Duration.instant(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nos);
+        return new Duration(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nos);
     }
 
     //-----------------------------------------------------------------------
@@ -348,7 +365,117 @@ public final class Duration implements Comparable<Duration>, Serializable {
      */
     @Override
     public String toString() {
-        return "P" + durationSeconds + "S";
+        StringBuilder buf = new StringBuilder(24);
+        buf.append('P');
+        buf.append(durationSeconds);
+        if (nanoOfSecond > 0) {
+            int pos = buf.length();
+            buf.append(nanoOfSecond + NANOS_PER_SECOND);
+            while (buf.charAt(buf.length() - 1) == '0') {
+                buf.setLength(buf.length() - 1);
+            }
+            buf.setCharAt(pos, '.');
+        }
+        buf.append('S');
+        return buf.toString();
     }
 
+//    //-----------------------------------------------------------------------
+//    private static final class Millis extends Duration {
+//        private final long millis;
+//        public Millis(long millis) {
+//            super(0, 0);
+//            this.millis = millis;
+//        }
+//        @Override
+//        public long getEpochSeconds() {
+//            return millis / 1000;
+//        }
+//        @Override
+//        public int getNanoOfSecond() {
+//            return ((int) millis % 1000) * 1000000;
+//        }
+//        @Override
+//        public Duration plus(Duration duration) {
+//            if (duration instanceof Millis) {
+//            } else {
+//                return super.plus(duration);
+//            }
+//        }
+//        @Override
+//        public Duration plusSeconds(long secondsToAdd) {
+//            if (secondsToAdd == 0) {
+//                return this;
+//            }
+//            return new Millis(MathUtils.safeAdd(millis, millisToAdd));
+//        }
+//        @Override
+//        public Duration plusMillis(long millisToAdd) {
+//            if (millisToAdd == 0) {
+//                return this;
+//            }
+//            long sum = millis + millisToAdd;
+//            if ((millis ^ sum) < 0 && (millis ^ millisToAdd) >= 0) {
+//                return new Duration(getEpochSeconds(), getNanoOfSecond()).plusMillis(millisToAdd);
+//            } else {
+//                return new Millis(sum);
+//            }
+//        }
+//        @Override
+//        public Duration plusNanos(long nanosToAdd) {
+//            if (nanosToAdd == 0) {
+//                return this;
+//            }
+//            long nanos = MathUtils.safeMultiply(millis, millisToAdd);
+//            return new Nanos();
+//        }
+//        @Override
+//        public int compareTo(Duration otherDuration) {
+//            if (otherDuration instanceof Millis) {
+//                return MathUtils.safeCompare(millis, ((Millis) otherDuration).millis);
+//            } else {
+//                return super.compareTo(otherDuration);
+//            }
+//        }
+//        @Override
+//        public boolean equals(Object otherDuration) {
+//            if (otherDuration instanceof Millis) {
+//                return millis == ((Millis) otherDuration).millis;
+//            } else {
+//                return super.equals(otherDuration);
+//            }
+//        }
+//        @Override
+//        public int hashCode() {
+//            return super.hashCode();
+//        }
+//        @Override
+//        public String toString() {
+//            return super.toString();
+//        }
+//    }
+//
+//    public static class Nano96 {
+//        static final long MASK = 0xFFFFFFFFL;
+//        int low;
+//        long high;
+//        Nano96(int low, long high) {
+//            this.low = low;
+//            this.high = high;
+//        }
+//        Nano96 add(Nano96 a) {
+//            long sum = (low & MASK) + (a.low & MASK);
+//            return new Nano96((int) sum, high + a.high + (sum >>> 32));
+//        }
+//        @Override
+//        public String toString() {
+//            return high + " " + low;
+//        }
+//        public static void main(String[] args) {
+//            Nano96 a = new Nano96(1, 0);
+//            Nano96 b = new Nano96(-2, 0);
+//            Nano96 c = a.add(b);
+//            System.out.println(c);
+//        }
+//    }
 }
