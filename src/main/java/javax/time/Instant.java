@@ -59,6 +59,10 @@ public final class Instant implements Comparable<Instant>, Serializable {
     // TODO: Consider BigDecimal
 
     /**
+     * Constant for nanos per second.
+     */
+    private static final int NANOS_PER_SECOND = 1000000000;
+    /**
      * Serialization version id.
      */
     private static final long serialVersionUID = -9114640809030911667L;
@@ -186,19 +190,32 @@ public final class Instant implements Comparable<Instant>, Serializable {
         return nanoOfSecond;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this Instant with the specified duration added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param duration  the duration to add, not null
-//     * @return a new updated Instant
-//     */
-//    public Instant plus(Duration duration) {
-//        // TODO
-//        return null;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Instant with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return a new updated Instant
+     */
+    public Instant plus(Duration duration) {
+        long secsToAdd = duration.getEpochSeconds();
+        int nanosToAdd = duration.getNanoOfSecond();
+        if (secsToAdd == 0 && nanosToAdd == 0) {
+            return this;
+        }
+        long secs = MathUtils.safeAdd(epochSeconds, secsToAdd);
+        if (nanosToAdd == 0) {
+            return new Instant(secs, nanoOfSecond);
+        }
+        int nos = nanoOfSecond + nanosToAdd;
+        if (nos > NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;
+            MathUtils.safeAdd(secs, 1);
+        }
+        return new Instant(secs, nos);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -213,7 +230,7 @@ public final class Instant implements Comparable<Instant>, Serializable {
         if (secondsToAdd == 0) {
             return this;
         }
-        return Instant.instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nanoOfSecond);
+        return new Instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -235,13 +252,13 @@ public final class Instant implements Comparable<Instant>, Serializable {
         // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
         nos += nanoOfSecond;
         if (nos < 0) {
-            nos += 1000000000;  // subtract: 1,000,000 to 999,999,999
+            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
             secondsToAdd--;
-        } else if (nos >= 1000000000) {
-            nos -= 1000000000;  // add: 1 to 998,999,999
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
             secondsToAdd++;
         }
-        return Instant.instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
+        return new Instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
     }
 
     //-----------------------------------------------------------------------
@@ -257,19 +274,19 @@ public final class Instant implements Comparable<Instant>, Serializable {
         if (nanosToAdd == 0) {
             return this;
         }
-        long secondsToAdd = nanosToAdd / 1000000000;
+        long secondsToAdd = nanosToAdd / NANOS_PER_SECOND;
         // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToAdd % 1000000000);
+        int nos = (int) (nanosToAdd % NANOS_PER_SECOND);
         // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
         nos += nanoOfSecond;
         if (nos < 0) {
-            nos += 1000000000;  // subtract: 1 to 999,999,999
+            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
             secondsToAdd--;
-        } else if (nos >= 1000000000) {
-            nos -= 1000000000;  // add: 1 to 999,999,999
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
             secondsToAdd++;
         }
-        return Instant.instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
+        return new Instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
     }
 
     //-----------------------------------------------------------------------
