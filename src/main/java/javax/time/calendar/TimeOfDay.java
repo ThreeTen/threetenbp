@@ -151,10 +151,10 @@ public final class TimeOfDay implements Calendrical, Comparable<TimeOfDay>, Seri
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated TimeOfDay
      */
-    public TimeOfDay with(Calendrical... moments) {
+    public TimeOfDay with(Calendrical... calendricals) {
         return null;
     }
 

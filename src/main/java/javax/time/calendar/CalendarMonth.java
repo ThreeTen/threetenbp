@@ -77,15 +77,15 @@ public final class CalendarMonth implements Calendrical, Comparable<CalendarMont
     }
 
     /**
-     * Obtains an instance of <code>CalendarMonth</code> from a set of moments.
+     * Obtains an instance of <code>CalendarMonth</code> from a set of calendricals.
      * <p>
-     * This can be used to pass in any combination of moments that fully specify
+     * This can be used to pass in any combination of calendricals that fully specify
      * a calendar month. For example, Year + MonthOfYear.
      *
-     * @param moments  a set of moments that fully represent a calendar month
+     * @param calendricals  a set of calendricals that fully represent a calendar month
      * @return a CalendarMonth object
      */
-    public static CalendarMonth calendarMonth(Calendrical... moments) {
+    public static CalendarMonth calendarMonth(Calendrical... calendricals) {
         return new CalendarMonth(0, 0);
     }
 
@@ -150,10 +150,10 @@ public final class CalendarMonth implements Calendrical, Comparable<CalendarMont
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated CalendarMonth
      */
-    public CalendarMonth with(Calendrical... moments) {
+    public CalendarMonth with(Calendrical... calendricals) {
         return null;
     }
 

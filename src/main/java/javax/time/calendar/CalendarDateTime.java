@@ -173,15 +173,15 @@ public final class CalendarDateTime
     }
 
     /**
-     * Obtains an instance of <code>CalendarDateTime</code> from a set of moments.
+     * Obtains an instance of <code>CalendarDateTime</code> from a set of calendricals.
      * <p>
-     * This can be used to pass in any combination of moments that fully specify
+     * This can be used to pass in any combination of calendricals that fully specify
      * a calendar day. For example, Year + MonthOfYear + DayOfMonth + TimeOfDay.
      *
-     * @param moments  a set of moments that fully represent a calendar day
+     * @param calendricals  a set of calendricals that fully represent a calendar day
      * @return a CalendarDateTime object
      */
-    public static CalendarDateTime calendarDateTime(Calendrical... moments) {
+    public static CalendarDateTime calendarDateTime(Calendrical... calendricals) {
         return null;
     }
 
@@ -499,10 +499,10 @@ public final class CalendarDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
+     * @param calendricals  the calendricals to update to, not null
      * @return a new updated CalendarDateTime
      */
-    public CalendarDateTime with(Calendrical... moments) {
+    public CalendarDateTime with(Calendrical... calendricals) {
         return null;
     }
 
