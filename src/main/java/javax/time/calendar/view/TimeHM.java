@@ -29,26 +29,29 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.view;
 
 import java.io.Serializable;
 
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalState;
 import javax.time.period.PeriodView;
 
 /**
- * A time of day to second precision.
+ * A time of day to minute precision.
  * <p>
- * TimeHMS is an immutable moment that records time information without a date.
- * For example, the value "14:30:04" can be stored in a TimeHMS.
+ * TimeHM is an immutable calendar object that records time information
+ * without a date to minute precision.
+ * For example, the value "14:30" can be stored in a TimeHM.
  * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
- * TimeHMS is thread-safe and immutable.
+ * TimeHM is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class TimeHMS
-        implements TimeCalendrical, Comparable<TimeHMS>, Serializable {
+public final class TimeHM
+        implements Calendrical, Comparable<TimeHM>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -56,37 +59,36 @@ public final class TimeHMS
     private static final long serialVersionUID = 1L;
 
     /**
-     * The second within the day that this TimeHMS represents.
+     * The minute within the day that this TimeHM represents.
      */
-    private final int secondOfDay;
+    private final int minuteOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>TimeHMS</code>.
+     * Obtains an instance of <code>TimeHM</code>.
      *
      * @param hourOfDay  the hour of day to represent
      * @param minuteOfHour  the minute of hour to represent
-     * @param secondOfMinute  the second of minute to represent
-     * @return a TimeHMS object representing the specified time
+     * @return a TimeHM object representing the specified time
      */
-    public static TimeHMS timeOfDay(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return new TimeHMS(0);
+    public static TimeHM timeOfDay(int hourOfDay, int minuteOfHour) {
+        return new TimeHM(0);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified month of year.
      *
-     * @param secondOfDay  the second of day to represent
+     * @param minuteOfDay  the minute of day to represent
      */
-    private TimeHMS(int secondOfDay) {
-        this.secondOfDay = secondOfDay;
+    private TimeHM(int minuteOfDay) {
+        this.minuteOfDay = minuteOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * TimeHMS instance.
+     * TimeHM instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -114,154 +116,121 @@ public final class TimeHMS
         return 0;
     }
 
-    /**
-     * Gets the second of minute value.
-     *
-     * @return the second of minute
-     */
-    public int getSecondOfMinute() {
-        return 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the specified values altered.
+     * Returns a copy of this TimeHM with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param moment  the moment to update to, not null
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS with(Calendrical moment) {
+    public TimeHM with(Calendrical moment) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified values altered.
+     * Returns a copy of this TimeHM with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param moments  the moments to update to, not null
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS with(Calendrical... moments) {
+    public TimeHM with(Calendrical... moments) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the hour of day value altered.
+     * Returns a copy of this TimeHM with the hour of day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS withHourOfDay(int hourOfDay) {
-        return new TimeHMS(secondOfDay);
+    public TimeHM withHourOfDay(int hourOfDay) {
+        return new TimeHM(minuteOfDay);
     }
 
     /**
-     * Returns a copy of this TimeHMS with the hour of day value altered.
+     * Returns a copy of this TimeHM with the hour of day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute of hour to represent
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS withMinuteOfHour(int minuteOfHour) {
-        return new TimeHMS(secondOfDay);
-    }
-
-    /**
-     * Returns a copy of this TimeHMS with the hour of day value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param secondOfMinute  the second of minute to represent
-     * @return a new updated TimeHMS
-     */
-    public TimeHMS withSecondOfMinute(int secondOfMinute) {
-        return new TimeHMS(secondOfDay);
+    public TimeHM withMinuteOfHour(int minuteOfHour) {
+        return new TimeHM(minuteOfDay);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the specified period added.
+     * Returns a copy of this TimeHM with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS plus(PeriodView period) {
+    public TimeHM plus(PeriodView period) {
         // TODO
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified periods added.
+     * Returns a copy of this TimeHM with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periods  the periods to add, not null
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS plus(PeriodView... periods) {
+    public TimeHM plus(PeriodView... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the specified number of hours added.
+     * Returns a copy of this TimeHM with the specified number of hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS plusHours(int hours) {
-        return new TimeHMS(secondOfDay);
+    public TimeHM plusHours(int hours) {
+        return new TimeHM(minuteOfDay);
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified number of minutes added.
+     * Returns a copy of this TimeHM with the specified number of minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add
-     * @return a new updated TimeHMS
+     * @return a new updated TimeHM
      */
-    public TimeHMS plusMinutes(int minutes) {
-        return new TimeHMS(secondOfDay);
-    }
-
-    /**
-     * Returns a copy of this TimeHMS with the specified number of seconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the secondsto add
-     * @return a new updated TimeHMS
-     */
-    public TimeHMS plusSeconds(int seconds) {
-        return new TimeHMS(secondOfDay);
+    public TimeHM plusMinutes(int minutes) {
+        return new TimeHM(minuteOfDay);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
      *
-     * @param otherTimeHMS  the other instance, not null
+     * @param otherTimeHM  the other instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if other value is null
      */
-    public int compareTo(TimeHMS otherTimeHMS) {
-        if (this.secondOfDay < otherTimeHMS.secondOfDay) {
+    public int compareTo(TimeHM otherTimeHM) {
+        if (this.minuteOfDay < otherTimeHM.minuteOfDay) {
             return -1;
         }
-        if (this.secondOfDay > otherTimeHMS.secondOfDay) {
+        if (this.minuteOfDay > otherTimeHM.minuteOfDay) {
             return 1;
         }
         return 0;
@@ -270,39 +239,39 @@ public final class TimeHMS
     /**
      * Is this instance after the specified one.
      *
-     * @param otherTimeHMS  the other time of day instance, not null
+     * @param otherTimeHM  the other time of day instance, not null
      * @return true if this time of day is later
-     * @throws NullPointerException if otherTimeHMS is null
+     * @throws NullPointerException if otherTimeHM is null
      */
-    public boolean isAfter(TimeHMS otherTimeHMS) {
-        return compareTo(otherTimeHMS) > 0;
+    public boolean isAfter(TimeHM otherTimeHM) {
+        return compareTo(otherTimeHM) > 0;
     }
 
     /**
      * Is this instance before the specified one.
      *
-     * @param otherTimeHMS  the other time of day instance, not null
+     * @param otherTimeHM  the other time of day instance, not null
      * @return true if this time of day is earlier
-     * @throws NullPointerException if otherTimeHMS is null
+     * @throws NullPointerException if otherTimeHM is null
      */
-    public boolean isBefore(TimeHMS otherTimeHMS) {
-        return compareTo(otherTimeHMS) < 0;
+    public boolean isBefore(TimeHM otherTimeHM) {
+        return compareTo(otherTimeHM) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
      *
-     * @param otherTimeHMS  the other time of day instance, null returns false
+     * @param otherTimeHM  the other time of day instance, null returns false
      * @return true if the time of day is the same
      */
     @Override
-    public boolean equals(Object otherTimeHMS) {
-        if (this == otherTimeHMS) {
+    public boolean equals(Object otherTimeHM) {
+        if (this == otherTimeHM) {
             return true;
         }
-        if (otherTimeHMS instanceof TimeHMS) {
-            return this.secondOfDay == ((TimeHMS) otherTimeHMS).secondOfDay;
+        if (otherTimeHM instanceof TimeHM) {
+            return this.minuteOfDay == ((TimeHM) otherTimeHM).minuteOfDay;
         }
         return false;
     }
@@ -314,7 +283,7 @@ public final class TimeHMS
      */
     @Override
     public int hashCode() {
-        return secondOfDay;
+        return minuteOfDay;
     }
 
 }

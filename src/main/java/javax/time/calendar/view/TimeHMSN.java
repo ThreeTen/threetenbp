@@ -29,11 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.view;
 
 import java.io.Serializable;
 
 import javax.time.MathUtils;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalState;
 import javax.time.period.PeriodView;
 
 /**
@@ -49,7 +51,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class TimeHMSN
-        implements TimeCalendrical, Comparable<TimeHMSN>, Serializable {
+        implements Calendrical, Comparable<TimeHMSN>, Serializable {
 
     /**
      * A serialization identifier for this instance.
