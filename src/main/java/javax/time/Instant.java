@@ -200,7 +200,7 @@ public final class Instant implements Comparable<Instant>, Serializable {
      * @return a new updated Instant
      */
     public Instant plus(Duration duration) {
-        long secsToAdd = duration.getEpochSeconds();
+        long secsToAdd = duration.getSeconds();
         int nanosToAdd = duration.getNanoOfSecond();
         if (secsToAdd == 0 && nanosToAdd == 0) {
             return this;

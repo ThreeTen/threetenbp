@@ -173,7 +173,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @return the seconds from the epoch
      */
-    public long getEpochSeconds() {
+    public long getSeconds() {
         return durationSeconds;
     }
 

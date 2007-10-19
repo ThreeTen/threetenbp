@@ -65,7 +65,7 @@ public class TestDuration {
     public void factory_instant_long() {
         for (long i = -2; i <= 2; i++) {
             Duration t = Duration.instant(i);
-            assertEquals(t.getEpochSeconds(), i);
+            assertEquals(t.getSeconds(), i);
             assertEquals(t.getNanoOfSecond(), 0);
         }
     }
@@ -74,12 +74,12 @@ public class TestDuration {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
                 Duration t = Duration.instant(i, j);
-                assertEquals(t.getEpochSeconds(), i);
+                assertEquals(t.getSeconds(), i);
                 assertEquals(t.getNanoOfSecond(), j);
             }
             for (int j = 999999990; j < 1000000000; j++) {
                 Duration t = Duration.instant(i, j);
-                assertEquals(t.getEpochSeconds(), i);
+                assertEquals(t.getSeconds(), i);
                 assertEquals(t.getNanoOfSecond(), j);
             }
         }
@@ -116,7 +116,7 @@ public class TestDuration {
     @Test(dataProvider="MillisDurationNoNanos")
     public void factory_millisDuration_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.millisDuration(millis);
-        assertEquals(t.getEpochSeconds(), expectedSeconds);
+        assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
@@ -161,7 +161,7 @@ public class TestDuration {
     @Test(dataProvider="MillisDurationWithNanos")
     public void factory_millisDuration_long_int(long millis, int nanos, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.millisDuration(millis, nanos);
-        assertEquals(t.getEpochSeconds(), expectedSeconds);
+        assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
@@ -334,7 +334,7 @@ public class TestDuration {
     public void plusSeconds_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.instant(seconds, nanos);
         t = t.plusSeconds(amount);
-        assertEquals(t.getEpochSeconds(), expectedSeconds);
+        assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
@@ -410,28 +410,28 @@ public class TestDuration {
     public void plusMillis_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.instant(seconds, nanos);
         t = t.plusMillis(amount);
-        assertEquals(t.getEpochSeconds(), expectedSeconds);
+        assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test(dataProvider="PlusMillis")
     public void plusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.instant(seconds + 1, nanos);
         t = t.plusMillis(amount);
-        assertEquals(t.getEpochSeconds(), expectedSeconds + 1);
+        assertEquals(t.getSeconds(), expectedSeconds + 1);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
     @Test(dataProvider="PlusMillis")
     public void plusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.instant(seconds - 1, nanos);
         t = t.plusMillis(amount);
-        assertEquals(t.getEpochSeconds(), expectedSeconds - 1);
+        assertEquals(t.getSeconds(), expectedSeconds - 1);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     public void plusMillis_long_max() {
         Duration t = Duration.instant(Long.MAX_VALUE, 998999999);
         t = t.plusMillis(1);
-        assertEquals(t.getEpochSeconds(), Long.MAX_VALUE);
+        assertEquals(t.getSeconds(), Long.MAX_VALUE);
         assertEquals(t.getNanoOfSecond(), 999999999);
     }
 
@@ -444,7 +444,7 @@ public class TestDuration {
     public void plusMillis_long_min() {
         Duration t = Duration.instant(Long.MIN_VALUE, 1000000);
         t = t.plusMillis(-1);
-        assertEquals(t.getEpochSeconds(), Long.MIN_VALUE);
+        assertEquals(t.getSeconds(), Long.MIN_VALUE);
         assertEquals(t.getNanoOfSecond(), 0);
     }
 
@@ -534,7 +534,7 @@ public class TestDuration {
     public void plusNanos_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
         Duration t = Duration.instant(seconds, nanos);
         t = t.plusNanos(amount);
-        assertEquals(t.getEpochSeconds(), expectedSeconds);
+        assertEquals(t.getSeconds(), expectedSeconds);
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
