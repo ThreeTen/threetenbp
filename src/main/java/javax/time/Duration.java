@@ -43,18 +43,23 @@ import java.io.Serializable;
  * Each instant is theoretically an instantaneous event, however for practicality
  * a precision of nanoseconds has been chosen. As a result, the duration class also
  * has a maximum preciion of nanoseconds.
+ * <p>
+ * Duration is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
 public class Duration implements Comparable<Duration>, Serializable {
     // TODO: Minus methods (as per plus methods)
-    // TODO: Duration class integration
     // TODO: Leap seconds (document or implement)
     // TODO: Serialized format
     // TODO: Evaluate hashcode
     // TODO: Optimise to 2 private subclasses (second/nano & millis)
     // TODO: Consider BigDecimal
 
+    /**
+     * Constant for a duration of zero.
+     */
+    public static final Duration ZERO = new Duration(0, 0);
     /**
      * Constant for nanos per second.
      */
@@ -193,7 +198,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param duration  the duration to add, not null
-     * @return a new updated Duration
+     * @return a new updated Duration, never null
      */
     public Duration plus(Duration duration) {
         long secsToAdd = duration.durationSeconds;
@@ -220,7 +225,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondsToAdd  the seconds to add
-     * @return a new updated Duration
+     * @return a new updated Duration, never null
      */
     public Duration plusSeconds(long secondsToAdd) {
         if (secondsToAdd == 0) {
@@ -236,7 +241,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param millisToAdd  the milliseconds to add
-     * @return a new updated Duration
+     * @return a new updated Duration, never null
      */
     public Duration plusMillis(long millisToAdd) {
         if (millisToAdd == 0) {
@@ -264,7 +269,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanosToAdd  the nanoseconds to add
-     * @return a new updated Duration
+     * @return a new updated Duration, never null
      */
     public Duration plusNanos(long nanosToAdd) {
         if (nanosToAdd == 0) {
@@ -284,6 +289,32 @@ public class Duration implements Comparable<Duration>, Serializable {
         }
         return new Duration(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nos);
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Duration multiplied by the scalar.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param multiplicand  the value to multiply the duration by
+     * @return a new updated Duration, never null
+     */
+    public Duration multipliedBy(int multiplicand) {
+        if (multiplicand == 0) {
+            return ZERO;
+        }
+        if (multiplicand == 1) {
+            return this;
+        }
+        long secs = MathUtils.safeMultiply(durationSeconds, multiplicand);
+        long nos = ((long) nanoOfSecond) * multiplicand;
+        if (nos > NANOS_PER_SECOND) {
+            long secsToAdd = nos / NANOS_PER_SECOND;
+            nos = nos % NANOS_PER_SECOND;
+            secs = MathUtils.safeAdd(secs, secsToAdd);
+        }
+        return new Duration(secs, (int) nos);
+     }
 
     //-----------------------------------------------------------------------
     /**
