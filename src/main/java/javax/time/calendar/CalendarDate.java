@@ -148,7 +148,10 @@ public final class CalendarDate implements Calendrical, Comparable<CalendarDate>
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        return 0; //field.getFromYMD(year, monthOfYear, dayOfMonth);
+        if (!isSupported(field)) {
+            throw new UnsupportedCalendarFieldException("CalendarDate does not support field " + field.getName());
+        }
+        return 0;
     }
 
     //-----------------------------------------------------------------------
