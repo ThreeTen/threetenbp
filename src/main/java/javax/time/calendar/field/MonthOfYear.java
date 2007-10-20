@@ -58,7 +58,26 @@ public enum MonthOfYear implements Calendrical {
     /**
      * The singleton instance for the month of February.
      */
-    FEBRUARY(2),
+    FEBRUARY(2) {
+        /** {@inheritDoc} */
+        @Override
+        public int lengthInDays(int year) {
+            if (Year.year(year).isLeap()) {
+                return 29;
+            }
+            return 28;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int minLengthInDays() {
+            return 28;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int maxLengthInDays() {
+            return 29;
+        }
+    },
     /**
      * The singleton instance for the month of March.
      */
@@ -222,6 +241,82 @@ public enum MonthOfYear implements Calendrical {
      */
     public boolean isLessThan(MonthOfYear otherMonthOfYear) {
         return compareTo(otherMonthOfYear) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the length of this month in days.
+     *
+     * @param year  the year to obtain the length for
+     * @return the length of this month in days, from 28 to 31
+     */
+    public int lengthInDays(int year) {
+        return maxLengthInDays();  // overridden by FEBRUARY
+    }
+
+    /**
+     * Gets the minimum length of this month in days.
+     *
+     * @return the minimum length of this month in days, from 28 to 31
+     */
+    public int minLengthInDays() {
+        switch (this) {
+            case FEBRUARY:
+                return 28;  // overridden by FEBRUARY
+            case APRIL:
+            case JUNE:
+            case SEPTEMBER:
+            case NOVEMBER:
+                return 30;
+            default:
+                return 31;
+        }
+    }
+
+    /**
+     * Gets the maximum length of this month in days.
+     *
+     * @return the maximum length of this month in days, from 29 to 31
+     */
+    public int maxLengthInDays() {
+        switch (this) {
+            case FEBRUARY:
+                return 29;  // overridden by FEBRUARY
+            case APRIL:
+            case JUNE:
+            case SEPTEMBER:
+            case NOVEMBER:
+                return 30;
+            default:
+                return 31;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the quarter that this month falls in.
+     *
+     * @return the quarter of year, never null
+     */
+    public QuarterOfYear getQuarterOfYear() {
+        if (ordinal() < 3) {
+            return QuarterOfYear.Q1;
+        } else if (ordinal() < 6) {
+            return QuarterOfYear.Q2;
+        } else if (ordinal() < 9) {
+            return QuarterOfYear.Q3;
+        } else {
+            return QuarterOfYear.Q4;
+        }
+    }
+
+    /**
+     * Gets the index of the month within the quarter.
+     *
+     * @return the month of season, from 1 to 3
+     */
+    public int getMonthOfQuarter() {
+        return (ordinal() % 3) + 1;
     }
 
     //-----------------------------------------------------------------------

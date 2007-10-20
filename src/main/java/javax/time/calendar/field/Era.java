@@ -143,6 +143,24 @@ public enum Era implements Calendrical {
         return compareTo(otherEra) < 0;
     }
 
+    /**
+     * Is this instance representing BC/BCE.
+     *
+     * @return true is this instance represents BC/BCE
+     */
+    public boolean isBC() {
+        return (this == BC);
+    }
+
+    /**
+     * Is this instance representing AD/CE.
+     *
+     * @return true is this instance represents AD/CE
+     */
+    public boolean isAD() {
+        return (this == AD);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Implementation of the rules for the era field.

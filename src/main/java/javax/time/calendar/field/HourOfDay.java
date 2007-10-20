@@ -175,6 +175,71 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
 
     //-----------------------------------------------------------------------
     /**
+     * Gets whether it is AM or PM.
+     * <p>
+     * AM is defined as 00:00 to 11:59 inclusive.<br />
+     * PM is defined as 12:00 to 23:59 inclusive.<br />
+     *
+     * @return true is the time is in the morning
+     */
+    public MeridianOfDay getAmPm() {
+        return MeridianOfDay.meridianOfDay(hourOfDay / 12);
+    }
+
+    /**
+     * Gets the hour of AM or PM, from 0 to 11.
+     * <p>
+     * This method returns the value from {@link #hourOfDay} modulo 12.
+     * This is rarely used. The time as seen on clocks and watches is
+     * returned from {@link #getClockHourOfAmPm()}.
+     * <p>
+     * The hour from 00:00 to 00:59 will return 0.<br />
+     * The hour from 01:00 to 01:59 will return 1.<br />
+     * The hour from 11:00 to 11:59 will return 11.<br />
+     * The hour from 12:00 to 12:59 will return 0.<br />
+     * The hour from 23:00 to 23:59 will return 11.<br />
+     *
+     * @return true is the time is in the morning
+     */
+    public int getHourOfAmPm() {
+        return hourOfDay % 12;
+    }
+
+    /**
+     * Gets the clock hour of AM or PM, from 1 to 12.
+     * <p>
+     * This method returns values as you would commonly expect from a
+     * wall clock or watch.
+     * <p>
+     * The hour from 00:00 to 00:59 will return 12.<br />
+     * The hour from 01:00 to 01:59 will return 1.<br />
+     * The hour from 11:00 to 11:59 will return 11.<br />
+     *
+     * @return true is the time is in the morning
+     */
+    public int getClockHourOfAmPm() {
+        return ((hourOfDay + 11) % 12) + 1;
+    }
+
+    /**
+     * Gets the clock hour of day, from 1 to 24.
+     * <p>
+     * This method returns the same as {@link #hourOfDay}, unless the
+     * hour is 0, when this method returns 24.
+     * <p>
+     * The hour from 00:00 to 00:59 will return 24.<br />
+     * The hour from 01:00 to 01:59 will return 1.<br />
+     * The hour from 12:00 to 12:59 will return 12.<br />
+     * The hour from 23:00 to 23:59 will return 23.<br />
+     *
+     * @return true is the time is in the morning
+     */
+    public int getClockHourOfDay() {
+        return (hourOfDay == 0 ? 24 : hourOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Implementation of the rules for the hour of day field.
      */
     private static class Rule extends TimeFieldRule {

@@ -164,6 +164,24 @@ public enum MeridianOfDay implements Calendrical {
         return compareTo(otherMeridianOfDay) < 0;
     }
 
+    /**
+     * Is this instance representing AM (ante-meridiem).
+     *
+     * @return true is this instance represents AM
+     */
+    public boolean isAm() {
+        return (this == AM);
+    }
+
+    /**
+     * Is this instance representing PM (post-meridiem).
+     *
+     * @return true is this instance represents PM
+     */
+    public boolean isPm() {
+        return (this == PM);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Implementation of the rules for the meridian of day field.
