@@ -85,9 +85,24 @@ public class TestInstant {
         }
     }
 
+    public void factory_instant_long_int_negative() {
+        for (long i = -2; i <= 2; i++) {
+            for (int j = -10; j < 0; j++) {
+                Instant t = Instant.instant(i, j);
+                assertEquals(t.getEpochSeconds(), i - 1);
+                assertEquals(t.getNanoOfSecond(), j + 1000000000);
+            }
+            for (int j = -999999999; j < -999999990; j++) {
+                Instant t = Instant.instant(i, j);
+                assertEquals(t.getEpochSeconds(), i - 1);
+                assertEquals(t.getNanoOfSecond(), j + 1000000000);
+            }
+        }
+    }
+
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_instant_long_int_nanosNegative() {
-        Instant.instant(0L, -1);
+    public void test_factory_instant_long_int_nanosTooSmall() {
+        Instant.instant(0L, -1000000000);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)

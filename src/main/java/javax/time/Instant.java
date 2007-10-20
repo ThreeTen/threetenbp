@@ -92,20 +92,57 @@ public final class Instant implements Comparable<Instant>, Serializable {
     /**
      * Factory method to create an instance of Instant using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
+     * <p>
+     * Primitive fractions of seconds can be unintuitive.
+     * For positive values, they work as expected: <code>instant(0L, 1)</code>
+     * represents one nanosecond after the epoch.
+     * For negative values, they can be confusing: <code>instant(-1L, 999999999)</code>
+     * represents one nanosecond before the epoch.
+     * It can be thought of as minus one second plus 999,999,999 nanoseconds.
+     * As a result, it can be easier to use a negative fraction:
+     * <code>instant(0L, -1)</code> - which does represent one nanosecond before
+     * the epoch.
+     * Thus, the <code>nanoOfSecond</code> parameter is a positive or negative
+     * adjustment to the <code>epochSeconds</code> parameter along the timeline.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @param nanoOfSecond  the nanoseconds within the second, must be positive
+     * @param nanoOfSecond  the nanoseconds within the second, -999,999,999 to 999,999,999
      * @return the created Instant
-     * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
+     * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, int nanoOfSecond) {
-        if (nanoOfSecond < 0) {
-            throw new IllegalArgumentException("NanoOfSecond must be positive but was " + nanoOfSecond);
+        if (nanoOfSecond >= NANOS_PER_SECOND) {
+            throw new IllegalArgumentException("Nanosecond fraction must not be more than 999,999,999 but was " + nanoOfSecond);
         }
-        if (nanoOfSecond > 999999999) {
-            throw new IllegalArgumentException("NanoOfSecond must not be more than 999,999,999 but was " + nanoOfSecond);
+        if (nanoOfSecond < 0) {
+            nanoOfSecond += NANOS_PER_SECOND;
+            if (nanoOfSecond <= 0) {
+                throw new IllegalArgumentException("Nanosecond fraction must not be less than -999,999,999 but was " + nanoOfSecond);
+            }
+            epochSeconds = MathUtils.safeDecrement(epochSeconds);
         }
         return new Instant(epochSeconds, nanoOfSecond);
+    }
+
+    /**
+     * Factory method to create an instance of Instant using seconds from the
+     * epoch of 1970-01-01T00:00:00Z and fraction of second.
+     *
+     * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     * @param fractionOfSecond  the fraction of the second, from -1 to 1 exclusive
+     * @return the created Instant
+     * @throws IllegalArgumentException if nanoOfSecond is out of range
+     */
+    public static Instant instant(long epochSeconds, double fractionOfSecond) {
+        if (fractionOfSecond <= 1 || fractionOfSecond >= 1) {
+            throw new IllegalArgumentException("Fraction of second must be between -1 and 1 exclusive but was " + fractionOfSecond);
+        }
+        int nanos = (int) (fractionOfSecond * NANOS_PER_SECOND);
+        if (nanos < 0) {
+            nanos += NANOS_PER_SECOND;
+            epochSeconds = MathUtils.safeDecrement(epochSeconds);
+        }
+        return new Instant(epochSeconds, nanos);
     }
 
     //-----------------------------------------------------------------------
