@@ -118,6 +118,23 @@ public abstract class TimeFieldRule {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the this field is supported using calendrical data that is
+     * completely specified by the unit and range.
+     * <p>
+     * For example, a date object has a unit of days and a range of forever.
+     * If this field is for hour of day, then that cannot be supported by the
+     * unit and range from a date object.
+     *
+     * @param unit  the unit to check, not null
+     * @param range  the range to check, not null
+     * @return true if the field is supported
+     */
+    public boolean isSupported(PeriodUnit unit, PeriodUnit range) {
+        return (periodUnit.compareTo(unit) >= 0) &&
+               (periodRange.compareTo(range) < 0);
+    }
+
+    /**
      * Gets the value of this field.
      *
      * @param calState  the calendrical state, not null

@@ -33,28 +33,28 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
 import javax.time.calendar.field.Era;
 import javax.time.period.PeriodView;
+import javax.time.period.Periods;
 
 /**
- * A time point of a year.
+ * A calendrical representation of a year without a time zone.
  * <p>
- * CalendarYear is an immutable time point that records time information to the
- * precision of a year. For example, the value "2007" can be stored in a CalendarYear.
+ * Year is an immutable calendrical that represents a year.
+ * This class does not store or represent a month, day, time or time zone.
+ * Thus, for example, the value "2007" can be stored in a Year.
  * <p>
- * Static factory methods allow you to constuct instances.
- * <p>
- * CalendarYear is thread-safe and immutable.
+ * Year is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class CalendarYear implements Calendrical, Comparable<CalendarYear>, Serializable {
+public final class Year
+        implements Calendrical, Comparable<Year>, Serializable {
 
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = -6758311647959144592L;
+    private static final long serialVersionUID = 2751581L;
 
     /**
      * The year being represented.
@@ -63,7 +63,7 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CalendarYear</code>.
+     * Obtains an instance of <code>Year</code>.
      * <p>
      * This method accepts a year value from the proleptic ISO calendar system.
      * <p>
@@ -71,53 +71,58 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * The year 1BC is represented by 0.<br />
      * The year 2BC is represented by -1.<br />
      *
-     * @param isoYear  the ISO proleptic year to represent
-     * @return the created CalendarYear
+     * @param isoYear  the ISO proleptic year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @return the created Year
+     * @throws IllegalCalendarFieldValueException if the field is invalid
      */
-    public static CalendarYear year(int isoYear) {
-        return new CalendarYear(isoYear);
+    public static Year isoYear(int isoYear) {
+        return new Year(isoYear);
     }
 
     /**
-     * Obtains an instance of <code>CalendarYear</code> using an era.
+     * Obtains an instance of <code>Year</code> using an era.
      * <p>
      * This method accepts a year and era to create a year object.
      *
      * @param era  the era to represent, either BC or AD, not null
      * @param yearOfEra  the year within the era to represent, from 1 to MAX_VALUE
      * @return the year object, never null
+     * @throws IllegalCalendarFieldValueException if either field is invalid
      */
-    public static CalendarYear year(Era era, int yearOfEra) {
+    public static Year year(Era era, int yearOfEra) {
+        if (yearOfEra < 1) {
+            throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, Integer.MAX_VALUE);
+        }
         if (yearOfEra < 1) {
             throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, Integer.MAX_VALUE);
         }
         if (era == Era.AD) {
-            return CalendarYear.year(yearOfEra);
+            return Year.isoYear(yearOfEra);
         } else {
-            return CalendarYear.year((-yearOfEra) + 1);
+            return Year.isoYear((-yearOfEra) + 1);
         }
     }
 
     /**
-     * Obtains an instance of <code>CalendarYear</code> from a set of moments.
+     * Obtains an instance of <code>Year</code> from a set of calendricals.
      * <p>
-     * This can be used to pass in any combination of moments that fully specify
+     * This can be used to pass in any combination of calendricals that fully specify
      * a calendar year. For example, Century + YearOfCentury.
      *
-     * @param moments  a set of moments that fully represent a calendar year
-     * @return a CalendarYear object
+     * @param calendricals  a set of calendricals that fully represent a calendar year
+     * @return a Year object
      */
-    public static CalendarYear calendarYear(Calendrical... moments) {
-        return new CalendarYear(0);
+    public static Year year(Calendrical... calendricals) {
+        return new Year(0);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified year.
+     * Constructor.
      *
      * @param year  the year to represent
      */
-    private CalendarYear(int year) {
+    private Year(int year) {
         this.year = year;
     }
 
@@ -133,154 +138,199 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
         return null;  // TODO
     }
 
+    /**
+     * Checks if the specified calendar field is supported.
+     * <p>
+     * This method queries whether this <code>Year</code> can
+     * be queried using the specified calendar field.
+     *
+     * @param field  the field to query, not null
+     * @return true if the field is supported
+     */
+    public boolean isSupported(TimeFieldRule field) {
+        return field.isSupported(Periods.YEARS, Periods.FOREVER);
+    }
+
+    /**
+     * Gets the value of the specified calendar field.
+     * <p>
+     * This method queries the value of the specified calendar field.
+     * If the calendar field is not supported then an exception is thrown.
+     *
+     * @param field  the field to query, not null
+     * @return the value for the field
+     * @throws UnsupportedCalendarFieldException if the field is not supported
+     */
+    public int get(TimeFieldRule field) {
+        if (!isSupported(field)) {
+            throw new UnsupportedCalendarFieldException("Year does not support field " + field.getName());
+        }
+        return 0;
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Gets the year value.
+     * Gets the ISO proleptic year value.
+     * <p>
+     * The year 1AD is represented by 1.<br />
+     * The year 1BC is represented by 0.<br />
+     * The year 2BC is represented by -1.<br />
      *
-     * @return the year
+     * @return the year, from MIN_VALUE + 1 to MAX_VALUE
      */
     public int getYear() {
-        return year;
+        return 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarYear with the specified values altered.
+     * Returns a copy of this Year with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moment  the moment to update to, not null
-     * @return a new updated CalendarYear
+     * @param calendrical  the calendrical values to update to, not null
+     * @return a new updated Year, never null
      */
-    public CalendarYear with(Calendrical moment) {
+    public Year with(Calendrical calendrical) {
         return null;
     }
 
     /**
-     * Returns a copy of this CalendarYear with the specified values altered.
+     * Returns a copy of this Year with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param moments  the moments to update to, not null
-     * @return a new updated CalendarYear
+     * @param calendricals  the calendrical values to update to, no nulls
+     * @return a new updated Year, never null
      */
-    public CalendarYear with(Calendrical... moments) {
+    public Year with(Calendrical... calendricals) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarYear with the year value altered.
+     * Returns a copy of this Year with the year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent
-     * @return a new updated CalendarYear
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @return a new updated Year, never null
      */
-    public CalendarYear withYear(int year) {
-        return new CalendarYear(0);
+    public Year withYear(int year) {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarYear with the specified period added.
+     * Returns a copy of this Year with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated CalendarYear
+     * @return a new updated Year, never null
      */
-    public CalendarYear plus(PeriodView period) {
+    public Year plus(PeriodView period) {
         // TODO
         return null;
     }
 
     /**
-     * Returns a copy of this CalendarYear with the specified periods added.
+     * Returns a copy of this Year with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, not null
-     * @return a new updated CalendarYear
+     * @param periods  the periods to add, no nulls
+     * @return a new updated Year, never null
      */
-    public CalendarYear plus(PeriodView... periods) {
+    public Year plus(PeriodView... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CalendarYear with the specified number of years added.
+     * Returns a copy of this Year with the specified number of years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add
-     * @return a new updated CalendarYear
+     * @return a new updated Year, never null
      */
-    public CalendarYear plusYears(int years) {
-        return new CalendarYear(year + years);
+    public Year plusYears(int years) {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this instance to another.
+     * Compares this year to another year.
      *
-     * @param otherYear  the other year instance to compare to, not null
+     * @param other  the other year to compare to, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherYear is null
+     * @throws NullPointerException if <code>other</code> is null
      */
-    public int compareTo(CalendarYear otherYear) {
-        return MathUtils.safeCompare(year, otherYear.year);
+    public int compareTo(Year other) {
+        return 0;
     }
 
     /**
-     * Is this instance after the specified one.
+     * Is this year after the specified year.
      *
-     * @param otherYear  the other month instance to compare to, not null
-     * @return true if this year is after the specified year
-     * @throws NullPointerException if otherYear is null
+     * @param other  the other year to compare to, not null
+     * @return true if this is after the specified year
+     * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isAfter(CalendarYear otherYear) {
-        return compareTo(otherYear) > 0;
+    public boolean isAfter(Year other) {
+        return compareTo(other) > 0;
     }
 
     /**
-     * Is this instance before the specified one.
+     * Is this year before the specified year.
      *
-     * @param otherYear  the other year instance to compare to, not null
-     * @return true if this year is before the specified year
-     * @throws NullPointerException if otherYear is null
+     * @param other  the other year to compare to, not null
+     * @return true if this point is before the specified year
+     * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isBefore(CalendarYear otherYear) {
-        return compareTo(otherYear) < 0;
+    public boolean isBefore(Year other) {
+        return compareTo(other) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified.
+     * Is this year equal to the specified year.
      *
-     * @param otherYear  the other month instance to compare to, null returns false
-     * @return true if this month is equal to the specified month
+     * @param other  the other year to compare to, null returns false
+     * @return true if this point is equal to the specified year
      */
     @Override
-    public boolean equals(Object otherYear) {
-        if (this == otherYear) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (otherYear instanceof CalendarYear) {
-            return year == ((CalendarYear) otherYear).year;
+        if (other instanceof Year) {
+            Year year = (Year) other;
+            return  true;
         }
         return false;
     }
 
     /**
-     * A hashcode for the month object.
+     * A hashcode for this year.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return year;
+        return 0;
+    }
+
+    /**
+     * Outputs the string form of the year.
+     *
+     * @return the string form of the year
+     */
+    @Override
+    public String toString() {
+        return super.toString();
     }
 
     //-----------------------------------------------------------------------
@@ -312,11 +362,11 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @return the next year, never null
      * @throws IllegalCalendarFieldValueException if the maximum year is reached
      */
-    public CalendarYear next() {
+    public Year next() {
         if (year == Integer.MAX_VALUE) {
-            throw new IllegalCalendarFieldValueException("year is already at the maximum value");
+            throw new IllegalCalendarFieldValueException("Year is already at the maximum value");
         }
-        return year(year + 1);
+        return isoYear(year + 1);
     }
 
     /**
@@ -326,8 +376,8 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @return the next leap year after this year
      * @throws IllegalCalendarFieldValueException if the maximum year is reached
      */
-    public CalendarYear nextLeap() {
-        CalendarYear temp = next();
+    public Year nextLeap() {
+        Year temp = next();
         while (!temp.isLeap()) {
             temp = temp.next();
         }
@@ -340,11 +390,11 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @return the previous year, never null
      * @throws IllegalCalendarFieldValueException if the maximum year is reached
      */
-    public CalendarYear previous() {
+    public Year previous() {
         if (year == (Integer.MIN_VALUE + 1)) {
-            throw new IllegalCalendarFieldValueException("year is already at the minimum value");
+            throw new IllegalCalendarFieldValueException("Year is already at the minimum value");
         }
-        return year(year - 1);
+        return isoYear(year - 1);
     }
 
     /**
@@ -354,8 +404,8 @@ public final class CalendarYear implements Calendrical, Comparable<CalendarYear>
      * @return the previous leap year after this year
      * @throws IllegalCalendarFieldValueException if the minimum year is reached
      */
-    public CalendarYear previousLeap() {
-        CalendarYear temp = previous();
+    public Year previousLeap() {
+        Year temp = previous();
         while (!temp.isLeap()) {
             temp = temp.previous();
         }

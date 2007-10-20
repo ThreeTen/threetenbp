@@ -70,9 +70,10 @@ public final class Calendars {
      *
      * @param year  the proleptic ISO year to represent
      * @return the year object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static CalendarYear year(int year) {
-        return CalendarYear.year(year);
+    public static Year year(int year) {
+        return Year.isoYear(year);
     }
 
     /**
@@ -83,40 +84,46 @@ public final class Calendars {
      * @param era  the era to represent, either BC or AD, not null
      * @param yearOfEra  the year within the era to represent, from 1 to MAX_VALUE
      * @return the year object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static CalendarYear year(Era era, int yearOfEra) {
-        return CalendarYear.year(era, yearOfEra);
+    public static Year year(Era era, int yearOfEra) {
+        return Year.year(era, yearOfEra);
     }
 
     /**
-     * Gets an instance of MonthOfYear.
-     * <p>
-     * This method accepts a year value from the proleptic ISO calendar system.
+     * Gets an instance of MonthOfYear using the ISO8601 index where
+     * January is 1 and December is 12.
      *
-     * @param monthOfYear  the ISO month of year value, 1 (January) to 12 (December)
+     * @param monthOfYear  the ISO month of year value, from 1 (January) to 12 (December)
      * @return the month of year object, never null
-     * @throws IllegalArgumentException if the month of year value is invalid
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
         return MonthOfYear.monthOfYear(monthOfYear);
     }
 
     /**
-     * Gets an instance of MonthOfYear.
+     * Gets the month constant for January.
+     *
+     * @return the constant for January, never null
      */
     public static MonthOfYear january() {
         return MonthOfYear.JANUARY;
     }
 
     /**
-     * Gets an instance of MonthOfYear.
+     * Gets the month constant for February.
+     *
+     * @return the constant for February, never null
      */
     public static MonthOfYear february() {
         return MonthOfYear.FEBRUARY;
     }
 
     /**
-     * Gets an instance of MonthOfYear.
+     * Gets the month constant for March.
+     *
+     * @return the constant for March, never null
      */
     public static MonthOfYear march() {
         return MonthOfYear.MARCH;
@@ -124,6 +131,10 @@ public final class Calendars {
 
     /**
      * Gets an instance of DayOfMonth.
+     *
+     * @param dayOfMonth  the day of month value, from 1 to 31
+     * @return the DayOfMonth object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public static DayOfMonth dayOfMonth(int dayOfMonth) {
         return DayOfMonth.dayOfMonth(dayOfMonth);
@@ -131,6 +142,10 @@ public final class Calendars {
 
     /**
      * Gets an instance of HourOfDay.
+     *
+     * @param hourOfDay  the hour of day value, from 0 to 23
+     * @return the HourOfDay object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public static HourOfDay hourOfDay(int hourOfDay) {
         return HourOfDay.hourOfDay(hourOfDay);
@@ -138,6 +153,10 @@ public final class Calendars {
 
     /**
      * Gets an instance of MinuteOfHour.
+     *
+     * @param minuteOfHour  the minute of hour value, from 0 to 59
+     * @return the MinuteOfHour object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public static MinuteOfHour minuteOfHour(int minuteOfHour) {
         return MinuteOfHour.minuteOfHour(minuteOfHour);
@@ -145,6 +164,10 @@ public final class Calendars {
 
     /**
      * Gets an instance of SecondOfMinute.
+     *
+     * @param secondOfMinute  the second of minute value, from 0 to 59
+     * @return the SecondOfMinute object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public static SecondOfMinute secondOfMinute(int secondOfMinute) {
         return SecondOfMinute.secondOfMinute(secondOfMinute);
@@ -153,17 +176,55 @@ public final class Calendars {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of CalendarDate.
+     * Gets an instance of a date.
+     *
+     * @param year  the year
+     * @param monthOfYear  the month of year
+     * @param dayOfMonth  the day of month
+     * @return the date object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static CalendarDate calendarDate(int year, int monthOfYear, int dayOfMonth) {
-        return CalendarDate.yearMonthDay(year, monthOfYear, dayOfMonth);
+    public static DateYMD date(int year, int monthOfYear, int dayOfMonth) {
+        return DateYMD.date(year, monthOfYear, dayOfMonth);
     }
 
     /**
-     * Gets an instance of CalendarDate.
+     * Gets an instance of a date.
+     *
+     * @param year  the year, not null
+     * @param monthOfYear  the month of year, not null
+     * @param dayOfMonth  the day of month, not null
+     * @return the date object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static CalendarDate calendarDate(CalendarYear year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        return CalendarDate.calendarDate(year, monthOfYear, dayOfMonth);
+    public static DateYMD date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        return DateYMD.date(year, monthOfYear, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of a date.
+     *
+     * @param hour  the hour of day
+     * @param minute  the minute of hour
+     * @return the time object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static TimeHM time(int hour, int minute) {
+        return TimeHM.time(hour, minute);
+    }
+
+    /**
+     * Gets an instance of a date.
+     *
+     * @param hour  the hour of day
+     * @param minute  the minute of hour
+     * @param second  the second of minute
+     * @return the time object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static TimeHMS time(int hour, int minute, int second) {
+        return TimeHMS.time(hour, minute, second);
     }
 
 //    /**
@@ -279,19 +340,19 @@ public final class Calendars {
         public CalendarWithYearMonthDayBuilder dayOfMonth(int dayOfMonth) {
             return new CalendarWithYearMonthDayBuilder();
         }
-        public CalendarMonth build() {
-            return CalendarMonth.yearMonth(2007, 6);
+        public YearMonth build() {
+            return YearMonth.yearMonth(2007, 6);
         }
-        public CalendarMonth buildLenient() {
-            return CalendarMonth.yearMonth(2007, 6);
+        public YearMonth buildLenient() {
+            return YearMonth.yearMonth(2007, 6);
         }
     }
     public static class CalendarWithYearMonthDayBuilder {
-        public CalendarDate build() {
-            return CalendarDate.yearMonthDay(2007, 6, 1);
+        public DateYMD build() {
+            return DateYMD.date(2007, 6, 1);
         }
-        public CalendarDate buildLenient() {
-            return CalendarDate.yearMonthDay(2007, 6, 1);
+        public DateYMD buildLenient() {
+            return DateYMD.date(2007, 6, 1);
         }
     }
 }

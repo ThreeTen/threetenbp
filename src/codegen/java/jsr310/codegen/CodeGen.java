@@ -53,18 +53,20 @@ public class CodeGen {
 
     private static final String TEMPLATE_DIR = "src/codegen/java/jsr310/codegen/";
     private static final File BASE_DIR = new File("src/main/java");
-    private static final String MAIN_CALENDAR_PKG = "javax.time.calendar.field";
-    private static final String I18N_CALENDAR_PKG = "javax.time.i18n";
+    private static final String MAIN_CALENDAR_PKG = "javax.time.calendar";
+    private static final String MAIN_CALENDAR_FIELD_PKG = "javax.time.calendar.field";
+    private static final String I18N_CALENDAR_FIELD_PKG = "javax.time.i18n";
     private static final File MAIN_PERIOD_DIR = new File("src/main/java/javax/time/period/field");
     private static final File TEST_DIR = new File("src/test/java/javax/time");
-    private static final File TEST_CALENDAR_DIR = new File("src/test/java/javax/time/calendar/field");
-    private static final File TEST_PERIOD_DIR = new File("src/test/java/javax/time/period/field");
+    private static final File TEST_CALENDAR_FIELD_DIR = new File("src/test/java/javax/time/calendar/field");
+    private static final File TEST_PERIOD_FIELD_DIR = new File("src/test/java/javax/time/period/field");
 
     public static void main(String[] args) {
         try {
             Velocity.init();
             
             CodeGen cg = new CodeGen();
+//            cg.processCalendarClassField();
 //            cg.processDurationField();
 //            cg.processTestDurationField();
 //            cg.processTimeField();
@@ -73,6 +75,99 @@ public class CodeGen {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    /**
+     * Code generate single field period classes.
+     */
+    private void processCalendarClassField() throws Exception {
+        Template template = Velocity.getTemplate(TEMPLATE_DIR + "Calendar.vm");
+        
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "Year",
+                "year", "Era + YearOfEra",
+                "Year", "Periods.YEARS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "YearMonth",
+                "year-month", "Year + MonthOfYear",
+                "YearMonth", "Periods.MONTHS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "MonthDay",
+                "month-day", "MonthOfYear + DayOfMonth",
+                "MonthDate", "Periods.DAYS", "Periods.MONTHS");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "DateYMD",
+                "date", "Year + MonthOfYear + DayOfMonth",
+                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "TimeHM",
+                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+                "HourMinute", "Periods.HOURS", "Periods.DAYS");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "TimeHMS",
+                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "DateTimeHM",
+                "date-time", "Year + DayOfYear + SecondOfDay",
+                "YearMonthDateHourMinute", "Periods.HOURS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "DateTimeHMS",
+                "date-time", "Year + DayOfYear + SecondOfDay",
+                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTimeHM",
+                "date-time", "Year + DayOfYear + SecondOfDay",
+                "YearMonthDateHourMinute", "Periods.HOURS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTimeHMS",
+                "date-time", "Year + DayOfYear + SecondOfDay",
+                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+    }
+
+    private void processCalendarClassField(
+            String pkg,
+            Template template,
+            String classname,
+            String desc,
+            String calendricalExample,
+            String includeCode,
+            String unitStr,
+            String rangeStr) throws Exception {
+        
+        File file = new File(BASE_DIR, pkg.replace('.', '/') + '/' + classname + ".java");
+        List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
+        List<String> importLines = findImports(file);
+        List<String> commentLines = findClassComment(file, "<p>");
+        List<String> topMethodLines = findCalendarToplMethods(file);
+        
+        VelocityContext vc = new VelocityContext();
+        vc.put("package", pkg);
+        vc.put("Type", classname);
+        vc.put("hashCode", Integer.toString(classname.hashCode()));
+        String mixedType = classname.substring(0, 1).toLowerCase() + classname.substring(1);
+        vc.put("type", mixedType);
+        vc.put("desc", desc);
+        vc.put("calendricalExample", calendricalExample);
+        vc.put("zoned", classname.contains("Zoned"));
+        vc.put("year", includeCode.contains("Year"));
+        vc.put("month", includeCode.contains("Month"));
+        vc.put("date", includeCode.contains("Date"));
+        vc.put("hour", includeCode.contains("Hour"));
+        vc.put("minute", includeCode.contains("Minute"));
+        vc.put("second", includeCode.contains("Second"));
+        vc.put("nano", includeCode.contains("Nano"));
+        vc.put("unit", unitStr);
+        vc.put("range", rangeStr);
+        vc.put("imports", importLines);
+        vc.put("comments", commentLines);
+        vc.put("topMethods", topMethodLines);
+        vc.put("methods", methodLines);
+        generate(file, template, vc);
+    }
+
+    private List<String> findCalendarToplMethods(File file) throws Exception {
+        List<String> methodLines = Collections.emptyList();
+        if (file.exists()) {
+            List<String> origLines = readFile(file);
+            int topStart = indexOfLineContaining(origLines, "private static final long serialVersionUID", 0);
+            int topEnd = indexOfLineContaining(origLines, "public CalendricalState getCalendricalState() {", 0);
+            methodLines = origLines.subList(topStart + 2, topEnd - 8);
+        }
+        return methodLines;
     }
 
     //-----------------------------------------------------------------------
@@ -121,7 +216,7 @@ public class CodeGen {
     }
 
     private void processTestPeriodField(Template template, String classname, boolean date) throws Exception {
-        File file = new File(TEST_PERIOD_DIR, "Test" + classname + ".java");
+        File file = new File(TEST_PERIOD_FIELD_DIR, "Test" + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file, "public void test_toString() {");
         VelocityContext vc = createPeriodContext(classname, date, methodLines, "");
         generate(file, template, vc);
@@ -148,31 +243,31 @@ public class CodeGen {
         Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
-        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "Era", "era", ERA, "0", "1");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
-        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
-        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "DayOfYear", "day of year", null, "1", "366");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
-        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
-        processTimeField(MAIN_CALENDAR_PKG, enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "HourOfMeridian", "hour of meridian", null, "0", "11");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
-        processTimeField(MAIN_CALENDAR_PKG, regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "Era", "era", ERA, "0", "1");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfYear", "day of year", null, "1", "366");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfMeridian", "hour of meridian", null, "0", "11");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
 
-        processTimeField(I18N_CALENDAR_PKG, enumTemplate, "CopticMonthOfYear", "Coptic month of year", COPTIC_MONTH_OF_YEARS, "1", "13");
-        processTimeField(I18N_CALENDAR_PKG, enumTemplate, "CopticSeasonOfYear", "Coptic season of year", COPTIC_SEASON, "1", "3");
+        processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticMonthOfYear", "Coptic month of year", COPTIC_MONTH_OF_YEARS, "1", "13");
+        processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticSeasonOfYear", "Coptic season of year", COPTIC_SEASON, "1", "3");
     }
 
     private void processTimeField(
@@ -212,6 +307,29 @@ public class CodeGen {
             int startToStringPos = indexOfLineContaining(origLines, lastMethodSig, 0);
             int endToStringPos = indexOfEmptyLine(origLines, startToStringPos);
             methodLines = origLines.subList(endToStringPos + 1, origLines.size() - 1);
+        }
+        return methodLines;
+    }
+
+    private List<String> findImports(File file) throws Exception {
+        List<String> methodLines = Collections.emptyList();
+        if (file.exists()) {
+            List<String> origLines = readFile(file);
+            int start = indexOfLineContaining(origLines, "import ", 0);
+            int end = indexOfLineContaining(origLines, "/**", start);
+            methodLines = origLines.subList(start, end);
+        }
+        return methodLines;
+    }
+
+    private List<String> findClassComment(File file, String search) throws Exception {
+        List<String> methodLines = Collections.emptyList();
+        if (file.exists()) {
+            List<String> origLines = readFile(file);
+            int start = indexOfLineContaining(origLines, "/**", 0);
+            int end = indexOfLineContaining(origLines, "*/", start);
+            end = lastIndexOfLineContaining(origLines, search, end);
+            methodLines = origLines.subList(start + 1, end);
         }
         return methodLines;
     }
@@ -264,6 +382,16 @@ public class CodeGen {
 
     private int indexOfLineContaining(List<String> lines, String part, int start) throws Exception {
         for (int i = start; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (line.contains(part)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int lastIndexOfLineContaining(List<String> lines, String part, int end) throws Exception {
+        for (int i = end; i >= 0; i--) {
             String line = lines.get(i);
             if (line.contains(part)) {
                 return i;

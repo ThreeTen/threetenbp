@@ -35,8 +35,8 @@ import static javax.time.calendar.Calendars.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.period.Periods.*;
 
-import javax.time.calendar.CalendarDate;
-import javax.time.calendar.TimeOfDay;
+import javax.time.calendar.DateYMD;
+import javax.time.calendar.TimeHM;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
@@ -51,17 +51,17 @@ import javax.time.period.field.Days;
 public class TestFluentAPI {
 
     public static void main(String[] args) {
-        TimeOfDay tod = now().currentTime();
+        TimeHM tod = now().currentTimeHM();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
         
-        CalendarDate date = null;
+        DateYMD date = null;
         date = now().today().plusDays(3);
         date = now().today().plus(days(3));
         date = now().today().plus(Days.days(3));
         
-        date = calendarDate(2007, 3, 20);
-        date = calendarDate(year(Era.AD, 2007), march(), dayOfMonth(20));
+        date = date(2007, 3, 20);
+        date = date(year(Era.AD, 2007), march(), dayOfMonth(20));
         date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
         date = calendar().year(1972).december().dayOfMonth(3).build();
         date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
@@ -70,7 +70,7 @@ public class TestFluentAPI {
         date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
         date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
-        date = CalendarDate.calendarDate(now().currentMonth(), dayOfMonth(6));
+        date = DateYMD.date(now().currentMonth(), dayOfMonth(6));
         
         // different ways to build/use periods
         date = date.plus(yearsMonthsDays(2, 3, 1));
@@ -82,6 +82,16 @@ public class TestFluentAPI {
         
         tod.with(hourOfDay(12), minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
+        
+//        if (tod.hourOfDay().getAmPm().isAm()) {
+//            // handle morning
+//        }
+        
+//        CORBADate c = null;
+//        c.year = date.year().getValue();
+//        c.month = date.month().getText(symbols);
+//        c.day = date.day().getValue();
+        
         //int q = date.get(QuarterOfYear.class);
         //int hourOfDay = HourOfDay.of(tod).get();
         

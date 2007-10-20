@@ -31,10 +31,13 @@
  */
 package javax.time;
 
-import javax.time.calendar.CalendarDate;
-import javax.time.calendar.CalendarMonth;
-import javax.time.calendar.CalendarYear;
-import javax.time.calendar.TimeOfDay;
+import java.io.Serializable;
+
+import javax.time.calendar.DateYMD;
+import javax.time.calendar.TimeHM;
+import javax.time.calendar.TimeHMS;
+import javax.time.calendar.Year;
+import javax.time.calendar.YearMonth;
 
 /**
  * A facade for accessing the current time in the Java Time Framework.
@@ -46,9 +49,10 @@ public abstract class Now {
     //-----------------------------------------------------------------------
     /**
      * Gets an instance of <code>Now</code> that obtains the current datetime
-     * using the system millisecond clock - {@link System#currentTimeMillis()}.
+     * using the system millisecond clock - {@link System#currentTimeMillis()}
+     * and the default time zone - {@link java.util.TimeZone#getDefault()}.
      *
-     * @return an instance of now that uses the system clock
+     * @return an instance of now that uses the system clock in the default time zone
      */
     public static Now system() {
         return SystemMillis.INSTANCE;
@@ -65,66 +69,69 @@ public abstract class Now {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of CalendarYear representing the current year
-     * using the system clock in the default time zone.
+     * Gets an instance of Year representing the current year.
      *
      * @return a year object represnting the current year, never null
      */
-    public CalendarYear currentYear() {
+    public Year currentYear() {
         return null; //Year.currentYear();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of CalendarMonth representing the current month
-     * using the system clock in the default time zone.
+     * Gets an instance of YearMonth representing the current month.
      *
      * @return a month object represnting the current month, never null
      */
-    public CalendarMonth currentMonth() {
-        return CalendarMonth.yearMonth(2007, 6);
+    public YearMonth currentMonth() {
+        return YearMonth.yearMonth(2007, 6);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of CalendarDate representing today
-     * using the system clock in the default time zone.
+     * Gets an instance of DateYMD representing today.
      *
      * @return a day object represnting today, never null
      */
-    public CalendarDate today() {
-        return CalendarDate.yearMonthDay(2007, 6, 1);
+    public DateYMD today() {
+        return DateYMD.date(2007, 6, 1);
     }
 
     /**
-     * Gets an instance of CalendarDate representing yesterday
-     * using the system clock in the default time zone.
+     * Gets an instance of DateYMD representing yesterday.
      *
      * @return a day object represnting yesterday, never null
      */
-    public CalendarDate yesterday() {
-        return CalendarDate.yearMonthDay(2007, 6, 1);
+    public DateYMD yesterday() {
+        return DateYMD.date(2007, 6, 1);
     }
 
     /**
-     * Gets an instance of CalendarDate representing tomorrow
-     * using the system clock in the default time zone.
+     * Gets an instance of DateYMD representing tomorrow.
      *
      * @return a day object represnting tommorrow, never null
      */
-    public CalendarDate tomorrow() {
-        return CalendarDate.yearMonthDay(2007, 6, 1);
+    public DateYMD tomorrow() {
+        return DateYMD.date(2007, 6, 1);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of TimeOfDay representing the current time of day
-     * using the system clock in the default time zone.
+     * Gets an instance of TimeHM representing the current time of day.
      *
      * @return a time object represnting the current time of day, never null
      */
-    public TimeOfDay currentTime() {
-        return TimeOfDay.timeOfDay(12, 30);
+    public TimeHM currentTimeHM() {
+        return TimeHM.time(12, 30);
+    }
+
+    /**
+     * Gets an instance of TimeHMS representing the current time of day.
+     *
+     * @return a time object represnting the current time of day, never null
+     */
+    public TimeHMS currentTimeHMS() {
+        return TimeHMS.time(12, 30, 12);
     }
 
     //-----------------------------------------------------------------------
@@ -132,11 +139,19 @@ public abstract class Now {
      * Implementation of Now that always returns the latest time from
      * {@link System#currentTimeMillis()}.
      */
-    private static class SystemMillis extends Now {
-        /** The singleton instance. */
+    private static final class SystemMillis extends Now implements Serializable {
+        /**
+         * The singleton instance.
+         */
         private static final SystemMillis INSTANCE = new SystemMillis();
+        /**
+         * A serialization identifier for this instance.
+         */
+        private static final long serialVersionUID = 1L;
 
-        /** Restricted constructor. */
+        /**
+         * Restricted constructor.
+         */
         private SystemMillis() {
             super();
         }
