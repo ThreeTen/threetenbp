@@ -46,6 +46,10 @@ import java.util.Map;
 public final class Periods {
 
     /**
+     * Period range of forever.
+     */
+    public static final PeriodUnit FOREVER = PeriodUnit.createUnit("Forever");
+    /**
      * Period unit for years.
      */
     public static final PeriodUnit YEARS = PeriodUnit.createUnit("Years");
