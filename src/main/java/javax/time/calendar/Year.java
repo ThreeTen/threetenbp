@@ -72,7 +72,7 @@ public final class Year
      * The year 2BC is represented by -1.<br />
      *
      * @param isoYear  the ISO proleptic year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @return the created Year
+     * @return the created Year, never null
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year isoYear(int isoYear) {
@@ -110,7 +110,7 @@ public final class Year
      * a calendar year. For example, Century + YearOfCentury.
      *
      * @param calendricals  a set of calendricals that fully represent a calendar year
-     * @return a Year object
+     * @return a Year object, never null
      */
     public static Year year(Calendrical... calendricals) {
         return new Year(0);
