@@ -188,6 +188,64 @@ public class MathUtils {
 
     //-----------------------------------------------------------------------
     /**
+     * Safely increments an int.
+     *
+     * @param value  the value to increment
+     * @return the result
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeIncrement(int value) {
+        if (value == Integer.MAX_VALUE) {
+            throw new ArithmeticException("Integer.MAX_VALUE cannot be incremented");
+        }
+        return value + 1;
+    }
+
+    /**
+     * Safely increments a long.
+     *
+     * @param value  the value to increment
+     * @return the result
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeIncrement(long value) {
+        if (value == Long.MAX_VALUE) {
+            throw new ArithmeticException("Long.MAX_VALUE cannot be incremented");
+        }
+        return value + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Safely decrements an int.
+     *
+     * @param value  the value to decrement
+     * @return the result
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeDecrement(int value) {
+        if (value == Integer.MIN_VALUE) {
+            throw new ArithmeticException("Integer.MIN_VALUE cannot be decremented");
+        }
+        return value - 1;
+    }
+
+    /**
+     * Safely decrements a long.
+     *
+     * @param value  the value to decrement
+     * @return the result
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeDecrement(long value) {
+        if (value == Long.MIN_VALUE) {
+            throw new ArithmeticException("Long.MIN_VALUE cannot be decremented");
+        }
+        return value - 1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Safely convert a long to an int.
      *
      * @param value  the value to convert
