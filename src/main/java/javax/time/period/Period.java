@@ -39,13 +39,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.time.MathUtils;
-import javax.time.period.field.Days;
-import javax.time.period.field.Hours;
-import javax.time.period.field.Minutes;
-import javax.time.period.field.Months;
-import javax.time.period.field.Seconds;
-import javax.time.period.field.Weeks;
-import javax.time.period.field.Years;
 
 /**
  * An immutable period consisting of a number of period fields.
@@ -184,7 +177,7 @@ public final class Period implements PeriodView, Serializable {
      * @return the years field of the overall period
      */
     public int getYears() {
-        return getAmount(Years.UNIT);
+        return getAmount(Periods.YEARS);
     }
 
     /**
@@ -193,7 +186,7 @@ public final class Period implements PeriodView, Serializable {
      * @return the months field of the overall period
      */
     public int getMonths() {
-        return getAmount(Months.UNIT);
+        return getAmount(Periods.MONTHS);
     }
 
     /**
@@ -202,7 +195,7 @@ public final class Period implements PeriodView, Serializable {
      * @return the days field of the overall period
      */
     public int getDays() {
-        return getAmount(Days.UNIT);
+        return getAmount(Periods.DAYS);
     }
 
     /**
@@ -211,7 +204,7 @@ public final class Period implements PeriodView, Serializable {
      * @return the hours field of the overall period
      */
     public int getHours() {
-        return getAmount(Hours.UNIT);
+        return getAmount(Periods.HOURS);
     }
 
     /**
@@ -220,7 +213,7 @@ public final class Period implements PeriodView, Serializable {
      * @return the minutes field of the overall period
      */
     public int getMinutes() {
-        return getAmount(Minutes.UNIT);
+        return getAmount(Periods.MINUTES);
     }
 
     /**
@@ -229,7 +222,7 @@ public final class Period implements PeriodView, Serializable {
      * @return the seconds field of the overall period
      */
     public int getSeconds() {
-        return getAmount(Seconds.UNIT);
+        return getAmount(Periods.SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -333,7 +326,7 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period withYears(int years) {
-        return with(years, Years.UNIT);
+        return with(years, Periods.YEARS);
     }
 
     /**
@@ -345,7 +338,7 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period withMonths(int months) {
-        return with(months, Months.UNIT);
+        return with(months, Periods.MONTHS);
     }
 
     /**
@@ -357,7 +350,7 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period withDays(int days) {
-        return with(days, Days.UNIT);
+        return with(days, Periods.DAYS);
     }
 
     /**
@@ -369,7 +362,7 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period withHours(int hours) {
-        return with(hours, Hours.UNIT);
+        return with(hours, Periods.HOURS);
     }
 
     /**
@@ -381,7 +374,7 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period withMinutes(int minutes) {
-        return with(minutes, Minutes.UNIT);
+        return with(minutes, Periods.MINUTES);
     }
 
     /**
@@ -393,7 +386,7 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period withSeconds(int seconds) {
-        return with(seconds, Seconds.UNIT);
+        return with(seconds, Periods.SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -444,8 +437,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusYears(int years) {
-        int current = getAmount(Years.UNIT);
-        return with(MathUtils.safeAdd(years, current), Years.UNIT);
+        int current = getAmount(Periods.YEARS);
+        return with(MathUtils.safeAdd(years, current), Periods.YEARS);
     }
 
     /**
@@ -457,8 +450,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusMonths(int months) {
-        int current = getAmount(Months.UNIT);
-        return with(MathUtils.safeAdd(months, current), Months.UNIT);
+        int current = getAmount(Periods.MONTHS);
+        return with(MathUtils.safeAdd(months, current), Periods.MONTHS);
     }
 
     /**
@@ -470,8 +463,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusWeeks(int weeks) {
-        int current = getAmount(Weeks.UNIT);
-        return with(MathUtils.safeAdd(weeks, current), Weeks.UNIT);
+        int current = getAmount(Periods.WEEKS);
+        return with(MathUtils.safeAdd(weeks, current), Periods.WEEKS);
     }
 
     /**
@@ -483,8 +476,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusDays(int days) {
-        int current = getAmount(Days.UNIT);
-        return with(MathUtils.safeAdd(days, current), Days.UNIT);
+        int current = getAmount(Periods.DAYS);
+        return with(MathUtils.safeAdd(days, current), Periods.DAYS);
     }
 
     /**
@@ -496,8 +489,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusHours(int hours) {
-        int current = getAmount(Hours.UNIT);
-        return with(MathUtils.safeAdd(hours, current), Hours.UNIT);
+        int current = getAmount(Periods.HOURS);
+        return with(MathUtils.safeAdd(hours, current), Periods.HOURS);
     }
 
     /**
@@ -509,8 +502,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusMinutes(int minutes) {
-        int current = getAmount(Minutes.UNIT);
-        return with(MathUtils.safeAdd(minutes, current), Minutes.UNIT);
+        int current = getAmount(Periods.MINUTES);
+        return with(MathUtils.safeAdd(minutes, current), Periods.MINUTES);
     }
 
     /**
@@ -522,8 +515,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period plusSeconds(int seconds) {
-        int current = getAmount(Seconds.UNIT);
-        return with(MathUtils.safeAdd(seconds, current), Seconds.UNIT);
+        int current = getAmount(Periods.SECONDS);
+        return with(MathUtils.safeAdd(seconds, current), Periods.SECONDS);
     }
 
     //-----------------------------------------------------------------------
