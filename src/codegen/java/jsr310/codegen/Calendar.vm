@@ -56,8 +56,8 @@ ${line}
 #end
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * instance.
+     * Gets the calendrical state which provides internal access to
+     * this ${desc}.
      *
      * @return the calendar state for this instance, never null
      */
@@ -66,6 +66,17 @@ ${line}
         return null;  // TODO
     }
 
+    /**
+     * Gets the chronology that describes the calendar system rules for
+     * this ${desc}.
+     *
+     * @return the ISO chronology, never null
+     */
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Checks if the specified calendar field is supported.
      * <p>

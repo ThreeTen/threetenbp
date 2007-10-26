@@ -44,6 +44,7 @@ import javax.time.period.PeriodUnit;
  */
 public abstract class CalendricalState {
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the period unit that this state represents.
      * <p>
@@ -64,13 +65,16 @@ public abstract class CalendricalState {
      */
     public abstract PeriodUnit getPeriodRange();
 
+    //-----------------------------------------------------------------------
     /**
      * Checks is the specified field is supported.
      *
      * @param fieldRule  the field rule to check, null returns false
      * @return true if the field is supported, false if not
      */
-    public abstract boolean isSupported(TimeFieldRule fieldRule);
+    public boolean isSupported(TimeFieldRule fieldRule) {
+        return fieldRule.isSupported(getPeriodUnit(), getPeriodRange());
+    }
 
     /**
      * Gets the value of the specified field.
@@ -80,6 +84,30 @@ public abstract class CalendricalState {
      * @throws NullPointerException if the specified field rule is null
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
-    public abstract int get(TimeFieldRule fieldRule);
+    public int get(TimeFieldRule fieldRule) {
+        return fieldRule.getValue(this);
+    }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the number of days elapsed from the epoch.
+//     * <p>
+//     * The epoch is 1970-01-01, and that day should return 0.
+//     *
+//     * @return the number of elapsed days since the epoch
+//     * @throws UnsupportedCalendarFieldException if the implementation is time only
+//     */
+//    public abstract long getEpochDays();
+//
+//    /**
+//     * Gets the number of elapsed fractional units since the start of day.
+//     * <p>
+//     * This is typically measured in nanoseconds, and the first nanosecond of
+//     * the day returns 0..
+//     *
+//     * @return the number of elapsed fractional units since the start of day
+//     * @throws UnsupportedCalendarFieldException if the implementation is date only
+//     */
+//    public abstract long getFractionalDays();
 
 }

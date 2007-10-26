@@ -57,18 +57,22 @@ public final class DateYMD
      */
     private static final long serialVersionUID = -1187006174L;
 
+//    /**
+//     * Cache of the year being represented.
+//     */
+//    private final int year;
+//    /**
+//     * Cache of the month of year being represented.
+//     */
+//    private final int monthOfYear;
+//    /**
+//     * Cache of the day of month being represented.
+//     */
+//    private final int dayOfMonth;
     /**
-     * The year being represented.
+     * The calendrical state of this date.
      */
-    private final int year;
-    /**
-     * The month of year being represented.
-     */
-    private final int monthOfYear;
-    /**
-     * The day of month being represented.
-     */
-    private final int dayOfMonth;
+    private final CalendricalState state;
 
     //-----------------------------------------------------------------------
     /**
@@ -81,7 +85,8 @@ public final class DateYMD
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static DateYMD date(int year, int monthOfYear, int dayOfMonth) {
-        return new DateYMD(year, monthOfYear, dayOfMonth);
+//        CalendricalState state = CalendricalResolvers.strict().createYMD(State.EMPTY, year, monthOfYear, dayOfMonth);
+        return new DateYMD(null);
     }
 
     /**
@@ -95,33 +100,29 @@ public final class DateYMD
      * @return a DateYMD object, never null
      */
     public static DateYMD date(Calendrical... calendricals) {
-        return new DateYMD(0, 0, 0);
+        return new DateYMD(null);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param year  the year to represent
-     * @param monthOfYear  the month of year to represent
-     * @param dayOfMonth  the day of month to represent
+     * @param state  the valid date-time state, not null
      */
-    private DateYMD(int year, int monthOfYear, int dayOfMonth) {
-        this.year = year;
-        this.monthOfYear = monthOfYear;
-        this.dayOfMonth = dayOfMonth;
+    private DateYMD(CalendricalState state) {
+        this.state = state;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * instance.
+     * Gets the calendrical state which provides internal access to the
+     * calendrical data of this instance.
      *
      * @return the calendar state for this instance, never null
      */
     @Override
     public CalendricalState getCalendricalState() {
-        return null;  // TODO
+        return state;
     }
 
     /**
@@ -165,7 +166,7 @@ public final class DateYMD
      * @return the year, from MIN_VALUE + 1 to MAX_VALUE
      */
     public int getYear() {
-        return 0;
+        return ISOChronology.INSTANCE.yearRule().getValue(state);
     }
 
     /**
@@ -174,7 +175,8 @@ public final class DateYMD
      * @return the month of year, never null
      */
     public MonthOfYear getMonthOfYear() {
-        return null;
+        int month = ISOChronology.INSTANCE.monthOfYearRule().getValue(state);
+        return MonthOfYear.monthOfYear(month);
     }
 
     /**
@@ -183,7 +185,7 @@ public final class DateYMD
      * @return the day of year, from 1 to 366
      */
     public int getDayOfYear() {
-        return 0;
+        return ISOChronology.INSTANCE.dayOfYearRule().getValue(state);
     }
 
     /**
@@ -192,7 +194,7 @@ public final class DateYMD
      * @return the day of month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return 0;
+        return ISOChronology.INSTANCE.dayOfMonthRule().getValue(state);
     }
 
     /**
@@ -201,7 +203,8 @@ public final class DateYMD
      * @return the day of week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        return null;
+        int dow = ISOChronology.INSTANCE.dayOfWeekRule().getValue(state);
+        return DayOfWeek.dayOfWeek(dow);
     }
 
     //-----------------------------------------------------------------------
@@ -239,7 +242,11 @@ public final class DateYMD
      * @return a new updated DateYMD, never null
      */
     public DateYMD withYear(int year) {
-        return null;
+        if (year == getYear()) {
+            return this;
+        }
+        CalendricalState newState = CalendricalResolvers.strict().set(ISOChronology.INSTANCE.yearRule(), state, year);
+        return new DateYMD(newState);
     }
 
     /**
@@ -361,6 +368,11 @@ public final class DateYMD
      * @return a new updated DateYMD, never null
      */
     public DateYMD plusMonths(int months) {
+//        if (months == 0) {
+//            return this;
+//        }
+//        DTState state = ISOChronology.STRATEGY_STRICT.plus(ISOChronology.INSTANCE.months(), state, months);
+//        return new DateYMD(state);
         return null;
     }
 
@@ -460,5 +472,39 @@ public final class DateYMD
     public String toString() {
         return super.toString();
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Internal state class providing calendrical information.
+//     *
+//     * @author Stephen Colebourne
+//     */
+//    private static final class State extends CalendricalState {
+//        /** The singleton instance. */
+//        private static final State EMPTY = new State();
+//        /** The epoch days. */
+//        private long epochDays;
+//        
+//        /** {@inheritDoc} */
+//        @Override
+//        public long getEpochDays() {
+//            return epochDays;
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public long getFractionalDays() {
+//            throw new UnsupportedCalendarFieldException("DateYMD does not support fractional days");
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public PeriodUnit getPeriodRange() {
+//            return Periods.FOREVER;
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public PeriodUnit getPeriodUnit() {
+//            return Periods.DAYS;
+//        }
+//    }
 
 }

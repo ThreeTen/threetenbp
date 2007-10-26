@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
@@ -59,7 +60,12 @@ public final class DateTimeHM
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = -1751148032L;
-
+    /** Number of months in one year. */
+    private static final int MONTHS_PER_YEAR = 12;
+    /** Number of days in one week. */
+    private static final int DAYS_PER_WEEK = 7;
+    /** Number of seconds in one day. */
+    private static final int MINUTES_PER_DAY = 60 * 24;
     /** Number of seconds in one hour. */
     private static final int MINUTES_PER_HOUR = 60;
 
@@ -70,17 +76,37 @@ public final class DateTimeHM
     /**
      * The month of year being represented.
      */
-    private final int monthOfYear;
+    private final byte monthOfYear;
     /**
      * The day of month being represented.
      */
-    private final int dayOfMonth;
+    private final byte dayOfMonth;
     /**
      * The minute of day.
      */
-    private final int minuteOfDay;
+    private final short minuteOfDay;
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Obtains an instance of <code>DateTimeHM</code>.
+//     *
+//     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+//     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+//     * @param dayOfMonth  the day of month to represent, from 1 to 31
+//     * @param minuteOfDay  the minute of day to represent, from 0 to 1439
+//     * @return a DateTimeHM instance
+//     * @throws IllegalCalendarFieldValueException if any field is invalid
+//     */
+//    private static DateTimeHM dateTime(int year, int monthOfYear, int dayOfMonth, int minuteOfDay) {
+//        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+//            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+//            year = resolved[0];
+//            monthOfYear = resolved[1];
+//            dayOfMonth = resolved[2];
+//        }
+//        return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
+//    }
+
     /**
      * Obtains an instance of <code>DateTimeHM</code>.
      *
@@ -93,12 +119,14 @@ public final class DateTimeHM
      * @throws IllegalCalendarFieldValueException if either field is invalid
      */
     public static DateTimeHM dateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
-//        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
-//            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
-//            year = resolved[0];
-//            monthOfYear = resolved[1];
-//            dayOfMonth = resolved[2];
-//        }
+        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+            year = resolved[0];
+            monthOfYear = resolved[1];
+            dayOfMonth = resolved[2];
+        }
+        HourOfDay.RULE.checkValue(hourOfDay);
+        HourOfDay.RULE.checkValue(minuteOfHour);
         return new DateTimeHM(year, monthOfYear, dayOfMonth, hourOfDay * MINUTES_PER_HOUR + minuteOfHour);
     }
 
@@ -127,9 +155,9 @@ public final class DateTimeHM
      */
     private DateTimeHM(int year, int monthOfYear, int dayOfMonth, int minuteOfDay) {
         this.year = year;
-        this.monthOfYear = monthOfYear;
-        this.dayOfMonth = dayOfMonth;
-        this.minuteOfDay = minuteOfDay;
+        this.monthOfYear = (byte) monthOfYear;
+        this.dayOfMonth = (byte) dayOfMonth;
+        this.minuteOfDay = (short) minuteOfDay;
     }
 
     //-----------------------------------------------------------------------
@@ -171,7 +199,10 @@ public final class DateTimeHM
         if (!isSupported(field)) {
             throw new UnsupportedCalendarFieldException("DateTimeHM does not support field " + field.getName());
         }
-        return 0;
+        if (field == ISOChronology.INSTANCE.yearRule()) {
+            return year;
+        }
+        return field.getValue(getCalendricalState());
     }
 
     //-----------------------------------------------------------------------
@@ -185,7 +216,7 @@ public final class DateTimeHM
      * @return the year, from MIN_VALUE + 1 to MAX_VALUE
      */
     public int getYear() {
-        return 0;
+        return year;
     }
 
     /**
@@ -194,7 +225,7 @@ public final class DateTimeHM
      * @return the month of year, never null
      */
     public MonthOfYear getMonthOfYear() {
-        return null;
+        return MonthOfYear.monthOfYear(monthOfYear);
     }
 
     /**
@@ -203,7 +234,7 @@ public final class DateTimeHM
      * @return the day of year, from 1 to 366
      */
     public int getDayOfYear() {
-        return 0;
+        return ISOChronology.INSTANCE.getDayOfYear(year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -212,7 +243,7 @@ public final class DateTimeHM
      * @return the day of month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return 0;
+        return dayOfMonth;
     }
 
     /**
@@ -230,16 +261,7 @@ public final class DateTimeHM
      * @return the hour of day, from 0 to 23
      */
     public int getHourOfDay() {
-        return 0;
-    }
-
-    /**
-     * Gets the hour of day instance.
-     *
-     * @return the hour of day, never null
-     */
-    public HourOfDay hourOfDay() {
-        return HourOfDay.hourOfDay(getHourOfDay());
+        return minuteOfDay / MINUTES_PER_HOUR;
     }
 
     /**
@@ -248,7 +270,7 @@ public final class DateTimeHM
      * @return the minute of hour, from 0 to 59
      */
     public int getMinuteOfHour() {
-        return 0;
+        return minuteOfDay % MINUTES_PER_HOUR;
     }
 
     //-----------------------------------------------------------------------
@@ -286,7 +308,14 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM withYear(int year) {
-        return null;
+        if (this.year == year) {
+            return this;
+        }
+        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+            int[] resolved = CalendricalResolvers.previousValidDay().resolveYMD(year, monthOfYear, dayOfMonth);
+            return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
+        }
+        return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
     }
 
     /**
@@ -298,7 +327,14 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM withMonthOfYear(int monthOfYear) {
-        return null;
+        if (this.monthOfYear == monthOfYear) {
+            return this;
+        }
+        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+            int[] resolved = CalendricalResolvers.previousValidDay().resolveYMD(year, monthOfYear, dayOfMonth);
+            return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
+        }
+        return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
     }
 
     /**
@@ -321,7 +357,7 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM withLastDayOfYear() {
-        return null;
+        return new DateTimeHM(year, 12, 31, minuteOfDay);
     }
 
     /**
@@ -333,7 +369,14 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM withDayOfMonth(int dayOfMonth) {
-        return null;
+        if (this.dayOfMonth == dayOfMonth) {
+            return this;
+        }
+        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+            return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
+        }
+        return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
     }
 
     /**
@@ -344,7 +387,11 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM withLastDayOfMonth() {
-        return null;
+        int dom = ISOChronology.INSTANCE.getMonthLength(year, monthOfYear);
+        if (this.dayOfMonth == dom) {
+            return this;
+        }
+        return new DateTimeHM(year, monthOfYear, dom, minuteOfDay);
     }
 
     /**
@@ -373,7 +420,14 @@ public final class DateTimeHM
      * @return a new updated ZonedDateTime
      */
     public DateTimeHM withDate(int year, int monthOfYear, int dayOfMonth) {
-        return null;
+        if (this.year == year && this.dayOfMonth == dayOfMonth && this.dayOfMonth == dayOfMonth) {
+            return this;
+        }
+        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+            return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
+        }
+        return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
     }
 
     /**
@@ -453,7 +507,11 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM plusYears(int years) {
-        return null;
+        if (years == 0) {
+            return this;
+        }
+        int newYear = MathUtils.safeAdd(year, years);
+        return withYear(newYear);
     }
 
     /**
@@ -463,9 +521,22 @@ public final class DateTimeHM
      *
      * @param months  the months to add
      * @return a new updated DateTimeHM, never null
+     * @throws ArithmeticException if the result overflows a field
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public DateTimeHM plusMonths(int months) {
-        return null;
+        if (months == 0) {
+            return this;
+        }
+        long newMonth0 = monthOfYear - 1;
+        newMonth0 = newMonth0 + months;
+        int years = (int) (newMonth0 / MONTHS_PER_YEAR);
+        newMonth0 = Math.abs(newMonth0) % MONTHS_PER_YEAR;
+        if (years < 0) {
+            years--;
+        }
+        int newYear = MathUtils.safeAdd(year, years);
+        return withDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
     }
 
     /**
@@ -477,7 +548,7 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM plusWeeks(int weeks) {
-        return null;
+        return plusDays(((long) weeks) * DAYS_PER_WEEK);
     }
 
     /**
@@ -489,7 +560,40 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM plusDays(int days) {
-        return null;
+        return plusDays((long) days);
+    }
+
+    /**
+     * Returns a copy of this DateTimeHM with the specified number of days added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to add
+     * @return a new updated DateTimeHM, never null
+     */
+    private DateTimeHM plusDays(long days) {
+        if (days == 0) {
+            return this;
+        }
+        int monthLen = ISOChronology.INSTANCE.getMonthLength(year, monthOfYear);
+        long possDOM = dayOfMonth + days;
+        if (possDOM >= 1) {
+            if (possDOM <= monthLen) {
+                // same month
+                return new DateTimeHM(year, monthOfYear, (int) possDOM, minuteOfDay);
+            } else if (possDOM <= monthLen + 28) {
+                // next month (28 guarantees only one month later)
+                possDOM -= monthLen;
+                if (monthOfYear == 12) {
+                    return new DateTimeHM(MathUtils.safeIncrement(year), 1, (int) possDOM, minuteOfDay);
+                } else {
+                    return new DateTimeHM(year, monthOfYear + 1, (int) possDOM, minuteOfDay);
+                }
+            }
+        }
+        long epochDays = 0L;
+        epochDays += days;
+        return null;  // return new DateTimeHM(...)
     }
 
     /**
@@ -501,7 +605,7 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM plusHours(int hours) {
-        return null;
+        return plusMinutes(MathUtils.safeMultiply((long) hours, MINUTES_PER_HOUR));
     }
 
     /**
@@ -513,7 +617,28 @@ public final class DateTimeHM
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM plusMinutes(int minutes) {
-        return null;
+        return plusMinutes((long) minutes);
+    }
+
+    /**
+     * Returns a copy of this DateTimeHM with the specified number of minutes added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param minutes  the minutes to add
+     * @return a new updated DateTimeHM, never null
+     */
+    private DateTimeHM plusMinutes(long minutes) {
+        if (minutes == 0) {
+            return this;
+        }
+        minutes += minuteOfDay;
+        int days = (int) (minutes / MINUTES_PER_DAY);
+        int newMinute = (int) (Math.abs(minutes) % MINUTES_PER_DAY);
+        if (days < 0) {
+            days--;
+        }
+        return new DateTimeHM(year, monthOfYear, dayOfMonth, newMinute).plusDays(days);
     }
 
     //-----------------------------------------------------------------------
@@ -563,8 +688,11 @@ public final class DateTimeHM
             return true;
         }
         if (other instanceof DateTimeHM) {
-            DateTimeHM dateTimeHM = (DateTimeHM) other;
-            return  true;
+            DateTimeHM otherDT = (DateTimeHM) other;
+            return this.year == otherDT.year &&
+                   this.monthOfYear == otherDT.monthOfYear &&
+                   this.dayOfMonth == otherDT.dayOfMonth &&
+                   this.minuteOfDay == otherDT.minuteOfDay;
         }
         return false;
     }
@@ -576,7 +704,7 @@ public final class DateTimeHM
      */
     @Override
     public int hashCode() {
-        return 0;
+        return (year & 0x80000000) | ((year << 22) + (monthOfYear << 17) + (dayOfMonth << 11) + minuteOfDay);
     }
 
     /**
@@ -586,7 +714,17 @@ public final class DateTimeHM
      */
     @Override
     public String toString() {
-        return super.toString();
+        return new StringBuilder(16)
+            .append(year)
+            .append(monthOfYear < 10 ? "-0" : "-")
+            .append(monthOfYear)
+            .append(dayOfMonth < 10 ? "-0" : "-")
+            .append(dayOfMonth)
+            .append(getHourOfDay() < 10 ? "T0" : "T")
+            .append(getHourOfDay())
+            .append(getMinuteOfHour() < 10 ? ":0" : ":")
+            .append(getMinuteOfHour())
+            .toString();
     }
 
 }

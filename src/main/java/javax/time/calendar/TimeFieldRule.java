@@ -157,6 +157,21 @@ public abstract class TimeFieldRule {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the value is invalid and throws an exception if it is.
+     * This method has no context, so only the outer minimum and maximum
+     * values are used.
+     *
+     * @param value  the value to check
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     */
+    public void checkValue(int value) {
+        if (value < getMinimumValue() || value > getMaximumValue()) {
+            throw new IllegalCalendarFieldValueException(getName(), value, getMinimumValue(), getMaximumValue());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Is the set of values, from the minimum value to the maximum, a fixed
      * set, or does it vary according to other fields.
      *

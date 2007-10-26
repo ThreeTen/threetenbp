@@ -33,6 +33,7 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -62,7 +63,7 @@ public enum MonthOfYear implements Calendrical {
         /** {@inheritDoc} */
         @Override
         public int lengthInDays(int year) {
-            if (Year.year(year).isLeap()) {
+            if (ISOChronology.INSTANCE.isLeapYear(year)) {
                 return 29;
             }
             return 28;
