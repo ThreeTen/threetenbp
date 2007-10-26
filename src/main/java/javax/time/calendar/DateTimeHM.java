@@ -60,6 +60,78 @@ public final class DateTimeHM
      */
     private static final long serialVersionUID = -1751148032L;
 
+    /** Number of seconds in one hour. */
+    private static final int MINUTES_PER_HOUR = 60;
+
+    /**
+     * The year being represented.
+     */
+    private final int year;
+    /**
+     * The month of year being represented.
+     */
+    private final int monthOfYear;
+    /**
+     * The day of month being represented.
+     */
+    private final int dayOfMonth;
+    /**
+     * The minute of day.
+     */
+    private final int minuteOfDay;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>DateTimeHM</code>.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @return a DateTimeHM instance
+     * @throws IllegalCalendarFieldValueException if either field is invalid
+     */
+    public static DateTimeHM dateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
+//        if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
+//            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+//            year = resolved[0];
+//            monthOfYear = resolved[1];
+//            dayOfMonth = resolved[2];
+//        }
+        return new DateTimeHM(year, monthOfYear, dayOfMonth, hourOfDay * MINUTES_PER_HOUR + minuteOfHour);
+    }
+
+    /**
+     * Obtains an instance of <code>DateTimeHM</code> with the time fields
+     * set to midnight.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return a DateTimeHM instance
+     * @throws IllegalCalendarFieldValueException if either field is invalid
+     */
+    public static DateTimeHM dateMidnight(int year, int monthOfYear, int dayOfMonth) {
+        return dateTime(year, monthOfYear, dayOfMonth, 0, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Constructor.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param minuteOfDay  the minute of day to represent, from 0 to 1439
+     */
+    private DateTimeHM(int year, int monthOfYear, int dayOfMonth, int minuteOfDay) {
+        this.year = year;
+        this.monthOfYear = monthOfYear;
+        this.dayOfMonth = dayOfMonth;
+        this.minuteOfDay = minuteOfDay;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
