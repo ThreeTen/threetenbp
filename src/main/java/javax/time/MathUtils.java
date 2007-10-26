@@ -194,7 +194,7 @@ public class MathUtils {
      * @return the result
      * @throws ArithmeticException if the result overflows a long
      */
-    public static long safeIncrement(int value) {
+    public static int safeIncrement(int value) {
         if (value == Integer.MAX_VALUE) {
             throw new ArithmeticException("Integer.MAX_VALUE cannot be incremented");
         }
@@ -223,7 +223,7 @@ public class MathUtils {
      * @return the result
      * @throws ArithmeticException if the result overflows a long
      */
-    public static long safeDecrement(int value) {
+    public static int safeDecrement(int value) {
         if (value == Integer.MIN_VALUE) {
             throw new ArithmeticException("Integer.MIN_VALUE cannot be decremented");
         }
