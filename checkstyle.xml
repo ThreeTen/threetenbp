@@ -92,7 +92,7 @@
       <module name="RightCurly">
         <property name="option" value="same" />
       </module>
-      <module name="SimplifyBooleanExpression" />
+      <!--module name="SimplifyBooleanExpression" /-->
       <module name="SimplifyBooleanReturn" />
       <module name="StaticVariableName" />
       <module name="TabCharacter" />
@@ -108,7 +108,8 @@
 
       <module name="GenericIllegalRegexp">
         <!-- \s matches whitespace character, $ matches end of line. -->
-        <property name="format" value="\s$"/>
+        <property name="format" value="[^ ][ ]+$"/>
+        <property name="message" value="No whitespace at the end of lines"/>
       </module>
 
     </module>
