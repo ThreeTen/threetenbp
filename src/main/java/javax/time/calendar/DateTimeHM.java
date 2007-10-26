@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
@@ -106,7 +107,7 @@ public final class DateTimeHM
             dayOfMonth = resolved[2];
         }
         HourOfDay.RULE.checkValue(hourOfDay);
-        HourOfDay.RULE.checkValue(minuteOfHour);
+        MinuteOfHour.RULE.checkValue(minuteOfHour);
         return new DateTimeHM(year, monthOfYear, dayOfMonth, hourOfDay * MINUTES_PER_HOUR + minuteOfHour);
     }
 
