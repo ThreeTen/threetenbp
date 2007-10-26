@@ -287,4 +287,23 @@ public class TestDateTimeHM {
         assertEquals(TEST_2007_07_15.equals("2007-07-15"), false);
     }
 
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sampleToString")
+    Object[][] provider_sampleToString() {
+        return new Object[][] {
+            {2008, 7, 5, 4, 3, "2008-07-05T04:03"},
+            {2007, 12, 31, 23, 59, "2007-12-31T23:59"},
+//            {-1, 1, 2, 3, 0, "-0001-01-02T03:00"},
+        };
+    }
+
+    @Test(dataProvider="sampleToString")
+    public void test_toString(int y, int m, int d, int h, int min, String expected) {
+        DateTimeHM t = DateTimeHM.dateTime(y, m, d, h, min);
+        String str = t.toString();
+        assertEquals(str, expected);
+    }
+
 }
