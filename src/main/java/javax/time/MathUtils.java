@@ -112,12 +112,29 @@ public class MathUtils {
      * @throws ArithmeticException if the result overflows an int
      */
     public static int safeSubtract(int a, int b) {
-        int sum = a - b;
+        int result = a - b;
         // check for a change of sign in the result when the inputs have the different signs
-        if ((a ^ sum) < 0 && (a ^ b) < 0) {
+        if ((a ^ result) < 0 && (a ^ b) < 0) {
             throw new ArithmeticException("Subtraction overflows an int: " + a + " - " + b);
         }
-        return sum;
+        return result;
+    }
+
+    /**
+     * Safely subtracts one long from another.
+     *
+     * @param a  the first value
+     * @param b  the second value to subtract from the first
+     * @return the result
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeSubtract(long a, long b) {
+        long result = a - b;
+        // check for a change of sign in the result when the inputs have the different signs
+        if ((a ^ result) < 0 && (a ^ b) < 0) {
+            throw new ArithmeticException("Subtraction overflows a long: " + a + " - " + b);
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
