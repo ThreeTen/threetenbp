@@ -85,7 +85,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * a zero nanosecond fraction.
      *
      * @param epochSeconds  the number of seconds
-     * @return the created Duration
+     * @return the created Duration, never null
      */
     public static Duration duration(long epochSeconds) {
         return new Duration(epochSeconds, 0);
@@ -97,7 +97,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param epochSeconds  the number of seconds
      * @param nanoOfSecond  the nanoseconds within the second, must be positive
-     * @return the created Duration
+     * @return the created Duration, never null
      * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
      */
     public static Duration duration(long epochSeconds, int nanoOfSecond) {
@@ -116,7 +116,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * with no further fraction of a second.
      *
      * @param epochMillis  the number of milliseconds
-     * @return the created Duration
+     * @return the created Duration, never null
      * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
      */
     public static Duration millisDuration(long epochMillis) {
@@ -136,7 +136,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param epochMillis  the number of milliseconds
      * @param nanoOfMillisecond  the nanoseconds within the millisecond, must be positive
-     * @return the created Duration
+     * @return the created Duration, never null
      * @throws IllegalArgumentException if nanoOfMillisecond is not in the range 0 to 999,999
      */
     public static Duration millisDuration(long epochMillis, int nanoOfMillisecond) {
@@ -154,6 +154,26 @@ public class Duration implements Comparable<Duration>, Serializable {
             return new Duration(epochSeconds - 1, millis * 1000000 + nanoOfMillisecond);
         }
         return new Duration(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000 + nanoOfMillisecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Factory method to create an instance of Duration representing the
+     * duration between two instants. This method may return a negative
+     * duration if the end is after the start.
+     *
+     * @param startInclusive  the start instant, inclusive, not null
+     * @param endExclusive  the end instant, exclusive, not null
+     * @return the created Duration, never null
+     */
+    public static Duration durationBetween(Instant startInclusive, Instant endExclusive) {
+        long secs = MathUtils.safeSubtract(endExclusive.getEpochSeconds(), startInclusive.getEpochSeconds());
+        int nanos = endExclusive.getNanoOfSecond() - startInclusive.getNanoOfSecond();
+        if (nanos < 0) {
+            nanos += NANOS_PER_SECOND;
+            secs = MathUtils.safeDecrement(secs);
+        }
+        return new Duration(secs, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -199,6 +219,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param duration  the duration to add, not null
      * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public Duration plus(Duration duration) {
         long secsToAdd = duration.durationSeconds;
@@ -226,12 +247,14 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param secondsToAdd  the seconds to add
      * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public Duration plusSeconds(long secondsToAdd) {
         if (secondsToAdd == 0) {
             return this;
         }
-        return new Duration(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nanoOfSecond);
+        long secs = MathUtils.safeAdd(durationSeconds, secondsToAdd);
+        return new Duration(secs , nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -242,6 +265,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param millisToAdd  the milliseconds to add
      * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public Duration plusMillis(long millisToAdd) {
         if (millisToAdd == 0) {
@@ -270,6 +294,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param nanosToAdd  the nanoseconds to add
      * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public Duration plusNanos(long nanosToAdd) {
         if (nanosToAdd == 0) {
@@ -298,6 +323,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param multiplicand  the value to multiply the duration by
      * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
      */
     public Duration multipliedBy(int multiplicand) {
         if (multiplicand == 0) {
@@ -318,9 +344,32 @@ public class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this Duration divided by the specified value.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param divisor  the value to divide the duration by
+     * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Duration dividedBy(int divisor) {
+        if (divisor == 0) {
+            throw new ArithmeticException("Cannot divide by zero");
+        }
+        if (divisor == 1) {
+            return this;
+        }
+        // TODO
+        long secs = durationSeconds / divisor;
+        long nos = nanoOfSecond / Math.abs(divisor);
+        return new Duration(secs, (int) nos);
+     }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this Duration to another.
      *
-     * @param otherDuration  the other instant to compare to, not null
+     * @param otherDuration  the other duration to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDuration is null
      */
@@ -333,24 +382,24 @@ public class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * Is this Duration after the specified one.
+     * Is this Duration greater than the specified one.
      *
-     * @param otherDuration  the other instant to compare to, not null
-     * @return true if this instant is after the specified instant
+     * @param otherDuration  the other duration to compare to, not null
+     * @return true if this duration is greater than the specified duration
      * @throws NullPointerException if otherDuration is null
      */
-    public boolean isAfter(Duration otherDuration) {
+    public boolean isGreaterThan(Duration otherDuration) {
         return compareTo(otherDuration) > 0;
     }
 
     /**
-     * Is this Duration before the specified one.
+     * Is this Duration less than the specified one.
      *
-     * @param otherDuration  the other instant to compare to, not null
-     * @return true if this instant is before the specified instant
+     * @param otherDuration  the other duration to compare to, not null
+     * @return true if this duration is less than the specified duration
      * @throws NullPointerException if otherDuration is null
      */
-    public boolean isBefore(Duration otherDuration) {
+    public boolean isLessThan(Duration otherDuration) {
         return compareTo(otherDuration) < 0;
     }
 
@@ -358,8 +407,8 @@ public class Duration implements Comparable<Duration>, Serializable {
     /**
      * Is this Duration equal to that specified.
      *
-     * @param otherDuration  the other instant, null returns false
-     * @return true if the other instant is equal to this one
+     * @param otherDuration  the other duration, null returns false
+     * @return true if the other duration is equal to this one
      */
     @Override
     public boolean equals(Object otherDuration) {

@@ -176,6 +176,27 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    @DataProvider(name="DurationBetween")
+    Object[][] provider_factory_durationBetween_Instant_Instant() {
+        return new Object[][] {
+            {0, 0, 0, 0, 0, 0},
+            {3, 0, 7, 0, 4, 0},
+            {3, 20, 7, 50, 4, 30},
+            {3, 80, 7, 50, 3, 999999970},
+            {7, 0, 3, 0, -4, 0},
+        };
+    }
+
+    @Test(dataProvider="DurationBetween")
+    public void factory_durationBetween_Instant_Instant(long secs1, int nanos1, long secs2, int nanos2, long expectedSeconds, int expectedNanoOfSecond) {
+        Instant start = Instant.instant(secs1, nanos1);
+        Instant end = Instant.instant(secs2, nanos2);
+        Duration t = Duration.durationBetween(start, end);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
         Duration orginal = Duration.duration(2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -214,18 +235,18 @@ public class TestDuration {
                 Duration b = durations[j];
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.isLessThan(b), true, a + " <=> " + b);
+                    assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else if (i > j) {
                     assertEquals(a.compareTo(b), 1, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
+                    assertEquals(a.isLessThan(b), false, a + " <=> " + b);
+                    assertEquals(a.isGreaterThan(b), true, a + " <=> " + b);
                     assertEquals(a.equals(b), false, a + " <=> " + b);
                 } else {
                     assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.isLessThan(b), false, a + " <=> " + b);
+                    assertEquals(a.isGreaterThan(b), false, a + " <=> " + b);
                     assertEquals(a.equals(b), true, a + " <=> " + b);
                 }
             }
@@ -239,15 +260,15 @@ public class TestDuration {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_isBefore_ObjectNull() {
+    public void test_isLessThan_ObjectNull() {
         Duration a = Duration.duration(0L, 0);
-        a.isBefore(null);
+        a.isLessThan(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_isAfter_ObjectNull() {
+    public void test_isGreaterThan_ObjectNull() {
         Duration a = Duration.duration(0L, 0);
-        a.isAfter(null);
+        a.isGreaterThan(null);
     }
 
     //-----------------------------------------------------------------------
