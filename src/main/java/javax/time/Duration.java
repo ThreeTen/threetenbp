@@ -87,7 +87,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * @param epochSeconds  the number of seconds
      * @return the created Duration
      */
-    public static Duration instant(long epochSeconds) {
+    public static Duration duration(long epochSeconds) {
         return new Duration(epochSeconds, 0);
     }
 
@@ -100,7 +100,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      * @return the created Duration
      * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
      */
-    public static Duration instant(long epochSeconds, int nanoOfSecond) {
+    public static Duration duration(long epochSeconds, int nanoOfSecond) {
         if (nanoOfSecond < 0) {
             throw new IllegalArgumentException("NanoOfSecond must be positive but was " + nanoOfSecond);
         }
