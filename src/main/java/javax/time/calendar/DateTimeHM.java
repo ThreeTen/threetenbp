@@ -91,7 +91,7 @@ public final class DateTimeHM
     /**
      * Obtains an instance of <code>DateTimeHM</code>.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param hourOfDay  the hour of day to represent, from 0 to 23
@@ -101,7 +101,7 @@ public final class DateTimeHM
      */
     public static DateTimeHM dateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
         if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
-            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+            int[] resolved = CalendricalResolvers.strict().resolveDate(year, monthOfYear, dayOfMonth);
             year = resolved[0];
             monthOfYear = resolved[1];
             dayOfMonth = resolved[2];
@@ -115,7 +115,7 @@ public final class DateTimeHM
      * Obtains an instance of <code>DateTimeHM</code> with the time fields
      * set to midnight.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a DateTimeHM instance
@@ -129,7 +129,7 @@ public final class DateTimeHM
     /**
      * Constructor.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param minuteOfDay  the minute of day to represent, from 0 to 1439
@@ -194,7 +194,7 @@ public final class DateTimeHM
      * The year 1BC is represented by 0.<br />
      * The year 2BC is represented by -1.<br />
      *
-     * @return the year, from MIN_VALUE + 1 to MAX_VALUE
+     * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
         return year;
@@ -285,7 +285,7 @@ public final class DateTimeHM
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated DateTimeHM, never null
      */
     public DateTimeHM withYear(int year) {
@@ -293,7 +293,7 @@ public final class DateTimeHM
             return this;
         }
         if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
-            int[] resolved = CalendricalResolvers.previousValidDay().resolveYMD(year, monthOfYear, dayOfMonth);
+            int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
             return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
         }
         return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
@@ -312,7 +312,7 @@ public final class DateTimeHM
             return this;
         }
         if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
-            int[] resolved = CalendricalResolvers.previousValidDay().resolveYMD(year, monthOfYear, dayOfMonth);
+            int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
             return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
         }
         return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
@@ -354,7 +354,7 @@ public final class DateTimeHM
             return this;
         }
         if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
-            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+            int[] resolved = CalendricalResolvers.strict().resolveDate(year, monthOfYear, dayOfMonth);
             return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
         }
         return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
@@ -395,7 +395,7 @@ public final class DateTimeHM
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated ZonedDateTime
@@ -405,7 +405,7 @@ public final class DateTimeHM
             return this;
         }
         if (ISOChronology.INSTANCE.validateDate(year, monthOfYear, dayOfMonth) == false) {
-            int[] resolved = CalendricalResolvers.strict().resolveYMD(year, monthOfYear, dayOfMonth);
+            int[] resolved = CalendricalResolvers.strict().resolveDate(year, monthOfYear, dayOfMonth);
             return new DateTimeHM(resolved[0], resolved[1], resolved[2], minuteOfDay);
         }
         return new DateTimeHM(year, monthOfYear, dayOfMonth, minuteOfDay);
@@ -696,7 +696,7 @@ public final class DateTimeHM
     @Override
     public String toString() {
         return new StringBuilder(16)
-            .append(year)
+            .append(year)  // TODO: padding
             .append(monthOfYear < 10 ? "-0" : "-")
             .append(monthOfYear)
             .append(dayOfMonth < 10 ? "-0" : "-")
