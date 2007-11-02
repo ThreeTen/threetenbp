@@ -510,7 +510,7 @@ public final class ISOChronology implements Serializable {
     static final class DayOfMonthRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public DayOfMonthRule() {
-            super("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 30);
+            super("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
         }
 
         /**
