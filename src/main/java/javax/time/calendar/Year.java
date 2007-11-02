@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
 import javax.time.calendar.field.Era;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
@@ -52,6 +53,15 @@ public final class Year
         implements Calendrical, Comparable<Year>, Serializable {
 
     /**
+     * Constant for the minimum year on the proleptic ISO calendar system.
+     */
+    public static final int MIN_YEAR = Integer.MIN_VALUE + 2;
+    /**
+     * Constant for the maximum year on the proleptic ISO calendar system,
+     * which is the same as the maximum for year of era.
+     */
+    public static final int MAX_YEAR = Integer.MAX_VALUE;
+    /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 2751581L;
@@ -67,15 +77,17 @@ public final class Year
      * <p>
      * This method accepts a year value from the proleptic ISO calendar system.
      * <p>
-     * The year 1AD is represented by 1.<br />
-     * The year 1BC is represented by 0.<br />
-     * The year 2BC is represented by -1.<br />
+     * The year 2AD/CE is represented by 2.<br />
+     * The year 1AD/CE is represented by 1.<br />
+     * The year 1BC/BCE is represented by 0.<br />
+     * The year 2BC/BCE is represented by -1.<br />
      *
-     * @param isoYear  the ISO proleptic year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param isoYear  the ISO proleptic year to represent, from MIN_YEAR to MAX_YEAR
      * @return the created Year, never null
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year isoYear(int isoYear) {
+        ISOChronology.INSTANCE.yearRule().checkValue(isoYear);
         return new Year(isoYear);
     }
 
@@ -85,16 +97,16 @@ public final class Year
      * This method accepts a year and era to create a year object.
      *
      * @param era  the era to represent, either BC or AD, not null
-     * @param yearOfEra  the year within the era to represent, from 1 to MAX_VALUE
+     * @param yearOfEra  the year within the era to represent, from 1 to MAX_YEAR
      * @return the year object, never null
      * @throws IllegalCalendarFieldValueException if either field is invalid
      */
     public static Year year(Era era, int yearOfEra) {
-        if (yearOfEra < 1) {
-            throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, Integer.MAX_VALUE);
+        if (era == null) {
+            throw new IllegalCalendarFieldValueException("era must not be null");
         }
         if (yearOfEra < 1) {
-            throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, Integer.MAX_VALUE);
+            throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, MAX_YEAR);
         }
         if (era == Era.AD) {
             return Year.isoYear(yearOfEra);
@@ -165,21 +177,10 @@ public final class Year
         if (!isSupported(field)) {
             throw new UnsupportedCalendarFieldException("Year does not support field " + field.getName());
         }
-        return 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the ISO proleptic year value.
-     * <p>
-     * The year 1AD is represented by 1.<br />
-     * The year 1BC is represented by 0.<br />
-     * The year 2BC is represented by -1.<br />
-     *
-     * @return the year, from MIN_VALUE + 1 to MAX_VALUE
-     */
-    public int getYear() {
-        return 0;
+        if (field == ISOChronology.INSTANCE.yearRule()) {
+            return year;
+        }
+        return field.getValue(null);
     }
 
     //-----------------------------------------------------------------------
@@ -204,19 +205,6 @@ public final class Year
      * @return a new updated Year, never null
      */
     public Year with(Calendrical... calendricals) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Year with the year value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @return a new updated Year, never null
-     */
-    public Year withYear(int year) {
         return null;
     }
 
@@ -255,9 +243,26 @@ public final class Year
      *
      * @param years  the years to add
      * @return a new updated Year, never null
+     * @throws ArithmeticException if the result cannot be stored
      */
     public Year plusYears(int years) {
-        return null;
+        int newYear = MathUtils.safeAdd(year, years);
+        return isoYear(newYear);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Year with the specified number of years subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract
+     * @return a new updated Year, never null
+     * @throws ArithmeticException if the result cannot be stored
+     */
+    public Year minusYears(int years) {
+        int newYear = MathUtils.safeSubtract(year, years);
+        return isoYear(newYear);
     }
 
     //-----------------------------------------------------------------------
@@ -269,7 +274,7 @@ public final class Year
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(Year other) {
-        return 0;
+        return MathUtils.safeCompare(year, other.year);
     }
 
     /**
@@ -280,7 +285,7 @@ public final class Year
      * @throws NullPointerException if <code>other</code> is null
      */
     public boolean isAfter(Year other) {
-        return compareTo(other) > 0;
+        return year > other.year;
     }
 
     /**
@@ -291,7 +296,7 @@ public final class Year
      * @throws NullPointerException if <code>other</code> is null
      */
     public boolean isBefore(Year other) {
-        return compareTo(other) < 0;
+        return year < other.year;
     }
 
     //-----------------------------------------------------------------------
@@ -307,8 +312,7 @@ public final class Year
             return true;
         }
         if (other instanceof Year) {
-            Year year = (Year) other;
-            return  true;
+            return year == ((Year) other).year;
         }
         return false;
     }
@@ -320,7 +324,7 @@ public final class Year
      */
     @Override
     public int hashCode() {
-        return 0;
+        return year;
     }
 
     /**
@@ -330,7 +334,8 @@ public final class Year
      */
     @Override
     public String toString() {
-        return super.toString();
+        // TODO: prefix to 4 digits
+        return Integer.toString(year);
     }
 
     //-----------------------------------------------------------------------
@@ -363,7 +368,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the maximum year is reached
      */
     public Year next() {
-        if (year == Integer.MAX_VALUE) {
+        if (year == MAX_YEAR) {
             throw new IllegalCalendarFieldValueException("Year is already at the maximum value");
         }
         return isoYear(year + 1);
@@ -391,7 +396,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the maximum year is reached
      */
     public Year previous() {
-        if (year == (Integer.MIN_VALUE + 1)) {
+        if (year == MIN_YEAR) {
             throw new IllegalCalendarFieldValueException("Year is already at the minimum value");
         }
         return isoYear(year - 1);
@@ -414,66 +419,97 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ISO proleptic year, from MIN_VALUE+1 to MAX_VALUE.
+     * Gets the ISO proleptic year, from MIN_YEAR to MAX_YEAR.
+     * <p>
+     * The year 2AD/CE is represented by 2.<br />
+     * The year 1AD/CE is represented by 1.<br />
+     * The year 1BC/BCE is represented by 0.<br />
+     * The year 2BC/BCE is represented by -1.<br />
      *
-     * @return the ISO proleptic year, from MIN_VALUE+1 to MAX_VALUE
+     * @return the ISO proleptic year, from MIN_YEAR to MAX_YEAR
      */
     public int getISOYear() {
         return year;
     }
 
     /**
-     * Gets the year of era, from 1 to MAX_VALUE.
+     * Returns a new <code>Year</code> instance with a different year.
+     * <p>
+     * The year 2AD/CE is represented by 2.<br />
+     * The year 1AD/CE is represented by 1.<br />
+     * The year 1BC/BCE is represented by 0.<br />
+     * The year 2BC/BCE is represented by -1.<br />
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @return the year of era, from 1 to MAX_VALUE.
+     * @param isoYear  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @return a new updated Year, never null
+     */
+    public Year withISOYear(int isoYear) {
+        ISOChronology.INSTANCE.yearRule().checkValue(isoYear);
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the year of era, from 1 to MAX_YEAR, which is used in combination
+     * with {@link #getEra()}.
+     * <p>
+     * The year 2AD/CE is represented by 2.<br />
+     * The year 1AD/CE is represented by 1.<br />
+     * The year 1BC/BCE is represented by 1.<br />
+     * The year 2BC/BCE is represented by 2.<br />
+     *
+     * @return the year of era, from 1 to MAX_YEAR.
      */
     public int getYearOfEra() {
         return (year > 0 ? year : -(year - 1));
     }
 
     /**
-     * Gets the century of era, from 0 to MAX_VALUE / 100.
+     * Gets the era, either AD or BC.
+     *
+     * @return the era, never null
+     */
+    public Era getEra() {
+        return (year > 0 ? Era.AD : Era.BC);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the century of era, from 0 to MAX_YEAR / 100.
      * <p>
      * This method uses a simple definition of century, being the
      * year of era divided by 100.
      * <p>
-     * The value 20 will be returned from 2000AD to 2099AD.<br/>
-     * The value 19 will be returned from 1900AD to 1999AD.<br/>
-     * The value 0 will be returned from 1AD to 99AD.<br/>
-     * The value 0 will be returned from 99BC to 1BC.<br/>
-     * The value 1 will be returned from 1000BC to 1999BC.<br/>
+     * The value 20 will be returned from 2000AD/CE to 2099AD/CE.<br/>
+     * The value 19 will be returned from 1900AD/CE to 1999AD/CE.<br/>
+     * The value 0 will be returned from 1AD/CE to 99AD/CE.<br/>
+     * The value 0 will be returned from 99BC/BCE to 1BC/BCE.<br/>
+     * The value 1 will be returned from 1000BC/BCE to 1999BC/BCE.<br/>
      *
-     * @return the century of era, from 0 to MAX_VALUE / 100.
+     * @return the century of era, from 0 to MAX_YEAR / 100.
      */
     public int getCenturyOfEra() {
         return getYearOfEra() / 100;
     }
 
     /**
-     * Gets the millenium of era, from 0 to MAX_VALUE / 1000.
+     * Gets the millenium of era, from 0 to MAX_YEAR / 1000.
      * <p>
      * This method uses a simple definition of millenium, being the
      * year of era divided by 100.
      * <p>
-     * The value 2 will be returned from 2000AD to 2999AD.<br/>
-     * The value 1 will be returned from 1000AD to 1999AD.<br/>
-     * The value 0 will be returned from 1AD to 999AD.<br/>
-     * The value 0 will be returned from 999BC to 1BC.<br/>
-     * The value 1 will be returned from 1000BC to 1999BC.<br/>
+     * The value 2 will be returned from 2000AD/CE to 2999AD/CE.<br/>
+     * The value 1 will be returned from 1000AD/CE to 1999AD/CE.<br/>
+     * The value 0 will be returned from 1AD/CE to 999AD/CE.<br/>
+     * The value 0 will be returned from 999BC/BCE to 1BC/BCE.<br/>
+     * The value 1 will be returned from 1000BC/BCE to 1999BC/BCE.<br/>
      *
-     * @return the millenium of era, from 0 to MAX_VALUE / 1000.
+     * @return the millenium of era, from 0 to MAX_YEAR / 1000.
      */
     public int getMilleniumOfEra() {
         return getYearOfEra() / 1000;
-    }
-
-    /**
-     * Gets the era.
-     *
-     * @return the era, never null
-     */
-    public Era getEra() {
-        return (year > 0 ? Era.AD : Era.BC);
     }
 
     /**
@@ -482,12 +518,12 @@ public final class Year
      * This method uses a simple definition of decade, being the
      * remainder of the year of era divided by 10.
      * <p>
-     * The value 2 will be returned from 2020AD to 2029AD.<br/>
-     * The value 1 will be returned from 2010AD to 2019AD.<br/>
-     * The value 0 will be returned from 2000AD to 2009AD.<br/>
-     * The value 9 will be returned from 1990AD to 1999AD.<br/>
+     * The value 2 will be returned from 2020AD/CE to 2029AD/CE.<br/>
+     * The value 1 will be returned from 2010AD/CE to 2019AD/CE.<br/>
+     * The value 0 will be returned from 2000AD/CE to 2009AD/CE.<br/>
+     * The value 9 will be returned from 1990AD/CE to 1999AD/CE.<br/>
      *
-     * @return the decade of era, from 0 to 9.
+     * @return the decade of century, from 0 to 9.
      */
     public int getDecadeOfCentury() {
         return (getYearOfEra() % 100) / 10;
