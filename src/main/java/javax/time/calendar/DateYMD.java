@@ -245,8 +245,8 @@ public final class DateYMD
         if (year == getYear()) {
             return this;
         }
-        CalendricalState newState = CalendricalResolvers.strict().set(ISOChronology.INSTANCE.yearRule(), state, year);
-        return new DateYMD(newState);
+        ISOChronology.INSTANCE.yearRule().checkValue(year);
+        return null;
     }
 
     /**
