@@ -32,45 +32,85 @@
 package javax.time.calendar;
 
 /**
- * Provides resolvers for handling invalid date-time values.
+ * Strategy for resolving an invalid year-month-day to a valid one
+ * within the ISO calendar system.
+ * <p>
+ * CalendricalResolver is an abstract class and must be implemented with care
+ * to ensure other classes in the framework operate correctly.
+ * All instantiable subclasses must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
 public abstract class CalendricalResolver {
 
     /**
+     * Restrictive constructor.
+     */
+    protected CalendricalResolver() {
+        super();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Resolves the invalid combination of year, month and day.
      * The individual values may be out or their normal range, or the
      * day of month may be invalid for the specified month.
+     * <p>
+     * This method forwards to an internal package scoped method that
+     * calls {@link #handleResolveDate(int, int, int)}. The package scoped
+     * method will validate the result of <code>handleResolve</code> to
+     * ensure that the date returned is valid.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param year  the year that was input, may be invalid
+     * @param monthOfYear  the month of year, should be from 1 to 12 but may be invalid
+     * @param dayOfMonth  the day of month, should be from 1 to 31 but may be invalid
      * @return the resolved values, returned as a (year,month,day) tuple, never null
      * @throws IllegalCalendarFieldValueException if a field cannot be resolved
      */
-    public abstract int[] resolveYMD(int year, int monthOfYear, int dayOfMonth);
+    public final int[] resolveDate(int year, int monthOfYear, int dayOfMonth) {
+        return doResolveDate(year, monthOfYear, dayOfMonth);
+    }
 
     /**
-     * Returns a state object with the value set.
+     * Provides validation that the result of {@link #handleResolveDate(int, int, int)}
+     * is a valid date.
      *
-     * @param field  the field to be updated, not null
-     * @param state  the state to resolve, not null
-     * @param value  the value being set, may be completely out of range
-     * @return the resolved state, never null
+     * @param year  the year that was input, may be invalid
+     * @param monthOfYear  the month of year, should be from 1 to 12 but may be invalid
+     * @param dayOfMonth  the day of month, should be from 1 to 31 but may be invalid
+     * @return the resolved values, returned as a (year,month,day) tuple, never null
      * @throws IllegalCalendarFieldValueException if a field cannot be resolved
      */
-    public abstract CalendricalState set(TimeFieldRule field, CalendricalState state, int value);
+    int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
+        int[] result = handleResolveDate(year, monthOfYear, dayOfMonth);
+        if (result == null) {
+            throw new IllegalCalendarFieldValueException(
+                    "CalendricalResolver implementation must not return null: " + getClass().getName());
+        }
+        if (result.length != 3) {
+            throw new IllegalCalendarFieldValueException(
+                    "CalendricalResolver implementation must return a tuple: " + getClass().getName());
+        }
+        ISOChronology.INSTANCE.checkValidDate(result[0], result[1], result[2]);
+        return result;
+    }
 
     /**
-     * Returns a state object with the value added.
+     * Overridable method to allow the implementation of a strategy for
+     * converting an invalid year-month-day to a valid one.
+     * <p>
+     * The individual values may be out or their normal range, or the
+     * day of month may be invalid for the specified month.
+     * After the completion of this method, the result will be validated.
+     * If your implementation cannot resolve certain dates, then it can simply
+     * return a (year,month,day) tuple and rely on the exception being thrown.
      *
-     * @param field  the field to be updated, not null
-     * @param state  the state to resolve, not null
-     * @param value  the value being added, positive or negative
-     * @return the resolved state, never null
+     * @param year  the year that was input, may be invalid
+     * @param monthOfYear  the month of year, should be from 1 to 12 but may be invalid
+     * @param dayOfMonth  the day of month, should be from 1 to 31 but may be invalid
+     * @return the resolved values, returned as a (year,month,day) tuple, never null
      * @throws IllegalCalendarFieldValueException if a field cannot be resolved
      */
-    public abstract CalendricalState plus(TimeFieldRule field, CalendricalState state, int value);
+    protected abstract int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth);
 
 }

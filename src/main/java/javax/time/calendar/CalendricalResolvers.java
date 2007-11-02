@@ -63,21 +63,14 @@ public class CalendricalResolvers {
 
         /** {@inheritDoc} */
         @Override
-        public int[] resolveYMD(int year, int monthOfYear, int dayOfMonth) {
-            ISOChronology.INSTANCE.yearRule().checkValue(year);
-            ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
-            int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
-            throw new IllegalCalendarFieldValueException("dayOfMonth", dayOfMonth, 1, len);
+        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
+            return new int[] {year, monthOfYear, dayOfMonth};
         }
         /** {@inheritDoc} */
         @Override
-        public CalendricalState set(TimeFieldRule field, CalendricalState state, int value) {
-            return null;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public CalendricalState plus(TimeFieldRule field, CalendricalState state, int value) {
-            return null;
+        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            return null;  // never called
         }
     }
 
@@ -86,36 +79,118 @@ public class CalendricalResolvers {
      * Returns the previous valid day resolver, which adjusts the date to be
      * valid by moving to the last valid day of the month.
      *
-     * @return the strict resolver, never null
+     * @return the previous valid day resolver, never null
      */
-    public static CalendricalResolver previousValidDay() {
-        return PreviousValidDay.INSTANCE;
+    public static CalendricalResolver previousValid() {
+        return PreviousValid.INSTANCE;
     }
 
     /**
-     * Class implementing previousValidDay resolver.
+     * Class implementing previousValid resolver.
      */
-    private static class PreviousValidDay extends CalendricalResolver {
+    private static class PreviousValid extends CalendricalResolver {
         /** The singleton instance. */
-        private static final CalendricalResolver INSTANCE = new PreviousValidDay();
+        private static final CalendricalResolver INSTANCE = new PreviousValid();
 
         /** {@inheritDoc} */
         @Override
-        public int[] resolveYMD(int year, int monthOfYear, int dayOfMonth) {
+        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
             ISOChronology.INSTANCE.yearRule().checkValue(year);
             ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
+            ISOChronology.INSTANCE.dayOfMonthRule().checkValue(dayOfMonth);
             int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
-            return new int[] {year, monthOfYear, len};
+            if (dayOfMonth > len) {
+                return new int[] {year, monthOfYear, len};
+            }
+            return new int[] {year, monthOfYear, dayOfMonth};
         }
         /** {@inheritDoc} */
         @Override
-        public CalendricalState set(TimeFieldRule field, CalendricalState state, int value) {
-            return null;
+        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            return null;  // never called
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the next valid day resolver, which adjusts the date to be
+     * valid by moving to the first of the next month.
+     *
+     * @return the next valid day resolver, never null
+     */
+    public static CalendricalResolver nextValid() {
+        return NextValid.INSTANCE;
+    }
+
+    /**
+     * Class implementing nextValid resolver.
+     */
+    private static class NextValid extends CalendricalResolver {
+        /** The singleton instance. */
+        private static final CalendricalResolver INSTANCE = new NextValid();
+
+        /** {@inheritDoc} */
+        @Override
+        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            ISOChronology.INSTANCE.yearRule().checkValue(year);
+            ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
+            ISOChronology.INSTANCE.dayOfMonthRule().checkValue(dayOfMonth);
+            int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
+            if (dayOfMonth > len) {
+                if (monthOfYear == 12) {
+                    ISOChronology.INSTANCE.yearRule().checkValue(++year);
+                    return new int[] {year, 1, 1};
+                }
+                return new int[] {year, monthOfYear + 1, 1};
+            }
+            return new int[] {year, monthOfYear, dayOfMonth};
         }
         /** {@inheritDoc} */
         @Override
-        public CalendricalState plus(TimeFieldRule field, CalendricalState state, int value) {
-            return null;
+        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            return null;  // never called
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the part lenient resolver, which adjusts the date to be
+     * valid by moving it to the next month by the number of days that
+     * are invalid up to the 31st of the month.
+     *
+     * @return the part lenient resolver, never null
+     */
+    public static CalendricalResolver partLenient() {
+        return PartLenient.INSTANCE;
+    }
+
+    /**
+     * Class implementing partLenient resolver.
+     */
+    private static class PartLenient extends CalendricalResolver {
+        /** The singleton instance. */
+        private static final CalendricalResolver INSTANCE = new PartLenient();
+
+        /** {@inheritDoc} */
+        @Override
+        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            ISOChronology.INSTANCE.yearRule().checkValue(year);
+            ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
+            ISOChronology.INSTANCE.dayOfMonthRule().checkValue(dayOfMonth);
+            int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
+            if (dayOfMonth > len) {
+                if (monthOfYear == 12) {
+                    ISOChronology.INSTANCE.yearRule().checkValue(++year);
+                    return new int[] {year, 1, dayOfMonth - len};
+                }
+                return new int[] {year, monthOfYear + 1, dayOfMonth - len};
+            }
+            return new int[] {year, monthOfYear, dayOfMonth};
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
+            return null;  // never called
         }
     }
 
