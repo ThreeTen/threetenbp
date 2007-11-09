@@ -184,8 +184,8 @@ public final class Calendars {
      * @return the date object, never null
      * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static DateYMD date(int year, int monthOfYear, int dayOfMonth) {
-        return DateYMD.date(year, monthOfYear, dayOfMonth);
+    public static LocalDate date(int year, int monthOfYear, int dayOfMonth) {
+        return LocalDate.date(year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -197,25 +197,25 @@ public final class Calendars {
      * @return the date object, never null
      * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static DateYMD date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        return DateYMD.date(year, monthOfYear, dayOfMonth);
+    public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        return LocalDate.date(year, monthOfYear, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of a date.
+     * Gets an instance of a time.
      *
      * @param hour  the hour of day
      * @param minute  the minute of hour
      * @return the time object, never null
      * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static TimeHM time(int hour, int minute) {
-        return TimeHM.time(hour, minute);
+    public static LocalTime time(int hour, int minute) {
+        return LocalTime.time(hour, minute);
     }
 
     /**
-     * Gets an instance of a date.
+     * Gets an instance of a time.
      *
      * @param hour  the hour of day
      * @param minute  the minute of hour
@@ -223,8 +223,22 @@ public final class Calendars {
      * @return the time object, never null
      * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static TimeHMS time(int hour, int minute, int second) {
-        return TimeHMS.time(hour, minute, second);
+    public static LocalTime time(int hour, int minute, int second) {
+        return LocalTime.time(hour, minute, second);
+    }
+
+    /**
+     * Gets an instance of a time.
+     *
+     * @param hour  the hour of day
+     * @param minute  the minute of hour
+     * @param second  the second of minute
+     * @param nano  the nano of second
+     * @return the time object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static LocalTime time(int hour, int minute, int second, int nano) {
+        return LocalTime.time(hour, minute, second, nano);
     }
 
 //    /**
@@ -348,11 +362,11 @@ public final class Calendars {
         }
     }
     public static class CalendarWithYearMonthDayBuilder {
-        public DateYMD build() {
-            return DateYMD.date(2007, 6, 1);
+        public LocalDate build() {
+            return LocalDate.date(2007, 6, 1);
         }
-        public DateYMD buildLenient() {
-            return DateYMD.date(2007, 6, 1);
+        public LocalDate buildLenient() {
+            return LocalDate.date(2007, 6, 1);
         }
     }
 }

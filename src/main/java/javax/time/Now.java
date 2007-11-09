@@ -33,9 +33,9 @@ package javax.time;
 
 import java.io.Serializable;
 
-import javax.time.calendar.DateYMD;
-import javax.time.calendar.TimeHM;
-import javax.time.calendar.TimeHMS;
+import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.Year;
 import javax.time.calendar.YearMonth;
 
@@ -69,7 +69,7 @@ public abstract class Now {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of Year representing the current year.
+     * Gets an instance of <code>Year</code> representing the current year.
      *
      * @return a year object represnting the current year, never null
      */
@@ -79,7 +79,7 @@ public abstract class Now {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of YearMonth representing the current month.
+     * Gets an instance of <code>YearMonth</code> representing the current month.
      *
      * @return a month object represnting the current month, never null
      */
@@ -89,49 +89,50 @@ public abstract class Now {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of DateYMD representing today.
+     * Gets an instance of LocalDate representing today.
      *
      * @return a day object represnting today, never null
      */
-    public DateYMD today() {
-        return DateYMD.date(2007, 6, 1);
+    public LocalDate today() {
+        return LocalDate.date(2007, 6, 1);
     }
 
     /**
-     * Gets an instance of DateYMD representing yesterday.
+     * Gets an instance of LocalDate representing yesterday.
      *
      * @return a day object represnting yesterday, never null
      */
-    public DateYMD yesterday() {
-        return DateYMD.date(2007, 6, 1);
+    public LocalDate yesterday() {
+        return LocalDate.date(2007, 6, 1);
     }
 
     /**
-     * Gets an instance of DateYMD representing tomorrow.
+     * Gets an instance of LocalDate representing tomorrow.
      *
      * @return a day object represnting tommorrow, never null
      */
-    public DateYMD tomorrow() {
-        return DateYMD.date(2007, 6, 1);
+    public LocalDate tomorrow() {
+        return LocalDate.date(2007, 6, 1);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of TimeHM representing the current time of day.
+     * Gets an instance of LocalTime representing the current time of day.
      *
      * @return a time object represnting the current time of day, never null
      */
-    public TimeHM currentTimeHM() {
-        return TimeHM.time(12, 30);
+    public LocalTime currentTime() {
+        return LocalTime.time(12, 30);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Gets an instance of TimeHMS representing the current time of day.
+     * Gets an instance of LocalDateTime representing the current date and time.
      *
-     * @return a time object represnting the current time of day, never null
+     * @return a date-time object represnting the current date and time, never null
      */
-    public TimeHMS currentTimeHMS() {
-        return TimeHMS.time(12, 30, 12);
+    public LocalDateTime currentDateTime() {
+        return LocalDateTime.dateTime(2007, 6, 1, 12, 30);
     }
 
     //-----------------------------------------------------------------------

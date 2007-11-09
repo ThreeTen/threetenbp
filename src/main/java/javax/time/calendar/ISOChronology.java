@@ -137,7 +137,6 @@ public final class ISOChronology implements Serializable {
 
     /**
      * Validates the date from a year, month and day.
-     * This method is provided for performance.
      *
      * @param year  the year
      * @param monthOfYear  the month of year
@@ -162,7 +161,6 @@ public final class ISOChronology implements Serializable {
 
     /**
      * Validates the date from a year, month and day.
-     * This method is provided for performance.
      *
      * @param year  the year
      * @param monthOfYear  the month of year
@@ -283,6 +281,42 @@ public final class ISOChronology implements Serializable {
      * @return the rule for the day of week field, never null
      */
     public TimeFieldRule dayOfWeekRule() {
+        return null;
+    }
+
+    /**
+     * Gets the rule for the hour of day field.
+     *
+     * @return the rule for the hour of day field, never null
+     */
+    public TimeFieldRule hourOfDayRule() {
+        return null;
+    }
+
+    /**
+     * Gets the rule for the minute of hour field.
+     *
+     * @return the rule for the minute of hour field, never null
+     */
+    public TimeFieldRule minuteOfHourRule() {
+        return null;
+    }
+
+    /**
+     * Gets the rule for the second of minute field.
+     *
+     * @return the rule for the second of minute field, never null
+     */
+    public TimeFieldRule secondOfMinuteRule() {
+        return null;
+    }
+
+    /**
+     * Gets the rule for the nano of second field.
+     *
+     * @return the rule for the nano of second field, never null
+     */
+    public TimeFieldRule nanoOfSecondRule() {
         return null;
     }
 

@@ -29,155 +29,91 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package ${package};
+package javax.time.calendar;
 
-#foreach ($line in $imports)
-${line}
-#end
+import java.io.Serializable;
+
+import javax.time.MathUtils;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
+import javax.time.period.PeriodView;
+import javax.time.period.Periods;
+
 /**
-#foreach ($line in $comments)
-${line}
-#end
  * <p>
- * ${Type} is thread-safe and immutable.
+ * ZonedDateTime is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ${Type}
-        implements Calendrical, Comparable<${Type}>, Serializable {
+public final class ZonedDateTime
+        implements Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = ${hashCode}L;
+    private static final long serialVersionUID = -456761901L;
 
-#if ($year)
     /**
      * The year, from MIN_YEAR to MAX_YEAR.
      */
     private final int year;
-#end
-#if ($month)
     /**
      * The month, from 1 to 12.
      */
     private final int month;
-#end
-#if ($day)
     /**
      * The dayOfMonth, from 1 to 31.
      */
     private final int dayOfMonth;
-#end
-#if ($hour)
     /**
      * The hour, from 0 to 23.
      */
     private final int hour;
-#end
-#if ($minute)
     /**
      * The minute, from 0 to 59.
      */
     private final int minute;
-#end
-#if ($second)
     /**
      * The second, from 0 to 59.
      */
     private final int second;
-#end
-#if ($nano)
     /**
      * The nanosecond, from 0 to 999,999,999.
      */
     private final int nano;
-#end
-#if ($zoned)
     /**
      * The time zone.
      */
     private final TimeZone zone;
-#end
 
-#foreach ($line in $topMethods)
-${line}
-#end
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-#if ($year)
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-#end
-#if ($month)
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-#end
-#if ($day)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-#end
-#if ($hour)
      * @param hourOfDay  the hour of day to represent, from 0 to 23
-#end
-#if ($minute)
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-#end
-#if ($second)
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-#end
-#if ($nano)
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-#end
-#if ($zoned)
      * @param zone  the time zone, not null
-#end
      */
-    private ${Type}(#if ($year)int year#if ($month), #else) {#end#end
-#if ($month)
-int monthOfYear#if ($day), #else) {#end#end
-#if ($day)
-int dayOfMonth#if ($hour), #else) {#end#end
-#if ($hour)
-int hourOfDay#if ($minute), #else) {#end#end
-#if ($minute)
-int minuteOfHour#if ($second), #else) {#end#end
-#if ($second)
-int secondOfMinute#if ($nano), #else) {#end#end
-#if ($nano)
-int nanoOfSecond#if ($zoned), #else) {#end#end
-#if ($zoned)
-TimeZone zone) {#end
-
-#if ($year)
+    private ZonedDateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
         this.year = year;
-#end
-#if ($month)
         this.month = monthOfYear;
-#end
-#if ($day)
         this.dayOfMonth = dayOfMonth;
-#end
-#if ($hour)
         this.hour = hourOfDay;
-#end
-#if ($minute)
         this.minute = minuteOfHour;
-#end
-#if ($second)
         this.second = secondOfMinute;
-#end
-#if ($nano)
         this.nano = nanoOfSecond;
-#end
-#if ($zoned)
         this.zone = zone;
-#end
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to
-     * this ${desc}.
+     * this date-time.
      *
      * @return the calendar state for this instance, never null
      */
@@ -188,7 +124,7 @@ TimeZone zone) {#end
 
     /**
      * Gets the chronology that describes the calendar system rules for
-     * this ${desc}.
+     * this date-time.
      *
      * @return the ISO chronology, never null
      */
@@ -200,14 +136,14 @@ TimeZone zone) {#end
     /**
      * Checks if the specified calendar field is supported.
      * <p>
-     * This method queries whether this <code>${Type}</code> can
+     * This method queries whether this <code>ZonedDateTime</code> can
      * be queried using the specified calendar field.
      *
      * @param field  the field to query, not null
      * @return true if the field is supported
      */
     public boolean isSupported(TimeFieldRule field) {
-        return field.isSupported(${unit}, ${range});
+        return field.isSupported(Periods.NANOS, Periods.FOREVER);
     }
 
     /**
@@ -222,47 +158,32 @@ TimeZone zone) {#end
      */
     public int get(TimeFieldRule field) {
         if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("${Type} does not support field " + field.getName());
+            throw new UnsupportedCalendarFieldException("ZonedDateTime does not support field " + field.getName());
         }
-#if ($year)
         if (field == ISOChronology.INSTANCE.yearRule()) {
             return year;
         }
-#end
-#if ($month)
         if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
             return month;
         }
-#end
-#if ($day)
         if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
             return dayOfMonth;
         }
-#end
-#if ($hour)
         if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
             return hour;
         }
-#end
-#if ($minute)
         if (field == ISOChronology.INSTANCE.minuteOfHourRule()) {
             return minute;
         }
-#end
-#if ($second)
         if (field == ISOChronology.INSTANCE.secondOfMinuteRule()) {
             return second;
         }
-#end
-#if ($second)
         if (field == ISOChronology.INSTANCE.nanoOfSecondRule()) {
             return nano;
         }
-#end
         return field.getValue(getCalendricalState());
     }
 
-#if ($zoned)
     //-----------------------------------------------------------------------
     /**
      * Gets the time zone.
@@ -274,32 +195,30 @@ TimeZone zone) {#end
     }
 
     /**
-     * Returns a copy of this ${Type} with a different time zone, ensuring
+     * Returns a copy of this ZonedDateTime with a different time zone, ensuring
      * that the instant remains the same.
      * This method may change the local time.
      *
      * @param zone  the time zone to change to, not null
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withZoneSameInstant(TimeZone zone) {
+    public ZonedDateTime withZoneSameInstant(TimeZone zone) {
         return this;
     }
 
     /**
-     * Returns a copy of this ${Type} with a different time zone, ensuring
+     * Returns a copy of this ZonedDateTime with a different time zone, ensuring
      * that the local time, expressed as fields, remains the same.
      * This method may change the instant.
      *
      * @param zone  the time zone to change to, not null
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withZoneSameFields(TimeZone zone) {
+    public ZonedDateTime withZoneSameFields(TimeZone zone) {
         return this;
     }
 
-#end
     //-----------------------------------------------------------------------
-#if ($year)
     /**
      * Gets the ISO proleptic year value.
      * <p>
@@ -313,8 +232,6 @@ TimeZone zone) {#end
         return year;
     }
 
-#end
-#if ($month)
     /**
      * Gets the month of year value.
      *
@@ -324,9 +241,6 @@ TimeZone zone) {#end
         return MonthOfYear.monthOfYear(month);
     }
 
-#end
-#if ($date)
-#if ($year)
     /**
      * Gets the day of year value.
      *
@@ -336,7 +250,6 @@ TimeZone zone) {#end
         return ISOChronology.INSTANCE.getDayOfYear(year, month, dayOfMonth);
     }
 
-#end
     /**
      * Gets the day of month value.
      *
@@ -346,7 +259,6 @@ TimeZone zone) {#end
         return dayOfMonth;
     }
 
-#if ($year)
     /**
      * Gets the day of week value.
      *
@@ -356,9 +268,6 @@ TimeZone zone) {#end
         return null;
     }
 
-#end
-#end
-#if ($hour)
     /**
      * Gets the hour of day value.
      *
@@ -368,8 +277,6 @@ TimeZone zone) {#end
         return hour;
     }
 
-#end
-#if ($minute)
     /**
      * Gets the minute of hour value.
      *
@@ -379,8 +286,6 @@ TimeZone zone) {#end
         return minute;
     }
 
-#end
-#if ($second)
     /**
      * Gets the second of minute value.
      *
@@ -390,8 +295,6 @@ TimeZone zone) {#end
         return second;
     }
 
-#end
-#if ($nano)
     /**
      * Gets the nanosecond fraction of a second expressed as an int.
      *
@@ -410,160 +313,132 @@ TimeZone zone) {#end
         return ((double) nano) / 1000000000d;
     }
 
-#end
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ${Type} with the specified values altered.
+     * Returns a copy of this ZonedDateTime with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} with(Calendrical calendrical) {
+    public ZonedDateTime with(Calendrical calendrical) {
         return null;
     }
 
     /**
-     * Returns a copy of this ${Type} with the specified values altered.
+     * Returns a copy of this ZonedDateTime with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} with(Calendrical... calendricals) {
+    public ZonedDateTime with(Calendrical... calendricals) {
         return null;
     }
 
     //-----------------------------------------------------------------------
-#if ($year)
     /**
-     * Returns a copy of this ${Type} with the year value altered.
+     * Returns a copy of this ZonedDateTime with the year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withYear(int year) {
+    public ZonedDateTime withYear(int year) {
         if (this.year == year) {
             return this;
         }
-#if ($date)
         int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-        return new ${Type}(resolved[0], resolved[1], resolved[2]${dateConstructorExt});
-#else
-        ISOChronology.INSTANCE.yearRule().checkValue(year);
-        return new ${Type}(year, month, dayOfMonth${dateConstructorExt});
-#end
+        return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
     }
 
-#end
-#if ($month)
     /**
-     * Returns a copy of this ${Type} with the month of year value altered.
+     * Returns a copy of this ZonedDateTime with the month of year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withMonthOfYear(int monthOfYear) {
+    public ZonedDateTime withMonthOfYear(int monthOfYear) {
         if (this.month == monthOfYear) {
             return this;
         }
-#if ($date)
         int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
-        return new ${Type}(resolved[0], resolved[1], resolved[2]${dateConstructorExt});
-#else
-        ISOChronology.INSTANCE.monthOfYearRule().checkValue(year);
-        return new ${Type}(year, monthOfYear, dayOfMonth${dateConstructorExt});
-#end
+        return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
     }
 
-#end
-#if ($day)
     /**
-     * Returns a copy of this ${Type} with the day of month value altered.
+     * Returns a copy of this ZonedDateTime with the day of month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withDayOfMonth(int dayOfMonth) {
+    public ZonedDateTime withDayOfMonth(int dayOfMonth) {
         if (this.dayOfMonth == dayOfMonth) {
             return this;
         }
-#if ($date)
         ISOChronology.INSTANCE.checkValidDate(year, month, dayOfMonth);
-#else
-        ISOChronology.INSTANCE.dayOfMonthRule().checkValue(year);
-#end
-        return new ${Type}(year, month, dayOfMonth${dateConstructorExt});
+        return new ZonedDateTime(year, month, dayOfMonth, hour, minute, second, nano, zone);
     }
 
-#if ($month)
     /**
-     * Returns a copy of this ${Type} with the date set to the last day of month.
+     * Returns a copy of this ZonedDateTime with the date set to the last day of month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withLastDayOfMonth() {
+    public ZonedDateTime withLastDayOfMonth() {
         int dom = ISOChronology.INSTANCE.getMonthLength(year, month);
         if (this.dayOfMonth == dom) {
             return this;
         }
-        return new ${Type}(year, month, dom${dateConstructorExt});
+        return new ZonedDateTime(year, month, dom, hour, minute, second, nano, zone);
     }
 
-#end
-#end
-#if ($date)
-#if ($year)
     /**
-     * Returns a copy of this ${Type} with the day of year value altered.
+     * Returns a copy of this ZonedDateTime with the day of year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day of year to represent, from 1 to 366
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withDayOfYear(int dayOfYear) {
+    public ZonedDateTime withDayOfYear(int dayOfYear) {
         return null;
     }
 
     /**
-     * Returns a copy of this ${Type} with the date set to the last day of year.
+     * Returns a copy of this ZonedDateTime with the date set to the last day of year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withLastDayOfYear() {
-        return new ${Type}(year, 12, 31${dateConstructorExt});
+    public ZonedDateTime withLastDayOfYear() {
+        return new ZonedDateTime(year, 12, 31, hour, minute, second, nano, zone);
     }
 
     /**
-     * Returns a copy of this ${Type} with the day of week value altered.
+     * Returns a copy of this ZonedDateTime with the day of week value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withDayOfWeek(int dayOfWeek) {
+    public ZonedDateTime withDayOfWeek(int dayOfWeek) {
         return null;
     }
 
-#end
-#end
-#if ($date && $hour)
     /**
-     * Returns a copy of this ${Type} with the date values altered.
+     * Returns a copy of this ZonedDateTime with the date values altered.
      * <p>
      * This method will return a new instance with the same time fields,
      * but altered date fields.
@@ -575,141 +450,124 @@ TimeZone zone) {#end
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated ZonedDateTime
      */
-    public ${Type} withDate(int year, int monthOfYear, int dayOfMonth) {
+    public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         if (this.year == year && this.dayOfMonth == dayOfMonth && this.dayOfMonth == dayOfMonth) {
             return this;
         }
         ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        return new ${Type}(year, monthOfYear, dayOfMonth${dateConstructorExt});
+        return new ZonedDateTime(year, monthOfYear, dayOfMonth, hour, minute, second, nano, zone);
     }
 
-#end
-#if ($hour)
     /**
-     * Returns a copy of this ${Type} with the hour of day value altered.
+     * Returns a copy of this ZonedDateTime with the hour of day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withHourOfDay(int hourOfDay) {
+    public ZonedDateTime withHourOfDay(int hourOfDay) {
         return null;
     }
 
-#end
-#if ($minute)
     /**
-     * Returns a copy of this ${Type} with the minute of hour value altered.
+     * Returns a copy of this ZonedDateTime with the minute of hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withMinuteOfHour(int minuteOfHour) {
+    public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
         return null;
     }
 
-#end
-#if ($second)
     /**
-     * Returns a copy of this ${Type} with the second of minute value altered.
+     * Returns a copy of this ZonedDateTime with the second of minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withSecondOfMinute(int secondOfMinute) {
+    public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
         return null;
     }
 
-#end
-#if ($nano)
     /**
-     * Returns a copy of this ${Type} with the nano of second value altered.
+     * Returns a copy of this ZonedDateTime with the nano of second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withNanoOfSecond(int nanoOfSecond) {
+    public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
         return null;
     }
 
-#end
-#if ($year && $minute)
     /**
-     * Returns a copy of this ${Type} with the time values altered.
+     * Returns a copy of this ZonedDateTime with the time values altered.
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
-#if ($second)
      * This is a shorthand for {@link #withTime(int,int,int)} and sets
      * the second field to zero.
-#end
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withTime(int hourOfDay, int minuteOfHour) {
+    public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
         return null;
     }
 
-#end
-#if ($year && $second)
     /**
-     * Returns a copy of this ${Type} with the time values altered.
+     * Returns a copy of this ZonedDateTime with the time values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
+    public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         return null;
     }
 
-#end
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ${Type} with the specified period added.
+     * Returns a copy of this ZonedDateTime with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plus(PeriodView period) {
+    public ZonedDateTime plus(PeriodView period) {
         // TODO
         return null;
     }
 
     /**
-     * Returns a copy of this ${Type} with the specified periods added.
+     * Returns a copy of this ZonedDateTime with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periods  the periods to add, no nulls
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plus(PeriodView... periods) {
+    public ZonedDateTime plus(PeriodView... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
-#if ($year)
     /**
-     * Returns a copy of this ${Type} with the specified period in years added.
-#if ($day)
+     * Returns a copy of this ZonedDateTime with the specified period in years added.
      * <p>
      * This method add the specified amount to the years field in three steps:
      * <ol>
@@ -721,16 +579,15 @@ TimeZone zone) {#end
      * For example, 2008-02-29 (leap year) plus one year would result in the
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
-#end
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
-    public ${Type} plusYears(int years) {
+    public ZonedDateTime plusYears(int years) {
         if (years == 0) {
             return this;
         }
@@ -738,11 +595,8 @@ TimeZone zone) {#end
         return withYear(newYear);
     }
 
-#end
-#if ($month)
     /**
-     * Returns a copy of this ${Type} with the specified period in months added.
-#if ($day)
+     * Returns a copy of this ZonedDateTime with the specified period in months added.
      * <p>
      * This method add the specified amount to the months field in three steps:
      * <ol>
@@ -754,16 +608,15 @@ TimeZone zone) {#end
      * For example, 2007-03-31 plus one month would result in the invalid date
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
-#end
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
-    public ${Type} plusMonths(int months) {
+    public ZonedDateTime plusMonths(int months) {
         if (months == 0) {
             return this;
         }
@@ -775,19 +628,12 @@ TimeZone zone) {#end
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
-#if ($date)
         int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
-        return new ${Type}(resolved[0], resolved[1], resolved[2]${dateConstructorExt});
-#else
-        ISOChronology.INSTANCE.yearRule().checkValue(year);
-        return new ${Type}(year, monthOfYear);
-#end
+        return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
     }
 
-#end
-#if ($date)
     /**
-     * Returns a copy of this ${Type} with the specified period in weeks added.
+     * Returns a copy of this ZonedDateTime with the specified period in weeks added.
      * <p>
      * This method add the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
@@ -798,15 +644,15 @@ TimeZone zone) {#end
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      * @throws ArithmeticException if the calculation overflows
      */
-    public ${Type} plusWeeks(int weeks) {
+    public ZonedDateTime plusWeeks(int weeks) {
         return null;
     }
 
     /**
-     * Returns a copy of this ${Type} with the specified period in days added.
+     * Returns a copy of this ZonedDateTime with the specified period in days added.
      * <p>
      * This method add the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
@@ -817,17 +663,14 @@ TimeZone zone) {#end
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plusDays(int days) {
+    public ZonedDateTime plusDays(int days) {
         return null;
     }
 
-#end
-#if ($hour)
     /**
-     * Returns a copy of this ${Type} with the specified period in hours added.
-#if ($zoned)
+     * Returns a copy of this ZonedDateTime with the specified period in hours added.
      * <p>
      * This method uses field based addition.
      * This method changes the field by the specified number of hours.
@@ -838,20 +681,18 @@ TimeZone zone) {#end
      * the local times 01:00 to 01:59 do not exist. Using this method, adding
      * a duration of 2 hours to 00:30 will result in 02:30, but it is important
      * to note that only a duration of 1 hour was actually added.
-#end
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plusHours(int hours) {
+    public ZonedDateTime plusHours(int hours) {
         return null;
     }
 
-#if ($zoned)
     /**
-     * Returns a copy of this ${Type} with the specified duration in hours added.
+     * Returns a copy of this ZonedDateTime with the specified duration in hours added.
      * <p>
      * This method uses duration based addition.
      * This method adds the physical duration in hours specified. At the daylight
@@ -865,111 +706,103 @@ TimeZone zone) {#end
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plusHoursDuration(int hours) {
+    public ZonedDateTime plusHoursDuration(int hours) {
         return null;
     }
 
-#end
-#end
-#if ($minute)
     /**
-     * Returns a copy of this ${Type} with the specified period in minutes added.
+     * Returns a copy of this ZonedDateTime with the specified period in minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plusMinutes(int minutes) {
+    public ZonedDateTime plusMinutes(int minutes) {
         return null;
     }
 
-#end
-#if ($second)
     /**
-     * Returns a copy of this ${Type} with the specified period in seconds added.
+     * Returns a copy of this ZonedDateTime with the specified period in seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plusSeconds(int seconds) {
+    public ZonedDateTime plusSeconds(int seconds) {
         return null;
     }
 
-#end
-#if ($nano)
     /**
-     * Returns a copy of this ${Type} with the specified period in nanoseconds added.
+     * Returns a copy of this ZonedDateTime with the specified period in nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
-     * @return a new updated ${Type}, never null
+     * @return a new updated ZonedDateTime, never null
      */
-    public ${Type} plusNanos(int nanos) {
+    public ZonedDateTime plusNanos(int nanos) {
         return null;
     }
 
-#end
     //-----------------------------------------------------------------------
     /**
-     * Compares this ${desc} to another ${desc}.
+     * Compares this date-time to another date-time.
      *
-     * @param other  the other ${desc} to compare to, not null
+     * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
-    public int compareTo(${Type} other) {
+    public int compareTo(ZonedDateTime other) {
         return 0;
     }
 
     /**
-     * Is this ${desc} after the specified ${desc}.
+     * Is this date-time after the specified date-time.
      *
-     * @param other  the other ${desc} to compare to, not null
-     * @return true if this is after the specified ${desc}
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is after the specified date-time
      * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isAfter(${Type} other) {
+    public boolean isAfter(ZonedDateTime other) {
         return compareTo(other) > 0;
     }
 
     /**
-     * Is this ${desc} before the specified ${desc}.
+     * Is this date-time before the specified date-time.
      *
-     * @param other  the other ${desc} to compare to, not null
-     * @return true if this point is before the specified ${desc}
+     * @param other  the other date-time to compare to, not null
+     * @return true if this point is before the specified date-time
      * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isBefore(${Type} other) {
+    public boolean isBefore(ZonedDateTime other) {
         return compareTo(other) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this ${desc} equal to the specified ${desc}.
+     * Is this date-time equal to the specified date-time.
      *
-     * @param other  the other ${desc} to compare to, null returns false
-     * @return true if this point is equal to the specified ${desc}
+     * @param other  the other date-time to compare to, null returns false
+     * @return true if this point is equal to the specified date-time
      */
     @Override
     public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
-        if (other instanceof ${Type}) {
-            ${Type} ${type} = (${Type}) other;
+        if (other instanceof ZonedDateTime) {
+            ZonedDateTime zonedDateTime = (ZonedDateTime) other;
             return  true;
         }
         return false;
     }
 
     /**
-     * A hashcode for this ${desc}.
+     * A hashcode for this date-time.
      *
      * @return a suitable hashcode
      */
@@ -979,16 +812,13 @@ TimeZone zone) {#end
     }
 
     /**
-     * Outputs the string form of the ${desc}.
+     * Outputs the string form of the date-time.
      *
-     * @return the string form of the ${desc}
+     * @return the string form of the date-time
      */
     @Override
     public String toString() {
         return super.toString();
     }
 
-#foreach ($line in $methods)
-${line}
-#end
 }

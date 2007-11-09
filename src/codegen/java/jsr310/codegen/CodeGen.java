@@ -81,41 +81,38 @@ public class CodeGen {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     /**
-     * Code generate single field period classes.
+     * Code generate calendar classes.
      */
-    private void processCalendarClassField() throws Exception {
+    private void processCalendarClass() throws Exception {
         Template template = Velocity.getTemplate(TEMPLATE_DIR + "Calendar.vm");
         
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "Year",
-                "year", "Era + YearOfEra",
-                "Year", "Periods.YEARS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "YearMonth",
-                "year-month", "Year + MonthOfYear",
-                "YearMonth", "Periods.MONTHS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "MonthDay",
-                "month-day", "MonthOfYear + DayOfMonth",
-                "MonthDate", "Periods.DAYS", "Periods.MONTHS");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "DateYMD",
-                "date", "Year + MonthOfYear + DayOfMonth",
-                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "TimeHM",
-                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
-                "HourMinute", "Periods.HOURS", "Periods.DAYS");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "TimeHMS",
-                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
-                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "DateTimeHM",
-                "date-time", "Year + DayOfYear + SecondOfDay",
-                "YearMonthDateHourMinute", "Periods.HOURS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "DateTimeHMS",
-                "date-time", "Year + DayOfYear + SecondOfDay",
-                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTimeHM",
-                "date-time", "Year + DayOfYear + SecondOfDay",
-                "YearMonthDateHourMinute", "Periods.HOURS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTimeHMS",
-                "date-time", "Year + DayOfYear + SecondOfDay",
-                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "Year",
+//                "year", "Era + YearOfEra",
+//                "Year", "Periods.YEARS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "YearMonth",
+//                "year-month", "Year + MonthOfYear",
+//                "YearMonth", "Periods.MONTHS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "MonthDay",
+//                "month-day", "MonthOfYear + DayOfMonth",
+//                "MonthDate", "Periods.DAYS", "Periods.MONTHS");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDate",
+//                "date", "Year + MonthOfYear + DayOfMonth",
+//                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalTime",
+//                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+//                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDateTime",
+//                "date-time", "Year + DayOfYear + SecondOfDay",
+//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDate",
+//                "date", "Year + MonthOfYear + DayOfMonth",
+//                "YearMonthDateHourMinuteSecondNano", "Periods.DAYS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedTime",
+//                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTime",
+//                "date-time", "Year + DayOfYear + SecondOfDay",
+//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
     }
 
     private void processCalendarClassField(
@@ -132,7 +129,7 @@ public class CodeGen {
         List<String> methodLines = findAdditionalMethods(file, "public String toString() {");
         List<String> importLines = findImports(file);
         List<String> commentLines = findClassComment(file, "<p>");
-        List<String> topMethodLines = findCalendarToplMethods(file);
+        List<String> topMethodLines = findCalendarTopMethods(file);
         
         VelocityContext vc = new VelocityContext();
         vc.put("package", pkg);
@@ -145,11 +142,29 @@ public class CodeGen {
         vc.put("zoned", classname.contains("Zoned"));
         vc.put("year", includeCode.contains("Year"));
         vc.put("month", includeCode.contains("Month"));
+        vc.put("day", includeCode.contains("Day") || includeCode.contains("Date"));
         vc.put("date", includeCode.contains("Date"));
         vc.put("hour", includeCode.contains("Hour"));
         vc.put("minute", includeCode.contains("Minute"));
         vc.put("second", includeCode.contains("Second"));
         vc.put("nano", includeCode.contains("Nano"));
+        String dateConstructorExt = "";
+        if (includeCode.contains("Hour")) {
+            dateConstructorExt = ", hour";
+        }
+        if (includeCode.contains("Minute")) {
+            dateConstructorExt += ", minute";
+        }
+        if (includeCode.contains("Second")) {
+            dateConstructorExt += ", second";
+        }
+        if (includeCode.contains("Nano")) {
+            dateConstructorExt += ", nano";
+        }
+        if (classname.contains("Zoned")) {
+            dateConstructorExt += ", zone";
+        }
+        vc.put("dateConstructorExt", dateConstructorExt);
         vc.put("unit", unitStr);
         vc.put("range", rangeStr);
         vc.put("imports", importLines);
@@ -159,13 +174,21 @@ public class CodeGen {
         generate(file, template, vc);
     }
 
-    private List<String> findCalendarToplMethods(File file) throws Exception {
+    private List<String> findCalendarTopMethods(File file) throws Exception {
         List<String> methodLines = Collections.emptyList();
         if (file.exists()) {
             List<String> origLines = readFile(file);
             int topStart = indexOfLineContaining(origLines, "private static final long serialVersionUID", 0);
-            int topEnd = indexOfLineContaining(origLines, "public CalendricalState getCalendricalState() {", 0);
-            methodLines = origLines.subList(topStart + 2, topEnd - 8);
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " year;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " month;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " dayOfMonth;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " hour;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " minute;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " second;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " nano;", topStart));
+            topStart = Math.max(topStart, indexOfLineContaining(origLines, " zone;", topStart));
+            int topEnd = indexOfLineContaining(origLines, "* Constructor.", topStart);
+            methodLines = origLines.subList(topStart + 2, topEnd - 2);
         }
         return methodLines;
     }
@@ -316,8 +339,10 @@ public class CodeGen {
         if (file.exists()) {
             List<String> origLines = readFile(file);
             int start = indexOfLineContaining(origLines, "import ", 0);
-            int end = indexOfLineContaining(origLines, "/**", start);
-            methodLines = origLines.subList(start, end);
+            if (start >= 0) {
+                int end = indexOfLineContaining(origLines, "/**", start);
+                methodLines = origLines.subList(start, end);
+            }
         }
         return methodLines;
     }

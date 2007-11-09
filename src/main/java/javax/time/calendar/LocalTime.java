@@ -33,76 +33,142 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.calendar.field.HourOfDay;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a time without a time zone, expressing
- * the time to nanosecond precision.
  * <p>
- * TimeHMS is an immutable calendrical that represents a time, often viewed as hour-minute-second.
- * This class does not store or represent a date or time zone.
- * Thus, for example, the value "14:45:32" can be stored in a TimeHMS.
- * <p>
- * TimeHMS is thread-safe and immutable.
+ * LocalTime is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class TimeHMS
-        implements Calendrical, Comparable<TimeHMS>, Serializable {
+public final class LocalTime
+        implements Calendrical, Comparable<LocalTime>, Serializable {
 
     /**
      * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = 350703073L;
+    private static final long serialVersionUID = 798759096L;
 
     /**
-     * The second of day.
+     * The hour, from 0 to 23.
      */
-    private final int secondOfDay;
+    private final int hour;
+    /**
+     * The minute, from 0 to 59.
+     */
+    private final int minute;
+    /**
+     * The second, from 0 to 59.
+     */
+    private final int second;
+    /**
+     * The nanosecond, from 0 to 999,999,999.
+     */
+    private final int nano;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>TimeHMS</code>.
-     * The seconds field will be set to zero.
+     * Obtains an instance of <code>LocalTime</code>.
+     * <p>
+     * The second and nanosecond fields will be set to zero by this factory method.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a TimeHMS object, never null
-     * @throws IllegalCalendarFieldValueException if either field is invalid
+     * @return a LocalTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static TimeHMS time(int hourOfDay, int minuteOfHour) {
-        return new TimeHMS(0);
+    public static LocalTime time(int hourOfDay, int minuteOfHour) {
+        return time(hourOfDay, minuteOfHour, 0, 0);
     }
 
     /**
-     * Obtains an instance of <code>TimeHMS</code>.
+     * Obtains an instance of <code>LocalTime</code>.
+     * <p>
+     * The second field will be set to zero by this factory method.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a TimeHMS object, never null
+     * @return a LocalTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static TimeHMS time(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return new TimeHMS(0);
+    public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute) {
+        return time(hourOfDay, minuteOfHour, secondOfMinute, 0);
+    }
+
+//    /**
+//     * Obtains an instance of <code>LocalTime</code>.
+//     *
+//     * @param hourOfDay  the hour of day to represent, from 0 to 23
+//     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+//     * @param secondOfMinute  the second of minute to represent, from 0 to 59.999,999,999
+//     * @return a LocalTime object, never null
+//     * @throws IllegalCalendarFieldValueException if any field is invalid
+//     */
+//    public static LocalTime time(int hourOfDay, int minuteOfHour, double secondOfMinute) {
+//        // TODO: check maths and overflow
+//        long nanos = Math.round(secondOfMinute * 1000000000);
+//        long sec = nanos / 1000000000;
+//        int nos = (int) (nanos % 1000000000);
+//        if (nos < 0) {
+//           nos += 1000000000;
+//           sec--;
+//        }
+//        return time(hourOfDay, minuteOfHour, (int) sec, nos);
+//    }
+
+    /**
+     * Obtains an instance of <code>LocalTime</code>.
+     *
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @return a LocalTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        ISOChronology.INSTANCE.hourOfDayRule().checkValue(hourOfDay);
+        ISOChronology.INSTANCE.minuteOfHourRule().checkValue(minuteOfHour);
+        ISOChronology.INSTANCE.secondOfMinuteRule().checkValue(secondOfMinute);
+        ISOChronology.INSTANCE.nanoOfSecondRule().checkValue(nanoOfSecond);
+        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalTime</code> from a set of calendricals.
+     * <p>
+     * This can be used to pass in any combination of calendricals that fully specify
+     * a time. For example, HourOfDay + MinuteOfHour.
+     *
+     * @param calendricals  a set of calendricals that fully represent a calendar day
+     * @return a LocalTime object, never null
+     */
+    public static LocalTime time(Calendrical... calendricals) {
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param secondOfDay  the second of day to represent
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      */
-    private TimeHMS(int secondOfDay) {
-        this.secondOfDay = secondOfDay;
+    private LocalTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        this.hour = hourOfDay;
+        this.minute = minuteOfHour;
+        this.second = secondOfMinute;
+        this.nano = nanoOfSecond;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * instance.
+     * Gets the calendrical state which provides internal access to
+     * this time.
      *
      * @return the calendar state for this instance, never null
      */
@@ -112,9 +178,20 @@ public final class TimeHMS
     }
 
     /**
+     * Gets the chronology that describes the calendar system rules for
+     * this time.
+     *
+     * @return the ISO chronology, never null
+     */
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if the specified calendar field is supported.
      * <p>
-     * This method queries whether this <code>TimeHMS</code> can
+     * This method queries whether this <code>LocalTime</code> can
      * be queried using the specified calendar field.
      *
      * @param field  the field to query, not null
@@ -136,9 +213,21 @@ public final class TimeHMS
      */
     public int get(TimeFieldRule field) {
         if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("TimeHMS does not support field " + field.getName());
+            throw new UnsupportedCalendarFieldException("LocalTime does not support field " + field.getName());
         }
-        return 0;
+        if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
+            return hour;
+        }
+        if (field == ISOChronology.INSTANCE.minuteOfHourRule()) {
+            return minute;
+        }
+        if (field == ISOChronology.INSTANCE.secondOfMinuteRule()) {
+            return second;
+        }
+        if (field == ISOChronology.INSTANCE.nanoOfSecondRule()) {
+            return nano;
+        }
+        return field.getValue(getCalendricalState());
     }
 
     //-----------------------------------------------------------------------
@@ -148,16 +237,7 @@ public final class TimeHMS
      * @return the hour of day, from 0 to 23
      */
     public int getHourOfDay() {
-        return 0;
-    }
-
-    /**
-     * Gets the hour of day instance.
-     *
-     * @return the hour of day, never null
-     */
-    public HourOfDay hourOfDay() {
-        return HourOfDay.hourOfDay(getHourOfDay());
+        return hour;
     }
 
     /**
@@ -166,7 +246,7 @@ public final class TimeHMS
      * @return the minute of hour, from 0 to 59
      */
     public int getMinuteOfHour() {
-        return 0;
+        return minute;
     }
 
     /**
@@ -175,165 +255,174 @@ public final class TimeHMS
      * @return the second of minute, from 0 to 59
      */
     public int getSecondOfMinute() {
-        return 0;
+        return second;
     }
 
     /**
-     * Gets the nano of second value.
+     * Gets the nanosecond fraction of a second expressed as an int.
      *
      * @return the nano of second, from 0 to 999,999,999
      */
     public int getNanoOfSecond() {
-        return 0;
+        return nano;
+    }
+
+    /**
+     * Gets the nanosecond fraction of a second expressed as a double.
+     *
+     * @return the nano of second, from 0 to 0.999,999,999
+     */
+    public double getNanoFraction() {
+        return ((double) nano) / 1000000000d;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the specified values altered.
+     * Returns a copy of this LocalTime with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS with(Calendrical calendrical) {
+    public LocalTime with(Calendrical calendrical) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified values altered.
+     * Returns a copy of this LocalTime with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS with(Calendrical... calendricals) {
+    public LocalTime with(Calendrical... calendricals) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the hour of day value altered.
+     * Returns a copy of this LocalTime with the hour of day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS withHourOfDay(int hourOfDay) {
+    public LocalTime withHourOfDay(int hourOfDay) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the minute of hour value altered.
+     * Returns a copy of this LocalTime with the minute of hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS withMinuteOfHour(int minuteOfHour) {
+    public LocalTime withMinuteOfHour(int minuteOfHour) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the second of minute value altered.
+     * Returns a copy of this LocalTime with the second of minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS withSecondOfMinute(int secondOfMinute) {
+    public LocalTime withSecondOfMinute(int secondOfMinute) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the nano of second value altered.
+     * Returns a copy of this LocalTime with the nano of second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS withNanoOfSecond(int nanoOfSecond) {
+    public LocalTime withNanoOfSecond(int nanoOfSecond) {
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the specified period added.
+     * Returns a copy of this LocalTime with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS plus(PeriodView period) {
+    public LocalTime plus(PeriodView period) {
         // TODO
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified periods added.
+     * Returns a copy of this LocalTime with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periods  the periods to add, no nulls
-     * @return a new updated TimeHMS, never null
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS plus(PeriodView... periods) {
+    public LocalTime plus(PeriodView... periods) {
         // TODO
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this TimeHMS with the specified number of hours added.
+     * Returns a copy of this LocalTime with the specified period in hours added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to add
-     * @return a new updated TimeHMS, never null
+     * @param hours  the hours to add, may be negative
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS plusHours(int hours) {
+    public LocalTime plusHours(int hours) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified number of minutes added.
+     * Returns a copy of this LocalTime with the specified period in minutes added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to add
-     * @return a new updated TimeHMS, never null
+     * @param minutes  the minutes to add, may be negative
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS plusMinutes(int minutes) {
+    public LocalTime plusMinutes(int minutes) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified number of seconds added.
+     * Returns a copy of this LocalTime with the specified period in seconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to add
-     * @return a new updated TimeHMS, never null
+     * @param seconds  the seconds to add, may be negative
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS plusSeconds(int seconds) {
+    public LocalTime plusSeconds(int seconds) {
         return null;
     }
 
     /**
-     * Returns a copy of this TimeHMS with the specified number of nanoseconds added.
+     * Returns a copy of this LocalTime with the specified period in nanoseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanos  the nanos to add
-     * @return a new updated TimeHMS, never null
+     * @param nanos  the nanos to add, may be negative
+     * @return a new updated LocalTime, never null
      */
-    public TimeHMS plusNanos(int nanos) {
+    public LocalTime plusNanos(int nanos) {
         return null;
     }
 
@@ -345,7 +434,7 @@ public final class TimeHMS
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
-    public int compareTo(TimeHMS other) {
+    public int compareTo(LocalTime other) {
         return 0;
     }
 
@@ -356,7 +445,7 @@ public final class TimeHMS
      * @return true if this is after the specified time
      * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isAfter(TimeHMS other) {
+    public boolean isAfter(LocalTime other) {
         return compareTo(other) > 0;
     }
 
@@ -367,7 +456,7 @@ public final class TimeHMS
      * @return true if this point is before the specified time
      * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isBefore(TimeHMS other) {
+    public boolean isBefore(LocalTime other) {
         return compareTo(other) < 0;
     }
 
@@ -383,8 +472,8 @@ public final class TimeHMS
         if (this == other) {
             return true;
         }
-        if (other instanceof TimeHMS) {
-            TimeHMS timeHMS = (TimeHMS) other;
+        if (other instanceof LocalTime) {
+            LocalTime localTime = (LocalTime) other;
             return  true;
         }
         return false;

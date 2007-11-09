@@ -38,8 +38,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateTimeHM;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.BeforeMethod;
@@ -47,18 +48,18 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test DateTimeHM.
+ * Test LocalDate.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestDateTimeHM {
+public class TestLocalDate {
 
-    private DateTimeHM TEST_2007_07_15;
+    private LocalDate TEST_2007_07_15;
 
     @BeforeMethod
     public void setUp() {
-        TEST_2007_07_15 = DateTimeHM.dateMidnight(2007, 7, 15);
+        TEST_2007_07_15 = LocalDate.date(2007, 7, 15);
     }
 
     //-----------------------------------------------------------------------
@@ -69,7 +70,7 @@ public class TestDateTimeHM {
     }
 
     public void test_immutable() {
-        Class<DateTimeHM> cls = DateTimeHM.class;
+        Class<LocalDate> cls = LocalDate.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
@@ -80,60 +81,60 @@ public class TestDateTimeHM {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_ints() {
+    public void factory_date_ints() {
         assertEquals(TEST_2007_07_15.getYear(), 2007);
         assertEquals(TEST_2007_07_15.getMonthOfYear(), MonthOfYear.JULY);
         assertEquals(TEST_2007_07_15.getDayOfMonth(), 15);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_ints_dayTooLow() {
-        DateTimeHM.dateMidnight(2007, 1, 0);
+    public void test_factory_date_ints_dayTooLow() {
+        LocalDate.date(2007, 1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_ints_dayTooHigh() {
-        DateTimeHM.dateMidnight(2007, 1, 32);
+    public void test_factory_date_ints_dayTooHigh() {
+        LocalDate.date(2007, 1, 32);
     }
 
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_ints_monthTooLow() {
-        DateTimeHM.dateMidnight(2007, 0, 1);
+    public void test_factory_date_ints_monthTooLow() {
+        LocalDate.date(2007, 0, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_ints_monthTooHigh() {
-        DateTimeHM.dateMidnight(2007, 13, 1);
+    public void test_factory_date_ints_monthTooHigh() {
+        LocalDate.date(2007, 13, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_ints_yearTooLow() {
-        DateTimeHM.dateMidnight(Integer.MIN_VALUE, 1, 1);
+    public void test_factory_date_ints_yearTooLow() {
+        LocalDate.date(Integer.MIN_VALUE, 1, 1);
     }
 
-//    //-----------------------------------------------------------------------
-//    public void test_isSupported() {
-//        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.yearRule()), true);
-//        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.monthOfYearRule()), true);
-//        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfMonthRule()), true);
-//        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfWeekRule()), true);
-//        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfYearRule()), true);
-//        assertEquals(TEST_2007_07_15.isSupported(HourOfDay.RULE), true);
-//        assertEquals(TEST_2007_07_15.isSupported(MinuteOfHour.RULE), true);
+    //-----------------------------------------------------------------------
+    public void test_isSupported() {
+        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.yearRule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.monthOfYearRule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfMonthRule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfWeekRule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfYearRule()), true);
+//        assertEquals(TEST_2007_07_15.isSupported(HourOfDay.RULE), false);
+//        assertEquals(TEST_2007_07_15.isSupported(MinuteOfHour.RULE), false);
 //        assertEquals(TEST_2007_07_15.isSupported(SecondOfMinute.RULE), false);
-//    }
+    }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleDates")
     Object[][] provider_sampleDates() {
         return new Object[][] {
-            {2008, 7, 5, 4, 3},
-            {2007, 7, 5, 4, 3},
-            {2006, 7, 5, 4, 3},
-            {2005, 7, 5, 4, 3},
-            {2004, 1, 1, 0, 0},
-            {-1, 1, 2, 3, 4},
+            {2008, 7, 5},
+            {2007, 7, 5},
+            {2006, 7, 5},
+            {2005, 7, 5},
+            {2004, 1, 1},
+            {-1, 1, 2},
         };
     }
 
@@ -141,18 +142,16 @@ public class TestDateTimeHM {
     // get*()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
-    public void test_get(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
+    public void test_get(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
         assertEquals(a.getYear(), y);
         assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
         assertEquals(a.getDayOfMonth(), d);
-        assertEquals(a.getHourOfDay(), h);
-        assertEquals(a.getMinuteOfHour(), min);
     }
 
     @Test(dataProvider="sampleDates")
-    public void test_getDOY(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
+    public void test_getDOY(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
             total += MonthOfYear.monthOfYear(i).lengthInDays(y);
@@ -165,18 +164,18 @@ public class TestDateTimeHM {
     // withYear()
     //-----------------------------------------------------------------------
     public void test_withYear_normal() {
-        DateTimeHM t = TEST_2007_07_15.withYear(2008);
-        assertEquals(t, DateTimeHM.dateMidnight(2008, 7, 15));
+        LocalDate t = TEST_2007_07_15.withYear(2008);
+        assertEquals(t, LocalDate.date(2008, 7, 15));
     }
 
     public void test_withYear_noChange() {
-        DateTimeHM t = TEST_2007_07_15.withYear(2007);
-        assertEquals(t, DateTimeHM.dateMidnight(2007, 7, 15));
+        LocalDate t = TEST_2007_07_15.withYear(2007);
+        assertEquals(t, LocalDate.date(2007, 7, 15));
     }
 
     public void test_withYear_adjustDay() {
-        DateTimeHM t = DateTimeHM.dateMidnight(2008, 2, 29).withYear(2007);
-        DateTimeHM expected = DateTimeHM.dateMidnight(2007, 2, 28);
+        LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007);
+        LocalDate expected = LocalDate.date(2007, 2, 28);
         assertEquals(t, expected);
     }
 
@@ -184,18 +183,18 @@ public class TestDateTimeHM {
     // withMonthOfYear()
     //-----------------------------------------------------------------------
     public void test_withMonthOfYear_normal() {
-        DateTimeHM t = TEST_2007_07_15.withMonthOfYear(1);
-        assertEquals(t, DateTimeHM.dateMidnight(2007, 1, 15));
+        LocalDate t = TEST_2007_07_15.withMonthOfYear(1);
+        assertEquals(t, LocalDate.date(2007, 1, 15));
     }
 
     public void test_withMonthOfYear_noChange() {
-        DateTimeHM t = TEST_2007_07_15.withMonthOfYear(7);
-        assertEquals(t, DateTimeHM.dateMidnight(2007, 7, 15));
+        LocalDate t = TEST_2007_07_15.withMonthOfYear(7);
+        assertEquals(t, LocalDate.date(2007, 7, 15));
     }
 
     public void test_withMonthOfYear_adjustDay() {
-        DateTimeHM t = DateTimeHM.dateMidnight(2007, 12, 31).withMonthOfYear(11);
-        DateTimeHM expected = DateTimeHM.dateMidnight(2007, 11, 30);
+        LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11);
+        LocalDate expected = LocalDate.date(2007, 11, 30);
         assertEquals(t, expected);
     }
 
@@ -203,18 +202,18 @@ public class TestDateTimeHM {
     // withDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_withDayOfMonth_normal() {
-        DateTimeHM t = TEST_2007_07_15.withDayOfMonth(1);
-        assertEquals(t, DateTimeHM.dateMidnight(2007, 7, 1));
+        LocalDate t = TEST_2007_07_15.withDayOfMonth(1);
+        assertEquals(t, LocalDate.date(2007, 7, 1));
     }
 
     public void test_withDayOfMonth_noChange() {
-        DateTimeHM t = TEST_2007_07_15.withDayOfMonth(15);
-        assertEquals(t, DateTimeHM.dateMidnight(2007, 7, 15));
+        LocalDate t = TEST_2007_07_15.withDayOfMonth(15);
+        assertEquals(t, LocalDate.date(2007, 7, 15));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDayOfMonth_invalid() {
-        DateTimeHM.dateMidnight(2007, 11, 30).withDayOfMonth(31);
+        LocalDate.date(2007, 11, 30).withDayOfMonth(31);
     }
 
     //-----------------------------------------------------------------------
@@ -222,60 +221,48 @@ public class TestDateTimeHM {
     //-----------------------------------------------------------------------
     public void test_withLastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            DateTimeHM t = DateTimeHM.dateMidnight(2008, month.getMonthOfYear(), 1).withLastDayOfMonth();
+            LocalDate t = LocalDate.date(2008, month.getMonthOfYear(), 1).withLastDayOfMonth();
             assertEquals(t.getDayOfMonth(), month.lengthInDays(2008));
         }
     }
 
     public void test_withLastDayOfMonth_standard() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            DateTimeHM t = DateTimeHM.dateMidnight(2007, month.getMonthOfYear(), 1).withLastDayOfMonth();
+            LocalDate t = LocalDate.date(2007, month.getMonthOfYear(), 1).withLastDayOfMonth();
             assertEquals(t.getDayOfMonth(), month.lengthInDays(2007));
         }
     }
 
     public void test_withLastDayOfMonth_noChange() {
-        DateTimeHM t = DateTimeHM.dateMidnight(2008, 10, 31).withLastDayOfMonth();
-        assertEquals(t, DateTimeHM.dateMidnight(2008, 10, 31));
+        LocalDate t = LocalDate.date(2008, 10, 31).withLastDayOfMonth();
+        assertEquals(t, LocalDate.date(2008, 10, 31));
     }
 
     //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
-    public void test_equals_true(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
-        DateTimeHM b = DateTimeHM.dateTime(y, m, d, h, min);
+    public void test_equals_true(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y, m, d);
         assertEquals(a.equals(b), true);
     }
     @Test(dataProvider="sampleDates")
-    public void test_equals_false_month_differs(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
-        DateTimeHM b = DateTimeHM.dateTime(y, m + 1, d, h, min);
+    public void test_equals_false_year_differs(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y + 1, m, d);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleDates")
-    public void test_equals_false_day_differs(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
-        DateTimeHM b = DateTimeHM.dateTime(y, m, d + 1, h, min);
+    public void test_equals_false_month_differs(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y, m + 1, d);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleDates")
-    public void test_equals_false_hour_differs(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
-        DateTimeHM b = DateTimeHM.dateTime(y, m, d, h + 1, min);
-        assertEquals(a.equals(b), false);
-    }
-    @Test(dataProvider="sampleDates")
-    public void test_equals_false_minute_differs(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
-        DateTimeHM b = DateTimeHM.dateTime(y, m, d, h, min + 1);
-        assertEquals(a.equals(b), false);
-    }
-    @Test(dataProvider="sampleDates")
-    public void test_equals_false_year_differs(int y, int m, int d, int h, int min) {
-        DateTimeHM a = DateTimeHM.dateTime(y, m, d, h, min);
-        DateTimeHM b = DateTimeHM.dateTime(y + 1, m, d, h, min);
+    public void test_equals_false_day_differs(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y, m, d + 1);
         assertEquals(a.equals(b), false);
     }
 
@@ -293,15 +280,15 @@ public class TestDateTimeHM {
     @DataProvider(name="sampleToString")
     Object[][] provider_sampleToString() {
         return new Object[][] {
-            {2008, 7, 5, 4, 3, "2008-07-05T04:03"},
-            {2007, 12, 31, 23, 59, "2007-12-31T23:59"},
-//            {-1, 1, 2, 3, 0, "-0001-01-02T03:00"},
+            {2008, 7, 5, "2008-07-05"},
+            {2007, 12, 31, "2007-12-31"},
+//            {-1, 1, 2, "-0001-01-02"},
         };
     }
 
     @Test(dataProvider="sampleToString")
-    public void test_toString(int y, int m, int d, int h, int min, String expected) {
-        DateTimeHM t = DateTimeHM.dateTime(y, m, d, h, min);
+    public void test_toString(int y, int m, int d, String expected) {
+        LocalDate t = LocalDate.date(y, m, d);
         String str = t.toString();
         assertEquals(str, expected);
     }

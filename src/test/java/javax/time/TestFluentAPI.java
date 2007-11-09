@@ -35,8 +35,8 @@ import static javax.time.calendar.Calendars.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.period.Periods.*;
 
-import javax.time.calendar.DateYMD;
-import javax.time.calendar.TimeHM;
+import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
@@ -51,11 +51,11 @@ import javax.time.period.field.Days;
 public class TestFluentAPI {
 
     public static void main(String[] args) {
-        TimeHM tod = now().currentTimeHM();
+        LocalTime tod = now().currentTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
         
-        DateYMD date = null;
+        LocalDate date = null;
         date = now().today().plusDays(3);
         date = now().today().plus(days(3));
         date = now().today().plus(Days.days(3));
@@ -70,7 +70,7 @@ public class TestFluentAPI {
         date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
         date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
-        date = DateYMD.date(now().currentMonth(), dayOfMonth(6));
+        date = LocalDate.date(now().currentMonth(), dayOfMonth(6));
         
         // different ways to build/use periods
         date = date.plus(yearsMonthsDays(2, 3, 1));
@@ -98,7 +98,7 @@ public class TestFluentAPI {
 //        CalendarDateTime dt = CalendarDateTime.calendarDateTime(2007, february(), 21, 12, 30);
 //        int sec = dt.withPrecisionAtLeastSeconds().getSecondOfMinute();
 //        
-//        CalendarDT<TimeHM> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
+//        CalendarDT<LocalTime> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
 //        int min = dtime.time().getMinuteOfHour();
         
         DayOfMonth.RULE.getMaximumValue();
