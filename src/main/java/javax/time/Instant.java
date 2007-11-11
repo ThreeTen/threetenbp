@@ -134,10 +134,10 @@ public final class Instant implements Comparable<Instant>, Serializable {
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, double fractionOfSecond) {
-        if (fractionOfSecond <= 1 || fractionOfSecond >= 1) {
+        if (fractionOfSecond <= -1 || fractionOfSecond >= 1) {
             throw new IllegalArgumentException("Fraction of second must be between -1 and 1 exclusive but was " + fractionOfSecond);
         }
-        int nanos = (int) (fractionOfSecond * NANOS_PER_SECOND);
+        int nanos = (int) Math.round(fractionOfSecond * NANOS_PER_SECOND);
         if (nanos < 0) {
             nanos += NANOS_PER_SECOND;
             epochSeconds = MathUtils.safeDecrement(epochSeconds);
