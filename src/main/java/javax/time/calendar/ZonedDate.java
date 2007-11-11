@@ -75,25 +75,28 @@ public final class ZonedDate
      */
     private final int dayOfMonth;
     /**
-     * The hour, from 0 to 23.
-     */
-    private final int hour;
-    /**
-     * The minute, from 0 to 59.
-     */
-    private final int minute;
-    /**
-     * The second, from 0 to 59.
-     */
-    private final int second;
-    /**
-     * The nanosecond, from 0 to 999,999,999.
-     */
-    private final int nano;
-    /**
      * The time zone.
      */
     private final TimeZone zone;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>ZonedDate</code>.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param zone  the time zone, not null
+     * @return a ZonedDate object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static ZonedDate date(int year, int monthOfYear, int dayOfMonth, TimeZone zone) {
+        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
+        if (zone == null) {
+            throw new NullPointerException("The time zone must not be null");
+        }
+        return new ZonedDate(year, monthOfYear, dayOfMonth, zone);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -102,20 +105,12 @@ public final class ZonedDate
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param zone  the time zone, not null
      */
-    private ZonedDate(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+    private ZonedDate(int year, int monthOfYear, int dayOfMonth, TimeZone zone) {
         this.year = year;
         this.month = monthOfYear;
         this.dayOfMonth = dayOfMonth;
-        this.hour = hourOfDay;
-        this.minute = minuteOfHour;
-        this.second = secondOfMinute;
-        this.nano = nanoOfSecond;
         this.zone = zone;
     }
 
@@ -178,19 +173,48 @@ public final class ZonedDate
         if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
             return dayOfMonth;
         }
-        if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
-            return hour;
-        }
-        if (field == ISOChronology.INSTANCE.minuteOfHourRule()) {
-            return minute;
-        }
-        if (field == ISOChronology.INSTANCE.secondOfMinuteRule()) {
-            return second;
-        }
-        if (field == ISOChronology.INSTANCE.nanoOfSecondRule()) {
-            return nano;
-        }
         return field.getValue(getCalendricalState());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>Year</code> initialised to the
+     * year of this date.
+     *
+     * @return the year object, never null
+     */
+    public Year year() {
+        return Year.isoYear(year);
+    }
+
+    /**
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this date.
+     *
+     * @return the month object, never null
+     */
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(month);
+    }
+
+    /**
+     * Gets an instance of <code>YearMonth</code> initialised to the
+     * year and month of this date.
+     *
+     * @return the year-month object, never null
+     */
+    public YearMonth yearMonth() {
+        return YearMonth.yearMonth(year, month);
+    }
+
+    /**
+     * Gets an instance of <code>MonthDay</code> initialised to the
+     * month and day of month of this date.
+     *
+     * @return the month-day object, never null
+     */
+    public MonthDay monthDay() {
+        return MonthDay.monthDay(month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -277,51 +301,6 @@ public final class ZonedDate
         return null;
     }
 
-    /**
-     * Gets the hour of day value.
-     *
-     * @return the hour of day, from 0 to 23
-     */
-    public int getHourOfDay() {
-        return hour;
-    }
-
-    /**
-     * Gets the minute of hour value.
-     *
-     * @return the minute of hour, from 0 to 59
-     */
-    public int getMinuteOfHour() {
-        return minute;
-    }
-
-    /**
-     * Gets the second of minute value.
-     *
-     * @return the second of minute, from 0 to 59
-     */
-    public int getSecondOfMinute() {
-        return second;
-    }
-
-    /**
-     * Gets the nanosecond fraction of a second expressed as an int.
-     *
-     * @return the nano of second, from 0 to 999,999,999
-     */
-    public int getNanoOfSecond() {
-        return nano;
-    }
-
-    /**
-     * Gets the nanosecond fraction of a second expressed as a double.
-     *
-     * @return the nano of second, from 0 to 0.999,999,999
-     */
-    public double getNanoFraction() {
-        return ((double) nano) / 1000000000d;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this ZonedDate with the specified values altered.
@@ -361,7 +340,7 @@ public final class ZonedDate
             return this;
         }
         int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-        return new ZonedDate(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
+        return new ZonedDate(resolved[0], resolved[1], resolved[2], zone);
     }
 
     /**
@@ -377,7 +356,7 @@ public final class ZonedDate
             return this;
         }
         int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
-        return new ZonedDate(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
+        return new ZonedDate(resolved[0], resolved[1], resolved[2], zone);
     }
 
     /**
@@ -393,7 +372,7 @@ public final class ZonedDate
             return this;
         }
         ISOChronology.INSTANCE.checkValidDate(year, month, dayOfMonth);
-        return new ZonedDate(year, month, dayOfMonth, hour, minute, second, nano, zone);
+        return new ZonedDate(year, month, dayOfMonth, zone);
     }
 
     /**
@@ -408,7 +387,7 @@ public final class ZonedDate
         if (this.dayOfMonth == dom) {
             return this;
         }
-        return new ZonedDate(year, month, dom, hour, minute, second, nano, zone);
+        return new ZonedDate(year, month, dom, zone);
     }
 
     /**
@@ -431,7 +410,7 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withLastDayOfYear() {
-        return new ZonedDate(year, 12, 31, hour, minute, second, nano, zone);
+        return new ZonedDate(year, 12, 31, zone);
     }
 
     /**
@@ -443,107 +422,6 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withDayOfWeek(int dayOfWeek) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the date values altered.
-     * <p>
-     * This method will return a new instance with the same time fields,
-     * but altered date fields.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated ZonedDateTime
-     */
-    public ZonedDate withDate(int year, int monthOfYear, int dayOfMonth) {
-        if (this.year == year && this.dayOfMonth == dayOfMonth && this.dayOfMonth == dayOfMonth) {
-            return this;
-        }
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        return new ZonedDate(year, monthOfYear, dayOfMonth, hour, minute, second, nano, zone);
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the hour of day value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withHourOfDay(int hourOfDay) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the minute of hour value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withMinuteOfHour(int minuteOfHour) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the second of minute value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withSecondOfMinute(int secondOfMinute) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the nano of second value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withNanoOfSecond(int nanoOfSecond) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the time values altered.
-     * <p>
-     * This method will return a new instance with the same date fields,
-     * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int)} and sets
-     * the second field to zero.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withTime(int hourOfDay, int minuteOfHour) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the time values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         return null;
     }
 
@@ -637,8 +515,8 @@ public final class ZonedDate
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
-        return new ZonedDate(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
+        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
+        return new ZonedDate(resolved[0], resolved[1], resolved[2], zone);
     }
 
     /**
@@ -675,85 +553,6 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate plusDays(int days) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the specified period in hours added.
-     * <p>
-     * This method uses field based addition.
-     * This method changes the field by the specified number of hours.
-     * This may, at daylight savings cutover, result in a duration being added
-     * that is more or less than the specified number of hours.
-     * <p>
-     * For example, consider a time zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, adding
-     * a duration of 2 hours to 00:30 will result in 02:30, but it is important
-     * to note that only a duration of 1 hour was actually added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate plusHours(int hours) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the specified duration in hours added.
-     * <p>
-     * This method uses duration based addition.
-     * This method adds the physical duration in hours specified. At the daylight
-     * savings cutover, this may result in the hours field not changing by the
-     * same number of hours.
-     * <p>
-     * For example, consider a time zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, adding
-     * a duration of 2 hours to 00:30 will result in 03:30.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate plusHoursDuration(int hours) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the specified period in minutes added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param minutes  the minutes to add, may be negative
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate plusMinutes(int minutes) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the specified period in seconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param seconds  the seconds to add, may be negative
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate plusSeconds(int seconds) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with the specified period in nanoseconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanos  the nanos to add, may be negative
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate plusNanos(int nanos) {
         return null;
     }
 

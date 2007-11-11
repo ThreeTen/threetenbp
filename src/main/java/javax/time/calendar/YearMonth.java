@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
@@ -59,13 +60,13 @@ public final class YearMonth
     private static final long serialVersionUID = 1507289123L;
 
     /**
-     * The year being represented.
+     * The year, from MIN_YEAR to MAX_YEAR.
      */
     private final int year;
     /**
-     * The month of year being represented.
+     * The month, from 1 to 12.
      */
-    private final int monthOfYear;
+    private final int month;
 
     //-----------------------------------------------------------------------
     /**
@@ -97,18 +98,18 @@ public final class YearMonth
     /**
      * Constructor.
      *
-     * @param year  the year to represent
-     * @param monthOfYear  the month of year to represent
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      */
     private YearMonth(int year, int monthOfYear) {
         this.year = year;
-        this.monthOfYear = monthOfYear;
+        this.month = monthOfYear;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * instance.
+     * Gets the calendrical state which provides internal access to
+     * this year-month.
      *
      * @return the calendar state for this instance, never null
      */
@@ -117,6 +118,17 @@ public final class YearMonth
         return null;  // TODO
     }
 
+    /**
+     * Gets the chronology that describes the calendar system rules for
+     * this year-month.
+     *
+     * @return the ISO chronology, never null
+     */
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Checks if the specified calendar field is supported.
      * <p>
@@ -144,7 +156,34 @@ public final class YearMonth
         if (!isSupported(field)) {
             throw new UnsupportedCalendarFieldException("YearMonth does not support field " + field.getName());
         }
-        return 0;
+        if (field == ISOChronology.INSTANCE.yearRule()) {
+            return year;
+        }
+        if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
+            return month;
+        }
+        return field.getValue(getCalendricalState());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>Year</code> initialised to the
+     * year of this year-month.
+     *
+     * @return the year object, never null
+     */
+    public Year year() {
+        return Year.isoYear(year);
+    }
+
+    /**
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this year-month.
+     *
+     * @return the month object, never null
+     */
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(month);
     }
 
     //-----------------------------------------------------------------------
@@ -155,10 +194,10 @@ public final class YearMonth
      * The year 1BC is represented by 0.<br />
      * The year 2BC is represented by -1.<br />
      *
-     * @return the year, from MIN_VALUE + 1 to MAX_VALUE
+     * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
-        return 0;
+        return year;
     }
 
     /**
@@ -167,7 +206,7 @@ public final class YearMonth
      * @return the month of year, never null
      */
     public MonthOfYear getMonthOfYear() {
-        return null;
+        return MonthOfYear.monthOfYear(month);
     }
 
     //-----------------------------------------------------------------------
@@ -201,11 +240,15 @@ public final class YearMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated YearMonth, never null
      */
     public YearMonth withYear(int year) {
-        return null;
+        if (this.year == year) {
+            return this;
+        }
+        ISOChronology.INSTANCE.yearRule().checkValue(year);
+        return new YearMonth(year, month);
     }
 
     /**
@@ -217,7 +260,11 @@ public final class YearMonth
      * @return a new updated YearMonth, never null
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
-        return null;
+        if (this.month == monthOfYear) {
+            return this;
+        }
+        ISOChronology.INSTANCE.monthOfYearRule().checkValue(year);
+        return new YearMonth(year, monthOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -249,27 +296,47 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth with the specified number of years added.
+     * Returns a copy of this YearMonth with the specified period in years added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add
+     * @param years  the years to add, may be negative
      * @return a new updated YearMonth, never null
+     * @throws ArithmeticException if the calculation overflows
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public YearMonth plusYears(int years) {
-        return null;
+        if (years == 0) {
+            return this;
+        }
+        int newYear = MathUtils.safeAdd(year, years);
+        return withYear(newYear);
     }
 
     /**
-     * Returns a copy of this YearMonth with the specified number of months added.
+     * Returns a copy of this YearMonth with the specified period in months added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add
+     * @param months  the months to add, may be negative
      * @return a new updated YearMonth, never null
+     * @throws ArithmeticException if the calculation overflows
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public YearMonth plusMonths(int months) {
-        return null;
+        if (months == 0) {
+            return this;
+        }
+        long newMonth0 = month - 1;
+        newMonth0 = newMonth0 + months;
+        int years = (int) (newMonth0 / 12);
+        newMonth0 = Math.abs(newMonth0) % 12;
+        if (years < 0) {
+            years--;
+        }
+        int newYear = MathUtils.safeAdd(year, years);
+        ISOChronology.INSTANCE.yearRule().checkValue(year);
+        return new YearMonth(newYear, (int) ++newMonth0);
     }
 
     //-----------------------------------------------------------------------

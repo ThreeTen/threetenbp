@@ -66,7 +66,7 @@ public class CodeGen {
             Velocity.init();
             
             CodeGen cg = new CodeGen();
-//            cg.processCalendarClassField();
+            cg.processCalendarClass();
 //            cg.processDurationField();
 //            cg.processTestDurationField();
 //            cg.processTimeField();
@@ -95,24 +95,24 @@ public class CodeGen {
 //        processCalendarClassField(MAIN_CALENDAR_PKG, template, "MonthDay",
 //                "month-day", "MonthOfYear + DayOfMonth",
 //                "MonthDate", "Periods.DAYS", "Periods.MONTHS");
-//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDate",
-//                "date", "Year + MonthOfYear + DayOfMonth",
-//                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
-//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalTime",
-//                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
-//                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
-//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDateTime",
-//                "date-time", "Year + DayOfYear + SecondOfDay",
-//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
-//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDate",
-//                "date", "Year + MonthOfYear + DayOfMonth",
-//                "YearMonthDateHourMinuteSecondNano", "Periods.DAYS", "Periods.FOREVER");
-//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedTime",
-//                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
-//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
-//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTime",
-//                "date-time", "Year + DayOfYear + SecondOfDay",
-//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDate",
+                "date", "Year + MonthOfYear + DayOfMonth",
+                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalTime",
+                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDateTime",
+                "date-time", "Year + DayOfYear + SecondOfDay",
+                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDate",
+                "date", "Year + MonthOfYear + DayOfMonth",
+                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedTime",
+                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTime",
+                "date-time", "Year + DayOfYear + SecondOfDay",
+                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
     }
 
     private void processCalendarClassField(

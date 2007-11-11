@@ -40,6 +40,14 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
+ * A calendrical representation of a date-time with a time zone.
+ * <p>
+ * ZonedDateTime is an immutable calendrical that represents a date-time, often
+ * viewed as year-month-day-hour-minute-second-zone.
+ * This class stores all date and time fields, to a precision of nanoseconds,
+ * as well as a time zone. Thus, for example, the value
+ * "2nd October 2007 at 13:45.30.123456789 in the Europe/Paris time zone"
+ * can be stored in a ZonedDateTime.
  * <p>
  * ZonedDateTime is thread-safe and immutable.
  *
@@ -85,6 +93,75 @@ public final class ZonedDateTime
      * The time zone.
      */
     private final TimeZone zone;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code>.
+     * <p>
+     * The second and nanosecond fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, TimeZone zone) {
+        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, zone);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code>.
+     * <p>
+     * The nanosecond field will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, TimeZone zone) {
+        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, zone);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code>.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
+        ISOChronology.INSTANCE.hourOfDayRule().checkValue(hourOfDay);
+        ISOChronology.INSTANCE.minuteOfHourRule().checkValue(minuteOfHour);
+        ISOChronology.INSTANCE.secondOfMinuteRule().checkValue(secondOfMinute);
+        ISOChronology.INSTANCE.nanoOfSecondRule().checkValue(nanoOfSecond);
+        if (zone == null) {
+            throw new NullPointerException("The time zone must not be null");
+        }
+        // TODO: Validate time exists in zone
+        return new ZonedDateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -182,6 +259,87 @@ public final class ZonedDateTime
             return nano;
         }
         return field.getValue(getCalendricalState());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>Year</code> initialised to the
+     * year of this date-time.
+     *
+     * @return the year object, never null
+     */
+    public Year year() {
+        return Year.isoYear(year);
+    }
+
+    /**
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this date-time.
+     *
+     * @return the month object, never null
+     */
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(month);
+    }
+
+    /**
+     * Gets an instance of <code>YearMonth</code> initialised to the
+     * year and month of this date-time.
+     *
+     * @return the year-month object, never null
+     */
+    public YearMonth yearMonth() {
+        return YearMonth.yearMonth(year, month);
+    }
+
+    /**
+     * Gets an instance of <code>MonthDay</code> initialised to the
+     * month and day of month of this date-time.
+     *
+     * @return the month-day object, never null
+     */
+    public MonthDay monthDay() {
+        return MonthDay.monthDay(month, dayOfMonth);
+    }
+
+    /**
+     * Gets an instance of <code>LocalDate</code> initialised to the
+     * date of this date-time.
+     *
+     * @return the date object, never null
+     */
+    public LocalDate date() {
+        return LocalDate.date(year, month, dayOfMonth);
+    }
+
+    /**
+     * Gets an instance of <code>ZonedDate</code> initialised to the
+     * date of this date-time.
+     *
+     * @return the date object, never null
+     */
+    public ZonedDate zonedDate() {
+        return ZonedDate.date(year, month, dayOfMonth, zone);
+    }
+
+    /**
+     * Gets an instance of <code>LocalTime</code> initialised to the
+     * time of this date-time.
+     *
+     * @return the time object, never null
+     */
+    public LocalTime time() {
+        return LocalTime.time(hour, minute, second, nano);
+    }
+
+    /**
+     * Gets an instance of <code>ZonedTime</code> initialised to the
+     * time of this date-time.
+     *
+     * @return the time object, never null
+     */
+    public ZonedTime zonedTime() {
+        return ZonedTime.time(hour, minute, second, nano, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -628,7 +786,7 @@ public final class ZonedDateTime
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
+        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
         return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
     }
 

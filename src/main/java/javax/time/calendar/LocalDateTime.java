@@ -241,6 +241,67 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Gets an instance of <code>Year</code> initialised to the
+     * year of this date-time.
+     *
+     * @return the year object, never null
+     */
+    public Year year() {
+        return Year.isoYear(year);
+    }
+
+    /**
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this date-time.
+     *
+     * @return the month object, never null
+     */
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(month);
+    }
+
+    /**
+     * Gets an instance of <code>YearMonth</code> initialised to the
+     * year and month of this date-time.
+     *
+     * @return the year-month object, never null
+     */
+    public YearMonth yearMonth() {
+        return YearMonth.yearMonth(year, month);
+    }
+
+    /**
+     * Gets an instance of <code>MonthDay</code> initialised to the
+     * month and day of month of this date-time.
+     *
+     * @return the month-day object, never null
+     */
+    public MonthDay monthDay() {
+        return MonthDay.monthDay(month, dayOfMonth);
+    }
+
+    /**
+     * Gets an instance of <code>LocalDate</code> initialised to the
+     * date of this date-time.
+     *
+     * @return the date object, never null
+     */
+    public LocalDate date() {
+        return LocalDate.date(year, month, dayOfMonth);
+    }
+
+    /**
+     * Gets an instance of <code>LocalTime</code> initialised to the
+     * time of this date-time.
+     *
+     * @return the time object, never null
+     */
+    public LocalTime time() {
+        return LocalTime.time(hour, minute, second, nano);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the ISO proleptic year value.
      * <p>
      * The year 1AD is represented by 1.<br />
@@ -649,7 +710,7 @@ public final class LocalDateTime
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
+        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
         return new LocalDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano);
     }
 

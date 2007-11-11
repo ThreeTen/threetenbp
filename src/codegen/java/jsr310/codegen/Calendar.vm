@@ -132,17 +132,17 @@ ${line}
      * @param zone  the time zone, not null
 #end
      */
-    private ${Type}(#if ($year)int year#if ($month), #else) {#end#end
+    private ${Type}(#if ($year)int year#if ($month || $zoned), #else) {#end#end
 #if ($month)
-int monthOfYear#if ($day), #else) {#end#end
+int monthOfYear#if ($day || $zoned), #else) {#end#end
 #if ($day)
-int dayOfMonth#if ($hour), #else) {#end#end
+int dayOfMonth#if ($hour || $zoned), #else) {#end#end
 #if ($hour)
-int hourOfDay#if ($minute), #else) {#end#end
+int hourOfDay#if ($minute || $zoned), #else) {#end#end
 #if ($minute)
-int minuteOfHour#if ($second), #else) {#end#end
+int minuteOfHour#if ($second || $zoned), #else) {#end#end
 #if ($second)
-int secondOfMinute#if ($nano), #else) {#end#end
+int secondOfMinute#if ($nano || $zoned), #else) {#end#end
 #if ($nano)
 int nanoOfSecond#if ($zoned), #else) {#end#end
 #if ($zoned)
@@ -262,6 +262,99 @@ TimeZone zone) {#end
         return field.getValue(getCalendricalState());
     }
 
+    //-----------------------------------------------------------------------
+#if ($year && $month)
+    /**
+     * Gets an instance of <code>Year</code> initialised to the
+     * year of this ${desc}.
+     *
+     * @return the year object, never null
+     */
+    public Year year() {
+        return Year.isoYear(year);
+    }
+
+#end
+#if ($year && $month || $month && $day)
+    /**
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this ${desc}.
+     *
+     * @return the month object, never null
+     */
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(month);
+    }
+
+#end
+#if ($date)
+    /**
+     * Gets an instance of <code>YearMonth</code> initialised to the
+     * year and month of this ${desc}.
+     *
+     * @return the year-month object, never null
+     */
+    public YearMonth yearMonth() {
+        return YearMonth.yearMonth(year, month);
+    }
+
+    /**
+     * Gets an instance of <code>MonthDay</code> initialised to the
+     * month and day of month of this ${desc}.
+     *
+     * @return the month-day object, never null
+     */
+    public MonthDay monthDay() {
+        return MonthDay.monthDay(month, dayOfMonth);
+    }
+
+#end
+#if ($date && $nano)
+    /**
+     * Gets an instance of <code>LocalDate</code> initialised to the
+     * date of this ${desc}.
+     *
+     * @return the date object, never null
+     */
+    public LocalDate date() {
+        return LocalDate.date(year, month, dayOfMonth);
+    }
+
+#if ($zoned)
+    /**
+     * Gets an instance of <code>ZonedDate</code> initialised to the
+     * date of this ${desc}.
+     *
+     * @return the date object, never null
+     */
+    public ZonedDate zonedDate() {
+        return ZonedDate.date(year, month, dayOfMonth, zone);
+    }
+
+#end
+    /**
+     * Gets an instance of <code>LocalTime</code> initialised to the
+     * time of this ${desc}.
+     *
+     * @return the time object, never null
+     */
+    public LocalTime time() {
+        return LocalTime.time(hour, minute, second, nano);
+    }
+
+#if ($zoned)
+    /**
+     * Gets an instance of <code>ZonedTime</code> initialised to the
+     * time of this ${desc}.
+     *
+     * @return the time object, never null
+     */
+    public ZonedTime zonedTime() {
+        return ZonedTime.time(hour, minute, second, nano, zone);
+    }
+
+#end
+#end
 #if ($zoned)
     //-----------------------------------------------------------------------
     /**
@@ -776,11 +869,11 @@ TimeZone zone) {#end
         }
         int newYear = MathUtils.safeAdd(year, years);
 #if ($date)
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
+        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
         return new ${Type}(resolved[0], resolved[1], resolved[2]${dateConstructorExt});
 #else
         ISOChronology.INSTANCE.yearRule().checkValue(year);
-        return new ${Type}(year, monthOfYear);
+        return new ${Type}(newYear, (int) ++newMonth0);
 #end
     }
 

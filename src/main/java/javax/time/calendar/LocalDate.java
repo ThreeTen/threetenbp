@@ -180,6 +180,47 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Gets an instance of <code>Year</code> initialised to the
+     * year of this date.
+     *
+     * @return the year object, never null
+     */
+    public Year year() {
+        return Year.isoYear(year);
+    }
+
+    /**
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this date.
+     *
+     * @return the month object, never null
+     */
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(month);
+    }
+
+    /**
+     * Gets an instance of <code>YearMonth</code> initialised to the
+     * year and month of this date.
+     *
+     * @return the year-month object, never null
+     */
+    public YearMonth yearMonth() {
+        return YearMonth.yearMonth(year, month);
+    }
+
+    /**
+     * Gets an instance of <code>MonthDay</code> initialised to the
+     * month and day of month of this date.
+     *
+     * @return the month-day object, never null
+     */
+    public MonthDay monthDay() {
+        return MonthDay.monthDay(month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the ISO proleptic year value.
      * <p>
      * The year 1AD is represented by 1.<br />
@@ -442,7 +483,7 @@ public final class LocalDate
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) (newMonth0 + 1), dayOfMonth);
+        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
         return new LocalDate(resolved[0], resolved[1], resolved[2]);
     }
 
@@ -553,18 +594,7 @@ public final class LocalDate
      */
     @Override
     public String toString() {
-        int absYear = Math.abs(year);
-        StringBuilder buf = new StringBuilder(12);
-        if (absYear < 1000) {
-            buf.append(year + 10000).deleteCharAt(year < 0 ? 1 : 0);
-        } else {
-            buf.append(year);
-        }
-        return buf.append(month < 10 ? "-0" : "-")
-            .append(month)
-            .append(dayOfMonth < 10 ? "-0" : "-")
-            .append(dayOfMonth)
-            .toString();
+        return super.toString();
     }
 
 }
