@@ -70,7 +70,20 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CalendarMonth</code>.
+     * Obtains an instance of <code>YearMonth</code>.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year to represent, not null
+     * @return a YearMonth object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
+        ISOChronology.INSTANCE.yearRule().checkValue(year);
+        return new YearMonth(year, monthOfYear.getMonthOfYear());
+    }
+
+    /**
+     * Obtains an instance of <code>YearMonth</code>.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
@@ -78,11 +91,13 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
+        ISOChronology.INSTANCE.yearRule().checkValue(year);
+        ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
         return new YearMonth(year, monthOfYear);
     }
 
     /**
-     * Obtains an instance of <code>CalendarMonth</code> from a set of calendricals.
+     * Obtains an instance of <code>YearMonth</code> from a set of calendricals.
      * <p>
      * This can be used to pass in any combination of calendricals that fully specify
      * a calendar month. For example, Year + MonthOfYear.
@@ -91,7 +106,7 @@ public final class YearMonth
      * @return a YearMonth object, never null
      */
     public static YearMonth yearMonth(Calendrical... calendricals) {
-        return new YearMonth(0, 0);
+        return new YearMonth(0, 0);  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -104,6 +119,21 @@ public final class YearMonth
     private YearMonth(int year, int monthOfYear) {
         this.year = year;
         this.month = monthOfYear;
+    }
+
+    /**
+     * Returns a copy of this year-month with the new year and month, checking
+     * to see if a new object is in fact required.
+     *
+     * @param newYear  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param newMonth  the month of year to represent, from 1 (January) to 12 (December)
+     * @return the year-month, never null
+     */
+    private YearMonth withYearMonth(int newYear, int newMonth) {
+        if (year == newYear && month == newMonth) {
+            return this;
+        }
+        return new YearMonth(newYear, newMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -222,6 +252,16 @@ public final class YearMonth
      * @return a new updated YearMonth, never null
      */
     public YearMonth with(Calendrical calendrical) {
+        if (calendrical instanceof Year) {
+            return withYearMonth(((Year) calendrical).getISOYear(), month);
+        }
+        if (calendrical instanceof MonthOfYear) {
+            return withYearMonth(year, ((MonthOfYear) calendrical).getMonthOfYear());
+        }
+        if (calendrical instanceof YearMonth) {
+            return (YearMonth) calendrical;
+        }
+        // TODO
         return null;
     }
 
@@ -247,11 +287,8 @@ public final class YearMonth
      * @return a new updated YearMonth, never null
      */
     public YearMonth withYear(int year) {
-        if (this.year == year) {
-            return this;
-        }
         ISOChronology.INSTANCE.yearRule().checkValue(year);
-        return new YearMonth(year, month);
+        return withYearMonth(year, month);
     }
 
     /**
@@ -263,11 +300,8 @@ public final class YearMonth
      * @return a new updated YearMonth, never null
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
-        if (this.month == monthOfYear) {
-            return this;
-        }
-        ISOChronology.INSTANCE.monthOfYearRule().checkValue(year);
-        return new YearMonth(year, monthOfYear);
+        ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
+        return withYearMonth(year, monthOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -333,13 +367,14 @@ public final class YearMonth
         long newMonth0 = month - 1;
         newMonth0 = newMonth0 + months;
         int years = (int) (newMonth0 / 12);
-        newMonth0 = Math.abs(newMonth0) % 12;
-        if (years < 0) {
+        newMonth0 = newMonth0 % 12;
+        if (newMonth0 < 0) {
+            newMonth0 += 12;
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
         ISOChronology.INSTANCE.yearRule().checkValue(year);
-        return new YearMonth(newYear, (int) ++newMonth0);
+        return withYearMonth(newYear, (int) ++newMonth0);
     }
 
     //-----------------------------------------------------------------------
@@ -351,7 +386,11 @@ public final class YearMonth
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(YearMonth other) {
-        return 0;
+        int cmp = MathUtils.safeCompare(year, other.year);
+        if (cmp == 0) {
+            cmp = MathUtils.safeCompare(month, other.month);
+        }
+        return cmp;
     }
 
     /**
@@ -389,8 +428,8 @@ public final class YearMonth
             return true;
         }
         if (other instanceof YearMonth) {
-            YearMonth yearMonth = (YearMonth) other;
-            return  true;
+            YearMonth otherYM = (YearMonth) other;
+            return year == otherYM.year && month == otherYM.month;
         }
         return false;
     }
@@ -402,17 +441,31 @@ public final class YearMonth
      */
     @Override
     public int hashCode() {
-        return 0;
+        return year ^ (month << 27);
     }
 
     /**
-     * Outputs the string form of the year-month.
+     * Outputs the year-month as a <code>String</code>.
+     * <p>
+     * The output will be in the format 'yyyy-MM':
      *
      * @return the string form of the year-month
      */
     @Override
     public String toString() {
-        return super.toString();
+        int absYear = Math.abs(year);
+        StringBuilder buf = new StringBuilder(9);
+        if (absYear < 1000) {
+            if (year < 0) {
+                buf.append(year - 10000).deleteCharAt(1);
+            } else {
+                buf.append(year + 10000).deleteCharAt(0);
+            }
+        } else {
+            buf.append(year);
+        }
+        return buf.append(month < 10 ? "-0" : "-").append(month)
+            .toString();
     }
 
 }
