@@ -215,6 +215,17 @@ public final class Periods {
         return Period.periodOf(map);
     }
 
+    /**
+     * Creates a period of nanoseconds.
+     *
+     * @param nanos  the nanoseconds to represent
+     * @return the created Period, never null
+     */
+    public static Period nanos(int nanos) {
+        Map<PeriodUnit, Integer> map = singletonMap(NANOS, nanos);
+        return Period.periodOf(map);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Creates a builder suitable for creating a period.
