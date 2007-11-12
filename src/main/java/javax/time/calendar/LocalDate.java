@@ -79,6 +79,19 @@ public final class LocalDate
      * Obtains an instance of <code>LocalDate</code> from a year, month and day.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return a LocalDate object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDate date(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a LocalDate object, never null
@@ -87,19 +100,6 @@ public final class LocalDate
     public static LocalDate date(int year, int monthOfYear, int dayOfMonth) {
         ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
         return new LocalDate(year, monthOfYear, dayOfMonth);
-    }
-
-    /**
-     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
-     *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a LocalDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public static LocalDate date(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth);
     }
 
     /**
