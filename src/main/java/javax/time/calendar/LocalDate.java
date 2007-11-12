@@ -99,6 +99,7 @@ public final class LocalDate
      * @return a LocalDate object, never null
      */
     public static LocalDate date(Calendrical... calendricals) {
+        // TODO
         return null;
     }
 
@@ -279,6 +280,7 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate with(Calendrical calendrical) {
+        // TODO
         return null;
     }
 
@@ -291,6 +293,7 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate with(Calendrical... calendricals) {
+        // TODO
         return null;
     }
 
@@ -446,8 +449,11 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        int newYear = MathUtils.safeAdd(year, years);
-        return withYear(newYear);
+        long newYear = ((long) year) + years;
+        if (newYear < Year.MIN_YEAR || newYear > Year.MAX_YEAR) {
+            throw new IllegalCalendarFieldValueException("Year", newYear, Year.MIN_YEAR, Year.MAX_YEAR);
+        }
+        return withYear((int) newYear);
     }
 
     /**
@@ -478,8 +484,9 @@ public final class LocalDate
         long newMonth0 = month - 1;
         newMonth0 = newMonth0 + months;
         int years = (int) (newMonth0 / 12);
-        newMonth0 = Math.abs(newMonth0) % 12;
-        if (years < 0) {
+        newMonth0 = newMonth0 % 12;
+        if (newMonth0 < 0) {
+            newMonth0 += 12;
             years--;
         }
         int newYear = MathUtils.safeAdd(year, years);
@@ -503,7 +510,7 @@ public final class LocalDate
      * @throws ArithmeticException if the calculation overflows
      */
     public LocalDate plusWeeks(int weeks) {
-        return null;
+        return plusDays(7L * weeks);
     }
 
     /**
@@ -521,7 +528,40 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate plusDays(int days) {
-        return null;
+        return plusDays((long) days);
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the specified number of days added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to add
+     * @return a new updated LocalDate, never null
+     */
+    private LocalDate plusDays(long days) {
+        if (days == 0) {
+            return this;
+        }
+        int monthLen = ISOChronology.INSTANCE.getMonthLength(year, month);
+        long possDOM = dayOfMonth + days;
+        if (possDOM >= 1) {
+            if (possDOM <= monthLen) {
+                // same month
+                return new LocalDate(year, month, (int) possDOM);
+            } else if (possDOM <= monthLen + 28) {
+                // next month (28 guarantees only one month later)
+                possDOM -= monthLen;
+                if (month == 12) {
+                    return new LocalDate(MathUtils.safeIncrement(year), 1, (int) possDOM);
+                } else {
+                    return new LocalDate(year, month + 1, (int) possDOM);
+                }
+            }
+        }
+        long epochDays = 0L;
+        epochDays += days;
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------
@@ -533,7 +573,14 @@ public final class LocalDate
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(LocalDate other) {
-        return 0;
+        int cmp = MathUtils.safeCompare(year, other.year);
+        if (cmp == 0) {
+            cmp = MathUtils.safeCompare(month, other.month);
+            if (cmp == 0) {
+                cmp = MathUtils.safeCompare(dayOfMonth, other.dayOfMonth);
+            }
+        }
+        return cmp;
     }
 
     /**
@@ -571,8 +618,8 @@ public final class LocalDate
             return true;
         }
         if (other instanceof LocalDate) {
-            LocalDate localDate = (LocalDate) other;
-            return  true;
+            LocalDate otherDate = (LocalDate) other;
+            return (year == otherDate.year && month == otherDate.month && dayOfMonth == otherDate.dayOfMonth);
         }
         return false;
     }
@@ -584,7 +631,7 @@ public final class LocalDate
      */
     @Override
     public int hashCode() {
-        return 0;
+        return (year & 0xFFFFF800) ^ ((year << 11) + (month << 6) + (dayOfMonth));
     }
 
     /**
@@ -594,7 +641,22 @@ public final class LocalDate
      */
     @Override
     public String toString() {
-        return super.toString();
+        int absYear = Math.abs(year);
+        StringBuilder buf = new StringBuilder(12);
+        if (absYear < 1000) {
+            if (year < 0) {
+                buf.append(year - 10000).deleteCharAt(1);
+            } else {
+                buf.append(year + 10000).deleteCharAt(0);
+            }
+        } else {
+            buf.append(year);
+        }
+        return buf.append(month < 10 ? "-0" : "-")
+            .append(month)
+            .append(dayOfMonth < 10 ? "-0" : "-")
+            .append(dayOfMonth)
+            .toString();
     }
 
 }

@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -436,7 +437,17 @@ public final class LocalTime
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(LocalTime other) {
-        return 0;
+        int cmp = MathUtils.safeCompare(hour, other.hour);
+        if (cmp == 0) {
+            cmp = MathUtils.safeCompare(minute, other.minute);
+            if (cmp == 0) {
+                cmp = MathUtils.safeCompare(second, other.second);
+                if (cmp == 0) {
+                    cmp = MathUtils.safeCompare(nano, other.nano);
+                }
+            }
+        }
+        return cmp;
     }
 
     /**
@@ -491,13 +502,106 @@ public final class LocalTime
     }
 
     /**
-     * Outputs the string form of the time.
+     * Outputs the time as a <code>String</code>.
+     * <p>
+     * The output will be one of the following formats:
+     * <ul>
+     * <li>'hh:mm'</li>
+     * <li>'hh:mm:ss'</li>
+     * <li>'hh:mm:ss.SSS'</li>
+     * <li>'hh:mm:ss.SSSSSS'</li>
+     * <li>'hh:mm:ss.SSSSSSSSS'</li>
+     * </ul>
+     * The format used will be the shortest that outputs the full value of
+     * the time where the omitted parts are implied to be zero.
      *
-     * @return the string form of the time
+     * @return the formatted time string, never null
      */
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder buf = new StringBuilder(18);
+        buf.append(hour < 10 ? "0" : "").append(hour)
+            .append(minute < 10 ? ":0" : ":").append(minute);
+        if (second > 0 || nano > 0) {
+            buf.append(second < 10 ? "-0" : "-").append(second);
+            if (nano > 0) {
+                if (nano % 1000000 == 0) {
+                    buf.append(Integer.toString((nano / 1000000) + 1000).substring(1));
+                } else if (nano % 1000 == 0) {
+                    buf.append(Integer.toString((nano / 1000) + 1000000).substring(1));
+                } else {
+                    buf.append(Integer.toString((nano) + 1000000000).substring(1));
+                }
+            }
+        }
+        return buf.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adds the specified period to create a new LocalTime returning any
+     * overflow in days.
+     * <p>
+     * This method returns an {@link Overflow} instance with the result of the
+     * addition and any overflow in days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to add, not null
+     * @return a new updated LocalTime, never null
+     */
+    public Overflow plusWithOverflow(PeriodView period) {
+        // TODO
+        LocalTime resultTime = null;
+        int excessDays = 0;
+        return new Overflow(resultTime, excessDays);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Class to return the result of addition when the addition overflows
+     * the capacity of a LocalTime.
+     */
+    public static class Overflow {
+        /** The LocalTime after the addition. */
+        private final LocalTime time;
+        /** The overflow in days. */
+        private final int days;
+        /**
+         * Constructor.
+         *
+         * @param time  the LocalTime after the addition, not null
+         * @param days  the overflow in days
+         */
+        private Overflow(LocalTime time, int days) {
+            this.time = time;
+            this.days = days;
+        }
+        /**
+         * Gets the time that was the result of the calculation.
+         *
+         * @return the time, never null
+         */
+        public LocalTime getResultTime() {
+            return time;
+        }
+        /**
+         * Gets the days overflowing from the calculation.
+         *
+         * @return the overflow days
+         */
+        public int getOverflowDays() {
+            return days;
+        }
+        /**
+         * Returns a string describing the state of this instance.
+         *
+         * @return the string, never null
+         */
+        @Override
+        public String toString() {
+            return getResultTime().toString() + " P" + days + "D";
+        }
     }
 
 }

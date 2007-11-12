@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
@@ -54,35 +53,31 @@ public final class LocalDateTime
     private static final long serialVersionUID = 1153828870L;
 
     /**
-     * The year, from MIN_YEAR to MAX_YEAR.
+     * The date part.
      */
-    private final int year;
+    private final LocalDate date;
     /**
-     * The month, from 1 to 12.
+     * The time part.
      */
-    private final int month;
-    /**
-     * The dayOfMonth, from 1 to 31.
-     */
-    private final int dayOfMonth;
-    /**
-     * The hour, from 0 to 23.
-     */
-    private final int hour;
-    /**
-     * The minute, from 0 to 59.
-     */
-    private final int minute;
-    /**
-     * The second, from 0 to 59.
-     */
-    private final int second;
-    /**
-     * The nanosecond, from 0 to 999,999,999.
-     */
-    private final int nano;
+    private final LocalTime time;
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> with the time set
+     * to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateMidnight(int year, int monthOfYear, int dayOfMonth) {
+        return dateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);
+    }
+
     /**
      * Obtains an instance of <code>LocalDateTime</code>.
      * <p>
@@ -134,35 +129,36 @@ public final class LocalDateTime
      */
     public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        ISOChronology.INSTANCE.hourOfDayRule().checkValue(hourOfDay);
-        ISOChronology.INSTANCE.minuteOfHourRule().checkValue(minuteOfHour);
-        ISOChronology.INSTANCE.secondOfMinuteRule().checkValue(secondOfMinute);
-        ISOChronology.INSTANCE.nanoOfSecondRule().checkValue(nanoOfSecond);
-        return new LocalDateTime(year, monthOfYear, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new LocalDateTime(date, time);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param date  the date part of the date-time, not null
+     * @param time  the time part of the date-time, not null
      */
-    private LocalDateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        this.year = year;
-        this.month = monthOfYear;
-        this.dayOfMonth = dayOfMonth;
-        this.hour = hourOfDay;
-        this.minute = minuteOfHour;
-        this.second = secondOfMinute;
-        this.nano = nanoOfSecond;
+    private LocalDateTime(LocalDate date, LocalTime time) {
+        this.date = date;
+        this.time = time;
+    }
+
+    /**
+     * Returns a copy of this date-time with the new date and time, checking
+     * to see if a new object is in fact required.
+     *
+     * @param newDate  the date of the new date-time, not null
+     * @param newTime  the time of the new date-time, not null
+     * @return the date-time, never null
+     */
+    private LocalDateTime withDateTime(LocalDate newDate, LocalTime newTime) {
+        if (date == newDate && time == newTime) {
+            return this;
+        }
+        return new LocalDateTime(newDate, newTime);
     }
 
     //-----------------------------------------------------------------------
@@ -215,28 +211,13 @@ public final class LocalDateTime
         if (!isSupported(field)) {
             throw new UnsupportedCalendarFieldException("LocalDateTime does not support field " + field.getName());
         }
-        if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year;
+        if (date.isSupported(field)) {
+            return date.get(field);
+        } else if (time.isSupported(field)) {
+            return time.get(field);
+        } else {
+            return field.getValue(getCalendricalState());
         }
-        if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month;
-        }
-        if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
-            return dayOfMonth;
-        }
-        if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
-            return hour;
-        }
-        if (field == ISOChronology.INSTANCE.minuteOfHourRule()) {
-            return minute;
-        }
-        if (field == ISOChronology.INSTANCE.secondOfMinuteRule()) {
-            return second;
-        }
-        if (field == ISOChronology.INSTANCE.nanoOfSecondRule()) {
-            return nano;
-        }
-        return field.getValue(getCalendricalState());
     }
 
     //-----------------------------------------------------------------------
@@ -247,7 +228,7 @@ public final class LocalDateTime
      * @return the year object, never null
      */
     public Year year() {
-        return Year.isoYear(year);
+        return date.year();
     }
 
     /**
@@ -257,7 +238,7 @@ public final class LocalDateTime
      * @return the month object, never null
      */
     public MonthOfYear monthOfYear() {
-        return MonthOfYear.monthOfYear(month);
+        return date.monthOfYear();
     }
 
     /**
@@ -267,7 +248,7 @@ public final class LocalDateTime
      * @return the year-month object, never null
      */
     public YearMonth yearMonth() {
-        return YearMonth.yearMonth(year, month);
+        return date.yearMonth();
     }
 
     /**
@@ -277,7 +258,7 @@ public final class LocalDateTime
      * @return the month-day object, never null
      */
     public MonthDay monthDay() {
-        return MonthDay.monthDay(month, dayOfMonth);
+        return date.monthDay();
     }
 
     /**
@@ -287,7 +268,7 @@ public final class LocalDateTime
      * @return the date object, never null
      */
     public LocalDate date() {
-        return LocalDate.date(year, month, dayOfMonth);
+        return date;
     }
 
     /**
@@ -297,7 +278,7 @@ public final class LocalDateTime
      * @return the time object, never null
      */
     public LocalTime time() {
-        return LocalTime.time(hour, minute, second, nano);
+        return time;
     }
 
     //-----------------------------------------------------------------------
@@ -311,7 +292,7 @@ public final class LocalDateTime
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
-        return year;
+        return date.getYear();
     }
 
     /**
@@ -320,16 +301,7 @@ public final class LocalDateTime
      * @return the month of year, never null
      */
     public MonthOfYear getMonthOfYear() {
-        return MonthOfYear.monthOfYear(month);
-    }
-
-    /**
-     * Gets the day of year value.
-     *
-     * @return the day of year, from 1 to 366
-     */
-    public int getDayOfYear() {
-        return ISOChronology.INSTANCE.getDayOfYear(year, month, dayOfMonth);
+        return date.getMonthOfYear();
     }
 
     /**
@@ -338,7 +310,16 @@ public final class LocalDateTime
      * @return the day of month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return dayOfMonth;
+        return date.getDayOfMonth();
+    }
+
+    /**
+     * Gets the day of year value.
+     *
+     * @return the day of year, from 1 to 366
+     */
+    public int getDayOfYear() {
+        return date.getDayOfYear();
     }
 
     /**
@@ -347,7 +328,7 @@ public final class LocalDateTime
      * @return the day of week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        return null;
+        return date.getDayOfWeek();
     }
 
     /**
@@ -356,7 +337,7 @@ public final class LocalDateTime
      * @return the hour of day, from 0 to 23
      */
     public int getHourOfDay() {
-        return hour;
+        return time.getHourOfDay();
     }
 
     /**
@@ -365,7 +346,7 @@ public final class LocalDateTime
      * @return the minute of hour, from 0 to 59
      */
     public int getMinuteOfHour() {
-        return minute;
+        return time.getMinuteOfHour();
     }
 
     /**
@@ -374,7 +355,7 @@ public final class LocalDateTime
      * @return the second of minute, from 0 to 59
      */
     public int getSecondOfMinute() {
-        return second;
+        return time.getSecondOfMinute();
     }
 
     /**
@@ -383,7 +364,7 @@ public final class LocalDateTime
      * @return the nano of second, from 0 to 999,999,999
      */
     public int getNanoOfSecond() {
-        return nano;
+        return time.getNanoOfSecond();
     }
 
     /**
@@ -392,7 +373,7 @@ public final class LocalDateTime
      * @return the nano of second, from 0 to 0.999,999,999
      */
     public double getNanoFraction() {
-        return ((double) nano) / 1000000000d;
+        return time.getNanoFraction();
     }
 
     //-----------------------------------------------------------------------
@@ -405,6 +386,13 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime with(Calendrical calendrical) {
+        if (calendrical instanceof LocalDate) {
+            return withDateTime((LocalDate) calendrical, time);
+        }
+        if (calendrical instanceof LocalTime) {
+            return withDateTime(date, (LocalTime) calendrical);
+        }
+        // TODO
         return null;
     }
 
@@ -417,6 +405,7 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime with(Calendrical... calendricals) {
+        // TODO
         return null;
     }
 
@@ -430,11 +419,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withYear(int year) {
-        if (this.year == year) {
-            return this;
-        }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-        return new LocalDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano);
+        LocalDate newDate = date.withYear(year);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -446,11 +432,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
-        if (this.month == monthOfYear) {
-            return this;
-        }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
-        return new LocalDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano);
+        LocalDate newDate = date.withMonthOfYear(monthOfYear);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -462,11 +445,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withDayOfMonth(int dayOfMonth) {
-        if (this.dayOfMonth == dayOfMonth) {
-            return this;
-        }
-        ISOChronology.INSTANCE.checkValidDate(year, month, dayOfMonth);
-        return new LocalDateTime(year, month, dayOfMonth, hour, minute, second, nano);
+        LocalDate newDate = date.withDayOfMonth(dayOfMonth);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -477,11 +457,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withLastDayOfMonth() {
-        int dom = ISOChronology.INSTANCE.getMonthLength(year, month);
-        if (this.dayOfMonth == dom) {
-            return this;
-        }
-        return new LocalDateTime(year, month, dom, hour, minute, second, nano);
+        LocalDate newDate = date.withLastDayOfMonth();
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -493,7 +470,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withDayOfYear(int dayOfYear) {
-        return null;
+        LocalDate newDate = date.withDayOfYear(dayOfYear);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -504,7 +482,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withLastDayOfYear() {
-        return new LocalDateTime(year, 12, 31, hour, minute, second, nano);
+        LocalDate newDate = date.withLastDayOfYear();
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -516,7 +495,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withDayOfWeek(int dayOfWeek) {
-        return null;
+        LocalDate newDate = date.withDayOfWeek(dayOfWeek);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -533,11 +513,11 @@ public final class LocalDateTime
      * @return a new updated ZonedDateTime
      */
     public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        if (this.year == year && this.dayOfMonth == dayOfMonth && this.dayOfMonth == dayOfMonth) {
+        if (year == getYear() && monthOfYear == getMonthOfYear().getMonthOfYear() && dayOfMonth == getDayOfMonth()) {
             return this;
         }
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        return new LocalDateTime(year, monthOfYear, dayOfMonth, hour, minute, second, nano);
+        LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -549,7 +529,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withHourOfDay(int hourOfDay) {
-        return null;
+        LocalTime newTime = time.withHourOfDay(hourOfDay);
+        return withDateTime(date, newTime);
     }
 
     /**
@@ -561,7 +542,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withMinuteOfHour(int minuteOfHour) {
-        return null;
+        LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
+        return withDateTime(date, newTime);
     }
 
     /**
@@ -573,7 +555,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withSecondOfMinute(int secondOfMinute) {
-        return null;
+        LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
+        return withDateTime(date, newTime);
     }
 
     /**
@@ -585,7 +568,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withNanoOfSecond(int nanoOfSecond) {
-        return null;
+        LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
+        return withDateTime(date, newTime);
     }
 
     /**
@@ -593,8 +577,8 @@ public final class LocalDateTime
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int)} and sets
-     * the second field to zero.
+     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
+     * the second and nanosecond fields to zero.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -603,11 +587,16 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour) {
-        return null;
+        return withTime(hourOfDay, minuteOfHour, 0, 0);
     }
 
     /**
      * Returns a copy of this LocalDateTime with the time values altered.
+     * <p>
+     * This method will return a new instance with the same date fields,
+     * but altered time fields.
+     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
+     * the nanosecond fields to zero.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -617,7 +606,32 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return null;
+        return withTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the time values altered.
+     * <p>
+     * This method will return a new instance with the same date fields,
+     * but altered time fields.
+     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
+     * the nanosecond fields to zero.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        if (hourOfDay == getHourOfDay() && minuteOfHour == getMinuteOfHour() &&
+                secondOfMinute == getSecondOfMinute() && nanoOfSecond == getNanoOfSecond()) {
+            return this;
+        }
+        LocalTime newTime = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        return withDateTime(date, newTime);
     }
 
     //-----------------------------------------------------------------------
@@ -670,11 +684,8 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public LocalDateTime plusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        int newYear = MathUtils.safeAdd(year, years);
-        return withYear(newYear);
+        LocalDate newDate = date.plusYears(years);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -699,19 +710,8 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public LocalDateTime plusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        long newMonth0 = month - 1;
-        newMonth0 = newMonth0 + months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = Math.abs(newMonth0) % 12;
-        if (years < 0) {
-            years--;
-        }
-        int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
-        return new LocalDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano);
+        LocalDate newDate = date.plusMonths(months);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -730,7 +730,8 @@ public final class LocalDateTime
      * @throws ArithmeticException if the calculation overflows
      */
     public LocalDateTime plusWeeks(int weeks) {
-        return null;
+        LocalDate newDate = date.plusWeeks(weeks);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -748,7 +749,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime plusDays(int days) {
-        return null;
+        LocalDate newDate = date.plusDays(days);
+        return withDateTime(newDate, time);
     }
 
     /**
@@ -760,7 +762,9 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime plusHours(int hours) {
-        return null;
+        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.hours(hours));
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
     }
 
     /**
@@ -772,7 +776,9 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime plusMinutes(int minutes) {
-        return null;
+        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.minutes(minutes));
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
     }
 
     /**
@@ -784,7 +790,9 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime plusSeconds(int seconds) {
-        return null;
+        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.seconds(seconds));
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
     }
 
     /**
@@ -796,7 +804,9 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime plusNanos(int nanos) {
-        return null;
+        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.nanos(nanos));
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------
@@ -808,7 +818,11 @@ public final class LocalDateTime
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(LocalDateTime other) {
-        return 0;
+        int cmp = date.compareTo(other.date);
+        if (cmp == 0) {
+            cmp = time.compareTo(other.time);
+        }
+        return cmp;
     }
 
     /**
@@ -846,8 +860,8 @@ public final class LocalDateTime
             return true;
         }
         if (other instanceof LocalDateTime) {
-            LocalDateTime localDateTime = (LocalDateTime) other;
-            return  true;
+            LocalDateTime dt = (LocalDateTime) other;
+            return date.equals(dt.date) && time.equals(dt.time);
         }
         return false;
     }
@@ -859,7 +873,7 @@ public final class LocalDateTime
      */
     @Override
     public int hashCode() {
-        return 0;
+        return date.hashCode() ^ time.hashCode();
     }
 
     /**
@@ -869,7 +883,7 @@ public final class LocalDateTime
      */
     @Override
     public String toString() {
-        return super.toString();
+        return date + "T" + time;
     }
 
 }
