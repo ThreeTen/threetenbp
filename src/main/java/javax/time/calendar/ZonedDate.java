@@ -267,11 +267,14 @@ public final class ZonedDate
 
     /**
      * Gets the month of year value.
+     * <p>
+     * This method returns the numerical value for the month, from 1 to 12.
+     * The enumerated constant is returned by {@link #monthOfYear()}.
      *
-     * @return the month of year, never null
+     * @return the month of year, from 1 (January) to 12 (December)
      */
-    public MonthOfYear getMonthOfYear() {
-        return MonthOfYear.monthOfYear(month);
+    public int getMonthOfYear() {
+        return month;
     }
 
     /**

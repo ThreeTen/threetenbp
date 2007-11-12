@@ -411,10 +411,10 @@ TimeZone zone) {#end
     /**
      * Gets the month of year value.
      *
-     * @return the month of year, never null
+     * @return the month of year, from 1 (January) to 12 (December)
      */
-    public MonthOfYear getMonthOfYear() {
-        return MonthOfYear.monthOfYear(month);
+    public int getMonthOfYear() {
+        return month;
     }
 
 #end

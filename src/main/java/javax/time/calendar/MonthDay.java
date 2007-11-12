@@ -149,12 +149,26 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month of year value.
+     * Gets an instance of <code>MonthOfYear</code> initialised to the
+     * month of this month-day.
      *
-     * @return the month of year, never null
+     * @return the month object, never null
      */
-    public MonthOfYear getMonthOfYear() {
-        return null;
+    public MonthOfYear monthOfYear() {
+        return MonthOfYear.monthOfYear(1);  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the month of year value.
+     * <p>
+     * This method returns the numerical value for the month, from 1 to 12.
+     * The enumerated constant is returned by {@link #monthOfYear()}.
+     *
+     * @return the month of year, from 1 (January) to 12 (December)
+     */
+    public int getMonthOfYear() {
+        return 0;
     }
 
     /**

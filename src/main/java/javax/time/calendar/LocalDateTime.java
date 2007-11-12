@@ -69,6 +69,22 @@ public final class LocalDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        return dateTime(year, monthOfYear.getMonthOfYear(), dayOfMonth, 0, 0, 0, 0);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> with the time set
+     * to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a LocalDateTime object, never null
@@ -76,6 +92,23 @@ public final class LocalDateTime
      */
     public static LocalDateTime dateMidnight(int year, int monthOfYear, int dayOfMonth) {
         return dateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code>.
+     * <p>
+     * The second and nanosecond fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
+        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0);
     }
 
     /**
@@ -101,6 +134,25 @@ public final class LocalDateTime
      * The nanosecond field will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute) {
+        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code>.
+     * <p>
+     * The nanosecond field will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param hourOfDay  the hour of day to represent, from 0 to 23
@@ -112,6 +164,26 @@ public final class LocalDateTime
     public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
         return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code>.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new LocalDateTime(date, time);
     }
 
     /**
@@ -297,10 +369,13 @@ public final class LocalDateTime
 
     /**
      * Gets the month of year value.
+     * <p>
+     * This method returns the numerical value for the month, from 1 to 12.
+     * The enumerated constant is returned by {@link #monthOfYear()}.
      *
-     * @return the month of year, never null
+     * @return the month of year, from 1 (January) to 12 (December)
      */
-    public MonthOfYear getMonthOfYear() {
+    public int getMonthOfYear() {
         return date.getMonthOfYear();
     }
 
@@ -513,7 +588,7 @@ public final class LocalDateTime
      * @return a new updated ZonedDateTime
      */
     public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        if (year == getYear() && monthOfYear == getMonthOfYear().getMonthOfYear() && dayOfMonth == getDayOfMonth()) {
+        if (year == getYear() && monthOfYear == getMonthOfYear() && dayOfMonth == getDayOfMonth()) {
             return this;
         }
         LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
