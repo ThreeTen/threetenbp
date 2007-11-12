@@ -420,7 +420,7 @@ public final class ISOChronology implements Serializable {
     static final class YearRule extends TimeFieldRule implements Serializable {
         /** Constructor. */
         public YearRule() {
-            super("Year", Periods.YEARS, null, 1, Integer.MAX_VALUE);
+            super("Year", Periods.YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR);
         }
 
         /**
