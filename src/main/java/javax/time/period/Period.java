@@ -397,7 +397,7 @@ public final class Period implements PeriodView, Serializable {
      *
      * @param period  the period to add, not null
      * @return a new updated Period
-     * @throws NullPointerException if the period is null
+     * @throws NullPointerException if the period to add is null
      */
     public Period plus(PeriodView period) {
         Map<PeriodUnit, Integer> periodViewMap = period.getPeriodViewMap();
@@ -408,7 +408,7 @@ public final class Period implements PeriodView, Serializable {
         for (PeriodUnit unit : periodViewMap.keySet()) {
             int amount = periodViewMap.get(unit);
             int current = copy.get(unit);
-            copy.put(unit, MathUtils.safeAdd(amount, current));
+            copy.put(unit, MathUtils.safeAdd(current, amount));
         }
         return new Period(copy);
     }
@@ -438,7 +438,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusYears(int years) {
         int current = getAmount(Periods.YEARS);
-        return with(MathUtils.safeAdd(years, current), Periods.YEARS);
+        return with(MathUtils.safeAdd(current, years), Periods.YEARS);
     }
 
     /**
@@ -451,7 +451,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusMonths(int months) {
         int current = getAmount(Periods.MONTHS);
-        return with(MathUtils.safeAdd(months, current), Periods.MONTHS);
+        return with(MathUtils.safeAdd(current, months), Periods.MONTHS);
     }
 
     /**
@@ -464,7 +464,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusWeeks(int weeks) {
         int current = getAmount(Periods.WEEKS);
-        return with(MathUtils.safeAdd(weeks, current), Periods.WEEKS);
+        return with(MathUtils.safeAdd(current, weeks), Periods.WEEKS);
     }
 
     /**
@@ -477,7 +477,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusDays(int days) {
         int current = getAmount(Periods.DAYS);
-        return with(MathUtils.safeAdd(days, current), Periods.DAYS);
+        return with(MathUtils.safeAdd(current, days), Periods.DAYS);
     }
 
     /**
@@ -490,7 +490,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusHours(int hours) {
         int current = getAmount(Periods.HOURS);
-        return with(MathUtils.safeAdd(hours, current), Periods.HOURS);
+        return with(MathUtils.safeAdd(current, hours), Periods.HOURS);
     }
 
     /**
@@ -503,7 +503,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusMinutes(int minutes) {
         int current = getAmount(Periods.MINUTES);
-        return with(MathUtils.safeAdd(minutes, current), Periods.MINUTES);
+        return with(MathUtils.safeAdd(current, minutes), Periods.MINUTES);
     }
 
     /**
@@ -516,7 +516,7 @@ public final class Period implements PeriodView, Serializable {
      */
     public Period plusSeconds(int seconds) {
         int current = getAmount(Periods.SECONDS);
-        return with(MathUtils.safeAdd(seconds, current), Periods.SECONDS);
+        return with(MathUtils.safeAdd(current, seconds), Periods.SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -527,11 +527,20 @@ public final class Period implements PeriodView, Serializable {
      *
      * @param period  the period to subtract, not null
      * @return a new updated Period
-     * @throws NullPointerException if the period is null
+     * @throws NullPointerException if the period to subtract is null
      */
     public Period minus(PeriodView period) {
-        // TODO
-        return null;
+        Map<PeriodUnit, Integer> periodViewMap = period.getPeriodViewMap();
+        if (periodViewMap.isEmpty()) {
+            return this;
+        }
+        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        for (PeriodUnit unit : periodViewMap.keySet()) {
+            int amount = periodViewMap.get(unit);
+            int current = copy.get(unit);
+            copy.put(unit, MathUtils.safeSubtract(current, amount));
+        }
+        return new Period(copy);
     }
 
     /**
@@ -558,7 +567,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusYears(int years) {
-        return null;
+        int current = getAmount(Periods.YEARS);
+        return with(MathUtils.safeSubtract(current, years), Periods.YEARS);
     }
 
     /**
@@ -570,7 +580,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusMonths(int months) {
-        return null;
+        int current = getAmount(Periods.MONTHS);
+        return with(MathUtils.safeSubtract(current, months), Periods.MONTHS);
     }
 
     /**
@@ -582,7 +593,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusWeeks(int weeks) {
-        return null;
+        int current = getAmount(Periods.WEEKS);
+        return with(MathUtils.safeSubtract(current, weeks), Periods.WEEKS);
     }
 
     /**
@@ -594,7 +606,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusDays(int days) {
-        return null;
+        int current = getAmount(Periods.DAYS);
+        return with(MathUtils.safeSubtract(current, days), Periods.DAYS);
     }
 
     /**
@@ -606,7 +619,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusHours(int hours) {
-        return null;
+        int current = getAmount(Periods.HOURS);
+        return with(MathUtils.safeSubtract(current, hours), Periods.HOURS);
     }
 
     /**
@@ -618,7 +632,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusMinutes(int minutes) {
-        return null;
+        int current = getAmount(Periods.MINUTES);
+        return with(MathUtils.safeSubtract(current, minutes), Periods.MINUTES);
     }
 
     /**
@@ -630,7 +645,8 @@ public final class Period implements PeriodView, Serializable {
      * @return a new updated Period
      */
     public Period minusSeconds(int seconds) {
-        return null;
+        int current = getAmount(Periods.SECONDS);
+        return with(MathUtils.safeSubtract(current, seconds), Periods.SECONDS);
     }
 
     //-----------------------------------------------------------------------
@@ -655,15 +671,26 @@ public final class Period implements PeriodView, Serializable {
     }
 
     /**
-     * Returns a new instance with each element in this period multiplied
-     * by the specified scalar.
+     * Returns a new instance with each element in this period divided
+     * by the specified value.
      *
-     * @param scalar  the scalar to multiply by, not null
+     * @param value  the value to divide by, not null
      * @return the new updated period instance, never null
-     * @throws ArithmeticException if the calculation result overflows
+     * @throws ArithmeticException if dividing by zero
      */
-    public Period dividedBy(int scalar) {
-        return null;
+    public Period dividedBy(int value) {
+        if (value == 0) {
+            throw new ArithmeticException("Cannot divide by zero");
+        }
+        if (periodMap.isEmpty()) {
+            return this;
+        }
+        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        for (PeriodUnit unit : periodMap.keySet()) {
+            int amount = periodMap.get(unit);
+            copy.put(unit, amount / value);
+        }
+        return new Period(copy);
     }
 
     //-----------------------------------------------------------------------

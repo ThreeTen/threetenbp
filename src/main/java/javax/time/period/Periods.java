@@ -218,6 +218,22 @@ public final class Periods {
     //-----------------------------------------------------------------------
     /**
      * Creates a builder suitable for creating a period.
+     * <p>
+     * This method provides the entry point to the builder pattern for
+     * constructing <code>Period</code> instances. The pattern allows any
+     * period to be easily constructed using clear code that is also efficient.
+     * Builders are intended to be used via method chaining.
+     * <pre>
+     * import static javax.time.period.Periods.*;
+     * Period p = periodBuilder().years(2).days(5).minutes(30).build();
+     * </pre>
+     * As can be seen in the example, the builder is created by calling this
+     * method. Each required period is then added, with a final <code>build()</code>
+     * to convert the builder to a <code>Period</code>. Note that not all the
+     * fields from years to seconds have to be specified.
+     * <p>
+     * The builder classes are not thread-safe.
+     * Do not create a builder and make it available to another thread.
      *
      * @return the builder, never null
      */
@@ -227,75 +243,164 @@ public final class Periods {
 
     //-----------------------------------------------------------------------
     /**
-     * Class that can add seconds to the current state of the builder.
+     * Base period builder class.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class Builder {
         /** The state of the period being built. */
-        protected Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
+        protected final Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
         /**
          * Builds the period into a <code>Period</code>.
-         * @return the created Period, never null
+         * <p>
+         * This method is the last stage in the builder pattern.
+         * It converts the period information previously added to a
+         * <code>Period</code> instance.
+         * <p>
+         * For full details on the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @return the created <code>Period</code>, never null
          */
         public Period build() {
             return Period.periodOf(map);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class that can add seconds to the current state of the builder.
+     * Builder class that can add seconds to the current state of the builder.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class SecondsBuilder extends Builder {
+        /**
+         * Adds a number of seconds to the period that is being built.
+         * <p>
+         * This method forms part of the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @param seconds  the number of seconds to store in the period, may be negative
+         * @return <code>this</code>, suitable for method chaining to construct the period, never null
+         */
         public Builder seconds(int seconds) {
             map.put(SECONDS, seconds);
             return this;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class that can add minutes to the current state of the builder.
+     * Builder class that can add minutes to the current state of the builder.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class MinutesBuilder extends SecondsBuilder {
-        public SecondsBuilder seconds(int minutes) {
+        /**
+         * Adds a number of minutes to the period that is being built.
+         * <p>
+         * This method forms part of the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @param minutes  the number of minutes to store in the period, may be negative
+         * @return <code>this</code>, suitable for method chaining to construct the period, never null
+         */
+        public SecondsBuilder minutes(int minutes) {
             map.put(MINUTES, minutes);
             return this;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class that can add hours to the current state of the builder.
+     * Builder class that can add hours to the current state of the builder.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class HoursBuilder extends MinutesBuilder {
+        /**
+         * Adds a number of hours to the period that is being built.
+         * <p>
+         * This method forms part of the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @param hours  the number of hours to store in the period, may be negative
+         * @return <code>this</code>, suitable for method chaining to construct the period, never null
+         */
         public MinutesBuilder hours(int hours) {
             map.put(HOURS, hours);
             return this;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class that can add days to the current state of the builder.
+     * Builder class that can add days to the current state of the builder.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class DaysBuilder extends HoursBuilder {
-        public MinutesBuilder days(int days) {
+        /**
+         * Adds a number of days to the period that is being built.
+         * <p>
+         * This method forms part of the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @param days  the number of days to store in the period, may be negative
+         * @return <code>this</code>, suitable for method chaining to construct the period, never null
+         */
+        public HoursBuilder days(int days) {
             map.put(DAYS, days);
             return this;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class that can add months to the current state of the builder.
+     * Builder class that can add months to the current state of the builder.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class MonthsBuilder extends DaysBuilder {
-        public MinutesBuilder months(int months) {
+        /**
+         * Adds a number of months to the period that is being built.
+         * <p>
+         * This method forms part of the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @param months  the number of months to store in the period, may be negative
+         * @return <code>this</code>, suitable for method chaining to construct the period, never null
+         */
+        public DaysBuilder months(int months) {
             map.put(MONTHS, months);
             return this;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Class that can add years to the current state of the builder.
+     * Builder class that can add years to the current state of the builder.
+     * <p>
+     * This method forms part of the builder pattern, see
+     * {@link Periods#periodBuilder()}.
      */
     public static class YearsBuilder extends MonthsBuilder {
-        public MinutesBuilder years(int years) {
+        /**
+         * Adds a number of years to the period that is being built.
+         * <p>
+         * This method forms part of the builder pattern, see
+         * {@link Periods#periodBuilder()}.
+         *
+         * @param years  the number of years to store in the period, may be negative
+         * @return <code>this</code>, suitable for method chaining to construct the period, never null
+         */
+        public MonthsBuilder years(int years) {
             map.put(YEARS, years);
             return this;
         }
