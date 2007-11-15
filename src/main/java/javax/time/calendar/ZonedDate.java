@@ -33,11 +33,9 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
-import javax.time.period.Periods;
 
 /**
  * A calendrical representation of a date with a time zone.
@@ -63,23 +61,29 @@ public final class ZonedDate
     private static final long serialVersionUID = -1751516698L;
 
     /**
-     * The year, from MIN_YEAR to MAX_YEAR.
+     * The date.
      */
-    private final int year;
-    /**
-     * The month, from 1 to 12.
-     */
-    private final int month;
-    /**
-     * The dayOfMonth, from 1 to 31.
-     */
-    private final int dayOfMonth;
+    private final LocalDate date;
     /**
      * The time zone.
      */
     private final TimeZone zone;
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>ZonedDate</code>.
+     *
+     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param monthOfYear  the month of year, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param zone  the time zone, not null
+     * @return a ZonedDate object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static ZonedDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, TimeZone zone) {
+        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth, zone);
+    }
+
     /**
      * Obtains an instance of <code>ZonedDate</code>.
      *
@@ -91,26 +95,22 @@ public final class ZonedDate
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static ZonedDate date(int year, int monthOfYear, int dayOfMonth, TimeZone zone) {
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         if (zone == null) {
             throw new NullPointerException("The time zone must not be null");
         }
-        return new ZonedDate(year, monthOfYear, dayOfMonth, zone);
+        return new ZonedDate(date, zone);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param date  the date, not null
      * @param zone  the time zone, not null
      */
-    private ZonedDate(int year, int monthOfYear, int dayOfMonth, TimeZone zone) {
-        this.year = year;
-        this.month = monthOfYear;
-        this.dayOfMonth = dayOfMonth;
+    private ZonedDate(LocalDate date, TimeZone zone) {
+        this.date = date;
         this.zone = zone;
     }
 
@@ -147,7 +147,7 @@ public final class ZonedDate
      * @return true if the field is supported
      */
     public boolean isSupported(TimeFieldRule field) {
-        return field.isSupported(Periods.DAYS, Periods.FOREVER);
+        return date.isSupported(field);
     }
 
     /**
@@ -161,19 +161,7 @@ public final class ZonedDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("ZonedDate does not support field " + field.getName());
-        }
-        if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year;
-        }
-        if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month;
-        }
-        if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
-            return dayOfMonth;
-        }
-        return field.getValue(getCalendricalState());
+        return date.get(field);
     }
 
     //-----------------------------------------------------------------------
@@ -184,7 +172,7 @@ public final class ZonedDate
      * @return the year object, never null
      */
     public Year year() {
-        return Year.isoYear(year);
+        return date.year();
     }
 
     /**
@@ -194,7 +182,7 @@ public final class ZonedDate
      * @return the month object, never null
      */
     public MonthOfYear monthOfYear() {
-        return MonthOfYear.monthOfYear(month);
+        return date.monthOfYear();
     }
 
     /**
@@ -204,7 +192,7 @@ public final class ZonedDate
      * @return the year-month object, never null
      */
     public YearMonth yearMonth() {
-        return YearMonth.yearMonth(year, month);
+        return date.yearMonth();
     }
 
     /**
@@ -214,7 +202,17 @@ public final class ZonedDate
      * @return the month-day object, never null
      */
     public MonthDay monthDay() {
-        return MonthDay.monthDay(month, dayOfMonth);
+        return date.monthDay();
+    }
+
+    /**
+     * Gets an instance of <code>LocalDate</code> which represents the
+     * date of this object but without the time zone.
+     *
+     * @return the date object, never null
+     */
+    public LocalDate localDate() {
+        return date;
     }
 
     //-----------------------------------------------------------------------
@@ -229,26 +227,17 @@ public final class ZonedDate
 
     /**
      * Returns a copy of this ZonedDate with a different time zone, ensuring
-     * that the instant remains the same.
-     * This method may change the local time.
-     *
-     * @param zone  the time zone to change to, not null
-     * @return a new updated ZonedDate, never null
-     */
-    public ZonedDate withZoneSameInstant(TimeZone zone) {
-        return this;
-    }
-
-    /**
-     * Returns a copy of this ZonedDate with a different time zone, ensuring
-     * that the local time, expressed as fields, remains the same.
+     * that the fields remain the same.
      * This method may change the instant.
      *
      * @param zone  the time zone to change to, not null
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withZoneSameFields(TimeZone zone) {
-        return this;
+        if (zone == null) {
+            throw new NullPointerException("Time zone must not be null");
+        }
+        return zone == this.zone ? this : new ZonedDate(date, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -262,7 +251,7 @@ public final class ZonedDate
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
-        return year;
+        return date.getYear();
     }
 
     /**
@@ -274,16 +263,7 @@ public final class ZonedDate
      * @return the month of year, from 1 (January) to 12 (December)
      */
     public int getMonthOfYear() {
-        return month;
-    }
-
-    /**
-     * Gets the day of year value.
-     *
-     * @return the day of year, from 1 to 366
-     */
-    public int getDayOfYear() {
-        return ISOChronology.INSTANCE.getDayOfYear(year, month, dayOfMonth);
+        return date.getMonthOfYear();
     }
 
     /**
@@ -292,7 +272,16 @@ public final class ZonedDate
      * @return the day of month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return dayOfMonth;
+        return date.getDayOfMonth();
+    }
+
+    /**
+     * Gets the day of year value.
+     *
+     * @return the day of year, from 1 to 366
+     */
+    public int getDayOfYear() {
+        return date.getDayOfYear();
     }
 
     /**
@@ -301,7 +290,7 @@ public final class ZonedDate
      * @return the day of week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        return null;
+        return date.getDayOfWeek();
     }
 
     //-----------------------------------------------------------------------
@@ -314,7 +303,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate with(Calendrical calendrical) {
-        return null;
+        LocalDate newDate = date.with(calendrical);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -326,7 +316,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate with(Calendrical... calendricals) {
-        return null;
+        LocalDate newDate = date.with(calendricals);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -339,11 +330,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withYear(int year) {
-        if (this.year == year) {
-            return this;
-        }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-        return new ZonedDate(resolved[0], resolved[1], resolved[2], zone);
+        LocalDate newDate = date.withYear(year);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -355,11 +343,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withMonthOfYear(int monthOfYear) {
-        if (this.month == monthOfYear) {
-            return this;
-        }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
-        return new ZonedDate(resolved[0], resolved[1], resolved[2], zone);
+        LocalDate newDate = date.withMonthOfYear(monthOfYear);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -371,11 +356,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withDayOfMonth(int dayOfMonth) {
-        if (this.dayOfMonth == dayOfMonth) {
-            return this;
-        }
-        ISOChronology.INSTANCE.checkValidDate(year, month, dayOfMonth);
-        return new ZonedDate(year, month, dayOfMonth, zone);
+        LocalDate newDate = date.withDayOfMonth(dayOfMonth);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -386,11 +368,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withLastDayOfMonth() {
-        int dom = ISOChronology.INSTANCE.getMonthLength(year, month);
-        if (this.dayOfMonth == dom) {
-            return this;
-        }
-        return new ZonedDate(year, month, dom, zone);
+        LocalDate newDate = date.withLastDayOfMonth();
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -402,7 +381,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withDayOfYear(int dayOfYear) {
-        return null;
+        LocalDate newDate = date.withDayOfYear(dayOfYear);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -413,7 +393,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withLastDayOfYear() {
-        return new ZonedDate(year, 12, 31, zone);
+        LocalDate newDate = date.withLastDayOfYear();
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -425,7 +406,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate withDayOfWeek(int dayOfWeek) {
-        return null;
+        LocalDate newDate = date.withDayOfWeek(dayOfWeek);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -438,8 +420,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate plus(PeriodView period) {
-        // TODO
-        return null;
+        LocalDate newDate = date.plus(period);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -451,8 +433,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate plus(PeriodView... periods) {
-        // TODO
-        return null;
+        LocalDate newDate = date.plus(periods);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -478,11 +460,8 @@ public final class ZonedDate
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public ZonedDate plusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        int newYear = MathUtils.safeAdd(year, years);
-        return withYear(newYear);
+        LocalDate newDate = date.plusYears(years);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -507,19 +486,8 @@ public final class ZonedDate
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public ZonedDate plusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        long newMonth0 = month - 1;
-        newMonth0 = newMonth0 + months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = Math.abs(newMonth0) % 12;
-        if (years < 0) {
-            years--;
-        }
-        int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
-        return new ZonedDate(resolved[0], resolved[1], resolved[2], zone);
+        LocalDate newDate = date.plusMonths(months);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -538,7 +506,8 @@ public final class ZonedDate
      * @throws ArithmeticException if the calculation overflows
      */
     public ZonedDate plusWeeks(int weeks) {
-        return null;
+        LocalDate newDate = date.plusWeeks(weeks);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     /**
@@ -556,7 +525,8 @@ public final class ZonedDate
      * @return a new updated ZonedDate, never null
      */
     public ZonedDate plusDays(int days) {
-        return null;
+        LocalDate newDate = date.plusDays(days);
+        return newDate == date ? this : new ZonedDate(newDate, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -568,7 +538,7 @@ public final class ZonedDate
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(ZonedDate other) {
-        return 0;
+        return 0;  // TODO
     }
 
     /**
@@ -607,7 +577,7 @@ public final class ZonedDate
         }
         if (other instanceof ZonedDate) {
             ZonedDate zonedDate = (ZonedDate) other;
-            return  true;
+            return date.equals(zonedDate.date) && zone.equals(zonedDate.zone);
         }
         return false;
     }
@@ -619,7 +589,7 @@ public final class ZonedDate
      */
     @Override
     public int hashCode() {
-        return 0;
+        return date.hashCode() ^ zone.hashCode();
     }
 
     /**
