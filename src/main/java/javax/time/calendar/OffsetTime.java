@@ -75,7 +75,7 @@ public final class OffsetTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return a OffsetTime object, never null
+     * @return an OffsetTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
@@ -91,7 +91,7 @@ public final class OffsetTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return a OffsetTime object, never null
+     * @return an OffsetTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
@@ -99,18 +99,33 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>.
+     * Obtains an instance of <code>OffsetTime</code>.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
-     * @return a OffsetTime object, never null
+     * @return an OffsetTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return time(time, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDate</code>.
+     *
+     * @param time  the time to represent, not null
+     * @param offset  the zone offset, not null
+     * @return an OffsetDate object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetTime time(LocalTime time, ZoneOffset offset) {
+        if (time == null) {
+            throw new NullPointerException("The time must not be null");
+        }
         if (offset == null) {
             throw new NullPointerException("The zone offset must not be null");
         }
@@ -121,8 +136,8 @@ public final class OffsetTime
     /**
      * Constructor.
      *
-     * @param time  the time, not null
-     * @param offset  the zone offset, not null
+     * @param time  the time, validated as not null
+     * @param offset  the zone offset, validated as not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
         this.time = time;
@@ -214,10 +229,7 @@ public final class OffsetTime
      * @return a new updated OffsetTime, never null
      */
     public OffsetTime withOffset(ZoneOffset offset) {
-        if (offset == null) {
-            throw new NullPointerException("Zone offset must not be null");
-        }
-        return offset == this.offset ? this : new OffsetTime(time, offset);
+        return offset == this.offset ? this : time(time, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -225,7 +237,7 @@ public final class OffsetTime
      * Adjusts the local time using the specified offset.
      * <p>
      * This method changes the zoned time from one offset to another.
-     * If this zoned date represents 10:30+02:00 and the offset specified is
+     * If this time represents 10:30+02:00 and the offset specified is
      * +03:00, then this method will return 11:30+03:00.
      * <p>
      * To change the offset whilst keeping the local time,
@@ -494,6 +506,8 @@ public final class OffsetTime
     //-----------------------------------------------------------------------
     /**
      * Is this time equal to the specified time.
+     * <p>
+     * This compares the time and the offset.
      *
      * @param other  the other time to compare to, null returns false
      * @return true if this point is equal to the specified time
