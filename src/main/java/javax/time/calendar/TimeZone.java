@@ -31,52 +31,78 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import javax.time.Instant;
-import javax.xml.datatype.Duration;
 
 /**
- * A time zone representing the set of rules by which the time offset from
- * UTC varies through the year and historically.
+ * A time zone representing the set of rules by which the zone offset
+ * varies through the year and historically.
  * <p>
  * All supplied subclasses of TimeZone are thread-safe and immutable.
  * Other subclasses of TimeZone should be immutable but this cannot be enforced.
  *
  * @author Stephen Colebourne
  */
-public abstract class TimeZone {
+public abstract class TimeZone implements Serializable {
 
-    /** The time zone ID. */
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 93618758758127L;
+    /**
+     * Cache of time zones by id.
+     */
+    private static final ConcurrentMap<String, TimeZone> CACHE = new ConcurrentHashMap<String, TimeZone>();
+    /**
+     * The time zone offset for UTC, with an id of 'UTC'.
+     */
+    public static final TimeZone UTC = timeZone(ZoneOffset.UTC);
+
+    /**
+     * The time zone ID.
+     */
     private final String timeZoneID;
 
     /**
      * Obtains an instance of <code>TimeZone</code> using its ID.
      *
      * @param timeZoneID  the time zone id, not null
-     * @return the TimeZone
+     * @return the TimeZone, never null
      */
     public static TimeZone timeZone(String timeZoneID) {
-        return null;
+        TimeZone zone = CACHE.get(timeZoneID);
+        if (zone == null) {
+            if (timeZoneID.startsWith("UTC")) {
+                if (timeZoneID.length() == 3) {
+                    return UTC;
+                } else {
+                    return timeZone(ZoneOffset.zoneOffset(timeZoneID.substring(3)));
+                }
+            } else {
+                // TODO
+            }
+        }
+        return zone;
     }
 
     /**
-     * Obtains an instance of <code>TimeZone</code> using an offset in hours.
+     * Obtains an instance of <code>TimeZone</code> using an offset.
      *
-     * @param hoursOffset  the time zone offset in hours
-     * @return the TimeZone
+     * @param offset  the zone offset, not null
+     * @return the TimeZone for the offset, never null
      */
-    public static TimeZone timeZoneOffset(int hoursOffset) {
-        return null;
-    }
-
-    /**
-     * Obtains an instance of <code>TimeZone</code> using an offset in hours.
-     *
-     * @param hoursOffset  the time zone offset in hours
-     * @param minutesOffset  the time zone offset in minutes (0-59)
-     * @return the TimeZone
-     */
-    public static TimeZone timeZoneOffset(int hoursOffset, int minutesOffset) {
-        return null;
+    public static TimeZone timeZone(ZoneOffset offset) {
+        String timeZoneID = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
+        TimeZone zone = CACHE.get(timeZoneID);
+        if (zone == null) {
+            zone = new Fixed(timeZoneID, offset);
+            TimeZone cached = CACHE.putIfAbsent(timeZoneID, zone);
+            zone = (cached != null ? cached : zone);
+        }
+        return zone;
     }
 
     //-----------------------------------------------------------------------
@@ -135,10 +161,10 @@ public abstract class TimeZone {
      * @param instant  the instant to find the offset for, not null
      * @return the millisecond offset to add to UTC to get local time
      */
-    public abstract Duration getOffset(Instant instant);
+    public abstract ZoneOffset getOffset(Instant instant);
 
     /**
-     * Gets the offset to add to the specified instant to get local time.
+     * Is this time zone fixed, such that the offset never varies.
      *
      * @return true if the time zone is fixed and the offset never changes
      */
@@ -163,7 +189,7 @@ public abstract class TimeZone {
     }
 
     /**
-     * A hashcode for the years object.
+     * A hashcode for the time zone object.
      *
      * @return a suitable hashcode
      */
@@ -181,6 +207,34 @@ public abstract class TimeZone {
     @Override
     public String toString() {
         return timeZoneID;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of time zone for fixed offsets.
+     */
+    private static class Fixed extends TimeZone {
+        /** The fixed offset. */
+        private final ZoneOffset offset;
+        /**
+         * Constructor.
+         * @param id  the time zone id, not null
+         * @param offset  the zone offset, not null
+         */
+        Fixed(String id, ZoneOffset offset) {
+            super(id);
+            this.offset = offset;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneOffset getOffset(Instant instant) {
+            return offset;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isFixed() {
+            return true;
+        }
     }
 
 }

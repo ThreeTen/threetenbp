@@ -38,68 +38,69 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
 
 /**
- * A calendrical representation of a date with a time zone.
+ * A calendrical representation of a date with a zone offset from UTC,
+ * such as 2007-12-03+02:00.
  * <p>
- * ZonedDate is an immutable calendrical that represents a date, often viewed
- * as year-month-day-zone. This object can also sccess other date fields such as
+ * OffsetDate is an immutable calendrical that represents a date, often viewed
+ * as year-month-day-offset. This object can also sccess other date fields such as
  * day of year, day of week and week of year.
  * <p>
  * This class does not store or represent a time.
- * Thus, for example, the value "2nd October 2007 in Europe/Paris" can be stored
- * in a ZonedDate.
+ * Thus, for example, the value "2nd October 2007 +02:00" can be stored
+ * in a OffsetDate.
  * <p>
- * ZonedDate is thread-safe and immutable.
+ * OffsetDate is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class ZonedDate
-        implements Calendrical, Comparable<ZonedDate>, Serializable {
+public final class OffsetDate
+        implements Calendrical, Comparable<OffsetDate>, Serializable {
 
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
-    private static final long serialVersionUID = -1751516698L;
+    private static final long serialVersionUID = -3618963189L;
 
     /**
      * The date.
      */
     private final LocalDate date;
     /**
-     * The time zone.
+     * The zone offset.
      */
-    private final TimeZone zone;
+    private final ZoneOffset offset;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDate</code>.
+     * Obtains an instance of <code>OffsetDate</code>.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month of year, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param zone  the time zone, not null
-     * @return a ZonedDate object, never null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDate object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static ZonedDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, TimeZone zone) {
-        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth, zone);
+    public static OffsetDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth, offset);
     }
 
     /**
-     * Obtains an instance of <code>ZonedDate</code>.
+     * Obtains an instance of <code>OffsetDate</code>.
      *
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param zone  the time zone, not null
-     * @return a ZonedDate object, never null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDate object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static ZonedDate date(int year, int monthOfYear, int dayOfMonth, TimeZone zone) {
+    public static OffsetDate date(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        if (zone == null) {
-            throw new NullPointerException("The time zone must not be null");
+        if (offset == null) {
+            throw new NullPointerException("The zone offset must not be null");
         }
-        return new ZonedDate(date, zone);
+        return new OffsetDate(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -107,11 +108,11 @@ public final class ZonedDate
      * Constructor.
      *
      * @param date  the date, not null
-     * @param zone  the time zone, not null
+     * @param offset  the zone offset, not null
      */
-    private ZonedDate(LocalDate date, TimeZone zone) {
+    private OffsetDate(LocalDate date, ZoneOffset offset) {
         this.date = date;
-        this.zone = zone;
+        this.offset = offset;
     }
 
     //-----------------------------------------------------------------------
@@ -140,7 +141,7 @@ public final class ZonedDate
     /**
      * Checks if the specified calendar field is supported.
      * <p>
-     * This method queries whether this <code>ZonedDate</code> can
+     * This method queries whether this <code>OffsetDate</code> can
      * be queried using the specified calendar field.
      *
      * @param field  the field to query, not null
@@ -207,7 +208,7 @@ public final class ZonedDate
 
     /**
      * Gets an instance of <code>LocalDate</code> which represents the
-     * date of this object but without the time zone.
+     * date of this object but without the zone offset.
      *
      * @return the date object, never null
      */
@@ -217,27 +218,29 @@ public final class ZonedDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time zone.
+     * Gets the zone offset.
      *
-     * @return the time zone, never null
+     * @return the zone offset, never null
      */
-    public TimeZone getZone() {
-        return zone;
+    public ZoneOffset getOffset() {
+        return offset;
     }
 
     /**
-     * Returns a copy of this ZonedDate with a different time zone.
-     * This method has no effect on the local date, but may affect the instant
-     * that the zoned date starts and ends.
+     * Returns a copy of this OffsetTime with a different zone offset.
+     * <p>
+     * This method changes the offset stored in this zoned date to a different
+     * offset. No calculation is performed. The result simply represents the same
+     * date and the new offset.
      *
-     * @param zone  the time zone to change to, not null
-     * @return a new updated ZonedDate, never null
+     * @param zone  the zone offset to change to, not null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withZone(TimeZone zone) {
+    public OffsetDate withOffset(ZoneOffset zone) {
         if (zone == null) {
-            throw new NullPointerException("Time zone must not be null");
+            throw new NullPointerException("Zone offset must not be null");
         }
-        return zone == this.zone ? this : new ZonedDate(date, zone);
+        return zone == this.offset ? this : new OffsetDate(date, zone);
     }
 
     //-----------------------------------------------------------------------
@@ -295,151 +298,151 @@ public final class ZonedDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDate with the specified values altered.
+     * Returns a copy of this OffsetDate with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate with(Calendrical calendrical) {
+    public OffsetDate with(Calendrical calendrical) {
         LocalDate newDate = date.with(calendrical);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the specified values altered.
+     * Returns a copy of this OffsetDate with the specified values altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate with(Calendrical... calendricals) {
+    public OffsetDate with(Calendrical... calendricals) {
         LocalDate newDate = date.with(calendricals);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDate with the year value altered.
+     * Returns a copy of this OffsetDate with the year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withYear(int year) {
+    public OffsetDate withYear(int year) {
         LocalDate newDate = date.withYear(year);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the month of year value altered.
+     * Returns a copy of this OffsetDate with the month of year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withMonthOfYear(int monthOfYear) {
+    public OffsetDate withMonthOfYear(int monthOfYear) {
         LocalDate newDate = date.withMonthOfYear(monthOfYear);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the day of month value altered.
+     * Returns a copy of this OffsetDate with the day of month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withDayOfMonth(int dayOfMonth) {
+    public OffsetDate withDayOfMonth(int dayOfMonth) {
         LocalDate newDate = date.withDayOfMonth(dayOfMonth);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the date set to the last day of month.
+     * Returns a copy of this OffsetDate with the date set to the last day of month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withLastDayOfMonth() {
+    public OffsetDate withLastDayOfMonth() {
         LocalDate newDate = date.withLastDayOfMonth();
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the day of year value altered.
+     * Returns a copy of this OffsetDate with the day of year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfYear  the day of year to represent, from 1 to 366
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withDayOfYear(int dayOfYear) {
+    public OffsetDate withDayOfYear(int dayOfYear) {
         LocalDate newDate = date.withDayOfYear(dayOfYear);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the date set to the last day of year.
+     * Returns a copy of this OffsetDate with the date set to the last day of year.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withLastDayOfYear() {
+    public OffsetDate withLastDayOfYear() {
         LocalDate newDate = date.withLastDayOfYear();
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the day of week value altered.
+     * Returns a copy of this OffsetDate with the day of week value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate withDayOfWeek(int dayOfWeek) {
+    public OffsetDate withDayOfWeek(int dayOfWeek) {
         LocalDate newDate = date.withDayOfWeek(dayOfWeek);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDate with the specified period added.
+     * Returns a copy of this OffsetDate with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate plus(PeriodView period) {
+    public OffsetDate plus(PeriodView period) {
         LocalDate newDate = date.plus(period);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the specified periods added.
+     * Returns a copy of this OffsetDate with the specified periods added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param periods  the periods to add, no nulls
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate plus(PeriodView... periods) {
+    public OffsetDate plus(PeriodView... periods) {
         LocalDate newDate = date.plus(periods);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDate with the specified period in years added.
+     * Returns a copy of this OffsetDate with the specified period in years added.
      * <p>
      * This method add the specified amount to the years field in three steps:
      * <ol>
@@ -455,17 +458,17 @@ public final class ZonedDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
-    public ZonedDate plusYears(int years) {
+    public OffsetDate plusYears(int years) {
         LocalDate newDate = date.plusYears(years);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the specified period in months added.
+     * Returns a copy of this OffsetDate with the specified period in months added.
      * <p>
      * This method add the specified amount to the months field in three steps:
      * <ol>
@@ -481,17 +484,17 @@ public final class ZonedDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
-    public ZonedDate plusMonths(int months) {
+    public OffsetDate plusMonths(int months) {
         LocalDate newDate = date.plusMonths(months);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the specified period in weeks added.
+     * Returns a copy of this OffsetDate with the specified period in weeks added.
      * <p>
      * This method add the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
@@ -502,16 +505,16 @@ public final class ZonedDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      * @throws ArithmeticException if the calculation overflows
      */
-    public ZonedDate plusWeeks(int weeks) {
+    public OffsetDate plusWeeks(int weeks) {
         LocalDate newDate = date.plusWeeks(weeks);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     /**
-     * Returns a copy of this ZonedDate with the specified period in days added.
+     * Returns a copy of this OffsetDate with the specified period in days added.
      * <p>
      * This method add the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
@@ -522,23 +525,30 @@ public final class ZonedDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, may be negative
-     * @return a new updated ZonedDate, never null
+     * @return a new updated OffsetDate, never null
      */
-    public ZonedDate plusDays(int days) {
+    public OffsetDate plusDays(int days) {
         LocalDate newDate = date.plusDays(days);
-        return newDate == date ? this : new ZonedDate(newDate, zone);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Compares this date to another date.
+     * <p>
+     * This compares based on the date, then the offset.
+     * This is equivalent to comparing on the start instant.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
-    public int compareTo(ZonedDate other) {
-        return 0;  // TODO
+    public int compareTo(OffsetDate other) {
+        int cmp = date.compareTo(other.date);
+        if (cmp == 0) {
+            cmp = offset.compareTo(other.offset);
+        }
+        return cmp;
     }
 
     /**
@@ -548,7 +558,7 @@ public final class ZonedDate
      * @return true if this is after the specified date
      * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isAfter(ZonedDate other) {
+    public boolean isAfter(OffsetDate other) {
         return compareTo(other) > 0;
     }
 
@@ -559,7 +569,7 @@ public final class ZonedDate
      * @return true if this point is before the specified date
      * @throws NullPointerException if <code>other</code> is null
      */
-    public boolean isBefore(ZonedDate other) {
+    public boolean isBefore(OffsetDate other) {
         return compareTo(other) < 0;
     }
 
@@ -575,9 +585,9 @@ public final class ZonedDate
         if (this == other) {
             return true;
         }
-        if (other instanceof ZonedDate) {
-            ZonedDate zonedDate = (ZonedDate) other;
-            return date.equals(zonedDate.date) && zone.equals(zonedDate.zone);
+        if (other instanceof OffsetDate) {
+            OffsetDate zonedDate = (OffsetDate) other;
+            return date.equals(zonedDate.date) && offset.equals(zonedDate.offset);
         }
         return false;
     }
@@ -589,18 +599,21 @@ public final class ZonedDate
      */
     @Override
     public int hashCode() {
-        return date.hashCode() ^ zone.hashCode();
+        return date.hashCode() ^ offset.hashCode();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the string form of the date.
+     * Outputs the time as a <code>String</code>.
+     * <p>
+     * The output will be in the format 'yyyy-MM-ddZ' where 'Z' is the id of
+     * the zone offset, such as '+02:30' or 'Z'.
      *
-     * @return the string form of the date
+     * @return the formatted time string, never null
      */
     @Override
     public String toString() {
-        return date.toString();  // TODO
+        return date.toString() + offset.toString();
     }
 
 }

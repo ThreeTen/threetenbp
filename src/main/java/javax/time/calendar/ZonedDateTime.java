@@ -57,7 +57,7 @@ public final class ZonedDateTime
         implements Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -456761901L;
 
@@ -332,15 +332,15 @@ public final class ZonedDateTime
         return LocalTime.time(hour, minute, second, nano);
     }
 
-    /**
-     * Gets an instance of <code>ZonedTime</code> initialised to the
-     * time of this date-time.
-     *
-     * @return the time object, never null
-     */
-    public ZonedTime zonedTime() {
-        return ZonedTime.time(hour, minute, second, nano, zone);
-    }
+//    /**
+//     * Gets an instance of <code>ZonedTime</code> initialised to the
+//     * time of this date-time.
+//     *
+//     * @return the time object, never null
+//     */
+//    public ZonedTime zonedTime() {
+//        return ZonedTime.time(hour, minute, second, nano, zone);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -972,6 +972,7 @@ public final class ZonedDateTime
         return 0;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the string form of the date-time.
      *
