@@ -178,19 +178,6 @@ public final class Calendars {
     /**
      * Gets an instance of a date.
      *
-     * @param year  the year
-     * @param monthOfYear  the month of year
-     * @param dayOfMonth  the day of month
-     * @return the date object, never null
-     * @throws IllegalCalendarFieldValueException if any value is invalid
-     */
-    public static LocalDate date(int year, int monthOfYear, int dayOfMonth) {
-        return LocalDate.date(year, monthOfYear, dayOfMonth);
-    }
-
-    /**
-     * Gets an instance of a date.
-     *
      * @param year  the year, not null
      * @param monthOfYear  the month of year, not null
      * @param dayOfMonth  the day of month, not null
@@ -199,6 +186,61 @@ public final class Calendars {
      */
     public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
         return LocalDate.date(year, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Gets an instance of a date.
+     *
+     * @param year  the year, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year, not null
+     * @param dayOfMonth  the day of month, from 1 to 31
+     * @return the date object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static LocalDate date(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        return LocalDate.date(year, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Gets an instance of a date.
+     *
+     * @param year  the year, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year
+     * @param dayOfMonth  the day of month, from 1 to 31
+     * @return the date object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static LocalDate date(int year, int monthOfYear, int dayOfMonth) {
+        return LocalDate.date(year, monthOfYear, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of a date.
+     *
+     * @param year  the year, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year, not null
+     * @param dayOfMonth  the day of month, from 1 to 31
+     * @param offset  the zone offset, not null
+     * @return the date object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static OffsetDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        return OffsetDate.date(year, monthOfYear, dayOfMonth, offset);
+    }
+
+    /**
+     * Gets an instance of a date.
+     *
+     * @param year  the year, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year
+     * @param dayOfMonth  the day of month, from 1 to 31
+     * @param offset  the zone offset, not null
+     * @return the date object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static OffsetDate date(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        return OffsetDate.date(year, monthOfYear, dayOfMonth, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -239,6 +281,49 @@ public final class Calendars {
      */
     public static LocalTime time(int hour, int minute, int second, int nano) {
         return LocalTime.time(hour, minute, second, nano);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of a time.
+     *
+     * @param hour  the hour of day, from 0 to 23
+     * @param minute  the minute of hour, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return the time object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static OffsetTime time(int hour, int minute, ZoneOffset offset) {
+        return OffsetTime.time(hour, minute, offset);
+    }
+
+    /**
+     * Gets an instance of a time.
+     *
+     * @param hour  the hour of day, from 0 to 23
+     * @param minute  the minute of hour, from 0 to 59
+     * @param second  the second of minute, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return the time object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static OffsetTime time(int hour, int minute, int second, ZoneOffset offset) {
+        return OffsetTime.time(hour, minute, second, offset);
+    }
+
+    /**
+     * Gets an instance of a time.
+     *
+     * @param hour  the hour of day, from 0 to 23
+     * @param minute  the minute of hour, from 0 to 59
+     * @param second  the second of minute, from 0 to 59
+     * @param nano  the nano of second, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
+     * @return the time object, never null
+     * @throws IllegalCalendarFieldValueException if any value is invalid
+     */
+    public static OffsetTime time(int hour, int minute, int second, int nano, ZoneOffset offset) {
+        return OffsetTime.time(hour, minute, second, nano, offset);
     }
 
 //    /**
