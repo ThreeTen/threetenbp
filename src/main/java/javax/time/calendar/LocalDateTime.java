@@ -48,7 +48,7 @@ public final class LocalDateTime
         implements Calendrical, Comparable<LocalDateTime>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1153828870L;
 
@@ -951,6 +951,7 @@ public final class LocalDateTime
         return date.hashCode() ^ time.hashCode();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the string form of the date-time.
      *

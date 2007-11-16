@@ -146,7 +146,7 @@ public abstract class Now {
          */
         private static final SystemMillis INSTANCE = new SystemMillis();
         /**
-         * A serialization identifier for this instance.
+         * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
 

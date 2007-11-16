@@ -64,7 +64,7 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
     public static final Hours ZERO = new Hours(0);
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

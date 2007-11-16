@@ -47,7 +47,7 @@ public final class LocalTime
         implements Calendrical, Comparable<LocalTime>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 798759096L;
 
@@ -501,6 +501,7 @@ public final class LocalTime
         return 0;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the time as a <code>String</code>.
      * <p>

@@ -57,7 +57,7 @@ public final class LocalDate
         implements Calendrical, Comparable<LocalDate>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 798274969L;
 
@@ -650,6 +650,7 @@ public final class LocalDate
         return (year & 0xFFFFF800) ^ ((year << 11) + (month << 6) + (dayOfMonth));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the string form of the date.
      *

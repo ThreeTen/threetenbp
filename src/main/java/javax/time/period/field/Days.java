@@ -64,7 +64,7 @@ public final class Days extends PeriodField implements Comparable<Days>, Seriali
     public static final Days ZERO = new Days(0);
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

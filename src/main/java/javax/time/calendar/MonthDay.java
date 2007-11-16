@@ -55,7 +55,7 @@ public final class MonthDay
         implements Calendrical, Comparable<MonthDay>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -254395108L;
 
@@ -430,6 +430,7 @@ public final class MonthDay
         return (month << 6) + day;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the month-day as a <code>String</code>.
      * <p>

@@ -57,7 +57,7 @@ public final class CopticChronology implements Serializable {
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

@@ -57,7 +57,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

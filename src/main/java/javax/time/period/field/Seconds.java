@@ -64,7 +64,7 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
     public static final Seconds ZERO = new Seconds(0);
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

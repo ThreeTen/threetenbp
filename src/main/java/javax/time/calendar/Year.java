@@ -62,7 +62,7 @@ public final class Year
      */
     public static final int MAX_YEAR = Integer.MAX_VALUE;
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 2751581L;
 
@@ -327,6 +327,7 @@ public final class Year
         return year;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the string form of the year.
      *

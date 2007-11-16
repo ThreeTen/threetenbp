@@ -64,7 +64,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
     public static final Minutes ZERO = new Minutes(0);
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

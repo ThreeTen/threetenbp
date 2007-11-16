@@ -56,7 +56,7 @@ public final class ISOChronology implements Serializable {
      */
     public static final ISOChronology INSTANCE = new ISOChronology();
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
     /** Number of months in one year. */

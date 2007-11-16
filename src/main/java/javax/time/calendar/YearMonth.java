@@ -55,7 +55,7 @@ public final class YearMonth
         implements Calendrical, Comparable<YearMonth>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1507289123L;
 
@@ -444,6 +444,7 @@ public final class YearMonth
         return year ^ (month << 27);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the year-month as a <code>String</code>.
      * <p>

@@ -60,7 +60,7 @@ public final class Period implements PeriodView, Serializable {
     public static final Period ZERO = new Period(new TreeMap<PeriodUnit, Integer>());
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 986187548716897689L;
 

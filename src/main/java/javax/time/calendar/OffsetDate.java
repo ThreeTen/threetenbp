@@ -57,7 +57,7 @@ public final class OffsetDate
         implements Calendrical, Comparable<OffsetDate>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -3618963189L;
 

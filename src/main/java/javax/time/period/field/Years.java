@@ -64,7 +64,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
     public static final Years ZERO = new Years(0);
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

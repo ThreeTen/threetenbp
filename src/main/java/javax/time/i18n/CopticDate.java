@@ -55,7 +55,7 @@ import javax.time.period.PeriodView;
 public final class CopticDate implements Calendrical, Comparable<CopticDate>, Serializable {
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 

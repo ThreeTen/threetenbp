@@ -64,7 +64,7 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
     public static final Months ZERO = new Months(0);
 
     /**
-     * A serialization identifier for this instance.
+     * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
 
