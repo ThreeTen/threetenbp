@@ -693,6 +693,15 @@ public final class Period implements PeriodView, Serializable {
         return new Period(copy);
     }
 
+    /**
+     * Returns a new instance with each element in this period negated.
+     *
+     * @return the new updated period instance, never null
+     */
+    public Period negated() {
+        return multipliedBy(-1);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Clone the internal data storage map.
