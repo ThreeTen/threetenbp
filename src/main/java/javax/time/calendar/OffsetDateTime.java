@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.Instant;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
@@ -126,6 +127,39 @@ public final class OffsetDateTime
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return dateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from an <code>Instant</code>.
+     *
+     * @param instant  the instant to convert, not null
+     * @param offset  the zone offset, not null
+     * @return an OffsetDateTime object, never null
+     */
+    public static OffsetDateTime dateTime(Instant instant, ZoneOffset offset) {
+        if (instant == null) {
+            throw new NullPointerException("The instant must not be null");
+        }
+        if (offset == null) {
+            throw new NullPointerException("The zone offset must not be null");
+        }
+        long epochSecs = instant.getEpochSeconds();
+        long days = epochSecs / 24 * 60 * 60;
+//        days += DAYS_FROM_0000_TO_1970;
+        int secsOfDay = (int) (epochSecs % 24 * 60 * 60);
+        if (secsOfDay < 0) {
+            secsOfDay += 24 * 60 * 60;
+            days--;
+        }
+        secsOfDay += 24 * 60 * 60;
+        secsOfDay += offset.getAmountSeconds();
+        secsOfDay %= 24 * 60 * 60;
+        int hour = secsOfDay / 60 * 60;
+        int min = (secsOfDay / 60) % 60;
+        int sec = secsOfDay % 60;
+        int nano = instant.getNanoOfSecond();
+        LocalDateTime dateTime = LocalDateTime.dateTime(0, 0, 0, hour, min, sec, nano);
+        return new OffsetDateTime(dateTime, offset);
     }
 
     /**
@@ -254,7 +288,7 @@ public final class OffsetDateTime
      * Gets an instance of <code>LocalDateTime</code> initialised to the
      * same date-time.
      *
-     * @return the date object, never null
+     * @return the date-time object, never null
      */
     public LocalDateTime localDateTime() {
         return dateTime;
@@ -271,7 +305,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Gets an instance of <code>ZonedDate</code> initialised to the
+     * Gets an instance of <code>OffsetDate</code> initialised to the
      * date of this date-time.
      *
      * @return the date object, never null
@@ -291,7 +325,7 @@ public final class OffsetDateTime
     }
 
     /**
-     * Gets an instance of <code>ZonedTime</code> initialised to the
+     * Gets an instance of <code>OffsetTime</code> initialised to the
      * time of this date-time.
      *
      * @return the time object, never null
@@ -306,16 +340,18 @@ public final class OffsetDateTime
      *
      * @return the zone offset, never null
      */
-    public ZoneOffset getZone() {
+    public ZoneOffset getOffset() {
         return offset;
     }
 
     /**
-     * Returns a copy of this OffsetTime with a different zone offset.
+     * Returns a copy of this OffsetDateTime with a different zone offset.
      * <p>
      * This method changes the offset stored in this zoned date to a different
      * offset. No calculation is performed. The result simply represents the same
      * date and the new offset.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
      * @return a new updated OffsetDateTime, never null
@@ -334,9 +370,11 @@ public final class OffsetDateTime
      * <p>
      * To change the offset whilst keeping the local time,
      * use {@link #withOffset(ZoneOffset)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
-     * @return a new updated OffsetTime, never null
+     * @return a new updated OffsetDateTime, never null
      */
     public OffsetDateTime adjustLocalDateTime(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
@@ -849,7 +887,22 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date-time to another date-time.
+     * Converts this date-time to an <code>Instant</code>.
+     *
+     * @return an Instant representing the same instant, never null
+     */
+    public Instant toInstant() {
+        return null;  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this date-time to another date-time based on the UTC
+     * equivalent date-times.
+     * <p>
+     * This ordering is inconsistent with <code>equals()</code> as two
+     * date-times with the same instant will compare as equal regardless of
+     * the actual offsets.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
@@ -933,7 +986,7 @@ public final class OffsetDateTime
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
-     * @return the formatted time string, never null
+     * @return the formatted date-time string, never null
      */
     @Override
     public String toString() {
