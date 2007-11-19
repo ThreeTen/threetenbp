@@ -33,11 +33,12 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
+import javax.time.Instant;
+import javax.time.calendar.TimeZone.Discontinuity;
+import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
-import javax.time.period.Periods;
 
 /**
  * A calendrical representation of a date-time with a time zone.
@@ -45,8 +46,8 @@ import javax.time.period.Periods;
  * ZonedDateTime is an immutable calendrical that represents a date-time, often
  * viewed as year-month-day-hour-minute-second-zone.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as a time zone. Thus, for example, the value
- * "2nd October 2007 at 13:45.30.123456789 in the Europe/Paris time zone"
+ * as well as a time zone and zone offset. Thus, for example, the value
+ * "2nd October 2007 at 13:45.30.123456789 +02:00 in the Europe/Paris time zone"
  * can be stored in a ZonedDateTime.
  * <p>
  * ZonedDateTime is thread-safe and immutable.
@@ -62,33 +63,9 @@ public final class ZonedDateTime
     private static final long serialVersionUID = -456761901L;
 
     /**
-     * The year, from MIN_YEAR to MAX_YEAR.
+     * The offset date-time.
      */
-    private final int year;
-    /**
-     * The month, from 1 to 12.
-     */
-    private final int month;
-    /**
-     * The dayOfMonth, from 1 to 31.
-     */
-    private final int dayOfMonth;
-    /**
-     * The hour, from 0 to 23.
-     */
-    private final int hour;
-    /**
-     * The minute, from 0 to 59.
-     */
-    private final int minute;
-    /**
-     * The second, from 0 to 59.
-     */
-    private final int second;
-    /**
-     * The nanosecond, from 0 to 999,999,999.
-     */
-    private final int nano;
+    private final OffsetDateTime dateTime;
     /**
      * The time zone.
      */
@@ -150,40 +127,76 @@ public final class ZonedDateTime
      */
     public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        ISOChronology.INSTANCE.hourOfDayRule().checkValue(hourOfDay);
-        ISOChronology.INSTANCE.minuteOfHourRule().checkValue(minuteOfHour);
-        ISOChronology.INSTANCE.secondOfMinuteRule().checkValue(secondOfMinute);
-        ISOChronology.INSTANCE.nanoOfSecondRule().checkValue(nanoOfSecond);
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return dateTime(dt, zone, ZoneResolvers.retainOffset());
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code> from an <code>Instant</code>.
+     *
+     * @param instant  the instant to convert, not null
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     */
+    public static ZonedDateTime dateTime(Instant instant, TimeZone zone) {
+        if (instant == null) {
+            throw new NullPointerException("The instant must not be null");
+        }
+        if (zone == null) {
+            throw new NullPointerException("The zone offset must not be null");
+        }
+        ZoneOffset offset = zone.getOffset(instant);
+        OffsetDateTime offsetDateTime = OffsetDateTime.dateTime(instant, offset);
+        return new ZonedDateTime(offsetDateTime, zone);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code>.
+     *
+     * @param dateTime  the date-time, not null
+     * @param zone  the time zone, not null
+     * @param resolver  the resolver from local date-time to zoned, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static ZonedDateTime dateTime(LocalDateTime dateTime, TimeZone zone, ZoneResolver resolver) {
+        if (dateTime == null) {
+            throw new NullPointerException("The date-time must not be null");
+        }
         if (zone == null) {
             throw new NullPointerException("The time zone must not be null");
         }
-        // TODO: Validate time exists in zone
-        return new ZonedDateTime(year, monthOfYear, dayOfMonth,
-                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond, zone);
+        if (resolver == null) {
+            throw new NullPointerException("The resolver must not be null");
+        }
+        OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, null);
+        return new ZonedDateTime(offsetDT, zone);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code>.
+     *
+     * @param dateTime  the date-time, not null
+     * @param oldDateTime  the old date-time prior to the calculation, not null
+     * @param zone  the time zone, not null
+     * @param resolver  the resolver from local date-time to zoned, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    private static ZonedDateTime dateTime(LocalDateTime dateTime, OffsetDateTime oldDateTime, TimeZone zone, ZoneResolver resolver) {
+        OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, oldDateTime);
+        return new ZonedDateTime(offsetDT, zone);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @param zone  the time zone, not null
+     * @param dateTime  the date-time, validated as not null
+     * @param zone  the time zone, validated as not null
      */
-    private ZonedDateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
-        this.year = year;
-        this.month = monthOfYear;
-        this.dayOfMonth = dayOfMonth;
-        this.hour = hourOfDay;
-        this.minute = minuteOfHour;
-        this.second = secondOfMinute;
-        this.nano = nanoOfSecond;
+    private ZonedDateTime(OffsetDateTime dateTime, TimeZone zone) {
+        this.dateTime = dateTime;
         this.zone = zone;
     }
 
@@ -220,7 +233,7 @@ public final class ZonedDateTime
      * @return true if the field is supported
      */
     public boolean isSupported(TimeFieldRule field) {
-        return field.isSupported(Periods.NANOS, Periods.FOREVER);
+        return dateTime.isSupported(field);
     }
 
     /**
@@ -234,31 +247,7 @@ public final class ZonedDateTime
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("ZonedDateTime does not support field " + field.getName());
-        }
-        if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year;
-        }
-        if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month;
-        }
-        if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
-            return dayOfMonth;
-        }
-        if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
-            return hour;
-        }
-        if (field == ISOChronology.INSTANCE.minuteOfHourRule()) {
-            return minute;
-        }
-        if (field == ISOChronology.INSTANCE.secondOfMinuteRule()) {
-            return second;
-        }
-        if (field == ISOChronology.INSTANCE.nanoOfSecondRule()) {
-            return nano;
-        }
-        return field.getValue(getCalendricalState());
+        return dateTime.get(field);
     }
 
     //-----------------------------------------------------------------------
@@ -269,7 +258,7 @@ public final class ZonedDateTime
      * @return the year object, never null
      */
     public Year year() {
-        return Year.isoYear(year);
+        return dateTime.year();
     }
 
     /**
@@ -279,7 +268,7 @@ public final class ZonedDateTime
      * @return the month object, never null
      */
     public MonthOfYear monthOfYear() {
-        return MonthOfYear.monthOfYear(month);
+        return dateTime.monthOfYear();
     }
 
     /**
@@ -289,7 +278,7 @@ public final class ZonedDateTime
      * @return the year-month object, never null
      */
     public YearMonth yearMonth() {
-        return YearMonth.yearMonth(year, month);
+        return dateTime.yearMonth();
     }
 
     /**
@@ -299,7 +288,28 @@ public final class ZonedDateTime
      * @return the month-day object, never null
      */
     public MonthDay monthDay() {
-        return MonthDay.monthDay(month, dayOfMonth);
+        return dateTime.monthDay();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>LocalDateTime</code> initialised to the
+     * same date-time.
+     *
+     * @return the date-time object, never null
+     */
+    public LocalDateTime localDateTime() {
+        return dateTime.localDateTime();
+    }
+
+    /**
+     * Gets an instance of <code>OffsetDateTime</code> initialised to the
+     * same date-time.
+     *
+     * @return the date-time object, never null
+     */
+    public OffsetDateTime offsetDateTime() {
+        return dateTime;
     }
 
     /**
@@ -308,8 +318,8 @@ public final class ZonedDateTime
      *
      * @return the date object, never null
      */
-    public LocalDate date() {
-        return LocalDate.date(year, month, dayOfMonth);
+    public LocalDate localDate() {
+        return dateTime.localDate();
     }
 
     /**
@@ -318,8 +328,8 @@ public final class ZonedDateTime
      *
      * @return the date object, never null
      */
-    public ZonedDate zonedDate() {
-        return ZonedDate.date(year, month, dayOfMonth, zone);
+    public OffsetDate offsetDate() {
+        return dateTime.offsetDate();
     }
 
     /**
@@ -328,52 +338,137 @@ public final class ZonedDateTime
      *
      * @return the time object, never null
      */
-    public LocalTime time() {
-        return LocalTime.time(hour, minute, second, nano);
+    public LocalTime localTime() {
+        return dateTime.localTime();
     }
 
-//    /**
-//     * Gets an instance of <code>ZonedTime</code> initialised to the
-//     * time of this date-time.
-//     *
-//     * @return the time object, never null
-//     */
-//    public ZonedTime zonedTime() {
-//        return ZonedTime.time(hour, minute, second, nano, zone);
-//    }
+    /**
+     * Gets an instance of <code>ZonedTime</code> initialised to the
+     * time of this date-time.
+     *
+     * @return the time object, never null
+     */
+    public OffsetTime offsetTime() {
+        return dateTime.offsetTime();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the zone offset.
+     *
+     * @return the zone offset, never null
+     */
+    public ZoneOffset getOffset() {
+        return dateTime.getOffset();
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime changing the zone offset to the
+     * earlier of the two valid offsets at a local time-line overlap.
+     * <p>
+     * This method is only useful when the local time-line overlaps, such as
+     * at an autumn daylight savings cutover. In this scenario, there are two
+     * valid offsets for the local date-time. Calling this method will return
+     * a zoned date-time with the earlier of the two selected.
+     * <p>
+     * If this method is called when it is not an overlap, <code>this</code>
+     * is returned.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a new updated ZonedDateTime, never null
+     */
+    public ZonedDateTime withEarlierOffsetAtOverlap() {
+        OffsetInfo info = zone.getOffsetInfo(localDateTime());
+        if (info instanceof Discontinuity) {
+            Discontinuity dis = (Discontinuity) info;
+            ZoneOffset offset = dis.getOffsetBefore();
+            if (offset.equals(getOffset()) == false) {
+                OffsetDateTime newDT = dateTime.withOffset(offset);
+                return new ZonedDateTime(newDT, zone);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime changing the zone offset to the
+     * later of the two valid offsets at a local time-line overlap.
+     * <p>
+     * This method is only useful when the local time-line overlaps, such as
+     * at an autumn daylight savings cutover. In this scenario, there are two
+     * valid offsets for the local date-time. Calling this method will return
+     * a zoned date-time with the later of the two selected.
+     * <p>
+     * If this method is called when it is not an overlap, <code>this</code>
+     * is returned.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a new updated ZonedDateTime, never null
+     */
+    public ZonedDateTime withLaterOffsetAtOverlap() {
+        OffsetInfo info = zone.getOffsetInfo(localDateTime());
+        if (info instanceof Discontinuity) {
+            Discontinuity dis = (Discontinuity) info;
+            ZoneOffset offset = dis.getOffsetAfter();
+            if (offset.equals(getOffset()) == false) {
+                OffsetDateTime newDT = dateTime.withOffset(offset);
+                return new ZonedDateTime(newDT, zone);
+            }
+        }
+        return this;
+    }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the time zone.
      *
-     * @return the time zone
+     * @return the time zone, never null
      */
     public TimeZone getZone() {
         return zone;
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with a different time zone, ensuring
-     * that the instant remains the same.
-     * This method may change the local time.
+     * Returns a copy of this ZonedDateTime with a different time zone,
+     * retaining the local date-time if possible.
+     * <p>
+     * This method changes the time zone and retains the local date-time.
+     * The local date-time is only changed if it is invalid for the new
+     * time zone. In that case, the standard resolver is used.
+     * <p>
+     * To change the zone and adjust the local date-time,
+     * use {@link #withZoneSameInstant(TimeZone)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time zone to change to, not null
+     * @return a new updated ZonedDateTime, never null
+     */
+    public ZonedDateTime withZoneSameLocal(TimeZone zone) {
+        return zone == this.zone ? this :
+            dateTime(dateTime.localDateTime(), dateTime, zone, ZoneResolvers.retainOffset());
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with a different time zone,
+     * retaining the instant.
+     * <p>
+     * This method changes the time zone and retains the instant.
+     * This normally results in a change to the local date-time.
+     * If there is an overlap in the local time-line at the new instant,
+     * then the standard resolver is used.
+     * <p>
+     * To change the offset whilst keeping the local time,
+     * use {@link #withZoneSameLocal(TimeZone)}.
      *
      * @param zone  the time zone to change to, not null
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withZoneSameInstant(TimeZone zone) {
-        return this;
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with a different time zone, ensuring
-     * that the local time, expressed as fields, remains the same.
-     * This method may change the instant.
-     *
-     * @param zone  the time zone to change to, not null
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime withZoneSameFields(TimeZone zone) {
-        return this;
+        return zone == this.zone ? this :
+            dateTime(toInstant(), zone);
     }
 
     //-----------------------------------------------------------------------
@@ -387,7 +482,7 @@ public final class ZonedDateTime
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getYear() {
-        return year;
+        return dateTime.getYear();
     }
 
     /**
@@ -399,7 +494,7 @@ public final class ZonedDateTime
      * @return the month of year, from 1 (January) to 12 (December)
      */
     public int getMonthOfYear() {
-        return month;
+        return dateTime.getMonthOfYear();
     }
 
     /**
@@ -408,7 +503,7 @@ public final class ZonedDateTime
      * @return the day of year, from 1 to 366
      */
     public int getDayOfYear() {
-        return ISOChronology.INSTANCE.getDayOfYear(year, month, dayOfMonth);
+        return dateTime.getDayOfYear();
     }
 
     /**
@@ -417,7 +512,7 @@ public final class ZonedDateTime
      * @return the day of month, from 1 to 31
      */
     public int getDayOfMonth() {
-        return dayOfMonth;
+        return dateTime.getDayOfMonth();
     }
 
     /**
@@ -426,7 +521,7 @@ public final class ZonedDateTime
      * @return the day of week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        return null;
+        return dateTime.getDayOfWeek();
     }
 
     /**
@@ -435,7 +530,7 @@ public final class ZonedDateTime
      * @return the hour of day, from 0 to 23
      */
     public int getHourOfDay() {
-        return hour;
+        return dateTime.getHourOfDay();
     }
 
     /**
@@ -444,7 +539,7 @@ public final class ZonedDateTime
      * @return the minute of hour, from 0 to 59
      */
     public int getMinuteOfHour() {
-        return minute;
+        return dateTime.getMinuteOfHour();
     }
 
     /**
@@ -453,7 +548,7 @@ public final class ZonedDateTime
      * @return the second of minute, from 0 to 59
      */
     public int getSecondOfMinute() {
-        return second;
+        return dateTime.getSecondOfMinute();
     }
 
     /**
@@ -462,7 +557,7 @@ public final class ZonedDateTime
      * @return the nano of second, from 0 to 999,999,999
      */
     public int getNanoOfSecond() {
-        return nano;
+        return dateTime.getNanoOfSecond();
     }
 
     /**
@@ -471,7 +566,7 @@ public final class ZonedDateTime
      * @return the nano of second, from 0 to 0.999,999,999
      */
     public double getNanoFraction() {
-        return ((double) nano) / 1000000000d;
+        return dateTime.getNanoFraction();
     }
 
     //-----------------------------------------------------------------------
@@ -484,7 +579,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime with(Calendrical calendrical) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().with(calendrical);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -496,7 +593,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime with(Calendrical... calendricals) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().with(calendricals);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     //-----------------------------------------------------------------------
@@ -509,11 +608,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withYear(int year) {
-        if (this.year == year) {
-            return this;
-        }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-        return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().withYear(year);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -525,11 +622,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
-        if (this.month == monthOfYear) {
-            return this;
-        }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
-        return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().withMonthOfYear(monthOfYear);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -541,11 +636,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
-        if (this.dayOfMonth == dayOfMonth) {
-            return this;
-        }
-        ISOChronology.INSTANCE.checkValidDate(year, month, dayOfMonth);
-        return new ZonedDateTime(year, month, dayOfMonth, hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().withDayOfMonth(dayOfMonth);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -556,11 +649,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withLastDayOfMonth() {
-        int dom = ISOChronology.INSTANCE.getMonthLength(year, month);
-        if (this.dayOfMonth == dom) {
-            return this;
-        }
-        return new ZonedDateTime(year, month, dom, hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().withLastDayOfMonth();
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -572,7 +663,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withDayOfYear(int dayOfYear) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withDayOfYear(dayOfYear);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -583,7 +676,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withLastDayOfYear() {
-        return new ZonedDateTime(year, 12, 31, hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().withLastDayOfYear();
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -595,7 +690,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withDayOfWeek(int dayOfWeek) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withDayOfWeek(dayOfWeek);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -612,11 +709,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime
      */
     public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        if (this.year == year && this.dayOfMonth == dayOfMonth && this.dayOfMonth == dayOfMonth) {
-            return this;
-        }
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        return new ZonedDateTime(year, monthOfYear, dayOfMonth, hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().withDate(year, monthOfYear, dayOfMonth);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -628,7 +723,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withHourOfDay(hourOfDay);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -640,7 +737,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withMinuteOfHour(minuteOfHour);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -652,7 +751,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withSecondOfMinute(secondOfMinute);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -664,7 +765,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withNanoOfSecond(nanoOfSecond);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -682,7 +785,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -696,7 +801,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     //-----------------------------------------------------------------------
@@ -709,8 +816,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plus(PeriodView period) {
-        // TODO
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plus(period);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -722,8 +830,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plus(PeriodView... periods) {
-        // TODO
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plus(periods);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     //-----------------------------------------------------------------------
@@ -749,11 +858,9 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public ZonedDateTime plusYears(int years) {
-        if (years == 0) {
-            return this;
-        }
-        int newYear = MathUtils.safeAdd(year, years);
-        return withYear(newYear);
+        LocalDateTime newDT = dateTime.localDateTime().plusYears(years);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -778,19 +885,9 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public ZonedDateTime plusMonths(int months) {
-        if (months == 0) {
-            return this;
-        }
-        long newMonth0 = month - 1;
-        newMonth0 = newMonth0 + months;
-        int years = (int) (newMonth0 / 12);
-        newMonth0 = Math.abs(newMonth0) % 12;
-        if (years < 0) {
-            years--;
-        }
-        int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
-        return new ZonedDateTime(resolved[0], resolved[1], resolved[2], hour, minute, second, nano, zone);
+        LocalDateTime newDT = dateTime.localDateTime().plusMonths(months);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -809,7 +906,9 @@ public final class ZonedDateTime
      * @throws ArithmeticException if the calculation overflows
      */
     public ZonedDateTime plusWeeks(int weeks) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plusWeeks(weeks);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -827,7 +926,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plusDays(int days) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plusDays(days);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -840,8 +941,8 @@ public final class ZonedDateTime
      * <p>
      * For example, consider a time zone where the spring DST cutover means that
      * the local times 01:00 to 01:59 do not exist. Using this method, adding
-     * a duration of 2 hours to 00:30 will result in 02:30, but it is important
-     * to note that only a duration of 1 hour was actually added.
+     * a period of 2 hours to 00:30 will result in 02:30, but it is important
+     * to note that the change in duration was only 1 hour.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -849,28 +950,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plusHours(int hours) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with the specified duration in hours added.
-     * <p>
-     * This method uses duration based addition.
-     * This method adds the physical duration in hours specified. At the daylight
-     * savings cutover, this may result in the hours field not changing by the
-     * same number of hours.
-     * <p>
-     * For example, consider a time zone where the spring DST cutover means that
-     * the local times 01:00 to 01:59 do not exist. Using this method, adding
-     * a duration of 2 hours to 00:30 will result in 03:30.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime plusHoursDuration(int hours) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plusHours(hours);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -882,7 +964,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plusMinutes(int minutes) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plusMinutes(minutes);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -894,7 +978,9 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plusSeconds(int seconds) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plusSeconds(seconds);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     /**
@@ -906,19 +992,36 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime plusNanos(int nanos) {
-        return null;
+        LocalDateTime newDT = dateTime.localDateTime().plusNanos(nanos);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date-time to another date-time.
+     * Converts this date-time to an <code>Instant</code>.
+     *
+     * @return an Instant representing the same instant, never null
+     */
+    public Instant toInstant() {
+        return dateTime.toInstant();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this date-time to another date-time based on the UTC
+     * equivalent date-times.
+     * <p>
+     * This ordering is inconsistent with <code>equals()</code> as two
+     * date-times with the same instant will compare as equal regardless of
+     * the actual zones.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(ZonedDateTime other) {
-        return 0;
+        return dateTime.compareTo(other.dateTime);
     }
 
     /**
@@ -946,6 +1049,8 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Is this date-time equal to the specified date-time.
+     * <p>
+     * This compares the date-time and the offset.
      *
      * @param other  the other date-time to compare to, null returns false
      * @return true if this point is equal to the specified date-time
@@ -957,7 +1062,8 @@ public final class ZonedDateTime
         }
         if (other instanceof ZonedDateTime) {
             ZonedDateTime zonedDateTime = (ZonedDateTime) other;
-            return  true;
+            return dateTime.equals(zonedDateTime.dateTime) &&
+                zone.equals(zonedDateTime.zone);
         }
         return false;
     }
@@ -969,18 +1075,31 @@ public final class ZonedDateTime
      */
     @Override
     public int hashCode() {
-        return 0;
+        return dateTime.hashCode() ^ zone.hashCode();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the string form of the date-time.
+     * Outputs the date-time as a <code>String</code>.
+     * <p>
+     * The output will be one of the following formats:
+     * <ul>
+     * <li>'yyyy-MM-ddThh:mmZ ZZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ssZ ZZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSZ ZZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSZ ZZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSSSSZ ZZ'</li>
+     * </ul>
+     * where 'Z' is the id of the zone offset, such as '+02:30' or 'Z' and
+     * 'ZZ' is the time zone id.
+     * The format used will be the shortest that outputs the full value of
+     * the time where the omitted parts are implied to be zero.
      *
-     * @return the string form of the date-time
+     * @return the formatted date-time string, never null
      */
     @Override
     public String toString() {
-        return super.toString();
+        return dateTime.toString() + " " + zone.toString();
     }
 
 }
