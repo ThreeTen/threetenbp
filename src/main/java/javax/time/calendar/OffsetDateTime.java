@@ -53,7 +53,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements ReadableDateTime, Calendrical, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -893,6 +893,33 @@ public final class OffsetDateTime
      */
     public Instant toInstant() {
         return null;  // TODO
+    }
+
+    /**
+     * Converts this date-time to a <code>LocalDate</code>.
+     *
+     * @return a LocalDate representing the date fields of this date-time, never null
+     */
+    public LocalDate toLocalDate() {
+        return dateTime.toLocalDate();
+    }
+
+    /**
+     * Converts this date-time to a <code>LocalTime</code>.
+     *
+     * @return a LocalTime representing the time fields of this date-time, never null
+     */
+    public LocalTime toLocalTime() {
+        return dateTime.toLocalTime();
+    }
+
+    /**
+     * Converts this date-time to a <code>LocalDateTime</code>.
+     *
+     * @return a LocalDateTime representing the fields of this date-time, never null
+     */
+    public LocalDateTime toLocalDateTime() {
+        return dateTime;
     }
 
     //-----------------------------------------------------------------------

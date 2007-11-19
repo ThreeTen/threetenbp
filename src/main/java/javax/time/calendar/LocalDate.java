@@ -54,7 +54,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, Comparable<LocalDate>, Serializable {
+        implements ReadableDate, Calendrical, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -578,6 +578,17 @@ public final class LocalDate
         long epochDays = 0L;
         epochDays += days;
         return null;  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this date to a <code>LocalDate</code>, trivially
+     * returning <code>this</code>.
+     *
+     * @return <code>this</code>, never null
+     */
+    public LocalDate toLocalDate() {
+        return this;
     }
 
     //-----------------------------------------------------------------------

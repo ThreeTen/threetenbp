@@ -45,7 +45,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements Calendrical, Comparable<LocalDateTime>, Serializable {
+        implements ReadableDateTime, Calendrical, Comparable<LocalDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -882,6 +882,35 @@ public final class LocalDateTime
         LocalTime.Overflow overflow = time.plusWithOverflow(Periods.nanos(nanos));
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this date-time to a <code>LocalDate</code>.
+     *
+     * @return a LocalDate representing the date fields of this date-time, never null
+     */
+    public LocalDate toLocalDate() {
+        return date;
+    }
+
+    /**
+     * Converts this date-time to a <code>LocalTime</code>.
+     *
+     * @return a LocalTime representing the time fields of this date-time, never null
+     */
+    public LocalTime toLocalTime() {
+        return time;
+    }
+
+    /**
+     * Converts this date-time to a <code>LocalDateTime</code>,
+     * trivially returning <code>this</code>.
+     *
+     * @return <code>this</code>, never null
+     */
+    public LocalDateTime toLocalDateTime() {
+        return this;
     }
 
     //-----------------------------------------------------------------------

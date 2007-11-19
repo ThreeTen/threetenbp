@@ -50,7 +50,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements Calendrical, Comparable<OffsetTime>, Serializable {
+        implements ReadableTime, Calendrical, Comparable<OffsetTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -459,6 +459,16 @@ public final class OffsetTime
     public OffsetTime plusNanos(int nanos) {
         LocalTime newTime = time.plusNanos(nanos);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this time to a <code>LocalTime</code>.
+     *
+     * @return a LocalTime with the same time as this instance, never null
+     */
+    public LocalTime toLocalTime() {
+        return time;
     }
 
     //-----------------------------------------------------------------------

@@ -54,7 +54,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements Calendrical, Comparable<OffsetDate>, Serializable {
+        implements ReadableDate, Calendrical, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -542,6 +542,16 @@ public final class OffsetDate
     public OffsetDate plusDays(int days) {
         LocalDate newDate = date.plusDays(days);
         return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this date to a <code>LocalDate</code>.
+     *
+     * @return a LocalDate with the same date as this instance, never null
+     */
+    public LocalDate toLocalDate() {
+        return date;
     }
 
     //-----------------------------------------------------------------------

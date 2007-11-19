@@ -44,7 +44,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, Comparable<LocalTime>, Serializable {
+        implements ReadableTime, Calendrical, Comparable<LocalTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -426,6 +426,17 @@ public final class LocalTime
      */
     public LocalTime plusNanos(int nanos) {
         return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this time to a <code>LocalTime</code>, trivially
+     * returning <code>this</code>.
+     *
+     * @return <code>this</code>, never null
+     */
+    public LocalTime toLocalTime() {
+        return this;
     }
 
     //-----------------------------------------------------------------------
