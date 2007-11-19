@@ -86,7 +86,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void factory_date_ints() {
         assertEquals(TEST_2007_07_15.getYear(), 2007);
-        assertEquals(TEST_2007_07_15.getMonthOfYear(), MonthOfYear.JULY);
+        assertEquals(TEST_2007_07_15.getMonthOfYear(), 7);
         assertEquals(TEST_2007_07_15.getDayOfMonth(), 15);
     }
 
@@ -148,7 +148,7 @@ public class TestLocalDate {
     public void test_get(int y, int m, int d) {
         LocalDate a = LocalDate.date(y, m, d);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        assertEquals(a.getMonthOfYear(), m);
         assertEquals(a.getDayOfMonth(), d);
     }
 
