@@ -175,7 +175,7 @@ public final class Year
      */
     public int get(TimeFieldRule field) {
         if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("Year does not support field " + field.getName());
+            throw new UnsupportedCalendarFieldException(field, "year");
         }
         if (field == ISOChronology.INSTANCE.yearRule()) {
             return year;

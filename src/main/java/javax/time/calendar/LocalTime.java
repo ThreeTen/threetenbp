@@ -214,7 +214,7 @@ public final class LocalTime
      */
     public int get(TimeFieldRule field) {
         if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("LocalTime does not support field " + field.getName());
+            throw new UnsupportedCalendarFieldException(field, "time");
         }
         if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
             return hour;

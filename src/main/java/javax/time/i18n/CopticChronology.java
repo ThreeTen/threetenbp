@@ -37,7 +37,6 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.period.PeriodUnit;
 import javax.time.period.Periods;
 
@@ -231,9 +230,6 @@ public final class CopticChronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         public int get(TimeFieldRule fieldRule) {
-            if (false) {
-                throw new UnsupportedCalendarFieldException();
-            }
             return 0; //fieldRule.getValue(this);
         }
 

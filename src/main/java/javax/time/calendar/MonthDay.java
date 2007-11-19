@@ -172,7 +172,7 @@ public final class MonthDay
      */
     public int get(TimeFieldRule field) {
         if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("MonthDay does not support field " + field.getName());
+            throw new UnsupportedCalendarFieldException(field, "month-day");
         }
         if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
             return month;

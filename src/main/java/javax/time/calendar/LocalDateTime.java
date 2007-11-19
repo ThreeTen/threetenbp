@@ -281,7 +281,7 @@ public final class LocalDateTime
      */
     public int get(TimeFieldRule field) {
         if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException("LocalDateTime does not support field " + field.getName());
+            throw new UnsupportedCalendarFieldException(field, "date-time");
         }
         if (date.isSupported(field)) {
             return date.get(field);

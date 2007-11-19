@@ -55,23 +55,33 @@ public class UnsupportedCalendarFieldException extends RuntimeException {
     }
 
     /**
-     * Constructs a new unsupported field exception with the specified message and cause.
+     * Constructs a new unsupported field exception creating a standard error message.
      *
-     * @param message  the message to use for this exception, may be null
-     * @param cause  the underlying cause of this exception, may be null
+     * @param field  the field that is not supported, may be null
+     * @param objectDescription  the description of the calendrical that does not support the field, not null
      */
-    public UnsupportedCalendarFieldException(String message, Throwable cause) {
-        super(message, cause);
+    public UnsupportedCalendarFieldException(TimeFieldRule field, String objectDescription) {
+        super("Field " + (field == null ? "null" : field.getName()) + " is not supported on a " + objectDescription);
     }
 
-    /**
-     * Constructs a new unsupported field exception with the specified cause,
-     * extracting the message from the cause if possible.
-     *
-     * @param cause  the underlying cause of this exception, may be null
-     */
-    public UnsupportedCalendarFieldException(Throwable cause) {
-        super(cause);
-    }
+//    /**
+//     * Constructs a new unsupported field exception with the specified message and cause.
+//     *
+//     * @param message  the message to use for this exception, may be null
+//     * @param cause  the underlying cause of this exception, may be null
+//     */
+//    public UnsupportedCalendarFieldException(String message, Throwable cause) {
+//        super(message, cause);
+//    }
+//
+//    /**
+//     * Constructs a new unsupported field exception with the specified cause,
+//     * extracting the message from the cause if possible.
+//     *
+//     * @param cause  the underlying cause of this exception, may be null
+//     */
+//    public UnsupportedCalendarFieldException(Throwable cause) {
+//        super(cause);
+//    }
 
 }
