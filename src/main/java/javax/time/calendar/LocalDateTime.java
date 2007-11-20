@@ -39,6 +39,16 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
+ * A calendrical representation of a date-time without a time zone,
+ * such as 2007-12-03T10:15:30.
+ * <p>
+ * LocalDateTime is an immutable calendrical that represents a date-time, often
+ * viewed as year-month-day-hour-minute-second. This object can also access other
+ * fields such as day of year, day of week and week of year.
+ * <p>
+ * This class stores all date and time fields, to a precision of nanoseconds.
+ * It does not store or represent a time zone. Thus, for example, the value
+ * "2nd October 2007 at 13:45.30.123456789" can be stored in an LocalDateTime.
  * <p>
  * LocalDateTime is thread-safe and immutable.
  *

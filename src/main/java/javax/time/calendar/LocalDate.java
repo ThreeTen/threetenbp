@@ -40,10 +40,10 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a date without a time zone.
+ * A calendrical representation of a date without a time zone, such as 2007-12-03.
  * <p>
  * LocalDate is an immutable calendrical that represents a date, often viewed
- * as year-month-day. This object can also sccess other date fields such as
+ * as year-month-day. This object can also access other date fields such as
  * day of year, day of week and week of year.
  * <p>
  * This class does not store or represent a time or time zone.

@@ -38,6 +38,14 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
+ * A calendrical representation of a time without a time zone, such as 10:15:30.
+ * <p>
+ * LocalTime is an immutable calendrical that represents a time, often
+ * viewed as hour-minute-second.
+ * <p>
+ * This class stores all time fields, to a precision of nanoseconds.
+ * It does not store or represent a date or time zone. Thus, for example, the
+ * value "13:45.30.123456789" can be stored in a LocalTime.
  * <p>
  * LocalTime is thread-safe and immutable.
  *

@@ -36,7 +36,8 @@ import java.io.Serializable;
 import javax.time.period.PeriodView;
 
 /**
- * A calendrical representation of a time with a zone offset from UTC.
+ * A calendrical representation of a time with a zone offset from UTC,
+ * such as 10:15:30+02:00.
  * <p>
  * OffsetTime is an immutable calendrical that represents a time, often
  * viewed as hour-minute-second-offset.
