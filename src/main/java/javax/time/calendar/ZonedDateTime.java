@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.Instant;
+import javax.time.ReadableInstant;
 import javax.time.calendar.TimeZone.Discontinuity;
 import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.DayOfWeek;
@@ -55,7 +56,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements ReadableDateTime, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements ReadableInstant, ReadableDateTime, Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.

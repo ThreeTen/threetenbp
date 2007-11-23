@@ -49,7 +49,8 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class Instant implements Comparable<Instant>, Serializable {
+public final class Instant
+        implements ReadableInstant, Comparable<Instant>, Serializable {
     // TODO: Minus methods (as per plus methods)
     // TODO: Duration class integration
     // TODO: Leap seconds (document or implement)
@@ -435,6 +436,17 @@ public final class Instant implements Comparable<Instant>, Serializable {
             secondsToSubtract++;
         }
         return new Instant(MathUtils.safeSubtract(epochSeconds, secondsToSubtract) , nos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this instant to an <code>Instant</code>, trivially
+     * returning <code>this</code>.
+     *
+     * @return <code>this</code>, never null
+     */
+    public Instant toInstant() {
+        return this;
     }
 
     //-----------------------------------------------------------------------

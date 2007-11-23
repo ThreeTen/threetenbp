@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.Instant;
+import javax.time.ReadableInstant;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
@@ -53,7 +54,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements ReadableDateTime, Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements ReadableInstant, ReadableDateTime, Calendrical, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
