@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a week of month.
+ * A calendrical representation of a week of month.
  * <p>
  * WeekOfMonth is an immutable time field that can only store a week of month.
  * It is a type-safe way of representing a week of month in an application.
@@ -57,7 +57,7 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      *
      * @return the week of month
      */
-    public int getWeekOfMonth() {
+    public int getValue() {
         return weekOfMonth;
     }
 
@@ -104,7 +104,6 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

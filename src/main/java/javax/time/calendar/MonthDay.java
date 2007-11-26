@@ -78,7 +78,7 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, int dayOfMonth) {
-        return monthDay(monthOfYear.getMonthOfYear(), dayOfMonth);
+        return monthDay(monthOfYear.getValue(), dayOfMonth);
     }
 
     /**
@@ -227,7 +227,7 @@ public final class MonthDay
      */
     public MonthDay with(Calendrical calendrical) {
         if (calendrical instanceof MonthOfYear) {
-            return withMonthDay(((MonthOfYear) calendrical).getMonthOfYear(), day);
+            return withMonthDay(((MonthOfYear) calendrical).getValue(), day);
         }
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;

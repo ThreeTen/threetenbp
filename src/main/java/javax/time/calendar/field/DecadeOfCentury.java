@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a decade of century.
+ * A calendrical representation of a decade of century.
  * <p>
  * DecadeOfCentury is an immutable time field that can only store a decade of century.
  * It is a type-safe way of representing a decade of century in an application.
@@ -57,7 +57,7 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
      *
      * @return the decade of century
      */
-    public int getDecadeOfCentury() {
+    public int getValue() {
         return decadeOfCentury;
     }
 
@@ -104,7 +104,6 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

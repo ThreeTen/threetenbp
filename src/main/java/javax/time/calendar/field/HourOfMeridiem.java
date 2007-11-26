@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a hour of meridiem.
+ * A calendrical representation of a hour of meridiem.
  * <p>
  * HourOfMeridiem is an immutable time field that can only store a hour of meridiem.
  * It is a type-safe way of representing a hour of meridiem in an application.
@@ -57,7 +57,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      *
      * @return the hour of meridiem
      */
-    public int getHourOfMeridiem() {
+    public int getValue() {
         return hourOfMeridiem;
     }
 
@@ -104,7 +104,6 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

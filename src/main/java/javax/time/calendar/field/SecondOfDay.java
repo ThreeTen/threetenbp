@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a second of day.
+ * A calendrical representation of a second of day.
  * <p>
  * SecondOfDay is an immutable time field that can only store a second of day.
  * It is a type-safe way of representing a second of day in an application.
@@ -57,7 +57,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
      *
      * @return the second of day
      */
-    public int getSecondOfDay() {
+    public int getValue() {
         return secondOfDay;
     }
 
@@ -104,7 +104,6 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

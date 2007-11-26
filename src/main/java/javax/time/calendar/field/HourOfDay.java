@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a hour of day.
+ * A calendrical representation of a hour of day.
  * <p>
  * HourOfDay is an immutable time field that can only store a hour of day.
  * It is a type-safe way of representing a hour of day in an application.
@@ -57,7 +57,7 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      *
      * @return the hour of day
      */
-    public int getHourOfDay() {
+    public int getValue() {
         return hourOfDay;
     }
 
@@ -104,7 +104,6 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

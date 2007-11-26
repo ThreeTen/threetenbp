@@ -36,13 +36,13 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a quarter of year.
+ * A calendrical representation of a quarter of year.
  * <p>
  * QuarterOfYear is an immutable time field that can only store a quarter of year.
  * It is a type-safe way of representing a quarter of year in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a QuarterOfYear
- * instance. Use getQuarterOfYear() instead.</b>
+ * instance. Use getValue() instead.</b>
  * <p>
  * QuarterOfYear is thread-safe and immutable.
  *
@@ -116,7 +116,7 @@ public enum QuarterOfYear implements Calendrical {
      *
      * @return the quarter of year
      */
-    public int getQuarterOfYear() {
+    public int getValue() {
         return quarterOfYear;
     }
 

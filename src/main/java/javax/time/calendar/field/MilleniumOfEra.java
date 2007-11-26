@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a millenium of era.
+ * A calendrical representation of a millenium of era.
  * <p>
  * MilleniumOfEra is an immutable time field that can only store a millenium of era.
  * It is a type-safe way of representing a millenium of era in an application.
@@ -57,7 +57,7 @@ public final class MilleniumOfEra implements Calendrical, Comparable<MilleniumOf
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class MilleniumOfEra implements Calendrical, Comparable<MilleniumOf
      *
      * @return the millenium of era
      */
-    public int getMilleniumOfEra() {
+    public int getValue() {
         return milleniumOfEra;
     }
 
@@ -104,7 +104,6 @@ public final class MilleniumOfEra implements Calendrical, Comparable<MilleniumOf
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

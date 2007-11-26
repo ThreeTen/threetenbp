@@ -79,7 +79,7 @@ public final class YearMonth
      */
     public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
         ISOChronology.INSTANCE.yearRule().checkValue(year);
-        return new YearMonth(year, monthOfYear.getMonthOfYear());
+        return new YearMonth(year, monthOfYear.getValue());
     }
 
     /**
@@ -256,7 +256,7 @@ public final class YearMonth
             return withYearMonth(((Year) calendrical).getISOYear(), month);
         }
         if (calendrical instanceof MonthOfYear) {
-            return withYearMonth(year, ((MonthOfYear) calendrical).getMonthOfYear());
+            return withYearMonth(year, ((MonthOfYear) calendrical).getValue());
         }
         if (calendrical instanceof YearMonth) {
             return (YearMonth) calendrical;

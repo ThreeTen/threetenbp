@@ -232,14 +232,14 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     public void test_withLastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            OffsetDate t = OffsetDate.date(2008, month.getMonthOfYear(), 1, OFFSET_PONE).withLastDayOfMonth();
+            OffsetDate t = OffsetDate.date(2008, month, 1, OFFSET_PONE).withLastDayOfMonth();
             assertEquals(t.getDayOfMonth(), month.lengthInDays(2008));
         }
     }
 
     public void test_withLastDayOfMonth_standard() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            OffsetDate t = OffsetDate.date(2007, month.getMonthOfYear(), 1, OFFSET_PONE).withLastDayOfMonth();
+            OffsetDate t = OffsetDate.date(2007, month, 1, OFFSET_PONE).withLastDayOfMonth();
             assertEquals(t.getDayOfMonth(), month.lengthInDays(2007));
         }
     }

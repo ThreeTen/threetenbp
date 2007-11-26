@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a minute of hour.
+ * A calendrical representation of a minute of hour.
  * <p>
  * MinuteOfHour is an immutable time field that can only store a minute of hour.
  * It is a type-safe way of representing a minute of hour in an application.
@@ -57,7 +57,7 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      *
      * @return the minute of hour
      */
-    public int getMinuteOfHour() {
+    public int getValue() {
         return minuteOfHour;
     }
 
@@ -104,7 +104,6 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

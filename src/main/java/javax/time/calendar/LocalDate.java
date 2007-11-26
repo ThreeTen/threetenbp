@@ -85,7 +85,7 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDate date(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth);
+        return date(year, monthOfYear.getValue(), dayOfMonth);
     }
 
     /**

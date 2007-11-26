@@ -100,7 +100,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @param dayOfMonth  the day of month to represent
      */
     private CopticDate(int year, CopticMonthOfYear monthOfYear, int dayOfMonth) {
-        this.state = CopticChronology.INSTANCE.stateFromYearMonthDay(year, monthOfYear.getCopticMonthOfYear(), dayOfMonth);
+        this.state = CopticChronology.INSTANCE.stateFromYearMonthDay(year, monthOfYear.getValue(), dayOfMonth);
     }
 
     /**
@@ -247,7 +247,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return a new updated CopticDate
      */
     public CopticDate withMonthOfYear(CopticMonthOfYear monthOfYear) {
-        CalendricalState newState = CopticChronology.INSTANCE.monthOfYearRule().setValue(state, monthOfYear.getCopticMonthOfYear());
+        CalendricalState newState = CopticChronology.INSTANCE.monthOfYearRule().setValue(state, monthOfYear.getValue());
         return new CopticDate(newState);
     }
 
@@ -310,7 +310,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return a new updated CopticDate
      */
     public CopticDate withDayOfWeek(DayOfWeek dayOfWeek) {
-        CalendricalState newState = CopticChronology.INSTANCE.dayOfWeekRule().setValue(state, dayOfWeek.getDayOfWeek());
+        CalendricalState newState = CopticChronology.INSTANCE.dayOfWeekRule().setValue(state, dayOfWeek.getValue());
         return new CopticDate(newState);
     }
 

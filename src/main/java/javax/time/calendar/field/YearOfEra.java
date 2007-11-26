@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a year of era.
+ * A calendrical representation of a year of era.
  * <p>
  * YearOfEra is an immutable time field that can only store a year of era.
  * It is a type-safe way of representing a year of era in an application.
@@ -57,7 +57,7 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
      *
      * @return the year of era
      */
-    public int getYearOfEra() {
+    public int getValue() {
         return yearOfEra;
     }
 
@@ -104,7 +104,6 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

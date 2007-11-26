@@ -224,14 +224,14 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_withLastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            LocalDate t = LocalDate.date(2008, month.getMonthOfYear(), 1).withLastDayOfMonth();
+            LocalDate t = LocalDate.date(2008, month, 1).withLastDayOfMonth();
             assertEquals(t.getDayOfMonth(), month.lengthInDays(2008));
         }
     }
 
     public void test_withLastDayOfMonth_standard() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            LocalDate t = LocalDate.date(2007, month.getMonthOfYear(), 1).withLastDayOfMonth();
+            LocalDate t = LocalDate.date(2007, month, 1).withLastDayOfMonth();
             assertEquals(t.getDayOfMonth(), month.lengthInDays(2007));
         }
     }

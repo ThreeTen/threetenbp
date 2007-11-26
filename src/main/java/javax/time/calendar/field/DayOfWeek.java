@@ -36,13 +36,13 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a day of week.
+ * A calendrical representation of a day of week.
  * <p>
  * DayOfWeek is an immutable time field that can only store a day of week.
  * It is a type-safe way of representing a day of week in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a DayOfWeek
- * instance. Use getDayOfWeek() instead.</b>
+ * instance. Use getValue() instead.</b>
  * <p>
  * DayOfWeek is thread-safe and immutable.
  *
@@ -134,7 +134,7 @@ public enum DayOfWeek implements Calendrical {
      *
      * @return the day of week
      */
-    public int getDayOfWeek() {
+    public int getValue() {
         return dayOfWeek;
     }
 

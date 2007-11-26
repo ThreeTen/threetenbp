@@ -66,7 +66,7 @@ public class CodeGen {
             Velocity.init();
             
             CodeGen cg = new CodeGen();
-            cg.processCalendarClass();
+//            cg.processCalendarClass();
 //            cg.processDurationField();
 //            cg.processTestDurationField();
 //            cg.processTimeField();
@@ -270,7 +270,7 @@ public class CodeGen {
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
+//        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");

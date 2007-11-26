@@ -57,7 +57,7 @@ public final class Year implements Calendrical, Comparable<Year>, Serializable {
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class Year implements Calendrical, Comparable<Year>, Serializable {
      *
      * @return the year
      */
-    public int getYear() {
+    public int getValue() {
         return year;
     }
 
@@ -104,7 +104,6 @@ public final class Year implements Calendrical, Comparable<Year>, Serializable {
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }
@@ -181,7 +180,7 @@ public final class Year implements Calendrical, Comparable<Year>, Serializable {
      * @return true if the year is leap, false otherwise
      */
     public boolean isLeap() {
-        return isLeap(getYear());
+        return isLeap(getValue());
     }
 
     /**

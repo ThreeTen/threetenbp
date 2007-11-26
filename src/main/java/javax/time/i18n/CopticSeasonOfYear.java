@@ -36,13 +36,13 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a Coptic season of year.
+ * A calendrical representation of a Coptic season of year.
  * <p>
  * CopticSeasonOfYear is an immutable time field that can only store a Coptic season of year.
  * It is a type-safe way of representing a Coptic season of year in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a CopticSeasonOfYear
- * instance. Use getCopticSeasonOfYear() instead.</b>
+ * instance. Use getValue() instead.</b>
  * <p>
  * CopticSeasonOfYear is thread-safe and immutable.
  *
@@ -110,7 +110,7 @@ public enum CopticSeasonOfYear implements Calendrical {
      *
      * @return the Coptic season of year
      */
-    public int getCopticSeasonOfYear() {
+    public int getValue() {
         return copticSeasonOfYear;
     }
 

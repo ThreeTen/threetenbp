@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a day of year.
+ * A calendrical representation of a day of year.
  * <p>
  * DayOfYear is an immutable time field that can only store a day of year.
  * It is a type-safe way of representing a day of year in an application.
@@ -57,7 +57,7 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
      *
      * @return the day of year
      */
-    public int getDayOfYear() {
+    public int getValue() {
         return dayOfYear;
     }
 
@@ -104,7 +104,6 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

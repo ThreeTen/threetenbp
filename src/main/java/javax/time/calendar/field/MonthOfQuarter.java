@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a month of quarter.
+ * A calendrical representation of a month of quarter.
  * <p>
  * MonthOfQuarter is an immutable time field that can only store a month of quarter.
  * It is a type-safe way of representing a month of quarter in an application.
@@ -57,7 +57,7 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      *
      * @return the month of quarter
      */
-    public int getMonthOfQuarter() {
+    public int getValue() {
         return monthOfQuarter;
     }
 
@@ -104,7 +104,6 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

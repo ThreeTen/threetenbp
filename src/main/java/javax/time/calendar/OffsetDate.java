@@ -82,7 +82,7 @@ public final class OffsetDate
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static OffsetDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        return date(year, monthOfYear.getMonthOfYear(), dayOfMonth, offset);
+        return date(year, monthOfYear.getValue(), dayOfMonth, offset);
     }
 
     /**

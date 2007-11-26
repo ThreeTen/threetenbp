@@ -85,7 +85,7 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        return dateTime(year, monthOfYear.getMonthOfYear(), dayOfMonth, 0, 0, 0, 0);
+        return dateTime(year, monthOfYear.getValue(), dayOfMonth, 0, 0, 0, 0);
     }
 
     /**

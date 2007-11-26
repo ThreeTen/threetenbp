@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a week-based year.
+ * A calendrical representation of a week-based year.
  * <p>
  * Weekyear is an immutable time field that can only store a week-based year.
  * It is a type-safe way of representing a week-based year in an application.
@@ -57,7 +57,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      *
      * @return the week-based year
      */
-    public int getWeekyear() {
+    public int getValue() {
         return weekyear;
     }
 
@@ -104,7 +104,6 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

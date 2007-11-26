@@ -36,13 +36,13 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a era.
+ * A calendrical representation of a era.
  * <p>
  * Era is an immutable time field that can only store a era.
  * It is a type-safe way of representing a era in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a Era
- * instance. Use getEra() instead.</b>
+ * instance. Use getValue() instead.</b>
  * <p>
  * Era is thread-safe and immutable.
  *
@@ -104,7 +104,7 @@ public enum Era implements Calendrical {
      *
      * @return the era
      */
-    public int getEra() {
+    public int getValue() {
         return era;
     }
 

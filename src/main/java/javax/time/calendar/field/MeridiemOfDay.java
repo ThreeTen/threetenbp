@@ -36,13 +36,13 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a meridiem of day.
+ * A calendrical representation of a meridiem of day.
  * <p>
  * MeridiemOfDay is an immutable time field that can only store a meridiem of day.
  * It is a type-safe way of representing a meridiem of day in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a MeridiemOfDay
- * instance. Use getMeridiemOfDay() instead.</b>
+ * instance. Use getValue() instead.</b>
  * <p>
  * MeridiemOfDay is thread-safe and immutable.
  *
@@ -52,11 +52,11 @@ import javax.time.calendar.TimeFieldRule;
 public enum MeridiemOfDay implements Calendrical {
 
     /**
-     * The singleton instance for the morning (ante meridiem).
+     * The singleton instance for the morning, AM - ante meridiem.
      */
     AM(0),
     /**
-     * The singleton instance for the afternoon (post meridiem).
+     * The singleton instance for the afternoon, PM - post meridiem.
      */
     PM(1),
     ;
@@ -104,7 +104,7 @@ public enum MeridiemOfDay implements Calendrical {
      *
      * @return the meridiem of day
      */
-    public int getMeridiemOfDay() {
+    public int getValue() {
         return meridiemOfDay;
     }
 

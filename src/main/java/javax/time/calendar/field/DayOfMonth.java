@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a day of month.
+ * A calendrical representation of a day of month.
  * <p>
  * DayOfMonth is an immutable time field that can only store a day of month.
  * It is a type-safe way of representing a day of month in an application.
@@ -57,7 +57,7 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
-     * A serialization identifier for this class.
+     * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
 
@@ -93,7 +93,7 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      *
      * @return the day of month
      */
-    public int getDayOfMonth() {
+    public int getValue() {
         return dayOfMonth;
     }
 
@@ -104,7 +104,6 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

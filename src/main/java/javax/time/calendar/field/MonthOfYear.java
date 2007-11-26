@@ -33,17 +33,16 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a month of year.
+ * A calendrical representation of a month of year.
  * <p>
  * MonthOfYear is an immutable time field that can only store a month of year.
  * It is a type-safe way of representing a month of year in an application.
  * <p>
  * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear
- * instance. Use getMonthOfYear() instead.</b>
+ * instance. Use getValue() instead.</b>
  * <p>
  * MonthOfYear is thread-safe and immutable.
  *
@@ -59,26 +58,7 @@ public enum MonthOfYear implements Calendrical {
     /**
      * The singleton instance for the month of February.
      */
-    FEBRUARY(2) {
-        /** {@inheritDoc} */
-        @Override
-        public int lengthInDays(int year) {
-            if (ISOChronology.INSTANCE.isLeapYear(year)) {
-                return 29;
-            }
-            return 28;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int minLengthInDays() {
-            return 28;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int maxLengthInDays() {
-            return 29;
-        }
-    },
+    FEBRUARY(2),
     /**
      * The singleton instance for the month of March.
      */
@@ -184,7 +164,7 @@ public enum MonthOfYear implements Calendrical {
      *
      * @return the month of year
      */
-    public int getMonthOfYear() {
+    public int getValue() {
         return monthOfYear;
     }
 
