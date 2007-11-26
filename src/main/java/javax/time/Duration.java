@@ -42,7 +42,7 @@ import java.io.Serializable;
  * <p>
  * Each instant is theoretically an instantaneous event, however for practicality
  * a precision of nanoseconds has been chosen. As a result, the duration class also
- * has a maximum preciion of nanoseconds.
+ * has a maximum precision of nanoseconds.
  * <p>
  * Duration is thread-safe and immutable.
  *
@@ -88,6 +88,10 @@ public class Duration implements Comparable<Duration>, Serializable {
      * @return the created Duration, never null
      */
     public static Duration duration(long epochSeconds) {
+        if (epochSeconds == 0) {
+            return ZERO;
+        }
+
         return new Duration(epochSeconds, 0);
     }
 
@@ -107,6 +111,11 @@ public class Duration implements Comparable<Duration>, Serializable {
         if (nanoOfSecond > 999999999) {
             throw new IllegalArgumentException("NanoOfSecond must not be more than 999,999,999 but was " + nanoOfSecond);
         }
+
+        if (epochSeconds == 0 && nanoOfSecond == 0) {
+            return ZERO;
+        }
+
         return new Duration(epochSeconds, nanoOfSecond);
     }
 
@@ -127,6 +136,11 @@ public class Duration implements Comparable<Duration>, Serializable {
             millis = 999 + millis;  // 0 to 999
             return new Duration(epochSeconds - 1, millis * 1000000);
         }
+
+        if (epochMillis == 0) {
+            return ZERO;
+        }
+
         return new Duration(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000);
     }
 
@@ -153,6 +167,11 @@ public class Duration implements Comparable<Duration>, Serializable {
             millis = 999 + millis;  // 0 to 999
             return new Duration(epochSeconds - 1, millis * 1000000 + nanoOfMillisecond);
         }
+
+        if (epochMillis == 0 && nanoOfMillisecond == 0) {
+            return ZERO;
+        }
+
         return new Duration(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000 + nanoOfMillisecond);
     }
 
@@ -166,9 +185,12 @@ public class Duration implements Comparable<Duration>, Serializable {
      * @param endExclusive  the end instant, exclusive, not null
      * @return the created Duration, never null
      */
-    public static Duration durationBetween(Instant startInclusive, Instant endExclusive) {
-        long secs = MathUtils.safeSubtract(endExclusive.getEpochSeconds(), startInclusive.getEpochSeconds());
-        int nanos = endExclusive.getNanoOfSecond() - startInclusive.getNanoOfSecond();
+    public static Duration durationBetween(ReadableInstant startInclusive, ReadableInstant endExclusive) {
+        Instant start = startInclusive.toInstant();
+        Instant end = endExclusive.toInstant();
+
+        long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
+        int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
         if (nanos < 0) {
             nanos += NANOS_PER_SECOND;
             secs = MathUtils.safeDecrement(secs);
@@ -359,10 +381,60 @@ public class Duration implements Comparable<Duration>, Serializable {
         if (divisor == 1) {
             return this;
         }
-        // TODO
-        long secs = durationSeconds / divisor;
-        long nos = nanoOfSecond / Math.abs(divisor);
-        return new Duration(secs, (int) nos);
+
+        long secs;
+        long nos;
+        long nanosToAdd;
+
+        //TODO: Optimize
+        if ((durationSeconds >= 0 && divisor > 0) || (durationSeconds <= 0 && nanoOfSecond == 0)) {
+            secs = durationSeconds / divisor;
+            nos = nanoOfSecond / divisor;
+
+            nanosToAdd = MathUtils.safeMultiply(durationSeconds % divisor, NANOS_PER_SECOND) / divisor;
+        } else if (durationSeconds < 0) {
+            if (divisor < 0) {
+                secs = (durationSeconds + 1) / divisor;
+                nos = -(nanoOfSecond - NANOS_PER_SECOND) / Math.abs(divisor);
+
+                nanosToAdd = MathUtils.safeMultiply((durationSeconds + 1) % divisor, NANOS_PER_SECOND) / divisor;
+            } else {
+               secs = -(durationSeconds + 1) / divisor;
+               nos = (NANOS_PER_SECOND - nanoOfSecond) / divisor;
+               nanosToAdd = MathUtils.safeMultiply(-(durationSeconds + 1) % divisor, NANOS_PER_SECOND) / divisor;
+            }
+        } else {
+           secs = -durationSeconds / Math.abs(divisor);
+           nos = 0;
+           nanosToAdd = nanoOfSecond / divisor + MathUtils.safeMultiply(durationSeconds % Math.abs(divisor), NANOS_PER_SECOND) / divisor;
+        }
+
+        // TODO: remove duplication (adapted from plusNanos)
+        long secondsToAdd = nanosToAdd / NANOS_PER_SECOND;
+        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
+        nos += (int) (nanosToAdd % NANOS_PER_SECOND);
+        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
+        if (nos < 0) {
+            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
+            secondsToAdd--;
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
+            secondsToAdd++;
+        }
+
+        long newDurationSeconds = MathUtils.safeAdd(secs, secondsToAdd);
+        long newNanoOfSecond = nos;
+
+        if (durationSeconds < 0 && nanoOfSecond > 0 && divisor > 0) {
+            if (newNanoOfSecond == 0) {
+                newDurationSeconds = -newDurationSeconds;
+            } else {
+                newDurationSeconds = -newDurationSeconds - 1;
+                newNanoOfSecond = NANOS_PER_SECOND - newNanoOfSecond;
+            }
+        }
+
+        return new Duration(newDurationSeconds, (int)newNanoOfSecond);
      }
 
     //-----------------------------------------------------------------------
@@ -438,19 +510,31 @@ public class Duration implements Comparable<Duration>, Serializable {
      * A string representation of this Duration using ISO-8601 seconds based
      * representation.
      * <p>
-     * The format of the returned string will be <code>PnS</code> where n is
+     * The format of the returned string will be <code>PTnS</code> where n is
      * the seconds and fractional seconds of the duration.
      *
-     * @return an ISO-8601 represntation of this Duration
+     * @return an ISO-8601 representation of this Duration
      */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(24);
-        buf.append('P');
-        buf.append(durationSeconds);
+        buf.append("PT");
+        if (durationSeconds < 0 && nanoOfSecond > 0) {
+            if (durationSeconds == -1) {
+                buf.append("-0");
+            } else {
+                buf.append(durationSeconds + 1);
+            }
+        } else {
+            buf.append(durationSeconds);
+        }
         if (nanoOfSecond > 0) {
             int pos = buf.length();
-            buf.append(nanoOfSecond + NANOS_PER_SECOND);
+            if (durationSeconds < 0) {
+                buf.append(2 * NANOS_PER_SECOND - nanoOfSecond);
+            } else {
+                buf.append(nanoOfSecond + NANOS_PER_SECOND);
+            }
             while (buf.charAt(buf.length() - 1) == '0') {
                 buf.setLength(buf.length() - 1);
             }
