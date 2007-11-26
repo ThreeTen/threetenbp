@@ -105,7 +105,6 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }
