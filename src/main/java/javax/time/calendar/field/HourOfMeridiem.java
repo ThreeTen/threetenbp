@@ -38,22 +38,22 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a hour of meridian.
+ * A time field representing a hour of meridiem.
  * <p>
- * HourOfMeridian is an immutable time field that can only store a hour of meridian.
- * It is a type-safe way of representing a hour of meridian in an application.
+ * HourOfMeridiem is an immutable time field that can only store a hour of meridiem.
+ * It is a type-safe way of representing a hour of meridiem in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The hour of meridian may be queried using getHourOfMeridian().
+ * The hour of meridiem may be queried using getHourOfMeridiem().
  * <p>
- * HourOfMeridian is thread-safe and immutable.
+ * HourOfMeridiem is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
-public final class HourOfMeridian implements Calendrical, Comparable<HourOfMeridian>, Serializable {
+public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMeridiem>, Serializable {
 
     /**
-     * The rule implementation that defines how the hour of meridian field operates.
+     * The rule implementation that defines how the hour of meridiem field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
     /**
@@ -62,45 +62,45 @@ public final class HourOfMeridian implements Calendrical, Comparable<HourOfMerid
     private static final long serialVersionUID = 1L;
 
     /**
-     * The hour of meridian being represented.
+     * The hour of meridiem being represented.
      */
-    private final int hourOfMeridian;
+    private final int hourOfMeridiem;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>HourOfMeridian</code>.
+     * Obtains an instance of <code>HourOfMeridiem</code>.
      *
-     * @param hourOfMeridian  the hour of meridian to represent
-     * @return the created HourOfMeridian
+     * @param hourOfMeridiem  the hour of meridiem to represent
+     * @return the created HourOfMeridiem
      */
-    public static HourOfMeridian hourOfMeridian(int hourOfMeridian) {
-        return new HourOfMeridian(hourOfMeridian);
+    public static HourOfMeridiem hourOfMeridiem(int hourOfMeridiem) {
+        return new HourOfMeridiem(hourOfMeridiem);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified hour of meridian.
+     * Constructs an instance with the specified hour of meridiem.
      *
-     * @param hourOfMeridian  the hour of meridian to represent
+     * @param hourOfMeridiem  the hour of meridiem to represent
      */
-    private HourOfMeridian(int hourOfMeridian) {
-        this.hourOfMeridian = hourOfMeridian;
+    private HourOfMeridiem(int hourOfMeridiem) {
+        this.hourOfMeridiem = hourOfMeridiem;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of meridian value.
+     * Gets the hour of meridiem value.
      *
-     * @return the hour of meridian
+     * @return the hour of meridiem
      */
-    public int getHourOfMeridian() {
-        return hourOfMeridian;
+    public int getHourOfMeridiem() {
+        return hourOfMeridiem;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * HourOfMeridian instance.
+     * HourOfMeridiem instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -111,77 +111,77 @@ public final class HourOfMeridian implements Calendrical, Comparable<HourOfMerid
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this hour of meridian instance to another.
+     * Compares this hour of meridiem instance to another.
      *
-     * @param otherHourOfMeridian  the other hour of meridian instance, not null
+     * @param otherHourOfMeridiem  the other hour of meridiem instance, not null
      * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherHourOfMeridian is null
+     * @throws NullPointerException if otherHourOfMeridiem is null
      */
-    public int compareTo(HourOfMeridian otherHourOfMeridian) {
-        int thisValue = this.hourOfMeridian;
-        int otherValue = otherHourOfMeridian.hourOfMeridian;
+    public int compareTo(HourOfMeridiem otherHourOfMeridiem) {
+        int thisValue = this.hourOfMeridiem;
+        int otherValue = otherHourOfMeridiem.hourOfMeridiem;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this hour of meridian instance greater than the specified hour of meridian.
+     * Is this hour of meridiem instance greater than the specified hour of meridiem.
      *
-     * @param otherHourOfMeridian  the other hour of meridian instance, not null
-     * @return true if this hour of meridian is greater
-     * @throws NullPointerException if otherHourOfMeridian is null
+     * @param otherHourOfMeridiem  the other hour of meridiem instance, not null
+     * @return true if this hour of meridiem is greater
+     * @throws NullPointerException if otherHourOfMeridiem is null
      */
-    public boolean isGreaterThan(HourOfMeridian otherHourOfMeridian) {
-        return compareTo(otherHourOfMeridian) > 0;
+    public boolean isGreaterThan(HourOfMeridiem otherHourOfMeridiem) {
+        return compareTo(otherHourOfMeridiem) > 0;
     }
 
     /**
-     * Is this hour of meridian instance less than the specified hour of meridian.
+     * Is this hour of meridiem instance less than the specified hour of meridiem.
      *
-     * @param otherHourOfMeridian  the other hour of meridian instance, not null
-     * @return true if this hour of meridian is less
-     * @throws NullPointerException if otherHourOfMeridian is null
+     * @param otherHourOfMeridiem  the other hour of meridiem instance, not null
+     * @return true if this hour of meridiem is less
+     * @throws NullPointerException if otherHourOfMeridiem is null
      */
-    public boolean isLessThan(HourOfMeridian otherHourOfMeridian) {
-        return compareTo(otherHourOfMeridian) < 0;
+    public boolean isLessThan(HourOfMeridiem otherHourOfMeridiem) {
+        return compareTo(otherHourOfMeridiem) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the hour of meridian.
+     * Is this instance equal to that specified, evaluating the hour of meridiem.
      *
-     * @param otherHourOfMeridian  the other hour of meridian instance, null returns false
-     * @return true if the hour of meridian is the same
+     * @param otherHourOfMeridiem  the other hour of meridiem instance, null returns false
+     * @return true if the hour of meridiem is the same
      */
     @Override
-    public boolean equals(Object otherHourOfMeridian) {
-        if (this == otherHourOfMeridian) {
+    public boolean equals(Object otherHourOfMeridiem) {
+        if (this == otherHourOfMeridiem) {
             return true;
         }
-        if (otherHourOfMeridian instanceof HourOfMeridian) {
-            return hourOfMeridian == ((HourOfMeridian) otherHourOfMeridian).hourOfMeridian;
+        if (otherHourOfMeridiem instanceof HourOfMeridiem) {
+            return hourOfMeridiem == ((HourOfMeridiem) otherHourOfMeridiem).hourOfMeridiem;
         }
         return false;
     }
 
     /**
-     * A hashcode for the hour of meridian object.
+     * A hashcode for the hour of meridiem object.
      *
      * @return a suitable hashcode
      */
     @Override
     public int hashCode() {
-        return hourOfMeridian;
+        return hourOfMeridiem;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the hour of meridian field.
+     * Implementation of the rules for the hour of meridiem field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("HourOfMeridian", null, null, 0, 11);
+            super("HourOfMeridiem", null, null, 0, 11);
         }
     }
 

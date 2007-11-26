@@ -95,24 +95,24 @@ public class CodeGen {
 //        processCalendarClassField(MAIN_CALENDAR_PKG, template, "MonthDay",
 //                "month-day", "MonthOfYear + DayOfMonth",
 //                "MonthDate", "Periods.DAYS", "Periods.MONTHS");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDate",
-                "date", "Year + MonthOfYear + DayOfMonth",
-                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalTime",
-                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
-                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDateTime",
-                "date-time", "Year + DayOfYear + SecondOfDay",
-                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDate",
-                "date", "Year + MonthOfYear + DayOfMonth",
-                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedTime",
-                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
-                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
-        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTime",
-                "date-time", "Year + DayOfYear + SecondOfDay",
-                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDate",
+//                "date", "Year + MonthOfYear + DayOfMonth",
+//                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalTime",
+//                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+//                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "LocalDateTime",
+//                "date-time", "Year + DayOfYear + SecondOfDay",
+//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDate",
+//                "date", "Year + MonthOfYear + DayOfMonth",
+//                "YearMonthDate", "Periods.DAYS", "Periods.FOREVER");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedTime",
+//                "time", "HourOfDay + MinuteOfHour + SecondOfMinute",
+//                "HourMinuteSecondNano", "Periods.NANOS", "Periods.DAYS");
+//        processCalendarClassField(MAIN_CALENDAR_PKG, template, "ZonedDateTime",
+//                "date-time", "Year + DayOfYear + SecondOfDay",
+//                "YearMonthDateHourMinuteSecondNano", "Periods.NANOS", "Periods.FOREVER");
     }
 
     private void processCalendarClassField(
@@ -281,9 +281,9 @@ public class CodeGen {
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfYear", "day of year", null, "1", "366");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MeridianOfDay", "meridian of day", MERIDIAN_OF_DAY, "0", "1");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MeridiemOfDay", "meridiem of day", MERIDIEM_OF_DAY, "0", "1");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfMeridian", "hour of meridian", null, "0", "11");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfMeridiem", "hour of meridiem", null, "0", "11");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
@@ -451,9 +451,9 @@ public class CodeGen {
         new FieldSingleton("SUNDAY", "The singleton instance for the day of week of Sunday.", "7"),
     };
 
-    private static final FieldSingleton[] MERIDIAN_OF_DAY = new FieldSingleton[] {
-        new FieldSingleton("AM", "The singleton instance for the morning (ante meridian).", "0"),
-        new FieldSingleton("PM", "The singleton instance for the afternoon (post meridian).", "1"),
+    private static final FieldSingleton[] MERIDIEM_OF_DAY = new FieldSingleton[] {
+        new FieldSingleton("AM", "The singleton instance for the morning, AM - ante meridiem.", "0"),
+        new FieldSingleton("PM", "The singleton instance for the afternoon, PM - post meridiem.", "1"),
     };
 
     private static final FieldSingleton[] QUARTER_OF_YEAR = new FieldSingleton[] {

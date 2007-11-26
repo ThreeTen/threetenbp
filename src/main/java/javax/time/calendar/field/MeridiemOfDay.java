@@ -36,82 +36,82 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A time field representing a meridian of day.
+ * A time field representing a meridiem of day.
  * <p>
- * MeridianOfDay is an immutable time field that can only store a meridian of day.
- * It is a type-safe way of representing a meridian of day in an application.
+ * MeridiemOfDay is an immutable time field that can only store a meridiem of day.
+ * It is a type-safe way of representing a meridiem of day in an application.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MeridianOfDay
- * instance. Use getMeridianOfDay() instead.</b>
+ * <b>Do not use ordinal() to obtain the numeric representation of a MeridiemOfDay
+ * instance. Use getMeridiemOfDay() instead.</b>
  * <p>
- * MeridianOfDay is thread-safe and immutable.
+ * MeridiemOfDay is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MeridianOfDay implements Calendrical {
+public enum MeridiemOfDay implements Calendrical {
 
     /**
-     * The singleton instance for the morning (ante meridian).
+     * The singleton instance for the morning (ante meridiem).
      */
     AM(0),
     /**
-     * The singleton instance for the afternoon (post meridian).
+     * The singleton instance for the afternoon (post meridiem).
      */
     PM(1),
     ;
     /**
-     * The rule implementation that defines how the meridian of day field operates.
+     * The rule implementation that defines how the meridiem of day field operates.
      */
     public static final TimeFieldRule RULE = new Rule();
 
     /**
-     * The meridian of day being represented.
+     * The meridiem of day being represented.
      */
-    private final int meridianOfDay;
+    private final int meridiemOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MeridianOfDay</code>.
+     * Obtains an instance of <code>MeridiemOfDay</code>.
      *
-     * @param meridianOfDay  the meridian of day to represent
-     * @return the existing MeridianOfDay
+     * @param meridiemOfDay  the meridiem of day to represent
+     * @return the existing MeridiemOfDay
      */
-    public static MeridianOfDay meridianOfDay(int meridianOfDay) {
-        switch (meridianOfDay) {
+    public static MeridiemOfDay meridiemOfDay(int meridiemOfDay) {
+        switch (meridiemOfDay) {
             case 0:
                 return AM;
             case 1:
                 return PM;
             default:
-                throw new IllegalArgumentException("MeridianOfDay cannot have the value " + meridianOfDay);
+                throw new IllegalArgumentException("MeridiemOfDay cannot have the value " + meridiemOfDay);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified meridian of day.
+     * Constructs an instance with the specified meridiem of day.
      *
-     * @param meridianOfDay  the meridian of day to represent
+     * @param meridiemOfDay  the meridiem of day to represent
      */
-    private MeridianOfDay(int meridianOfDay) {
-        this.meridianOfDay = meridianOfDay;
+    private MeridiemOfDay(int meridiemOfDay) {
+        this.meridiemOfDay = meridiemOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the meridian of day value.
+     * Gets the meridiem of day value.
      *
-     * @return the meridian of day
+     * @return the meridiem of day
      */
-    public int getMeridianOfDay() {
-        return meridianOfDay;
+    public int getMeridiemOfDay() {
+        return meridiemOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the calendrical state which provides internal access to this
-     * MeridianOfDay instance.
+     * MeridiemOfDay instance.
      *
      * @return the calendar state for this instance, never null
      */
@@ -122,46 +122,46 @@ public enum MeridianOfDay implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next meridian of day wrapping so that the next meridian of day
+     * Gets the next meridiem of day wrapping so that the next meridiem of day
      * is always returned.
      *
-     * @return the next meridian of day, never null
+     * @return the next meridiem of day, never null
      */
-    public MeridianOfDay next() {
+    public MeridiemOfDay next() {
         return values()[(ordinal() + 1) % 2];
     }
 
     /**
-     * Gets the previous meridian of day wrapping so that the previous meridian of day
+     * Gets the previous meridiem of day wrapping so that the previous meridiem of day
      * is always returned.
      *
-     * @return the previous meridian of day, never null
+     * @return the previous meridiem of day, never null
      */
-    public MeridianOfDay previous() {
+    public MeridiemOfDay previous() {
         return values()[(ordinal() + 2 - 1) % 2];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this meridian of day instance greater than the specified meridian of day.
+     * Is this meridiem of day instance greater than the specified meridiem of day.
      *
-     * @param otherMeridianOfDay  the other meridian of day instance, not null
-     * @return true if this meridian of day is greater
-     * @throws NullPointerException if otherMeridianOfDay is null
+     * @param otherMeridiemOfDay  the other meridiem of day instance, not null
+     * @return true if this meridiem of day is greater
+     * @throws NullPointerException if otherMeridiemOfDay is null
      */
-    public boolean isGreaterThan(MeridianOfDay otherMeridianOfDay) {
-        return compareTo(otherMeridianOfDay) > 0;
+    public boolean isGreaterThan(MeridiemOfDay otherMeridiemOfDay) {
+        return compareTo(otherMeridiemOfDay) > 0;
     }
 
     /**
-     * Is this meridian of day instance less than the specified meridian of day.
+     * Is this meridiem of day instance less than the specified meridiem of day.
      *
-     * @param otherMeridianOfDay  the other meridian of day instance, not null
-     * @return true if this meridian of day is less
-     * @throws NullPointerException if otherMeridianOfDay is null
+     * @param otherMeridiemOfDay  the other meridiem of day instance, not null
+     * @return true if this meridiem of day is less
+     * @throws NullPointerException if otherMeridiemOfDay is null
      */
-    public boolean isLessThan(MeridianOfDay otherMeridianOfDay) {
-        return compareTo(otherMeridianOfDay) < 0;
+    public boolean isLessThan(MeridiemOfDay otherMeridiemOfDay) {
+        return compareTo(otherMeridiemOfDay) < 0;
     }
 
     /**
@@ -184,13 +184,13 @@ public enum MeridianOfDay implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of the rules for the meridian of day field.
+     * Implementation of the rules for the meridiem of day field.
      */
     private static class Rule extends TimeFieldRule {
 
         /** Constructor. */
         protected Rule() {
-            super("MeridianOfDay", null, null, 0, 1);
+            super("MeridiemOfDay", null, null, 0, 1);
         }
     }
 

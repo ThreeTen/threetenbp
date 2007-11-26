@@ -182,8 +182,8 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      *
      * @return true is the time is in the morning
      */
-    public MeridianOfDay getAmPm() {
-        return MeridianOfDay.meridianOfDay(hourOfDay / 12);
+    public MeridiemOfDay getAmPm() {
+        return MeridiemOfDay.meridiemOfDay(hourOfDay / 12);
     }
 
     /**
