@@ -47,6 +47,7 @@ import org.apache.velocity.app.Velocity;
 /**
  * Code generates the repetitive parts of the JSR code.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public class CodeGen {
@@ -70,6 +71,7 @@ public class CodeGen {
 //            cg.processDurationField();
 //            cg.processTestDurationField();
 //            cg.processTimeField();
+//            cg.processTestPeriodField();
             System.out.println("Done");
             
         } catch (Exception ex) {

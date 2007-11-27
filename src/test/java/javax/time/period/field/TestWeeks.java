@@ -37,12 +37,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.period.PeriodUnit;
+import javax.time.period.Periods;
+
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 /**
  * Test class.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -153,6 +157,23 @@ public class TestWeeks {
         Weeks test6 = Weeks.weeks(6);
         assertEquals(true, test5.hashCode() == test5.hashCode());
         assertEquals(false, test5.hashCode() == test6.hashCode());
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isSupported() {
+        Weeks test5 = Weeks.weeks(5);
+        PeriodUnit unit = test5.getUnit();
+        assertFalse(test5.isSupported(null));
+        assertFalse(test5.isSupported(Periods.FOREVER));
+        assertTrue(test5.isSupported(unit));
+        assertTrue(test5.isSupported(Weeks.UNIT));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getUnit() {
+        PeriodUnit unit = Weeks.weeks(5).getUnit();
+        assertNotNull(unit);
+        assertEquals(unit, Weeks.UNIT);
     }
 
     //-----------------------------------------------------------------------
