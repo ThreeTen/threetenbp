@@ -45,7 +45,12 @@ import java.io.Serializable;
  * has a maximum precision of nanoseconds.
  * <p>
  * Duration is thread-safe and immutable.
+ * <p>
+ * NOTE: Since the number of nanoseconds is represented by a positive integer, 
+ * negative durations such as <code>PT-0.1S</code> are represented as -1 second 
+ * and 900,000,000 nanoseconds.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public class Duration implements Comparable<Duration>, Serializable {
@@ -126,7 +131,6 @@ public class Duration implements Comparable<Duration>, Serializable {
      *
      * @param epochMillis  the number of milliseconds
      * @return the created Duration, never null
-     * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
      */
     public static Duration millisDuration(long epochMillis) {
         if (epochMillis < 0) {
@@ -249,16 +253,31 @@ public class Duration implements Comparable<Duration>, Serializable {
         if (secsToAdd == 0 && nanosToAdd == 0) {
             return this;
         }
-        long secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
-        if (nanosToAdd == 0) {
-            return new Duration(secs, nanoOfSecond);
+        long secs;
+        if (nanosToAdd == 0 || nanoOfSecond == 0) {
+            secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
+            return new Duration(secs, nanosToAdd + nanoOfSecond);
         }
-        int nos = nanoOfSecond + nanosToAdd;
-        if (nos > NANOS_PER_SECOND) {
+
+        long nos;
+        if (durationSeconds >=0 && secsToAdd < 0) {
+            secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
+            secs = MathUtils.safeAdd(secs, 1);
+            nos = nanoOfSecond + nanosToAdd - NANOS_PER_SECOND;
+        } else {
+            secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
+            nos = nanoOfSecond + nanosToAdd;
+        }
+
+        if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;
-            MathUtils.safeAdd(secs, 1);
+            secs = MathUtils.safeAdd(secs, 1);
+        } else if (nos < 0) {
+            nos += NANOS_PER_SECOND;
+            secs = MathUtils.safeSubtract(secs, 1);
         }
-        return new Duration(secs, nos);
+
+        return new Duration(secs, (int)nos);
      }
 
     //-----------------------------------------------------------------------
@@ -354,13 +373,37 @@ public class Duration implements Comparable<Duration>, Serializable {
         if (multiplicand == 1) {
             return this;
         }
-        long secs = MathUtils.safeMultiply(durationSeconds, multiplicand);
-        long nos = ((long) nanoOfSecond) * multiplicand;
-        if (nos > NANOS_PER_SECOND) {
+
+        long secs;
+        long nos;
+
+        if ((durationSeconds >= 0) || (durationSeconds <= 0 && nanoOfSecond == 0)) {
+            secs = MathUtils.safeMultiply(durationSeconds, multiplicand);
+            nos = ((long) nanoOfSecond) * multiplicand;
+        } else if (multiplicand < 0) {
+            secs = MathUtils.safeMultiply(MathUtils.safeAdd(durationSeconds, 1), multiplicand);
+            nos = ((long)(nanoOfSecond - NANOS_PER_SECOND)) * multiplicand;
+        } else {
+            secs = MathUtils.safeMultiply(MathUtils.safeAdd(durationSeconds, 1), multiplicand);
+            nos = -((long)(NANOS_PER_SECOND - nanoOfSecond)) * multiplicand;
+        }
+
+        if (nos >= NANOS_PER_SECOND) {
             long secsToAdd = nos / NANOS_PER_SECOND;
             nos = nos % NANOS_PER_SECOND;
             secs = MathUtils.safeAdd(secs, secsToAdd);
+        } else if (nos < 0) {
+            long secsToAdd = nos / NANOS_PER_SECOND;
+            nos = nos % NANOS_PER_SECOND;
+            
+            if (nos < 0) {
+                secsToAdd--;
+                nos += NANOS_PER_SECOND;
+            }
+
+            secs = MathUtils.safeAdd(secs, secsToAdd);
         }
+
         return new Duration(secs, (int) nos);
      }
 
@@ -397,11 +440,11 @@ public class Duration implements Comparable<Duration>, Serializable {
                 secs = (durationSeconds + 1) / divisor;
                 nos = -(nanoOfSecond - NANOS_PER_SECOND) / Math.abs(divisor);
 
-                nanosToAdd = MathUtils.safeMultiply((durationSeconds + 1) % divisor, NANOS_PER_SECOND) / divisor;
+                nanosToAdd = MathUtils.safeMultiply(MathUtils.safeAdd(durationSeconds, 1) % divisor, NANOS_PER_SECOND) / divisor;
             } else {
                secs = -(durationSeconds + 1) / divisor;
                nos = (NANOS_PER_SECOND - nanoOfSecond) / divisor;
-               nanosToAdd = MathUtils.safeMultiply(-(durationSeconds + 1) % divisor, NANOS_PER_SECOND) / divisor;
+               nanosToAdd = MathUtils.safeMultiply(-MathUtils.safeAdd(durationSeconds, 1) % divisor, NANOS_PER_SECOND) / divisor;
             }
         } else {
            secs = -durationSeconds / Math.abs(divisor);
@@ -502,7 +545,7 @@ public class Duration implements Comparable<Duration>, Serializable {
      */
     @Override
     public int hashCode() {
-        return ((int) (durationSeconds ^ (durationSeconds >>> 32))) + 51 * nanoOfSecond;
+        return ((int) (durationSeconds ^ (durationSeconds >>> 32))) + (51 * nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
