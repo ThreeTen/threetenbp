@@ -498,8 +498,6 @@ public class TestDuration {
     @Test(dataProvider="Plus") 
     public void plus(long seconds, int nanos, long otherSeconds, int otherNanos, long expectedSeconds, int expectedNanoOfSecond) {
        Duration t = Duration.duration(seconds, nanos).plus(Duration.duration(otherSeconds, otherNanos));
-       Reporter.log(String.valueOf(t.getSeconds()));
-       Reporter.log(String.valueOf(t.getNanoOfSecond()));
        assertEquals(t.getSeconds(), expectedSeconds);
        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
