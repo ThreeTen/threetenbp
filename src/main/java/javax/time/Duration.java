@@ -377,7 +377,7 @@ public class Duration implements Comparable<Duration>, Serializable {
         long secs;
         long nos;
 
-        if ((durationSeconds >= 0) || (durationSeconds <= 0 && nanoOfSecond == 0)) {
+        if (durationSeconds >= 0 || nanoOfSecond == 0) {
             secs = MathUtils.safeMultiply(durationSeconds, multiplicand);
             nos = ((long) nanoOfSecond) * multiplicand;
         } else if (multiplicand < 0) {
