@@ -35,7 +35,9 @@ import java.io.Serializable;
 
 import javax.time.Instant;
 import javax.time.ReadableInstant;
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
 
@@ -245,26 +247,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Year</code> initialised to the
-     * year of this date-time.
-     *
-     * @return the year object, never null
-     */
-    public Year year() {
-        return dateTime.year();
-    }
-
-    /**
-     * Gets an instance of <code>MonthOfYear</code> initialised to the
-     * month of this date-time.
-     *
-     * @return the month object, never null
-     */
-    public MonthOfYear monthOfYear() {
-        return dateTime.monthOfYear();
-    }
-
-    /**
      * Gets an instance of <code>YearMonth</code> initialised to the
      * year and month of this date-time.
      *
@@ -388,50 +370,58 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ISO proleptic year value.
+     * Gets the year field.
      * <p>
-     * The year 1AD is represented by 1.<br />
-     * The year 1BC is represented by 0.<br />
-     * The year 2BC is represented by -1.<br />
+     * This method provides access to an object representing the year field.
+     * This can be used to access the {@link Year#getValue() int value}.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the year, never null
      */
-    public int getYear() {
+    public Year getYear() {
         return dateTime.getYear();
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month of year field.
      * <p>
-     * This method returns the numerical value for the month, from 1 to 12.
-     * The enumerated constant is returned by {@link #monthOfYear()}.
+     * This method provides access to an object representing the month field.
+     * This can be used to access the {@link MonthOfYear#getValue() int value}.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month of year, never null
      */
-    public int getMonthOfYear() {
+    public MonthOfYear getMonthOfYear() {
         return dateTime.getMonthOfYear();
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the day of month field.
+     * <p>
+     * This method provides access to an object representing the day of month field.
+     * This can be used to access the {@link DayOfMonth#getValue() int value}.
      *
-     * @return the day of year, from 1 to 366
+     * @return the day of month, never null
      */
-    public int getDayOfYear() {
-        return dateTime.getDayOfYear();
-    }
-
-    /**
-     * Gets the day of month value.
-     *
-     * @return the day of month, from 1 to 31
-     */
-    public int getDayOfMonth() {
+    public DayOfMonth getDayOfMonth() {
         return dateTime.getDayOfMonth();
     }
 
     /**
-     * Gets the day of week value.
+     * Gets the day of year field.
+     * <p>
+     * This method provides access to an object representing the day of year field.
+     * This can be used to access the {@link DayOfYear#getValue() int value}.
+     *
+     * @return the day of year, never null
+     */
+    public DayOfYear getDayOfYear() {
+        return dateTime.getDayOfYear();
+    }
+
+    /**
+     * Gets the day of week field.
+     * <p>
+     * This method provides access to an object representing the day of week field.
+     * This can be used to access the {@link DayOfWeek#getValue() int value}.
      *
      * @return the day of week, never null
      */
@@ -439,6 +429,7 @@ public final class OffsetDateTime
         return dateTime.getDayOfWeek();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the hour of day value.
      *

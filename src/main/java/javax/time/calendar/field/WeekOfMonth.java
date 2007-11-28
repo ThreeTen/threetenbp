@@ -74,6 +74,7 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      * @return the created WeekOfMonth
      */
     public static WeekOfMonth weekOfMonth(int weekOfMonth) {
+        RULE.checkValue(weekOfMonth);
         return new WeekOfMonth(weekOfMonth);
     }
 
@@ -170,6 +171,16 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
     @Override
     public int hashCode() {
         return weekOfMonth;
+    }
+
+    /**
+     * A string describing the week of month object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "WeekOfMonth=" + getValue();
     }
 
     //-----------------------------------------------------------------------

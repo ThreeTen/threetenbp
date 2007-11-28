@@ -74,6 +74,7 @@ public final class MilleniumOfEra implements Calendrical, Comparable<MilleniumOf
      * @return the created MilleniumOfEra
      */
     public static MilleniumOfEra milleniumOfEra(int milleniumOfEra) {
+        RULE.checkValue(milleniumOfEra);
         return new MilleniumOfEra(milleniumOfEra);
     }
 
@@ -170,6 +171,16 @@ public final class MilleniumOfEra implements Calendrical, Comparable<MilleniumOf
     @Override
     public int hashCode() {
         return milleniumOfEra;
+    }
+
+    /**
+     * A string describing the millenium of era object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "MilleniumOfEra=" + getValue();
     }
 
     //-----------------------------------------------------------------------

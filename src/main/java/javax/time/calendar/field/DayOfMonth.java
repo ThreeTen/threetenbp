@@ -74,6 +74,7 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      * @return the created DayOfMonth
      */
     public static DayOfMonth dayOfMonth(int dayOfMonth) {
+        RULE.checkValue(dayOfMonth);
         return new DayOfMonth(dayOfMonth);
     }
 
@@ -170,6 +171,16 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
     @Override
     public int hashCode() {
         return dayOfMonth;
+    }
+
+    /**
+     * A string describing the day of month object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "DayOfMonth=" + getValue();
     }
 
 //  /**

@@ -276,7 +276,7 @@ public class CodeGen {
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
+//        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
@@ -301,7 +301,7 @@ public class CodeGen {
             String minValue, String maxValue) throws Exception {
         File file = new File(BASE_DIR, pkg.replace('.', '/') + '/' + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file,
-              singletons == null ? "public int hashCode() {" : "public boolean isLessThan(");
+              singletons == null ? "public String toString() {" : "public boolean isLessThan(");
         int pos = indexOfLineContaining(methodLines, "private static class Rule", 0);
         VelocityContext vc = new VelocityContext();
         vc.put("package", pkg);

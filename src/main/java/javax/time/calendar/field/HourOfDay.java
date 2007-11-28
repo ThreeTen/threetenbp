@@ -74,6 +74,7 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      * @return the created HourOfDay
      */
     public static HourOfDay hourOfDay(int hourOfDay) {
+        RULE.checkValue(hourOfDay);
         return new HourOfDay(hourOfDay);
     }
 
@@ -170,6 +171,16 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
     @Override
     public int hashCode() {
         return hourOfDay;
+    }
+
+    /**
+     * A string describing the hour of day object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "HourOfDay=" + getValue();
     }
 
     //-----------------------------------------------------------------------

@@ -33,6 +33,7 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -76,6 +77,7 @@ public enum Era implements Calendrical {
      *
      * @param era  the era to represent
      * @return the existing Era
+     * @throws IllegalCalendarFieldValueException if the era is invalid
      */
     public static Era era(int era) {
         switch (era) {
@@ -84,7 +86,7 @@ public enum Era implements Calendrical {
             case 1:
                 return AD;
             default:
-                throw new IllegalArgumentException("Era cannot have the value " + era);
+                throw new IllegalCalendarFieldValueException("Era cannot have the value " + era);
         }
     }
 

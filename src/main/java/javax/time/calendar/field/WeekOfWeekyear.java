@@ -74,6 +74,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      * @return the created WeekOfWeekyear
      */
     public static WeekOfWeekyear weekOfWeekyear(int weekOfWeekyear) {
+        RULE.checkValue(weekOfWeekyear);
         return new WeekOfWeekyear(weekOfWeekyear);
     }
 
@@ -170,6 +171,16 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
     @Override
     public int hashCode() {
         return weekOfWeekyear;
+    }
+
+    /**
+     * A string describing the week of week-based year object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "WeekOfWeekyear=" + getValue();
     }
 
     //-----------------------------------------------------------------------

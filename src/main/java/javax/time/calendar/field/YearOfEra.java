@@ -74,6 +74,7 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
      * @return the created YearOfEra
      */
     public static YearOfEra yearOfEra(int yearOfEra) {
+        RULE.checkValue(yearOfEra);
         return new YearOfEra(yearOfEra);
     }
 
@@ -170,6 +171,16 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
     @Override
     public int hashCode() {
         return yearOfEra;
+    }
+
+    /**
+     * A string describing the year of era object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "YearOfEra=" + getValue();
     }
 
     //-----------------------------------------------------------------------

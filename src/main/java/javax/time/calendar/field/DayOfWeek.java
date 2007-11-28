@@ -33,6 +33,7 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -96,6 +97,7 @@ public enum DayOfWeek implements Calendrical {
      *
      * @param dayOfWeek  the day of week to represent
      * @return the existing DayOfWeek
+     * @throws IllegalCalendarFieldValueException if the day of week is invalid
      */
     public static DayOfWeek dayOfWeek(int dayOfWeek) {
         switch (dayOfWeek) {
@@ -114,7 +116,7 @@ public enum DayOfWeek implements Calendrical {
             case 7:
                 return SUNDAY;
             default:
-                throw new IllegalArgumentException("DayOfWeek cannot have the value " + dayOfWeek);
+                throw new IllegalCalendarFieldValueException("DayOfWeek cannot have the value " + dayOfWeek);
         }
     }
 

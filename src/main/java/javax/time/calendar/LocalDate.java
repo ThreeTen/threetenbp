@@ -33,9 +33,11 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.period.PeriodUnit;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -62,44 +64,57 @@ public final class LocalDate
     private static final long serialVersionUID = 798274969L;
 
     /**
-     * The year, from MIN_YEAR to MAX_YEAR.
+     * The year, not null.
      */
-    private final int year;
+    private final Year year;
     /**
-     * The month, from 1 to 12.
+     * The month of year, not null.
      */
-    private final int month;
+    private final MonthOfYear month;
     /**
-     * The dayOfMonth, from 1 to 31.
+     * The day of month, not null.
      */
-    private final int dayOfMonth;
+    private final DayOfMonth day;
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>LocalDate</code> from a year, month and day.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @return a LocalDate object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
+        return new LocalDate(year, monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a LocalDate object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDate date(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        return date(year, monthOfYear.getValue(), dayOfMonth);
+        return date(Year.isoYear(year), monthOfYear, DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
     /**
      * Obtains an instance of <code>LocalDate</code> from a year, month and day.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a LocalDate object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDate date(int year, int monthOfYear, int dayOfMonth) {
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-        return new LocalDate(year, monthOfYear, dayOfMonth);
+        return date(Year.isoYear(year), MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
     /**
@@ -110,24 +125,41 @@ public final class LocalDate
      *
      * @param calendricals  a set of calendricals that fully represent a calendar day
      * @return a LocalDate object, never null
+     * @throws IllegalCalendarFieldValueException if any calendrical is invalid
      */
     public static LocalDate date(Calendrical... calendricals) {
-        // TODO
+        if (calendricals.length == 0) {
+            throw new IllegalCalendarFieldValueException("No calendricals specified");
+        }
+        if (calendricals[0].getCalendricalState().getPeriodRange() != Periods.FOREVER) {
+            throw new IllegalCalendarFieldValueException("First calendrical must have a range of forever");
+        }
+        if (calendricals[calendricals.length - 1].getCalendricalState().getPeriodUnit() != Periods.DAYS) {
+            throw new IllegalCalendarFieldValueException("Last calendrical must have a unit of days");
+        }
+        PeriodUnit last = calendricals[0].getCalendricalState().getPeriodUnit();
+        for (int i = 1; i < calendricals.length; i++) {
+            if (calendricals[i].getCalendricalState().getPeriodRange() != last) {
+                throw new IllegalCalendarFieldValueException("Calendricals do not form a continuous set: " +
+                        last + " != " + calendricals[i].getCalendricalState().getPeriodRange());
+            }
+            last = calendricals[i].getCalendricalState().getPeriodUnit();
+        }
         return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
+     * Constructor, previously validated.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, valid for year-month, not null
      */
-    private LocalDate(int year, int monthOfYear, int dayOfMonth) {
+    private LocalDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
         this.year = year;
         this.month = monthOfYear;
-        this.dayOfMonth = dayOfMonth;
+        this.day = dayOfMonth;
     }
 
     //-----------------------------------------------------------------------
@@ -181,38 +213,18 @@ public final class LocalDate
             throw new UnsupportedCalendarFieldException(field, "date");
         }
         if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year;
+            return year.getValue();
         }
         if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month;
+            return month.getValue();
         }
         if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
-            return dayOfMonth;
+            return day.getValue();
         }
         return field.getValue(getCalendricalState());
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets an instance of <code>Year</code> initialised to the
-     * year of this date.
-     *
-     * @return the year object, never null
-     */
-    public Year year() {
-        return Year.isoYear(year);
-    }
-
-    /**
-     * Gets an instance of <code>MonthOfYear</code> initialised to the
-     * month of this date.
-     *
-     * @return the month object, never null
-     */
-    public MonthOfYear monthOfYear() {
-        return MonthOfYear.monthOfYear(month);
-    }
-
     /**
      * Gets an instance of <code>YearMonth</code> initialised to the
      * year and month of this date.
@@ -230,55 +242,63 @@ public final class LocalDate
      * @return the month-day object, never null
      */
     public MonthDay monthDay() {
-        return MonthDay.monthDay(month, dayOfMonth);
+        return MonthDay.monthDay(month, day);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ISO proleptic year value.
+     * Gets the year field.
      * <p>
-     * The year 1AD is represented by 1.<br />
-     * The year 1BC is represented by 0.<br />
-     * The year 2BC is represented by -1.<br />
+     * This method provides access to an object representing the year field.
+     * This can be used to access the {@link Year#getValue() int value}.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the year, never null
      */
-    public int getYear() {
+    public Year getYear() {
         return year;
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month of year field.
      * <p>
-     * This method returns the numerical value for the month, from 1 to 12.
-     * The enumerated constant is returned by {@link #monthOfYear()}.
+     * This method provides access to an object representing the month field.
+     * This can be used to access the {@link MonthOfYear#getValue() int value}.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month of year, never null
      */
-    public int getMonthOfYear() {
+    public MonthOfYear getMonthOfYear() {
         return month;
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the day of month field.
+     * <p>
+     * This method provides access to an object representing the day of month field.
+     * This can be used to access the {@link DayOfMonth#getValue() int value}.
      *
-     * @return the day of year, from 1 to 366
+     * @return the day of month, never null
      */
-    public int getDayOfYear() {
-        return ISOChronology.INSTANCE.getDayOfYear(year, month, dayOfMonth);
+    public DayOfMonth getDayOfMonth() {
+        return day;
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the day of year field.
+     * <p>
+     * This method provides access to an object representing the day of year field.
+     * This can be used to access the {@link DayOfYear#getValue() int value}.
      *
-     * @return the day of month, from 1 to 31
+     * @return the day of year, never null
      */
-    public int getDayOfMonth() {
-        return dayOfMonth;
+    public DayOfYear getDayOfYear() {
+        return DayOfYear.dayOfYear(ISOChronology.INSTANCE.getDayOfYear(year, month, day));
     }
 
     /**
-     * Gets the day of week value.
+     * Gets the day of week field.
+     * <p>
+     * This method provides access to an object representing the day of week field.
+     * This can be used to access the {@link DayOfWeek#getValue() int value}.
      *
      * @return the day of week, never null
      */
@@ -296,6 +316,18 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate with(Calendrical calendrical) {
+        if (calendrical instanceof Year) {
+            return withYear(((Year) calendrical).getISOYear());
+        }
+        if (calendrical instanceof MonthOfYear) {
+            return withMonthOfYear(((MonthOfYear) calendrical).getValue());
+        }
+        if (calendrical instanceof DayOfMonth) {
+            return withDayOfMonth(((DayOfMonth) calendrical).getValue());
+        }
+        if (calendrical instanceof ReadableDate) {
+            return ((ReadableDate) calendrical).toLocalDate();
+        }
         // TODO
         return null;
     }
@@ -323,11 +355,11 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate withYear(int year) {
-        if (this.year == year) {
+        if (this.year.getValue() == year) {
             return this;
         }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-        return new LocalDate(resolved[0], resolved[1], resolved[2]);
+        return CalendricalResolvers.previousValid().resolveDate(
+                Year.isoYear(year), month, day);
     }
 
     /**
@@ -339,11 +371,11 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
-        if (this.month == monthOfYear) {
+        if (this.month.getValue() == monthOfYear) {
             return this;
         }
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(year, monthOfYear, dayOfMonth);
-        return new LocalDate(resolved[0], resolved[1], resolved[2]);
+        return CalendricalResolvers.previousValid().resolveDate(
+                year, MonthOfYear.monthOfYear(monthOfYear), day);
     }
 
     /**
@@ -351,15 +383,14 @@ public final class LocalDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param dayOfMonth  the day of month to represent, from 1 to 28-31
      * @return a new updated LocalDate, never null
      */
     public LocalDate withDayOfMonth(int dayOfMonth) {
-        if (this.dayOfMonth == dayOfMonth) {
+        if (this.day.getValue() == dayOfMonth) {
             return this;
         }
-        ISOChronology.INSTANCE.checkValidDate(year, month, dayOfMonth);
-        return new LocalDate(year, month, dayOfMonth);
+        return date(year, month, DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
     /**
@@ -370,11 +401,18 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      */
     public LocalDate withLastDayOfMonth() {
-        int dom = ISOChronology.INSTANCE.getMonthLength(year, month);
-        if (this.dayOfMonth == dom) {
-            return this;
-        }
-        return new LocalDate(year, month, dom);
+        return withDayOfMonth(month.lengthInDays(year));
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the date set to the last day of year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a new updated LocalDate, never null
+     */
+    public LocalDate withLastDayOfYear() {
+        return new LocalDate(year, MonthOfYear.DECEMBER, DayOfMonth.dayOfMonth(31));
     }
 
     /**
@@ -387,17 +425,6 @@ public final class LocalDate
      */
     public LocalDate withDayOfYear(int dayOfYear) {
         return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDate with the date set to the last day of year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated LocalDate, never null
-     */
-    public LocalDate withLastDayOfYear() {
-        return new LocalDate(year, 12, 31);
     }
 
     /**
@@ -465,11 +492,8 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        long newYear = ((long) year) + years;
-        if (newYear < Year.MIN_YEAR || newYear > Year.MAX_YEAR) {
-            throw new IllegalCalendarFieldValueException("Year", newYear, Year.MIN_YEAR, Year.MAX_YEAR);
-        }
-        return withYear((int) newYear);
+        Year newYear = year.plusYears(years);
+        return CalendricalResolvers.previousValid().resolveDate(newYear, month, day);
     }
 
     /**
@@ -497,7 +521,7 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month - 1;
+        long newMonth0 = month.getValue() - 1;
         newMonth0 = newMonth0 + months;
         int years = (int) (newMonth0 / 12);
         newMonth0 = newMonth0 % 12;
@@ -505,9 +529,9 @@ public final class LocalDate
             newMonth0 += 12;
             years--;
         }
-        int newYear = MathUtils.safeAdd(year, years);
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(newYear, (int) ++newMonth0, dayOfMonth);
-        return new LocalDate(resolved[0], resolved[1], resolved[2]);
+        Year newYear = year.plusYears(years);
+        MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
+        return CalendricalResolvers.previousValid().resolveDate(newYear, newMonth, day);
     }
 
     /**
@@ -559,19 +583,19 @@ public final class LocalDate
         if (days == 0) {
             return this;
         }
-        int monthLen = ISOChronology.INSTANCE.getMonthLength(year, month);
-        long possDOM = dayOfMonth + days;
+        int monthLen = month.lengthInDays(year);
+        long possDOM = day.getValue() + days;
         if (possDOM >= 1) {
             if (possDOM <= monthLen) {
                 // same month
-                return new LocalDate(year, month, (int) possDOM);
+                return new LocalDate(year, month, DayOfMonth.dayOfMonth((int) possDOM));
             } else if (possDOM <= monthLen + 28) {
                 // next month (28 guarantees only one month later)
                 possDOM -= monthLen;
-                if (month == 12) {
-                    return new LocalDate(MathUtils.safeIncrement(year), 1, (int) possDOM);
+                if (month == MonthOfYear.DECEMBER) {
+                    return new LocalDate(year.next(), MonthOfYear.JANUARY, DayOfMonth.dayOfMonth((int) possDOM));
                 } else {
-                    return new LocalDate(year, month + 1, (int) possDOM);
+                    return new LocalDate(year, month.next(), DayOfMonth.dayOfMonth((int) possDOM));
                 }
             }
         }
@@ -600,11 +624,11 @@ public final class LocalDate
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(LocalDate other) {
-        int cmp = MathUtils.safeCompare(year, other.year);
+        int cmp = year.compareTo(other.year);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(month, other.month);
+            cmp = month.compareTo(other.month);
             if (cmp == 0) {
-                cmp = MathUtils.safeCompare(dayOfMonth, other.dayOfMonth);
+                cmp = day.compareTo(other.day);
             }
         }
         return cmp;
@@ -646,7 +670,9 @@ public final class LocalDate
         }
         if (other instanceof LocalDate) {
             LocalDate otherDate = (LocalDate) other;
-            return (year == otherDate.year && month == otherDate.month && dayOfMonth == otherDate.dayOfMonth);
+            return (year.equals(otherDate.year) &&
+                    month == otherDate.month &&
+                    day.equals(otherDate.day));
         }
         return false;
     }
@@ -658,7 +684,10 @@ public final class LocalDate
      */
     @Override
     public int hashCode() {
-        return (year & 0xFFFFF800) ^ ((year << 11) + (month << 6) + (dayOfMonth));
+        int yearValue = year.getValue();
+        int monthValue = month.getValue();
+        int dayValue = day.getValue();
+        return (yearValue & 0xFFFFF800) ^ ((yearValue << 11) + (monthValue << 6) + (dayValue));
     }
 
     //-----------------------------------------------------------------------
@@ -669,21 +698,24 @@ public final class LocalDate
      */
     @Override
     public String toString() {
-        int absYear = Math.abs(year);
+        int yearValue = year.getValue();
+        int monthValue = month.getValue();
+        int dayValue = day.getValue();
+        int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(12);
         if (absYear < 1000) {
-            if (year < 0) {
-                buf.append(year - 10000).deleteCharAt(1);
+            if (yearValue < 0) {
+                buf.append(yearValue - 10000).deleteCharAt(1);
             } else {
-                buf.append(year + 10000).deleteCharAt(0);
+                buf.append(yearValue + 10000).deleteCharAt(0);
             }
         } else {
             buf.append(year);
         }
-        return buf.append(month < 10 ? "-0" : "-")
-            .append(month)
-            .append(dayOfMonth < 10 ? "-0" : "-")
-            .append(dayOfMonth)
+        return buf.append(monthValue < 10 ? "-0" : "-")
+            .append(monthValue)
+            .append(dayValue < 10 ? "-0" : "-")
+            .append(dayValue)
             .toString();
     }
 

@@ -33,6 +33,7 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -84,6 +85,7 @@ public enum QuarterOfYear implements Calendrical {
      *
      * @param quarterOfYear  the quarter of year to represent
      * @return the existing QuarterOfYear
+     * @throws IllegalCalendarFieldValueException if the quarter of year is invalid
      */
     public static QuarterOfYear quarterOfYear(int quarterOfYear) {
         switch (quarterOfYear) {
@@ -96,7 +98,7 @@ public enum QuarterOfYear implements Calendrical {
             case 4:
                 return Q4;
             default:
-                throw new IllegalArgumentException("QuarterOfYear cannot have the value " + quarterOfYear);
+                throw new IllegalCalendarFieldValueException("QuarterOfYear cannot have the value " + quarterOfYear);
         }
     }
 

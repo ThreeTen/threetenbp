@@ -33,6 +33,7 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -76,6 +77,7 @@ public enum MeridiemOfDay implements Calendrical {
      *
      * @param meridiemOfDay  the meridiem of day to represent
      * @return the existing MeridiemOfDay
+     * @throws IllegalCalendarFieldValueException if the meridiem of day is invalid
      */
     public static MeridiemOfDay meridiemOfDay(int meridiemOfDay) {
         switch (meridiemOfDay) {
@@ -84,7 +86,7 @@ public enum MeridiemOfDay implements Calendrical {
             case 1:
                 return PM;
             default:
-                throw new IllegalArgumentException("MeridiemOfDay cannot have the value " + meridiemOfDay);
+                throw new IllegalCalendarFieldValueException("MeridiemOfDay cannot have the value " + meridiemOfDay);
         }
     }
 

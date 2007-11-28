@@ -74,6 +74,7 @@ public final class CenturyOfEra implements Calendrical, Comparable<CenturyOfEra>
      * @return the created CenturyOfEra
      */
     public static CenturyOfEra centuryOfEra(int centuryOfEra) {
+        RULE.checkValue(centuryOfEra);
         return new CenturyOfEra(centuryOfEra);
     }
 
@@ -170,6 +171,16 @@ public final class CenturyOfEra implements Calendrical, Comparable<CenturyOfEra>
     @Override
     public int hashCode() {
         return centuryOfEra;
+    }
+
+    /**
+     * A string describing the century of era object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "CenturyOfEra=" + getValue();
     }
 
     //-----------------------------------------------------------------------

@@ -74,6 +74,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
      * @return the created SecondOfDay
      */
     public static SecondOfDay secondOfDay(int secondOfDay) {
+        RULE.checkValue(secondOfDay);
         return new SecondOfDay(secondOfDay);
     }
 
@@ -170,6 +171,16 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
     @Override
     public int hashCode() {
         return secondOfDay;
+    }
+
+    /**
+     * A string describing the second of day object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "SecondOfDay=" + getValue();
     }
 
     //-----------------------------------------------------------------------

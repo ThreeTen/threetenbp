@@ -74,6 +74,7 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
      * @return the created DayOfYear
      */
     public static DayOfYear dayOfYear(int dayOfYear) {
+        RULE.checkValue(dayOfYear);
         return new DayOfYear(dayOfYear);
     }
 
@@ -170,6 +171,16 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
     @Override
     public int hashCode() {
         return dayOfYear;
+    }
+
+    /**
+     * A string describing the day of year object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "DayOfYear=" + getValue();
     }
 
     //-----------------------------------------------------------------------

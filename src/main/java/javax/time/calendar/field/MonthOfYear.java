@@ -33,7 +33,10 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.Year;
 
 /**
  * A calendrical representation of a month of year.
@@ -58,7 +61,26 @@ public enum MonthOfYear implements Calendrical {
     /**
      * The singleton instance for the month of February.
      */
-    FEBRUARY(2),
+    FEBRUARY(2) {
+        /** {@inheritDoc} */
+        @Override
+        public int lengthInDays(Year year) {
+            if (ISOChronology.INSTANCE.isLeapYear(year.getValue())) {
+                return 29;
+            }
+            return 28;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int minLengthInDays() {
+            return 28;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int maxLengthInDays() {
+            return 29;
+        }
+    },
     /**
      * The singleton instance for the month of March.
      */
@@ -116,6 +138,7 @@ public enum MonthOfYear implements Calendrical {
      *
      * @param monthOfYear  the month of year to represent
      * @return the existing MonthOfYear
+     * @throws IllegalCalendarFieldValueException if the month of year is invalid
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
         switch (monthOfYear) {
@@ -144,7 +167,7 @@ public enum MonthOfYear implements Calendrical {
             case 12:
                 return DECEMBER;
             default:
-                throw new IllegalArgumentException("MonthOfYear cannot have the value " + monthOfYear);
+                throw new IllegalCalendarFieldValueException("MonthOfYear cannot have the value " + monthOfYear);
         }
     }
 
@@ -226,12 +249,22 @@ public enum MonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the last day of the month.
+     *
+     * @param year  the year to obtain the last day of month for, not null
+     * @return an object representing the last day of this month
+     */
+    public DayOfMonth getLastDayOfMonth(Year year) {
+        return DayOfMonth.dayOfMonth(lengthInDays(year));
+    }
+
+    /**
      * Gets the length of this month in days.
      *
-     * @param year  the year to obtain the length for
+     * @param year  the year to obtain the length for, not null
      * @return the length of this month in days, from 28 to 31
      */
-    public int lengthInDays(int year) {
+    public int lengthInDays(Year year) {
         return maxLengthInDays();  // overridden by FEBRUARY
     }
 

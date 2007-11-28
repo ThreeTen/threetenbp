@@ -74,6 +74,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      * @return the created HourOfMeridiem
      */
     public static HourOfMeridiem hourOfMeridiem(int hourOfMeridiem) {
+        RULE.checkValue(hourOfMeridiem);
         return new HourOfMeridiem(hourOfMeridiem);
     }
 
@@ -170,6 +171,16 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
     @Override
     public int hashCode() {
         return hourOfMeridiem;
+    }
+
+    /**
+     * A string describing the hour of meridiem object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "HourOfMeridiem=" + getValue();
     }
 
     //-----------------------------------------------------------------------

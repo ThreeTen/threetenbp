@@ -74,6 +74,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      * @return the created Weekyear
      */
     public static Weekyear weekyear(int weekyear) {
+        RULE.checkValue(weekyear);
         return new Weekyear(weekyear);
     }
 
@@ -170,6 +171,16 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
     @Override
     public int hashCode() {
         return weekyear;
+    }
+
+    /**
+     * A string describing the week-based year object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "Weekyear=" + getValue();
     }
 
     //-----------------------------------------------------------------------

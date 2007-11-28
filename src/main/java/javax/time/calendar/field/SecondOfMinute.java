@@ -74,6 +74,7 @@ public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMin
      * @return the created SecondOfMinute
      */
     public static SecondOfMinute secondOfMinute(int secondOfMinute) {
+        RULE.checkValue(secondOfMinute);
         return new SecondOfMinute(secondOfMinute);
     }
 
@@ -170,6 +171,16 @@ public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMin
     @Override
     public int hashCode() {
         return secondOfMinute;
+    }
+
+    /**
+     * A string describing the second of minute object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "SecondOfMinute=" + getValue();
     }
 
     //-----------------------------------------------------------------------

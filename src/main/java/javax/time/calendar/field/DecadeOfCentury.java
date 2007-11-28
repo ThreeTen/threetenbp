@@ -74,6 +74,7 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
      * @return the created DecadeOfCentury
      */
     public static DecadeOfCentury decadeOfCentury(int decadeOfCentury) {
+        RULE.checkValue(decadeOfCentury);
         return new DecadeOfCentury(decadeOfCentury);
     }
 
@@ -170,6 +171,16 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
     @Override
     public int hashCode() {
         return decadeOfCentury;
+    }
+
+    /**
+     * A string describing the decade of century object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "DecadeOfCentury=" + getValue();
     }
 
     //-----------------------------------------------------------------------

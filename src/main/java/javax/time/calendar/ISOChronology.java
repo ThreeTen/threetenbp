@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.i18n.CopticChronology.State;
 import javax.time.period.Periods;
@@ -151,7 +152,7 @@ public final class ISOChronology implements Serializable {
             return false;
         }
         if (dayOfMonth < 1 || dayOfMonth > 28) {
-            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
+            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(Year.isoYear(year));
             if (dayOfMonth < 1 || dayOfMonth > length) {
                 return false;
             }
@@ -162,25 +163,51 @@ public final class ISOChronology implements Serializable {
     /**
      * Validates the date from a year, month and day.
      *
-     * @param year  the year
-     * @param monthOfYear  the month of year
-     * @param dayOfMonth  the day of month
+     * @param year  the year, not null
+     * @param monthOfYear  the month of year, not null
+     * @param dayOfMonth  the day of month, not null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public void checkValidDate(int year, int monthOfYear, int dayOfMonth) {
-        if (year == Integer.MIN_VALUE) {
-            throw new IllegalCalendarFieldValueException("Year", year, Integer.MIN_VALUE + 1, Integer.MAX_VALUE);
+    public void checkValidDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        if (year == null) {
+            throw new NullPointerException("Year must not be null");
         }
-        if (monthOfYear < 1 || monthOfYear > 12) {
-            throw new IllegalCalendarFieldValueException("MonthOfYear", monthOfYear, 1, 12);
+        if (monthOfYear == null) {
+            throw new NullPointerException("MonthOfYear must not be null");
         }
-        if (dayOfMonth < 1 || dayOfMonth > 28) {
-            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
-            if (dayOfMonth < 1 || dayOfMonth > length) {
-                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth, 1, length);
+        if (dayOfMonth == null) {
+            throw new NullPointerException("DayOfMonth must not be null");
+        }
+        if (dayOfMonth.getValue() > 28) {
+            int length = monthOfYear.lengthInDays(year);
+            if (dayOfMonth.getValue() > length) {
+                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, length);
             }
         }
     }
+
+//    /**
+//     * Validates the date from a year, month and day.
+//     *
+//     * @param year  the year
+//     * @param monthOfYear  the month of year
+//     * @param dayOfMonth  the day of month
+//     * @throws IllegalCalendarFieldValueException if any field is invalid
+//     */
+//    public void checkValidDate(int year, int monthOfYear, int dayOfMonth) {
+//        if (year == Integer.MIN_VALUE) {
+//            throw new IllegalCalendarFieldValueException("Year", year, Integer.MIN_VALUE + 1, Integer.MAX_VALUE);
+//        }
+//        if (monthOfYear < 1 || monthOfYear > 12) {
+//            throw new IllegalCalendarFieldValueException("MonthOfYear", monthOfYear, 1, 12);
+//        }
+//        if (dayOfMonth < 1 || dayOfMonth > 28) {
+//            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(Year.isoYear(year));
+//            if (dayOfMonth < 1 || dayOfMonth > length) {
+//                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth, 1, length);
+//            }
+//        }
+//    }
 
     /**
      * Gets the day of year from a year, month and day.
@@ -205,11 +232,11 @@ public final class ISOChronology implements Serializable {
      * @param dayOfMonth  the day of month, from 1 to 31, must be valid
      * @return the day of year, from 1 to 366
      */
-    int getDayOfYear(int year, int monthOfYear, int dayOfMonth) {
-        if (isLeapYear(year)) {
-            return LEAP_MONTH_START[monthOfYear - 1] + dayOfMonth;
+    int getDayOfYear(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        if (year.isLeap()) {
+            return LEAP_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
         } else {
-            return STANDARD_MONTH_START[monthOfYear - 1] + dayOfMonth;
+            return STANDARD_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
         }
     }
 

@@ -33,6 +33,7 @@ package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -120,6 +121,7 @@ public enum CopticMonthOfYear implements Calendrical {
      *
      * @param copticMonthOfYear  the Coptic month of year to represent
      * @return the existing CopticMonthOfYear
+     * @throws IllegalCalendarFieldValueException if the Coptic month of year is invalid
      */
     public static CopticMonthOfYear copticMonthOfYear(int copticMonthOfYear) {
         switch (copticMonthOfYear) {
@@ -150,7 +152,7 @@ public enum CopticMonthOfYear implements Calendrical {
             case 13:
                 return PI_KOGI_ENAVOT;
             default:
-                throw new IllegalArgumentException("CopticMonthOfYear cannot have the value " + copticMonthOfYear);
+                throw new IllegalCalendarFieldValueException("CopticMonthOfYear cannot have the value " + copticMonthOfYear);
         }
     }
 

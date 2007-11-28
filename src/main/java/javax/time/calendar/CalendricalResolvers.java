@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 
 /**
@@ -63,14 +64,8 @@ public class CalendricalResolvers {
 
         /** {@inheritDoc} */
         @Override
-        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
-            return new int[] {year, monthOfYear, dayOfMonth};
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            return null;  // never called
+        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+            return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
     }
 
@@ -94,20 +89,12 @@ public class CalendricalResolvers {
 
         /** {@inheritDoc} */
         @Override
-        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            ISOChronology.INSTANCE.yearRule().checkValue(year);
-            ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
-            ISOChronology.INSTANCE.dayOfMonthRule().checkValue(dayOfMonth);
-            int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
-            if (dayOfMonth > len) {
-                return new int[] {year, monthOfYear, len};
+        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+            int len = monthOfYear.lengthInDays(year);
+            if (dayOfMonth.getValue() > len) {
+                return LocalDate.date(year, monthOfYear, DayOfMonth.dayOfMonth(len));
             }
-            return new int[] {year, monthOfYear, dayOfMonth};
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            return null;  // never called
+            return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
     }
 
@@ -131,24 +118,15 @@ public class CalendricalResolvers {
 
         /** {@inheritDoc} */
         @Override
-        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            ISOChronology.INSTANCE.yearRule().checkValue(year);
-            ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
-            ISOChronology.INSTANCE.dayOfMonthRule().checkValue(dayOfMonth);
-            int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
-            if (dayOfMonth > len) {
-                if (monthOfYear == 12) {
-                    ISOChronology.INSTANCE.yearRule().checkValue(++year);
-                    return new int[] {year, 1, 1};
+        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+            int len = monthOfYear.lengthInDays(year);
+            if (dayOfMonth.getValue() > len) {
+                if (monthOfYear == MonthOfYear.DECEMBER) {
+                    year = year.next();
                 }
-                return new int[] {year, monthOfYear + 1, 1};
+                return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(1));
             }
-            return new int[] {year, monthOfYear, dayOfMonth};
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            return null;  // never called
+            return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
     }
 
@@ -173,24 +151,15 @@ public class CalendricalResolvers {
 
         /** {@inheritDoc} */
         @Override
-        int[] doResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            ISOChronology.INSTANCE.yearRule().checkValue(year);
-            ISOChronology.INSTANCE.monthOfYearRule().checkValue(monthOfYear);
-            ISOChronology.INSTANCE.dayOfMonthRule().checkValue(dayOfMonth);
-            int len = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(year);
-            if (dayOfMonth > len) {
-                if (monthOfYear == 12) {
-                    ISOChronology.INSTANCE.yearRule().checkValue(++year);
-                    return new int[] {year, 1, dayOfMonth - len};
+        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+            int len = monthOfYear.lengthInDays(year);
+            if (dayOfMonth.getValue() > len) {
+                if (monthOfYear == MonthOfYear.DECEMBER) {
+                    year = year.next();
                 }
-                return new int[] {year, monthOfYear + 1, dayOfMonth - len};
+                return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(dayOfMonth.getValue() - len));
             }
-            return new int[] {year, monthOfYear, dayOfMonth};
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected int[] handleResolveDate(int year, int monthOfYear, int dayOfMonth) {
-            return null;  // never called
+            return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
     }
 

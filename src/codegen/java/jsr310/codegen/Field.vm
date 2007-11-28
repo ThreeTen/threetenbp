@@ -74,6 +74,7 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
      * @return the created ${Type}
      */
     public static ${Type} ${type}(int ${type}) {
+        RULE.checkValue(${type});
         return new ${Type}(${type});
     }
 
@@ -170,6 +171,16 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
     @Override
     public int hashCode() {
         return ${type};
+    }
+
+    /**
+     * A string describing the ${desc} object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "${Type}=" + getValue();
     }
 
 #foreach ($line in $methods)

@@ -140,6 +140,16 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the year value.
+     *
+     * @return the year
+     */
+    public int getValue() {
+        return year;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the calendrical state which provides internal access to this
      * instance.
      *

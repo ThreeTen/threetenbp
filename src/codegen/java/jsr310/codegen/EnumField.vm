@@ -33,6 +33,7 @@ package ${package};
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -74,6 +75,7 @@ public enum ${Type} implements Calendrical {
      *
      * @param ${type}  the ${desc} to represent
      * @return the existing ${Type}
+     * @throws IllegalCalendarFieldValueException if the ${desc} is invalid
      */
     public static ${Type} ${type}(int ${type}) {
         switch (${type}) {
@@ -82,7 +84,7 @@ public enum ${Type} implements Calendrical {
                 return ${singleton.type};
 #end
             default:
-                throw new IllegalArgumentException("${Type} cannot have the value " + ${type});
+                throw new IllegalCalendarFieldValueException("${Type} cannot have the value " + ${type});
         }
     }
 

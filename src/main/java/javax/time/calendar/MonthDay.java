@@ -33,7 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
@@ -58,27 +58,44 @@ public final class MonthDay
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -254395108L;
+    /**
+     * A sample year that can be used to seed calculations.
+     */
+    private static final Year SAMPLE_YEAR = Year.isoYear(2000);
 
     /**
-     * The month of year being represented.
+     * The month of year, not null.
      */
-    private final int month;
+    private final MonthOfYear month;
     /**
-     * The day of month being represented.
+     * The day of month, not null.
      */
-    private final int day;
+    private final DayOfMonth day;
 
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>MonthDay</code>.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @return a MonthDay object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        ISOChronology.INSTANCE.checkValidDate(SAMPLE_YEAR, monthOfYear, dayOfMonth);
+        return new MonthDay(monthOfYear, dayOfMonth);
+    }
+
+    /**
+     * Obtains an instance of <code>MonthDay</code>.
+     *
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a MonthDay object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, int dayOfMonth) {
-        return monthDay(monthOfYear.getValue(), dayOfMonth);
+        return monthDay(monthOfYear, DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
     /**
@@ -90,8 +107,7 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
-        ISOChronology.INSTANCE.checkValidDate(2000, monthOfYear, dayOfMonth);
-        return new MonthDay(monthOfYear, dayOfMonth);
+        return monthDay(MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
     /**
@@ -105,17 +121,17 @@ public final class MonthDay
      */
     public static MonthDay monthDay(Calendrical... calendricals) {
         // TODO
-        return new MonthDay(0, 0);
+        return null;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
+     * Constructor, previously validated.
      *
-     * @param monthOfYear  the month of year to represent
-     * @param dayOfMonth  the day of month to represent
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, valid for month, not null
      */
-    private MonthDay(int monthOfYear, int dayOfMonth) {
+    private MonthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
         this.month = monthOfYear;
         this.day = dayOfMonth;
     }
@@ -128,8 +144,8 @@ public final class MonthDay
      * @param newDay  the day of month to represent, from 1 to 31
      * @return the month-day, never null
      */
-    private MonthDay withMonthDay(int newMonth, int newDay) {
-        if (month == newMonth && day == newDay) {
+    private MonthDay withMonthDay(MonthOfYear newMonth, DayOfMonth newDay) {
+        if (month == newMonth && day.equals(newDay)) {
             return this;
         }
         return new MonthDay(newMonth, newDay);
@@ -175,44 +191,36 @@ public final class MonthDay
             throw new UnsupportedCalendarFieldException(field, "month-day");
         }
         if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month;
+            return month.getValue();
         }
         if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
-            return day;
+            return day.getValue();
         }
         return field.getValue(getCalendricalState());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>MonthOfYear</code> initialised to the
-     * month of this month-day.
-     *
-     * @return the month object, never null
-     */
-    public MonthOfYear monthOfYear() {
-        return MonthOfYear.monthOfYear(month);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the month of year value.
+     * Gets the month of year field.
      * <p>
-     * This method returns the numerical value for the month, from 1 to 12.
-     * The enumerated constant is returned by {@link #monthOfYear()}.
+     * This method provides access to an object representing the month field.
+     * This can be used to access the {@link MonthOfYear#getValue() int value}.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month of year, never null
      */
-    public int getMonthOfYear() {
+    public MonthOfYear getMonthOfYear() {
         return month;
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the day of month field.
+     * <p>
+     * This method provides access to an object representing the day of month field.
+     * This can be used to access the {@link DayOfMonth#getValue() int value}.
      *
-     * @return the day of month, from 1 to 31
+     * @return the day of month, never null
      */
-    public int getDayOfMonth() {
+    public DayOfMonth getDayOfMonth() {
         return day;
     }
 
@@ -227,7 +235,10 @@ public final class MonthDay
      */
     public MonthDay with(Calendrical calendrical) {
         if (calendrical instanceof MonthOfYear) {
-            return withMonthDay(((MonthOfYear) calendrical).getValue(), day);
+            return withMonthDay((MonthOfYear) calendrical, day);
+        }
+        if (calendrical instanceof DayOfMonth) {
+            return withDayOfMonth(((DayOfMonth) calendrical).getValue());
         }
         if (calendrical instanceof MonthDay) {
             return (MonthDay) calendrical;
@@ -259,8 +270,9 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
-        int[] resolved = CalendricalResolvers.previousValid().resolveDate(2000, monthOfYear, day);
-        return withMonthDay(resolved[1], resolved[2]);
+        LocalDate date = CalendricalResolvers.previousValid().resolveDate(
+                SAMPLE_YEAR, MonthOfYear.monthOfYear(monthOfYear), day);
+        return withMonthDay(date.getMonthOfYear(), date.getDayOfMonth());
     }
 
     /**
@@ -272,8 +284,9 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
-        ISOChronology.INSTANCE.checkValidDate(2000, month, dayOfMonth);
-        return withMonthDay(month, dayOfMonth);
+        DayOfMonth dom = DayOfMonth.dayOfMonth(dayOfMonth);
+        ISOChronology.INSTANCE.checkValidDate(SAMPLE_YEAR, month, dom);
+        return withMonthDay(month, dom);
     }
 
     /**
@@ -284,7 +297,7 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay withLastDayOfMonth() {
-        int dom = ISOChronology.INSTANCE.getMonthLength(2000, month);
+        DayOfMonth dom = month.getLastDayOfMonth(SAMPLE_YEAR);
         return withMonthDay(month, dom);
     }
 
@@ -328,7 +341,7 @@ public final class MonthDay
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month - 1;
+        long newMonth0 = month.getValue() - 1;
         newMonth0 = newMonth0 + months;
         newMonth0 = newMonth0 % 12;
         if (newMonth0 < 0) {
@@ -372,9 +385,9 @@ public final class MonthDay
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(MonthDay other) {
-        int cmp = MathUtils.safeCompare(month, other.month);
+        int cmp = month.compareTo(other.month);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(day, other.day);
+            cmp = day.compareTo(other.day);
         }
         return cmp;
     }
@@ -415,7 +428,7 @@ public final class MonthDay
         }
         if (other instanceof MonthDay) {
             MonthDay otherMD = (MonthDay) other;
-            return month == otherMD.month && day == otherMD.day;
+            return month == otherMD.month && day.equals(otherMD.day);
         }
         return false;
     }
@@ -427,7 +440,7 @@ public final class MonthDay
      */
     @Override
     public int hashCode() {
-        return (month << 6) + day;
+        return (month.getValue() << 6) + day.getValue();
     }
 
     //-----------------------------------------------------------------------
@@ -440,9 +453,11 @@ public final class MonthDay
      */
     @Override
     public String toString() {
+        int monthValue = month.getValue();
+        int dayValue = day.getValue();
         return new StringBuilder(10).append("XXXX-")
-            .append(month < 10 ? "-0" : "-").append(month)
-            .append(day < 10 ? "-0" : "-").append(day)
+            .append(monthValue < 10 ? "-0" : "-").append(monthValue)
+            .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .toString();
     }
 

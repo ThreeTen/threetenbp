@@ -74,6 +74,7 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      * @return the created MonthOfQuarter
      */
     public static MonthOfQuarter monthOfQuarter(int monthOfQuarter) {
+        RULE.checkValue(monthOfQuarter);
         return new MonthOfQuarter(monthOfQuarter);
     }
 
@@ -170,6 +171,16 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
     @Override
     public int hashCode() {
         return monthOfQuarter;
+    }
+
+    /**
+     * A string describing the month of quarter object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "MonthOfQuarter=" + getValue();
     }
 
     //-----------------------------------------------------------------------

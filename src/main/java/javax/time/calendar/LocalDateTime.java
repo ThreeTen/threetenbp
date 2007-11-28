@@ -33,7 +33,9 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
@@ -78,6 +80,23 @@ public final class LocalDateTime
      * <p>
      * The time fields will be set to zero by this factory method.
      *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateMidnight(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        return new LocalDateTime(date, LocalTime.MIDNIGHT);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> with the time set
+     * to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
@@ -85,7 +104,7 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        return dateTime(year, monthOfYear.getValue(), dayOfMonth, 0, 0, 0, 0);
+        return dateMidnight(year, monthOfYear.getValue(), dayOfMonth);
     }
 
     /**
@@ -101,7 +120,7 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateMidnight(int year, int monthOfYear, int dayOfMonth) {
-        return dateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);
+        return dateMidnight(year, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -304,26 +323,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Year</code> initialised to the
-     * year of this date-time.
-     *
-     * @return the year object, never null
-     */
-    public Year year() {
-        return date.year();
-    }
-
-    /**
-     * Gets an instance of <code>MonthOfYear</code> initialised to the
-     * month of this date-time.
-     *
-     * @return the month object, never null
-     */
-    public MonthOfYear monthOfYear() {
-        return date.monthOfYear();
-    }
-
-    /**
      * Gets an instance of <code>YearMonth</code> initialised to the
      * year and month of this date-time.
      *
@@ -365,50 +364,58 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ISO proleptic year value.
+     * Gets the year field.
      * <p>
-     * The year 1AD is represented by 1.<br />
-     * The year 1BC is represented by 0.<br />
-     * The year 2BC is represented by -1.<br />
+     * This method provides access to an object representing the year field.
+     * This can be used to access the {@link Year#getValue() int value}.
      *
-     * @return the year, from MIN_YEAR to MAX_YEAR
+     * @return the year, never null
      */
-    public int getYear() {
+    public Year getYear() {
         return date.getYear();
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month of year field.
      * <p>
-     * This method returns the numerical value for the month, from 1 to 12.
-     * The enumerated constant is returned by {@link #monthOfYear()}.
+     * This method provides access to an object representing the month field.
+     * This can be used to access the {@link MonthOfYear#getValue() int value}.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month of year, never null
      */
-    public int getMonthOfYear() {
+    public MonthOfYear getMonthOfYear() {
         return date.getMonthOfYear();
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the day of month field.
+     * <p>
+     * This method provides access to an object representing the day of month field.
+     * This can be used to access the {@link DayOfMonth#getValue() int value}.
      *
-     * @return the day of month, from 1 to 31
+     * @return the day of month, never null
      */
-    public int getDayOfMonth() {
+    public DayOfMonth getDayOfMonth() {
         return date.getDayOfMonth();
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the day of year field.
+     * <p>
+     * This method provides access to an object representing the day of year field.
+     * This can be used to access the {@link DayOfYear#getValue() int value}.
      *
-     * @return the day of year, from 1 to 366
+     * @return the day of year, never null
      */
-    public int getDayOfYear() {
+    public DayOfYear getDayOfYear() {
         return date.getDayOfYear();
     }
 
     /**
-     * Gets the day of week value.
+     * Gets the day of week field.
+     * <p>
+     * This method provides access to an object representing the day of week field.
+     * This can be used to access the {@link DayOfWeek#getValue() int value}.
      *
      * @return the day of week, never null
      */
@@ -416,6 +423,7 @@ public final class LocalDateTime
         return date.getDayOfWeek();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the hour of day value.
      *
@@ -592,13 +600,15 @@ public final class LocalDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated ZonedDateTime
      */
     public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        if (year == getYear() && monthOfYear == getMonthOfYear() && dayOfMonth == getDayOfMonth()) {
+        if (year == getYear().getValue() &&
+                monthOfYear == getMonthOfYear().getValue() &&
+                dayOfMonth == getDayOfMonth().getValue()) {
             return this;
         }
         LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);

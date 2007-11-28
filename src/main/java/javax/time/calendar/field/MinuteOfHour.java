@@ -74,6 +74,7 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      * @return the created MinuteOfHour
      */
     public static MinuteOfHour minuteOfHour(int minuteOfHour) {
+        RULE.checkValue(minuteOfHour);
         return new MinuteOfHour(minuteOfHour);
     }
 
@@ -170,6 +171,16 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
     @Override
     public int hashCode() {
         return minuteOfHour;
+    }
+
+    /**
+     * A string describing the minute of hour object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "MinuteOfHour=" + getValue();
     }
 
     //-----------------------------------------------------------------------
