@@ -55,6 +55,10 @@ public final class LocalTime
         implements ReadableTime, Calendrical, Comparable<LocalTime>, Serializable {
 
     /**
+     * Constant for the local time of midnight, 00:00.
+     */
+    public static final LocalTime MIDNIGHT = new LocalTime(0, 0, 0, 0);
+    /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 798759096L;
