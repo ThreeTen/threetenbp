@@ -136,29 +136,29 @@ public final class ISOChronology implements Serializable {
 //        return new State(epochMonths, epochSeconds);
 //    }
 
-    /**
-     * Validates the date from a year, month and day.
-     *
-     * @param year  the year
-     * @param monthOfYear  the month of year
-     * @param dayOfMonth  the day of month
-     * @return true if valid
-     */
-    public boolean validateDate(int year, int monthOfYear, int dayOfMonth) {
-        if (year == Integer.MIN_VALUE) {
-            return false;
-        }
-        if (monthOfYear < 1 || monthOfYear > 12) {
-            return false;
-        }
-        if (dayOfMonth < 1 || dayOfMonth > 28) {
-            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(Year.isoYear(year));
-            if (dayOfMonth < 1 || dayOfMonth > length) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    /**
+//     * Validates the date from a year, month and day.
+//     *
+//     * @param year  the year
+//     * @param monthOfYear  the month of year
+//     * @param dayOfMonth  the day of month
+//     * @return true if valid
+//     */
+//    public boolean validateDate(int year, int monthOfYear, int dayOfMonth) {
+//        if (year == Integer.MIN_VALUE) {
+//            return false;
+//        }
+//        if (monthOfYear < 1 || monthOfYear > 12) {
+//            return false;
+//        }
+//        if (dayOfMonth < 1 || dayOfMonth > 28) {
+//            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(Year.isoYear(year));
+//            if (dayOfMonth < 1 || dayOfMonth > length) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     /**
      * Validates the date from a year, month and day.
