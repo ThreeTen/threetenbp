@@ -79,8 +79,8 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDateTime</code> with the time set
-     * to midnight at the start of day.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month and
+     * day with the time set to midnight at the start of day.
      * <p>
      * The time fields will be set to zero by this factory method.
      *
@@ -96,8 +96,8 @@ public final class LocalDateTime
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> with the time set
-     * to midnight at the start of day.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month and
+     * day with the time set to midnight at the start of day.
      * <p>
      * The time fields will be set to zero by this factory method.
      *
@@ -108,12 +108,13 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        return dateMidnight(year, monthOfYear.getValue(), dayOfMonth);
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code> with the time set
-     * to midnight at the start of day.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month and
+     * day with the time set to midnight at the start of day.
      * <p>
      * The time fields will be set to zero by this factory method.
      *
@@ -124,11 +125,79 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateMidnight(int year, int monthOfYear, int dayOfMonth) {
-        return dateMidnight(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        return new LocalDateTime(date, LocalTime.MIDNIGHT);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        return new LocalDateTime(date, time);
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code>.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour, SecondOfMinute secondOfMinute) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        return new LocalDateTime(date, time);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour, minute, second and nanosecond.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param nanoOfSecond  the nano of second to represent, not null
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new LocalDateTime(date, time);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
@@ -141,11 +210,58 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0);
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        return new LocalDateTime(date, time);
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code>.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
+     * <p>
+     * The nanosecond field will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        return new LocalDateTime(date, time);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour, minute, second and nanosecond.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @return a LocalDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new LocalDateTime(date, time);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
@@ -158,30 +274,14 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0);
+        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        return new LocalDateTime(date, time);
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code>.
-     * <p>
-     * The nanosecond field will be set to zero by this factory method.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a LocalDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0);
-    }
-
-    /**
-     * Obtains an instance of <code>LocalDateTime</code>.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
      *
@@ -196,31 +296,14 @@ public final class LocalDateTime
      */
     public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0);
-    }
-
-    /**
-     * Obtains an instance of <code>LocalDateTime</code>.
-     *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @return a LocalDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
         return new LocalDateTime(date, time);
     }
 
     /**
-     * Obtains an instance of <code>LocalDateTime</code>.
+     * Obtains an instance of <code>LocalDateTime</code> from year, month,
+     * day, hour, minute, second and nanosecond.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
@@ -239,6 +322,7 @@ public final class LocalDateTime
         return new LocalDateTime(date, time);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>LocalDateTime</code> from a date and time.
      *
