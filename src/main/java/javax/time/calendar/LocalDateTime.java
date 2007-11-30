@@ -209,7 +209,9 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
+    public static LocalDateTime dateTime(
+            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
         return new LocalDateTime(date, time);
@@ -230,7 +232,8 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
+    public static LocalDateTime dateTime(
+            int year, MonthOfYear monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
@@ -251,7 +254,8 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static LocalDateTime dateTime(int year, MonthOfYear monthOfYear, int dayOfMonth,
+    public static LocalDateTime dateTime(
+            int year, MonthOfYear monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
@@ -273,7 +277,9 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
+    public static LocalDateTime dateTime(
+            int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
         return new LocalDateTime(date, time);
@@ -294,7 +300,8 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+    public static LocalDateTime dateTime(
+            int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
@@ -315,7 +322,8 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static LocalDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+    public static LocalDateTime dateTime(
+            int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
