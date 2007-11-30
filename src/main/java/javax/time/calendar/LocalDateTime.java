@@ -1028,9 +1028,21 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the string form of the date-time.
+     * Outputs the date-time as a <code>String</code>, such as
+     * '2007-12-03T10:15:30'.
+     * <p>
+     * The output will be one of the following formats:
+     * <ul>
+     * <li>'yyyy-MM-ddThh:mm'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSS'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSS'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSSSS'</li>
+     * </ul>
+     * The format used will be the shortest that outputs the full value of
+     * the time where the omitted parts are implied to be zero.
      *
-     * @return the string form of the date-time
+     * @return the formatted date-time string, never null
      */
     @Override
     public String toString() {

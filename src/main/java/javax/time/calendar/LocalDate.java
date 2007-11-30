@@ -42,7 +42,7 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a date without a time zone, such as 2007-12-03.
+ * A calendrical representation of a date without a time zone, such as '2007-12-03'.
  * <p>
  * LocalDate is an immutable calendrical that represents a date, often viewed
  * as year-month-day. This object can also access other date fields such as
@@ -692,9 +692,11 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the string form of the date.
+     * Outputs the date as a <code>String</code>, such as '2007-12-03'.
+     * <p>
+     * The output will be in the format 'yyyy-MM-dd'.
      *
-     * @return the string form of the date
+     * @return the formatted date string, never null
      */
     @Override
     public String toString() {

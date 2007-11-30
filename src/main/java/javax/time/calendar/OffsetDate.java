@@ -41,7 +41,7 @@ import javax.time.period.PeriodView;
 
 /**
  * A calendrical representation of a date with a zone offset from UTC,
- * such as 2007-12-03+02:00.
+ * such as '2007-12-03+01:00'.
  * <p>
  * OffsetDate is an immutable calendrical that represents a date, often viewed
  * as year-month-day-offset. This object can also sccess other date fields such as
@@ -637,12 +637,12 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a <code>String</code>.
+     * Outputs the date as a <code>String</code>, such as '2007-12-03+01:00'.
      * <p>
      * The output will be in the format 'yyyy-MM-ddZ' where 'Z' is the id of
      * the zone offset, such as '+02:30' or 'Z'.
      *
-     * @return the formatted time string, never null
+     * @return the formatted date string, never null
      */
     @Override
     public String toString() {
