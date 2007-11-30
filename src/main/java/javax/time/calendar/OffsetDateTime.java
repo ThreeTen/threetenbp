@@ -78,7 +78,206 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month and
+     * day with the time set to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateMidnight(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateMidnight(year, monthOfYear, dayOfMonth);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month and
+     * day with the time set to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateMidnight(
+            int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateMidnight(year, monthOfYear, dayOfMonth);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month and
+     * day with the time set to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateMidnight(
+            int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateMidnight(year, monthOfYear, dayOfMonth);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour, minute, second and nanosecond.
+     *
+     * @param year  the year to represent, not null
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, not null
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param nanoOfSecond  the nano of second to represent, not null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
+     * <p>
+     * The second and nanosecond fields will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
+     * <p>
+     * The nanosecond field will be set to zero by this factory method.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour, minute, second and nanosecond.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            int year, MonthOfYear monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
@@ -88,16 +287,20 @@ public final class OffsetDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return an OffsetDateTime object, never null
+     * @return a OffsetDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static OffsetDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+    public static OffsetDateTime dateTime(
+            int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, offset);
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour);
+        return new OffsetDateTime(dt, offset);
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour, minute and second, setting the nanosecond to zero.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
      *
@@ -108,16 +311,20 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return an OffsetDateTime object, never null
+     * @return a OffsetDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static OffsetDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+    public static OffsetDateTime dateTime(
+            int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, offset);
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute);
+        return new OffsetDateTime(dt, offset);
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
+     * Obtains an instance of <code>OffsetDateTime</code> from year, month,
+     * day, hour, minute, second and nanosecond.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
@@ -127,13 +334,34 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public static OffsetDateTime dateTime(
+            int year, int monthOfYear, int dayOfMonth,
+            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+                hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new OffsetDateTime(dt, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code>.
+     *
+     * @param dateTime  the date-time to represent, not null
+     * @param offset  the zone offset, not null
      * @return an OffsetDateTime object, never null
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static OffsetDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-        return dateTime(dt, offset);
+    public static OffsetDateTime dateTime(LocalDateTime dateTime, ZoneOffset offset) {
+        if (dateTime == null) {
+            throw new NullPointerException("The date-time must not be null");
+        }
+        if (offset == null) {
+            throw new NullPointerException("The zone offset must not be null");
+        }
+        return new OffsetDateTime(dateTime, offset);
     }
 
     /**
@@ -166,24 +394,6 @@ public final class OffsetDateTime
         int sec = secsOfDay % 60;
         int nano = instant.getNanoOfSecond();
         LocalDateTime dateTime = LocalDateTime.dateTime(0, 0, 0, hour, min, sec, nano);
-        return new OffsetDateTime(dateTime, offset);
-    }
-
-    /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
-     *
-     * @param dateTime  the date-time to represent, not null
-     * @param offset  the zone offset, not null
-     * @return an OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public static OffsetDateTime dateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        if (dateTime == null) {
-            throw new NullPointerException("The date-time must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
-        }
         return new OffsetDateTime(dateTime, offset);
     }
 
