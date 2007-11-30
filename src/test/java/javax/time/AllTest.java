@@ -31,6 +31,9 @@
  */
 package javax.time;
 
+import javax.time.calendar.TestLocalDate;
+import javax.time.calendar.TestLocalTime;
+import javax.time.calendar.TestOffsetDate;
 import javax.time.period.field.TestDays;
 import javax.time.period.field.TestHours;
 import javax.time.period.field.TestMinutes;
@@ -56,6 +59,10 @@ public class AllTest {
             // main classes
             TestDuration.class,
             TestInstant.class,
+            // calendar classes
+            TestLocalDate.class,
+            TestLocalTime.class,
+            TestOffsetDate.class,
             // period fields
             TestDays.class,
             TestHours.class,
