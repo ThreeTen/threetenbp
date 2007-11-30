@@ -290,6 +290,7 @@ public class CodeGen {
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
         processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
+//        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "NanoOfSecond", "nano of second", null, "0", "999999999");
 
         processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticMonthOfYear", "Coptic month of year", COPTIC_MONTH_OF_YEARS, "1", "13");
         processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticSeasonOfYear", "Coptic season of year", COPTIC_SEASON, "1", "3");

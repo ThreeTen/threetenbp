@@ -33,12 +33,15 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
+import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MinuteOfHour;
+import javax.time.calendar.field.NanoOfSecond;
+import javax.time.calendar.field.SecondOfMinute;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a time without a time zone, such as 10:15:30.
+ * A calendrical representation of a time without a time zone, such as '10:15:30'.
  * <p>
  * LocalTime is an immutable calendrical that represents a time, often
  * viewed as hour-minute-second.
@@ -57,30 +60,124 @@ public final class LocalTime
     /**
      * Constant for the local time of midnight, 00:00.
      */
-    public static final LocalTime MIDNIGHT = new LocalTime(0, 0, 0, 0);
+    public static final LocalTime MIDNIGHT = new LocalTime(
+            HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0),
+            SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
+    /**
+     * Constant for the local time of midnight, 12:00.
+     */
+    public static final LocalTime MIDDAY = new LocalTime(
+            HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0),
+            SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
     /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 798759096L;
+    /** Hours per minute. */
+    private static final int HOURS_PER_DAY = 24;
+    /** Minutes per hour. */
+    private static final int MINUTES_PER_HOUR = 60;
+    /** Minutes per day. */
+    private static final int MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+    /** Seconds per minute. */
+    private static final int SECONDS_PER_MINUTE = 60;
+    /** Seconds per hour. */
+    private static final int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+    /** Seconds per day. */
+    private static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    /** Nanos per second. */
+    private static final int NANOS_PER_SECOND = 1000000000;
+    /** Nanos per minute. */
+    private static final long NANOS_PER_MINUTE = ((long) NANOS_PER_SECOND) * SECONDS_PER_MINUTE;
+    /** Nanos per hour. */
+    private static final long NANOS_PER_HOUR = ((long) NANOS_PER_MINUTE) * MINUTES_PER_HOUR;
+    /** Nanos per day. */
+    private static final long NANOS_PER_DAY = ((long) NANOS_PER_HOUR) * HOURS_PER_DAY;
 
     /**
-     * The hour, from 0 to 23.
+     * The hour, never null.
      */
-    private final int hour;
+    private final HourOfDay hour;
     /**
-     * The minute, from 0 to 59.
+     * The minute, never null.
      */
-    private final int minute;
+    private final MinuteOfHour minute;
     /**
-     * The second, from 0 to 59.
+     * The second, never null.
      */
-    private final int second;
+    private final SecondOfMinute second;
     /**
-     * The nanosecond, from 0 to 999,999,999.
+     * The nanosecond, never null.
      */
-    private final int nano;
+    private final NanoOfSecond nano;
+//    /**
+//     * The nanosecond of day.
+//     */
+//    private transient volatile long nanoOfDay;
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalTime</code> from an hour and minute,
+     * setting the second and nanosecond to zero.
+     *
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @return a LocalTime object, never null
+     */
+    public static LocalTime time(HourOfDay hourOfDay, MinuteOfHour minuteOfHour) {
+        return time(hourOfDay, minuteOfHour, SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalTime</code> from an hour, minute and
+     * second, setting the nanosecond to zero.
+     *
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @return a LocalTime object, never null
+     */
+    public static LocalTime time(
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour, SecondOfMinute secondOfMinute) {
+        return time(hourOfDay, minuteOfHour, secondOfMinute, NanoOfSecond.NANO_0);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalTime</code> from an hour, minute,
+     * second and nanosecond.
+     *
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param nanoOfSecond  the nano of second to represent, not null
+     * @return a LocalTime object, never null
+     */
+    public static LocalTime time(
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond) {
+        if (hourOfDay == null) {
+            throw new NullPointerException("HourOfDay must not be null");
+        }
+        if (minuteOfHour == null) {
+            throw new NullPointerException("MinuteOfHour must not be null");
+        }
+        if (secondOfMinute == null) {
+            throw new NullPointerException("SecondOfMinute must not be null");
+        }
+        if (nanoOfSecond == null) {
+            throw new NullPointerException("NanoOfSecond must not be null");
+        }
+        if (hourOfDay.getValue() == 0 && minuteOfHour.getValue() == 0 &&
+                secondOfMinute.getValue() == 0 && nanoOfSecond == NanoOfSecond.NANO_0) {
+            return MIDNIGHT;
+        }
+        if (hourOfDay.getValue() == 12 && minuteOfHour.getValue() == 0 &&
+                secondOfMinute.getValue() == 0 && nanoOfSecond == NanoOfSecond.NANO_0) {
+            return MIDDAY;
+        }
+        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    }
+
     /**
      * Obtains an instance of <code>LocalTime</code>.
      * <p>
@@ -92,7 +189,17 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour) {
-        return time(hourOfDay, minuteOfHour, 0, 0);
+        if (hourOfDay == 0 && minuteOfHour == 0) {
+            return MIDNIGHT;
+        }
+        if (hourOfDay == 12 && minuteOfHour == 0) {
+            return MIDDAY;
+        }
+        return new LocalTime(
+                HourOfDay.hourOfDay(hourOfDay),
+                MinuteOfHour.minuteOfHour(minuteOfHour),
+                SecondOfMinute.secondOfMinute(0),
+                NanoOfSecond.NANO_0);
     }
 
     /**
@@ -107,7 +214,18 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        return time(hourOfDay, minuteOfHour, secondOfMinute, 0);
+        if (hourOfDay == 0 && minuteOfHour == 0 && secondOfMinute == 0) {
+            return MIDNIGHT;
+        }
+        if (hourOfDay == 12 && minuteOfHour == 0 && secondOfMinute == 0) {
+            return MIDDAY;
+        }
+        return new LocalTime(
+                HourOfDay.hourOfDay(hourOfDay),
+                MinuteOfHour.minuteOfHour(minuteOfHour),
+                SecondOfMinute.secondOfMinute(secondOfMinute),
+                NanoOfSecond.NANO_0);
+
     }
 
 //    /**
@@ -142,11 +260,17 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        ISOChronology.INSTANCE.hourOfDayRule().checkValue(hourOfDay);
-        ISOChronology.INSTANCE.minuteOfHourRule().checkValue(minuteOfHour);
-        ISOChronology.INSTANCE.secondOfMinuteRule().checkValue(secondOfMinute);
-        ISOChronology.INSTANCE.nanoOfSecondRule().checkValue(nanoOfSecond);
-        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        if (hourOfDay == 0 && minuteOfHour == 0 && secondOfMinute == 0 && nanoOfSecond == 0) {
+            return MIDNIGHT;
+        }
+        if (hourOfDay == 12 && minuteOfHour == 0 && secondOfMinute == 0 && nanoOfSecond == 0) {
+            return MIDDAY;
+        }
+        return new LocalTime(
+                HourOfDay.hourOfDay(hourOfDay),
+                MinuteOfHour.minuteOfHour(minuteOfHour),
+                SecondOfMinute.secondOfMinute(secondOfMinute),
+                NanoOfSecond.nanoOfSecond(nanoOfSecond));
     }
 
     /**
@@ -164,14 +288,16 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor.
+     * Constructor, previously validated.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param nanoOfSecond  the nano of second to represent, not null
      */
-    private LocalTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+    private LocalTime(
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond) {
         this.hour = hourOfDay;
         this.minute = minuteOfHour;
         this.second = secondOfMinute;
@@ -229,65 +355,87 @@ public final class LocalTime
             throw new UnsupportedCalendarFieldException(field, "time");
         }
         if (field == ISOChronology.INSTANCE.hourOfDayRule()) {
-            return hour;
+            return hour.getValue();
         }
         if (field == ISOChronology.INSTANCE.minuteOfHourRule()) {
-            return minute;
+            return minute.getValue();
         }
         if (field == ISOChronology.INSTANCE.secondOfMinuteRule()) {
-            return second;
+            return second.getValue();
         }
         if (field == ISOChronology.INSTANCE.nanoOfSecondRule()) {
-            return nano;
+            return nano.getValue();
         }
         return field.getValue(getCalendricalState());
     }
 
     //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day value.
+     * Gets the hour of day field.
+     * <p>
+     * This method provides access to an object representing the hour of day field.
+     * This can be used to access the {@link HourOfDay#getValue() int value}.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour of day, never null
      */
-    public int getHourOfDay() {
+    public HourOfDay getHourOfDay() {
         return hour;
     }
 
     /**
-     * Gets the minute of hour value.
+     * Gets the minute of hour field.
+     * <p>
+     * This method provides access to an object representing the minute of hour field.
+     * This can be used to access the {@link MinuteOfHour#getValue() int value}.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute of hour, never null
      */
-    public int getMinuteOfHour() {
+    public MinuteOfHour getMinuteOfHour() {
         return minute;
     }
 
     /**
-     * Gets the second of minute value.
+     * Gets the second of minute field.
+     * <p>
+     * This method provides access to an object representing the second of minute field.
+     * This can be used to access the {@link SecondOfMinute#getValue() int value}.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second of minute, never null
      */
-    public int getSecondOfMinute() {
+    public SecondOfMinute getSecondOfMinute() {
         return second;
     }
 
     /**
-     * Gets the nanosecond fraction of a second expressed as an int.
+     * Gets the nano of second field.
+     * <p>
+     * This method provides access to an object representing the nano of second field.
+     * This can be used to access the {@link NanoOfSecond#getValue() int value}.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano of second, never null
      */
-    public int getNanoOfSecond() {
+    public NanoOfSecond getNanoOfSecond() {
         return nano;
     }
 
     /**
-     * Gets the nanosecond fraction of a second expressed as a double.
+     * Gets the second and nanosecond, expressed as a double in seconds.
      *
-     * @return the nano of second, from 0 to 0.999,999,999
+     * @return the nano of second, from 0 to 59.999,999,999
      */
-    public double getNanoFraction() {
-        return ((double) nano) / 1000000000d;
+    public double getFractionalSecondOfMinute() {
+        // TODO: check maths
+        return (((double) nano.getValue()) / 1000000000d) + second.getValue();
+    }
+
+    /**
+     * Gets the time as a fraction of a day, expressed as a double in days.
+     *
+     * @return the nano of second, from 0 to &lt; 1
+     */
+    public double getFractionalDay() {
+        // TODO: check maths
+        return (((double) toNanoOfDay()) / ((double) NANOS_PER_DAY));
     }
 
     //-----------------------------------------------------------------------
@@ -323,9 +471,14 @@ public final class LocalTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated LocalTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
-        return null;
+        if (hourOfDay == getHourOfDay().getValue()) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay(hourOfDay);
+        return time(newHour, minute, second, nano);
     }
 
     /**
@@ -335,9 +488,14 @@ public final class LocalTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated LocalTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
-        return null;
+        if (minuteOfHour == getMinuteOfHour().getValue()) {
+            return this;
+        }
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour(minuteOfHour);
+        return time(hour, newMinute, second, nano);
     }
 
     /**
@@ -347,9 +505,14 @@ public final class LocalTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated LocalTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
-        return null;
+        if (secondOfMinute == getSecondOfMinute().getValue()) {
+            return this;
+        }
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute(secondOfMinute);
+        return time(hour, minute, newSecond, nano);
     }
 
     /**
@@ -359,9 +522,14 @@ public final class LocalTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated LocalTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
-        return null;
+        if (nanoOfSecond == getNanoOfSecond().getValue()) {
+            return this;
+        }
+        NanoOfSecond newNano = NanoOfSecond.nanoOfSecond(nanoOfSecond);
+        return time(hour, minute, second, newNano);
     }
 
     //-----------------------------------------------------------------------
@@ -401,7 +569,11 @@ public final class LocalTime
      * @return a new updated LocalTime, never null
      */
     public LocalTime plusHours(int hours) {
-        return null;
+        if (hours == 0) {
+            return this;
+        }
+        int newHour = ((hours % HOURS_PER_DAY) + hour.getValue() + HOURS_PER_DAY) % HOURS_PER_DAY;
+        return withHourOfDay(newHour);
     }
 
     /**
@@ -413,7 +585,17 @@ public final class LocalTime
      * @return a new updated LocalTime, never null
      */
     public LocalTime plusMinutes(int minutes) {
-        return null;
+        if (minutes == 0) {
+            return this;
+        }
+        int mofd = hour.getValue() * MINUTES_PER_HOUR + minute.getValue();
+        int newMofd = ((minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+        if (mofd == newMofd) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay(newMofd / MINUTES_PER_HOUR);
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour(newMofd % MINUTES_PER_HOUR);
+        return time(newHour, newMinute, second, nano);
     }
 
     /**
@@ -425,7 +607,19 @@ public final class LocalTime
      * @return a new updated LocalTime, never null
      */
     public LocalTime plusSeconds(int seconds) {
-        return null;
+        if (seconds == 0) {
+            return this;
+        }
+        int sofd = hour.getValue() * SECONDS_PER_HOUR +
+                    minute.getValue() * SECONDS_PER_MINUTE + second.getValue();
+        int newSofd = ((seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
+        if (sofd == newSofd) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay(newSofd / SECONDS_PER_HOUR);
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour((newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR);
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute(newSofd % SECONDS_PER_HOUR);
+        return time(newHour, newMinute, newSecond, nano);
     }
 
     /**
@@ -437,7 +631,19 @@ public final class LocalTime
      * @return a new updated LocalTime, never null
      */
     public LocalTime plusNanos(int nanos) {
-        return null;
+        if (nanos == 0) {
+            return this;
+        }
+        long nofd = toNanoOfDay();
+        long newNofd = ((nanos % NANOS_PER_DAY) + nofd + NANOS_PER_DAY) % NANOS_PER_DAY;
+        if (nofd == newNofd) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay((int) (newNofd / NANOS_PER_HOUR));
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour((int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR));
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute((int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_HOUR));
+        NanoOfSecond newNano = NanoOfSecond.nanoOfSecond((int) (newNofd % NANOS_PER_SECOND));
+        return time(newHour, newMinute, newSecond, newNano);
     }
 
     //-----------------------------------------------------------------------
@@ -453,6 +659,28 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Extracts the time as nanos of day,
+     * from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>.
+     *
+     * @return <code>this</code>, never null
+     */
+    private long toNanoOfDay() {
+//        if (nanoOfDay > 0) {
+//            return nanoOfDay;
+//        }
+        if (this == MIDNIGHT) {
+            return 0;
+        }
+        long total = hour.getValue() * NANOS_PER_HOUR;
+        total += minute.getValue() * NANOS_PER_MINUTE;
+        total += second.getValue() * ((long) NANOS_PER_SECOND);
+        total += total + nano.getValue();
+//        nanoOfDay = total;
+        return total;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this time to another time.
      *
      * @param other  the other time to compare to, not null
@@ -460,13 +688,14 @@ public final class LocalTime
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(LocalTime other) {
-        int cmp = MathUtils.safeCompare(hour, other.hour);
+//        return MathUtils.safeCompare(toNanoOfDay(), other.toNanoOfDay());
+        int cmp = hour.compareTo(other.hour);
         if (cmp == 0) {
-            cmp = MathUtils.safeCompare(minute, other.minute);
+            cmp = minute.compareTo(other.minute);
             if (cmp == 0) {
-                cmp = MathUtils.safeCompare(second, other.second);
+                cmp = second.compareTo(other.second);
                 if (cmp == 0) {
-                    cmp = MathUtils.safeCompare(nano, other.nano);
+                    cmp = nano.compareTo(other.nano);
                 }
             }
         }
@@ -509,7 +738,9 @@ public final class LocalTime
         }
         if (other instanceof LocalTime) {
             LocalTime localTime = (LocalTime) other;
-            return  true;
+//            return toNanoOfDay() == localTime.toNanoOfDay();
+            return hour.equals(localTime.hour) && minute.equals(localTime.minute) &&
+                    second.equals(localTime.second) && nano.equals(localTime.nano);
         }
         return false;
     }
@@ -521,12 +752,13 @@ public final class LocalTime
      */
     @Override
     public int hashCode() {
-        return 0;
+        long nod = toNanoOfDay();
+        return (int) (nod ^ (nod >>> 32));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a <code>String</code>.
+     * Outputs the time as a <code>String</code>, such as '10:15'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
@@ -544,17 +776,22 @@ public final class LocalTime
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(18);
-        buf.append(hour < 10 ? "0" : "").append(hour)
-            .append(minute < 10 ? ":0" : ":").append(minute);
-        if (second > 0 || nano > 0) {
-            buf.append(second < 10 ? "-0" : "-").append(second);
-            if (nano > 0) {
-                if (nano % 1000000 == 0) {
-                    buf.append(Integer.toString((nano / 1000000) + 1000).substring(1));
-                } else if (nano % 1000 == 0) {
-                    buf.append(Integer.toString((nano / 1000) + 1000000).substring(1));
+        int hourValue = hour.getValue();
+        int minuteValue = minute.getValue();
+        int secondValue = second.getValue();
+        int nanoValue = nano.getValue();
+        buf.append(hourValue < 10 ? "0" : "").append(hourValue)
+            .append(minuteValue < 10 ? ":0" : ":").append(minuteValue);
+        if (secondValue > 0 || nanoValue > 0) {
+            buf.append(secondValue < 10 ? ":0" : ":").append(secondValue);
+            if (nanoValue > 0) {
+                buf.append('.');
+                if (nanoValue % 1000000 == 0) {
+                    buf.append(Integer.toString((nanoValue / 1000000) + 1000).substring(1));
+                } else if (nanoValue % 1000 == 0) {
+                    buf.append(Integer.toString((nanoValue / 1000) + 1000000).substring(1));
                 } else {
-                    buf.append(Integer.toString((nano) + 1000000000).substring(1));
+                    buf.append(Integer.toString((nanoValue) + 1000000000).substring(1));
                 }
             }
         }

@@ -40,11 +40,16 @@ import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.NanoOfSecond;
+import javax.time.calendar.field.SecondOfMinute;
 import javax.time.period.PeriodView;
 
 /**
- * A calendrical representation of a date-time with a time zone.
+ * A calendrical representation of a date-time with a time zone,
+ * such as '2007-12-03T10:15:30+01:00 Europe/Paris'.
  * <p>
  * ZonedDateTime is an immutable calendrical that represents a date-time, often
  * viewed as year-month-day-hour-minute-second-zone.
@@ -517,48 +522,51 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day value.
+     * Gets the hour of day field.
+     * <p>
+     * This method provides access to an object representing the hour of day field.
+     * This can be used to access the {@link HourOfDay#getValue() int value}.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour of day, never null
      */
-    public int getHourOfDay() {
+    public HourOfDay getHourOfDay() {
         return dateTime.getHourOfDay();
     }
 
     /**
-     * Gets the minute of hour value.
+     * Gets the minute of hour field.
+     * <p>
+     * This method provides access to an object representing the minute of hour field.
+     * This can be used to access the {@link MinuteOfHour#getValue() int value}.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute of hour, never null
      */
-    public int getMinuteOfHour() {
+    public MinuteOfHour getMinuteOfHour() {
         return dateTime.getMinuteOfHour();
     }
 
     /**
-     * Gets the second of minute value.
+     * Gets the second of minute field.
+     * <p>
+     * This method provides access to an object representing the second of minute field.
+     * This can be used to access the {@link SecondOfMinute#getValue() int value}.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second of minute, never null
      */
-    public int getSecondOfMinute() {
+    public SecondOfMinute getSecondOfMinute() {
         return dateTime.getSecondOfMinute();
     }
 
     /**
-     * Gets the nanosecond fraction of a second expressed as an int.
+     * Gets the nano of second field.
+     * <p>
+     * This method provides access to an object representing the nano of second field.
+     * This can be used to access the {@link NanoOfSecond#getValue() int value}.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano of second, never null
      */
-    public int getNanoOfSecond() {
+    public NanoOfSecond getNanoOfSecond() {
         return dateTime.getNanoOfSecond();
-    }
-
-    /**
-     * Gets the nanosecond fraction of a second expressed as a double.
-     *
-     * @return the nano of second, from 0 to 0.999,999,999
-     */
-    public double getNanoFraction() {
-        return dateTime.getNanoFraction();
     }
 
     //-----------------------------------------------------------------------
@@ -713,6 +721,7 @@ public final class ZonedDateTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
         LocalDateTime newDT = dateTime.localDateTime().withHourOfDay(hourOfDay);
@@ -727,6 +736,7 @@ public final class ZonedDateTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
         LocalDateTime newDT = dateTime.localDateTime().withMinuteOfHour(minuteOfHour);
@@ -741,6 +751,7 @@ public final class ZonedDateTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
         LocalDateTime newDT = dateTime.localDateTime().withSecondOfMinute(secondOfMinute);
@@ -755,6 +766,7 @@ public final class ZonedDateTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalDateTime newDT = dateTime.localDateTime().withNanoOfSecond(nanoOfSecond);
@@ -1099,7 +1111,8 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the date-time as a <code>String</code>.
+     * Outputs the date-time as a <code>String</code>, such as
+     * '2007-12-03T10:15:30+01:00 Europe/Paris'.
      * <p>
      * The output will be one of the following formats:
      * <ul>

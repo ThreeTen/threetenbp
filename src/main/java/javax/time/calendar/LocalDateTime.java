@@ -36,13 +36,17 @@ import java.io.Serializable;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.NanoOfSecond;
+import javax.time.calendar.field.SecondOfMinute;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
  * A calendrical representation of a date-time without a time zone,
- * such as 2007-12-03T10:15:30.
+ * such as '2007-12-03T10:15:30'.
  * <p>
  * LocalDateTime is an immutable calendrical that represents a date-time, often
  * viewed as year-month-day-hour-minute-second. This object can also access other
@@ -232,6 +236,23 @@ public final class LocalDateTime
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new LocalDateTime(date, time);
+    }
+
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from a date and time.
+     *
+     * @param date  the date to represent, not null
+     * @param time  the time to represent, not null
+     * @return a LocalDateTime object, never null
+     */
+    public static LocalDateTime dateTime(LocalDate date, LocalTime time) {
+        if (date == null) {
+            throw new NullPointerException("The date must not be null");
+        }
+        if (time == null) {
+            throw new NullPointerException("The time must not be null");
+        }
         return new LocalDateTime(date, time);
     }
 
@@ -425,48 +446,51 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day value.
+     * Gets the hour of day field.
+     * <p>
+     * This method provides access to an object representing the hour of day field.
+     * This can be used to access the {@link HourOfDay#getValue() int value}.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour of day, never null
      */
-    public int getHourOfDay() {
+    public HourOfDay getHourOfDay() {
         return time.getHourOfDay();
     }
 
     /**
-     * Gets the minute of hour value.
+     * Gets the minute of hour field.
+     * <p>
+     * This method provides access to an object representing the minute of hour field.
+     * This can be used to access the {@link MinuteOfHour#getValue() int value}.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute of hour, never null
      */
-    public int getMinuteOfHour() {
+    public MinuteOfHour getMinuteOfHour() {
         return time.getMinuteOfHour();
     }
 
     /**
-     * Gets the second of minute value.
+     * Gets the second of minute field.
+     * <p>
+     * This method provides access to an object representing the second of minute field.
+     * This can be used to access the {@link SecondOfMinute#getValue() int value}.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second of minute, never null
      */
-    public int getSecondOfMinute() {
+    public SecondOfMinute getSecondOfMinute() {
         return time.getSecondOfMinute();
     }
 
     /**
-     * Gets the nanosecond fraction of a second expressed as an int.
+     * Gets the nano of second field.
+     * <p>
+     * This method provides access to an object representing the nano of second field.
+     * This can be used to access the {@link NanoOfSecond#getValue() int value}.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano of second, never null
      */
-    public int getNanoOfSecond() {
+    public NanoOfSecond getNanoOfSecond() {
         return time.getNanoOfSecond();
-    }
-
-    /**
-     * Gets the nanosecond fraction of a second expressed as a double.
-     *
-     * @return the nano of second, from 0 to 0.999,999,999
-     */
-    public double getNanoFraction() {
-        return time.getNanoFraction();
     }
 
     //-----------------------------------------------------------------------
@@ -622,6 +646,7 @@ public final class LocalDateTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalDateTime withHourOfDay(int hourOfDay) {
         LocalTime newTime = time.withHourOfDay(hourOfDay);
@@ -635,6 +660,7 @@ public final class LocalDateTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalDateTime withMinuteOfHour(int minuteOfHour) {
         LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
@@ -648,6 +674,7 @@ public final class LocalDateTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalDateTime withSecondOfMinute(int secondOfMinute) {
         LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
@@ -661,6 +688,7 @@ public final class LocalDateTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public LocalDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
@@ -709,8 +737,6 @@ public final class LocalDateTime
      * <p>
      * This method will return a new instance with the same date fields,
      * but altered time fields.
-     * This is a shorthand for {@link #withTime(int,int,int,int)} and sets
-     * the nanosecond fields to zero.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -721,8 +747,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        if (hourOfDay == getHourOfDay() && minuteOfHour == getMinuteOfHour() &&
-                secondOfMinute == getSecondOfMinute() && nanoOfSecond == getNanoOfSecond()) {
+        if (hourOfDay == getHourOfDay().getValue() && minuteOfHour == getMinuteOfHour().getValue() &&
+                secondOfMinute == getSecondOfMinute().getValue() && nanoOfSecond == getNanoOfSecond().getValue()) {
             return this;
         }
         LocalTime newTime = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);

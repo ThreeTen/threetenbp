@@ -33,11 +33,15 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MinuteOfHour;
+import javax.time.calendar.field.NanoOfSecond;
+import javax.time.calendar.field.SecondOfMinute;
 import javax.time.period.PeriodView;
 
 /**
  * A calendrical representation of a time with a zone offset from UTC,
- * such as 10:15:30+02:00.
+ * such as '10:15:30+01:00'.
  * <p>
  * OffsetTime is an immutable calendrical that represents a time, often
  * viewed as hour-minute-second-offset.
@@ -59,15 +63,65 @@ public final class OffsetTime
     private static final long serialVersionUID = -1751032571L;
 
     /**
-     * The local time.
+     * The local time, never null.
      */
     private final LocalTime time;
     /**
-     * The zone offset from UTC.
+     * The zone offset from UTC, never null.
      */
     private final ZoneOffset offset;
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
+     * and offset, setting the second and nanosecond to zero.
+     *
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param offset  the zone offset, not null
+     * @return an OffsetTime object, never null
+     */
+    public static OffsetTime time(
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour, ZoneOffset offset) {
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        return new OffsetTime(time, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
+     * second, and offset, setting the nanosecond to zero.
+     *
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param offset  the zone offset, not null
+     * @return an OffsetTime object, never null
+     */
+    public static OffsetTime time(
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, ZoneOffset offset) {
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        return new OffsetTime(time, offset);
+    }
+
+    /**
+     * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
+     * second, nanosecond, and offset.
+     *
+     * @param hourOfDay  the hour of day to represent, not null
+     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param secondOfMinute  the second of minute to represent, not null
+     * @param nanoOfSecond  the nano of second to represent, not null
+     * @param offset  the zone offset, not null
+     * @return an OffsetTime object, never null
+     */
+    public static OffsetTime time(
+            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
+            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond, ZoneOffset offset) {
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return new OffsetTime(time, offset);
+    }
+
     /**
      * Obtains an instance of <code>OffsetTime</code>.
      * <p>
@@ -80,7 +134,8 @@ public final class OffsetTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        return time(hourOfDay, minuteOfHour, 0, 0, offset);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        return new OffsetTime(time, offset);
     }
 
     /**
@@ -96,7 +151,8 @@ public final class OffsetTime
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        return time(hourOfDay, minuteOfHour, secondOfMinute, 0, offset);
+        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        return new OffsetTime(time, offset);
     }
 
     /**
@@ -112,7 +168,7 @@ public final class OffsetTime
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-        return time(time, offset);
+        return new OffsetTime(time, offset);
     }
 
     /**
@@ -258,48 +314,51 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day value.
+     * Gets the hour of day field.
+     * <p>
+     * This method provides access to an object representing the hour of day field.
+     * This can be used to access the {@link HourOfDay#getValue() int value}.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour of day, never null
      */
-    public int getHourOfDay() {
+    public HourOfDay getHourOfDay() {
         return time.getHourOfDay();
     }
 
     /**
-     * Gets the minute of hour value.
+     * Gets the minute of hour field.
+     * <p>
+     * This method provides access to an object representing the minute of hour field.
+     * This can be used to access the {@link MinuteOfHour#getValue() int value}.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute of hour, never null
      */
-    public int getMinuteOfHour() {
+    public MinuteOfHour getMinuteOfHour() {
         return time.getMinuteOfHour();
     }
 
     /**
-     * Gets the second of minute value.
+     * Gets the second of minute field.
+     * <p>
+     * This method provides access to an object representing the second of minute field.
+     * This can be used to access the {@link SecondOfMinute#getValue() int value}.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second of minute, never null
      */
-    public int getSecondOfMinute() {
+    public SecondOfMinute getSecondOfMinute() {
         return time.getSecondOfMinute();
     }
 
     /**
-     * Gets the nanosecond fraction of a second expressed as an int.
+     * Gets the nano of second field.
+     * <p>
+     * This method provides access to an object representing the nano of second field.
+     * This can be used to access the {@link NanoOfSecond#getValue() int value}.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano of second, never null
      */
-    public int getNanoOfSecond() {
+    public NanoOfSecond getNanoOfSecond() {
         return time.getNanoOfSecond();
-    }
-
-    /**
-     * Gets the nanosecond fraction of a second expressed as a double.
-     *
-     * @return the nano of second, from 0 to 0.999,999,999
-     */
-    public double getNanoFraction() {
-        return time.getNanoFraction();
     }
 
     //-----------------------------------------------------------------------
@@ -337,6 +396,7 @@ public final class OffsetTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated OffsetTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public OffsetTime withHourOfDay(int hourOfDay) {
         LocalTime newTime = time.withHourOfDay(hourOfDay);
@@ -350,6 +410,7 @@ public final class OffsetTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated OffsetTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public OffsetTime withMinuteOfHour(int minuteOfHour) {
         LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
@@ -363,6 +424,7 @@ public final class OffsetTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated OffsetTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public OffsetTime withSecondOfMinute(int secondOfMinute) {
         LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
@@ -376,6 +438,7 @@ public final class OffsetTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated OffsetTime, never null
+     * @throws IllegalCalendarFieldValueException if the value if invalid
      */
     public OffsetTime withNanoOfSecond(int nanoOfSecond) {
         LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
@@ -547,7 +610,7 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the time as a <code>String</code>.
+     * Outputs the time as a <code>String</code>, such as '10:15:30+01:00'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
