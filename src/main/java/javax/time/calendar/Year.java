@@ -53,6 +53,10 @@ public final class Year
         implements Calendrical, Comparable<Year>, Serializable {
 
     /**
+     * The rule implementation that defines how the year field operates.
+     */
+    public static final TimeFieldRule RULE = new Rule();
+    /**
      * Constant for the minimum year on the proleptic ISO calendar system.
      */
     public static final int MIN_YEAR = Integer.MIN_VALUE + 2;
@@ -538,6 +542,24 @@ public final class Year
      */
     public int getDecadeOfCentury() {
         return (getYearOfEra() % 100) / 10;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of the rules for the year field.
+     */
+    private static class Rule extends TimeFieldRule {
+
+        /** Constructor. */
+        protected Rule() {
+            super("Year", Periods.YEARS, Periods.FOREVER, MIN_YEAR, MAX_YEAR);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(CalendricalState calState) {
+            return super.getValue(calState) + 1970;
+        }
     }
 
 }
