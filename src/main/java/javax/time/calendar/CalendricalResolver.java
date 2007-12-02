@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.Year;
 
 /**
  * Strategy for resolving an invalid year-month-day to a valid one

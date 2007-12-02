@@ -244,7 +244,7 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
                         case 2:
                             if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
                                 int year = calendricalContext.getCalendricalState().get(Year.RULE);
-                                if (Year.isLeap(year)) {
+                                if (Year.isoYear(year).isLeap()) {
                                     return 29;
                                 }
                             }
@@ -273,7 +273,7 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
                     case 2:
                         if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
                             int year = calendricalContext.getCalendricalState().get(Year.RULE);
-                            if (Year.isLeap(year)) {
+                            if (Year.isoYear(year).isLeap()) {
                                 return 29;
                             }
                         }
@@ -289,7 +289,7 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
             }
             if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
                 int year = calendricalContext.getCalendricalState().get(Year.RULE);
-                if (Year.isLeap(year)) {
+                if (Year.isoYear(year).isLeap()) {
                     return 29;
                 }
             }

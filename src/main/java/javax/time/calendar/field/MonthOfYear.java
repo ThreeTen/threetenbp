@@ -36,7 +36,6 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
-import javax.time.calendar.Year;
 
 /**
  * A calendrical representation of a month of year.

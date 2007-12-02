@@ -29,12 +29,17 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.field;
 
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.calendar.field.Era;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalState;
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
