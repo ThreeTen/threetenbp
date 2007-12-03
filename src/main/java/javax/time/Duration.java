@@ -253,28 +253,13 @@ public class Duration implements Comparable<Duration>, Serializable {
         if (secsToAdd == 0 && nanosToAdd == 0) {
             return this;
         }
-        long secs;
-        if (nanosToAdd == 0 || nanoOfSecond == 0) {
-            secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
-            return new Duration(secs, nanosToAdd + nanoOfSecond);
-        }
 
-        long nos;
-        if (durationSeconds >=0 && secsToAdd < 0) {
-            secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
-            secs = MathUtils.safeAdd(secs, 1);
-            nos = nanoOfSecond + nanosToAdd - NANOS_PER_SECOND;
-        } else {
-            secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
-            nos = nanoOfSecond + nanosToAdd;
-        }
+        long secs = MathUtils.safeAdd(durationSeconds, secsToAdd);
+        long nos = nanoOfSecond + nanosToAdd;
 
         if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;
             secs = MathUtils.safeAdd(secs, 1);
-        } else if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = MathUtils.safeSubtract(secs, 1);
         }
 
         return new Duration(secs, (int)nos);
@@ -355,6 +340,35 @@ public class Duration implements Comparable<Duration>, Serializable {
         }
         return new Duration(MathUtils.safeAdd(durationSeconds, secondsToAdd) , nos);
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Duration with the specified duration subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to subtract, not null
+     * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Duration minus(Duration duration) {
+        long secsToSubtract = duration.durationSeconds;
+        int nanosToSubtract = duration.nanoOfSecond;
+
+        if (secsToSubtract == 0 && nanosToSubtract == 0) {
+            return this;
+        }
+
+        long secs = MathUtils.safeSubtract(durationSeconds, secsToSubtract);
+        long nos = nanoOfSecond - nanosToSubtract;
+
+        if (nos < 0) {
+            nos += NANOS_PER_SECOND;
+            secs = MathUtils.safeSubtract(secs, 1);
+        }
+
+        return new Duration(secs, (int)nos);
+     }
 
     //-----------------------------------------------------------------------
     /**
@@ -460,21 +474,14 @@ public class Duration implements Comparable<Duration>, Serializable {
         if (nos < 0) {
             nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
             secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToAdd++;
         }
 
         long newDurationSeconds = MathUtils.safeAdd(secs, secondsToAdd);
         long newNanoOfSecond = nos;
 
         if (durationSeconds < 0 && nanoOfSecond > 0 && divisor > 0) {
-            if (newNanoOfSecond == 0) {
-                newDurationSeconds = -newDurationSeconds;
-            } else {
-                newDurationSeconds = -newDurationSeconds - 1;
-                newNanoOfSecond = NANOS_PER_SECOND - newNanoOfSecond;
-            }
+            newDurationSeconds = -newDurationSeconds - 1;
+            newNanoOfSecond = NANOS_PER_SECOND - newNanoOfSecond;
         }
 
         return new Duration(newDurationSeconds, (int)newNanoOfSecond);
