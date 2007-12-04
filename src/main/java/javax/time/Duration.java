@@ -372,6 +372,78 @@ public class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this Duration with the specified number of seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param secondsToSubtract the seconds to subtract
+     * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Duration minusSeconds(long secondsToSubtract) {
+        if (secondsToSubtract == 0) {
+            return this;
+        }
+        long secs = MathUtils.safeSubtract(durationSeconds, secondsToSubtract);
+        return new Duration(secs , nanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Duration with the specified number of milliseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param millisToSubtract  the milliseconds to subtract
+     * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Duration minusMillis(long millisToSubtract) {
+        if (millisToSubtract == 0) {
+            return this;
+        }
+        long secondsToSubtract = millisToSubtract / 1000;
+        int nos = ((int) (millisToSubtract % 1000)) * 1000000;
+        nos = nanoOfSecond - nos;
+        if (nos < 0) {
+            nos += NANOS_PER_SECOND;
+            secondsToSubtract++;
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;
+            secondsToSubtract--;
+        }
+        return new Duration(MathUtils.safeSubtract(durationSeconds, secondsToSubtract), nos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Duration with the specified number of nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanosToSubtract  the nanoseconds to subtract
+     * @return a new updated Duration, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Duration minusNanos(long nanosToSubtract) {
+        if (nanosToSubtract == 0) {
+            return this;
+        }
+        long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
+        int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
+        nos = nanoOfSecond - nos;
+        if (nos < 0) {
+            nos += NANOS_PER_SECOND;
+            secondsToSubtract++;
+        } else if (nos >= NANOS_PER_SECOND) {
+            nos -= NANOS_PER_SECOND;
+            secondsToSubtract--;
+        }
+        return new Duration(MathUtils.safeSubtract(durationSeconds, secondsToSubtract), nos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this Duration multiplied by the scalar.
      * <p>
      * This instance is immutable and unaffected by this method call.

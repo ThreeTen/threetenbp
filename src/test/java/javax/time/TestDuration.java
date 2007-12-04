@@ -278,6 +278,13 @@ public class TestDuration {
         a.isGreaterThan(null);
     }
 
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonDuration() {
+       Comparable c = Duration.duration(0L);
+       c.compareTo(new Object());
+    }
+    
     //-----------------------------------------------------------------------
     public void test_equals() {
         Duration test5a = Duration.duration(5L, 20);
@@ -986,6 +993,253 @@ public class TestDuration {
     public void minusOverflowTooBig() {
        Duration t = Duration.duration(Long.MAX_VALUE, 999999999);
        t.minus(Duration.duration(-1, 999999999));
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="MinusSeconds")
+    Object[][] provider_minusSeconds_long() {
+        return new Object[][] {
+            {0, 0, 0, 0, 0},
+            {0, 0, 1, -1, 0},
+            {0, 0, -1, 1, 0},
+            {0, 0, Long.MAX_VALUE, -Long.MAX_VALUE, 0},
+            {0, 0, Long.MIN_VALUE + 1, Long.MAX_VALUE, 0},
+            {1, 0, 0, 1, 0},
+            {1, 0, 1, 0, 0},
+            {1, 0, -1, 2, 0},
+            {1, 0, Long.MAX_VALUE - 1, -Long.MAX_VALUE + 2, 0},
+            {1, 0, Long.MIN_VALUE + 2, Long.MAX_VALUE, 0},
+            {1, 1, 0, 1, 1},
+            {1, 1, 1, 0, 1},
+            {1, 1, -1, 2, 1},
+            {1, 1, Long.MAX_VALUE, -Long.MAX_VALUE + 1, 1},
+            {1, 1, Long.MIN_VALUE + 2, Long.MAX_VALUE, 1},
+            {-1, 1, 0, -1, 1},
+            {-1, 1, 1, -2, 1},
+            {-1, 1, -1, 0, 1},
+            {-1, 1, Long.MAX_VALUE, Long.MIN_VALUE, 1},
+            {-1, 1, Long.MIN_VALUE + 1, Long.MAX_VALUE - 1, 1},
+        };
+    }
+
+    @Test(dataProvider="MinusSeconds")
+    public void minusSeconds_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.duration(seconds, nanos);
+        t = t.minusSeconds(amount);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+
+    @Test(expectedExceptions = {ArithmeticException.class})
+    public void minusSeconds_long_overflowTooBig() {
+        Duration t = Duration.duration(1, 0);
+        t.minusSeconds(Long.MIN_VALUE + 1);
+    }
+
+    @Test(expectedExceptions = {ArithmeticException.class})
+    public void minusSeconds_long_overflowTooSmall() {
+        Duration t = Duration.duration(-2, 0);
+        t.minusSeconds(Long.MAX_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="MinusMillis")
+    Object[][] provider_minusMillis_long() {
+        return new Object[][] {
+            {0, 0, 0,       0, 0},
+            {0, 0, 1,      -1, 999000000},
+            {0, 0, 999,    -1, 1000000},
+            {0, 0, 1000,   -1, 0},
+            {0, 0, 1001,   -2, 999000000},
+            {0, 0, 1999,   -2, 1000000},
+            {0, 0, 2000,   -2, 0},
+            {0, 0, -1,      0, 1000000},
+            {0, 0, -999,    0, 999000000},
+            {0, 0, -1000,   1, 0},
+            {0, 0, -1001,   1, 1000000},
+            {0, 0, -1999,   1, 999000000},
+            
+            {0, 1, 0,       0, 1},
+            {0, 1, 1,      -1, 999000001},
+            {0, 1, 998,    -1, 2000001},
+            {0, 1, 999,    -1, 1000001},
+            {0, 1, 1000,   -1, 1},
+            {0, 1, 1998,   -2, 2000001},
+            {0, 1, 1999,   -2, 1000001},
+            {0, 1, 2000,   -2, 1},
+            {0, 1, -1,      0, 1000001},
+            {0, 1, -2,      0, 2000001},
+            {0, 1, -1000,   1, 1},
+            {0, 1, -1001,   1, 1000001},
+            
+            {0, 1000000, 0,       0, 1000000},
+            {0, 1000000, 1,       0, 0},
+            {0, 1000000, 998,    -1, 3000000},
+            {0, 1000000, 999,    -1, 2000000},
+            {0, 1000000, 1000,   -1, 1000000},
+            {0, 1000000, 1998,   -2, 3000000},
+            {0, 1000000, 1999,   -2, 2000000},
+            {0, 1000000, 2000,   -2, 1000000},
+            {0, 1000000, -1,      0, 2000000},
+            {0, 1000000, -2,      0, 3000000},
+            {0, 1000000, -999,    1, 0},
+            {0, 1000000, -1000,   1, 1000000},
+            {0, 1000000, -1001,   1, 2000000},
+            {0, 1000000, -1002,   1, 3000000},
+            
+            {0, 999999999, 0,     0, 999999999},
+            {0, 999999999, 1,     0, 998999999},
+            {0, 999999999, 999,   0, 999999},
+            {0, 999999999, 1000, -1, 999999999},
+            {0, 999999999, 1001, -1, 998999999},
+            {0, 999999999, -1,    1, 999999},
+            {0, 999999999, -1000, 1, 999999999},
+            {0, 999999999, -1001, 2, 999999},
+        };
+    }
+
+    @Test(dataProvider="MinusMillis")
+    public void minusMillis_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.duration(seconds, nanos);
+        t = t.minusMillis(amount);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+    @Test(dataProvider="MinusMillis")
+    public void minusMillis_long_oneMore(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.duration(seconds + 1, nanos);
+        t = t.minusMillis(amount);
+        assertEquals(t.getSeconds(), expectedSeconds + 1);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+    @Test(dataProvider="MinusMillis")
+    public void minusMillis_long_minusOneLess(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.duration(seconds - 1, nanos);
+        t = t.minusMillis(amount);
+        assertEquals(t.getSeconds(), expectedSeconds - 1);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+
+    public void minusMillis_long_max() {
+        Duration t = Duration.duration(Long.MAX_VALUE, 998999999);
+        t = t.minusMillis(-1);
+        assertEquals(t.getSeconds(), Long.MAX_VALUE);
+        assertEquals(t.getNanoOfSecond(), 999999999);
+    }
+
+    @Test(expectedExceptions = {ArithmeticException.class})
+    public void minusMillis_long_overflowTooBig() {
+        Duration t = Duration.duration(Long.MAX_VALUE, 999000000);
+        t.minusMillis(-1);
+    }
+
+    public void minusMillis_long_min() {
+        Duration t = Duration.duration(Long.MIN_VALUE, 1000000);
+        t = t.minusMillis(1);
+        assertEquals(t.getSeconds(), Long.MIN_VALUE);
+        assertEquals(t.getNanoOfSecond(), 0);
+    }
+
+    @Test(expectedExceptions = {ArithmeticException.class})
+    public void minusMillis_long_overflowTooSmall() {
+        Duration t = Duration.duration(Long.MIN_VALUE, 0);
+        t.minusMillis(1);
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="MinusNanos")
+    Object[][] provider_minusNanos_long() {
+        return new Object[][] {
+            {0, 0, 0,           0, 0},
+            {0, 0, 1,          -1, 999999999},
+            {0, 0, 999999999,  -1, 1},
+            {0, 0, 1000000000, -1, 0},
+            {0, 0, 1000000001, -2, 999999999},
+            {0, 0, 1999999999, -2, 1},
+            {0, 0, 2000000000, -2, 0},
+            {0, 0, -1,          0, 1},
+            {0, 0, -999999999,  0, 999999999},
+            {0, 0, -1000000000, 1, 0},
+            {0, 0, -1000000001, 1, 1},
+            {0, 0, -1999999999, 1, 999999999},
+            
+            {1, 0, 0,            1, 0},
+            {1, 0, 1,            0, 999999999},
+            {1, 0, 999999999,    0, 1},
+            {1, 0, 1000000000,   0, 0},
+            {1, 0, 1000000001,  -1, 999999999},
+            {1, 0, 1999999999,  -1, 1},
+            {1, 0, 2000000000,  -1, 0},
+            {1, 0, -1,           1, 1},
+            {1, 0, -999999999,   1, 999999999},
+            {1, 0, -1000000000,  2, 0},
+            {1, 0, -1000000001,  2, 1},
+            {1, 0, -1999999999,  2, 999999999},
+            
+            {-1, 0, 0,           -1, 0},
+            {-1, 0, 1,           -2, 999999999},
+            {-1, 0, 999999999,   -2, 1},
+            {-1, 0, 1000000000,  -2, 0},
+            {-1, 0, 1000000001,  -3, 999999999},
+            {-1, 0, 1999999999,  -3, 1},
+            {-1, 0, 2000000000,  -3, 0},
+            {-1, 0, -1,          -1, 1},
+            {-1, 0, -999999999,  -1, 999999999},
+            {-1, 0, -1000000000,  0, 0},
+            {-1, 0, -1000000001,  0, 1},
+            {-1, 0, -1999999999,  0, 999999999},
+            
+            {1, 1, 0,           1, 1},
+            {1, 1, 1,           1, 0},
+            {1, 1, 999999998,   0, 3},
+            {1, 1, 999999999,   0, 2},
+            {1, 1, 1000000000,  0, 1},
+            {1, 1, 1999999998, -1, 3},
+            {1, 1, 1999999999, -1, 2},
+            {1, 1, 2000000000, -1, 1},
+            {1, 1, -1,          1, 2},
+            {1, 1, -2,          1, 3},
+            {1, 1, -1000000000, 2, 1},
+            {1, 1, -1000000001, 2, 2},
+            {1, 1, -1000000002, 2, 3},
+            {1, 1, -2000000000, 3, 1},
+            
+            {1, 999999999, 0,           1, 999999999},
+            {1, 999999999, 1,           1, 999999998},
+            {1, 999999999, 999999999,   1, 0},
+            {1, 999999999, 1000000000,  0, 999999999},
+            {1, 999999999, 1000000001,  0, 999999998},
+            {1, 999999999, -1,          2, 0},
+            {1, 999999999, -1000000000, 2, 999999999},
+            {1, 999999999, -1000000001, 3, 0},
+            {1, 999999999, -1999999999, 3, 999999998},
+            {1, 999999999, -2000000000, 3, 999999999},
+            
+            {Long.MAX_VALUE, 0, -999999999, Long.MAX_VALUE, 999999999},
+            {Long.MAX_VALUE - 1, 0, -1999999999, Long.MAX_VALUE, 999999999},
+            {Long.MIN_VALUE, 1, 1, Long.MIN_VALUE, 0},
+            {Long.MIN_VALUE + 1, 1, 1000000001, Long.MIN_VALUE, 0},
+        };
+    }
+
+    @Test(dataProvider="MinusNanos")
+    public void minusNanos_long(long seconds, int nanos, long amount, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.duration(seconds, nanos);
+        t = t.minusNanos(amount);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    }
+
+    @Test(expectedExceptions = {ArithmeticException.class})
+    public void minusNanos_long_overflowTooBig() {
+        Duration t = Duration.duration(Long.MAX_VALUE, 999999999);
+        t.minusNanos(-1);
+    }
+
+    @Test(expectedExceptions = {ArithmeticException.class})
+    public void minusNanos_long_overflowTooSmall() {
+        Duration t = Duration.duration(Long.MIN_VALUE, 0);
+        t.minusNanos(1);
     }
 
     //-----------------------------------------------------------------------
