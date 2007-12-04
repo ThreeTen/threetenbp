@@ -460,19 +460,8 @@ public class Duration implements Comparable<Duration>, Serializable {
             return this;
         }
 
-        long secs;
-        long nos;
-
-        if (durationSeconds >= 0 || nanoOfSecond == 0) {
-            secs = MathUtils.safeMultiply(durationSeconds, multiplicand);
-            nos = ((long) nanoOfSecond) * multiplicand;
-        } else if (multiplicand < 0) {
-            secs = MathUtils.safeMultiply(MathUtils.safeAdd(durationSeconds, 1), multiplicand);
-            nos = ((long)(nanoOfSecond - NANOS_PER_SECOND)) * multiplicand;
-        } else {
-            secs = MathUtils.safeMultiply(MathUtils.safeAdd(durationSeconds, 1), multiplicand);
-            nos = -((long)(NANOS_PER_SECOND - nanoOfSecond)) * multiplicand;
-        }
+        long secs = MathUtils.safeMultiply(durationSeconds, multiplicand);
+        long nos = ((long) nanoOfSecond) * multiplicand;
 
         if (nos >= NANOS_PER_SECOND) {
             long secsToAdd = nos / NANOS_PER_SECOND;
@@ -516,12 +505,12 @@ public class Duration implements Comparable<Duration>, Serializable {
         long nanosToAdd;
 
         //TODO: Optimize
-        if ((durationSeconds >= 0 && divisor > 0) || (durationSeconds <= 0 && nanoOfSecond == 0)) {
+        if ((durationSeconds >= 0) || (durationSeconds < 0 && nanoOfSecond == 0)) {
             secs = durationSeconds / divisor;
             nos = nanoOfSecond / divisor;
 
             nanosToAdd = MathUtils.safeMultiply(durationSeconds % divisor, NANOS_PER_SECOND) / divisor;
-        } else if (durationSeconds < 0) {
+        } else {
             if (divisor < 0) {
                 secs = (durationSeconds + 1) / divisor;
                 nos = -(nanoOfSecond - NANOS_PER_SECOND) / Math.abs(divisor);
@@ -532,10 +521,6 @@ public class Duration implements Comparable<Duration>, Serializable {
                nos = (NANOS_PER_SECOND - nanoOfSecond) / divisor;
                nanosToAdd = MathUtils.safeMultiply(-MathUtils.safeAdd(durationSeconds, 1) % divisor, NANOS_PER_SECOND) / divisor;
             }
-        } else {
-           secs = -durationSeconds / Math.abs(divisor);
-           nos = 0;
-           nanosToAdd = nanoOfSecond / divisor + MathUtils.safeMultiply(durationSeconds % Math.abs(divisor), NANOS_PER_SECOND) / divisor;
         }
 
         // TODO: remove duplication (adapted from plusNanos)
