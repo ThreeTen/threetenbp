@@ -59,6 +59,7 @@ import javax.time.period.Periods;
  * <p>
  * LocalDateTime is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
@@ -383,7 +384,6 @@ public final class LocalDateTime
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

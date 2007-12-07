@@ -50,6 +50,7 @@ import javax.time.period.Periods;
  * <p>
  * YearMonth is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class YearMonth
@@ -144,7 +145,6 @@ public final class YearMonth
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

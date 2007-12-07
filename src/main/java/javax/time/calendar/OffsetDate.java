@@ -54,6 +54,7 @@ import javax.time.period.PeriodView;
  * <p>
  * OffsetDate is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class OffsetDate
@@ -156,7 +157,6 @@ public final class OffsetDate
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

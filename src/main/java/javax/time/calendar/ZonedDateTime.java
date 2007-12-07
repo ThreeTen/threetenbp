@@ -61,6 +61,7 @@ import javax.time.period.PeriodView;
  * <p>
  * ZonedDateTime is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
@@ -216,7 +217,6 @@ public final class ZonedDateTime
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

@@ -41,6 +41,7 @@ ${line}
  * <p>
  * ${Type} is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class ${Type}
@@ -181,7 +182,6 @@ TimeZone zone) {#end
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

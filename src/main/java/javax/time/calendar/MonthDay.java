@@ -50,6 +50,7 @@ import javax.time.period.Periods;
  * <p>
  * MonthDay is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class MonthDay
@@ -159,7 +160,6 @@ public final class MonthDay
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

@@ -117,7 +117,6 @@ public enum Era implements Calendrical {
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

@@ -52,6 +52,7 @@ import javax.time.period.Periods;
  * <p>
  * Year is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class Year
@@ -164,7 +165,6 @@ public final class Year
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return null;  // TODO
     }

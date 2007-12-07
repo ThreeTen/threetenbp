@@ -50,6 +50,7 @@ import javax.time.period.PeriodView;
  * <p>
  * CopticDate is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class CopticDate implements Calendrical, Comparable<CopticDate>, Serializable {
@@ -119,7 +120,6 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      *
      * @return the calendar state for this instance, never null
      */
-    @Override
     public CalendricalState getCalendricalState() {
         return state;
     }
