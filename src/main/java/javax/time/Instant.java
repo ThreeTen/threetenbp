@@ -46,12 +46,14 @@ import java.io.Serializable;
  * An instant is always defined with respect to a well-defined fixed point in time,
  * known as the epoch. The Java Time Framework uses the standard Java epoch of
  * 1970-01-01T00:00:00Z.
+ * <p>
+ * Instant is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class Instant
         implements ReadableInstant, Comparable<Instant>, Serializable {
-    // TODO: Minus methods (as per plus methods)
     // TODO: Duration class integration
     // TODO: Leap seconds (document or implement)
     // TODO: Serialized format
@@ -132,7 +134,7 @@ public final class Instant
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param fractionOfSecond  the fraction of the second, from -1 to 1 exclusive
      * @return the created Instant, never null
-     * @throws IllegalArgumentException if nanoOfSecond is out of range
+     * @throws IllegalArgumentException if fractionOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, double fractionOfSecond) {
         if (fractionOfSecond <= -1 || fractionOfSecond >= 1) {
@@ -153,7 +155,6 @@ public final class Instant
      *
      * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
      * @return the created Instant, never null
-     * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
      */
     public static Instant millisInstant(long epochMillis) {
         if (epochMillis < 0) {
@@ -244,15 +245,15 @@ public final class Instant
         if (secsToAdd == 0 && nanosToAdd == 0) {
             return this;
         }
+
         long secs = MathUtils.safeAdd(epochSeconds, secsToAdd);
-        if (nanosToAdd == 0) {
-            return new Instant(secs, nanoOfSecond);
-        }
         int nos = nanoOfSecond + nanosToAdd;
-        if (nos > NANOS_PER_SECOND) {
+
+        if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;
-            MathUtils.safeIncrement(secs);
+            secs = MathUtils.safeIncrement(secs);
         }
+
         return new Instant(secs, nos);
     }
 
@@ -276,7 +277,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of nanoseconds added.
+     * Returns a copy of this Instant with the specified number of milliseconds added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -349,13 +350,10 @@ public final class Instant
             return this;
         }
         long secs = MathUtils.safeSubtract(epochSeconds, secsToSubtract);
-        if (nanosToSubtract == 0) {
-            return new Instant(secs, nanoOfSecond);
-        }
         int nos = nanoOfSecond - nanosToSubtract;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;
-            MathUtils.safeDecrement(secs);
+            secs = MathUtils.safeDecrement(secs);
         }
         return new Instant(secs, nos);
     }
@@ -380,7 +378,7 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Instant with the specified number of nanoseconds subtracted.
+     * Returns a copy of this Instant with the specified number of milliseconds subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -397,13 +395,13 @@ public final class Instant
         // add: 0 to 999,000,000, subtract: 0 to -999,000,000
         int nos = ((int) (millisToSubtract % 1000)) * 1000000;
         // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos += nanoOfSecond;
+        nos = nanoOfSecond - nos;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
-            secondsToSubtract--;
+            secondsToSubtract++;
         } else if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
-            secondsToSubtract++;
+            secondsToSubtract--;
         }
         return new Instant(MathUtils.safeSubtract(epochSeconds, secondsToSubtract) , nos);
     }
@@ -427,13 +425,13 @@ public final class Instant
         // add: 0 to 999,999,999, subtract: 0 to -999,999,999
         int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
         // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos += nanoOfSecond;
+        nos = nanoOfSecond - nos;
         if (nos < 0) {
             nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
-            secondsToSubtract--;
+            secondsToSubtract++;
         } else if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToSubtract++;
+            secondsToSubtract--;
         }
         return new Instant(MathUtils.safeSubtract(epochSeconds, secondsToSubtract) , nos);
     }
