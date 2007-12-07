@@ -54,7 +54,6 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  */
 public class Duration implements Comparable<Duration>, Serializable {
-    // TODO: Minus methods (as per plus methods)
     // TODO: Leap seconds (document or implement)
     // TODO: Serialized format
     // TODO: Evaluate hashcode
@@ -259,7 +258,7 @@ public class Duration implements Comparable<Duration>, Serializable {
 
         if (nos >= NANOS_PER_SECOND) {
             nos -= NANOS_PER_SECOND;
-            secs = MathUtils.safeAdd(secs, 1);
+            secs = MathUtils.safeIncrement(secs);
         }
 
         return new Duration(secs, (int)nos);
@@ -364,7 +363,7 @@ public class Duration implements Comparable<Duration>, Serializable {
 
         if (nos < 0) {
             nos += NANOS_PER_SECOND;
-            secs = MathUtils.safeSubtract(secs, 1);
+            secs = MathUtils.safeDecrement(secs);
         }
 
         return new Duration(secs, (int)nos);
@@ -505,7 +504,7 @@ public class Duration implements Comparable<Duration>, Serializable {
         long nanosToAdd;
 
         //TODO: Optimize
-        if ((durationSeconds >= 0) || (durationSeconds < 0 && nanoOfSecond == 0)) {
+        if ((durationSeconds >= 0) || nanoOfSecond == 0) {
             secs = durationSeconds / divisor;
             nos = nanoOfSecond / divisor;
 
