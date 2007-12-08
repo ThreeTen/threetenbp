@@ -62,6 +62,11 @@ public final class Instant
     // TODO: Consider BigDecimal
 
     /**
+     * Constant for the 1970-01-01T00:00:00Z epoch instant.
+     */
+    public static final Instant EPOCH = new Instant(0, 0);
+
+    /**
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
@@ -89,6 +94,10 @@ public final class Instant
      * @return the created Instant, never null
      */
     public static Instant instant(long epochSeconds) {
+        if (epochSeconds == 0) {
+            return EPOCH;
+        }
+
         return new Instant(epochSeconds, 0);
     }
 
@@ -124,6 +133,9 @@ public final class Instant
             }
             epochSeconds = MathUtils.safeDecrement(epochSeconds);
         }
+        if (epochSeconds == 0 && nanoOfSecond == 0) {
+           return EPOCH;
+        }
         return new Instant(epochSeconds, nanoOfSecond);
     }
 
@@ -139,6 +151,9 @@ public final class Instant
     public static Instant instant(long epochSeconds, double fractionOfSecond) {
         if (fractionOfSecond <= -1 || fractionOfSecond >= 1) {
             throw new IllegalArgumentException("Fraction of second must be between -1 and 1 exclusive but was " + fractionOfSecond);
+        }
+        if (epochSeconds == 0 && fractionOfSecond == 0d) {
+            return EPOCH;
         }
         int nanos = (int) Math.round(fractionOfSecond * NANOS_PER_SECOND);
         if (nanos < 0) {
@@ -163,6 +178,9 @@ public final class Instant
             int millis = ((int) (epochMillis % 1000));  // 0 to -999
             millis = 999 + millis;  // 0 to 999
             return new Instant(epochSeconds - 1, millis * 1000000);
+        }
+        if (epochMillis == 0) {
+            return EPOCH;
         }
         return new Instant(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000);
     }
@@ -189,6 +207,9 @@ public final class Instant
             int millis = ((int) (epochMillis % 1000));  // 0 to -999
             millis = 999 + millis;  // 0 to 999
             return new Instant(epochSeconds - 1, millis * 1000000 + nanoOfMillisecond);
+        }
+        if (epochMillis == 0 && nanoOfMillisecond == 0) {
+            return EPOCH;
         }
         return new Instant(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000 + nanoOfMillisecond);
     }
@@ -390,7 +411,7 @@ public final class Instant
         if (millisToSubtract == 0) {
             return this;
         }
-        // TODO
+
         long secondsToSubtract = millisToSubtract / 1000;
         // add: 0 to 999,000,000, subtract: 0 to -999,000,000
         int nos = ((int) (millisToSubtract % 1000)) * 1000000;
@@ -420,7 +441,7 @@ public final class Instant
         if (nanosToSubtract == 0) {
             return this;
         }
-        // TODO
+
         long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
         // add: 0 to 999,999,999, subtract: 0 to -999,999,999
         int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);

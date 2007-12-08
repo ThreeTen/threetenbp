@@ -62,6 +62,11 @@ public class TestInstant {
         assertTrue(t instanceof Comparable);
     }
 
+    public void test_epoch() {
+        assertEquals(Instant.EPOCH.getEpochSeconds(), 0L);
+        assertEquals(Instant.EPOCH.getNanoOfSecond(), 0);
+    }
+
     //-----------------------------------------------------------------------
     public void factory_instant_long() {
         for (long i = -2; i <= 2; i++) {
