@@ -35,6 +35,7 @@ import static javax.time.calendar.LocalTime.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +49,7 @@ import javax.time.calendar.LocalTime;
 public class Performance {
 
     /** Size. */
-    private static final int SIZE = 1000000;
+    private static final int SIZE = 100000;
 
     /**
      * Main.
@@ -60,6 +61,8 @@ public class Performance {
         
         List<LocalTime> list = setup();
         sortList(list);
+//        List<GregorianCalendar> list = setupGCal();
+//        sortListGCal(list);
     }
 
     private static List<LocalTime> setup() {
@@ -76,6 +79,26 @@ public class Performance {
     }
 
     private static void sortList(List<LocalTime> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println((end - start) + " ns");
+    }
+
+    private static List<GregorianCalendar> setupGCal() {
+        Random random = new Random(47658758756875687L);
+        List<GregorianCalendar> list = new ArrayList<GregorianCalendar>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            GregorianCalendar t = new GregorianCalendar(1970, 0, 1, random.nextInt(24), random.nextInt(60), random.nextInt(60));
+            list.add(t);
+        }
+        long end = System.nanoTime();
+        System.out.println((end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListGCal(List<GregorianCalendar> list) {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
