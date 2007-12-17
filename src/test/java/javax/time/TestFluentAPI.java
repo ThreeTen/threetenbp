@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendar.Calendars.*;
+import static javax.time.calendar.DateAdjustors.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.period.Periods.*;
 
@@ -71,6 +72,16 @@ public class TestFluentAPI {
         date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
         date = LocalDate.date(now().currentMonth(), dayOfMonth(6));
+        
+        date = date.with(lastDayOfMonth());
+        date = date.with(nextNonWeekendDay());
+        date = date.with(nextMonday());
+        date = date.with(next(MONDAY));
+        date = date.with(nextOrCurrent(MONDAY));
+        date = date.with(dayOfWeekInMonth(2, TUESDAY));
+        date = date.with(firstInMonth(MONDAY));
+        
+//        date = date.with(MONDAY.adjustToNext());
         
         // different ways to build/use periods
         date = date.plus(yearsMonthsDays(2, 3, 1));

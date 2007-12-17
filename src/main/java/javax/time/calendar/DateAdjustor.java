@@ -29,53 +29,32 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time;
-
-import javax.time.calendar.TestDateAdjustors;
-import javax.time.calendar.TestLocalDate;
-import javax.time.calendar.TestLocalTime;
-import javax.time.calendar.TestOffsetDate;
-import javax.time.period.field.TestDays;
-import javax.time.period.field.TestHours;
-import javax.time.period.field.TestMinutes;
-import javax.time.period.field.TestMonths;
-import javax.time.period.field.TestSeconds;
-import javax.time.period.field.TestWeeks;
-import javax.time.period.field.TestYears;
-
-import org.testng.TestListenerAdapter;
-import org.testng.TestNG;
+package javax.time.calendar;
 
 /**
- * Test class.
- * 
+ * Strategy for adjusting a date.
+ * <p>
+ * This interface provides a common way to access many different date
+ * adjustments. Examples might be an adjustor that set the date avoiding
+ * weekends, or one that sets the date to the last day of the month.
+ * <p>
+ * DateAdjustor is an interface and must be implemented with care
+ * to ensure other classes in the framework operate correctly.
+ * All instantiable implementations must be final, immutable and thread-safe.
+ *
  * @author Stephen Colebourne
  */
-public class AllTest {
+public interface DateAdjustor {
 
-    public static void main(String[] args) {
-        TestListenerAdapter tla = new TestListenerAdapter();
-        TestNG testng = new TestNG();
-        testng.setTestClasses(new Class[] {
-            // main classes
-            TestDuration.class,
-            TestInstant.class,
-            // calendar classes
-            TestDateAdjustors.class,
-            TestLocalDate.class,
-            TestLocalTime.class,
-            TestOffsetDate.class,
-            // period fields
-            TestDays.class,
-            TestHours.class,
-            TestMinutes.class,
-            TestMonths.class,
-            TestSeconds.class,
-            TestWeeks.class,
-            TestYears.class,
-        });
-        testng.addListener(tla);
-        testng.run();
-    }
+    /**
+     * Adjusts the input date returning the adjusted date.
+     * <p>
+     * This is a strategy pattern that allows a range of adjustents to be made
+     * to a date.
+     *
+     * @param date  the date to adjust, not null
+     * @return the adjusted date, never null
+     */
+    LocalDate adjust(LocalDate date);
 
 }
