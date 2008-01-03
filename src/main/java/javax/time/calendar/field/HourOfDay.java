@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<HourOfDay> cache = new AtomicReferenceArray<HourOfDay>(24);
 
     /**
      * The hour of day being represented.
@@ -72,10 +78,21 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      *
      * @param hourOfDay  the hour of day to represent
      * @return the created HourOfDay
+     * @throws IllegalCalendarFieldValueException if the hourOfDay is invalid
      */
     public static HourOfDay hourOfDay(int hourOfDay) {
-        RULE.checkValue(hourOfDay);
-        return new HourOfDay(hourOfDay);
+        try {
+            HourOfDay result = cache.get(hourOfDay);
+            if (result == null) {
+                HourOfDay temp = new HourOfDay(hourOfDay);
+                cache.compareAndSet(hourOfDay, null, temp);
+                result = cache.get(hourOfDay);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), hourOfDay, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class HourOfDay implements Calendrical, Comparable<HourOfDay>, Seri
      */
     private HourOfDay(int hourOfDay) {
         this.hourOfDay = hourOfDay;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return hourOfDay(hourOfDay);
     }
 
     //-----------------------------------------------------------------------

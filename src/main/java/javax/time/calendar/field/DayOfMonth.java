@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<DayOfMonth> cache = new AtomicReferenceArray<DayOfMonth>(32);
 
     /**
      * The day of month being represented.
@@ -72,10 +78,21 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      *
      * @param dayOfMonth  the day of month to represent
      * @return the created DayOfMonth
+     * @throws IllegalCalendarFieldValueException if the dayOfMonth is invalid
      */
     public static DayOfMonth dayOfMonth(int dayOfMonth) {
-        RULE.checkValue(dayOfMonth);
-        return new DayOfMonth(dayOfMonth);
+        try {
+            DayOfMonth result = cache.get(dayOfMonth);
+            if (result == null) {
+                DayOfMonth temp = new DayOfMonth(dayOfMonth);
+                cache.compareAndSet(dayOfMonth, null, temp);
+                result = cache.get(dayOfMonth);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), dayOfMonth, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
      */
     private DayOfMonth(int dayOfMonth) {
         this.dayOfMonth = dayOfMonth;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return dayOfMonth(dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

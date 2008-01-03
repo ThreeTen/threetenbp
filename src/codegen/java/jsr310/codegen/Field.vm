@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,13 @@
 package ${package};
 
 import java.io.Serializable;
+#if (${cached})
+import java.util.concurrent.atomic.AtomicReferenceArray;
+#end
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +64,12 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+#if (${cached})
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<${Type}> cache = new AtomicReferenceArray<${Type}>(${cacheSize});
+#end
 
     /**
      * The ${desc} being represented.
@@ -72,10 +82,26 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
      *
      * @param ${type}  the ${desc} to represent
      * @return the created ${Type}
+     * @throws IllegalCalendarFieldValueException if the ${type} is invalid
      */
     public static ${Type} ${type}(int ${type}) {
+#if (${cached})
+        try {
+            ${Type} result = cache.get(${type});
+            if (result == null) {
+                ${Type} temp = new ${Type}(${type});
+                cache.compareAndSet(${type}, null, temp);
+                result = cache.get(${type});
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), ${type}, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
+#else
         RULE.checkValue(${type});
         return new ${Type}(${type});
+#end
     }
 
     //-----------------------------------------------------------------------
@@ -88,6 +114,17 @@ public final class ${Type} implements Calendrical, Comparable<${Type}>, Serializ
         this.${type} = ${type};
     }
 
+#if (${cached})
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return ${type}(${type});
+    }
+
+#end
     //-----------------------------------------------------------------------
     /**
      * Gets the ${desc} value.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<MinuteOfHour> cache = new AtomicReferenceArray<MinuteOfHour>(60);
 
     /**
      * The minute of hour being represented.
@@ -72,10 +78,21 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      *
      * @param minuteOfHour  the minute of hour to represent
      * @return the created MinuteOfHour
+     * @throws IllegalCalendarFieldValueException if the minuteOfHour is invalid
      */
     public static MinuteOfHour minuteOfHour(int minuteOfHour) {
-        RULE.checkValue(minuteOfHour);
-        return new MinuteOfHour(minuteOfHour);
+        try {
+            MinuteOfHour result = cache.get(minuteOfHour);
+            if (result == null) {
+                MinuteOfHour temp = new MinuteOfHour(minuteOfHour);
+                cache.compareAndSet(minuteOfHour, null, temp);
+                result = cache.get(minuteOfHour);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), minuteOfHour, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class MinuteOfHour implements Calendrical, Comparable<MinuteOfHour>
      */
     private MinuteOfHour(int minuteOfHour) {
         this.minuteOfHour = minuteOfHour;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return minuteOfHour(minuteOfHour);
     }
 
     //-----------------------------------------------------------------------

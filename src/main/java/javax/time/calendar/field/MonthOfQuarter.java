@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<MonthOfQuarter> cache = new AtomicReferenceArray<MonthOfQuarter>(4);
 
     /**
      * The month of quarter being represented.
@@ -72,10 +78,21 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      *
      * @param monthOfQuarter  the month of quarter to represent
      * @return the created MonthOfQuarter
+     * @throws IllegalCalendarFieldValueException if the monthOfQuarter is invalid
      */
     public static MonthOfQuarter monthOfQuarter(int monthOfQuarter) {
-        RULE.checkValue(monthOfQuarter);
-        return new MonthOfQuarter(monthOfQuarter);
+        try {
+            MonthOfQuarter result = cache.get(monthOfQuarter);
+            if (result == null) {
+                MonthOfQuarter temp = new MonthOfQuarter(monthOfQuarter);
+                cache.compareAndSet(monthOfQuarter, null, temp);
+                result = cache.get(monthOfQuarter);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), monthOfQuarter, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
      */
     private MonthOfQuarter(int monthOfQuarter) {
         this.monthOfQuarter = monthOfQuarter;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return monthOfQuarter(monthOfQuarter);
     }
 
     //-----------------------------------------------------------------------

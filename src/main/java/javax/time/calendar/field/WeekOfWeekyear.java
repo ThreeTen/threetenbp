@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<WeekOfWeekyear> cache = new AtomicReferenceArray<WeekOfWeekyear>(54);
 
     /**
      * The week of week-based year being represented.
@@ -72,10 +78,21 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      *
      * @param weekOfWeekyear  the week of week-based year to represent
      * @return the created WeekOfWeekyear
+     * @throws IllegalCalendarFieldValueException if the weekOfWeekyear is invalid
      */
     public static WeekOfWeekyear weekOfWeekyear(int weekOfWeekyear) {
-        RULE.checkValue(weekOfWeekyear);
-        return new WeekOfWeekyear(weekOfWeekyear);
+        try {
+            WeekOfWeekyear result = cache.get(weekOfWeekyear);
+            if (result == null) {
+                WeekOfWeekyear temp = new WeekOfWeekyear(weekOfWeekyear);
+                cache.compareAndSet(weekOfWeekyear, null, temp);
+                result = cache.get(weekOfWeekyear);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), weekOfWeekyear, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      */
     private WeekOfWeekyear(int weekOfWeekyear) {
         this.weekOfWeekyear = weekOfWeekyear;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return weekOfWeekyear(weekOfWeekyear);
     }
 
     //-----------------------------------------------------------------------

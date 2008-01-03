@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<WeekOfMonth> cache = new AtomicReferenceArray<WeekOfMonth>(6);
 
     /**
      * The week of month being represented.
@@ -72,10 +78,21 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      *
      * @param weekOfMonth  the week of month to represent
      * @return the created WeekOfMonth
+     * @throws IllegalCalendarFieldValueException if the weekOfMonth is invalid
      */
     public static WeekOfMonth weekOfMonth(int weekOfMonth) {
-        RULE.checkValue(weekOfMonth);
-        return new WeekOfMonth(weekOfMonth);
+        try {
+            WeekOfMonth result = cache.get(weekOfMonth);
+            if (result == null) {
+                WeekOfMonth temp = new WeekOfMonth(weekOfMonth);
+                cache.compareAndSet(weekOfMonth, null, temp);
+                result = cache.get(weekOfMonth);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), weekOfMonth, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      */
     private WeekOfMonth(int weekOfMonth) {
         this.weekOfMonth = weekOfMonth;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return weekOfMonth(weekOfMonth);
     }
 
     //-----------------------------------------------------------------------

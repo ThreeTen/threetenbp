@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMin
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<SecondOfMinute> cache = new AtomicReferenceArray<SecondOfMinute>(60);
 
     /**
      * The second of minute being represented.
@@ -72,10 +78,21 @@ public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMin
      *
      * @param secondOfMinute  the second of minute to represent
      * @return the created SecondOfMinute
+     * @throws IllegalCalendarFieldValueException if the secondOfMinute is invalid
      */
     public static SecondOfMinute secondOfMinute(int secondOfMinute) {
-        RULE.checkValue(secondOfMinute);
-        return new SecondOfMinute(secondOfMinute);
+        try {
+            SecondOfMinute result = cache.get(secondOfMinute);
+            if (result == null) {
+                SecondOfMinute temp = new SecondOfMinute(secondOfMinute);
+                cache.compareAndSet(secondOfMinute, null, temp);
+                result = cache.get(secondOfMinute);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), secondOfMinute, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMin
      */
     private SecondOfMinute(int secondOfMinute) {
         this.secondOfMinute = secondOfMinute;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return secondOfMinute(secondOfMinute);
     }
 
     //-----------------------------------------------------------------------

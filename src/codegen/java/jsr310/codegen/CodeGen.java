@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -268,38 +268,38 @@ public class CodeGen {
         Template regularTemplate = Velocity.getTemplate(TEMPLATE_DIR + "Field.vm");
         Template enumTemplate = Velocity.getTemplate(TEMPLATE_DIR + "EnumField.vm");
         
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "Era", "era", ERA, "0", "1");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9");
-//        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4");
-//        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfMonth", "week of month", null, "1", "5");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfYear", "day of year", null, "1", "366");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfMonth", "day of month", null, "1", "31");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MeridiemOfDay", "meridiem of day", MERIDIEM_OF_DAY, "0", "1");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfDay", "hour of day", null, "0", "23");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfMeridiem", "hour of meridiem", null, "0", "11");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399");
-        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59");
-//        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "NanoOfSecond", "nano of second", null, "0", "999999999");
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "Era", "era", ERA, "0", "1", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MilleniumOfEra", "millenium of era", null, "0", "Integer.MAX_VALUE / 1000", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "CenturyOfEra", "century of era", null, "0", "Integer.MAX_VALUE / 100", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DecadeOfCentury", "decade of century", null, "0", "9", false);
+//        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Year", "year", null, "Integer.MIN_VALUE", "Integer.MAX_VALUE", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "YearOfEra", "year of era", null, "1", "Integer.MAX_VALUE", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "Weekyear", "week-based year", null, "Integer.MIN_VALUE + 1", "Integer.MAX_VALUE -1", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "QuarterOfYear", "quarter of year", QUARTER_OF_YEAR, "1", "4", false);
+//        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MonthOfYear", "month of year", MONTH_OF_YEARS, "1", "12", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MonthOfQuarter", "month of quarter", null, "1", "3", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfWeekyear", "week of week-based year", null, "1", "53", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "WeekOfMonth", "week of month", null, "1", "5", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfYear", "day of year", null, "1", "366", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "DayOfMonth", "day of month", null, "1", "31", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "DayOfWeek", "day of week", DAY_OF_WEEKS, "1", "7", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, enumTemplate, "MeridiemOfDay", "meridiem of day", MERIDIEM_OF_DAY, "0", "1", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfDay", "hour of day", null, "0", "23", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "HourOfMeridiem", "hour of meridiem", null, "0", "11", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfDay", "minute of day", null, "0", "1439", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "MinuteOfHour", "minute of hour", null, "0", "59", true);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfDay", "second of day", null, "0", "86399", false);
+        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "SecondOfMinute", "second of minute", null, "0", "59", true);
+//        processTimeField(MAIN_CALENDAR_FIELD_PKG, regularTemplate, "NanoOfSecond", "nano of second", null, "0", "999999999", false);
 
-        processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticMonthOfYear", "Coptic month of year", COPTIC_MONTH_OF_YEARS, "1", "13");
-        processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticSeasonOfYear", "Coptic season of year", COPTIC_SEASON, "1", "3");
+        processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticMonthOfYear", "Coptic month of year", COPTIC_MONTH_OF_YEARS, "1", "13", false);
+        processTimeField(I18N_CALENDAR_FIELD_PKG, enumTemplate, "CopticSeasonOfYear", "Coptic season of year", COPTIC_SEASON, "1", "3", false);
     }
 
     private void processTimeField(
             String pkg, Template template,
             String classname, String desc, FieldSingleton[] singletons,
-            String minValue, String maxValue) throws Exception {
+            String minValue, String maxValue, boolean cached) throws Exception {
         File file = new File(BASE_DIR, pkg.replace('.', '/') + '/' + classname + ".java");
         List<String> methodLines = findAdditionalMethods(file,
               singletons == null ? "public String toString() {" : "public boolean isLessThan(");
@@ -313,6 +313,10 @@ public class CodeGen {
         vc.put("singletons", singletons == null ? Collections.EMPTY_LIST : Arrays.asList(singletons));
         vc.put("minValue", minValue);
         vc.put("maxValue", maxValue);
+        vc.put("cached", cached);
+        if (cached) {
+            vc.put("cacheSize", Integer.parseInt(maxValue) + 1);
+        }
         vc.put("bound", classname.contains("Of"));
         vc.put("methods", methodLines);
         vc.put("ruleMethods", new ArrayList<String>());

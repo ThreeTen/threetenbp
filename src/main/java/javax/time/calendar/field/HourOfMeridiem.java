@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,11 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -60,6 +62,10 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * Cache of singleton instances.
+     */
+    private static final AtomicReferenceArray<HourOfMeridiem> cache = new AtomicReferenceArray<HourOfMeridiem>(12);
 
     /**
      * The hour of meridiem being represented.
@@ -72,10 +78,21 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      *
      * @param hourOfMeridiem  the hour of meridiem to represent
      * @return the created HourOfMeridiem
+     * @throws IllegalCalendarFieldValueException if the hourOfMeridiem is invalid
      */
     public static HourOfMeridiem hourOfMeridiem(int hourOfMeridiem) {
-        RULE.checkValue(hourOfMeridiem);
-        return new HourOfMeridiem(hourOfMeridiem);
+        try {
+            HourOfMeridiem result = cache.get(hourOfMeridiem);
+            if (result == null) {
+                HourOfMeridiem temp = new HourOfMeridiem(hourOfMeridiem);
+                cache.compareAndSet(hourOfMeridiem, null, temp);
+                result = cache.get(hourOfMeridiem);
+            }
+            return result;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalCalendarFieldValueException(
+                RULE.getName(), hourOfMeridiem, RULE.getMinimumValue(), RULE.getMaximumValue());
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -86,6 +103,15 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
      */
     private HourOfMeridiem(int hourOfMeridiem) {
         this.hourOfMeridiem = hourOfMeridiem;
+    }
+
+    /**
+     * Resolve the singleton.
+     *
+     * @return the singleton, never null
+     */
+    private Object readResolve() {
+        return hourOfMeridiem(hourOfMeridiem);
     }
 
     //-----------------------------------------------------------------------
