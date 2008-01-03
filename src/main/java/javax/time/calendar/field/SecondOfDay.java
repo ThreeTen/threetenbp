@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -72,6 +73,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
      *
      * @param secondOfDay  the second of day to represent
      * @return the created SecondOfDay
+     * @throws IllegalCalendarFieldValueException if the secondOfDay is invalid
      */
     public static SecondOfDay secondOfDay(int secondOfDay) {
         RULE.checkValue(secondOfDay);

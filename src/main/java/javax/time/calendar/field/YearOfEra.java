@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -72,6 +73,7 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
      *
      * @param yearOfEra  the year of era to represent
      * @return the created YearOfEra
+     * @throws IllegalCalendarFieldValueException if the yearOfEra is invalid
      */
     public static YearOfEra yearOfEra(int yearOfEra) {
         RULE.checkValue(yearOfEra);
