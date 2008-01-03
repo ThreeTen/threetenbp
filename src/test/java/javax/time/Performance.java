@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time;
 import static javax.time.calendar.LocalTime.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -61,8 +62,10 @@ public class Performance {
         
         List<LocalTime> list = setup();
         sortList(list);
+        queryList(list);
 //        List<GregorianCalendar> list = setupGCal();
 //        sortListGCal(list);
+//        queryListGCal(list);
     }
 
     private static List<LocalTime> setup() {
@@ -85,6 +88,18 @@ public class Performance {
         System.out.println((end - start) + " ns");
     }
 
+    private static void queryList(List<LocalTime> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (LocalTime localTime : list) {
+            total += localTime.getHourOfDay().getValue();
+            total += localTime.getMinuteOfHour().getValue();
+            total += localTime.getSecondOfMinute().getValue();
+        };
+        long end = System.nanoTime();
+        System.out.println((end - start) + " ns" + " " + total);
+    }
+
     private static List<GregorianCalendar> setupGCal() {
         Random random = new Random(47658758756875687L);
         List<GregorianCalendar> list = new ArrayList<GregorianCalendar>(SIZE);
@@ -103,6 +118,18 @@ public class Performance {
         Collections.sort(list);
         long end = System.nanoTime();
         System.out.println((end - start) + " ns");
+    }
+
+    private static void queryListGCal(List<GregorianCalendar> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (GregorianCalendar gcal : list) {
+            total += gcal.get(Calendar.HOUR_OF_DAY);
+            total += gcal.get(Calendar.MINUTE);
+            total += gcal.get(Calendar.SECOND);
+        };
+        long end = System.nanoTime();
+        System.out.println((end - start) + " ns" + " " + total);
     }
 
 }
