@@ -369,7 +369,7 @@ public final class LocalDate
      * @return a new updated LocalDate, never null if adjustor written correctly
      */
     public LocalDate with(DateAdjustor adjustor) {
-        return adjustor.adjust(this);
+        return adjustor.adjustDate(this);
     }
 
     //-----------------------------------------------------------------------

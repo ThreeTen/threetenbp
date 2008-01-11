@@ -55,6 +55,6 @@ public interface DateAdjustor {
      * @param date  the date to adjust, not null
      * @return the adjusted date, never null
      */
-    LocalDate adjust(LocalDate date);
+    LocalDate adjustDate(LocalDate date);
 
 }
