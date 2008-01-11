@@ -36,8 +36,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 
 /**
- * Strategy for resolving an invalid year-month-day to a valid one
- * within the ISO calendar system.
+ * Strategy for resolving an invalid year-month-day to a valid one.
  * <p>
  * CalendricalResolver is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
@@ -45,24 +44,14 @@ import javax.time.calendar.field.Year;
  *
  * @author Stephen Colebourne
  */
-public abstract class CalendricalResolver {
+public interface DateResolver {
 
-    /**
-     * Restrictive constructor.
-     */
-    protected CalendricalResolver() {
-        super();
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Resolves the combination of year, month and day into a date.
      * <p>
      * The purpose of resolution is to avoid invalid dates. Each of the three
      * fields are individually valid. However, the day of month may not be
      * valid for the associated month and year.
-     * <p>
-     * This method forwards to the protected method {@link #handleResolveDate}.
      *
      * @param year  the year that was input, not null
      * @param monthOfYear  the month of year, not null
@@ -70,27 +59,6 @@ public abstract class CalendricalResolver {
      * @return the resolved date, never null
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved
      */
-    public final LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        LocalDate date = handleResolveDate(year, monthOfYear, dayOfMonth);
-        if (date == null) {
-            throw new IllegalCalendarFieldValueException(
-                    "CalendricalResolver implementation must not return null: " + getClass().getName());
-        }
-        return date;
-    }
-
-    /**
-     * Overridable method to allow the implementation of a strategy for
-     * converting an invalid year-month-day to a valid one.
-     * <p>
-     * The day of month may be invalid for the specified month and year.
-     *
-     * @param year  the year that was input, not null
-     * @param monthOfYear  the month of year, not null
-     * @param dayOfMonth  the day of month, not null
-     * @return the resolved date, never null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved
-     */
-    protected abstract LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth);
+    LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth);
 
 }

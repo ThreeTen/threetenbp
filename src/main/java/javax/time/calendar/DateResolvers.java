@@ -36,14 +36,14 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 
 /**
- * Internal state class providing calendrical information.
+ * Provides common implementations of <code>DateResolver</code>.
  * <p>
- * CalendricalResolvers is a utility class.
+ * DateResolvers is a utility class.
  * All resolvers returned are immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalResolvers {
+public class DateResolvers {
 
     //-----------------------------------------------------------------------
     /**
@@ -52,20 +52,19 @@ public class CalendricalResolvers {
      *
      * @return the strict resolver, never null
      */
-    public static CalendricalResolver strict() {
+    public static DateResolver strict() {
         return Strict.INSTANCE;
     }
 
     /**
      * Class implementing strict resolver.
      */
-    private static class Strict extends CalendricalResolver {
+    private static class Strict implements DateResolver {
         /** The singleton instance. */
-        private static final CalendricalResolver INSTANCE = new Strict();
+        private static final DateResolver INSTANCE = new Strict();
 
         /** {@inheritDoc} */
-        @Override
-        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
             return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
     }
@@ -77,20 +76,19 @@ public class CalendricalResolvers {
      *
      * @return the previous valid day resolver, never null
      */
-    public static CalendricalResolver previousValid() {
+    public static DateResolver previousValid() {
         return PreviousValid.INSTANCE;
     }
 
     /**
      * Class implementing previousValid resolver.
      */
-    private static class PreviousValid extends CalendricalResolver {
+    private static class PreviousValid implements DateResolver {
         /** The singleton instance. */
-        private static final CalendricalResolver INSTANCE = new PreviousValid();
+        private static final DateResolver INSTANCE = new PreviousValid();
 
         /** {@inheritDoc} */
-        @Override
-        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
             int len = monthOfYear.lengthInDays(year);
             if (dayOfMonth.getValue() > len) {
                 return LocalDate.date(year, monthOfYear, DayOfMonth.dayOfMonth(len));
@@ -106,20 +104,19 @@ public class CalendricalResolvers {
      *
      * @return the next valid day resolver, never null
      */
-    public static CalendricalResolver nextValid() {
+    public static DateResolver nextValid() {
         return NextValid.INSTANCE;
     }
 
     /**
      * Class implementing nextValid resolver.
      */
-    private static class NextValid extends CalendricalResolver {
+    private static class NextValid implements DateResolver {
         /** The singleton instance. */
-        private static final CalendricalResolver INSTANCE = new NextValid();
+        private static final DateResolver INSTANCE = new NextValid();
 
         /** {@inheritDoc} */
-        @Override
-        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
             int len = monthOfYear.lengthInDays(year);
             if (dayOfMonth.getValue() > len) {
                 if (monthOfYear == MonthOfYear.DECEMBER) {
@@ -139,20 +136,19 @@ public class CalendricalResolvers {
      *
      * @return the part lenient resolver, never null
      */
-    public static CalendricalResolver partLenient() {
+    public static DateResolver partLenient() {
         return PartLenient.INSTANCE;
     }
 
     /**
      * Class implementing partLenient resolver.
      */
-    private static class PartLenient extends CalendricalResolver {
+    private static class PartLenient implements DateResolver {
         /** The singleton instance. */
-        private static final CalendricalResolver INSTANCE = new PartLenient();
+        private static final DateResolver INSTANCE = new PartLenient();
 
         /** {@inheritDoc} */
-        @Override
-        protected LocalDate handleResolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
             int len = monthOfYear.lengthInDays(year);
             if (dayOfMonth.getValue() > len) {
                 if (monthOfYear == MonthOfYear.DECEMBER) {

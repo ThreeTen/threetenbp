@@ -385,7 +385,7 @@ public final class LocalDate
         if (this.year.getValue() == year) {
             return this;
         }
-        return CalendricalResolvers.previousValid().resolveDate(
+        return DateResolvers.previousValid().resolveDate(
                 Year.isoYear(year), month, day);
     }
 
@@ -401,7 +401,7 @@ public final class LocalDate
         if (this.month.getValue() == monthOfYear) {
             return this;
         }
-        return CalendricalResolvers.previousValid().resolveDate(
+        return DateResolvers.previousValid().resolveDate(
                 year, MonthOfYear.monthOfYear(monthOfYear), day);
     }
 
@@ -520,7 +520,7 @@ public final class LocalDate
             return this;
         }
         Year newYear = year.plusYears(years);
-        return CalendricalResolvers.previousValid().resolveDate(newYear, month, day);
+        return DateResolvers.previousValid().resolveDate(newYear, month, day);
     }
 
     /**
@@ -558,7 +558,7 @@ public final class LocalDate
         }
         Year newYear = year.plusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return CalendricalResolvers.previousValid().resolveDate(newYear, newMonth, day);
+        return DateResolvers.previousValid().resolveDate(newYear, newMonth, day);
     }
 
     /**

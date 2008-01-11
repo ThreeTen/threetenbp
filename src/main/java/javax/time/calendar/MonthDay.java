@@ -271,7 +271,7 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
-        LocalDate date = CalendricalResolvers.previousValid().resolveDate(
+        LocalDate date = DateResolvers.previousValid().resolveDate(
                 SAMPLE_YEAR, MonthOfYear.monthOfYear(monthOfYear), day);
         return withMonthDay(date.getMonthOfYear(), date.getDayOfMonth());
     }
