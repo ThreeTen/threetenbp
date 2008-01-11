@@ -71,7 +71,6 @@ public class DateAdjustors {
         private static final DateAdjustor INSTANCE = new LastDayOfMonth();
 
         /** {@inheritDoc} */
-        @Override
         public LocalDate adjust(LocalDate date) {
             DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.getYear());
             return date.with(dom);
@@ -100,7 +99,6 @@ public class DateAdjustors {
         private static final DateAdjustor INSTANCE = new LastDayOfYear();
 
         /** {@inheritDoc} */
-        @Override
         public LocalDate adjust(LocalDate date) {
             return LocalDate.date(date.getYear(), DECEMBER, dayOfMonth(31));
         }
@@ -176,7 +174,6 @@ public class DateAdjustors {
         }
 
         /** {@inheritDoc} */
-        @Override
         public LocalDate adjust(LocalDate date) {
             // TODO: Better algorithm
             LocalDate temp = date.withDayOfMonth(1);
@@ -241,7 +238,6 @@ public class DateAdjustors {
         private static final DateAdjustor INSTANCE = new NextNonWeekendDay();
 
         /** {@inheritDoc} */
-        @Override
         public LocalDate adjust(LocalDate date) {
             DayOfWeek dow = date.getDayOfWeek();
             switch (dow) {
