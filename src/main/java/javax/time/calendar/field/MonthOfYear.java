@@ -33,8 +33,12 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateResolver;
+import javax.time.calendar.DateResolvers;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -51,7 +55,8 @@ import javax.time.calendar.TimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear implements Calendrical {
+public enum MonthOfYear
+        implements Calendrical, DateAdjustor {
 
     /**
      * The singleton instance for the month of January.
@@ -243,6 +248,44 @@ public enum MonthOfYear implements Calendrical {
      */
     public boolean isLessThan(MonthOfYear otherMonthOfYear) {
         return compareTo(otherMonthOfYear) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the value of this month of year, returning a new date.
+     * <p>
+     * If the day of month is invalid for the new month then the
+     * {@link DateResolvers#previousValid()} resolver is used.
+     * <p>
+     * For example, if this object represents November, and the input date is
+     * the 31st December, then the result will be the 30th November. The result
+     * cannot be the 31st of November, so the previous valid date is chosen.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return adjustDate(date, DateResolvers.previousValid());
+    }
+
+    /**
+     * Adjusts a date to have the value of this month of year, using a resolver to
+     * handle the case when the day of month becomes invalid.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @param resolver  the date resolver to use if the day of month becomes invalid, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     */
+    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (this == date.getMonthOfYear()) {
+            return date;
+        }
+        return resolver.resolveDate(date.getYear(), this, date.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------

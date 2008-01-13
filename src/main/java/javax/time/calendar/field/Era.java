@@ -33,7 +33,9 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -50,7 +52,8 @@ import javax.time.calendar.TimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum Era implements Calendrical {
+public enum Era
+        implements Calendrical, DateAdjustor {
 
     /**
      * The singleton instance for the last Era, BC/BCE.
@@ -144,6 +147,24 @@ public enum Era implements Calendrical {
         return compareTo(otherEra) < 0;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the era represented by this object, returning a new date.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        if (this == date.getYear().getEra()) {
+            return date;
+        }
+        Year newYear = Year.year(this, date.getYear().getYearOfEra());
+        return LocalDate.date(newYear, date.getMonthOfYear(), date.getDayOfMonth());
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Is this instance representing BC/BCE.
      *

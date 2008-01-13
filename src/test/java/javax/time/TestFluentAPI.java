@@ -36,11 +36,14 @@ import static javax.time.calendar.DateAdjustors.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.period.Periods.*;
 
+import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.Period;
 import javax.time.period.field.Days;
 
@@ -80,6 +83,10 @@ public class TestFluentAPI {
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
+        date = date.with((DateAdjustor) year(2009));
+        date = date.with((DateAdjustor) monthOfYear(6));
+        date = date.with((DateAdjustor) MonthOfYear.AUGUST);
+        MonthOfYear.DECEMBER.adjustDate(date, DateResolvers.strict());
         
 //        date = date.with(MONDAY.adjustToNext());
         

@@ -36,7 +36,11 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateResolver;
+import javax.time.calendar.DateResolvers;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -52,7 +56,8 @@ import javax.time.calendar.TimeFieldRule;
  *
  * @author Stephen Colebourne
  */
-public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Serializable {
+public final class DayOfMonth
+        implements Calendrical, Comparable<DayOfMonth>, Serializable, DateAdjustor {
 
     /**
      * The rule implementation that defines how the day of month field operates.
@@ -207,6 +212,40 @@ public final class DayOfMonth implements Calendrical, Comparable<DayOfMonth>, Se
     @Override
     public String toString() {
         return "DayOfMonth=" + getValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the value of this day of month, returning a new date.
+     * <p>
+     * If the day of month is invalid for the year and month then an exception
+     * is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return adjustDate(date, DateResolvers.previousValid());
+    }
+
+    /**
+     * Adjusts a date to have the value of this day of month, using a resolver
+     * to handle the case when the day of month is invalid for the year and month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @param resolver  the date resolver to use, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     */
+    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (this == date.getDayOfMonth()) {
+            return date;
+        }
+        return resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
     }
 
 //  /**

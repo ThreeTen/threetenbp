@@ -35,7 +35,11 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateResolver;
+import javax.time.calendar.DateResolvers;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -51,7 +55,8 @@ import javax.time.calendar.TimeFieldRule;
  *
  * @author Stephen Colebourne
  */
-public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Serializable {
+public final class YearOfEra
+        implements Calendrical, Comparable<YearOfEra>, Serializable, DateAdjustor {
 
     /**
      * The rule implementation that defines how the year of era field operates.
@@ -183,6 +188,44 @@ public final class YearOfEra implements Calendrical, Comparable<YearOfEra>, Seri
     @Override
     public String toString() {
         return "YearOfEra=" + getValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the year of era represented by this object,
+     * returning a new date.
+     * <p>
+     * If the day of month is invalid for the new year then the
+     * {@link DateResolvers#previousValid()} resolver is used.
+     * This occurs if the input date is 29th February in a leap year, and this
+     * object represents a non-leap year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return adjustDate(date, DateResolvers.previousValid());
+    }
+
+    /**
+     * Adjusts a date to have the value of this year, using a resolver to
+     * handle the case when the day of month becomes invalid.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @param resolver  the date resolver to use if the day of month becomes invalid, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     */
+    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (this.getValue() == date.getYear().getYearOfEra()) {
+            return date;
+        }
+        Year newYear = Year.year(date.getYear().getEra(), this.getValue());
+        return resolver.resolveDate(newYear, date.getMonthOfYear(), date.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------
