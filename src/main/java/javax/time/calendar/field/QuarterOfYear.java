@@ -33,7 +33,9 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -50,7 +52,7 @@ import javax.time.calendar.TimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear implements Calendrical {
+public enum QuarterOfYear implements Calendrical, DateMatcher {
 
     /**
      * The singleton instance for the first quarter of year, from January to March.
@@ -175,6 +177,17 @@ public enum QuarterOfYear implements Calendrical {
      */
     public boolean isLessThan(QuarterOfYear otherQuarterOfYear) {
         return compareTo(otherQuarterOfYear) < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the value of this quarter of year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getMonthOfYear().getQuarterOfYear() == this;
     }
 
     //-----------------------------------------------------------------------

@@ -37,6 +37,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.ISOChronology;
@@ -60,7 +61,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class Year
-        implements Calendrical, Comparable<Year>, Serializable, DateAdjustor {
+        implements Calendrical, Comparable<Year>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * The rule implementation that defines how the year field operates.
@@ -396,6 +397,16 @@ public final class Year
             return date;
         }
         return resolver.resolveDate(this, date.getMonthOfYear(), date.getDayOfMonth());
+    }
+
+    /**
+     * Checks if the value of this year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return this.equals(date.getYear());
     }
 
     //-----------------------------------------------------------------------

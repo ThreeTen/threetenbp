@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -57,7 +58,7 @@ import javax.time.calendar.TimeFieldRule;
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
-        implements Calendrical, Comparable<DayOfMonth>, Serializable, DateAdjustor {
+        implements Calendrical, Comparable<DayOfMonth>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * The rule implementation that defines how the day of month field operates.
@@ -246,6 +247,16 @@ public final class DayOfMonth
             return date;
         }
         return resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
+    }
+
+    /**
+     * Checks if the value of this day of month matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getDayOfMonth() == this;
     }
 
 //  /**

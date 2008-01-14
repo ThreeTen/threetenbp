@@ -34,6 +34,7 @@ package javax.time.calendar.field;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.ISOChronology;
@@ -56,7 +57,7 @@ import javax.time.calendar.TimeFieldRule;
  * @author Stephen Colebourne
  */
 public enum MonthOfYear
-        implements Calendrical, DateAdjustor {
+        implements Calendrical, DateAdjustor, DateMatcher {
 
     /**
      * The singleton instance for the month of January.
@@ -286,6 +287,16 @@ public enum MonthOfYear
             return date;
         }
         return resolver.resolveDate(date.getYear(), this, date.getDayOfMonth());
+    }
+
+    /**
+     * Checks if the value of this month of year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getMonthOfYear() == this;
     }
 
     //-----------------------------------------------------------------------

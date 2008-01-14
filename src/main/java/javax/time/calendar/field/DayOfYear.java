@@ -36,7 +36,9 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -52,7 +54,8 @@ import javax.time.calendar.TimeFieldRule;
  *
  * @author Stephen Colebourne
  */
-public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Serializable {
+public final class DayOfYear
+        implements Calendrical, Comparable<DayOfYear>, Serializable, DateMatcher {
 
     /**
      * The rule implementation that defines how the day of year field operates.
@@ -207,6 +210,17 @@ public final class DayOfYear implements Calendrical, Comparable<DayOfYear>, Seri
     @Override
     public String toString() {
         return "DayOfYear=" + getValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the value of this day of year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getDayOfYear() == this;
     }
 
     //-----------------------------------------------------------------------

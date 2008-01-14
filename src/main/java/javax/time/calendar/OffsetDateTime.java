@@ -720,6 +720,26 @@ public final class OffsetDateTime
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
+    /**
+     * Returns a copy of this OffsetDateTime with the date altered using the adjustor.
+     * <p>
+     * Adjustors can be used to alter the date in unusual ways. Examples might
+     * be an adjustor that set the date avoiding weekends, or one that sets the
+     * date to the last day of the month.
+     * <p>
+     * The adjustment has no effect on the time.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @return a new updated OffsetDateTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     */
+    public OffsetDateTime with(DateAdjustor adjustor) {
+        LocalDateTime newDT = dateTime.with(adjustor);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this OffsetDateTime with the year value altered.
@@ -1097,6 +1117,25 @@ public final class OffsetDateTime
     public OffsetDateTime plusNanos(int nanos) {
         LocalDateTime newDT = dateTime.plusNanos(nanos);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this date matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the date in unusual ways. Examples might
+     * be a matcher that checks if the date is a weekend or holiday, or
+     * Friday the Thirteenth.
+     * <p>
+     * The time and offset have no effect on the matching.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this date matches the matcher, false otherwise
+     */
+    public boolean matches(DateMatcher matcher) {
+        return dateTime.matches(matcher);
     }
 
     //-----------------------------------------------------------------------

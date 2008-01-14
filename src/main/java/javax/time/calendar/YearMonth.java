@@ -53,7 +53,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class YearMonth
-        implements Calendrical, Comparable<YearMonth>, Serializable {
+        implements Calendrical, Comparable<YearMonth>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -358,6 +358,50 @@ public final class YearMonth
         Year newYear = year.plusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
         return withYearMonth(newYear, newMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the value of this year-month, returning a new date.
+     * <p>
+     * If the day of month is invalid for the new year then the
+     * {@link DateResolvers#previousValid()} resolver is used.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return adjustDate(date, DateResolvers.previousValid());
+    }
+
+    /**
+     * Adjusts a date to have the value of this year-month, using a resolver to
+     * handle the case when the day of month becomes invalid.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @param resolver  the date resolver to use if the day of month becomes invalid, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     */
+    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (year.equals(date.getYear()) && month == date.getMonthOfYear()) {
+            return date;
+        }
+        return resolver.resolveDate(year, month, date.getDayOfMonth());
+    }
+
+    /**
+     * Checks if the year-month represented by this object matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return year.equals(date.getYear()) && month == date.getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------

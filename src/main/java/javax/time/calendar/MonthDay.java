@@ -54,7 +54,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, Comparable<MonthDay>, Serializable {
+        implements Calendrical, Comparable<MonthDay>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -375,6 +375,49 @@ public final class MonthDay
     public MonthDay plusDays(int days) {
         // TODO: What about leap years
         return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the value of this month-day, returning a new date.
+     * <p>
+     * If the day of month is invalid for the new year then an exception is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return adjustDate(date, DateResolvers.strict());
+    }
+
+    /**
+     * Adjusts a date to have the value of this month-day, using a resolver to
+     * handle the case when the day of month becomes invalid.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @param resolver  the date resolver to use if the day of month is invalid, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     */
+    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
+            return date;
+        }
+        return resolver.resolveDate(date.getYear(), month, day);
+    }
+
+    /**
+     * Checks if the month-day represented by this object matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return month == date.getMonthOfYear() && day == date.getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------

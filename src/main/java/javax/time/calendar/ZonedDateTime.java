@@ -599,6 +599,27 @@ public final class ZonedDateTime
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
+    /**
+     * Returns a copy of this ZonedDateTime with the date altered using the adjustor.
+     * <p>
+     * Adjustors can be used to alter the date in unusual ways. Examples might
+     * be an adjustor that set the date avoiding weekends, or one that sets the
+     * date to the last day of the month.
+     * <p>
+     * The adjustment has no effect on the time.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     */
+    public ZonedDateTime with(DateAdjustor adjustor) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjustor);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this ZonedDateTime with the year value altered.
@@ -1000,6 +1021,25 @@ public final class ZonedDateTime
         LocalDateTime newDT = dateTime.localDateTime().plusNanos(nanos);
         return (newDT == dateTime.localDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this date matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the date in unusual ways. Examples might
+     * be a matcher that checks if the date is a weekend or holiday, or
+     * Friday the Thirteenth.
+     * <p>
+     * The time and zone have no effect on the matching.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this date matches the matcher, false otherwise
+     */
+    public boolean matches(DateMatcher matcher) {
+        return dateTime.matches(matcher);
     }
 
     //-----------------------------------------------------------------------

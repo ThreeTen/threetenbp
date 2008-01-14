@@ -342,6 +342,26 @@ public final class OffsetDate
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
+    /**
+     * Returns a copy of this OffsetDate with the date altered using the adjustor.
+     * <p>
+     * Adjustors can be used to alter the date in unusual ways. Examples might
+     * be an adjustor that set the date avoiding weekends, or one that sets the
+     * date to the last day of the month.
+     * <p>
+     * The offset has no effect on the adjustment.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @return a new updated OffsetDate, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     */
+    public OffsetDate with(DateAdjustor adjustor) {
+        LocalDate newDate = date.with(adjustor);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this OffsetDate with the year value altered.
@@ -549,6 +569,25 @@ public final class OffsetDate
     public OffsetDate plusDays(int days) {
         LocalDate newDate = date.plusDays(days);
         return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this date matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the date in unusual ways. Examples might
+     * be a matcher that checks if the date is a weekend or holiday, or
+     * Friday the Thirteenth.
+     * <p>
+     * The offset has no effect on the matching.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this date matches the matcher, false otherwise
+     */
+    public boolean matches(DateMatcher matcher) {
+        return date.matches(matcher);
     }
 
     //-----------------------------------------------------------------------

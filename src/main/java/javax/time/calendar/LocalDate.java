@@ -366,10 +366,15 @@ public final class LocalDate
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjustor  the adjustor to use, not null
-     * @return a new updated LocalDate, never null if adjustor written correctly
+     * @return a new updated LocalDate, never null
+     * @throws IllegalArgumentException if the adjustor returned null
      */
     public LocalDate with(DateAdjustor adjustor) {
-        return adjustor.adjustDate(this);
+        LocalDate date = adjustor.adjustDate(this);
+        if (date == null) {
+            throw new IllegalArgumentException("The implementation of DateAdjustor must not return null");
+        }
+        return date;
     }
 
     //-----------------------------------------------------------------------
@@ -629,6 +634,23 @@ public final class LocalDate
         long epochDays = 0L;
         epochDays += days;
         return null;  // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this date matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the date in unusual ways. Examples might
+     * be a matcher that checks if the date is a weekend or holiday, or
+     * Friday the Thirteenth.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this date matches the matcher, false otherwise
+     */
+    public boolean matches(DateMatcher matcher) {
+        return matcher.matchesDate(this);
     }
 
     //-----------------------------------------------------------------------

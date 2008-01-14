@@ -88,6 +88,11 @@ public class TestFluentAPI {
         date = date.with((DateAdjustor) MonthOfYear.AUGUST);
         MonthOfYear.DECEMBER.adjustDate(date, DateResolvers.strict());
         
+        if (date.matches(FRIDAY) && date.matches(dayOfMonth(13))) {
+            System.out.println("Spooky");
+        }
+        
+        
 //        date = date.with(MONDAY.adjustToNext());
         
         // different ways to build/use periods
