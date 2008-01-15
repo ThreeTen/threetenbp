@@ -37,7 +37,10 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.TimeMatcher;
 
 /**
  * A calendrical representation of a second of minute.
@@ -52,7 +55,8 @@ import javax.time.calendar.TimeFieldRule;
  *
  * @author Stephen Colebourne
  */
-public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMinute>, Serializable {
+public final class SecondOfMinute
+        implements Calendrical, Comparable<SecondOfMinute>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
      * The rule implementation that defines how the second of minute field operates.
@@ -207,6 +211,37 @@ public final class SecondOfMinute implements Calendrical, Comparable<SecondOfMin
     @Override
     public String toString() {
         return "SecondOfMinute=" + getValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the the second of minute represented by this object,
+     * returning a new time.
+     * <p>
+     * Only the second of minute field is adjusted in the result. The other time
+     * fields are unaffected.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        if (this == time.getSecondOfMinute()) {
+            return time;
+        }
+        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), this, time.getNanoOfSecond());
+    }
+
+    /**
+     * Checks if the input time has the same second of minute that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this == time.getSecondOfMinute();
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,7 +34,10 @@ package javax.time.calendar.field;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.TimeMatcher;
 
 /**
  * A calendrical representation of a meridiem of day.
@@ -50,7 +53,8 @@ import javax.time.calendar.TimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MeridiemOfDay implements Calendrical {
+public enum MeridiemOfDay
+        implements Calendrical, TimeAdjustor, TimeMatcher {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -165,6 +169,7 @@ public enum MeridiemOfDay implements Calendrical {
         return compareTo(otherMeridiemOfDay) < 0;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Is this instance representing AM (ante-meridiem).
      *
@@ -181,6 +186,41 @@ public enum MeridiemOfDay implements Calendrical {
      */
     public boolean isPm() {
         return (this == PM);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the the meridem of day represented by this object,
+     * returning a new time.
+     * <p>
+     * Only the meridiem of day field is adjusted in the result. The other time
+     * fields are unaffected.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        if (this == time.getHourOfDay().getAmPm()) {
+            return time;
+        }
+        return LocalTime.time(
+                HourOfDay.hourOfDay(this, time.getHourOfDay().getHourOfAmPm()),
+                time.getMinuteOfHour(),
+                time.getSecondOfMinute(),
+                time.getNanoOfSecond());
+    }
+
+    /**
+     * Checks if the input time has the same meridiem of day that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this == time.getHourOfDay().getAmPm();
     }
 
     //-----------------------------------------------------------------------

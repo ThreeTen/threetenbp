@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -723,9 +723,9 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this OffsetDateTime with the date altered using the adjustor.
      * <p>
-     * Adjustors can be used to alter the date in unusual ways. Examples might
-     * be an adjustor that set the date avoiding weekends, or one that sets the
-     * date to the last day of the month.
+     * Adjustors can be used to alter the date in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the year field.
+     * A more complex adjustor might set the date to the last day of the month.
      * <p>
      * The adjustment has no effect on the time.
      * <p>
@@ -736,6 +736,26 @@ public final class OffsetDateTime
      * @throws IllegalArgumentException if the adjustor returned null
      */
     public OffsetDateTime with(DateAdjustor adjustor) {
+        LocalDateTime newDT = dateTime.with(adjustor);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the time altered using the adjustor.
+     * <p>
+     * Adjustors can be used to alter the time in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the hour field.
+     * A more complex adjustor might set the time to end of the working day.
+     * <p>
+     * The adjustment has no effect on the date.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @return a new updated OffsetDateTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     */
+    public OffsetDateTime with(TimeAdjustor adjustor) {
         LocalDateTime newDT = dateTime.with(adjustor);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1121,20 +1141,34 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this date matches the specified matcher.
+     * Checks whether the date matches the specified matcher.
      * <p>
-     * Matchers can be used to query the date in unusual ways. Examples might
-     * be a matcher that checks if the date is a weekend or holiday, or
-     * Friday the Thirteenth.
+     * Matchers can be used to query the date.
+     * A simple matcher might simply query one of the fields, such as the year field.
+     * A more complex matcher might query if the date is the last day of the month.
      * <p>
      * The time and offset have no effect on the matching.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param matcher  the matcher to use, not null
      * @return true if this date matches the matcher, false otherwise
      */
     public boolean matches(DateMatcher matcher) {
+        return dateTime.matches(matcher);
+    }
+
+    /**
+     * Checks whether the time matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the time.
+     * A simple matcher might simply query one of the fields, such as the hour field.
+     * A more complex matcher might query if the time is during opening hours.
+     * <p>
+     * The date and offset have no effect on the matching.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this time matches the matcher, false otherwise
+     */
+    public boolean matches(TimeMatcher matcher) {
         return dateTime.matches(matcher);
     }
 

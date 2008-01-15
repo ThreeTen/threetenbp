@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -161,13 +161,14 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>.
+     * Obtains an instance of <code>ZonedDateTime</code>, providing a resolver
+     * to handle an invalid date-time.
      *
      * @param dateTime  the date-time, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
      */
     public static ZonedDateTime dateTime(LocalDateTime dateTime, TimeZone zone, ZoneResolver resolver) {
         if (dateTime == null) {
@@ -602,11 +603,12 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the date altered using the adjustor.
      * <p>
-     * Adjustors can be used to alter the date in unusual ways. Examples might
-     * be an adjustor that set the date avoiding weekends, or one that sets the
-     * date to the last day of the month.
+     * Adjustors can be used to alter the date in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the year field.
+     * A more complex adjustor might set the date to the last day of the month.
      * <p>
-     * The adjustment has no effect on the time.
+     * If the adjusted date results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -615,9 +617,69 @@ public final class ZonedDateTime
      * @throws IllegalArgumentException if the adjustor returned null
      */
     public ZonedDateTime with(DateAdjustor adjustor) {
+        return with(adjustor, ZoneResolvers.retainOffset());
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the date altered using the
+     * adjustor, providing a resolver to handle an invalid date-time.
+     * <p>
+     * Adjustors can be used to alter the date in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the year field.
+     * A more complex adjustor might set the date to the last day of the month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @param resolver  the resolver to use, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
+     */
+    public ZonedDateTime with(DateAdjustor adjustor, ZoneResolver resolver) {
         LocalDateTime newDT = dateTime.toLocalDateTime().with(adjustor);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+        return (newDT == dateTime.toLocalDateTime() ? this : dateTime(newDT, dateTime, zone, resolver));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the time altered using the adjustor.
+     * <p>
+     * Adjustors can be used to alter the time in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the hour field.
+     * A more complex adjustor might set the time to end of the working day.
+     * <p>
+     * If the adjusted date results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     */
+    public ZonedDateTime with(TimeAdjustor adjustor) {
+        return with(adjustor, ZoneResolvers.retainOffset());
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the time altered using the
+     * adjustor, providing a resolver to handle an invalid date-time.
+     * <p>
+     * Adjustors can be used to alter the time in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the hour field.
+     * A more complex adjustor might set the time to end of the working day.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @param resolver  the resolver to use, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
+     */
+    public ZonedDateTime with(TimeAdjustor adjustor, ZoneResolver resolver) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjustor);
+        return (newDT == dateTime.toLocalDateTime() ? this : dateTime(newDT, dateTime, zone, resolver));
     }
 
     //-----------------------------------------------------------------------
@@ -1025,20 +1087,34 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether this date matches the specified matcher.
+     * Checks whether the date matches the specified matcher.
      * <p>
-     * Matchers can be used to query the date in unusual ways. Examples might
-     * be a matcher that checks if the date is a weekend or holiday, or
-     * Friday the Thirteenth.
+     * Matchers can be used to query the date.
+     * A simple matcher might simply query one of the fields, such as the year field.
+     * A more complex matcher might query if the date is the last day of the month.
      * <p>
      * The time and zone have no effect on the matching.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
      * @param matcher  the matcher to use, not null
      * @return true if this date matches the matcher, false otherwise
      */
     public boolean matches(DateMatcher matcher) {
+        return dateTime.matches(matcher);
+    }
+
+    /**
+     * Checks whether the time matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the time.
+     * A simple matcher might simply query one of the fields, such as the hour field.
+     * A more complex matcher might query if the time is during opening hours.
+     * <p>
+     * The date and zone have no effect on the matching.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this time matches the matcher, false otherwise
+     */
+    public boolean matches(TimeMatcher matcher) {
         return dateTime.matches(matcher);
     }
 

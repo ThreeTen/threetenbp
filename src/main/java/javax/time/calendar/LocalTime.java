@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -463,6 +463,27 @@ public final class LocalTime
         return null;
     }
 
+    /**
+     * Returns a copy of this LocalTime with the time altered using the adjustor.
+     * <p>
+     * Adjustors can be used to alter the time in various ways.
+     * A simple adjustor might simply set the one of the fields, such as the hour field.
+     * A more complex adjustor might set the time to end of the working day.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param adjustor  the adjustor to use, not null
+     * @return a new updated LocalTime, never null
+     * @throws IllegalArgumentException if the adjustor returned null
+     */
+    public LocalTime with(TimeAdjustor adjustor) {
+        LocalTime time = adjustor.adjustTime(this);
+        if (time == null) {
+            throw new IllegalArgumentException("The implementation of TimeAdjustor must not return null");
+        }
+        return time;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalTime with the hour of day value altered.
@@ -644,6 +665,21 @@ public final class LocalTime
         SecondOfMinute newSecond = SecondOfMinute.secondOfMinute((int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_HOUR));
         NanoOfSecond newNano = NanoOfSecond.nanoOfSecond((int) (newNofd % NANOS_PER_SECOND));
         return time(newHour, newMinute, newSecond, newNano);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether the time matches the specified matcher.
+     * <p>
+     * Matchers can be used to query the time.
+     * A simple matcher might simply query one of the fields, such as the hour field.
+     * A more complex matcher might query if the time is during opening hours.
+     *
+     * @param matcher  the matcher to use, not null
+     * @return true if this time matches the matcher, false otherwise
+     */
+    public boolean matches(TimeMatcher matcher) {
+        return matcher.matchesTime(this);
     }
 
     //-----------------------------------------------------------------------

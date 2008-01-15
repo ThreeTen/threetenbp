@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -40,9 +40,11 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
+import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.Period;
 import javax.time.period.field.Days;
@@ -58,6 +60,9 @@ public class TestFluentAPI {
         LocalTime tod = now().currentTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
+        if (tod.matches(MeridiemOfDay.AM)) {
+            tod = tod.with((TimeAdjustor) hourOfDay(9));
+        }
         
         LocalDate date = null;
         date = now().today().plusDays(3);

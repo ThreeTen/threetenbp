@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,7 +35,10 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.TimeMatcher;
 
 /**
  * A calendrical representation of a nano of second.
@@ -50,7 +53,8 @@ import javax.time.calendar.TimeFieldRule;
  *
  * @author Stephen Colebourne
  */
-public final class NanoOfSecond implements Calendrical, Comparable<NanoOfSecond>, Serializable {
+public final class NanoOfSecond
+        implements Calendrical, Comparable<NanoOfSecond>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
      * The rule implementation that defines how the nano of second field operates.
@@ -190,6 +194,38 @@ public final class NanoOfSecond implements Calendrical, Comparable<NanoOfSecond>
         return "NanoOfSecond=" + getValue();
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the the nano of second represented by this object,
+     * returning a new time.
+     * <p>
+     * Only the nano of second field is adjusted in the result. The other time
+     * fields are unaffected.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        if (this == time.getNanoOfSecond()) {
+            return time;
+        }
+        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), this);
+    }
+
+    /**
+     * Checks if the input time has the same nano of second that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this == time.getNanoOfSecond();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the value as a fraction of a second expressed as a double.
      *
