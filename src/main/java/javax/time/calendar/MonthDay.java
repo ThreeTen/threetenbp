@@ -491,7 +491,7 @@ public final class MonthDay
     /**
      * Outputs the month-day as a <code>String</code>.
      * <p>
-     * The output will be in the format '"XXXX"-MM-dd':
+     * The output will be in the format '--MM-dd':
      *
      * @return the string form of the month-day
      */
@@ -499,7 +499,7 @@ public final class MonthDay
     public String toString() {
         int monthValue = month.getValue();
         int dayValue = day.getValue();
-        return new StringBuilder(10).append("XXXX-")
+        return new StringBuilder(10).append("--")
             .append(monthValue < 10 ? "-0" : "-").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .toString();
