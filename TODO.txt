@@ -44,7 +44,6 @@ Items still todo before EDR:
 - round()
 - TimeZone providers Olson/IATA
 - TimeScale (see ICU)
-- DateAdjuster - date.with(lastDayOfWeek());  date.with(nextTuesday());
 - Favour single method interfaces, for closures
 
 Implementation items todo:
@@ -52,5 +51,4 @@ Implementation items todo:
 - LocalDate plusDays
 - OffsetDateTime toInstant
 - TimeZone
-- MonthDay
 - construct from calendricals
