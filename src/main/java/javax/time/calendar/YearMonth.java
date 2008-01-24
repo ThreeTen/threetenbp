@@ -223,37 +223,33 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth with the specified values altered.
+     * Returns a copy of this YearMonth with the year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param calendrical  the calendrical values to update to, not null
+     * @param year  the year to represent, not null
      * @return a new updated YearMonth, never null
      */
-    public YearMonth with(Calendrical calendrical) {
-        if (calendrical instanceof Year) {
-            return withYearMonth(((Year) calendrical), month);
+    public YearMonth with(Year year) {
+        if (year == null) {
+            throw new NullPointerException("Year must not be null");
         }
-        if (calendrical instanceof MonthOfYear) {
-            return withYearMonth(year, ((MonthOfYear) calendrical));
-        }
-        if (calendrical instanceof YearMonth) {
-            return (YearMonth) calendrical;
-        }
-        // TODO
-        return null;
+        return withYearMonth(year, month);
     }
 
     /**
-     * Returns a copy of this YearMonth with the specified values altered.
+     * Returns a copy of this YearMonth with the month of year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param calendricals  the calendrical values to update to, no nulls
+     * @param monthOfYear  the month of year to represent, not null
      * @return a new updated YearMonth, never null
      */
-    public YearMonth with(Calendrical... calendricals) {
-        return null;
+    public YearMonth with(MonthOfYear monthOfYear) {
+        if (monthOfYear == null) {
+            throw new NullPointerException("MonthOfYear must not be null");
+        }
+        return withYearMonth(year, monthOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -320,7 +316,7 @@ public final class YearMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to add, may be negative
+     * @param years  the years to add, positive or negative
      * @return a new updated YearMonth, never null
      * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
@@ -338,7 +334,7 @@ public final class YearMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, may be negative
+     * @param months  the months to add, positive or negative
      * @return a new updated YearMonth, never null
      * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
@@ -358,6 +354,28 @@ public final class YearMonth
         Year newYear = year.plusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
         return withYearMonth(newYear, newMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this YearMonth rolling the month of year field by the
+     * specified number of months.
+     * <p>
+     * This method will add the specified number of months to the month-day,
+     * rolling from December back to January if necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to roll by, positive or negative
+     * @return a new updated YearMonth, never null
+     */
+    public YearMonth rollMonthOfYear(int months) {
+        if (months == 0) {
+            return this;
+        }
+        int newMonth0 = (months % 12) + (month.getValue() - 1);
+        newMonth0 = (newMonth0 + 12) % 12;
+        return withMonthOfYear(++newMonth0);
     }
 
     //-----------------------------------------------------------------------
