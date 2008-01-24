@@ -40,6 +40,7 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.MonthDay;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -128,6 +129,10 @@ public class TestFluentAPI {
 //        
 //        CalendarDT<LocalTime> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
 //        int min = dtime.time().getMinuteOfHour();
+        
+        MonthDay md = MonthDay.monthDay(february(), dayOfMonth(4));
+        md = md.with(march());
+        md = md.rollDayOfMonth(3);
         
         DayOfMonth.RULE.getMaximumValue();
         DayOfMonth.RULE.getMaximumValue(date);

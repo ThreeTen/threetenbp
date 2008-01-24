@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
@@ -77,6 +76,13 @@ public final class MonthDay
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>MonthDay</code>.
+     * <p>
+     * The day of month must be valid for the month within a leap year.
+     * Hence, for February, day 29 is valid.
+     * <p>
+     * For example, passing in April and day 31 will throw an exception, as
+     * there can never be a 31st April in any year. Alternately, passing in
+     * 29th February is valid, as that month-day can be valid.
      *
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
@@ -90,6 +96,13 @@ public final class MonthDay
 
     /**
      * Obtains an instance of <code>MonthDay</code>.
+     * <p>
+     * The day of month must be valid for the month within a leap year.
+     * Hence, for February, day 29 is valid.
+     * <p>
+     * For example, passing in April and day 31 will throw an exception, as
+     * there can never be a 31st April in any year. Alternately, passing in
+     * 29th February is valid, as that month-day can be valid.
      *
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
@@ -102,6 +115,13 @@ public final class MonthDay
 
     /**
      * Obtains an instance of <code>MonthDay</code>.
+     * <p>
+     * The day of month must be valid for the month within a leap year.
+     * Hence, for month 2 (February), day 29 is valid.
+     * <p>
+     * For example, passing in month 4 (April) and day 31 will throw an exception, as
+     * there can never be a 31st April in any year. Alternately, passing in
+     * 29th February is valid, as that month-day can be valid.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
@@ -110,20 +130,6 @@ public final class MonthDay
      */
     public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
         return monthDay(MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
-    }
-
-    /**
-     * Obtains an instance of <code>MonthDay</code> from a set of calendricals.
-     * <p>
-     * This can be used to pass in any combination of calendricals that fully specify
-     * a calendar day. For example, MonthOfYear + DayOfMonth.
-     *
-     * @param calendricals  a set of calendricals that fully represent a calendar day
-     * @return a MonthDay object, never null
-     */
-    public static MonthDay monthDay(Calendrical... calendricals) {
-        // TODO
-        return null;
     }
 
     //-----------------------------------------------------------------------
@@ -147,7 +153,7 @@ public final class MonthDay
      * @return the month-day, never null
      */
     private MonthDay withMonthDay(MonthOfYear newMonth, DayOfMonth newDay) {
-        if (month == newMonth && day.equals(newDay)) {
+        if (month == newMonth && day == newDay) {
             return this;
         }
         return new MonthDay(newMonth, newDay);
@@ -227,154 +233,122 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this MonthDay with the specified values altered.
+     * Returns a copy of this MonthDay with the month of year altered.
+     * <p>
+     * If the day of month is invalid for the specified month, the day will
+     * be adjusted to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param calendrical  the calendrical values to update to, not null
+     * @param monthOfYear  the month of year to represent, not null
      * @return a new updated MonthDay, never null
      */
-    public MonthDay with(Calendrical calendrical) {
-        if (calendrical instanceof MonthOfYear) {
-            return withMonthDay((MonthOfYear) calendrical, day);
+    public MonthDay with(MonthOfYear monthOfYear) {
+        DayOfMonth lastDOM = monthOfYear.getLastDayOfMonth(SAMPLE_YEAR);
+        if (day.isGreaterThan(lastDOM)) {
+            return withMonthDay(monthOfYear, lastDOM);
         }
-        if (calendrical instanceof DayOfMonth) {
-            return withDayOfMonth(((DayOfMonth) calendrical).getValue());
-        }
-        if (calendrical instanceof MonthDay) {
-            return (MonthDay) calendrical;
-        }
-        // TODO
-        return null;
+        return withMonthDay(monthOfYear, day);
     }
 
     /**
-     * Returns a copy of this MonthDay with the specified values altered.
+     * Returns a copy of this MonthDay with the day of month altered.
+     * <p>
+     * If the day of month is invalid for the current month, an exception
+     * will be thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param calendricals  the calendrical values to update to, no nulls
+     * @param dayOfMonth  the day of month to represent, not null
      * @return a new updated MonthDay, never null
+     * @throws IllegalCalendarFieldValueException if the day of month is invalid for the month
      */
-    public MonthDay with(Calendrical... calendricals) {
-        // TODO
-        return null;
+    public MonthDay with(DayOfMonth dayOfMonth) {
+        if (dayOfMonth.isGreaterThan(month.getLastDayOfMonth(SAMPLE_YEAR))) {
+            throw new IllegalCalendarFieldValueException("Day of month cannot be changed to " +
+                    dayOfMonth + " for the month " + month);
+        }
+        return withMonthDay(month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this MonthDay with the month of year value altered.
      * <p>
+     * If the day of month is invalid for the specified month, the day will
+     * be adjusted to the last valid day of the month.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated MonthDay, never null
+     * @throws IllegalCalendarFieldValueException if the month of year is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
-        LocalDate date = DateResolvers.previousValid().resolveDate(
-                SAMPLE_YEAR, MonthOfYear.monthOfYear(monthOfYear), day);
-        return withMonthDay(date.getMonthOfYear(), date.getDayOfMonth());
+        return with(MonthOfYear.monthOfYear(monthOfYear));
     }
 
     /**
      * Returns a copy of this MonthDay with the day of month value altered.
      * <p>
+     * If the day of month is invalid for the current month, an exception
+     * will be thrown.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated MonthDay, never null
+     * @throws IllegalCalendarFieldValueException if the day of month is invalid
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
-        DayOfMonth dom = DayOfMonth.dayOfMonth(dayOfMonth);
-        ISOChronology.INSTANCE.checkValidDate(SAMPLE_YEAR, month, dom);
-        return withMonthDay(month, dom);
-    }
-
-    /**
-     * Returns a copy of this MonthDay with the date set to the last day of month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated MonthDay, never null
-     */
-    public MonthDay withLastDayOfMonth() {
-        DayOfMonth dom = month.getLastDayOfMonth(SAMPLE_YEAR);
-        return withMonthDay(month, dom);
+        return with(DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this MonthDay with the specified period added.
+     * Returns a copy of this MonthDay rolling the month of year field by the
+     * specified number of months.
+     * <p>
+     * This method will add the specified number of months to the month-day,
+     * rolling from December back to January if necessary.
+     * <p>
+     * If the day of month is invalid for the specified month in the result,
+     * the day will be adjusted to the last valid day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param period  the period to add, not null
+     * @param months  the months to roll by, positive or negative
      * @return a new updated MonthDay, never null
      */
-    public MonthDay plus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this MonthDay with the specified periods added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periods  the periods to add, no nulls
-     * @return a new updated MonthDay, never null
-     */
-    public MonthDay plus(PeriodView... periods) {
-        // TODO
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this MonthDay with the specified number of months added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add
-     * @return a new updated MonthDay, never null
-     */
-    public MonthDay plusMonths(int months) {
+    public MonthDay rollMonthOfYear(int months) {
         if (months == 0) {
             return this;
         }
-        long newMonth0 = month.getValue() - 1;
-        newMonth0 = newMonth0 + months;
-        newMonth0 = newMonth0 % 12;
-        if (newMonth0 < 0) {
-            newMonth0 += 12;
+        int newMonth0 = (months % 12) + (month.getValue() - 1);
+        newMonth0 = (newMonth0 + 12) % 12;
+        return withMonthOfYear(++newMonth0);
+    }
+
+    /**
+     * Returns a copy of this MonthDay rolling the day of month field by the
+     * specified number of days.
+     * <p>
+     * This method will add the specified number of days to the month-day,
+     * rolling from last day of month to the first if necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to roll by, positive or negative
+     * @return a new updated MonthDay, never null
+     */
+    public MonthDay rollDayOfMonth(int days) {
+        int monthLength = month.lengthInDays(SAMPLE_YEAR);
+        if (days == 0) {
+            return this;
         }
-        return withMonthOfYear((int) ++newMonth0);
-    }
-
-    /**
-     * Returns a copy of this MonthDay with the specified number of weeks added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to add
-     * @return a new updated MonthDay, never null
-     */
-    public MonthDay plusWeeks(int weeks) {
-        // TODO: What about leap years
-        return null;
-    }
-
-    /**
-     * Returns a copy of this MonthDay with the specified number of days added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add
-     * @return a new updated MonthDay, never null
-     */
-    public MonthDay plusDays(int days) {
-        // TODO: What about leap years
-        return null;
+        int newDOM0 = (days % monthLength) + (day.getValue() - 1);
+        newDOM0 = (newDOM0 + monthLength) % monthLength;
+        return withMonthOfYear(++newDOM0);
     }
 
     //-----------------------------------------------------------------------
