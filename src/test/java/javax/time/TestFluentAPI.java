@@ -80,7 +80,7 @@ public class TestFluentAPI {
         date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
         date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
-        date = LocalDate.date(now().currentMonth(), dayOfMonth(6));
+        // date = LocalDate.date(now().currentMonth(), dayOfMonth(6));
         
         date = date.with(lastDayOfMonth());
         date = date.with(nextNonWeekendDay());
@@ -173,6 +173,10 @@ public class TestFluentAPI {
         d1 = d3;
 //        secondOfMinute(sec);
 //        minuteOfHour(min);
+        
+//        year(2008).append(MonthOfYear.JULY).append(dayOfMonth(3))
+//        LocalDateTime dt = date.append(tod);
+        
     }
 
 }
