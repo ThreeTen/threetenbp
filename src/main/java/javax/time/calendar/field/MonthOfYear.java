@@ -135,10 +135,13 @@ public enum MonthOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MonthOfYear</code>.
+     * Obtains an instance of <code>MonthOfYear</code> from a value.
+     * <p>
+     * Each month has an associated value, which ranges from 1 (January) to
+     * 12 (December).
      *
-     * @param monthOfYear  the month of year to represent
-     * @return the existing MonthOfYear
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @return the MonthOfYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the month of year is invalid
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
@@ -168,7 +171,7 @@ public enum MonthOfYear
             case 12:
                 return DECEMBER;
             default:
-                throw new IllegalCalendarFieldValueException("MonthOfYear cannot have the value " + monthOfYear);
+                throw new IllegalCalendarFieldValueException("MonthOfYear", monthOfYear, 1, 12);
         }
     }
 
