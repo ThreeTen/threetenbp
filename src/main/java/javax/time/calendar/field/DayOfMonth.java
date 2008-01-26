@@ -71,33 +71,36 @@ public final class DayOfMonth
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<DayOfMonth> cache = new AtomicReferenceArray<DayOfMonth>(32);
+    private static final AtomicReferenceArray<DayOfMonth> cache = new AtomicReferenceArray<DayOfMonth>(31);
 
     /**
-     * The day of month being represented.
+     * The day of month being represented, from 1 to 31.
      */
     private final int dayOfMonth;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfMonth</code>.
+     * Obtains an instance of <code>DayOfMonth</code> from a value.
+     * <p>
+     * A day of month object represents one of the 31 days of the month, from
+     * 1 to 31. These are cached internally and returned as singletons, so
+     * you can use == for comparison.
      *
-     * @param dayOfMonth  the day of month to represent
-     * @return the created DayOfMonth
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return the DayOfMonth singleton, never null
      * @throws IllegalCalendarFieldValueException if the dayOfMonth is invalid
      */
     public static DayOfMonth dayOfMonth(int dayOfMonth) {
         try {
-            DayOfMonth result = cache.get(dayOfMonth);
+            DayOfMonth result = cache.get(--dayOfMonth);
             if (result == null) {
-                DayOfMonth temp = new DayOfMonth(dayOfMonth);
+                DayOfMonth temp = new DayOfMonth(dayOfMonth + 1);
                 cache.compareAndSet(dayOfMonth, null, temp);
                 result = cache.get(dayOfMonth);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(
-                RULE.getName(), dayOfMonth, RULE.getMinimumValue(), RULE.getMaximumValue());
+            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth, 1, 31);
         }
     }
 
