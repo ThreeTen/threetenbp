@@ -153,28 +153,6 @@ public final class MinuteOfHour
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this minute of hour instance greater than the specified minute of hour.
-     *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is greater
-     * @throws NullPointerException if otherMinuteOfHour is null
-     */
-    public boolean isGreaterThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) > 0;
-    }
-
-    /**
-     * Is this minute of hour instance less than the specified minute of hour.
-     *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
-     * @return true if this minute of hour is less
-     * @throws NullPointerException if otherMinuteOfHour is null
-     */
-    public boolean isLessThan(MinuteOfHour otherMinuteOfHour) {
-        return compareTo(otherMinuteOfHour) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the minute of hour.

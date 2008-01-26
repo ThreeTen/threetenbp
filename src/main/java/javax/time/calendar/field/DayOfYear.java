@@ -184,28 +184,6 @@ public final class DayOfYear
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this day of year instance greater than the specified day of year.
-     *
-     * @param otherDayOfYear  the other day of year instance, not null
-     * @return true if this day of year is greater
-     * @throws NullPointerException if otherDayOfYear is null
-     */
-    public boolean isGreaterThan(DayOfYear otherDayOfYear) {
-        return compareTo(otherDayOfYear) > 0;
-    }
-
-    /**
-     * Is this day of year instance less than the specified day of year.
-     *
-     * @param otherDayOfYear  the other day of year instance, not null
-     * @return true if this day of year is less
-     * @throws NullPointerException if otherDayOfYear is null
-     */
-    public boolean isLessThan(DayOfYear otherDayOfYear) {
-        return compareTo(otherDayOfYear) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the day of year.

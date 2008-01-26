@@ -207,29 +207,6 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this day of week instance greater than the specified day of week.
-     *
-     * @param otherDayOfWeek  the other day of week instance, not null
-     * @return true if this day of week is greater
-     * @throws NullPointerException if otherDayOfWeek is null
-     */
-    public boolean isGreaterThan(DayOfWeek otherDayOfWeek) {
-        return compareTo(otherDayOfWeek) > 0;
-    }
-
-    /**
-     * Is this day of week instance less than the specified day of week.
-     *
-     * @param otherDayOfWeek  the other day of week instance, not null
-     * @return true if this day of week is less
-     * @throws NullPointerException if otherDayOfWeek is null
-     */
-    public boolean isLessThan(DayOfWeek otherDayOfWeek) {
-        return compareTo(otherDayOfWeek) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the value of this day of week matches the input date.
      *
      * @param date  the date to match, not null

@@ -125,28 +125,6 @@ public final class MilleniumOfEra implements Calendrical, Comparable<MilleniumOf
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this millenium of era instance greater than the specified millenium of era.
-     *
-     * @param otherMilleniumOfEra  the other millenium of era instance, not null
-     * @return true if this millenium of era is greater
-     * @throws NullPointerException if otherMilleniumOfEra is null
-     */
-    public boolean isGreaterThan(MilleniumOfEra otherMilleniumOfEra) {
-        return compareTo(otherMilleniumOfEra) > 0;
-    }
-
-    /**
-     * Is this millenium of era instance less than the specified millenium of era.
-     *
-     * @param otherMilleniumOfEra  the other millenium of era instance, not null
-     * @return true if this millenium of era is less
-     * @throws NullPointerException if otherMilleniumOfEra is null
-     */
-    public boolean isLessThan(MilleniumOfEra otherMilleniumOfEra) {
-        return compareTo(otherMilleniumOfEra) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the millenium of era.

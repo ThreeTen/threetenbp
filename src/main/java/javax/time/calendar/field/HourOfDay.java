@@ -167,28 +167,6 @@ public final class HourOfDay
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this hour of day instance greater than the specified hour of day.
-     *
-     * @param otherHourOfDay  the other hour of day instance, not null
-     * @return true if this hour of day is greater
-     * @throws NullPointerException if otherHourOfDay is null
-     */
-    public boolean isGreaterThan(HourOfDay otherHourOfDay) {
-        return compareTo(otherHourOfDay) > 0;
-    }
-
-    /**
-     * Is this hour of day instance less than the specified hour of day.
-     *
-     * @param otherHourOfDay  the other hour of day instance, not null
-     * @return true if this hour of day is less
-     * @throws NullPointerException if otherHourOfDay is null
-     */
-    public boolean isLessThan(HourOfDay otherHourOfDay) {
-        return compareTo(otherHourOfDay) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the hour of day.

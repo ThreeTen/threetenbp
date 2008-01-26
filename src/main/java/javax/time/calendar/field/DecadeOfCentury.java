@@ -125,28 +125,6 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this decade of century instance greater than the specified decade of century.
-     *
-     * @param otherDecadeOfCentury  the other decade of century instance, not null
-     * @return true if this decade of century is greater
-     * @throws NullPointerException if otherDecadeOfCentury is null
-     */
-    public boolean isGreaterThan(DecadeOfCentury otherDecadeOfCentury) {
-        return compareTo(otherDecadeOfCentury) > 0;
-    }
-
-    /**
-     * Is this decade of century instance less than the specified decade of century.
-     *
-     * @param otherDecadeOfCentury  the other decade of century instance, not null
-     * @return true if this decade of century is less
-     * @throws NullPointerException if otherDecadeOfCentury is null
-     */
-    public boolean isLessThan(DecadeOfCentury otherDecadeOfCentury) {
-        return compareTo(otherDecadeOfCentury) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the decade of century.

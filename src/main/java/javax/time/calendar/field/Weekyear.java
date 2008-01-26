@@ -158,24 +158,24 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
     }
 
     /**
-     * Is this week-based year instance greater than the specified week-based year.
+     * Is this week-based year instance after the specified week-based year.
      *
      * @param otherWeekyear  the other week-based year instance, not null
-     * @return true if this week-based year is greater
+     * @return true if this is after the specified week-based year
      * @throws NullPointerException if otherWeekyear is null
      */
-    public boolean isGreaterThan(Weekyear otherWeekyear) {
+    public boolean isAfter(Weekyear otherWeekyear) {
         return compareTo(otherWeekyear) > 0;
     }
 
     /**
-     * Is this week-based year instance less than the specified week-based year.
+     * Is this week-based year instance before the specified week-based year.
      *
      * @param otherWeekyear  the other week-based year instance, not null
-     * @return true if this week-based year is less
+     * @return true if this is before the specified week-based year
      * @throws NullPointerException if otherWeekyear is null
      */
-    public boolean isLessThan(Weekyear otherWeekyear) {
+    public boolean isBefore(Weekyear otherWeekyear) {
         return compareTo(otherWeekyear) < 0;
     }
 

@@ -172,28 +172,6 @@ public final class DayOfMonth
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this day of month instance greater than the specified day of month.
-     *
-     * @param otherDayOfMonth  the other day of month instance, not null
-     * @return true if this day of month is greater
-     * @throws NullPointerException if otherDayOfMonth is null
-     */
-    public boolean isGreaterThan(DayOfMonth otherDayOfMonth) {
-        return compareTo(otherDayOfMonth) > 0;
-    }
-
-    /**
-     * Is this day of month instance less than the specified day of month.
-     *
-     * @param otherDayOfMonth  the other day of month instance, not null
-     * @return true if this day of month is less
-     * @throws NullPointerException if otherDayOfMonth is null
-     */
-    public boolean isLessThan(DayOfMonth otherDayOfMonth) {
-        return compareTo(otherDayOfMonth) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the day of month.

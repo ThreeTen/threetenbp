@@ -130,28 +130,6 @@ public final class YearOfEra
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this year of era instance greater than the specified year of era.
-     *
-     * @param otherYearOfEra  the other year of era instance, not null
-     * @return true if this year of era is greater
-     * @throws NullPointerException if otherYearOfEra is null
-     */
-    public boolean isGreaterThan(YearOfEra otherYearOfEra) {
-        return compareTo(otherYearOfEra) > 0;
-    }
-
-    /**
-     * Is this year of era instance less than the specified year of era.
-     *
-     * @param otherYearOfEra  the other year of era instance, not null
-     * @return true if this year of era is less
-     * @throws NullPointerException if otherYearOfEra is null
-     */
-    public boolean isLessThan(YearOfEra otherYearOfEra) {
-        return compareTo(otherYearOfEra) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the year of era.

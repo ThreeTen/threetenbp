@@ -153,28 +153,6 @@ public final class SecondOfMinute
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this second of minute instance greater than the specified second of minute.
-     *
-     * @param otherSecondOfMinute  the other second of minute instance, not null
-     * @return true if this second of minute is greater
-     * @throws NullPointerException if otherSecondOfMinute is null
-     */
-    public boolean isGreaterThan(SecondOfMinute otherSecondOfMinute) {
-        return compareTo(otherSecondOfMinute) > 0;
-    }
-
-    /**
-     * Is this second of minute instance less than the specified second of minute.
-     *
-     * @param otherSecondOfMinute  the other second of minute instance, not null
-     * @return true if this second of minute is less
-     * @throws NullPointerException if otherSecondOfMinute is null
-     */
-    public boolean isLessThan(SecondOfMinute otherSecondOfMinute) {
-        return compareTo(otherSecondOfMinute) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the second of minute.

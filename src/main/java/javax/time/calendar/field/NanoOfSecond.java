@@ -134,28 +134,6 @@ public final class NanoOfSecond
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this nano of second instance greater than the specified nano of second.
-     *
-     * @param otherNanoOfSecond  the other nano of second instance, not null
-     * @return true if this nano of second is greater
-     * @throws NullPointerException if otherNanoOfSecond is null
-     */
-    public boolean isGreaterThan(NanoOfSecond otherNanoOfSecond) {
-        return compareTo(otherNanoOfSecond) > 0;
-    }
-
-    /**
-     * Is this nano of second instance less than the specified nano of second.
-     *
-     * @param otherNanoOfSecond  the other nano of second instance, not null
-     * @return true if this nano of second is less
-     * @throws NullPointerException if otherNanoOfSecond is null
-     */
-    public boolean isLessThan(NanoOfSecond otherNanoOfSecond) {
-        return compareTo(otherNanoOfSecond) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the nano of second.

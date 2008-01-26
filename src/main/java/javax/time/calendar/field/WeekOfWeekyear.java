@@ -170,28 +170,6 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this week of week-based year instance greater than the specified week of week-based year.
-     *
-     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
-     * @return true if this week of week-based year is greater
-     * @throws NullPointerException if otherWeekOfWeekyear is null
-     */
-    public boolean isGreaterThan(WeekOfWeekyear otherWeekOfWeekyear) {
-        return compareTo(otherWeekOfWeekyear) > 0;
-    }
-
-    /**
-     * Is this week of week-based year instance less than the specified week of week-based year.
-     *
-     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
-     * @return true if this week of week-based year is less
-     * @throws NullPointerException if otherWeekOfWeekyear is null
-     */
-    public boolean isLessThan(WeekOfWeekyear otherWeekOfWeekyear) {
-        return compareTo(otherWeekOfWeekyear) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the week of week-based year.

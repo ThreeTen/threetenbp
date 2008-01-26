@@ -148,29 +148,6 @@ public enum MeridiemOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Is this meridiem of day instance greater than the specified meridiem of day.
-     *
-     * @param otherMeridiemOfDay  the other meridiem of day instance, not null
-     * @return true if this meridiem of day is greater
-     * @throws NullPointerException if otherMeridiemOfDay is null
-     */
-    public boolean isGreaterThan(MeridiemOfDay otherMeridiemOfDay) {
-        return compareTo(otherMeridiemOfDay) > 0;
-    }
-
-    /**
-     * Is this meridiem of day instance less than the specified meridiem of day.
-     *
-     * @param otherMeridiemOfDay  the other meridiem of day instance, not null
-     * @return true if this meridiem of day is less
-     * @throws NullPointerException if otherMeridiemOfDay is null
-     */
-    public boolean isLessThan(MeridiemOfDay otherMeridiemOfDay) {
-        return compareTo(otherMeridiemOfDay) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Is this instance representing AM (ante-meridiem).
      *
      * @return true is this instance represents AM

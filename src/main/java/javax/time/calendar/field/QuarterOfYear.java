@@ -178,29 +178,6 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this quarter of year instance greater than the specified quarter of year.
-     *
-     * @param otherQuarterOfYear  the other quarter of year instance, not null
-     * @return true if this quarter of year is greater
-     * @throws NullPointerException if otherQuarterOfYear is null
-     */
-    public boolean isGreaterThan(QuarterOfYear otherQuarterOfYear) {
-        return compareTo(otherQuarterOfYear) > 0;
-    }
-
-    /**
-     * Is this quarter of year instance less than the specified quarter of year.
-     *
-     * @param otherQuarterOfYear  the other quarter of year instance, not null
-     * @return true if this quarter of year is less
-     * @throws NullPointerException if otherQuarterOfYear is null
-     */
-    public boolean isLessThan(QuarterOfYear otherQuarterOfYear) {
-        return compareTo(otherQuarterOfYear) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Checks if the value of this quarter of year matches the input date.
      *
      * @param date  the date to match, not null

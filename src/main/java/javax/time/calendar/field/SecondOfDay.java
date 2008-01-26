@@ -125,28 +125,6 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this second of day instance greater than the specified second of day.
-     *
-     * @param otherSecondOfDay  the other second of day instance, not null
-     * @return true if this second of day is greater
-     * @throws NullPointerException if otherSecondOfDay is null
-     */
-    public boolean isGreaterThan(SecondOfDay otherSecondOfDay) {
-        return compareTo(otherSecondOfDay) > 0;
-    }
-
-    /**
-     * Is this second of day instance less than the specified second of day.
-     *
-     * @param otherSecondOfDay  the other second of day instance, not null
-     * @return true if this second of day is less
-     * @throws NullPointerException if otherSecondOfDay is null
-     */
-    public boolean isLessThan(SecondOfDay otherSecondOfDay) {
-        return compareTo(otherSecondOfDay) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the second of day.

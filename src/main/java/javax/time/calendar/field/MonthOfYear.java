@@ -243,29 +243,6 @@ public enum MonthOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Is this month of year instance greater than the specified month of year.
-     *
-     * @param otherMonthOfYear  the other month of year instance, not null
-     * @return true if this month of year is greater
-     * @throws NullPointerException if otherMonthOfYear is null
-     */
-    public boolean isGreaterThan(MonthOfYear otherMonthOfYear) {
-        return compareTo(otherMonthOfYear) > 0;
-    }
-
-    /**
-     * Is this month of year instance less than the specified month of year.
-     *
-     * @param otherMonthOfYear  the other month of year instance, not null
-     * @return true if this month of year is less
-     * @throws NullPointerException if otherMonthOfYear is null
-     */
-    public boolean isLessThan(MonthOfYear otherMonthOfYear) {
-        return compareTo(otherMonthOfYear) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Adjusts a date to have the value of this month of year, returning a new date.
      * <p>
      * If the day of month is invalid for the new month then the

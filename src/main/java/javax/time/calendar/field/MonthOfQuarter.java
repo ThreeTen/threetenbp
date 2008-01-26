@@ -149,28 +149,6 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this month of quarter instance greater than the specified month of quarter.
-     *
-     * @param otherMonthOfQuarter  the other month of quarter instance, not null
-     * @return true if this month of quarter is greater
-     * @throws NullPointerException if otherMonthOfQuarter is null
-     */
-    public boolean isGreaterThan(MonthOfQuarter otherMonthOfQuarter) {
-        return compareTo(otherMonthOfQuarter) > 0;
-    }
-
-    /**
-     * Is this month of quarter instance less than the specified month of quarter.
-     *
-     * @param otherMonthOfQuarter  the other month of quarter instance, not null
-     * @return true if this month of quarter is less
-     * @throws NullPointerException if otherMonthOfQuarter is null
-     */
-    public boolean isLessThan(MonthOfQuarter otherMonthOfQuarter) {
-        return compareTo(otherMonthOfQuarter) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the month of quarter.

@@ -125,28 +125,6 @@ public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, 
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this minute of day instance greater than the specified minute of day.
-     *
-     * @param otherMinuteOfDay  the other minute of day instance, not null
-     * @return true if this minute of day is greater
-     * @throws NullPointerException if otherMinuteOfDay is null
-     */
-    public boolean isGreaterThan(MinuteOfDay otherMinuteOfDay) {
-        return compareTo(otherMinuteOfDay) > 0;
-    }
-
-    /**
-     * Is this minute of day instance less than the specified minute of day.
-     *
-     * @param otherMinuteOfDay  the other minute of day instance, not null
-     * @return true if this minute of day is less
-     * @throws NullPointerException if otherMinuteOfDay is null
-     */
-    public boolean isLessThan(MinuteOfDay otherMinuteOfDay) {
-        return compareTo(otherMinuteOfDay) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the minute of day.

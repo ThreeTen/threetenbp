@@ -125,28 +125,6 @@ public final class CenturyOfEra implements Calendrical, Comparable<CenturyOfEra>
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this century of era instance greater than the specified century of era.
-     *
-     * @param otherCenturyOfEra  the other century of era instance, not null
-     * @return true if this century of era is greater
-     * @throws NullPointerException if otherCenturyOfEra is null
-     */
-    public boolean isGreaterThan(CenturyOfEra otherCenturyOfEra) {
-        return compareTo(otherCenturyOfEra) > 0;
-    }
-
-    /**
-     * Is this century of era instance less than the specified century of era.
-     *
-     * @param otherCenturyOfEra  the other century of era instance, not null
-     * @return true if this century of era is less
-     * @throws NullPointerException if otherCenturyOfEra is null
-     */
-    public boolean isLessThan(CenturyOfEra otherCenturyOfEra) {
-        return compareTo(otherCenturyOfEra) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the century of era.

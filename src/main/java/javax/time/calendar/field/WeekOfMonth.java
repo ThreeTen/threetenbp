@@ -149,28 +149,6 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this week of month instance greater than the specified week of month.
-     *
-     * @param otherWeekOfMonth  the other week of month instance, not null
-     * @return true if this week of month is greater
-     * @throws NullPointerException if otherWeekOfMonth is null
-     */
-    public boolean isGreaterThan(WeekOfMonth otherWeekOfMonth) {
-        return compareTo(otherWeekOfMonth) > 0;
-    }
-
-    /**
-     * Is this week of month instance less than the specified week of month.
-     *
-     * @param otherWeekOfMonth  the other week of month instance, not null
-     * @return true if this week of month is less
-     * @throws NullPointerException if otherWeekOfMonth is null
-     */
-    public boolean isLessThan(WeekOfMonth otherWeekOfMonth) {
-        return compareTo(otherWeekOfMonth) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the week of month.

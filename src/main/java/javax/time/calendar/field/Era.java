@@ -147,29 +147,6 @@ public enum Era
 
     //-----------------------------------------------------------------------
     /**
-     * Is this era instance greater than the specified era.
-     *
-     * @param otherEra  the other era instance, not null
-     * @return true if this era is greater
-     * @throws NullPointerException if otherEra is null
-     */
-    public boolean isGreaterThan(Era otherEra) {
-        return compareTo(otherEra) > 0;
-    }
-
-    /**
-     * Is this era instance less than the specified era.
-     *
-     * @param otherEra  the other era instance, not null
-     * @return true if this era is less
-     * @throws NullPointerException if otherEra is null
-     */
-    public boolean isLessThan(Era otherEra) {
-        return compareTo(otherEra) < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Adjusts a date to have the era represented by this object, returning a new date.
      * <p>
      * This instance is immutable and unaffected by this method call.

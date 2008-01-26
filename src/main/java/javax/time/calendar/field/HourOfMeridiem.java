@@ -149,28 +149,6 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
-    /**
-     * Is this hour of meridiem instance greater than the specified hour of meridiem.
-     *
-     * @param otherHourOfMeridiem  the other hour of meridiem instance, not null
-     * @return true if this hour of meridiem is greater
-     * @throws NullPointerException if otherHourOfMeridiem is null
-     */
-    public boolean isGreaterThan(HourOfMeridiem otherHourOfMeridiem) {
-        return compareTo(otherHourOfMeridiem) > 0;
-    }
-
-    /**
-     * Is this hour of meridiem instance less than the specified hour of meridiem.
-     *
-     * @param otherHourOfMeridiem  the other hour of meridiem instance, not null
-     * @return true if this hour of meridiem is less
-     * @throws NullPointerException if otherHourOfMeridiem is null
-     */
-    public boolean isLessThan(HourOfMeridiem otherHourOfMeridiem) {
-        return compareTo(otherHourOfMeridiem) < 0;
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the hour of meridiem.
