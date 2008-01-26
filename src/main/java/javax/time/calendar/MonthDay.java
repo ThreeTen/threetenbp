@@ -246,7 +246,7 @@ public final class MonthDay
      */
     public MonthDay with(MonthOfYear monthOfYear) {
         DayOfMonth lastDOM = monthOfYear.getLastDayOfMonth(SAMPLE_YEAR);
-        if (day.isGreaterThan(lastDOM)) {
+        if (day.compareTo(lastDOM) > 0) {
             return withMonthDay(monthOfYear, lastDOM);
         }
         return withMonthDay(monthOfYear, day);
@@ -265,7 +265,7 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if the day of month is invalid for the month
      */
     public MonthDay with(DayOfMonth dayOfMonth) {
-        if (dayOfMonth.isGreaterThan(month.getLastDayOfMonth(SAMPLE_YEAR))) {
+        if (dayOfMonth.compareTo(month.getLastDayOfMonth(SAMPLE_YEAR)) > 0) {
             throw new IllegalCalendarFieldValueException("Day of month cannot be changed to " +
                     dayOfMonth + " for the month " + month);
         }
