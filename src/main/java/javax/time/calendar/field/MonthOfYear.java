@@ -37,7 +37,6 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
@@ -70,10 +69,7 @@ public enum MonthOfYear
         /** {@inheritDoc} */
         @Override
         public int lengthInDays(Year year) {
-            if (ISOChronology.INSTANCE.isLeapYear(year.getValue())) {
-                return 29;
-            }
-            return 28;
+            return (year.isLeap() ? 29 : 28);
         }
         /** {@inheritDoc} */
         @Override
