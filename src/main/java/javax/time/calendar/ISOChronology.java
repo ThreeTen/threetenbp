@@ -69,14 +69,14 @@ public final class ISOChronology implements Serializable {
     private static final int SECONDS_PER_HOUR = 60 * 60;
     /** Number of seconds in one minute. */
     private static final int SECONDS_PER_MINUTE = 60;
-    /** The length of months in a standard year. */
-    private static final int[] STANDARD_MONTH_LENGTHS = new int[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    /** The length of months in a leap year. */
-    private static final int[] LEAP_MONTH_LENGTHS = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    /** The start of months in a standard year. */
-    private static final int[] STANDARD_MONTH_START = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-    /** The start of months in a leap year. */
-    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
+//    /** The length of months in a standard year. */
+//    private static final int[] STANDARD_MONTH_LENGTHS = new int[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+//    /** The length of months in a leap year. */
+//    private static final int[] LEAP_MONTH_LENGTHS = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+//    /** The start of months in a standard year. */
+//    private static final int[] STANDARD_MONTH_START = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+//    /** The start of months in a leap year. */
+//    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
     //-----------------------------------------------------------------------
     /**
@@ -104,19 +104,19 @@ public final class ISOChronology implements Serializable {
      * @param year  the year to check
      * @return true if the year is a leap year
      */
-    public boolean isLeapYear(int year) {
+    private boolean isLeapYear(int year) {
         return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the name of the chronology.
-     *
-     * @return the name of the chronology, never null
-     */
-    public String getName() {
-        return "ISO";
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the name of the chronology.
+//     *
+//     * @return the name of the chronology, never null
+//     */
+//    public String getName() {
+//        return "ISO";
+//    }
 
     //-----------------------------------------------------------------------
 //    /**
@@ -225,33 +225,33 @@ public final class ISOChronology implements Serializable {
 //        }
 //    }
 
-    /**
-     * Gets the day of year from a year, month and day.
-     *
-     * @param year  the year, must be valid, must be valid
-     * @param monthOfYear  the month of year, from 1 to 12, must be valid
-     * @param dayOfMonth  the day of month, from 1 to 31, must be valid
-     * @return the day of year, from 1 to 366
-     */
-    int getDayOfYear(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        if (year.isLeap()) {
-            return LEAP_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
-        } else {
-            return STANDARD_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
-        }
-    }
+//    /**
+//     * Gets the day of year from a year, month and day.
+//     *
+//     * @param year  the year, must be valid, must be valid
+//     * @param monthOfYear  the month of year, from 1 to 12, must be valid
+//     * @param dayOfMonth  the day of month, from 1 to 31, must be valid
+//     * @return the day of year, from 1 to 366
+//     */
+//    int getDayOfYear(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+//        if (year.isLeap()) {
+//            return LEAP_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
+//        } else {
+//            return STANDARD_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
+//        }
+//    }
 
-    /**
-     * Gets the day of week from a year, month and day.
-     *
-     * @param year  the year, must be valid, must be valid
-     * @param monthOfYear  the month of year, from 1 to 12, must be valid
-     * @param dayOfMonth  the day of month, from 1 to 31, must be valid
-     * @return the day of week, from 1 to 7
-     */
-    int getDayOfWeek(int year, int monthOfYear, int dayOfMonth) {
-        return 1;
-    }
+//    /**
+//     * Gets the day of week from a year, month and day.
+//     *
+//     * @param year  the year, must be valid, must be valid
+//     * @param monthOfYear  the month of year, from 1 to 12, must be valid
+//     * @param dayOfMonth  the day of month, from 1 to 31, must be valid
+//     * @return the day of week, from 1 to 7
+//     */
+//    int getDayOfWeek(int year, int monthOfYear, int dayOfMonth) {
+//        return 1;
+//    }
 
     //-----------------------------------------------------------------------
 //    /**

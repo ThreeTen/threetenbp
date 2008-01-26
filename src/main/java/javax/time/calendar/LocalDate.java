@@ -275,7 +275,7 @@ public final class LocalDate
      * @return the day of year, never null
      */
     public DayOfYear getDayOfYear() {
-        return DayOfYear.dayOfYear(ISOChronology.INSTANCE.getDayOfYear(year, month, day));
+        return DayOfYear.dayOfYear(this);
     }
 
     /**
@@ -287,17 +287,7 @@ public final class LocalDate
      * @return the day of week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        if (year.getValue() == 2007) {  // Jan 1 is Mon
-            int doy = getDayOfYear().getValue() - 1;
-            int dow = doy % 7 + 1;
-            return DayOfWeek.dayOfWeek(dow);
-        }
-        if (year.getValue() == 2008) {  // Jan 1 is Tue
-            int doy = getDayOfYear().getValue();
-            int dow = doy % 7 + 1;
-            return DayOfWeek.dayOfWeek(dow);
-        }
-        return DayOfWeek.MONDAY;  // TODO
+        return DayOfWeek.dayOfWeek(this);
     }
 
     //-----------------------------------------------------------------------
