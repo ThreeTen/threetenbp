@@ -95,10 +95,16 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfWeek</code>.
+     * Obtains an instance of <code>DayOfWeek</code> from a value.
+     * <p>
+     * A day of week object represents one of the 7 days of the week. These
+     * are numbered following the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
+     * <p>
+     * As DayOfWeek is an enum, each instance is a singleton and can be compared
+     * using ==.
      *
-     * @param dayOfWeek  the day of week to represent
-     * @return the existing DayOfWeek
+     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
+     * @return the DayOfWeek singleton, never null
      * @throws IllegalCalendarFieldValueException if the day of week is invalid
      */
     public static DayOfWeek dayOfWeek(int dayOfWeek) {
@@ -118,7 +124,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
             case 7:
                 return SUNDAY;
             default:
-                throw new IllegalCalendarFieldValueException("DayOfWeek cannot have the value " + dayOfWeek);
+                throw new IllegalCalendarFieldValueException("DayOfWeek", dayOfWeek, 1, 7);
         }
     }
 

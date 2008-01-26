@@ -68,7 +68,7 @@ public final class DayOfYear
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<DayOfYear> cache = new AtomicReferenceArray<DayOfYear>(367);
+    private static final AtomicReferenceArray<DayOfYear> cache = new AtomicReferenceArray<DayOfYear>(366);
 
     /**
      * The day of year being represented.
@@ -77,24 +77,27 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>DayOfYear</code>.
+     * Obtains an instance of <code>DayOfYear</code> from a value.
+     * <p>
+     * A day of year object represents one of the 366 days of the year, from
+     * 1 to 366. These are cached internally and returned as singletons, so
+     * they can be compared using ==.
      *
-     * @param dayOfYear  the day of year to represent
-     * @return the created DayOfYear
+     * @param dayOfYear  the day of year to represent, from 1 to 366
+     * @return the DayOfYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the dayOfYear is invalid
      */
     public static DayOfYear dayOfYear(int dayOfYear) {
         try {
-            DayOfYear result = cache.get(dayOfYear);
+            DayOfYear result = cache.get(--dayOfYear);
             if (result == null) {
-                DayOfYear temp = new DayOfYear(dayOfYear);
+                DayOfYear temp = new DayOfYear(dayOfYear + 1);
                 cache.compareAndSet(dayOfYear, null, temp);
                 result = cache.get(dayOfYear);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(
-                RULE.getName(), dayOfYear, RULE.getMinimumValue(), RULE.getMaximumValue());
+            throw new IllegalCalendarFieldValueException("DayOfYear", dayOfYear, 1, 366);
         }
     }
 
