@@ -45,6 +45,10 @@ import javax.time.calendar.TimeFieldRule;
  * WeekOfWeekyear is an immutable time field that can only store a week of week-based year.
  * It is a type-safe way of representing a week of week-based year in an application.
  * <p>
+ * The week of week-based year is a field that should be used in combination with
+ * the Weekyear field. Together they represent the ISO-8601 week based date
+ * calculation described in {@link Weekyear}.
+ * <p>
  * Static factory methods allow you to construct instances.
  * The week of week-based year may be queried using getWeekOfWeekyear().
  * <p>
@@ -65,7 +69,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<WeekOfWeekyear> cache = new AtomicReferenceArray<WeekOfWeekyear>(54);
+    private static final AtomicReferenceArray<WeekOfWeekyear> cache = new AtomicReferenceArray<WeekOfWeekyear>(53);
 
     /**
      * The week of week-based year being represented.
@@ -74,24 +78,27 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>WeekOfWeekyear</code>.
+     * Obtains an instance of <code>WeekOfWeekyear</code> from a value.
+     * <p>
+     * A week of week-based year object represents one of the 53 weeks of the year,
+     * from 1 to 53. These are cached internally and returned as singletons,
+     * so they can be compared using ==.
      *
-     * @param weekOfWeekyear  the week of week-based year to represent
-     * @return the created WeekOfWeekyear
+     * @param weekOfWeekyear  the week of week-based year to represent, from 1 to 53
+     * @return the WeekOfWeekyear singleton, never null
      * @throws IllegalCalendarFieldValueException if the weekOfWeekyear is invalid
      */
     public static WeekOfWeekyear weekOfWeekyear(int weekOfWeekyear) {
         try {
-            WeekOfWeekyear result = cache.get(weekOfWeekyear);
+            WeekOfWeekyear result = cache.get(--weekOfWeekyear);
             if (result == null) {
-                WeekOfWeekyear temp = new WeekOfWeekyear(weekOfWeekyear);
+                WeekOfWeekyear temp = new WeekOfWeekyear(weekOfWeekyear + 1);
                 cache.compareAndSet(weekOfWeekyear, null, temp);
                 result = cache.get(weekOfWeekyear);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(
-                RULE.getName(), weekOfWeekyear, RULE.getMinimumValue(), RULE.getMaximumValue());
+            throw new IllegalCalendarFieldValueException("WeekOfWeekyear", weekOfWeekyear, 1, 53);
         }
     }
 

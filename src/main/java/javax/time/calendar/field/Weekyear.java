@@ -44,6 +44,24 @@ import javax.time.calendar.TimeFieldRule;
  * Weekyear is an immutable time field that can only store a week-based year.
  * It is a type-safe way of representing a week-based year in an application.
  * <p>
+ * A week-based year is the year that is applicable when using the
+ * ISO-8601 week based date calculation. In this system, the week-based year
+ * may begin up to three days early or three days late.
+ * <p>
+ * For example, 2007-01-01 is Monday, thus the the week-based year of 2007
+ * also begins on 2007-01-01. In 2008, the first day of the year is Tuesday,
+ * with the Monday being in year 2007. However, the week-based year for both
+ * Monday and Tuesday is 2008.
+ * <pre>
+ *   Date     DayOfWeek  Week-based year
+ * 2007-12-30  Sunday     2007-W52
+ * 2007-12-31  Monday     2008-W01
+ * 2007-01-01  Tuesday    2008-W01
+ * </pre>
+ * <p>
+ * The ISO-8601 rules state that the first week of the year is the one that
+ * contains the first Thursday of the year.
+ * <p>
  * Static factory methods allow you to construct instances.
  * The week-based year may be queried using getWeekyear().
  * <p>
@@ -69,10 +87,10 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Weekyear</code>.
+     * Obtains an instance of <code>Weekyear</code> from a value.
      *
-     * @param weekyear  the week-based year to represent
-     * @return the created Weekyear
+     * @param weekyear  the week-based year to represent, from MIN_YEAR to MAX_YEAR
+     * @return the Weekyear singleton, never null
      * @throws IllegalCalendarFieldValueException if the weekyear is invalid
      */
     public static Weekyear weekyear(int weekyear) {
