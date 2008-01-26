@@ -36,6 +36,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -126,6 +127,30 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
             default:
                 throw new IllegalCalendarFieldValueException("DayOfWeek", dayOfWeek, 1, 7);
         }
+    }
+
+    /**
+     * Obtains an instance of <code>DayOfWeek</code> from a date provider.
+     * <p>
+     * This can be used extract a day of week object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the DayOfWeek singleton, never null
+     */
+    public static DayOfWeek dayOfWeek(ReadableDate dateProvider) {
+        LocalDate date = dateProvider.toLocalDate();
+        if (date.getYear().getValue() == 2007) {  // Jan 1 is Mon
+            int doy = date.getDayOfYear().getValue() - 1;
+            int dow = doy % 7 + 1;
+            return dayOfWeek(dow);
+        }
+        if (date.getYear().getValue() == 2008) {  // Jan 1 is Tue
+            int doy = date.getDayOfYear().getValue();
+            int dow = doy % 7 + 1;
+            return dayOfWeek(dow);
+        }
+        return DayOfWeek.MONDAY;  // TODO
     }
 
     //-----------------------------------------------------------------------

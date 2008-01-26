@@ -43,6 +43,7 @@ import javax.time.calendar.DateResolvers;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.period.PeriodView;
@@ -131,16 +132,16 @@ public final class Year
     }
 
     /**
-     * Obtains an instance of <code>Year</code> from a set of calendricals.
+     * Obtains an instance of <code>Year</code> from a date provider.
      * <p>
-     * This can be used to pass in any combination of calendricals that fully specify
-     * a calendar year. For example, Century + YearOfCentury.
+     * This can be used extract a year object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
      *
-     * @param calendricals  a set of calendricals that fully represent a calendar year
+     * @param dateProvider  the date provider to use, not null
      * @return a Year object, never null
      */
-    public static Year year(Calendrical... calendricals) {
-        return new Year(0);
+    public static Year year(ReadableDate dateProvider) {
+        return dateProvider.toLocalDate().getYear();
     }
 
     //-----------------------------------------------------------------------

@@ -42,6 +42,7 @@ import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -102,6 +103,19 @@ public final class DayOfMonth
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth, 1, 31);
         }
+    }
+
+    /**
+     * Obtains an instance of <code>DayOfMonth</code> from a date provider.
+     * <p>
+     * This can be used extract a day of month object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the DayOfMonth singleton, never null
+     */
+    public static DayOfMonth dayOfMonth(ReadableDate dateProvider) {
+        return dateProvider.toLocalDate().getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------

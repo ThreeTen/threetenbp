@@ -39,6 +39,7 @@ import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -173,6 +174,19 @@ public enum MonthOfYear
             default:
                 throw new IllegalCalendarFieldValueException("MonthOfYear", monthOfYear, 1, 12);
         }
+    }
+
+    /**
+     * Obtains an instance of <code>MonthOfYear</code> from a date provider.
+     * <p>
+     * This can be used extract a month of year object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the MonthOfYear singleton, never null
+     */
+    public static MonthOfYear monthOfYear(ReadableDate dateProvider) {
+        return dateProvider.toLocalDate().getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------

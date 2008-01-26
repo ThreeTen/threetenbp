@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -96,6 +97,19 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
     public static Weekyear weekyear(int weekyear) {
         RULE.checkValue(weekyear);
         return new Weekyear(weekyear);
+    }
+
+    /**
+     * Obtains an instance of <code>Weekyear</code> from a date provider.
+     * <p>
+     * This can be used extract a weekyear object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the Weekyear singleton, never null
+     */
+    public static Weekyear weekyear(ReadableDate dateProvider) {
+        return null;  // TODO
     }
 
     //-----------------------------------------------------------------------

@@ -39,6 +39,7 @@ import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -69,6 +70,14 @@ public final class DayOfYear
      * Cache of singleton instances.
      */
     private static final AtomicReferenceArray<DayOfYear> cache = new AtomicReferenceArray<DayOfYear>(366);
+    /**
+     * The start of months in a standard year.
+     */
+    private static final int[] STANDARD_MONTH_START = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+    /**
+     * The start of months in a leap year.
+     */
+    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
     /**
      * The day of year being represented.
@@ -98,6 +107,26 @@ public final class DayOfYear
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException("DayOfYear", dayOfYear, 1, 366);
+        }
+    }
+
+    /**
+     * Obtains an instance of <code>DayOfYear</code> from a date provider.
+     * <p>
+     * This can be used extract a day of year object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the DayOfWeek singleton, never null
+     */
+    public static DayOfYear dayOfYear(ReadableDate dateProvider) {
+        LocalDate date = dateProvider.toLocalDate();
+        int moy0 = date.getMonthOfYear().ordinal();
+        int dom = date.getDayOfMonth().getValue();
+        if (date.getYear().isLeap()) {
+            return dayOfYear(LEAP_MONTH_START[moy0] + dom);
+        } else {
+            return dayOfYear(STANDARD_MONTH_START[moy0] + dom);
         }
     }
 

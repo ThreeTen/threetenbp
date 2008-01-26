@@ -37,6 +37,7 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
@@ -98,6 +99,19 @@ public enum Era
             default:
                 throw new IllegalCalendarFieldValueException("Era", era, 0, 1);
         }
+    }
+
+    /**
+     * Obtains an instance of <code>Era</code> from a date provider.
+     * <p>
+     * This can be used extract an era object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the Era singleton, never null
+     */
+    public static Era era(ReadableDate dateProvider) {
+        return dateProvider.toLocalDate().getYear().getEra();
     }
 
     //-----------------------------------------------------------------------
