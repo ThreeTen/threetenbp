@@ -46,7 +46,7 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a date-time without a time zone,
+ * A date-time without a time zone in the ISO-8601 calendar system,
  * such as '2007-12-03T10:15:30'.
  * <p>
  * LocalDateTime is an immutable calendrical that represents a date-time, often

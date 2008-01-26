@@ -40,7 +40,7 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 
 /**
- * A calendrical representation of a meridiem of day.
+ * A representation of a meridiem of day in the ISO-8601 calendar system.
  * <p>
  * MeridiemOfDay is an immutable time field that can only store a meridiem of day.
  * It is a type-safe way of representing a meridiem of day in an application.

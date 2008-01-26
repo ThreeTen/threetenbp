@@ -43,7 +43,7 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 
 /**
- * A calendrical representation of a minute of hour.
+ * A representation of a minute of hour in the ISO-8601 calendar system.
  * <p>
  * MinuteOfHour is an immutable time field that can only store a minute of hour.
  * It is a type-safe way of representing a minute of hour in an application.

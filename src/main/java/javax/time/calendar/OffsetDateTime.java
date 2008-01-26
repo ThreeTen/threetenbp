@@ -47,7 +47,7 @@ import javax.time.calendar.field.Year;
 import javax.time.period.PeriodView;
 
 /**
- * A calendrical representation of a date-time with a zone offset from UTC,
+ * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
  * such as '2007-12-03T10:15:30+01:00'.
  * <p>
  * OffsetDateTime is an immutable calendrical that represents a date-time, often

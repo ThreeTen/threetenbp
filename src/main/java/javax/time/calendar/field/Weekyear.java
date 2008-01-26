@@ -39,7 +39,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a week-based year.
+ * A representation of a week-based year in the ISO-8601 calendar system.
  * <p>
  * Weekyear is an immutable time field that can only store a week-based year.
  * It is a type-safe way of representing a week-based year in an application.

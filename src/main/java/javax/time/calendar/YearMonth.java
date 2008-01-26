@@ -39,7 +39,8 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a year and month without a time zone.
+ * A year-month without a time zone in the ISO-8601 calendar system,
+ * such as 'December 2007'.
  * <p>
  * YearMonth is an immutable calendrical that represents a year-month combination.
  * This class does not store or represent a day, time or time zone.

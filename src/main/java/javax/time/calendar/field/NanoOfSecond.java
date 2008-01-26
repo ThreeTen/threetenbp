@@ -41,7 +41,7 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 
 /**
- * A calendrical representation of a nano of second.
+ * A representation of a nano of second in the ISO-8601 calendar system.
  * <p>
  * NanoOfSecond is an immutable time field that can only store a nano of second.
  * It is a type-safe way of representing a nano of second in an application.

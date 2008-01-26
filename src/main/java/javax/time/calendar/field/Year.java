@@ -49,7 +49,7 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a year without a time zone.
+ * A representation of a year without a time zone in the ISO-8601 calendar system.
  * <p>
  * Year is an immutable calendrical that represents a year.
  * This class does not store or represent a month, day, time or time zone.

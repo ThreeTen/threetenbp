@@ -40,7 +40,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a era.
+ * A representation of a era in the ISO-8601 calendar system.
  * <p>
  * Era is an immutable time field that can only store a era.
  * It is a type-safe way of representing a era in an application.

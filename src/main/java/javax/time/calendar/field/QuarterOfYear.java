@@ -39,7 +39,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a quarter of year.
+ * A representation of a quarter of year in the ISO-8601 calendar system.
  * <p>
  * QuarterOfYear is an immutable time field that can only store a quarter of year.
  * It is a type-safe way of representing a quarter of year in an application.

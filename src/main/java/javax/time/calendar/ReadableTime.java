@@ -32,10 +32,10 @@
 package javax.time.calendar;
 
 /**
- * Provides read-only access to a time in the ISO calendar system.
+ * Provides read-only access to a time in the ISO-8601 calendar system.
  * <p>
  * ReadableTime is a simple interface that provides uniform access to any
- * object that can provide access to a time in the ISO calendar system.
+ * object that can provide access to a time in the ISO-8601 calendar system.
  * <p>
  * NOTE: The implementation of <code>ReadableTime</code> may be mutable.
  * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a

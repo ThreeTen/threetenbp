@@ -39,7 +39,8 @@ import javax.time.calendar.field.Year;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a month and day without a time zone.
+ * A month-day without a time zone in the ISO-8601 calendar system,
+ * such as '3rd December'.
  * <p>
  * MonthDay is an immutable calendrical that represents a month-day combination.
  * This class does not store or represent a year, time or time zone.

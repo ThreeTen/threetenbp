@@ -43,7 +43,7 @@ import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 
 /**
- * A calendrical representation of a second of minute.
+ * A representation of a second of minute in the ISO-8601 calendar system.
  * <p>
  * SecondOfMinute is an immutable time field that can only store a second of minute.
  * It is a type-safe way of representing a second of minute in an application.

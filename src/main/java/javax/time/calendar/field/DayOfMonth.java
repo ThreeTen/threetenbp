@@ -45,7 +45,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a day of month.
+ * A representation of a day of month in the ISO-8601 calendar system.
  * <p>
  * DayOfMonth is an immutable time field that can only store a day of month.
  * It is a type-safe way of representing a day of month in an application.

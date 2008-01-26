@@ -39,7 +39,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a day of week.
+ * A representation of a day of week in the ISO-8601 calendar system.
  * <p>
  * DayOfWeek is an immutable time field that can only store a day of week.
  * It is a type-safe way of representing a day of week in an application.

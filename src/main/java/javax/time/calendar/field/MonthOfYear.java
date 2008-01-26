@@ -43,7 +43,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a month of year.
+ * A representation of a month of year in the ISO-8601 calendar system.
  * <p>
  * MonthOfYear is an immutable time field that can only store a month of year.
  * It is a type-safe way of representing a month of year in an application.

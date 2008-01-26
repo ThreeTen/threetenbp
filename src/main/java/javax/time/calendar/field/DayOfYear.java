@@ -42,7 +42,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.TimeFieldRule;
 
 /**
- * A calendrical representation of a day of year.
+ * A representation of a day of year in the ISO-8601 calendar system.
  * <p>
  * DayOfYear is an immutable time field that can only store a day of year.
  * It is a type-safe way of representing a day of year in an application.

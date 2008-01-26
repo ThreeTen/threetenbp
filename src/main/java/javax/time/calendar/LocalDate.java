@@ -43,7 +43,8 @@ import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
 /**
- * A calendrical representation of a date without a time zone, such as '2007-12-03'.
+ * A date without a time zone in the ISO-8601 calendar system,
+ * such as '2007-12-03'.
  * <p>
  * LocalDate is an immutable calendrical that represents a date, often viewed
  * as year-month-day. This object can also access other date fields such as
