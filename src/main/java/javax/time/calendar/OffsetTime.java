@@ -173,20 +173,14 @@ public final class OffsetTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDate</code>.
+     * Obtains an instance of <code>OffsetTime</code>.
      *
-     * @param time  the time to represent, not null
+     * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @return an OffsetTime object, never null
      */
-    public static OffsetTime time(LocalTime time, ZoneOffset offset) {
-        if (time == null) {
-            throw new NullPointerException("The time must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
-        }
+    public static OffsetTime time(ReadableTime timeProvider, ZoneOffset offset) {
+        LocalTime time = timeProvider.toLocalTime();
         return new OffsetTime(time, offset);
     }
 
@@ -198,6 +192,12 @@ public final class OffsetTime
      * @param offset  the zone offset, validated as not null
      */
     private OffsetTime(LocalTime time, ZoneOffset offset) {
+        if (time == null) {
+            throw new NullPointerException("The time must not be null");
+        }
+        if (offset == null) {
+            throw new NullPointerException("The zone offset must not be null");
+        }
         this.time = time;
         this.offset = offset;
     }
@@ -286,7 +286,7 @@ public final class OffsetTime
      * @return a new updated OffsetTime, never null
      */
     public OffsetTime withOffset(ZoneOffset offset) {
-        return offset == this.offset ? this : time(time, offset);
+        return offset == this.offset ? this : new OffsetTime(time, offset);
     }
 
     //-----------------------------------------------------------------------

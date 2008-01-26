@@ -87,7 +87,7 @@ public final class OffsetDate
      */
     public static OffsetDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        return date(date, offset);
+        return new OffsetDate(date, offset);
     }
 
     /**
@@ -102,7 +102,7 @@ public final class OffsetDate
      */
     public static OffsetDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        return date(date, offset);
+        return new OffsetDate(date, offset);
     }
 
     /**
@@ -117,24 +117,18 @@ public final class OffsetDate
      */
     public static OffsetDate date(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        return date(date, offset);
+        return new OffsetDate(date, offset);
     }
 
     /**
      * Obtains an instance of <code>OffsetDate</code>.
      *
-     * @param date  the date to represent, not null
+     * @param dateProvider  the date provider to use, not null
      * @param offset  the zone offset, not null
      * @return an OffsetDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
      */
-    public static OffsetDate date(LocalDate date, ZoneOffset offset) {
-        if (date == null) {
-            throw new NullPointerException("The date must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
-        }
+    public static OffsetDate date(ReadableDate dateProvider, ZoneOffset offset) {
+        LocalDate date = dateProvider.toLocalDate();
         return new OffsetDate(date, offset);
     }
 
@@ -146,6 +140,12 @@ public final class OffsetDate
      * @param offset  the zone offset, validated as not null
      */
     private OffsetDate(LocalDate date, ZoneOffset offset) {
+        if (date == null) {
+            throw new NullPointerException("The date must not be null");
+        }
+        if (offset == null) {
+            throw new NullPointerException("The zone offset must not be null");
+        }
         this.date = date;
         this.offset = offset;
     }
@@ -251,7 +251,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withOffset(ZoneOffset zone) {
-        return zone == this.offset ? this : date(date, zone);
+        return zone == this.offset ? this : new OffsetDate(date, zone);
     }
 
     //-----------------------------------------------------------------------

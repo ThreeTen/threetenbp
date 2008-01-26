@@ -164,13 +164,28 @@ public final class ZonedDateTime
      * Obtains an instance of <code>ZonedDateTime</code>, providing a resolver
      * to handle an invalid date-time.
      *
+     * @param dateTimeProvider  the date-time provider to use, not null
+     * @param zone  the time zone, not null
+     * @param resolver  the resolver from local date-time to zoned, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
+     */
+    public static ZonedDateTime dateTime(ReadableDateTime dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
+        LocalDateTime dt = dateTimeProvider.toLocalDateTime();
+        return dateTime(dt, zone, resolver);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code>, providing a resolver
+     * to handle an invalid date-time.
+     *
      * @param dateTime  the date-time, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
      * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
      */
-    public static ZonedDateTime dateTime(LocalDateTime dateTime, TimeZone zone, ZoneResolver resolver) {
+    private static ZonedDateTime dateTime(LocalDateTime dateTime, TimeZone zone, ZoneResolver resolver) {
         if (dateTime == null) {
             throw new NullPointerException("The date-time must not be null");
         }
@@ -207,6 +222,12 @@ public final class ZonedDateTime
      * @param zone  the time zone, validated as not null
      */
     private ZonedDateTime(OffsetDateTime dateTime, TimeZone zone) {
+        if (dateTime == null) {
+            throw new NullPointerException("The date-time must not be null");
+        }
+        if (zone == null) {
+            throw new NullPointerException("The time zone must not be null");
+        }
         this.dateTime = dateTime;
         this.zone = zone;
     }

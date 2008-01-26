@@ -131,6 +131,23 @@ public final class LocalDateTime
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from a date with the
+     * time set to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return a LocalDateTime object, never null
+     */
+    public static LocalDateTime dateMidnight(ReadableDate dateProvider) {
+        LocalDate date = dateProvider.toLocalDate();
+        if (date == null) {
+            throw new NullPointerException("The date provider must not return null");
+        }
+        return new LocalDateTime(date, LocalTime.MIDNIGHT);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
@@ -336,16 +353,18 @@ public final class LocalDateTime
     /**
      * Obtains an instance of <code>LocalDateTime</code> from a date and time.
      *
-     * @param date  the date to represent, not null
-     * @param time  the time to represent, not null
+     * @param dateProvider  the date provider to use, not null
+     * @param timeProvider  the time provider to use, not null
      * @return a LocalDateTime object, never null
      */
-    public static LocalDateTime dateTime(LocalDate date, LocalTime time) {
+    public static LocalDateTime dateTime(ReadableDate dateProvider, ReadableTime timeProvider) {
+        LocalDate date = dateProvider.toLocalDate();
         if (date == null) {
-            throw new NullPointerException("The date must not be null");
+            throw new NullPointerException("The date provider must not return null");
         }
+        LocalTime time = timeProvider.toLocalTime();
         if (time == null) {
-            throw new NullPointerException("The time must not be null");
+            throw new NullPointerException("The time provider must not return null");
         }
         return new LocalDateTime(date, time);
     }

@@ -38,7 +38,6 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodUnit;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -121,34 +120,17 @@ public final class LocalDate
     }
 
     /**
-     * Obtains an instance of <code>LocalDate</code> from a set of calendricals.
-     * <p>
-     * This can be used to pass in any combination of calendricals that fully specify
-     * a date. For example, Year + MonthOfYear + DayOfMonth, or Year + DayOfYear.
+     * Obtains an instance of <code>LocalDate</code> from a readable date.
      *
-     * @param calendricals  a set of calendricals that fully represent a calendar day
+     * @param dateProvider  the date provider to use, not null
      * @return a LocalDate object, never null
-     * @throws IllegalCalendarFieldValueException if any calendrical is invalid
      */
-    public static LocalDate date(Calendrical... calendricals) {
-        if (calendricals.length == 0) {
-            throw new IllegalCalendarFieldValueException("No calendricals specified");
+    public static LocalDate date(ReadableDate dateProvider) {
+        LocalDate result = dateProvider.toLocalDate();
+        if (result == null) {
+            throw new NullPointerException("The implementation of ReadableDate must not return null");
         }
-        if (calendricals[0].getCalendricalState().getPeriodRange() != Periods.FOREVER) {
-            throw new IllegalCalendarFieldValueException("First calendrical must have a range of forever");
-        }
-        if (calendricals[calendricals.length - 1].getCalendricalState().getPeriodUnit() != Periods.DAYS) {
-            throw new IllegalCalendarFieldValueException("Last calendrical must have a unit of days");
-        }
-        PeriodUnit last = calendricals[0].getCalendricalState().getPeriodUnit();
-        for (int i = 1; i < calendricals.length; i++) {
-            if (calendricals[i].getCalendricalState().getPeriodRange() != last) {
-                throw new IllegalCalendarFieldValueException("Calendricals do not form a continuous set: " +
-                        last + " != " + calendricals[i].getCalendricalState().getPeriodRange());
-            }
-            last = calendricals[i].getCalendricalState().getPeriodUnit();
-        }
-        return null;
+        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -653,6 +635,19 @@ public final class LocalDate
     public boolean matches(DateMatcher matcher) {
         return matcher.matchesDate(this);
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Appends the time to this date returning a LocalDateTime.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param time  the time to append, not null
+//     * @return the LocalDateTime formed by appending the time to this date, never null
+//     */
+//    public LocalDateTime append(LocalTime time) {
+//        return LocalDateTime.dateTime(this, time);
+//    }
 
     //-----------------------------------------------------------------------
     /**

@@ -136,6 +136,21 @@ public final class OffsetDateTime
         return new OffsetDateTime(dt, offset);
     }
 
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code> from a date with the
+     * time set to midnight at the start of day.
+     * <p>
+     * The time fields will be set to zero by this factory method.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @param offset  the zone offset, not null
+     * @return a OffsetDateTime object, never null
+     */
+    public static OffsetDateTime dateMidnight(ReadableDate dateProvider, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateMidnight(dateProvider);
+        return new OffsetDateTime(dt, offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>OffsetDateTime</code> from year, month,
@@ -349,23 +364,31 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
+     * Obtains an instance of <code>OffsetDateTime</code> from a date and time.
      *
-     * @param dateTime  the date-time to represent, not null
+     * @param dateProvider  the date provider to use, not null
+     * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @return a OffsetDateTime object, never null
      */
-    public static OffsetDateTime dateTime(LocalDateTime dateTime, ZoneOffset offset) {
-        if (dateTime == null) {
-            throw new NullPointerException("The date-time must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
-        }
-        return new OffsetDateTime(dateTime, offset);
+    public static OffsetDateTime dateTime(ReadableDate dateProvider, ReadableTime timeProvider, ZoneOffset offset) {
+        LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
+        return new OffsetDateTime(dt, offset);
     }
 
+    /**
+     * Obtains an instance of <code>OffsetDateTime</code>.
+     *
+     * @param dateTimeProvider  the date-time provider to use, not null
+     * @param offset  the zone offset, not null
+     * @return an OffsetDateTime object, never null
+     */
+    public static OffsetDateTime dateTime(ReadableDateTime dateTimeProvider, ZoneOffset offset) {
+        LocalDateTime dt = dateTimeProvider.toLocalDateTime();
+        return new OffsetDateTime(dt, offset);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>OffsetDateTime</code> from an <code>Instant</code>.
      *
@@ -403,10 +426,16 @@ public final class OffsetDateTime
     /**
      * Constructor.
      *
-     * @param dateTime  the date-time, validated as not null
-     * @param offset  the zone offset, validated as not null
+     * @param dateTime  the date-time, not null
+     * @param offset  the zone offset, not null
      */
     private OffsetDateTime(LocalDateTime dateTime, ZoneOffset offset) {
+        if (dateTime == null) {
+            throw new NullPointerException("The date-time must not be null");
+        }
+        if (offset == null) {
+            throw new NullPointerException("The zone offset must not be null");
+        }
         this.dateTime = dateTime;
         this.offset = offset;
     }

@@ -275,18 +275,19 @@ public final class LocalTime
                 NanoOfSecond.nanoOfSecond(nanoOfSecond));
     }
 
-//    /**
-//     * Obtains an instance of <code>LocalTime</code> from a set of calendricals.
-//     * <p>
-//     * This can be used to pass in any combination of calendricals that fully specify
-//     * a time. For example, HourOfDay + MinuteOfHour.
-//     *
-//     * @param calendricals  a set of calendricals that fully represent a calendar day
-//     * @return a LocalTime object, never null
-//     */
-//    public static LocalTime time(Calendrical... calendricals) {
-//        return null;
-//    }
+    /**
+     * Obtains an instance of <code>LocalTime</code> from a readable time.
+     *
+     * @param timeProvider  the time provider to use, not null
+     * @return a LocalTime object, never null
+     */
+    public static LocalTime time(ReadableTime timeProvider) {
+        LocalTime result = timeProvider.toLocalTime();
+        if (result == null) {
+            throw new NullPointerException("The implementation of ReadableTime must not return null");
+        }
+        return result;
+    }
 
     //-----------------------------------------------------------------------
     /**
