@@ -77,10 +77,16 @@ public enum Era
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Era</code>.
+     * Obtains an instance of <code>Era</code> from a value.
+     * <p>
+     * A day of week object represents one of the 2 eras. These are numbered
+     * as 0 (BC/BCE) and 1 (AD/CE).
+     * <p>
+     * Era is an enum, thus each instance is a singleton.
+     * As a result, Era instances can be compared using ==.
      *
-     * @param era  the era to represent
-     * @return the existing Era
+     * @param era  the era to represent, from 0 to 1
+     * @return the Era singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
     public static Era era(int era) {
@@ -90,7 +96,7 @@ public enum Era
             case 1:
                 return AD;
             default:
-                throw new IllegalCalendarFieldValueException("Era cannot have the value " + era);
+                throw new IllegalCalendarFieldValueException("Era", era, 0, 1);
         }
     }
 

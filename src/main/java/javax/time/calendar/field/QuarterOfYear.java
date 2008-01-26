@@ -83,10 +83,16 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>QuarterOfYear</code>.
+     * Obtains an instance of <code>QuarterOfYear</code> from a value.
+     * <p>
+     * A quarter of year object represents one of the 4 quarters of the year.
+     * These are numbered from 1 (Q1) to 4 (Q4).
+     * <p>
+     * QuarterOfYear is an enum, thus each instance is a singleton.
+     * As a result, QuarterOfYear instances can be compared using ==.
      *
-     * @param quarterOfYear  the quarter of year to represent
-     * @return the existing QuarterOfYear
+     * @param quarterOfYear  the quarter of year to represent, from 1 to 4
+     * @return the QuarterOfYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the quarter of year is invalid
      */
     public static QuarterOfYear quarterOfYear(int quarterOfYear) {
@@ -100,7 +106,7 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
             case 4:
                 return Q4;
             default:
-                throw new IllegalCalendarFieldValueException("QuarterOfYear cannot have the value " + quarterOfYear);
+                throw new IllegalCalendarFieldValueException("QuarterOfYear", quarterOfYear, 1, 4);
         }
     }
 

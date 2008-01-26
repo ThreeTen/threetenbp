@@ -100,8 +100,8 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      * A day of week object represents one of the 7 days of the week. These
      * are numbered following the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
      * <p>
-     * As DayOfWeek is an enum, each instance is a singleton and can be compared
-     * using ==.
+     * DayOfWeek is an enum, thus each instance is a singleton.
+     * As a result, DayOfWeek instances can be compared using ==.
      *
      * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
      * @return the DayOfWeek singleton, never null
