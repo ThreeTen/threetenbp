@@ -303,44 +303,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalDate with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated LocalDate, never null
-     */
-    public LocalDate with(Calendrical calendrical) {
-        if (calendrical instanceof Year) {
-            return withYear(((Year) calendrical).getISOYear());
-        }
-        if (calendrical instanceof MonthOfYear) {
-            return withMonthOfYear(((MonthOfYear) calendrical).getValue());
-        }
-        if (calendrical instanceof DayOfMonth) {
-            return withDayOfMonth(((DayOfMonth) calendrical).getValue());
-        }
-        if (calendrical instanceof ReadableDate) {
-            return ((ReadableDate) calendrical).toLocalDate();
-        }
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDate with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated LocalDate, never null
-     */
-    public LocalDate with(Calendrical... calendricals) {
-        // TODO
-        return null;
-    }
-
-    /**
      * Returns a copy of this LocalDate with the date altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the date in unusual ways. Examples might

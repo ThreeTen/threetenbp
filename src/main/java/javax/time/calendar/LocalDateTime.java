@@ -607,38 +607,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalDateTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated LocalDateTime, never null
-     */
-    public LocalDateTime with(Calendrical calendrical) {
-        if (calendrical instanceof LocalDate) {
-            return withDateTime((LocalDate) calendrical, time);
-        }
-        if (calendrical instanceof LocalTime) {
-            return withDateTime(date, (LocalTime) calendrical);
-        }
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDateTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated LocalDateTime, never null
-     */
-    public LocalDateTime with(Calendrical... calendricals) {
-        // TODO
-        return null;
-    }
-
-    /**
      * Returns a copy of this LocalDateTime with the date altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the date in various ways.

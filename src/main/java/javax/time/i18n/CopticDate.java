@@ -201,31 +201,6 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this CopticDate with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param moment  the moment to update to, not null
-     * @return a new updated CopticDate
-     */
-    public CopticDate with(Calendrical moment) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this CopticDate with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param moments  the moments to update to, not null
-     * @return a new updated CopticDate
-     */
-    public CopticDate with(Calendrical... moments) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this CopticDate with the year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.

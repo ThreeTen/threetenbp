@@ -363,32 +363,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated OffsetTime, never null
-     */
-    public OffsetTime with(Calendrical calendrical) {
-        LocalTime newTime = time.with(calendrical);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated OffsetTime, never null
-     */
-    public OffsetTime with(Calendrical... calendricals) {
-        LocalTime newTime = time.with(calendricals);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
-    }
-
-    /**
      * Returns a copy of this OffsetTime with the time altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the time in various ways.

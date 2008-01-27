@@ -210,31 +210,6 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Year with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated Year, never null
-     */
-    public Year with(Calendrical calendrical) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this Year with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated Year, never null
-     */
-    public Year with(Calendrical... calendricals) {
-        return null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns a copy of this Year with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.

@@ -317,32 +317,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate with(Calendrical calendrical) {
-        LocalDate newDate = date.with(calendrical);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetDate with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate with(Calendrical... calendricals) {
-        LocalDate newDate = date.with(calendricals);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
      * Returns a copy of this OffsetDate with the date altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the date in unusual ways. Examples might

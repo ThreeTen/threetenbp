@@ -594,34 +594,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime with(Calendrical calendrical) {
-        LocalDateTime newDT = dateTime.localDateTime().with(calendrical);
-        return (newDT == dateTime.localDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime with(Calendrical... calendricals) {
-        LocalDateTime newDT = dateTime.localDateTime().with(calendricals);
-        return (newDT == dateTime.localDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
      * Returns a copy of this ZonedDateTime with the date altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the date in various ways.

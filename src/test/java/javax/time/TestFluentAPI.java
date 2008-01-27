@@ -36,12 +36,10 @@ import static javax.time.calendar.DateAdjustors.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.period.Periods.*;
 
-import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
-import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
@@ -62,7 +60,7 @@ public class TestFluentAPI {
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
         if (tod.matches(MeridiemOfDay.AM)) {
-            tod = tod.with((TimeAdjustor) hourOfDay(9));
+            tod = tod.with(hourOfDay(9));
         }
         
         LocalDate date = null;
@@ -89,9 +87,9 @@ public class TestFluentAPI {
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
-        date = date.with((DateAdjustor) year(2009));
-        date = date.with((DateAdjustor) monthOfYear(6));
-        date = date.with((DateAdjustor) MonthOfYear.AUGUST);
+        date = date.with(year(2009));
+        date = date.with(monthOfYear(6));
+        date = date.with(MonthOfYear.AUGUST);
         MonthOfYear.DECEMBER.adjustDate(date, DateResolvers.strict());
         
         if (date.matches(FRIDAY) && date.matches(dayOfMonth(13))) {
@@ -109,7 +107,7 @@ public class TestFluentAPI {
         Period d2 = hours(2).withSeconds(3);
         Period d3 = Period.periodOf(hours(2), seconds(3));
         
-        tod.with(hourOfDay(12), minuteOfHour(30));
+        tod.with(hourOfDay(12)).with(minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
         
 //        if (tod.hourOfDay().getAmPm().isAm()) {

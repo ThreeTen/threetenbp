@@ -442,30 +442,6 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendrical  the calendrical values to update to, not null
-     * @return a new updated LocalTime, never null
-     */
-    public LocalTime with(Calendrical calendrical) {
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified values altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param calendricals  the calendrical values to update to, no nulls
-     * @return a new updated LocalTime, never null
-     */
-    public LocalTime with(Calendrical... calendricals) {
-        return null;
-    }
-
-    /**
      * Returns a copy of this LocalTime with the time altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the time in various ways.
