@@ -91,7 +91,15 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        ISOChronology.INSTANCE.checkValidDate(SAMPLE_YEAR, monthOfYear, dayOfMonth);
+        if (monthOfYear == null) {
+            throw new NullPointerException("MonthOfYear must not be null");
+        }
+        if (dayOfMonth == null) {
+            throw new NullPointerException("DayOfMonth must not be null");
+        }
+        if (dayOfMonth.isValid(SAMPLE_YEAR, monthOfYear) == false) {
+            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(SAMPLE_YEAR));
+        }
         return new MonthDay(monthOfYear, dayOfMonth);
     }
 
@@ -245,9 +253,8 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        DayOfMonth lastDOM = monthOfYear.getLastDayOfMonth(SAMPLE_YEAR);
-        if (day.compareTo(lastDOM) > 0) {
-            return withMonthDay(monthOfYear, lastDOM);
+        if (day.isValid(SAMPLE_YEAR, monthOfYear) == false) {
+            return withMonthDay(monthOfYear, monthOfYear.getLastDayOfMonth(SAMPLE_YEAR));
         }
         return withMonthDay(monthOfYear, day);
     }
@@ -265,7 +272,7 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if the day of month is invalid for the month
      */
     public MonthDay with(DayOfMonth dayOfMonth) {
-        if (dayOfMonth.compareTo(month.getLastDayOfMonth(SAMPLE_YEAR)) > 0) {
+        if (dayOfMonth.isValid(SAMPLE_YEAR, month) == false) {
             throw new IllegalCalendarFieldValueException("Day of month cannot be changed to " +
                     dayOfMonth + " for the month " + month);
         }

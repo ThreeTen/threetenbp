@@ -89,7 +89,18 @@ public final class LocalDate
      * @throws IllegalCalendarFieldValueException if any field is invalid
      */
     public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        ISOChronology.INSTANCE.checkValidDate(year, monthOfYear, dayOfMonth);
+        if (year == null) {
+            throw new NullPointerException("Year must not be null");
+        }
+        if (monthOfYear == null) {
+            throw new NullPointerException("MonthOfYear must not be null");
+        }
+        if (dayOfMonth == null) {
+            throw new NullPointerException("DayOfMonth must not be null");
+        }
+        if (dayOfMonth.isValid(year, monthOfYear) == false) {
+            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(year));
+        }
         return new LocalDate(year, monthOfYear, dayOfMonth);
     }
 

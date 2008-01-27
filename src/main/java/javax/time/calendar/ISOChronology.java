@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.calendar.field.DayOfMonth;
-import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.i18n.CopticChronology.State;
 import javax.time.period.Periods;
@@ -161,31 +159,28 @@ public final class ISOChronology implements Serializable {
 //        return true;
 //    }
 
-    /**
-     * Validates the date from a year, month and day.
-     *
-     * @param year  the year, not null
-     * @param monthOfYear  the month of year, not null
-     * @param dayOfMonth  the day of month, not null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public void checkValidDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        if (year == null) {
-            throw new NullPointerException("Year must not be null");
-        }
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        if (dayOfMonth == null) {
-            throw new NullPointerException("DayOfMonth must not be null");
-        }
-        if (dayOfMonth.getValue() > 28) {
-            int length = monthOfYear.lengthInDays(year);
-            if (dayOfMonth.getValue() > length) {
-                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, length);
-            }
-        }
-    }
+//    /**
+//     * Validates the date from a year, month and day.
+//     *
+//     * @param year  the year, not null
+//     * @param monthOfYear  the month of year, not null
+//     * @param dayOfMonth  the day of month, not null
+//     * @throws IllegalCalendarFieldValueException if any field is invalid
+//     */
+//    public void checkValidDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+//        if (year == null) {
+//            throw new NullPointerException("Year must not be null");
+//        }
+//        if (monthOfYear == null) {
+//            throw new NullPointerException("MonthOfYear must not be null");
+//        }
+//        if (dayOfMonth == null) {
+//            throw new NullPointerException("DayOfMonth must not be null");
+//        }
+//        if (dayOfMonth.isValid(year, monthOfYear) == false) {
+//            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(year));
+//        }
+//    }
 
 //    /**
 //     * Validates the date from a year, month and day.
