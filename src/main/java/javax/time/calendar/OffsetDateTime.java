@@ -496,8 +496,8 @@ public final class OffsetDateTime
      *
      * @return the year-month object, never null
      */
-    public YearMonth yearMonth() {
-        return dateTime.yearMonth();
+    public YearMonth getYearMonth() {
+        return dateTime.getYearMonth();
     }
 
     /**
@@ -506,8 +506,8 @@ public final class OffsetDateTime
      *
      * @return the month-day object, never null
      */
-    public MonthDay monthDay() {
-        return dateTime.monthDay();
+    public MonthDay getMonthDay() {
+        return dateTime.getMonthDay();
     }
 
     //-----------------------------------------------------------------------

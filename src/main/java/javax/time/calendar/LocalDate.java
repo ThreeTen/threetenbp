@@ -226,7 +226,7 @@ public final class LocalDate
      *
      * @return the year-month object, never null
      */
-    public YearMonth yearMonth() {
+    public YearMonth getYearMonth() {
         return YearMonth.yearMonth(year, month);
     }
 
@@ -236,7 +236,7 @@ public final class LocalDate
      *
      * @return the month-day object, never null
      */
-    public MonthDay monthDay() {
+    public MonthDay getMonthDay() {
         return MonthDay.monthDay(month, day);
     }
 

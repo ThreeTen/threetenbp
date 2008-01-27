@@ -461,8 +461,8 @@ public final class LocalDateTime
      *
      * @return the year-month object, never null
      */
-    public YearMonth yearMonth() {
-        return date.yearMonth();
+    public YearMonth getYearMonth() {
+        return date.getYearMonth();
     }
 
     /**
@@ -471,8 +471,8 @@ public final class LocalDateTime
      *
      * @return the month-day object, never null
      */
-    public MonthDay monthDay() {
-        return date.monthDay();
+    public MonthDay getMonthDay() {
+        return date.getMonthDay();
     }
 
     /**
