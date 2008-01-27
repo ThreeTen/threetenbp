@@ -47,7 +47,7 @@ import javax.time.calendar.TimeMatcher;
  * It is a type-safe way of representing a nano of second in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The nano of second may be queried using getNanoOfSecond().
+ * The nano of second may be queried using getValue().
  * <p>
  * NanoOfSecond is thread-safe and immutable.
  *

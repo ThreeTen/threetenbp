@@ -46,7 +46,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a month of quarter in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The month of quarter may be queried using getMonthOfQuarter().
+ * The month of quarter may be queried using getValue().
  * <p>
  * MonthOfQuarter is thread-safe and immutable.
  *

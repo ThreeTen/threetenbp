@@ -45,7 +45,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a second of day in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The second of day may be queried using getSecondOfDay().
+ * The second of day may be queried using getValue().
  * <p>
  * SecondOfDay is thread-safe and immutable.
  *

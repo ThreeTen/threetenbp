@@ -45,7 +45,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a minute of day in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of day may be queried using getMinuteOfDay().
+ * The minute of day may be queried using getValue().
  * <p>
  * MinuteOfDay is thread-safe and immutable.
  *

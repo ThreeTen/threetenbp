@@ -64,7 +64,7 @@ import javax.time.calendar.TimeFieldRule;
  * contains the first Thursday of the year.
  * <p>
  * Static factory methods allow you to construct instances.
- * The week-based year may be queried using getWeekyear().
+ * The week-based year may be queried using getValue().
  * <p>
  * Weekyear is thread-safe and immutable.
  *

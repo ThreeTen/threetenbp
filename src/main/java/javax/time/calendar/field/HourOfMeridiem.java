@@ -46,7 +46,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a hour of meridiem in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The hour of meridiem may be queried using getHourOfMeridiem().
+ * The hour of meridiem may be queried using getValue().
  * <p>
  * HourOfMeridiem is thread-safe and immutable.
  *

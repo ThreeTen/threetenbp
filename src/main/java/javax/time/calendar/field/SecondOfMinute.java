@@ -49,7 +49,7 @@ import javax.time.calendar.TimeMatcher;
  * It is a type-safe way of representing a second of minute in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The second of minute may be queried using getSecondOfMinute().
+ * The second of minute may be queried using getValue().
  * <p>
  * SecondOfMinute is thread-safe and immutable.
  *

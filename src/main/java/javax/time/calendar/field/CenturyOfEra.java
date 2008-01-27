@@ -45,7 +45,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a century of era in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The century of era may be queried using getCenturyOfEra().
+ * The century of era may be queried using getValue().
  * <p>
  * CenturyOfEra is thread-safe and immutable.
  *

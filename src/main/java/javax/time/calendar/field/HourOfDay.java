@@ -49,7 +49,7 @@ import javax.time.calendar.TimeMatcher;
  * It is a type-safe way of representing a hour of day in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The hour of day may be queried using getHourOfDay().
+ * The hour of day may be queried using getValue().
  * <p>
  * HourOfDay is thread-safe and immutable.
  *

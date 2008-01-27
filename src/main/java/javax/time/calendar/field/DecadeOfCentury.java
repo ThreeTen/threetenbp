@@ -45,7 +45,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a decade of century in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The decade of century may be queried using getDecadeOfCentury().
+ * The decade of century may be queried using getValue().
  * <p>
  * DecadeOfCentury is thread-safe and immutable.
  *

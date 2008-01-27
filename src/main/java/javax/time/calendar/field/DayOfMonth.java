@@ -52,7 +52,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a day of month in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The day of month may be queried using getDayOfMonth().
+ * The day of month may be queried using getValue().
  * <p>
  * DayOfMonth is thread-safe and immutable.
  *

@@ -49,7 +49,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a day of year in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The day of year may be queried using getDayOfYear().
+ * The day of year may be queried using getValue().
  * <p>
  * DayOfYear is thread-safe and immutable.
  *

@@ -46,7 +46,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a week of month in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The week of month may be queried using getWeekOfMonth().
+ * The week of month may be queried using getValue().
  * <p>
  * WeekOfMonth is thread-safe and immutable.
  *

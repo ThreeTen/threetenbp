@@ -49,7 +49,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a year of era in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The year of era may be queried using getYearOfEra().
+ * The year of era may be queried using getValue().
  * <p>
  * YearOfEra is thread-safe and immutable.
  *

@@ -51,7 +51,7 @@ import javax.time.calendar.TimeFieldRule;
  * calculation described in {@link Weekyear}.
  * <p>
  * Static factory methods allow you to construct instances.
- * The week of week-based year may be queried using getWeekOfWeekyear().
+ * The week of week-based year may be queried using getValue().
  * <p>
  * WeekOfWeekyear is thread-safe and immutable.
  *

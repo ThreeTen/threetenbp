@@ -49,7 +49,7 @@ import javax.time.calendar.TimeMatcher;
  * It is a type-safe way of representing a minute of hour in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getMinuteOfHour().
+ * The minute of hour may be queried using getValue().
  * <p>
  * MinuteOfHour is thread-safe and immutable.
  *

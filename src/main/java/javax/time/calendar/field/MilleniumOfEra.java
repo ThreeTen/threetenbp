@@ -45,7 +45,7 @@ import javax.time.calendar.TimeFieldRule;
  * It is a type-safe way of representing a millenium of era in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The millenium of era may be queried using getMilleniumOfEra().
+ * The millenium of era may be queried using getValue().
  * <p>
  * MilleniumOfEra is thread-safe and immutable.
  *
