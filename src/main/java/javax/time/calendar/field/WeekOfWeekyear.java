@@ -158,6 +158,17 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this week of weekyear is valid for the specified week-based year.
+     *
+     * @param weekyear  the weekyear to validate against, not null
+     * @return true if this week of weekyear is valid for the week-based year
+     */
+    public boolean isValid(Weekyear weekyear) {
+        return (weekOfWeekyear < 53 || weekyear.lengthInWeeks() == 53);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this week of week-based year instance to another.
      *
      * @param otherWeekOfWeekyear  the other week of week-based year instance, not null

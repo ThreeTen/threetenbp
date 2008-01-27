@@ -254,6 +254,18 @@ public final class DayOfMonth
         return date.getDayOfMonth() == this;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this day of month is valid for the specified month and year.
+     *
+     * @param year  the year to validate against, not null
+     * @param monthOfYear  the month of year to validate against, not null
+     * @return true if this day of month is valid for the month and year
+     */
+    public boolean isValid(Year year, MonthOfYear monthOfYear) {
+        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
+    }
+
 //  /**
 //  * A map holding the maximum number of days per month.
 //  */

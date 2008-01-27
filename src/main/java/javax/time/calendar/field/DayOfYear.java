@@ -235,6 +235,17 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this day of year is valid for the specified year.
+     *
+     * @param year  the year to validate against, not null
+     * @return true if this day of year is valid for the year
+     */
+    public boolean isValid(Year year) {
+        return (dayOfYear < 366 || year.isLeap());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Implementation of the rules for the day of year field.
      */
     private static class Rule extends TimeFieldRule {

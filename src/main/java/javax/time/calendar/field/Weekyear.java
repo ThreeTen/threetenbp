@@ -145,6 +145,25 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the length of this week-based year in weeks.
+     *
+     * @return the length of this weekyear in weeks, either 52 or 53
+     */
+    public int lengthInWeeks() {
+        return 52; // TODO
+    }
+
+    /**
+     * Gets the last week of the week-based year.
+     *
+     * @return an object representing the last week of the week-based year
+     */
+    public WeekOfWeekyear getLastWeekOfWeekyear() {
+        return null; // TODO
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this week-based year instance to another.
      *
      * @param otherWeekyear  the other week-based year instance, not null
