@@ -223,7 +223,7 @@ public final class DayOfMonth
      * @return the adjusted date, never null
      */
     public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.previousValid());
+        return adjustDate(date, DateResolvers.strict());
     }
 
     /**
