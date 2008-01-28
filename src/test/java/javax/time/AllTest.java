@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import javax.time.calendar.TestDateAdjustors;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalTime;
 import javax.time.calendar.TestOffsetDate;
+import javax.time.calendar.field.TestDayOfYear;
 import javax.time.period.field.TestDays;
 import javax.time.period.field.TestHours;
 import javax.time.period.field.TestMinutes;
@@ -65,6 +66,8 @@ public class AllTest {
             TestLocalDate.class,
             TestLocalTime.class,
             TestOffsetDate.class,
+            // calendar fields
+            TestDayOfYear.class,
             // period fields
             TestDays.class,
             TestHours.class,
