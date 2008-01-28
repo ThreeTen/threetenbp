@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalState;
+import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -56,7 +57,7 @@ import javax.time.calendar.TimeFieldRule;
  * @author Stephen Colebourne
  */
 public final class DayOfYear
-        implements Calendrical, Comparable<DayOfYear>, Serializable, DateMatcher {
+        implements Calendrical, Comparable<DayOfYear>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * The rule implementation that defines how the day of year field operates.
@@ -172,6 +173,61 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
+     * Adjusts a date to have the value of this day of year, returning a new date.
+     * <p>
+     * If the day of year is invalid for the year and month then an exception
+     * is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the day of year is invalid for the input year
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        Year year = date.getYear();
+        if (isValid(year) == false) {
+            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+        }
+        int doy0 = dayOfYear - 1;
+        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
+        int month = 1;
+        for ( ; month < 12; month++) {
+            if (doy0 < array[month]) {
+                break;
+            }
+        }
+        MonthOfYear moy = MonthOfYear.monthOfYear(month);
+        DayOfMonth dom = DayOfMonth.dayOfMonth(doy0 - array[month - 1] + 1);
+        return LocalDate.date(year, moy, dom);
+    }
+
+    /**
+     * Checks if the value of this day of year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getDayOfYear() == this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this day of year is valid for the specified year.
+     *
+     * @param year  the year to validate against, not null
+     * @return true if this day of year is valid for the year
+     */
+    public boolean isValid(Year year) {
+        if (year == null) {
+            throw new NullPointerException("The year must not be null");
+        }
+        return (dayOfYear < 366 || year.isLeap());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this day of year instance to another.
      *
      * @param otherDayOfYear  the other day of year instance, not null
@@ -220,28 +276,6 @@ public final class DayOfYear
     @Override
     public String toString() {
         return "DayOfYear=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the value of this day of year matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getDayOfYear() == this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this day of year is valid for the specified year.
-     *
-     * @param year  the year to validate against, not null
-     * @return true if this day of year is valid for the year
-     */
-    public boolean isValid(Year year) {
-        return (dayOfYear < 366 || year.isLeap());
     }
 
     //-----------------------------------------------------------------------
