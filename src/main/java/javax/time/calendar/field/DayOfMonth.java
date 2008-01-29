@@ -160,6 +160,74 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Adjusts a date to have the value of this day of month, returning a new date.
+     * <p>
+     * If the day of month is invalid for the year and month then an exception
+     * is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return adjustDate(date, DateResolvers.strict());
+    }
+
+    /**
+     * Adjusts a date to have the value of this day of month, using a resolver
+     * to handle the case when the day of month is invalid for the year and month.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param date  the date to be adjusted, not null
+     * @param resolver  the date resolver to use, not null
+     * @return the adjusted date, never null
+     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     */
+    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (date == null) {
+            throw new NullPointerException("The date must not be null");
+        }
+        if (resolver == null) {
+            throw new NullPointerException("The resolver must not be null");
+        }
+        if (this == date.getDayOfMonth()) {
+            return date;
+        }
+        return resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
+    }
+
+    /**
+     * Checks if the value of this day of month matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getDayOfMonth() == this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this day of month is valid for the specified month and year.
+     *
+     * @param year  the year to validate against, not null
+     * @param monthOfYear  the month of year to validate against, not null
+     * @return true if this day of month is valid for the month and year
+     */
+    public boolean isValid(Year year, MonthOfYear monthOfYear) {
+        if (year == null) {
+            throw new NullPointerException("The year must not be null");
+        }
+        if (monthOfYear == null) {
+            throw new NullPointerException("The month of year must not be null");
+        }
+        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this day of month instance to another.
      *
      * @param otherDayOfMonth  the other day of month instance, not null
@@ -208,62 +276,6 @@ public final class DayOfMonth
     @Override
     public String toString() {
         return "DayOfMonth=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adjusts a date to have the value of this day of month, returning a new date.
-     * <p>
-     * If the day of month is invalid for the year and month then an exception
-     * is thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.strict());
-    }
-
-    /**
-     * Adjusts a date to have the value of this day of month, using a resolver
-     * to handle the case when the day of month is invalid for the year and month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use, not null
-     * @return the adjusted date, never null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
-     */
-    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (this == date.getDayOfMonth()) {
-            return date;
-        }
-        return resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
-    }
-
-    /**
-     * Checks if the value of this day of month matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getDayOfMonth() == this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this day of month is valid for the specified month and year.
-     *
-     * @param year  the year to validate against, not null
-     * @param monthOfYear  the month of year to validate against, not null
-     * @return true if this day of month is valid for the month and year
-     */
-    public boolean isValid(Year year, MonthOfYear monthOfYear) {
-        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
     }
 
 //  /**
