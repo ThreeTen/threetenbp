@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -66,23 +66,7 @@ public enum MonthOfYear
     /**
      * The singleton instance for the month of February.
      */
-    FEBRUARY(2) {
-        /** {@inheritDoc} */
-        @Override
-        public int lengthInDays(Year year) {
-            return (year.isLeap() ? 29 : 28);
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int minLengthInDays() {
-            return 28;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int maxLengthInDays() {
-            return 29;
-        }
-    },
+    FEBRUARY(2),
     /**
      * The singleton instance for the month of March.
      */
@@ -273,6 +257,12 @@ public enum MonthOfYear
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        if (date == null) {
+            throw new NullPointerException("The date must not be null");
+        }
+        if (resolver == null) {
+            throw new NullPointerException("The resolver must not be null");
+        }
         if (this == date.getMonthOfYear()) {
             return date;
         }
@@ -291,23 +281,26 @@ public enum MonthOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the last day of the month.
-     *
-     * @param year  the year to obtain the last day of month for, not null
-     * @return an object representing the last day of this month
-     */
-    public DayOfMonth getLastDayOfMonth(Year year) {
-        return DayOfMonth.dayOfMonth(lengthInDays(year));
-    }
-
-    /**
      * Gets the length of this month in days.
      *
      * @param year  the year to obtain the length for, not null
      * @return the length of this month in days, from 28 to 31
      */
     public int lengthInDays(Year year) {
-        return maxLengthInDays();  // overridden by FEBRUARY
+        if (year == null) {
+            throw new NullPointerException("The year must not be null");
+        }
+        switch (this) {
+            case FEBRUARY:
+                return (year.isLeap() ? 29 : 28);
+            case APRIL:
+            case JUNE:
+            case SEPTEMBER:
+            case NOVEMBER:
+                return 30;
+            default:
+                return 31;
+        }
     }
 
     /**
@@ -318,7 +311,7 @@ public enum MonthOfYear
     public int minLengthInDays() {
         switch (this) {
             case FEBRUARY:
-                return 28;  // overridden by FEBRUARY
+                return 28;
             case APRIL:
             case JUNE:
             case SEPTEMBER:
@@ -337,7 +330,7 @@ public enum MonthOfYear
     public int maxLengthInDays() {
         switch (this) {
             case FEBRUARY:
-                return 29;  // overridden by FEBRUARY
+                return 29;
             case APRIL:
             case JUNE:
             case SEPTEMBER:
@@ -349,6 +342,16 @@ public enum MonthOfYear
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the last day of the month.
+     *
+     * @param year  the year to obtain the last day of month for, not null
+     * @return an object representing the last day of this month
+     */
+    public DayOfMonth getLastDayOfMonth(Year year) {
+        return DayOfMonth.dayOfMonth(lengthInDays(year));
+    }
+
     /**
      * Gets the quarter that this month falls in.
      *
@@ -373,6 +376,16 @@ public enum MonthOfYear
      */
     public int getMonthOfQuarter() {
         return (ordinal() % 3) + 1;
+    }
+
+    /**
+     * A string describing the month of year object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "MonthOfYear=" + name();
     }
 
     //-----------------------------------------------------------------------
