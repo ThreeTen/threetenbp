@@ -188,7 +188,7 @@ public class TestDayOfMonth {
     public void test_adjustDate() {
         LocalDate base = LocalDate.date(2007, 1, 1);
         LocalDate expected = base;
-        for (int i = 1; i <= 31; i++) {  // Jan
+        for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
             LocalDate result = DayOfMonth.dayOfMonth(i).adjustDate(base);
             assertEquals(result, expected);
             expected = expected.plusDays(1);
@@ -222,7 +222,7 @@ public class TestDayOfMonth {
     public void test_adjustDate_strictResolver() {
         LocalDate base = LocalDate.date(2007, 1, 1);
         LocalDate expected = base;
-        for (int i = 1; i <= 31; i++) {  // Jan
+        for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
             LocalDate result = DayOfMonth.dayOfMonth(i).adjustDate(base, DateResolvers.strict());
             assertEquals(result, expected);
             expected = expected.plusDays(1);
@@ -263,7 +263,7 @@ public class TestDayOfMonth {
     public void test_matchesDate_notLeapYear() {
         LocalDate work = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            for (int j = 1; j < MAX_LENGTH; j++) {
+            for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
                 assertEquals(test.matchesDate(work), work.getDayOfMonth().getValue() == j);
             }
@@ -274,7 +274,7 @@ public class TestDayOfMonth {
     public void test_matchesDate_leapYear() {
         LocalDate work = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            for (int j = 1; j < MAX_LENGTH; j++) {
+            for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
                 assertEquals(test.matchesDate(work), work.getDayOfMonth().getValue() == j);
             }
