@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,15 +34,16 @@ package javax.time;
 import java.io.Serializable;
 
 /**
- * An interval of instants.
+ * An interval of instants. This class can represent inclusive, exclusive or 
+ * unbounded intervals on one or both ends.
  * <p>
  * InstantInterval is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public abstract class InstantInterval
         implements Serializable {
-
     /**
      * Singleton instance of the empty interval.
      */
@@ -58,7 +59,9 @@ public abstract class InstantInterval
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>InstantInterval</code>.
+     * Obtains an instance of <code>InstantInterval</code>, where the interval
+     * contains all instants from <code>startInclusive</code> up to, but not 
+     * including, <code>endExclusive</code>.
      *
      * @param startInclusive  the start of the interval, inclusive, not null
      * @param endExclusive  the end of the interval, exclusive, not null
@@ -74,7 +77,7 @@ public abstract class InstantInterval
      *
      * @param start  the start of the interval, not null
      * @param startInclusive  whether the start is inclusive
-     * @param end  the end of the interval, not null
+     * @param end  the end of the interval, greater than <code>start</start>, not null
      * @param endInclusive  whether the end is inclusive
      * @return the created interval, never null
      */
@@ -97,11 +100,11 @@ public abstract class InstantInterval
      * Obtains an instance of <code>InstantInterval</code> where the interval
      * contains all instants from, and including, the specified instant.
      *
-     * @param startInclusive  the start of the interval, exclusive, not null
+     * @param startInclusive  the start of the interval, inclusive, not null
      * @return the created interval, never null
      */
     public static InstantInterval intervalFrom(Instant startInclusive) {
-        return intervalTo(startInclusive, true);
+        return intervalFrom(startInclusive, true);
     }
 
     /**
@@ -114,9 +117,9 @@ public abstract class InstantInterval
      */
     public static InstantInterval intervalFrom(Instant start, boolean startInclusive) {
         if (startInclusive) {
-            return new LessThanExclusive(start);  // TODO
+            return new LessThanExclusive(start);  // TODO: Implement GreaterThanExclusive
         } else {
-            return new LessThanInclusive(start);  // TODO
+            return new LessThanInclusive(start);  // TODO: Implement GreaterThanInclusive
         }
     }
 
@@ -163,7 +166,7 @@ public abstract class InstantInterval
      * point on the time-line, does not contain any other interval and has
      * a zero duration.
      *
-     * @return the start of the interval, null if start is unbounded
+     * @return true if this interval is empty, false otherwise
      */
     public boolean isEmpty() {
         return false;  // subclasses override this
