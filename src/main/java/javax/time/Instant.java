@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -54,7 +54,6 @@ import java.io.Serializable;
  */
 public final class Instant
         implements ReadableInstant, Comparable<Instant>, Serializable {
-    // TODO: Duration class integration
     // TODO: Leap seconds (document or implement)
     // TODO: Serialized format
     // TODO: Evaluate hashcode
@@ -542,7 +541,7 @@ public final class Instant
      * <p>
      * The format of the returned string will be <code>yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ</code>.
      *
-     * @return an ISO-8601 represntation of this Instant
+     * @return an ISO-8601 representation of this Instant
      */
     @Override
     public String toString() {
