@@ -95,7 +95,7 @@ public class Performance {
             total += localTime.getHourOfDay().getValue();
             total += localTime.getMinuteOfHour().getValue();
             total += localTime.getSecondOfMinute().getValue();
-        };
+        }
         long end = System.nanoTime();
         System.out.println((end - start) + " ns" + " " + total);
     }
@@ -127,7 +127,7 @@ public class Performance {
             total += gcal.get(Calendar.HOUR_OF_DAY);
             total += gcal.get(Calendar.MINUTE);
             total += gcal.get(Calendar.SECOND);
-        };
+        }
         long end = System.nanoTime();
         System.out.println((end - start) + " ns" + " " + total);
     }
