@@ -234,6 +234,10 @@ public abstract class Now {
          */
         @Override
         public void setTimeZone(TimeZone timeZone) {
+            if (timeZone == null) {
+                throw new IllegalArgumentException("timeZone must not be null");
+            }
+
             this.timeZone = timeZone;
         }
     }
