@@ -63,7 +63,7 @@ public class TestClock {
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
               baos.toByteArray()));
-        assertSame(ois.readObject(), system);
+        assertEquals(ois.readObject(), system);
     }
 
     /**
@@ -92,15 +92,13 @@ public class TestClock {
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_system_setTimeZone_null() {
-        Clock system = Clock.system();
-        system.setTimeZone(null);
+    public void test_system_null() {
+        Clock.system(null);
     }
 
     public void test_system_timeZone() {
-        Clock system = Clock.system();
         TimeZone timeZone = TimeZone.timeZone(ZoneOffset.zoneOffset(1));
-        system.setTimeZone(timeZone);
+        Clock system = Clock.system(timeZone);
         assertSame(timeZone, system.timeZone());
         assertSame(timeZone, system.currentZonedDateTime().getZone());
     }

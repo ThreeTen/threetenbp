@@ -58,11 +58,34 @@ public abstract class Clock {
      * precision, since this is the maximum precision supported by 
      * <code>System</code>.
      *
-     * @return an instance of now that uses the system clock in the default time zone
+     * @return an instance of <code>Clock</code> that uses the system clock in the default time zone
      */
     public static Clock system() {
-        return SystemMillis.INSTANCE;
+        //TODO: use the default timezone
+        return system(TimeZone.UTC);
     }
+    
+    /**
+     * Gets an instance of <code>Clock</code> that obtains the current datetime
+     * using the system millisecond clock - {@link System#currentTimeMillis()}
+     * and the specified <code>timeZone</code> - {@link #timeZone()}.
+     * 
+     * All objects produced by this implementation have at best millisecond 
+     * precision, since this is the maximum precision supported by 
+     * <code>System</code>.
+     *
+     * @param timeZone a <code>TimeZone</code> instance used to create <code>ZonedDateTime</code> instances, never null
+     * @return an instance of <code>Clock</code> that uses the system clock and the specified <code>TimeZone</code>
+     * @throws IllegalArgumentException if <code>timeZone</code> is null
+     */
+    public static Clock system(TimeZone timeZone) {
+        if (timeZone == null) {
+            throw new IllegalArgumentException("timeZone must not be null");
+        }
+
+        return new SystemMillis(timeZone);
+    }
+
 
     //-----------------------------------------------------------------------
     /**
@@ -81,19 +104,8 @@ public abstract class Clock {
      * 
      * @return the <code>TimeZone</code>
      * @see #currentZonedDateTime()
-     * @see #setTimeZone(TimeZone)
      */
     public abstract TimeZone timeZone();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Sets the <code>TimeZone</code> instance used to produce <code>ZonedDateTime</code> instances.
-     * 
-     * @param timeZone the new <code>TimeZone</code> instance, must not be null
-     * @throws IllegalArgumentException if <code>timeZone</code> is null
-     */
-    //TODO: Create a permission class and require it
-    public abstract void setTimeZone(TimeZone timeZone);
 
     //-----------------------------------------------------------------------
     /**
@@ -167,7 +179,7 @@ public abstract class Clock {
     /**
      * Gets an instance of <code>ZonedDateTime</code> representing date and time in the default <code>TimeZone</code>.
      * 
-     * It is a shortcut for <code>ZonedDateTime.dateTime(now.instant(), now.timeZone())</code> for this <code>Clock</code> instance.
+     * It is a shortcut for <code>ZonedDateTime.dateTime(clock.instant(), clock.timeZone())</code> for this <code>Clock</code> instance.
      *
      * @return a zoned date-time object representing date and time in the default <code>TimeZone</code>, never null
      * @see #timeZone()
@@ -183,33 +195,20 @@ public abstract class Clock {
      */
     private static final class SystemMillis extends Clock implements Serializable {
         /**
-         * The singleton instance.
-         */
-        private static final SystemMillis INSTANCE = new SystemMillis();
-        /**
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
 
         /**
-         * The default <code>TimeZone</code>.
+         * The <code>TimeZone</code> instance used by this clock.
          */
-        //TODO: Proper initialization
-        private transient TimeZone timeZone = TimeZone.UTC;
+        private final TimeZone timeZone;
 
         /**
          * Restricted constructor.
          */
-        private SystemMillis() {
-            super();
-        }
-
-        /**
-         * Resolves singleton.
-         * @return the singleton instance
-         */
-        private Object readResolve() {
-            return INSTANCE;
+        SystemMillis(TimeZone timeZone) {
+            this.timeZone = timeZone;
         }
 
         /**
@@ -229,16 +228,26 @@ public abstract class Clock {
             return timeZone;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        public void setTimeZone(TimeZone timeZone) {
-            if (timeZone == null) {
-                throw new IllegalArgumentException("timeZone must not be null");
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
             }
+            if (obj == this) {
+                return true;
+            }
+            final SystemMillis other = (SystemMillis)obj;
+            if (this.timeZone != other.timeZone && (this.timeZone == null || !this.timeZone.equals(other.timeZone))) {
+                return false;
+            }
+            return true;
+        }
 
-            this.timeZone = timeZone;
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 41 * hash + (this.timeZone != null ? this.timeZone.hashCode() : 0);
+            return hash;
         }
     }
 }
