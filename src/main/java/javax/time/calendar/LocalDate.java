@@ -99,7 +99,12 @@ public final class LocalDate
             throw new NullPointerException("DayOfMonth must not be null");
         }
         if (dayOfMonth.isValid(year, monthOfYear) == false) {
-            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(year));
+            if (dayOfMonth.getValue() == 29) {
+                throw new IllegalCalendarFieldValueException("Illegal value for DayOfMonth field, value 29 is not valid as " +
+                        year + " is not a leap year");
+            } else {
+                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(year));
+            }
         }
         return new LocalDate(year, monthOfYear, dayOfMonth);
     }
