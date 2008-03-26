@@ -68,6 +68,20 @@ public final class OffsetDateTime
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -456761901L;
+    /**
+     * The number of seconds per day.
+     */
+    private static final long SECS_PER_DAY = 24L * 60L * 60L;
+    /**
+     * The number of days in a 400 year cycle.
+     */
+    private static final int DAYS_PER_CYCLE = 146097;
+    /**
+     * The number of days from year zero to year 1970.
+     * There are five 400 year cycles from year zero to 2000.
+     * There are 7 leap years from 1970 to 2000.
+     */
+    private static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5) - (30 * 365 + 7);
 
     /**
      * The local date-time.
@@ -395,30 +409,77 @@ public final class OffsetDateTime
      * @param instant  the instant to convert, not null
      * @param offset  the zone offset, not null
      * @return an OffsetDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if the instant cannot be represented as a date
      */
-    public static OffsetDateTime dateTime(Instant instant, ZoneOffset offset) {
+    public static OffsetDateTime dateTime(ReadableInstant instant, ZoneOffset offset) {
         if (instant == null) {
             throw new NullPointerException("The instant must not be null");
         }
         if (offset == null) {
             throw new NullPointerException("The zone offset must not be null");
         }
-        long epochSecs = instant.getEpochSeconds();
-        long days = epochSecs / 24 * 60 * 60;
-//        days += DAYS_FROM_0000_TO_1970;
-        int secsOfDay = (int) (epochSecs % 24 * 60 * 60);
+        Instant i = instant.toInstant();
+        // the following line may cause a wrap, but this will be caught later
+        // as not all instants can be represented in an int year
+        long epochSecs = i.getEpochSeconds() + offset.getAmountSeconds();
+        
+        long epochDays = epochSecs / SECS_PER_DAY;
+        epochDays += DAYS_0000_TO_1970;
+        int secsOfDay = (int) (epochSecs % SECS_PER_DAY);
         if (secsOfDay < 0) {
-            secsOfDay += 24 * 60 * 60;
-            days--;
+            secsOfDay += SECS_PER_DAY;
+            epochDays--;
         }
-        secsOfDay += 24 * 60 * 60;
-        secsOfDay += offset.getAmountSeconds();
-        secsOfDay %= 24 * 60 * 60;
-        int hour = secsOfDay / 60 * 60;
-        int min = (secsOfDay / 60) % 60;
-        int sec = secsOfDay % 60;
-        int nano = instant.getNanoOfSecond();
-        LocalDateTime dateTime = LocalDateTime.dateTime(0, 0, 0, hour, min, sec, nano);
+        
+        // find the march-based year
+        epochDays -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
+        long adjust = 0;
+        if (epochDays < 0) {
+            // adjust negative years to positive for calculation
+            long adjustCycles = (epochDays + 1) / DAYS_PER_CYCLE - 1;
+            adjust = adjustCycles * 400;
+            epochDays += -adjustCycles * DAYS_PER_CYCLE;
+        }
+        long yearEst = (400 * epochDays + 591) / DAYS_PER_CYCLE;
+        long doyEst = epochDays - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        if (doyEst < 0) {
+            // fix estimate
+            yearEst--;
+            doyEst = epochDays - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        }
+        yearEst += adjust;  // reset any negative year
+        int marchDoy0 = (int) doyEst;
+        
+        // convert march-based values back to january-based
+        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
+        int month = (marchMonth0 + 2) % 12 + 1;
+        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
+        yearEst += marchMonth0 / 10;
+        
+        // check year now we are certain it is correct
+        if (yearEst > Year.MAX_YEAR) {
+            throw new IllegalCalendarFieldValueException(
+                    "Instant cannot be converted to a date-time as the year is greater than the maximum supported year");
+        }
+        if (yearEst < Year.MIN_YEAR) {
+            throw new IllegalCalendarFieldValueException(
+                    "Instant cannot be converted to a date-time as the year is less than the minimum supported year");
+        }
+        int year = (int) yearEst;
+        LocalDate date = LocalDate.date(year, month, dom);
+        
+        // time
+        int nano = i.getNanoOfSecond();
+        LocalTime time = null;
+        if (secsOfDay == 0 && nano == 0) {
+            time = LocalTime.MIDNIGHT;
+        } else {
+            int hour = secsOfDay / (60 * 60);
+            int min = (secsOfDay / 60) % 60;
+            int sec = secsOfDay % 60;
+            time = LocalTime.time(hour, min, sec, nano);
+        }
+        LocalDateTime dateTime = LocalDateTime.dateTime(date, time);
         return new OffsetDateTime(dateTime, offset);
     }
 

@@ -35,6 +35,7 @@ import javax.time.calendar.TestDateAdjustors;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalTime;
 import javax.time.calendar.TestOffsetDate;
+import javax.time.calendar.TestOffsetDateTime_creation;
 import javax.time.calendar.field.TestDayOfMonth;
 import javax.time.calendar.field.TestDayOfYear;
 import javax.time.calendar.field.TestMonthOfYear;
@@ -68,6 +69,7 @@ public class AllTest {
             TestLocalDate.class,
             TestLocalTime.class,
             TestOffsetDate.class,
+            TestOffsetDateTime_creation.class,
             // calendar fields
             TestDayOfYear.class,
             TestDayOfMonth.class,
