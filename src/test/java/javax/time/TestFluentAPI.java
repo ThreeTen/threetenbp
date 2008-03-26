@@ -56,7 +56,7 @@ import javax.time.period.field.Days;
 public class TestFluentAPI {
 
     public static void main(String[] args) {
-        LocalTime tod = now().currentTime();
+        LocalTime tod = clock().currentTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
         if (tod.matches(MeridiemOfDay.AM)) {
@@ -64,9 +64,9 @@ public class TestFluentAPI {
         }
         
         LocalDate date = null;
-        date = now().today().plusDays(3);
-        date = now().today().plus(days(3));
-        date = now().today().plus(Days.days(3));
+        date = clock().today().plusDays(3);
+        date = clock().today().plus(days(3));
+        date = clock().today().plus(Days.days(3));
         
         date = date(2007, 3, 20);
         date = date(year(Era.AD, 2007), march(), dayOfMonth(20));
@@ -78,7 +78,7 @@ public class TestFluentAPI {
         date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
         date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
-        // date = LocalDate.date(now().currentMonth(), dayOfMonth(6));
+        // date = LocalDate.date(clock().currentMonth(), dayOfMonth(6));
         
         date = date.with(lastDayOfMonth());
         date = date.with(nextNonWeekendDay());

@@ -33,7 +33,7 @@ package javax.time.calendar;
 
 import java.util.TimeZone;
 
-import javax.time.Now;
+import javax.time.Clock;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
@@ -55,8 +55,8 @@ public final class Calendars {
      *
      * @return an accessor to the current time using the default time zone, never null
      */
-    public static Now now() {
-        return Now.system();
+    public static Clock clock() {
+        return Clock.system();
     }
 
     //-----------------------------------------------------------------------

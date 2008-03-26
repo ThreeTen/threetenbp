@@ -47,10 +47,10 @@ import javax.time.calendar.field.Year;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class Now {
+public abstract class Clock {
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Now</code> that obtains the current datetime
+     * Gets an instance of <code>Clock</code> that obtains the current datetime
      * using the system millisecond clock - {@link System#currentTimeMillis()}
      * and the default time zone - {@link #timeZone()}.
      * 
@@ -60,7 +60,7 @@ public abstract class Now {
      *
      * @return an instance of now that uses the system clock in the default time zone
      */
-    public static Now system() {
+    public static Clock system() {
         return SystemMillis.INSTANCE;
     }
 
@@ -167,7 +167,7 @@ public abstract class Now {
     /**
      * Gets an instance of <code>ZonedDateTime</code> representing date and time in the default <code>TimeZone</code>.
      * 
-     * It is a shortcut for <code>ZonedDateTime.dateTime(now.instant(), now.timeZone())</code> for this <code>Now</code> instance.
+     * It is a shortcut for <code>ZonedDateTime.dateTime(now.instant(), now.timeZone())</code> for this <code>Clock</code> instance.
      *
      * @return a zoned date-time object representing date and time in the default <code>TimeZone</code>, never null
      * @see #timeZone()
@@ -178,10 +178,10 @@ public abstract class Now {
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of Now that always returns the latest time from
+     * Implementation of Clock that always returns the latest time from
      * {@link System#currentTimeMillis()}.
      */
-    private static final class SystemMillis extends Now implements Serializable {
+    private static final class SystemMillis extends Clock implements Serializable {
         /**
          * The singleton instance.
          */

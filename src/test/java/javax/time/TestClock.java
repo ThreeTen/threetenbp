@@ -45,15 +45,15 @@ import javax.time.calendar.ZoneOffset;
 import org.testng.annotations.Test;
 
 /**
- * Test Now.
+ * Test Clock.
  *
  * @author Michael Nascimento Santos
  */
 @Test
-public class TestNow {
+public class TestClock {
     //-----------------------------------------------------------------------
     public void test_system_isSerializable() throws IOException, ClassNotFoundException {
-        Now system = Now.system();
+        Clock system = Clock.system();
         assertTrue(system instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -70,7 +70,7 @@ public class TestNow {
      * This test assumes an Instant instance can eventually be produced in less than one millisecond
      */
     public void test_system_instantVersusCurrentTimeMillis() {
-        Now system = Now.system();
+        Clock system = Clock.system();
 
         long currentTimeMillis = System.currentTimeMillis();
         Instant instant = system.instant();
@@ -93,12 +93,12 @@ public class TestNow {
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_system_setTimeZone_null() {
-        Now system = Now.system();
+        Clock system = Clock.system();
         system.setTimeZone(null);
     }
 
     public void test_system_timeZone() {
-        Now system = Now.system();
+        Clock system = Clock.system();
         TimeZone timeZone = TimeZone.timeZone(ZoneOffset.zoneOffset(1));
         system.setTimeZone(timeZone);
         assertSame(timeZone, system.timeZone());
@@ -106,30 +106,30 @@ public class TestNow {
     }
 
     public void test_system_currentYear() {
-        assertNotNull(Now.system().currentYear());
+        assertNotNull(Clock.system().currentYear());
     }
 
     public void test_system_currentMonth() {
-        assertNotNull(Now.system().currentMonth());
+        assertNotNull(Clock.system().currentMonth());
     }
 
     public void test_system_today() {
-        assertNotNull(Now.system().today());
+        assertNotNull(Clock.system().today());
     }
 
     public void test_system_yesterday() {
-        assertNotNull(Now.system().yesterday());
+        assertNotNull(Clock.system().yesterday());
     }
 
     public void test_system_tomorrow() {
-        assertNotNull(Now.system().tomorrow());
+        assertNotNull(Clock.system().tomorrow());
     }
 
     public void test_system_currentTime() {
-        assertNotNull(Now.system().currentTime());
+        assertNotNull(Clock.system().currentTime());
     }
 
     public void test_system_currentDateTime() {
-        assertNotNull(Now.system().currentDateTime());
+        assertNotNull(Clock.system().currentDateTime());
     }
 }
