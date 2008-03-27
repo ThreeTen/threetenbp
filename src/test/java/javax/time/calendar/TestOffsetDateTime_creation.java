@@ -253,6 +253,9 @@ public class TestOffsetDateTime_creation {
         assertEquals(test.getDayOfMonth().getValue(), 1);
         assertEquals(test.getOffset(), OFFSET_MIN);
         assertEquals(test.getHourOfDay().getValue(), 0);
+        assertEquals(test.getMinuteOfHour().getValue(), 0);
+        assertEquals(test.getSecondOfMinute().getValue(), 0);
+        assertEquals(test.getNanoOfSecond().getValue(), 0);
     }
 
     public void test_factory_dateTime_ReadableInstant_minWithMaxOffset() {
@@ -266,32 +269,41 @@ public class TestOffsetDateTime_creation {
         assertEquals(test.getDayOfMonth().getValue(), 1);
         assertEquals(test.getOffset(), OFFSET_MAX);
         assertEquals(test.getHourOfDay().getValue(), 0);
+        assertEquals(test.getMinuteOfHour().getValue(), 0);
+        assertEquals(test.getSecondOfMinute().getValue(), 0);
+        assertEquals(test.getNanoOfSecond().getValue(), 0);
     }
 
     public void test_factory_dateTime_ReadableInstant_maxWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR;
         long days = (long) (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
-        Instant instant = Instant.instant(days * 24L * 60L * 60L - OFFSET_MIN.getAmountSeconds());
+        Instant instant = Instant.instant((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getAmountSeconds());
         OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_MIN);
         assertEquals(test.getYear().getValue(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
         assertEquals(test.getDayOfMonth().getValue(), 31);
         assertEquals(test.getOffset(), OFFSET_MIN);
-        assertEquals(test.getHourOfDay().getValue(), 0);
+        assertEquals(test.getHourOfDay().getValue(), 23);
+        assertEquals(test.getMinuteOfHour().getValue(), 59);
+        assertEquals(test.getSecondOfMinute().getValue(), 59);
+        assertEquals(test.getNanoOfSecond().getValue(), 0);
     }
 
     public void test_factory_dateTime_ReadableInstant_maxWithMaxOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR;
         long days = (long) (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
-        Instant instant = Instant.instant(days * 24L * 60L * 60L - OFFSET_MAX.getAmountSeconds());
+        Instant instant = Instant.instant((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getAmountSeconds());
         OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_MAX);
         assertEquals(test.getYear().getValue(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
         assertEquals(test.getDayOfMonth().getValue(), 31);
         assertEquals(test.getOffset(), OFFSET_MAX);
-        assertEquals(test.getHourOfDay().getValue(), 0);
+        assertEquals(test.getHourOfDay().getValue(), 23);
+        assertEquals(test.getMinuteOfHour().getValue(), 59);
+        assertEquals(test.getSecondOfMinute().getValue(), 59);
+        assertEquals(test.getNanoOfSecond().getValue(), 0);
     }
 
     private void doTest_factory_dateTime_ReadableInstant_all(int minYear, int maxYear) {
