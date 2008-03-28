@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.time.MathUtils;
 import javax.time.period.Period;
 import javax.time.period.Periods;
 
@@ -56,9 +55,13 @@ import javax.time.period.Periods;
  * <code>ZoneOffset</code> instances - a <code>+01:00</code> instance for winter,
  * and a <code>+02:00</code> instance for summer.
  * <p>
- * In 2007, time zone offsets around the world extended from -12:00 to +14:00.
+ * In 2008, time zone offsets around the world extended from -12:00 to +14:00.
  * To prevent any problems with that range being extended, yet still provide
- * validation, the range of hours is restricted to -18:00 to 18:00 inclusive.
+ * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
+ * <p>
+ * Instances of ZoneOffset must be compared using {@link #equals}.
+ * Implementations may choose to cache certain common offsets, however
+ * applications must not rely on such caching.
  * <p>
  * ZoneOffset is thread-safe and immutable.
  *
@@ -98,11 +101,11 @@ public final class ZoneOffset
     /**
      * The string form of the time zone offset.
      */
-    private final transient String id;
+    private final String id;
     /**
      * The offset in seconds.
      */
-    private final int amountSeconds;
+    private final transient int amountSeconds;
 
     //-----------------------------------------------------------------------
     /**
@@ -119,16 +122,21 @@ public final class ZoneOffset
      * <li>'&plusmn;hhmmss'
      * <li>'&plusmn;hh:mm:ss'
      * </ul>
-     * Note that &plusmn; means either the plus of minus symbol.
+     * Note that &plusmn; means either the plus or minus symbol.
      * <p>
      * The ID of the returned offset will be normalized to one of the formats
      * described by {@link #getID()}.
+     * <p>
+     * The maximum supported range is from +18:00 to -18:00 inclusive.
      *
      * @param offsetID  the offset id, not null
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset id is invalid
      */
     public static ZoneOffset zoneOffset(String offsetID) {
+        if (offsetID == null) {
+            throw new NullPointerException("The offset ID must not be null");
+        }
         CACHE_LOCK.readLock().lock();
         try {
             ZoneOffset offset = ID_CACHE.get(offsetID);
@@ -179,7 +187,7 @@ public final class ZoneOffset
             throw new IllegalArgumentException("Zone offset id '" + offsetID + "' is invalid: Plus/minus not found when expected");
         }
         if (first == '-') {
-            return zoneOffset(-hours, minutes, seconds);
+            return zoneOffset(-hours, -minutes, -seconds);
         } else {
             return zoneOffset(hours, minutes, seconds);
         }
@@ -220,9 +228,13 @@ public final class ZoneOffset
     /**
      * Obtains an instance of <code>ZoneOffset</code> using an offset in
      * hours and minutes.
+     * <p>
+     * The sign of the hours and minutes components must match.
+     * Thus, if the hours is negative, the minutes must be negative or zero.
+     * If the hours is zero, the minutes may be positive, negative or zero.
      *
      * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to 59
+     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59, sign matches hours
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
@@ -233,36 +245,43 @@ public final class ZoneOffset
     /**
      * Obtains an instance of <code>ZoneOffset</code> using an offset in
      * hours, minutes and seconds.
+     * <p>
+     * The sign of the hours, minutes and seconds components must match.
+     * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
      *
      * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to 59
-     * @param seconds  the time zone offset in seconds, from 0 to 59
+     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
+     * @param seconds  the time zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
      * @return the ZoneOffset, never null
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     public static ZoneOffset zoneOffset(int hours, int minutes, int seconds) {
         validate(hours, minutes, seconds);
-        Integer totalSecs = totalSeconds(hours, minutes, seconds);
-        CACHE_LOCK.readLock().lock();
-        try {
-            ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-            if (result != null) {
+        if (minutes % 15 == 0 & seconds == 0) {
+            Integer totalSecs = totalSeconds(hours, minutes, seconds);
+            CACHE_LOCK.readLock().lock();
+            try {
+                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+                if (result != null) {
+                    return result;
+                }
+            } finally {
+                CACHE_LOCK.readLock().unlock();
+            }
+            CACHE_LOCK.writeLock().lock();
+            try {
+                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+                if (result == null) {
+                    result = new ZoneOffset(hours, minutes, seconds);
+                    SECONDS_CACHE.put(totalSecs, result);
+                    ID_CACHE.put(result.getID(), result);
+                }
                 return result;
+            } finally {
+                CACHE_LOCK.writeLock().unlock();
             }
-        } finally {
-            CACHE_LOCK.readLock().unlock();
-        }
-        CACHE_LOCK.writeLock().lock();
-        try {
-            ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-            if (result == null) {
-                result = new ZoneOffset(hours, minutes, seconds);
-                SECONDS_CACHE.put(totalSecs, result);
-                ID_CACHE.put(result.toString(), result);
-            }
-            return result;
-        } finally {
-            CACHE_LOCK.writeLock().unlock();
+        } else {
+            return new ZoneOffset(hours, minutes, seconds);
         }
     }
 
@@ -271,36 +290,49 @@ public final class ZoneOffset
      * Validates the offset fields.
      *
      * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to 59
-     * @param seconds  the time zone offset in seconds, from 0 to 59
+     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59
+     * @param seconds  the time zone offset in seconds, from 0 to &plusmn;59
      * @throws IllegalArgumentException if the offset is not in the required range
      */
     private static void validate(int hours, int minutes, int seconds) {
         if (hours < -18 || hours > 18) {
-            throw new IllegalArgumentException("Zone offset hours: value " + hours + " is not in the range -18 to 18");
+            throw new IllegalArgumentException("Zone offset hours not in valid range: value " + hours +
+                    " is not in the range -18 to 18");
         }
-        if (minutes < 0 || minutes > 59) {
-            throw new IllegalArgumentException("Zone offset minutes: value " + minutes + " is not in the range 0 to 59");
+        if (hours > 0) {
+            if (minutes < 0 || seconds < 0) {
+                throw new IllegalArgumentException("Zone offset minutes and seconds must be positive because hours is positive");
+            }
+        } else if (hours < 0) {
+            if (minutes > 0 || seconds > 0) {
+                throw new IllegalArgumentException("Zone offset minutes and seconds must be negative because hours is negative");
+            }
+        } else if ((minutes > 0 && seconds < 0) || (minutes < 0 && seconds > 0)) {
+            throw new IllegalArgumentException("Zone offset minutes and seconds must have the same sign");
         }
-        if (seconds < 0 || seconds > 59) {
-            throw new IllegalArgumentException("Zone offset seconds: value " + seconds + " is not in the range 0 to 59");
+        if (Math.abs(minutes) > 59) {
+            throw new IllegalArgumentException("Zone offset minutes not in valid range: value " +
+                    Math.abs(minutes) + " is not in the range 0 to 59");
+        }
+        if (Math.abs(seconds) > 59) {
+            throw new IllegalArgumentException("Zone offset seconds not in valid range: value " +
+                    Math.abs(seconds) + " is not in the range 0 to 59");
+        }
+        if (Math.abs(hours) == 18 && (Math.abs(minutes) > 0 || Math.abs(seconds) > 0)) {
+            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
         }
     }
 
     /**
-     * Calculates the total in seconds.
+     * Calculates the total offset in seconds.
      *
      * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to 59
-     * @param seconds  the time zone offset in seconds, from 0 to 59
+     * @param minutes  the time zone offset in minutes, from 0 to &plusmn;59, sign matches hours and seconds
+     * @param seconds  the time zone offset in seconds, from 0 to &plusmn;59, sign matches hours and minutes
      * @return the total in seconds
      */
     private static int totalSeconds(int hours, int minutes, int seconds) {
-        if (hours < 0) {
-            return hours * SECONDS_PER_HOUR - minutes * SECONDS_PER_MINUTE - seconds;
-        } else {
-            return hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds;
-        }
+        return hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds;
     }
 
     //-----------------------------------------------------------------------
@@ -308,9 +340,8 @@ public final class ZoneOffset
      * Constructor.
      *
      * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from 0 to 59
-     * @param seconds  the time zone offset in seconds, from 0 to 59
-     * @throws IllegalArgumentException if the offset is not in the required range
+     * @param minutes  the time zone offset in minutes, from -59 to 59
+     * @param seconds  the time zone offset in seconds, from -59 to 59
      */
     private ZoneOffset(int hours, int minutes, int seconds) {
         super();
@@ -319,11 +350,14 @@ public final class ZoneOffset
             id = "Z";
         } else {
             StringBuilder buf = new StringBuilder();
-            buf.append(hours < 0 ? "-" : "+")
-                .append(Math.abs(hours) < 10 ? "0" : "").append(hours)
-                .append(minutes < 10 ? ":0" : ":").append(minutes);
-            if (seconds > 0) {
-                buf.append(seconds < 10 ? ":0" : ":").append(seconds);
+            int absHours = Math.abs(hours);
+            int absMinutes = Math.abs(minutes);
+            buf.append(hours < 0 || minutes < 0 || seconds < 0 ? "-" : "+")
+                .append(absHours < 10 ? "0" : "").append(absHours)
+                .append(absMinutes < 10 ? ":0" : ":").append(absMinutes);
+            if (seconds != 0) {
+                int absSeconds = Math.abs(seconds);
+                buf.append(absSeconds < 10 ? ":0" : ":").append(absSeconds);
             }
             id = buf.toString();
         }
@@ -373,15 +407,16 @@ public final class ZoneOffset
     /**
      * Gets the hours field of the zone offset.
      * <p>
+     * This method only has meaning when considered with the minutes and seconds
+     * fields. Most applications are advised to use {@link #toPeriod()}
+     * or {@link #getAmountSeconds()}.
+     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the hours field.
-     * <p>
-     * Note that this method only has meaning when considered with the minutes
-     * and seconds fields. That is because negative offsets are only expressed
-     * using the negative value of the hours field. Most applications are
-     * advised to use {@link #toPeriod()} or {@link #getAmountSeconds()}.
+     * The sign of the value returned by this method will match that of the
+     * minutes and seconds fields.
      *
-     * @return the hours fields of the zone offset amount, from -18 to 18
+     * @return the hours field of the zone offset amount, from -18 to 18
      */
     public int getHoursField() {
         return amountSeconds / SECONDS_PER_HOUR;
@@ -390,35 +425,39 @@ public final class ZoneOffset
     /**
      * Gets the minutes field of the zone offset.
      * <p>
+     * This method only has meaning when considered with the hours and minutes
+     * fields. Most applications are advised to use {@link #toPeriod()}
+     * or {@link #getAmountSeconds()}.
+     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the minutes field.
-     * <p>
-     * Note that this method only has meaning when considered with the hours
-     * and seconds fields. That is because negative offsets are only expressed
-     * using the negative value of the hours field. Most applications are
-     * advised to use {@link #toPeriod()} or {@link #getAmountSeconds()}.
+     * The sign of the value returned by this method will match that of the
+     * hours and seconds fields.
      *
-     * @return the minutes fields of the zone offset amount, from 0 to 59
+     * @return the minutes field of the zone offset amount,
+     *      from -59 to 59 where the sign matches the hours and seconds
      */
     public int getMinutesField() {
-        return (Math.abs(amountSeconds) / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+        return (amountSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
     }
 
     /**
      * Gets the seconds field of the zone offset.
      * <p>
+     * This method only has meaning when considered with the hours and minutes
+     * fields. Most applications are advised to use {@link #toPeriod()}
+     * or {@link #getAmountSeconds()}.
+     * <p>
      * The zone offset is divided into three fields - hours, minutes and seconds.
      * This method returns the value of the seconds field.
-     * <p>
-     * Note that this method only has meaning when considered with the minutes
-     * and seconds fields. That is because negative offsets are only expressed
-     * using the negative value of the hours field. Most applications are
-     * advised to use {@link #toPeriod()} or {@link #getAmountSeconds()}.
+     * The sign of the value returned by this method will match that of the
+     * hours and minutes fields.
      *
-     * @return the seconds fields of the zone offset amount, from 0 to 59
+     * @return the seconds field of the zone offset amount,
+     *      from -59 to 59 where the sign matches the hours and minutes
      */
     public int getSecondsField() {
-        return Math.abs(amountSeconds) % SECONDS_PER_MINUTE;
+        return amountSeconds % SECONDS_PER_MINUTE;
     }
 
     //-----------------------------------------------------------------------
@@ -428,8 +467,7 @@ public final class ZoneOffset
      * The period returned will have fields for hour, minute and second.
      * <p>
      * Note that for negative offsets, the values in the period will all be
-     * negative, which differs from the fields returned by
-     * {@link #getMinutesField()} and {@link #getSecondsField()}.
+     * negative.
      * <p>
      * For example, +02:45 will be converted to P2H45M while -01:15 will be
      * converted to P-1H-15M.
@@ -440,10 +478,6 @@ public final class ZoneOffset
         int hours = getHoursField();
         int minutes = getMinutesField();
         int seconds = getSecondsField();
-        if (hours < 0) {
-            minutes = -minutes;
-            seconds = -seconds;
-        }
         return Periods.periodBuilder().hours(hours).minutes(minutes).seconds(seconds).build();
     }
 
@@ -471,15 +505,16 @@ public final class ZoneOffset
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(ZoneOffset other) {
-        return -(MathUtils.safeCompare(amountSeconds, other.amountSeconds));
+        return other.amountSeconds - amountSeconds;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified by comparing the normalized ID.
+     * Checks if this instance is equal to the specified offset, comparing
+     * the amount of the offset in seconds.
      *
      * @param other  the other zone offset, null returns false
-     * @return true if this zone is the same as that specified
+     * @return true if this offset is the same as that specified
      */
     @Override
     public boolean equals(Object other) {
@@ -504,7 +539,8 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the zone offset using the ID.
+     * Returns a string representation of the zone offset, which is the same
+     * as the normalized id.
      *
      * @return the id
      */
