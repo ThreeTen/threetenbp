@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.Calendars.*;
+import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.MonthOfYear.*;
 
+import java.io.Serializable;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 
@@ -43,9 +44,15 @@ import javax.time.calendar.field.DayOfWeek;
  * DateAdjustors is a utility class.
  * All adjustors returned are immutable and thread-safe.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public class DateAdjustors {
+public final class DateAdjustors {
+    /**
+     * Private constructor since this is a utility class
+     */
+    private DateAdjustors() {
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -56,6 +63,7 @@ public class DateAdjustors {
      * The input 2007-02-15 will return 2007-02-28.<br />
      * The input 2007-03-15 will return 2007-03-31.<br />
      * The input 2007-04-15 will return 2007-04-30.<br />
+     * The input 2008-02-15 will return 2008-02-29.
      *
      * @return the last day of month adjustor, never null
      */
@@ -66,9 +74,13 @@ public class DateAdjustors {
     /**
      * Class implementing last day of month adjustor.
      */
-    private static final class LastDayOfMonth implements DateAdjustor {
+    private static final class LastDayOfMonth implements DateAdjustor, Serializable {
         /** The singleton instance. */
         private static final DateAdjustor INSTANCE = new LastDayOfMonth();
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate adjustDate(LocalDate date) {
@@ -94,9 +106,13 @@ public class DateAdjustors {
     /**
      * Class implementing last day of year adjustor.
      */
-    private static final class LastDayOfYear implements DateAdjustor {
+    private static final class LastDayOfYear implements DateAdjustor, Serializable {
         /** The singleton instance. */
         private static final DateAdjustor INSTANCE = new LastDayOfYear();
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate adjustDate(LocalDate date) {
@@ -156,7 +172,7 @@ public class DateAdjustors {
     /**
      * Class implementing day of week in month adjustor.
      */
-    private static final class DayOfWeekInMonth implements DateAdjustor {
+    private static final class DayOfWeekInMonth implements DateAdjustor, Serializable {
         /** The ordinal, from 1 to 5. */
         private final int ordinal;
         /** The day of week. */
