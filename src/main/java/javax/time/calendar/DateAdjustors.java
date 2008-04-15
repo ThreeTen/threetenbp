@@ -161,7 +161,7 @@ public final class DateAdjustors {
     public static DateAdjustor dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         if (ordinal < 1 || ordinal > 5) {
             throw new IllegalArgumentException("Illegal value for ordinal, value " + ordinal +
-                " is not in the range 1 to 5");
+                    " is not in the range 1 to 5");
         }
         if (dayOfWeek == null) {
             throw new NullPointerException("DayOfWeek must not be null");
@@ -198,7 +198,7 @@ public final class DateAdjustors {
             int dowDiff = (newDow - curDow + 7) % 7;
             dowDiff += (ordinal - 1) * 7;
             return temp.plusDays(dowDiff);
-            
+
 //            int curDow = date.getDayOfWeek().ordinal();
 //            int newDow = dayOfWeek.ordinal();
 ////            int dowDiff = newDow - curDow;  // from -6 to 6
@@ -254,7 +254,7 @@ public final class DateAdjustors {
         private static final DateAdjustor INSTANCE = new NextNonWeekendDay();
 
         private Object readResolve() {
-           return INSTANCE;
+            return INSTANCE;
         }
 
         /** {@inheritDoc} */
@@ -279,7 +279,7 @@ public final class DateAdjustors {
      * @return the next Monday adjustor, never null
      */
     public static DateAdjustor nextMonday() {
-        return null;  // TODO
+        return new NextOrCurrentDayOfWeek(false, DayOfWeek.MONDAY);
     }
 
     /**
@@ -290,7 +290,10 @@ public final class DateAdjustors {
      * @return the next day of week adjustor, never null
      */
     public static DateAdjustor next(DayOfWeek dow) {
-        return null;  // TODO
+        if (dow == null) {
+            throw new NullPointerException("dow must not be null");
+        }
+        return new NextOrCurrentDayOfWeek(false, dow);
     }
 
     /**
@@ -302,7 +305,61 @@ public final class DateAdjustors {
      * @return the next day of week adjustor, never null
      */
     public static DateAdjustor nextOrCurrent(DayOfWeek dow) {
-        return null;  // TODO
+        if (dow == null) {
+            throw new NullPointerException("dow must not be null");
+        }
+        return new NextOrCurrentDayOfWeek(true, dow);
     }
 
+    private static final class NextOrCurrentDayOfWeek implements DateAdjustor, Serializable {
+        private final boolean currentValid;
+        private final DayOfWeek dow;
+
+        private NextOrCurrentDayOfWeek(boolean currentValid, DayOfWeek dow) {
+            this.currentValid = currentValid;
+            this.dow = dow;
+        }
+
+        /** {@inheritDoc} */
+        public LocalDate adjustDate(LocalDate date) {
+            DayOfWeek dow = date.getDayOfWeek();
+
+            if (currentValid && dow == this.dow) {
+                return date;
+            }
+
+            int daysDiff = dow.ordinal() - this.dow.ordinal();
+            return date.plusDays(daysDiff >= 0 ? 7 - daysDiff : -daysDiff);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof NextOrCurrentDayOfWeek)) {
+                return false;
+            }
+            final NextOrCurrentDayOfWeek other = (NextOrCurrentDayOfWeek)obj;
+            if (this.currentValid != other.currentValid) {
+                return false;
+            }
+            if (this.dow != other.dow) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 13;
+            hash = 19 * hash + (currentValid ? 1 : 0);
+            hash = 19 * hash + dow.hashCode();
+            return hash;
+        }
+    }
 }
