@@ -249,9 +249,13 @@ public final class DateAdjustors {
     /**
      * Class implementing next non weekend day adjustor.
      */
-    private static class NextNonWeekendDay implements DateAdjustor {
+    private static class NextNonWeekendDay implements DateAdjustor, Serializable {
         /** The singleton instance. */
         private static final DateAdjustor INSTANCE = new NextNonWeekendDay();
+
+        private Object readResolve() {
+           return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate adjustDate(LocalDate date) {
