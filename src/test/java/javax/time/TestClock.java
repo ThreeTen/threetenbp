@@ -66,6 +66,32 @@ public class TestClock {
         assertEquals(ois.readObject(), system);
     }
 
+    public void test_system_equals() {
+        Clock system = Clock.system();
+        assertFalse(system.equals(null));
+        assertFalse(system.equals(new Object()));
+        assertFalse(system.equals(new Clock() {
+            @Override
+            public Instant instant() {
+                return null;
+            }
+
+            @Override
+            public TimeZone timeZone() {
+                return null;
+            }
+        }));
+        assertFalse(system.equals(Clock.system(TimeZone.timeZone(ZoneOffset.zoneOffset(1)))));
+        assertTrue(system.equals(system));
+        assertTrue(system.equals(Clock.system()));
+    }
+
+    public void test_system_hashCode() {
+        Clock system = Clock.system();
+        assertEquals(system.hashCode(), system.hashCode());
+        assertEquals(system.hashCode(), Clock.system().hashCode());
+    }
+
     /**
      * This test assumes an Instant instance can eventually be produced in less than one millisecond
      */

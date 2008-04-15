@@ -236,8 +236,11 @@ public abstract class Clock {
             if (obj == this) {
                 return true;
             }
+            if (!(obj instanceof SystemMillis)) {
+                return false;
+            }
             final SystemMillis other = (SystemMillis)obj;
-            if (this.timeZone != other.timeZone && (this.timeZone == null || !this.timeZone.equals(other.timeZone))) {
+            if (timeZone != other.timeZone && !timeZone.equals(other.timeZone)) {
                 return false;
             }
             return true;
@@ -246,7 +249,7 @@ public abstract class Clock {
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 41 * hash + (this.timeZone != null ? this.timeZone.hashCode() : 0);
+            hash = 41 * hash + timeZone.hashCode();
             return hash;
         }
     }
