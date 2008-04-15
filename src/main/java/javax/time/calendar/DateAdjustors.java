@@ -75,6 +75,11 @@ public final class DateAdjustors {
      * Class implementing last day of month adjustor.
      */
     private static final class LastDayOfMonth implements DateAdjustor, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateAdjustor INSTANCE = new LastDayOfMonth();
 
@@ -107,6 +112,11 @@ public final class DateAdjustors {
      * Class implementing last day of year adjustor.
      */
     private static final class LastDayOfYear implements DateAdjustor, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateAdjustor INSTANCE = new LastDayOfYear();
 
@@ -173,6 +183,11 @@ public final class DateAdjustors {
      * Class implementing day of week in month adjustor.
      */
     private static final class DayOfWeekInMonth implements DateAdjustor, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The ordinal, from 1 to 5. */
         private final int ordinal;
         /** The day of week. */
@@ -250,6 +265,11 @@ public final class DateAdjustors {
      * Class implementing next non weekend day adjustor.
      */
     private static class NextNonWeekendDay implements DateAdjustor, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateAdjustor INSTANCE = new NextNonWeekendDay();
 
@@ -312,6 +332,11 @@ public final class DateAdjustors {
     }
 
     private static final class NextOrCurrentDayOfWeek implements DateAdjustor, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         private final boolean currentValid;
         private final DayOfWeek dow;
 
