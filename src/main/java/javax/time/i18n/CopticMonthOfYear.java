@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,9 @@
 package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a Coptic month of year.
@@ -178,13 +178,12 @@ public enum CopticMonthOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * CopticMonthOfYear instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -206,29 +205,6 @@ public enum CopticMonthOfYear implements Calendrical {
      */
     public CopticMonthOfYear previous() {
         return values()[(ordinal() + 13 - 1) % 13];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this Coptic month of year instance greater than the specified Coptic month of year.
-     *
-     * @param otherCopticMonthOfYear  the other Coptic month of year instance, not null
-     * @return true if this Coptic month of year is greater
-     * @throws NullPointerException if otherCopticMonthOfYear is null
-     */
-    public boolean isGreaterThan(CopticMonthOfYear otherCopticMonthOfYear) {
-        return compareTo(otherCopticMonthOfYear) > 0;
-    }
-
-    /**
-     * Is this Coptic month of year instance less than the specified Coptic month of year.
-     *
-     * @param otherCopticMonthOfYear  the other Coptic month of year instance, not null
-     * @return true if this Coptic month of year is less
-     * @throws NullPointerException if otherCopticMonthOfYear is null
-     */
-    public boolean isLessThan(CopticMonthOfYear otherCopticMonthOfYear) {
-        return compareTo(otherCopticMonthOfYear) < 0;
     }
 
     //-----------------------------------------------------------------------

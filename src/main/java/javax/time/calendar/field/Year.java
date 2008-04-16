@@ -35,17 +35,16 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -103,7 +102,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year isoYear(int isoYear) {
-        ISOChronology.INSTANCE.yearRule().checkValue(isoYear);
+        Year.RULE.checkValue(isoYear);
         return new Year(isoYear);
     }
 
@@ -166,13 +165,12 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     /**
@@ -199,13 +197,7 @@ public final class Year
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException(field, "year");
-        }
-        if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year;
-        }
-        return field.getValue(null);
+        return field.getValue(toFlexiDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -493,7 +485,7 @@ public final class Year
      * @return a new updated Year, never null
      */
     public Year withISOYear(int isoYear) {
-        ISOChronology.INSTANCE.yearRule().checkValue(isoYear);
+        Year.RULE.checkValue(isoYear);
         return null;
     }
 
@@ -589,8 +581,11 @@ public final class Year
 
         /** {@inheritDoc} */
         @Override
-        public int getValue(CalendricalState calState) {
-            return super.getValue(calState) + 1970;
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getYear().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 

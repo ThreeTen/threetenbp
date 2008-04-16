@@ -46,6 +46,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
 /**
@@ -234,16 +235,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to
-     * this date-time.
-     *
-     * @return the calendar state for this instance, never null
-     */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
-    }
-
-    /**
      * Gets the chronology that describes the calendar system rules for
      * this date-time.
      *
@@ -278,7 +269,7 @@ public final class ZonedDateTime
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        return dateTime.get(field);
+        return field.getValue(toFlexiDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -1146,6 +1137,15 @@ public final class ZonedDateTime
      */
     public LocalDateTime toLocalDateTime() {
         return dateTime.toLocalDateTime();
+    }
+
+    /**
+     * Converts this date to a <code>FlexiDateTime</code>.
+     *
+     * @return the flexible date-time representation for this instance, never null
+     */
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(toLocalDate(), toLocalTime(), getOffset(), zone);
     }
 
     //-----------------------------------------------------------------------

@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
@@ -44,6 +43,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a day of month in the ISO-8601 calendar system.
@@ -149,13 +149,12 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * DayOfMonth instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -316,8 +315,11 @@ public final class DayOfMonth
 
         /** {@inheritDoc} */
         @Override
-        public int getValue(CalendricalState calState) {
-            return super.getValue(calState) + 1;
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getDayOfMonth().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
         /** {@inheritDoc} */
         @Override
@@ -329,67 +331,67 @@ public final class DayOfMonth
         public int getSmallestMaximumValue() {
             return 28;
         }
-        /** {@inheritDoc} */
-        @Override
-        public int getMaximumValue(Calendrical calendricalContext) {
-            if (calendricalContext != null) {
-                if (calendricalContext.getCalendricalState().isSupported(MonthOfYear.RULE)) {
-                    int month = calendricalContext.getCalendricalState().get(MonthOfYear.RULE);
-                    switch (month) {
-                        case 2:
-                            if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
-                                int year = calendricalContext.getCalendricalState().get(Year.RULE);
-                                if (Year.isoYear(year).isLeap()) {
-                                    return 29;
-                                }
-                            }
-                            return 28;
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11:
-                            return 30;
-                        default:
-                            return 31;
-                    }
-                }
-            }
-            return 31;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int getSmallestMaximumValue(Calendrical calendricalContext) {
-            if (calendricalContext == null) {
-                return 28;
-            }
-            if (calendricalContext.getCalendricalState().isSupported(MonthOfYear.RULE)) {
-                int month = calendricalContext.getCalendricalState().get(MonthOfYear.RULE);
-                switch (month) {
-                    case 2:
-                        if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
-                            int year = calendricalContext.getCalendricalState().get(Year.RULE);
-                            if (Year.isoYear(year).isLeap()) {
-                                return 29;
-                            }
-                        }
-                        return 28;
-                    case 4:
-                    case 6:
-                    case 9:
-                    case 11:
-                        return 30;
-                    default:
-                        return 31;
-                }
-            }
-            if (calendricalContext.getCalendricalState().isSupported(Year.RULE)) {
-                int year = calendricalContext.getCalendricalState().get(Year.RULE);
-                if (Year.isoYear(year).isLeap()) {
-                    return 29;
-                }
-            }
-            return 28;
-        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public int getMaximumValue(Calendrical calendricalContext) {
+//            if (calendricalContext != null) {
+//                if (calendricalContext.toFlexiDateTime().isSupported(MonthOfYear.RULE)) {
+//                    int month = calendricalContext.toFlexiDateTime().get(MonthOfYear.RULE);
+//                    switch (month) {
+//                        case 2:
+//                            if (calendricalContext.toFlexiDateTime().isSupported(Year.RULE)) {
+//                                int year = calendricalContext.toFlexiDateTime().get(Year.RULE);
+//                                if (Year.isoYear(year).isLeap()) {
+//                                    return 29;
+//                                }
+//                            }
+//                            return 28;
+//                        case 4:
+//                        case 6:
+//                        case 9:
+//                        case 11:
+//                            return 30;
+//                        default:
+//                            return 31;
+//                    }
+//                }
+//            }
+//            return 31;
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public int getSmallestMaximumValue(Calendrical calendricalContext) {
+//            if (calendricalContext == null) {
+//                return 28;
+//            }
+//            if (calendricalContext.toFlexiDateTime().isSupported(MonthOfYear.RULE)) {
+//                int month = calendricalContext.toFlexiDateTime().get(MonthOfYear.RULE);
+//                switch (month) {
+//                    case 2:
+//                        if (calendricalContext.toFlexiDateTime().isSupported(Year.RULE)) {
+//                            int year = calendricalContext.toFlexiDateTime().get(Year.RULE);
+//                            if (Year.isoYear(year).isLeap()) {
+//                                return 29;
+//                            }
+//                        }
+//                        return 28;
+//                    case 4:
+//                    case 6:
+//                    case 9:
+//                    case 11:
+//                        return 30;
+//                    default:
+//                        return 31;
+//                }
+//            }
+//            if (calendricalContext.toFlexiDateTime().isSupported(Year.RULE)) {
+//                int year = calendricalContext.toFlexiDateTime().get(Year.RULE);
+//                if (Year.isoYear(year).isLeap()) {
+//                    return 29;
+//                }
+//            }
+//            return 28;
+//        }
     }
 
 }

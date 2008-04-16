@@ -34,9 +34,9 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a decade of century.
@@ -102,13 +102,12 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * DecadeOfCentury instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -172,6 +171,15 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
         /** Constructor. */
         protected Rule() {
             super("DecadeOfCentury", null, null, 0, 9);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getYear().getDecadeOfCentury();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 

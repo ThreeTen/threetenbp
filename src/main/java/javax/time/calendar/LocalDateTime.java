@@ -42,6 +42,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -398,16 +399,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to
-     * this date-time.
-     *
-     * @return the calendar state for this instance, never null
-     */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
-    }
-
-    /**
      * Gets the chronology that describes the calendar system rules for
      * this date-time.
      *
@@ -450,7 +441,7 @@ public final class LocalDateTime
         } else if (time.isSupported(field)) {
             return time.get(field);
         } else {
-            return field.getValue(getCalendricalState());
+            return field.getValue(toFlexiDateTime());
         }
     }
 
@@ -1108,6 +1099,15 @@ public final class LocalDateTime
      */
     public LocalDateTime toLocalDateTime() {
         return this;
+    }
+
+    /**
+     * Converts this date to a <code>FlexiDateTime</code>.
+     *
+     * @return the flexible date-time representation for this instance, never null
+     */
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(date, time, null, null);
     }
 
     //-----------------------------------------------------------------------

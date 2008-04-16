@@ -35,9 +35,9 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a month of quarter.
@@ -126,13 +126,12 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * MonthOfQuarter instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -196,6 +195,15 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
         /** Constructor. */
         protected Rule() {
             super("MonthOfQuarter", null, null, 1, 3);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getMonthOfYear().getMonthOfQuarter();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 

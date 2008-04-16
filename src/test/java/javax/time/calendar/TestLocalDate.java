@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,6 +38,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.field.DayOfMonth;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
@@ -116,11 +117,11 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.yearRule()), true);
-        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.monthOfYearRule()), true);
-        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfMonthRule()), true);
-        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfWeekRule()), true);
-        assertEquals(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfYearRule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(Year.RULE), true);
+        assertEquals(TEST_2007_07_15.isSupported(MonthOfYear.RULE), true);
+        assertEquals(TEST_2007_07_15.isSupported(DayOfMonth.RULE), true);
+        assertEquals(TEST_2007_07_15.isSupported(DayOfWeek.RULE), true);
+        assertEquals(TEST_2007_07_15.isSupported(DayOfYear.RULE), true);
 //        assertEquals(TEST_2007_07_15.isSupported(HourOfDay.RULE), false);
 //        assertEquals(TEST_2007_07_15.isSupported(MinuteOfHour.RULE), false);
 //        assertEquals(TEST_2007_07_15.isSupported(SecondOfMinute.RULE), false);

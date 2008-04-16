@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -257,32 +257,8 @@ public final class ZoneOffset
      */
     public static ZoneOffset zoneOffset(int hours, int minutes, int seconds) {
         validate(hours, minutes, seconds);
-        if (minutes % 15 == 0 & seconds == 0) {
-            Integer totalSecs = totalSeconds(hours, minutes, seconds);
-            CACHE_LOCK.readLock().lock();
-            try {
-                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-                if (result != null) {
-                    return result;
-                }
-            } finally {
-                CACHE_LOCK.readLock().unlock();
-            }
-            CACHE_LOCK.writeLock().lock();
-            try {
-                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
-                if (result == null) {
-                    result = new ZoneOffset(hours, minutes, seconds);
-                    SECONDS_CACHE.put(totalSecs, result);
-                    ID_CACHE.put(result.getID(), result);
-                }
-                return result;
-            } finally {
-                CACHE_LOCK.writeLock().unlock();
-            }
-        } else {
-            return new ZoneOffset(hours, minutes, seconds);
-        }
+        int totalSeconds = totalSeconds(hours, minutes, seconds);
+        return forTotalSeconds(totalSeconds);
     }
 
     //-----------------------------------------------------------------------
@@ -337,26 +313,67 @@ public final class ZoneOffset
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of <code>ZoneOffset</code> specifying the total offset in seconds
+     * <p>
+     * The offset must be in the range -18:00 to +18:00, which corresponds to -64800 to +64800.
+     *
+     * @param totalSeconds  the total time zone offset in seconds, from -64800 to +64800
+     * @return the ZoneOffset, never null
+     * @throws IllegalArgumentException if the offset is not in the required range
+     */
+    public static ZoneOffset forTotalSeconds(int totalSeconds) {
+        if (Math.abs(totalSeconds) > (18 * SECONDS_PER_HOUR)) {
+            throw new IllegalArgumentException("Zone offset not in valid range: -18:00 to +18:00");
+        }
+        if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
+            Integer totalSecs = totalSeconds;
+            CACHE_LOCK.readLock().lock();
+            try {
+                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+                if (result != null) {
+                    return result;
+                }
+            } finally {
+                CACHE_LOCK.readLock().unlock();
+            }
+            CACHE_LOCK.writeLock().lock();
+            try {
+                ZoneOffset result = SECONDS_CACHE.get(totalSecs);
+                if (result == null) {
+                    result = new ZoneOffset(totalSeconds);
+                    SECONDS_CACHE.put(totalSecs, result);
+                    ID_CACHE.put(result.getID(), result);
+                }
+                return result;
+            } finally {
+                CACHE_LOCK.writeLock().unlock();
+            }
+        } else {
+            return new ZoneOffset(totalSeconds);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Constructor.
      *
-     * @param hours  the time zone offset in hours, from -18 to +18
-     * @param minutes  the time zone offset in minutes, from -59 to 59
-     * @param seconds  the time zone offset in seconds, from -59 to 59
+     * @param totalSeconds  the total time zone offset in seconds, from -64800 to +64800
      */
-    private ZoneOffset(int hours, int minutes, int seconds) {
+    private ZoneOffset(int totalSeconds) {
         super();
-        amountSeconds = totalSeconds(hours, minutes, seconds);
+        amountSeconds = totalSeconds;
         if (amountSeconds == 0) {
             id = "Z";
         } else {
+            int absTotalSeconds = Math.abs(amountSeconds);
             StringBuilder buf = new StringBuilder();
-            int absHours = Math.abs(hours);
-            int absMinutes = Math.abs(minutes);
-            buf.append(hours < 0 || minutes < 0 || seconds < 0 ? "-" : "+")
+            int absHours = absTotalSeconds / SECONDS_PER_HOUR;
+            int absMinutes = (absTotalSeconds / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+            buf.append(amountSeconds < 0 ? "-" : "+")
                 .append(absHours < 10 ? "0" : "").append(absHours)
                 .append(absMinutes < 10 ? ":0" : ":").append(absMinutes);
-            if (seconds != 0) {
-                int absSeconds = Math.abs(seconds);
+            int absSeconds = absTotalSeconds % SECONDS_PER_MINUTE;
+            if (absSeconds != 0) {
                 buf.append(absSeconds < 10 ? ":0" : ":").append(absSeconds);
             }
             id = buf.toString();
@@ -548,5 +565,80 @@ public final class ZoneOffset
     public String toString() {
         return id;
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Formatter.
+//     *
+//     * @param days  the days to subtract, positive or negative
+//     * @return the resulting DayOfWeek, never null
+//     */
+//    public static enum Format implements DateFormatter<OffsetDate> {
+//        NO_COLON {
+//            @Override
+//            public void format(Appendable out, DateExtractor<LocalDate, DayOfWeek> dow) throws IOException {
+//                out.append(Integer.toString(dow.extractField(date).getValue()));
+//            }
+//        }
+//        COLON {
+//            @Override
+//            public void format(Appendable out, DateExtractor<LocalDate, DayOfWeek> dow) throws IOException {
+//                out.append(Integer.toString(dow.extractField(date).getValue()));
+//            }
+//        };
+//        public abstract void format(Appendable out, DateExtractor<LocalDate, DayOfWeek> dow) throws IOException;
+//    }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Formatter.
+//     *
+//     * @param days  the days to subtract, positive or negative
+//     * @return the resulting DayOfWeek, never null
+//     */
+//    public static class Format implements DateFormatter {
+//        private enum SecondFormat {ALWAYS, NEVER, NON_ZERO};
+//        private final boolean colon;
+//        private final SecondFormat secs;
+//        private Format(boolean colon, SecondFormat secs) {
+//            this.colon = colon;
+//            this.secs = secs;
+//        }
+//        public String format(FlexiDateTime dateTime, Locale locale) {
+//            StringBuilder buf = new StringBuilder();
+//            try {
+//                format(buf, dateTime, locale);
+//            } catch (IOException ex) {
+//                // never happens;
+//            }
+//            return buf.toString();
+//        }
+//        public void format(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+//            ZoneOffset offset = dateTime.getOffset();
+//            int seconds = offset.getSecondsField();
+//            if (colon && (secs == SecondFormat.NON_ZERO || seconds == 0)) {
+//                appendable.append(offset.getID());
+//            } else {
+//                int amountSeconds = offset.getAmountSeconds();
+//                if (amountSeconds == 0) {
+//                    appendable.append('Z');
+//                } else {
+//                    int hours = offset.getHoursField();
+//                    int minutes = offset.getMinutesField();
+//                    int absHours = Math.abs(hours);
+//                    int absMinutes = Math.abs(minutes);
+//                    appendable.append(amountSeconds < 0 ? "-" : "+")
+//                        .append((char) ((absHours / 10) + 48)).append((char) ((absHours % 10) + 48))
+//                        .append(colon ? ":" : "")
+//                        .append((char) ((absMinutes / 10) + 48)).append((char) ((absMinutes % 10) + 48));
+//                    if (secs == SecondFormat.ALWAYS || (secs == SecondFormat.NON_ZERO && seconds != 0)) {
+//                        int absSeconds = Math.abs(seconds);
+//                        appendable.append(colon ? ":" : "")
+//                            .append((char) ((absSeconds / 10) + 48)).append((char) ((absSeconds % 10) + 48));
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 }

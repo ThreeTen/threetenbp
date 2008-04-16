@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,6 +38,7 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -165,16 +166,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to
-     * this date.
-     *
-     * @return the calendar state for this instance, never null
-     */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
-    }
-
-    /**
      * Gets the chronology that describes the calendar system rules for
      * this date.
      *
@@ -209,19 +200,7 @@ public final class LocalDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException(field, "date");
-        }
-        if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year.getValue();
-        }
-        if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month.getValue();
-        }
-        if (field == ISOChronology.INSTANCE.dayOfMonthRule()) {
-            return day.getValue();
-        }
-        return field.getValue(getCalendricalState());
+        return field.getValue(toFlexiDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -626,6 +605,15 @@ public final class LocalDate
      */
     public LocalDate toLocalDate() {
         return this;
+    }
+
+    /**
+     * Converts this date to a <code>FlexiDateTime</code>.
+     *
+     * @return the flexible date-time representation for this instance, never null
+     */
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

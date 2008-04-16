@@ -31,13 +31,15 @@
  */
 package javax.time.calendar.field;
 
+import java.util.Locale;
+
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a day of week in the ISO-8601 calendar system.
@@ -183,15 +185,38 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
         return dayOfWeek;
     }
 
+    /**
+     * Gets the day of week value as short text.
+     * <p>
+     * In English, this will return text of the form 'Mon' or 'Fri'.
+     *
+     * @param locale  the locale to use, not null
+     * @return the long text value of the day of week, never null
+     */
+    public String getShortText(Locale locale) {
+        return "";  // TODO
+    }
+
+    /**
+     * Gets the day of week value as text.
+     * <p>
+     * In English, this will return text of the form 'Monday' or 'Friday'.
+     *
+     * @param locale  the locale to use, not null
+     * @return the long text value of the day of week, never null
+     */
+    public String getText(Locale locale) {
+        return "";  // TODO
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * DayOfWeek instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -273,8 +298,11 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
 
         /** {@inheritDoc} */
         @Override
-        public int getValue(CalendricalState calState) {
-            return ((super.getValue(calState) + 3) % 7) + 1;
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getDayOfWeek().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 

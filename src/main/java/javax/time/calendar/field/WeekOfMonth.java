@@ -35,9 +35,10 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a week of month.
@@ -95,6 +96,19 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
         }
     }
 
+    /**
+     * Obtains an instance of <code>WeekOfMonth</code> from a date provider.
+     * <p>
+     * This can be used extract a week of month object directly from any
+     * implementation of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return the WeekOfMonth instance, never null
+     */
+    public static WeekOfWeekyear weekOfMonth(ReadableDate dateProvider) {
+        return null;  // TODO
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified week of month.
@@ -126,13 +140,12 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * WeekOfMonth instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -196,6 +209,15 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
         /** Constructor. */
         protected Rule() {
             super("WeekOfMonth", null, null, 1, 5);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 

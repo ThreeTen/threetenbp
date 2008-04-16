@@ -32,12 +32,12 @@
 package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.TimeMatcher;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a meridiem of day in the ISO-8601 calendar system.
@@ -116,13 +116,12 @@ public enum MeridiemOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * MeridiemOfDay instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------

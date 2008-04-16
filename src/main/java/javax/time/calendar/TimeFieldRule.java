@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -137,22 +138,12 @@ public abstract class TimeFieldRule {
     /**
      * Gets the value of this field.
      *
-     * @param calState  the calendrical state, not null
+     * @param dateTime  the date time, not null
      * @return the value of the field
+     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
-    public int getValue(CalendricalState calState) {
-        return 0;  //epochPeriod.getPeriodalState().getDerived(getPeriodUnit());
-    }
-
-    /**
-     * Sets the value of this field.
-     *
-     * @param calState  the calendrical state, not null
-     * @param newValue  the new value of the field
-     * @return the new calendrical state, never null
-     */
-    public CalendricalState setValue(CalendricalState calState, int newValue) {
-        return calState;
+    public int getValue(FlexiDateTime dateTime) {
+        throw new UnsupportedCalendarFieldException(this, "FlexiDateTime");
     }
 
     //-----------------------------------------------------------------------
@@ -270,19 +261,19 @@ public abstract class TimeFieldRule {
         return getMaximumValue(calendricalContext);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks whether a given calendrical is supported or not.
-     *
-     * @param calState  the calendar state to check, not null
-     * @throws UnsupportedCalendarFieldException if the field is unsupported
-     */
-    protected void checkSupported(CalendricalState calState) {
-        if (calState.getPeriodUnit().compareTo(getPeriodUnit()) > 0 ||
-                calState.getPeriodRange().compareTo(getPeriodRange()) < 0) {
-            throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
-        }
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Checks whether a given calendrical is supported or not.
+//     *
+//     * @param calState  the calendar state to check, not null
+//     * @throws UnsupportedCalendarFieldException if the field is unsupported
+//     */
+//    protected void checkSupported(CalendricalState calState) {
+//        if (calState.getPeriodUnit().compareTo(getPeriodUnit()) > 0 ||
+//                calState.getPeriodRange().compareTo(getPeriodRange()) < 0) {
+//            throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     /**

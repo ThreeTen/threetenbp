@@ -35,10 +35,10 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.ReadableDate;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a week of week-based year in the ISO-8601 calendar system.
@@ -147,13 +147,12 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * WeekOfWeekyear instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -228,6 +227,15 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
         /** Constructor. */
         protected Rule() {
             super("WeekOfWeekyear", null, null, 1, 53);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 

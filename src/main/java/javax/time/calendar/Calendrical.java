@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,26 +31,41 @@
  */
 package javax.time.calendar;
 
+import javax.time.calendar.format.FlexiDateTime;
+
 /**
- * Interface implemented by all objects that can provide calendrical information.
+ * The basic interface which all calendrical implementations should provide.
  * <p>
- * Calendrical is the interface that is shared amongst many other classes in
- * the Java Time Framework. Many low level APIs are defined to accept a
- * Calendrical, however it is less common that you will hold instances directly.
  * <p>
- * Calendrical is an interface and must be implemented with care to ensure
- * other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe.
+ * Calendrical is a simple interface that provides uniform access to any
+ * object that can provide access to calendrical information in the
+ * ISO-8601 calendar system.
+ * <p>
+ * NOTE: The implementation of <code>Calendrical</code> may be mutable.
+ * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
+ * mutable implementation of this interface.
+ * The result of {@link #toFlexiDateTime()}, however, is immutable.  // TODO
+ * <p>
+ * Calendrical makes no guarantees about the thread-safety or immutability
+ * of implementations.
  *
  * @author Stephen Colebourne
  */
 public interface Calendrical {
 
     /**
-     * Gets the calendrical state which provides internal access to the calendar.
+     * Returns an instance of <code>FlexiDateTime</code> initialised from the
+     * state of this object.
+     * <p>
+     * This method will take the calendrical information represented by this
+     * object and return the best matching {@link FlexiDateTime}.
+     * <p>
+     * The result of this method is a <code>FlexiDateTime</code> which represents
+     * a date in the ISO calendar system. Implementors may perform conversion
+     * when implementing this method to convert from alternate calendar systems.
      *
-     * @return the calendar state, never null
+     * @return the <code>FlexiDateTime</code> equivalent to this object, never null
      */
-    CalendricalState getCalendricalState() ;
+    FlexiDateTime toFlexiDateTime() ;
 
 }

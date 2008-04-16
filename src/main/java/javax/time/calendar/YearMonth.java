@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -141,16 +142,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to
-     * this year-month.
-     *
-     * @return the calendar state for this instance, never null
-     */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
-    }
-
-    /**
      * Gets the chronology that describes the calendar system rules for
      * this year-month.
      *
@@ -185,16 +176,7 @@ public final class YearMonth
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException(field, "year-month");
-        }
-        if (field == ISOChronology.INSTANCE.yearRule()) {
-            return year.getValue();
-        }
-        if (field == ISOChronology.INSTANCE.monthOfYearRule()) {
-            return month.getValue();
-        }
-        return field.getValue(getCalendricalState());
+        return field.getValue(toFlexiDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -421,6 +403,16 @@ public final class YearMonth
      */
     public boolean matchesDate(LocalDate date) {
         return year.equals(date.getYear()) && month == date.getMonthOfYear();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this date to a <code>FlexiDateTime</code>.
+     *
+     * @return the flexible date-time representation for this instance, never null
+     */
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(Year.RULE, year.getValue(), MonthOfYear.RULE, month.getValue());
     }
 
     //-----------------------------------------------------------------------

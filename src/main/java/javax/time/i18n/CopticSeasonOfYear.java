@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,9 @@
 package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalState;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a Coptic season of year.
@@ -118,13 +118,12 @@ public enum CopticSeasonOfYear implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to this
-     * CopticSeasonOfYear instance.
+     * Converts this field to a <code>FlexiDateTime</code>.
      *
-     * @return the calendar state for this instance, never null
+     * @return the flexible date-time representation for this instance, never null
      */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -146,29 +145,6 @@ public enum CopticSeasonOfYear implements Calendrical {
      */
     public CopticSeasonOfYear previous() {
         return values()[(ordinal() + 3 - 1) % 3];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this Coptic season of year instance greater than the specified Coptic season of year.
-     *
-     * @param otherCopticSeasonOfYear  the other Coptic season of year instance, not null
-     * @return true if this Coptic season of year is greater
-     * @throws NullPointerException if otherCopticSeasonOfYear is null
-     */
-    public boolean isGreaterThan(CopticSeasonOfYear otherCopticSeasonOfYear) {
-        return compareTo(otherCopticSeasonOfYear) > 0;
-    }
-
-    /**
-     * Is this Coptic season of year instance less than the specified Coptic season of year.
-     *
-     * @param otherCopticSeasonOfYear  the other Coptic season of year instance, not null
-     * @return true if this Coptic season of year is less
-     * @throws NullPointerException if otherCopticSeasonOfYear is null
-     */
-    public boolean isLessThan(CopticSeasonOfYear otherCopticSeasonOfYear) {
-        return compareTo(otherCopticSeasonOfYear) < 0;
     }
 
     //-----------------------------------------------------------------------

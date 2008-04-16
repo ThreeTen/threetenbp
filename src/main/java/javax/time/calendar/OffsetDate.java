@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,6 +38,7 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
 /**
@@ -152,16 +153,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the calendrical state which provides internal access to
-     * this date.
-     *
-     * @return the calendar state for this instance, never null
-     */
-    public CalendricalState getCalendricalState() {
-        return null;  // TODO
-    }
-
-    /**
      * Gets the chronology that describes the calendar system rules for
      * this date.
      *
@@ -196,7 +187,7 @@ public final class OffsetDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(TimeFieldRule field) {
-        return date.get(field);
+        return field.getValue(toFlexiDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -572,6 +563,15 @@ public final class OffsetDate
      */
     public LocalDate toLocalDate() {
         return date;
+    }
+
+    /**
+     * Converts this date to a <code>FlexiDateTime</code>.
+     *
+     * @return the flexible date-time representation for this instance, never null
+     */
+    public FlexiDateTime toFlexiDateTime() {
+        return new FlexiDateTime(date, null, offset, null);
     }
 
     //-----------------------------------------------------------------------
