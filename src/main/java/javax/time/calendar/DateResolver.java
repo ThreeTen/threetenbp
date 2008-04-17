@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,10 +38,11 @@ import javax.time.calendar.field.Year;
 /**
  * Strategy for resolving an invalid year-month-day to a valid one.
  * <p>
- * CalendricalResolver is an abstract class and must be implemented with care
+ * DateResolver is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public interface DateResolver {

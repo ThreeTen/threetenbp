@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
@@ -41,9 +42,15 @@ import javax.time.calendar.field.Year;
  * DateResolvers is a utility class.
  * All resolvers returned are immutable and thread-safe.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public class DateResolvers {
+public final class DateResolvers {
+    /**
+     * Private constructor since this is a utility class
+     */
+    private DateResolvers() {
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -59,9 +66,18 @@ public class DateResolvers {
     /**
      * Class implementing strict resolver.
      */
-    private static class Strict implements DateResolver {
+    private static class Strict implements DateResolver, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateResolver INSTANCE = new Strict();
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
@@ -83,9 +99,18 @@ public class DateResolvers {
     /**
      * Class implementing previousValid resolver.
      */
-    private static class PreviousValid implements DateResolver {
+    private static class PreviousValid implements DateResolver, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateResolver INSTANCE = new PreviousValid();
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
@@ -111,17 +136,23 @@ public class DateResolvers {
     /**
      * Class implementing nextValid resolver.
      */
-    private static class NextValid implements DateResolver {
+    private static class NextValid implements DateResolver, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateResolver INSTANCE = new NextValid();
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
             int len = monthOfYear.lengthInDays(year);
             if (dayOfMonth.getValue() > len) {
-                if (monthOfYear == MonthOfYear.DECEMBER) {
-                    year = year.next();
-                }
                 return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(1));
             }
             return LocalDate.date(year, monthOfYear, dayOfMonth);
@@ -143,17 +174,23 @@ public class DateResolvers {
     /**
      * Class implementing partLenient resolver.
      */
-    private static class PartLenient implements DateResolver {
+    private static class PartLenient implements DateResolver, Serializable {
+        /**
+         * A serialization identifier for this class.
+         */
+        private static final long serialVersionUID = 1L;
+
         /** The singleton instance. */
         private static final DateResolver INSTANCE = new PartLenient();
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
             int len = monthOfYear.lengthInDays(year);
             if (dayOfMonth.getValue() > len) {
-                if (monthOfYear == MonthOfYear.DECEMBER) {
-                    year = year.next();
-                }
                 return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(dayOfMonth.getValue() - len));
             }
             return LocalDate.date(year, monthOfYear, dayOfMonth);
