@@ -65,10 +65,9 @@ public abstract class ZoneResolver {
     /**
      * Resolves the new local date-time to an offset date-time using the zone.
      * <p>
-     * This method forwards to an internal package scoped method that
-     * calls {@link #handleResolve}. The package scoped method will validate
-     * the result of <code>handleResolve</code> to ensure that the result is
-     * valid for the zone.
+     * This method forwards to an internal package scoped method that calls
+     * {@link #handleGap} or {@link #handleOverlap}. The package scoped method
+     * will validate the result to ensure that the result is valid for the zone.
      *
      * @param zone  the time zone, not null
      * @param newDateTime  the new date-time, not null
