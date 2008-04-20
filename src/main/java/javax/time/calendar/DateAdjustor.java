@@ -35,7 +35,7 @@ package javax.time.calendar;
  * Strategy for adjusting a date.
  * <p>
  * This interface provides a common way to access many different date
- * adjustments. Examples might be an adjustor that set the date avoiding
+ * adjustments. Examples might be an adjustor that sets the date avoiding
  * weekends, or one that sets the date to the last day of the month.
  * <p>
  * DateAdjustor is an interface and must be implemented with care
