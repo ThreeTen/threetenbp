@@ -543,27 +543,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>YearMonth</code> initialised to the
-     * year and month of this date-time.
-     *
-     * @return the year-month object, never null
-     */
-    public YearMonth getYearMonth() {
-        return dateTime.getYearMonth();
-    }
-
-    /**
-     * Gets an instance of <code>MonthDay</code> initialised to the
-     * month and day of month of this date-time.
-     *
-     * @return the month-day object, never null
-     */
-    public MonthDay getMonthDay() {
-        return dateTime.getMonthDay();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets an instance of <code>LocalDateTime</code> initialised to the
      * same date-time.
      *

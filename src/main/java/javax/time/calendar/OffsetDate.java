@@ -192,26 +192,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>YearMonth</code> initialised to the
-     * year and month of this date.
-     *
-     * @return the year-month object, never null
-     */
-    public YearMonth getYearMonth() {
-        return date.getYearMonth();
-    }
-
-    /**
-     * Gets an instance of <code>MonthDay</code> initialised to the
-     * month and day of month of this date.
-     *
-     * @return the month-day object, never null
-     */
-    public MonthDay getMonthDay() {
-        return date.getMonthDay();
-    }
-
-    /**
      * Gets an instance of <code>LocalDate</code> which represents the
      * date of this object but without the zone offset.
      *
