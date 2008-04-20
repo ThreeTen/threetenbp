@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -57,7 +57,7 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
     /**
      * The rule implementation that defines how the month of quarter field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -190,7 +190,7 @@ public final class MonthOfQuarter implements Calendrical, Comparable<MonthOfQuar
     /**
      * Implementation of the rules for the month of quarter field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

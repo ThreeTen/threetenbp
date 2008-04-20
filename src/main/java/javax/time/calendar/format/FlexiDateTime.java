@@ -41,7 +41,7 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.ZoneOffset;
@@ -63,7 +63,7 @@ public final class FlexiDateTime implements Calendrical {
     /**
      * The date time map.
      */
-    private Map<TimeFieldRule, Integer> fieldValueMap = new TreeMap<TimeFieldRule, Integer>();
+    private Map<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>();
     /**
      * The date.
      */
@@ -102,7 +102,7 @@ public final class FlexiDateTime implements Calendrical {
      * @param rule  the rule, not null
      * @param value  the field value
      */
-    public FlexiDateTime(TimeFieldRule rule, int value) {
+    public FlexiDateTime(DateTimeFieldRule rule, int value) {
         if (rule == null) {
             throw new NullPointerException("The rule must not be null");
         }
@@ -117,7 +117,7 @@ public final class FlexiDateTime implements Calendrical {
      * @param rule2  the second rule, not null
      * @param value2  the second field value
      */
-    public FlexiDateTime(TimeFieldRule rule1, int value1, TimeFieldRule rule2, int value2) {
+    public FlexiDateTime(DateTimeFieldRule rule1, int value1, DateTimeFieldRule rule2, int value2) {
         if (rule1 == null || rule2 == null) {
             throw new NullPointerException("The rule2 must not be null");
         }
@@ -137,7 +137,7 @@ public final class FlexiDateTime implements Calendrical {
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
-    public int getValue(TimeFieldRule rule) {
+    public int getValue(DateTimeFieldRule rule) {
         if (rule == null) {
             throw new NullPointerException("The rule must not be null");
         }
@@ -154,7 +154,7 @@ public final class FlexiDateTime implements Calendrical {
      *
      * @return the field-value map, never null
      */
-    public Map<TimeFieldRule, Integer> getFieldValueMap() {
+    public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
         return fieldValueMap;
     }
 
@@ -169,7 +169,7 @@ public final class FlexiDateTime implements Calendrical {
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
-    public int getFieldValueMapValue(TimeFieldRule rule) {
+    public int getFieldValueMapValue(DateTimeFieldRule rule) {
         if (rule == null) {
             throw new NullPointerException("The rule must not be null");
         }

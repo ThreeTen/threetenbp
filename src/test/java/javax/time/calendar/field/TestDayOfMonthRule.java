@@ -38,7 +38,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 
@@ -63,7 +63,7 @@ public class TestDayOfMonthRule {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TimeFieldRule.class.isAssignableFrom(DayOfMonth.RULE.getClass()));
+        assertTrue(DateTimeFieldRule.class.isAssignableFrom(DayOfMonth.RULE.getClass()));
     }
 
     public void test_immutable() {

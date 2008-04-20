@@ -41,7 +41,7 @@ public class UnsupportedCalendarFieldException extends RuntimeException {
     /**
      * The field that caused the exception
      */
-    private final TimeFieldRule fieldRule;
+    private final DateTimeFieldRule fieldRule;
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
@@ -49,7 +49,7 @@ public class UnsupportedCalendarFieldException extends RuntimeException {
      * @param fieldRule  the rule of the field that is not supported, may be null
      * @param objectDescription  the description of the calendrical that does not support the field, may be null
      */
-    public UnsupportedCalendarFieldException(TimeFieldRule fieldRule, String objectDescription) {
+    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule, String objectDescription) {
         super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported on " + objectDescription);
         this.fieldRule = fieldRule;
     }
@@ -60,7 +60,7 @@ public class UnsupportedCalendarFieldException extends RuntimeException {
      *
      * @return the field rule, null if unknown
      */
-    public TimeFieldRule getFieldRule() {
+    public DateTimeFieldRule getFieldRule() {
         return fieldRule;
     }
 

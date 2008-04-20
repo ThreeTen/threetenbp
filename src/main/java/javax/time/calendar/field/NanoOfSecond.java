@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
 
@@ -59,7 +59,7 @@ public final class NanoOfSecond
     /**
      * The rule implementation that defines how the nano of second field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A singleton instance for zero nanoseconds.
      */
@@ -216,7 +216,7 @@ public final class NanoOfSecond
     /**
      * Implementation of the rules for the nano of second field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

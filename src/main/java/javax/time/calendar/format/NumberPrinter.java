@@ -34,7 +34,7 @@ package javax.time.calendar.format;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
@@ -48,7 +48,7 @@ class NumberPrinter implements DateTimePrinter {
     /**
      * The field to output.
      */
-    private final TimeFieldRule fieldRule;
+    private final DateTimeFieldRule fieldRule;
     /**
      * The minimum width allowed, padding is used up to this width.
      */
@@ -75,7 +75,7 @@ class NumberPrinter implements DateTimePrinter {
      *
      * @param fieldRule  the rule of the field to print, not null
      */
-    public NumberPrinter(TimeFieldRule fieldRule) {
+    public NumberPrinter(DateTimeFieldRule fieldRule) {
         this(fieldRule, 0, Integer.MAX_VALUE, '0', true, SignStyle.NORMAL);
     }
 
@@ -89,7 +89,7 @@ class NumberPrinter implements DateTimePrinter {
      * @param padOnLeft  whether to left pad (true) or right pad (false)
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberPrinter(TimeFieldRule fieldRule, int minWidth, int maxWidth, char padChar, boolean padOnLeft, SignStyle signStyle) {
+    NumberPrinter(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, char padChar, boolean padOnLeft, SignStyle signStyle) {
         this.fieldRule = fieldRule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;

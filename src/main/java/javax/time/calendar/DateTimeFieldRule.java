@@ -46,7 +46,7 @@ import javax.time.period.PeriodUnit;
  *
  * @author Stephen Colebourne
  */
-public abstract class TimeFieldRule implements Comparable<TimeFieldRule> {
+public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule> {
 
     /** The name of the rule, not null. */
     private final String name;
@@ -68,7 +68,7 @@ public abstract class TimeFieldRule implements Comparable<TimeFieldRule> {
      * @param minimumValue  the minimum value
      * @param maximumValue  the minimum value
      */
-    protected TimeFieldRule(
+    protected DateTimeFieldRule(
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
@@ -289,7 +289,7 @@ public abstract class TimeFieldRule implements Comparable<TimeFieldRule> {
      * @return the comparator result, negative if less, postive if greater, zero if equal
      * @throws NullPointerException if other is null
      */
-    public int compareTo(TimeFieldRule other) {
+    public int compareTo(DateTimeFieldRule other) {
         int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
         if (cmp != 0) {
             return cmp;

@@ -418,7 +418,7 @@ public final class LocalDateTime
      * @param field  the field to query, not null
      * @return true if the field is supported
      */
-    public boolean isSupported(TimeFieldRule field) {
+    public boolean isSupported(DateTimeFieldRule field) {
         return field.isSupported(Periods.NANOS, Periods.FOREVER);
     }
 
@@ -432,7 +432,7 @@ public final class LocalDateTime
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
-    public int get(TimeFieldRule field) {
+    public int get(DateTimeFieldRule field) {
         if (!isSupported(field)) {
             throw new UnsupportedCalendarFieldException(field, "date-time");
         }

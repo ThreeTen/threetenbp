@@ -37,7 +37,7 @@ import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -69,7 +69,7 @@ public enum Era
     /**
      * The rule implementation that defines how the era field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The era being represented.
@@ -194,7 +194,7 @@ public enum Era
     /**
      * Implementation of the rules for the era field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

@@ -42,7 +42,7 @@ import javax.time.calendar.DateResolvers;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
@@ -66,7 +66,7 @@ public final class Year
     /**
      * The rule implementation that defines how the year field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * Constant for the minimum year on the proleptic ISO calendar system.
      */
@@ -182,7 +182,7 @@ public final class Year
      * @param field  the field to query, not null
      * @return true if the field is supported
      */
-    public boolean isSupported(TimeFieldRule field) {
+    public boolean isSupported(DateTimeFieldRule field) {
         return field.isSupported(Periods.YEARS, Periods.FOREVER);
     }
 
@@ -196,7 +196,7 @@ public final class Year
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
-    public int get(TimeFieldRule field) {
+    public int get(DateTimeFieldRule field) {
         return field.getValue(toFlexiDateTime());
     }
 
@@ -582,7 +582,7 @@ public final class Year
     /**
      * Implementation of the rules for the year field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

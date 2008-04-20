@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -56,7 +56,7 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
     /**
      * The rule implementation that defines how the decade of century field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -166,7 +166,7 @@ public final class DecadeOfCentury implements Calendrical, Comparable<DecadeOfCe
     /**
      * Implementation of the rules for the decade of century field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

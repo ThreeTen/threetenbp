@@ -33,7 +33,7 @@ package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -68,7 +68,7 @@ public enum CopticSeasonOfYear implements Calendrical {
     /**
      * The rule implementation that defines how the Coptic season of year field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The Coptic season of year being represented.
@@ -151,7 +151,7 @@ public enum CopticSeasonOfYear implements Calendrical {
     /**
      * Implementation of the rules for the Coptic season of year field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

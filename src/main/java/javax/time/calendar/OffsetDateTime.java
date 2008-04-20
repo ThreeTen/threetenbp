@@ -523,7 +523,7 @@ public final class OffsetDateTime
      * @param field  the field to query, not null
      * @return true if the field is supported
      */
-    public boolean isSupported(TimeFieldRule field) {
+    public boolean isSupported(DateTimeFieldRule field) {
         return dateTime.isSupported(field);
     }
 
@@ -537,7 +537,7 @@ public final class OffsetDateTime
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
-    public int get(TimeFieldRule field) {
+    public int get(DateTimeFieldRule field) {
         return field.getValue(toFlexiDateTime());
     }
 

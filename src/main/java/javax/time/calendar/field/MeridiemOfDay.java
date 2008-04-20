@@ -35,7 +35,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
 
@@ -68,7 +68,7 @@ public enum MeridiemOfDay
     /**
      * The rule implementation that defines how the meridiem of day field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The meridiem of day being represented.
@@ -203,7 +203,7 @@ public enum MeridiemOfDay
     /**
      * Implementation of the rules for the meridiem of day field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

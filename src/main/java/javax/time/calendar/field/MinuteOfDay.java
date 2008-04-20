@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -56,7 +56,7 @@ public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, 
     /**
      * The rule implementation that defines how the minute of day field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -166,7 +166,7 @@ public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, 
     /**
      * Implementation of the rules for the minute of day field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

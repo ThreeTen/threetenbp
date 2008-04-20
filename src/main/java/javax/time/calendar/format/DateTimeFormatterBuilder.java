@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 
 /**
  * Builder to create formats for dates and times.
@@ -83,7 +83,7 @@ public class DateTimeFormatterBuilder {
      * @param fieldRule  the rule of the field to print, not null
      * @return this, for chaining, never null
      */
-    public DateTimeFormatterBuilder appendValue(TimeFieldRule fieldRule) {
+    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
         if (fieldRule == null) {
             throw new NullPointerException("TimeFieldRule must not be null");
         }
@@ -107,7 +107,7 @@ public class DateTimeFormatterBuilder {
      * @param width  the width of the printed field
      * @return this, for chaining, never null
      */
-    public DateTimeFormatterBuilder appendValue(TimeFieldRule fieldRule, int width) {
+    public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
         if (fieldRule == null) {
             throw new NullPointerException("TimeFieldRule must not be null");
         }
@@ -135,7 +135,7 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendValue(
-            TimeFieldRule fieldRule, int minWidth, int maxWidth,
+            DateTimeFieldRule fieldRule, int minWidth, int maxWidth,
             char padChar, boolean padOnLeft, SignStyle signStyle) {
         if (fieldRule == null) {
             throw new NullPointerException("TimeFieldRule must not be null");
@@ -234,7 +234,7 @@ public class DateTimeFormatterBuilder {
         NEGATIVE_ERROR {
             /** {@inheritDoc} */
             @Override
-            void print(Appendable appendable, TimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
                 if (value < 0) {
                     throw new CalendricalFormatException("The field " + fieldRule.getName() + " cannot be printed as it is negative");
                 }
@@ -246,7 +246,7 @@ public class DateTimeFormatterBuilder {
         ABS {
             /** {@inheritDoc} */
             @Override
-            void print(Appendable appendable, TimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
             }
         },
         /**
@@ -255,7 +255,7 @@ public class DateTimeFormatterBuilder {
         NORMAL {
             /** {@inheritDoc} */
             @Override
-            void print(Appendable appendable, TimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
                 if (value < 0) {
                     appendable.append('-');
                 }
@@ -268,7 +268,7 @@ public class DateTimeFormatterBuilder {
         EXCEEDS_PAD {
             /** {@inheritDoc} */
             @Override
-            void print(Appendable appendable, TimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
                 if (value < 0) {
                     appendable.append('-');
                 } else if (padWidth < 10 && value >= EXCEED_POINTS[padWidth]) {
@@ -283,7 +283,7 @@ public class DateTimeFormatterBuilder {
         ALWAYS {
             /** {@inheritDoc} */
             @Override
-            void print(Appendable appendable, TimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
                 if (value < 0) {
                     appendable.append('-');
                 } else {
@@ -317,7 +317,7 @@ public class DateTimeFormatterBuilder {
          * @param padWidth  the pad width
          * @throws IOException if an error occurs
          */
-        abstract void print(Appendable appendable, TimeFieldRule fieldRule, int value, int padWidth) throws IOException;
+        abstract void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException;
 
     }
 

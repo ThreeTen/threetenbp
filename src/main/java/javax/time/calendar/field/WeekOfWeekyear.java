@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -62,7 +62,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
     /**
      * The rule implementation that defines how the week of week-based year field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -222,7 +222,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
     /**
      * Implementation of the rules for the week of week-based year field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

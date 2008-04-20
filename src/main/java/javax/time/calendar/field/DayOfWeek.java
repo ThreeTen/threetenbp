@@ -38,7 +38,7 @@ import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -89,7 +89,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
     /**
      * The rule implementation that defines how the day of week field operates.
      */
-    public static final TimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The day of week being represented.
@@ -289,7 +289,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
     /**
      * Implementation of the rules for the day of week field.
      */
-    private static class Rule extends TimeFieldRule {
+    private static class Rule extends DateTimeFieldRule {
 
         /** Constructor. */
         protected Rule() {

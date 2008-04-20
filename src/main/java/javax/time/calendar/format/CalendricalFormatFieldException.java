@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import javax.time.calendar.TimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 
 /**
@@ -45,7 +45,7 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
     /**
      * The field that caused the exception
      */
-    private final TimeFieldRule fieldRule;
+    private final DateTimeFieldRule fieldRule;
     /**
      * The value of the field that caused the exception
      */
@@ -71,7 +71,7 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
      * @param value  the value of the field that caused the exception
      * @param maxWidth  the maximum print width
      */
-    public CalendricalFormatFieldException(TimeFieldRule fieldRule, int value, int maxWidth) {
+    public CalendricalFormatFieldException(DateTimeFieldRule fieldRule, int value, int maxWidth) {
         super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " exceeds the maximum print width of " + maxWidth);
@@ -85,7 +85,7 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
      *
      * @return the field rule, null if unknown
      */
-    public TimeFieldRule getFieldRule() {
+    public DateTimeFieldRule getFieldRule() {
         return fieldRule;
     }
 
