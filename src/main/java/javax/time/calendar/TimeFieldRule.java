@@ -46,7 +46,7 @@ import javax.time.period.PeriodUnit;
  *
  * @author Stephen Colebourne
  */
-public abstract class TimeFieldRule {
+public abstract class TimeFieldRule implements Comparable<TimeFieldRule> {
 
     /** The name of the rule, not null. */
     private final String name;
