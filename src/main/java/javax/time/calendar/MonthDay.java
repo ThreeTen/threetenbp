@@ -145,6 +145,20 @@ public final class MonthDay
         return monthDay(MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
+    /**
+     * Obtains an instance of <code>MonthDay</code> from a date provider.
+     * <p>
+     * This can be used extract a month-day object directly from any implementation
+     * of ReadableDate, including those in other calendar systems.
+     *
+     * @param dateProvider  the date provider to use, not null
+     * @return a MonthDay object, never null
+     */
+    public static MonthDay monthDay(ReadableDate dateProvider) {
+        LocalDate localDate = dateProvider.toLocalDate();
+        return new MonthDay(localDate.getMonthOfYear(), localDate.getDayOfMonth());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructor, previously validated.
