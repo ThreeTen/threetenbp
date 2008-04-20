@@ -35,13 +35,13 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.ZoneOffset;
@@ -323,12 +323,11 @@ public final class FlexiDateTime implements Calendrical {
      * @throws UnsupportedOperationException if the date, offset or zone is null
      */
     public ZonedDateTime toZonedDateTime() {
-//        OffsetDateTime dateTime = toOffsetDateTime();
-//        if (zone == null) {
-//            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to ZonedDateTime because the zone is null");
-//        }
-//        return ZonedDateTime.dateTime(dateTime, offset);
-        return null;
+        OffsetDateTime dateTime = toOffsetDateTime();
+        if (zone == null) {
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to ZonedDateTime because the zone is null");
+        }
+        return ZonedDateTime.dateTime(dateTime, zone);
     }
 
     //-----------------------------------------------------------------------

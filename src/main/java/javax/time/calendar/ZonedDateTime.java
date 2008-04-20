@@ -177,6 +177,42 @@ public final class ZonedDateTime
     }
 
     /**
+     * Obtains an instance of <code>ZonedDateTime</code>, ensuring that the offset
+     * provided is valid for the time zone.
+     *
+     * @param dateTime  the offset date-time to use, not null
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     * @throws IllegalCalendarFieldValueException if the offset is invalid for the time zone at the date-time
+     */
+    public static ZonedDateTime dateTime(OffsetDateTime dateTime, TimeZone zone) {
+        if (dateTime == null) {
+            throw new NullPointerException("The date-time must not be null");
+        }
+        if (zone == null) {
+            throw new NullPointerException("The time zone must not be null");
+        }
+        ZoneOffset inputOffset = dateTime.getOffset();
+        OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
+        if (info instanceof ZoneOffset) {
+            if (info.equals(inputOffset) == false) {
+                throw new IllegalCalendarFieldValueException("The offset " + inputOffset +
+                        " specified in the OffsetDateTime is invalid for the time zone " + zone);
+            }
+        } else {
+            Discontinuity disc = (Discontinuity) info;
+            if (disc.isGap()) {
+                throw new IllegalCalendarFieldValueException("The local time " + dateTime +
+                        " does not exist in time zone " + zone + " due to a daylight savings gap");
+            } else if (disc.containsOffset(inputOffset) == false) {
+                throw new IllegalCalendarFieldValueException("The offset in the date-time " + dateTime +
+                        " is invalid for the time zone " + zone);
+            }
+        }
+        return new ZonedDateTime(dateTime, zone);
+    }
+
+    /**
      * Obtains an instance of <code>ZonedDateTime</code>, providing a resolver
      * to handle an invalid date-time.
      *
