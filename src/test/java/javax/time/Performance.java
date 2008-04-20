@@ -31,16 +31,23 @@
  */
 package javax.time;
 
-import static javax.time.calendar.LocalTime.*;
+import static javax.time.calendar.Calendars.*;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
+import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatters;
 
 /**
  * Test Performance.
@@ -49,6 +56,11 @@ import javax.time.calendar.LocalTime;
  */
 public class Performance {
 
+    /** Size. */
+    private static final NumberFormat NF = NumberFormat.getIntegerInstance();
+    static {
+        NF.setGroupingUsed(true);
+    }
     /** Size. */
     private static final int SIZE = 100000;
 
@@ -60,56 +72,142 @@ public class Performance {
         LocalTime time = time(12, 30, 20);
         System.out.println(time);
         
-        List<LocalTime> list = setup();
-        sortList(list);
-        queryList(list);
-//        List<GregorianCalendar> list = setupGCal();
-//        sortListGCal(list);
-//        queryListGCal(list);
+        List<LocalDateTime> jsrs = setupDateTime();
+//        sortListDateTime(jsrs);
+        queryListDateTime(jsrs);
+        formatListDateTime(jsrs);
+//        List<LocalTime> times = setupTime();
+//        List<LocalDate> dates = setupDate();
+//        sortList(times);
+//        queryList(times);
+//        formatList(dates);
+        List<GregorianCalendar> gcals = setupGCal();
+//        sortListGCal(gcals);
+        queryListGCal(gcals);
+        formatListGCal(gcals);
     }
 
-    private static List<LocalTime> setup() {
+    //-----------------------------------------------------------------------
+    private static List<LocalDateTime> setupDateTime() {
         Random random = new Random(47658758756875687L);
-        List<LocalTime> list = new ArrayList<LocalTime>(SIZE);
+        List<LocalDateTime> list = new ArrayList<LocalDateTime>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            LocalTime t = time(random.nextInt(24), random.nextInt(60), random.nextInt(60));
+            LocalDateTime t = LocalDateTime.dateTime(
+                    random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1,
+                    random.nextInt(24), random.nextInt(60), random.nextInt(60));
             list.add(t);
         }
         long end = System.nanoTime();
-        System.out.println((end - start) + " ns");
+        System.out.println("LocalDT:   Setup:  " + NF.format(end - start) + " ns");
         return list;
     }
 
-    private static void sortList(List<LocalTime> list) {
+    private static void sortListDateTime(List<LocalDateTime> list) {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
-        System.out.println((end - start) + " ns");
+        System.out.println("LocalDT:   Sort:   " + NF.format(end - start) + " ns");
     }
 
-    private static void queryList(List<LocalTime> list) {
+    private static void queryListDateTime(List<LocalDateTime> list) {
         long total = 0;
         long start = System.nanoTime();
-        for (LocalTime localTime : list) {
-            total += localTime.getHourOfDay().getValue();
-            total += localTime.getMinuteOfHour().getValue();
-            total += localTime.getSecondOfMinute().getValue();
+        for (LocalDateTime dt : list) {
+            total += dt.getYear().getValue();
+            total += dt.getMonthOfYear().getValue();
+            total += dt.getDayOfMonth().getValue();
+            total += dt.getHourOfDay().getValue();
+            total += dt.getMinuteOfHour().getValue();
+            total += dt.getSecondOfMinute().getValue();
         }
         long end = System.nanoTime();
-        System.out.println((end - start) + " ns" + " " + total);
+        System.out.println("LocalDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
     }
 
+    private static void formatListDateTime(List<LocalDateTime> list) {
+        StringBuilder buf = new StringBuilder();
+        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        long start = System.nanoTime();
+        for (LocalDateTime dt : list) {
+            buf.setLength(0);
+            buf.append(format.print(dt));
+        }
+        long end = System.nanoTime();
+        System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+//    //-----------------------------------------------------------------------
+//    private static List<LocalTime> setupTime() {
+//        Random random = new Random(47658758756875687L);
+//        List<LocalTime> list = new ArrayList<LocalTime>(SIZE);
+//        long start = System.nanoTime();
+//        for (int i = 0; i < SIZE; i++) {
+//            LocalTime t = time(random.nextInt(24), random.nextInt(60), random.nextInt(60));
+//            list.add(t);
+//        }
+//        long end = System.nanoTime();
+//        System.out.println((end - start) + " ns");
+//        return list;
+//    }
+//
+//    private static List<LocalDate> setupDate() {
+//        Random random = new Random(47658758756875687L);
+//        List<LocalDate> list = new ArrayList<LocalDate>(SIZE);
+//        long start = System.nanoTime();
+//        for (int i = 0; i < SIZE; i++) {
+//            LocalDate t = date(random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1);
+//            list.add(t);
+//        }
+//        long end = System.nanoTime();
+//        System.out.println((end - start) + " ns");
+//        return list;
+//    }
+//
+//    private static void sortList(List<LocalTime> list) {
+//        long start = System.nanoTime();
+//        Collections.sort(list);
+//        long end = System.nanoTime();
+//        System.out.println("LocalTime: Sort:   " + NF.format(end - start) + " ns");
+//    }
+//
+//    private static void queryList(List<LocalTime> list) {
+//        long total = 0;
+//        long start = System.nanoTime();
+//        for (LocalTime localTime : list) {
+//            total += localTime.getHourOfDay().getValue();
+//            total += localTime.getMinuteOfHour().getValue();
+//            total += localTime.getSecondOfMinute().getValue();
+//        }
+//        long end = System.nanoTime();
+//        System.out.println("LocalTime: Query:  " + NF.format(end - start) + " ns" + " " + total);
+//    }
+//
+//    private static void formatList(List<LocalDate> list) {
+//        StringBuilder buf = new StringBuilder();
+//        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+//        long start = System.nanoTime();
+//        for (LocalDate date : list) {
+//            buf.setLength(0);
+//            buf.append(format.print(date));
+//        }
+//        long end = System.nanoTime();
+//        System.out.println("LocalDate: Format: " + NF.format(end - start) + " ns" + " " + buf);
+//    }
+
+    //-----------------------------------------------------------------------
     private static List<GregorianCalendar> setupGCal() {
         Random random = new Random(47658758756875687L);
         List<GregorianCalendar> list = new ArrayList<GregorianCalendar>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            GregorianCalendar t = new GregorianCalendar(1970, 0, 1, random.nextInt(24), random.nextInt(60), random.nextInt(60));
+            GregorianCalendar t = new GregorianCalendar();
+            t.setGregorianChange(new Date(Long.MIN_VALUE));
+            t.set(random.nextInt(10000), random.nextInt(12), random.nextInt(28) + 1, random.nextInt(24), random.nextInt(60), random.nextInt(60));
             list.add(t);
         }
         long end = System.nanoTime();
-        System.out.println((end - start) + " ns");
+        System.out.println("GCalendar: Setup:  " + NF.format(end - start) + " ns");
         return list;
     }
 
@@ -117,19 +215,34 @@ public class Performance {
         long start = System.nanoTime();
         Collections.sort(list);
         long end = System.nanoTime();
-        System.out.println((end - start) + " ns");
+        System.out.println("GCalendar: Sort:   " + NF.format(end - start) + " ns");
     }
 
     private static void queryListGCal(List<GregorianCalendar> list) {
         long total = 0;
         long start = System.nanoTime();
         for (GregorianCalendar gcal : list) {
+            total += gcal.get(Calendar.YEAR);
+            total += gcal.get(Calendar.MONTH + 1);
+            total += gcal.get(Calendar.DAY_OF_MONTH);
             total += gcal.get(Calendar.HOUR_OF_DAY);
             total += gcal.get(Calendar.MINUTE);
             total += gcal.get(Calendar.SECOND);
         }
         long end = System.nanoTime();
-        System.out.println((end - start) + " ns" + " " + total);
+        System.out.println("GCalendar: Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListGCal(List<GregorianCalendar> list) {
+        StringBuilder buf = new StringBuilder();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        long start = System.nanoTime();
+        for (GregorianCalendar gcal : list) {
+            buf.setLength(0);
+            buf.append(format.format(gcal.getTime()));
+        }
+        long end = System.nanoTime();
+        System.out.println("GCalendar: Format: " + NF.format(end - start) + " ns" + " " + buf);
     }
 
 }
