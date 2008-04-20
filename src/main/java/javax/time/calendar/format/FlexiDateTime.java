@@ -31,16 +31,21 @@
  */
 package javax.time.calendar.format;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDate;
+import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.OffsetTime;
 import javax.time.calendar.TimeFieldRule;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.ZonedDateTime;
 
 /**
  * Flexible date time implementation that can hold a date, time, date-time or
@@ -53,17 +58,27 @@ import javax.time.calendar.ZoneOffset;
  *
  * @author Stephen Colebourne
  */
-public final class FlexiDateTime {
+public final class FlexiDateTime implements Calendrical {
 
-    /** The date time map. */
-    private Map<TimeFieldRule, Integer> fieldValueMap = new HashMap<TimeFieldRule, Integer>();
-    /** The date. */
+    /**
+     * The date time map.
+     */
+    private Map<TimeFieldRule, Integer> fieldValueMap = new TreeMap<TimeFieldRule, Integer>();
+    /**
+     * The date.
+     */
     private LocalDate date;
-    /** The time. */
+    /**
+     * The time.
+     */
     private LocalTime time;
-    /** The offset. */
+    /**
+     * The offset.
+     */
     private ZoneOffset offset;
-    /** The zone. */
+    /**
+     * The zone.
+     */
     private TimeZone zone;
 
     /**
@@ -112,6 +127,25 @@ public final class FlexiDateTime {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value for the specified field throwing an exception if the
+     * field is not in the field-value map.
+     * <p>
+     * The value returned might contradict the date or time, or be out of
+     * range for the rule.
+     *
+     * @param rule  the rule to query from the map, not null
+     * @return the value mapped to the specified field
+     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     */
+    public int getValue(TimeFieldRule rule) {
+        if (rule == null) {
+            throw new NullPointerException("The rule must not be null");
+        }
+        return rule.getValue(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * The optional set of specific fields and values.
      * <p>
      * The map will never be null, however it may well be empty.
@@ -146,8 +180,10 @@ public final class FlexiDateTime {
         throw new UnsupportedCalendarFieldException(rule, "FlexiDateTime");
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * The optional local date, such as '2007-12-03'.
+     * Gets the optional local date, such as '2007-12-03'.
+     * This method will return null if the date is null.
      *
      * @return the date, may be null
      */
@@ -156,7 +192,8 @@ public final class FlexiDateTime {
     }
 
     /**
-     * The optional local time, such as '10:15:30'.
+     * Gets the optional local time, such as '10:15:30'.
+     * This method will return null if the time is null.
      *
      * @return the time, may be null
      */
@@ -164,8 +201,10 @@ public final class FlexiDateTime {
         return time;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * The optional time zone offset, such as '+02:00'.
+     * Gets the optional time zone offset, such as '+02:00'.
+     * This method will return null if the offset is null.
      *
      * @return the offset, may be null
      */
@@ -174,7 +213,8 @@ public final class FlexiDateTime {
     }
 
     /**
-     * The optional time zone rules, such as 'Europe/Paris'.
+     * Gets the optional time zone rules, such as 'Europe/Paris'.
+     * This method will return null if the zone is null.
      *
      * @return the zone, may be null
      */
@@ -198,6 +238,38 @@ public final class FlexiDateTime {
     }
 
     /**
+     * Converts this object to a LocalTime.
+     * This method will fail if the time is null.
+     *
+     * @return the LocalTime, never null
+     * @throws UnsupportedOperationException if the time is null
+     */
+    public LocalTime toLocalTime() {
+        if (time == null) {
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to LocalTime because the time is null");
+        }
+        return time;
+    }
+
+    /**
+     * Converts this object to a LocalDateTime.
+     * This method will fail if the date or time is null.
+     *
+     * @return the LocalDateTime, never null
+     * @throws UnsupportedOperationException if the date or time is null
+     */
+    public LocalDateTime toLocalDateTime() {
+        if (date == null) {
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to LocalDateTime because the date is null");
+        }
+        if (time == null) {
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to LocalDateTime because the time is null");
+        }
+        return LocalDateTime.dateTime(date, time);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this object to an OffsetDate.
      * This method will fail if the date or offset is null.
      *
@@ -207,11 +279,42 @@ public final class FlexiDateTime {
     public OffsetDate toOffsetDate() {
         LocalDate date = toLocalDate();
         if (offset == null) {
-            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to LocalDate because the offset is null");
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to OffsetDate because the offset is null");
         }
         return OffsetDate.date(date, offset);
     }
 
+    /**
+     * Converts this object to an OffsetTime.
+     * This method will fail if the time or offset is null.
+     *
+     * @return the OffsetTime, never null
+     * @throws UnsupportedOperationException if the time or offset is null
+     */
+    public OffsetTime toOffsetTime() {
+        LocalTime time = toLocalTime();
+        if (offset == null) {
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to OffsetTime because the offset is null");
+        }
+        return OffsetTime.time(time, offset);
+    }
+
+    /**
+     * Converts this object to an OffsetDateTime.
+     * This method will fail if the time or offset is null.
+     *
+     * @return the OffsetDateTime, never null
+     * @throws UnsupportedOperationException if the time or offset is null
+     */
+    public OffsetDateTime toOffsetDateTime() {
+        LocalDateTime dateTime = toLocalDateTime();
+        if (offset == null) {
+            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to OffsetDateTime because the offset is null");
+        }
+        return OffsetDateTime.dateTime(dateTime, offset);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Converts this object to a ZonedDateTime.
      * This method will fail if the date or offset is null.
@@ -219,13 +322,68 @@ public final class FlexiDateTime {
      * @return the ZonedDateTime, never null
      * @throws UnsupportedOperationException if the date, offset or zone is null
      */
-    public OffsetDate toZonedDateTime() {
-//        LocalDate date = toLocalDate();
-//        if (offset == null) {
-//            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to LocalDate because the offset is null");
+    public ZonedDateTime toZonedDateTime() {
+//        OffsetDateTime dateTime = toOffsetDateTime();
+//        if (zone == null) {
+//            throw new UnsupportedOperationException("Cannot convert FlexiDateTime to ZonedDateTime because the zone is null");
 //        }
-//        return ZonedDateTime.dateTime(date, offset);
+//        return ZonedDateTime.dateTime(dateTime, offset);
         return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this object to a FlexiDateTime, trivially returning <code>this</code>.
+     *
+     * @return this
+     */
+    public FlexiDateTime toFlexiDateTime() {
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Outputs the flexi date-time as a <code>String</code>.
+     * <p>
+     * The output will use the following format:
+     * <ul>
+     * <li>Field-Value map, followed by space if non-empty</li>
+     * <li>Date</li>
+     * <li>Time, prefixed by 'T' if non-null</li>
+     * <li>Offset</li>
+     * <li>Zone, prefixed by a space if non-null</li>
+     * </ul>
+     * If an instance of LocalDate, LocalTime, LocalDateTime, OffsetDate, OffsetTime,
+     * OffsetDateTime or ZonedDateTime is converted to a FlexiDateTime then the
+     * toString output will remain the same.
+     *
+     * @return the formatted date-time string, never null
+     */
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        if (getFieldValueMap().size() > 0) {
+            buf.append(getFieldValueMap());
+            if (date != null || time != null || offset != null) {
+                buf.append(' ');
+            }
+        }
+        if (date != null) {
+            buf.append(date);
+        }
+        if (time != null) {
+            buf.append('T').append(time);
+        }
+        if (offset != null) {
+            buf.append(offset);
+        }
+        if (zone != null) {
+            if (date != null || time != null || offset != null) {
+                buf.append(' ');
+            }
+            buf.append(zone);
+        }
+        return buf.toString();
     }
 
 }
