@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -499,7 +499,7 @@ public final class Year
      * The year 1BC/BCE is represented by 1.<br />
      * The year 2BC/BCE is represented by 2.<br />
      *
-     * @return the year of era, from 1 to MAX_YEAR.
+     * @return the year of era, from 1 to MAX_YEAR
      */
     public int getYearOfEra() {
         return (year > 0 ? year : -(year - 1));
@@ -516,6 +516,33 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the year of century, from 0 to 99, which is used in combination
+     * with {@link #getCenturyOfEra()}.
+     *
+     * @return the year of era, from 0 to 99
+     */
+    public int getYearOfCentury() {
+        return getYearOfEra() % 100;
+    }
+
+    /**
+     * Gets the decade of century, from 0 to 9.
+     * <p>
+     * This method uses a simple definition of decade, being the
+     * remainder of the year of era divided by 10.
+     * <p>
+     * The value 2 will be returned from 2020AD/CE to 2029AD/CE.<br/>
+     * The value 1 will be returned from 2010AD/CE to 2019AD/CE.<br/>
+     * The value 0 will be returned from 2000AD/CE to 2009AD/CE.<br/>
+     * The value 9 will be returned from 1990AD/CE to 1999AD/CE.<br/>
+     *
+     * @return the decade of century, from 0 to 9
+     */
+    public int getDecadeOfCentury() {
+        return (getYearOfEra() % 100) / 10;
+    }
+
+    /**
      * Gets the century of era, from 0 to MAX_YEAR / 100.
      * <p>
      * This method uses a simple definition of century, being the
@@ -527,7 +554,7 @@ public final class Year
      * The value 0 will be returned from 99BC/BCE to 1BC/BCE.<br/>
      * The value 1 will be returned from 1000BC/BCE to 1999BC/BCE.<br/>
      *
-     * @return the century of era, from 0 to MAX_YEAR / 100.
+     * @return the century of era, from 0 to MAX_YEAR / 100
      */
     public int getCenturyOfEra() {
         return getYearOfEra() / 100;
@@ -545,27 +572,10 @@ public final class Year
      * The value 0 will be returned from 999BC/BCE to 1BC/BCE.<br/>
      * The value 1 will be returned from 1000BC/BCE to 1999BC/BCE.<br/>
      *
-     * @return the millenium of era, from 0 to MAX_YEAR / 1000.
+     * @return the millenium of era, from 0 to MAX_YEAR / 1000
      */
     public int getMilleniumOfEra() {
         return getYearOfEra() / 1000;
-    }
-
-    /**
-     * Gets the decade of century, from 0 to 9.
-     * <p>
-     * This method uses a simple definition of decade, being the
-     * remainder of the year of era divided by 10.
-     * <p>
-     * The value 2 will be returned from 2020AD/CE to 2029AD/CE.<br/>
-     * The value 1 will be returned from 2010AD/CE to 2019AD/CE.<br/>
-     * The value 0 will be returned from 2000AD/CE to 2009AD/CE.<br/>
-     * The value 9 will be returned from 1990AD/CE to 1999AD/CE.<br/>
-     *
-     * @return the decade of century, from 0 to 9.
-     */
-    public int getDecadeOfCentury() {
-        return (getYearOfEra() % 100) / 10;
     }
 
     //-----------------------------------------------------------------------
