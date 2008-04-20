@@ -47,6 +47,8 @@ import javax.time.period.Periods;
  * This class does not store or represent a year, time or time zone.
  * Thus, for example, the value "2nd October" can be stored in a MonthDay.
  * <p>
+ * A MonthDay does not posses a year, thus the 29th of February is considered valid.
+ * <p>
  * Static factory methods allow you to constuct instances.
  * <p>
  * MonthDay is thread-safe and immutable.
@@ -63,6 +65,7 @@ public final class MonthDay
     private static final long serialVersionUID = -254395108L;
     /**
      * A sample year that can be used to seed calculations.
+     * This is a leap year to enable the 29th of February.
      */
     private static final Year SAMPLE_YEAR = Year.isoYear(2000);
 
