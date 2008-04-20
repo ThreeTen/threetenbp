@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,49 +39,29 @@ package javax.time.calendar;
 public class UnsupportedCalendarFieldException extends RuntimeException {
 
     /**
-     * Constructs a new unsupported field exception with no message.
+     * The field that caused the exception
      */
-    public UnsupportedCalendarFieldException() {
-        super();
-    }
-
-    /**
-     * Constructs a new unsupported field exception with the specified message.
-     *
-     * @param message  the message to use for this exception, may be null
-     */
-    public UnsupportedCalendarFieldException(String message) {
-        super(message);
-    }
+    private final TimeFieldRule fieldRule;
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
      *
-     * @param field  the field that is not supported, may be null
-     * @param objectDescription  the description of the calendrical that does not support the field, not null
+     * @param fieldRule  the rule of the field that is not supported, may be null
+     * @param objectDescription  the description of the calendrical that does not support the field, may be null
      */
-    public UnsupportedCalendarFieldException(TimeFieldRule field, String objectDescription) {
-        super("Field " + (field == null ? "null" : field.getName()) + " is not supported on a " + objectDescription);
+    public UnsupportedCalendarFieldException(TimeFieldRule fieldRule, String objectDescription) {
+        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported on " + objectDescription);
+        this.fieldRule = fieldRule;
     }
 
-//    /**
-//     * Constructs a new unsupported field exception with the specified message and cause.
-//     *
-//     * @param message  the message to use for this exception, may be null
-//     * @param cause  the underlying cause of this exception, may be null
-//     */
-//    public UnsupportedCalendarFieldException(String message, Throwable cause) {
-//        super(message, cause);
-//    }
-//
-//    /**
-//     * Constructs a new unsupported field exception with the specified cause,
-//     * extracting the message from the cause if possible.
-//     *
-//     * @param cause  the underlying cause of this exception, may be null
-//     */
-//    public UnsupportedCalendarFieldException(Throwable cause) {
-//        super(cause);
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule of the field that caused the exception.
+     *
+     * @return the field rule, null if unknown
+     */
+    public TimeFieldRule getFieldRule() {
+        return fieldRule;
+    }
 
 }
