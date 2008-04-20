@@ -122,7 +122,7 @@ public final class YearMonth
      * @param dateProvider  the date provider to use, not null
      * @return a YearMonth object, never null
      */
-    public static YearMonth monthDay(ReadableDate dateProvider) {
+    public static YearMonth yearMonth(ReadableDate dateProvider) {
         LocalDate localDate = dateProvider.toLocalDate();
         return new YearMonth(localDate.getYear(), localDate.getMonthOfYear());
     }
