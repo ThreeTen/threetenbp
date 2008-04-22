@@ -143,6 +143,9 @@ public final class LocalDate
      * @return a LocalDate object, never null
      */
     public static LocalDate date(ReadableDate dateProvider) {
+        if (dateProvider == null) {
+            throw new NullPointerException("dateProvider must not be null");
+        }
         LocalDate result = dateProvider.toLocalDate();
         if (result == null) {
             throw new NullPointerException("The implementation of ReadableDate must not return null");

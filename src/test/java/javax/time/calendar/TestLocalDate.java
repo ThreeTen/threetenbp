@@ -33,6 +33,11 @@ package javax.time.calendar;
 
 import static org.testng.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -42,6 +47,7 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -50,6 +56,7 @@ import org.testng.annotations.Test;
 /**
  * Test LocalDate.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -71,6 +78,17 @@ public class TestLocalDate {
         assertTrue(TEST_2007_07_15 instanceof Comparable);
     }
 
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(TEST_2007_07_15);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertEquals(ois.readObject(), TEST_2007_07_15);
+    }
+
     public void test_immutable() {
         Class<LocalDate> cls = LocalDate.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
@@ -80,6 +98,63 @@ public class TestLocalDate {
             assertTrue(Modifier.isPrivate(field.getModifiers()));
             assertTrue(Modifier.isFinal(field.getModifiers()));
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_date_objects() {
+        assertEquals(TEST_2007_07_15, LocalDate.date(Year.isoYear(2007), MonthOfYear.JULY, DayOfMonth.dayOfMonth(15)));
+    }
+
+    public void factory_date_objects_leapYear() {
+        LocalDate test_2008_02_29 = LocalDate.date(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
+        assertEquals(test_2008_02_29.getYear(), Year.isoYear(2008));
+        assertEquals(test_2008_02_29.getMonthOfYear(), MonthOfYear.FEBRUARY);
+        assertEquals(test_2008_02_29.getDayOfMonth(), DayOfMonth.dayOfMonth(29));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_objects_nullYear() {
+        LocalDate.date(null, MonthOfYear.JULY, DayOfMonth.dayOfMonth(15));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_objects_nullMonth() {
+        LocalDate.date(Year.isoYear(2007), null, DayOfMonth.dayOfMonth(15));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_objects_nullDay() {
+        LocalDate.date(Year.isoYear(2007), MonthOfYear.JULY, null);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_date_objects_nonleapYear() {
+        LocalDate.date(Year.isoYear(2007), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_date_objects_dayTooBig() {
+        LocalDate.date(Year.isoYear(2007), MonthOfYear.APRIL, DayOfMonth.dayOfMonth(31));
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_date_intsMonth() {
+        assertEquals(TEST_2007_07_15, LocalDate.date(2007, MonthOfYear.JULY, 15));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_factory_date_intsMonth_dayTooLow() {
+        LocalDate.date(2007, MonthOfYear.JANUARY, 0);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_factory_date_intsMonth_dayTooHigh() {
+        LocalDate.date(2007, MonthOfYear.JANUARY, 32);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_factory_date_intsMonth_yearTooLow() {
+        LocalDate.date(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -113,6 +188,29 @@ public class TestLocalDate {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_date_ints_yearTooLow() {
         LocalDate.date(Integer.MIN_VALUE, 1, 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_date_ReadableDate() {
+        assertEquals(TEST_2007_07_15, LocalDate.date(TEST_2007_07_15));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_ReadableDate_null() {
+        LocalDate.date(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_ReadableDate_null_toDate() {
+        LocalDate.date(new ReadableDate() {
+            public LocalDate toLocalDate() {
+                return null;
+            }
+
+            public FlexiDateTime toFlexiDateTime() {
+                return null;
+            }
+        });
     }
 
     //-----------------------------------------------------------------------
@@ -355,6 +453,78 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    // compareTo()
+    //-----------------------------------------------------------------------
+    public void test_comparisons() {
+        doTest_comparisons_LocalDate(
+            LocalDate.date(Year.MIN_YEAR, 1, 1),
+            LocalDate.date(Year.MIN_YEAR, 12, 31),
+            LocalDate.date(-1, 1, 1),
+            LocalDate.date(-1, 12, 31),
+            LocalDate.date(0, 1, 1),
+            LocalDate.date(0, 12, 31),
+            LocalDate.date(1, 1, 1),
+            LocalDate.date(1, 12, 31),
+            LocalDate.date(2006, 1, 1),
+            LocalDate.date(2006, 12, 31),
+            LocalDate.date(2007, 1, 1),
+            LocalDate.date(2007, 12, 31),
+            LocalDate.date(2008, 1, 1),
+            LocalDate.date(2008, 2, 29),
+            LocalDate.date(2008, 12, 31),
+            LocalDate.date(Year.MAX_YEAR, 1, 1),
+            LocalDate.date(Year.MAX_YEAR, 12, 31)
+        );
+    }
+
+    void doTest_comparisons_LocalDate(LocalDate... LocalDates) {
+        for (int i = 0; i < LocalDates.length; i++) {
+            LocalDate a = LocalDates[i];
+            for (int j = 0; j < LocalDates.length; j++) {
+                LocalDate b = LocalDates[j];
+                if (i < j) {
+                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else if (i > j) {
+                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else {
+                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                }
+            }
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_compareTo_ObjectNull() {
+        TEST_2007_07_15.compareTo(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isBefore_ObjectNull() {
+        TEST_2007_07_15.isBefore(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isAfter_ObjectNull() {
+        TEST_2007_07_15.isAfter(null);
+    }
+
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonLocalDate() {
+       Comparable c = TEST_2007_07_15;
+       c.compareTo(new Object());
+    }
+
+    //-----------------------------------------------------------------------
     // equals()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
@@ -391,7 +561,7 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    // equals()
+    // toString()
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleToString")
     Object[][] provider_sampleToString() {
