@@ -51,6 +51,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * WeekOfMonth is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, Serializable {
@@ -105,8 +106,8 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      * @param dateProvider  the date provider to use, not null
      * @return the WeekOfMonth instance, never null
      */
-    public static WeekOfWeekyear weekOfMonth(ReadableDate dateProvider) {
-        return null;  // TODO
+    public static WeekOfMonth weekOfMonth(ReadableDate dateProvider) {
+        return new WeekOfMonth(1);  // TODO
     }
 
     //-----------------------------------------------------------------------

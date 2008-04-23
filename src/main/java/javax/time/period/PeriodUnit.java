@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,6 +44,7 @@ import java.util.concurrent.ConcurrentMap;
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public class PeriodUnit implements Comparable<PeriodUnit> {
@@ -72,8 +73,7 @@ public class PeriodUnit implements Comparable<PeriodUnit> {
             throw new NullPointerException("Period unit name must not be null");
         }
         PeriodUnit unit = new PeriodUnit(name, null);
-        unit = INSTANCES.putIfAbsent(name, unit);
-        if (unit != null) {
+        if (INSTANCES.putIfAbsent(name, unit) != null) {
             throw new IllegalArgumentException("Period unit '" + name + "' already exists");
         }
         return unit;

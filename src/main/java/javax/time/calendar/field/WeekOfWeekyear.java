@@ -55,6 +55,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * WeekOfWeekyear is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeekyear>, Serializable {
@@ -113,7 +114,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      * @return the WeekOfWeekyear singleton, never null
      */
     public static WeekOfWeekyear weekOfWeekyear(ReadableDate dateProvider) {
-        return null;  // TODO
+        return new WeekOfWeekyear(1);  // TODO
     }
 
     //-----------------------------------------------------------------------

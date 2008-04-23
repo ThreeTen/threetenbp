@@ -50,10 +50,9 @@ import javax.time.calendar.field.Year;
 import org.testng.annotations.Test;
 
 /**
- * Test DateAdjustors.
+ * Test DateResolvers.
  *
  * @author Michael Nascimento Santos
- * @author Stephen Colebourne
  */
 @Test
 public class TestDateResolvers {

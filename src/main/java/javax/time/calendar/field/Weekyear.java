@@ -68,6 +68,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * Weekyear is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serializable {
@@ -109,7 +110,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      * @return the Weekyear singleton, never null
      */
     public static Weekyear weekyear(ReadableDate dateProvider) {
-        return null;  // TODO
+        return new Weekyear(1);  // TODO
     }
 
     //-----------------------------------------------------------------------
