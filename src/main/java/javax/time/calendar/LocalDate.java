@@ -313,34 +313,72 @@ public final class LocalDate
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDate with the year value altered.
+     * If the resulting <code>LocalDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if year is invalid
+     * @see #withYear(int,DateResolver)
      */
     public LocalDate withYear(int year) {
+        return withYear(year, DateResolvers.previousValid());
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the year value altered.
+     * If the resulting <code>LocalDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if year is invalid
+     */
+    public LocalDate withYear(int year, DateResolver dateResolver) {
         if (this.year.getValue() == year) {
             return this;
         }
-        return DateResolvers.previousValid().resolveDate(
-                Year.isoYear(year), month, day);
+        return dateResolver.resolveDate(Year.isoYear(year), month, day);
     }
 
     /**
      * Returns a copy of this LocalDate with the month of year value altered.
+     * If the resulting <code>LocalDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if monthOfYear is invalid
+     * @see #withMonthOfYear(int,DateResolver)
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
+        return withMonthOfYear(monthOfYear, DateResolvers.previousValid());
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the month of year value altered.
+     * If the resulting <code>LocalDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if monthOfYear is invalid
+     */
+    public LocalDate withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
         if (this.month.getValue() == monthOfYear) {
             return this;
         }
-        return DateResolvers.previousValid().resolveDate(
-                year, MonthOfYear.monthOfYear(monthOfYear), day);
+        return dateResolver.resolveDate(year, MonthOfYear.monthOfYear(monthOfYear), day);
     }
 
     /**

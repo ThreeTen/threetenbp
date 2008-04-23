@@ -304,6 +304,16 @@ public class TestLocalDate {
     // get*()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
+    public void test_getYearMonth(int y, int m, int d) {
+        assertEquals(LocalDate.date(y, m, d).getYearMonth(), YearMonth.yearMonth(y, m));
+    }
+
+    @Test(dataProvider="sampleDates")
+    public void test_getMonthDay(int y, int m, int d) {
+        assertEquals(LocalDate.date(y, m, d).getMonthDay(), MonthDay.monthDay(m, d));
+    }
+
+    @Test(dataProvider="sampleDates")
     public void test_get(int y, int m, int d) {
         LocalDate a = LocalDate.date(y, m, d);
         assertEquals(a.getYear(), Year.isoYear(y));
@@ -324,41 +334,120 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    // with()
+    //-----------------------------------------------------------------------
+    public void test_with() {
+        DateAdjustor dateAdjustor = DateAdjustors.lastDayOfMonth();
+        assertEquals(TEST_2007_07_15.with(dateAdjustor), dateAdjustor.adjustDate(TEST_2007_07_15));
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_with_null_adjustDate() {
+        TEST_2007_07_15.with(new DateAdjustor() {
+            public LocalDate adjustDate(LocalDate date) {
+                return null;
+            }
+        });
+    }
+
+    //-----------------------------------------------------------------------
     // withYear()
     //-----------------------------------------------------------------------
-    public void test_withYear_normal() {
+    public void test_withYear_int_normal() {
         LocalDate t = TEST_2007_07_15.withYear(2008);
         assertEquals(t, LocalDate.date(2008, 7, 15));
     }
 
-    public void test_withYear_noChange() {
+    public void test_withYear_int_noChange() {
         LocalDate t = TEST_2007_07_15.withYear(2007);
         assertEquals(t, LocalDate.date(2007, 7, 15));
     }
+    
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withYear_int_invalid() {
+        TEST_2007_07_15.withYear(Year.MIN_YEAR - 1);
+    }
 
-    public void test_withYear_adjustDay() {
+    public void test_withYear_int_adjustDay() {
         LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007);
         LocalDate expected = LocalDate.date(2007, 2, 28);
         assertEquals(t, expected);
     }
 
+    public void test_withYear_int_DateResolver_normal() {
+        LocalDate t = TEST_2007_07_15.withYear(2008, DateResolvers.strict());
+        assertEquals(t, LocalDate.date(2008, 7, 15));
+    }
+
+    public void test_withYear_int_DateResolver_noChange() {
+        LocalDate t = TEST_2007_07_15.withYear(2007, DateResolvers.strict());
+        assertEquals(t, LocalDate.date(2007, 7, 15));
+    }
+    
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withYear_int_DateResolver_invalid() {
+        TEST_2007_07_15.withYear(Year.MIN_YEAR - 1, DateResolvers.nextValid());
+    }
+
+    public void test_withYear_int_DateResolver_adjustDay() {
+        LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.date(2007, 3, 1);
+        assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withYear_int_DateResolver_adjustDay_invalid() {
+        LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.strict());
+    }
+
     //-----------------------------------------------------------------------
     // withMonthOfYear()
     //-----------------------------------------------------------------------
-    public void test_withMonthOfYear_normal() {
+    public void test_withMonthOfYear_int_normal() {
         LocalDate t = TEST_2007_07_15.withMonthOfYear(1);
         assertEquals(t, LocalDate.date(2007, 1, 15));
     }
 
-    public void test_withMonthOfYear_noChange() {
+    public void test_withMonthOfYear_int_noChange() {
         LocalDate t = TEST_2007_07_15.withMonthOfYear(7);
         assertEquals(t, LocalDate.date(2007, 7, 15));
     }
 
-    public void test_withMonthOfYear_adjustDay() {
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMonthOfYear_int_invalid() {
+        TEST_2007_07_15.withMonthOfYear(13);
+    }
+
+    public void test_withMonthOfYear_int_adjustDay() {
         LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11);
         LocalDate expected = LocalDate.date(2007, 11, 30);
         assertEquals(t, expected);
+    }
+
+    public void test_withMonthOfYear_int_DateResolver_normal() {
+        LocalDate t = TEST_2007_07_15.withMonthOfYear(1, DateResolvers.strict());
+        assertEquals(t, LocalDate.date(2007, 1, 15));
+    }
+
+    public void test_withMonthOfYear_int_DateResolver_noChange() {
+        LocalDate t = TEST_2007_07_15.withMonthOfYear(7, DateResolvers.strict());
+        assertEquals(t, LocalDate.date(2007, 7, 15));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMonthOfYear_int_DateResolver_invalid() {
+        TEST_2007_07_15.withMonthOfYear(13, DateResolvers.nextValid());
+    }
+
+    public void test_withMonthOfYear_int_DateResolver_adjustDay() {
+        LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.date(2007, 12, 1);
+        assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
+        LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
