@@ -54,6 +54,9 @@
       </module>
       <module name="JavadocMethod">
         <property name="allowUndeclaredRTE" value="true" />
+        <!-- property name="allowMissingJavadoc" value="true" /-->
+        <!-- property name="excludeScope" value="private" /-->
+        <property name="scope" value="package" />
       </module>
       <module name="JavadocVariable" />
 
