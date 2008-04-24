@@ -53,19 +53,19 @@ public class MathUtils {
         return -value;
     }
 
-    /**
-     * Negates the input value, throwing an exception if an overflow occurs.
-     *
-     * @param value  the value to negate
-     * @return the negated value
-     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
-     */
-    public static long safeNegate(long value) {
-        if (value == Long.MIN_VALUE) {
-            throw new ArithmeticException("Long.MIN_VALUE cannot be negated");
-        }
-        return -value;
-    }
+//    /**
+//     * Negates the input value, throwing an exception if an overflow occurs.
+//     *
+//     * @param value  the value to negate
+//     * @return the negated value
+//     * @throws ArithmeticException if the value is MIN_VALUE and cannot be negated
+//     */
+//    public static long safeNegate(long value) {
+//        if (value == Long.MIN_VALUE) {
+//            throw new ArithmeticException("Long.MIN_VALUE cannot be negated");
+//        }
+//        return -value;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -178,45 +178,45 @@ public class MathUtils {
         return total;
     }
 
-    /**
-     * Multiply two values throwing an exception if overflow occurs.
-     *
-     * @param val1  the first value
-     * @param val2  the second value
-     * @return the new total
-     * @throws ArithmeticException if the result overflows a long
-     */
-    public static long safeMultiply(long val1, long val2) {
-        if (val2 == 1) {
-            return val1;
-        }
-        if (val1 == 1) {
-            return val2;
-        }
-        if (val1 == 0 || val2 == 0) {
-            return 0;
-        }
-        long total = val1 * val2;
-        if (total / val2 != val1) {
-            throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
-        }
-        return total;
-    }
+//    /**
+//     * Multiply two values throwing an exception if overflow occurs.
+//     *
+//     * @param val1  the first value
+//     * @param val2  the second value
+//     * @return the new total
+//     * @throws ArithmeticException if the result overflows a long
+//     */
+//    public static long safeMultiply(long val1, long val2) {
+//        if (val2 == 1) {
+//            return val1;
+//        }
+//        if (val1 == 1) {
+//            return val2;
+//        }
+//        if (val1 == 0 || val2 == 0) {
+//            return 0;
+//        }
+//        long total = val1 * val2;
+//        if (total / val2 != val1) {
+//            throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
+//        }
+//        return total;
+//    }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Safely increments an int.
-     *
-     * @param value  the value to increment
-     * @return the result
-     * @throws ArithmeticException if the result overflows a long
-     */
-    public static int safeIncrement(int value) {
-        if (value == Integer.MAX_VALUE) {
-            throw new ArithmeticException("Integer.MAX_VALUE cannot be incremented");
-        }
-        return value + 1;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Safely increments an int.
+//     *
+//     * @param value  the value to increment
+//     * @return the result
+//     * @throws ArithmeticException if the result overflows a long
+//     */
+//    public static int safeIncrement(int value) {
+//        if (value == Integer.MAX_VALUE) {
+//            throw new ArithmeticException("Integer.MAX_VALUE cannot be incremented");
+//        }
+//        return value + 1;
+//    }
 
     /**
      * Safely increments a long.
@@ -232,20 +232,20 @@ public class MathUtils {
         return value + 1;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Safely decrements an int.
-     *
-     * @param value  the value to decrement
-     * @return the result
-     * @throws ArithmeticException if the result overflows a long
-     */
-    public static int safeDecrement(int value) {
-        if (value == Integer.MIN_VALUE) {
-            throw new ArithmeticException("Integer.MIN_VALUE cannot be decremented");
-        }
-        return value - 1;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Safely decrements an int.
+//     *
+//     * @param value  the value to decrement
+//     * @return the result
+//     * @throws ArithmeticException if the result overflows a long
+//     */
+//    public static int safeDecrement(int value) {
+//        if (value == Integer.MIN_VALUE) {
+//            throw new ArithmeticException("Integer.MIN_VALUE cannot be decremented");
+//        }
+//        return value - 1;
+//    }
 
     /**
      * Safely decrements a long.
@@ -261,20 +261,20 @@ public class MathUtils {
         return value - 1;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Safely convert a long to an int.
-     *
-     * @param value  the value to convert
-     * @return the int value
-     */
-    public static int safeToInt(long value) {
-        if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE) {
-//        if (value >>> 32 > 0) {
-            throw new ArithmeticException("Calculation overflows an int: " + value);
-        }
-        return (int) value;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Safely convert a long to an int.
+//     *
+//     * @param value  the value to convert
+//     * @return the int value
+//     */
+//    public static int safeToInt(long value) {
+//        if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE) {
+////        if (value >>> 32 > 0) {
+//            throw new ArithmeticException("Calculation overflows an int: " + value);
+//        }
+//        return (int) value;
+//    }
 
     //-----------------------------------------------------------------------
     /**
