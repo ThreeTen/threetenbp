@@ -192,30 +192,30 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return getMinimumValue();
     }
 
-    /**
-     * Gets the minimum value that the field can take using the specified
-     * calendrical information to refine the accuracy of the response.
-     *
-     * @param calendricalContext  context datetime, null returns getMinimumValue()
-     * @return the minimum value of the field given the context
-     */
-    public int getMinimumValue(Calendrical calendricalContext) {
-        return getMinimumValue();
-    }
-
-    /**
-     * Gets the largest possible minimum value that the field can take using
-     * the specified calendrical information to refine the accuracy of the response.
-     *
-     * @param calendricalContext  context datetime, null returns getLargestMinimumValue()
-     * @return the largest possible minimum value of the field given the context
-     */
-    public int getLargestMinimumValue(Calendrical calendricalContext) {
-        if (calendricalContext == null) {
-            return getLargestMinimumValue();
-        }
-        return getMinimumValue(calendricalContext);
-    }
+//    /**
+//     * Gets the minimum value that the field can take using the specified
+//     * calendrical information to refine the accuracy of the response.
+//     *
+//     * @param calendricalContext  context datetime, null returns getMinimumValue()
+//     * @return the minimum value of the field given the context
+//     */
+//    public int getMinimumValue(Calendrical calendricalContext) {
+//        return getMinimumValue();
+//    }
+//
+//    /**
+//     * Gets the largest possible minimum value that the field can take using
+//     * the specified calendrical information to refine the accuracy of the response.
+//     *
+//     * @param calendricalContext  context datetime, null returns getLargestMinimumValue()
+//     * @return the largest possible minimum value of the field given the context
+//     */
+//    public int getLargestMinimumValue(Calendrical calendricalContext) {
+//        if (calendricalContext == null) {
+//            return getLargestMinimumValue();
+//        }
+//        return getMinimumValue(calendricalContext);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -236,31 +236,31 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return getMaximumValue();
     }
 
-    /**
-     * Gets the maximum value that the field can take using the specified
-     * calendrical information to refine the accuracy of the response.
-     *
-     * @param calendricalContext  context datetime, null returns getMaximumValue()
-     * @return the maximum value of the field given the context
-     */
-    public int getMaximumValue(Calendrical calendricalContext) {
-        return getMaximumValue();
-    }
-
-    /**
-     * Gets the smallest possible maximum value that the field can take using
-     * the specified calendrical information to refine the accuracy of the response.
-     *
-     * @param calendricalContext  context datetime, null returns getSmallestMaximumValue()
-     * @return the smallest possible maximum value of the field given the context
-     */
-    public int getSmallestMaximumValue(Calendrical calendricalContext) {
-        if (calendricalContext == null) {
-            return getSmallestMaximumValue();
-        }
-        return getMaximumValue(calendricalContext);
-    }
-
+//    /**
+//     * Gets the maximum value that the field can take using the specified
+//     * calendrical information to refine the accuracy of the response.
+//     *
+//     * @param calendricalContext  context datetime, null returns getMaximumValue()
+//     * @return the maximum value of the field given the context
+//     */
+//    public int getMaximumValue(Calendrical calendricalContext) {
+//        return getMaximumValue();
+//    }
+//
+//    /**
+//     * Gets the smallest possible maximum value that the field can take using
+//     * the specified calendrical information to refine the accuracy of the response.
+//     *
+//     * @param calendricalContext  context datetime, null returns getSmallestMaximumValue()
+//     * @return the smallest possible maximum value of the field given the context
+//     */
+//    public int getSmallestMaximumValue(Calendrical calendricalContext) {
+//        if (calendricalContext == null) {
+//            return getSmallestMaximumValue();
+//        }
+//        return getMaximumValue(calendricalContext);
+//    }
+//
 //    //-----------------------------------------------------------------------
 //    /**
 //     * Checks whether a given calendrical is supported or not.

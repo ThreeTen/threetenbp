@@ -37,10 +37,11 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -59,10 +60,6 @@ import javax.time.calendar.format.FlexiDateTime;
 public final class DayOfYear
         implements Calendrical, Comparable<DayOfYear>, Serializable, DateAdjustor, DateMatcher {
 
-    /**
-     * The rule implementation that defines how the day of year field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -84,6 +81,19 @@ public final class DayOfYear
      * The day of year being represented.
      */
     private final int dayOfYear;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the day of year field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the day of year rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.dayOfYear();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -167,7 +177,7 @@ public final class DayOfYear
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -275,27 +285,6 @@ public final class DayOfYear
     @Override
     public String toString() {
         return "DayOfYear=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the day of year field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("DayOfYear", null, null, 1, 366);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfYear().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

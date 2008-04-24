@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
@@ -86,15 +87,24 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      */
     SUNDAY(7),
     ;
-    /**
-     * The rule implementation that defines how the day of week field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The day of week being represented.
      */
     private final int dayOfWeek;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the day of week field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the day of week rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.dayOfWeek();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -216,7 +226,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -283,27 +293,6 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      */
     public DayOfWeek minusDays(int days) {
         return values()[(ordinal() + (days % 7)) % 7];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the day of week field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("DayOfWeek", null, null, 1, 7);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfWeek().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

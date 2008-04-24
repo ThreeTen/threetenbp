@@ -124,11 +124,11 @@ public class TestOffsetDate {
 
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-        assertEquals(TEST_2007_07_15.isSupported(Year.RULE), true);
-        assertEquals(TEST_2007_07_15.isSupported(MonthOfYear.RULE), true);
-        assertEquals(TEST_2007_07_15.isSupported(DayOfMonth.RULE), true);
-        assertEquals(TEST_2007_07_15.isSupported(DayOfWeek.RULE), true);
-        assertEquals(TEST_2007_07_15.isSupported(DayOfYear.RULE), true);
+        assertEquals(TEST_2007_07_15.isSupported(Year.rule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(MonthOfYear.rule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(DayOfMonth.rule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(DayOfWeek.rule()), true);
+        assertEquals(TEST_2007_07_15.isSupported(DayOfYear.rule()), true);
 //        assertEquals(TEST_2007_07_15.isSupported(HourOfDay.RULE), false);
 //        assertEquals(TEST_2007_07_15.isSupported(MinuteOfHour.RULE), false);
 //        assertEquals(TEST_2007_07_15.isSupported(SecondOfMinute.RULE), false);

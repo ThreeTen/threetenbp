@@ -36,6 +36,7 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
@@ -108,15 +109,24 @@ public enum MonthOfYear
      */
     DECEMBER(12),
     ;
-    /**
-     * The rule implementation that defines how the month of year field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The month of year being represented.
      */
     private final int monthOfYear;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the month of year field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the month of year rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.monthOfYear();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -200,7 +210,7 @@ public enum MonthOfYear
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -385,27 +395,6 @@ public enum MonthOfYear
     @Override
     public String toString() {
         return "MonthOfYear=" + name();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the month of year field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("MonthOfYear", null, null, 1, 12);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getMonthOfYear().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

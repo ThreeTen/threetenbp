@@ -33,6 +33,13 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.calendar.field.WeekOfMonth;
+import javax.time.calendar.field.WeekOfWeekyear;
+import javax.time.calendar.field.Weekyear;
+import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
+import javax.time.period.Periods;
+
 /**
  * The ISO8601 calendar system, which follows the rules of the current
  * <i>de facto</i> world calendar.
@@ -89,7 +96,7 @@ public final class ISOChronology implements Serializable {
         return INSTANCE;
     }
 
-    //-----------------------------------------------------------------------
+//    //-----------------------------------------------------------------------
 //    /**
 //     * Checks if the specified year is a leap year.
 //     * <p>
@@ -258,58 +265,104 @@ public final class ISOChronology implements Serializable {
 //        return 0;
 //    }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the rule for the year field.
-//     *
-//     * @return the rule for the year field, never null
-//     */
-//    public TimeFieldRule yearRule() {
-//        return YEAR_RULE;
-//    }
-//
-//    /**
-//     * Gets the rule for the month of year field.
-//     *
-//     * @return the rule for the month of year field, never null
-//     */
-//    public TimeFieldRule monthOfYearRule() {
-//        return MONTH_OF_YEAR_RULE;
-//    }
-//
-//    /**
-//     * Gets the rule for the day of year field.
-//     *
-//     * @return the rule for the day of year field, never null
-//     */
-//    public TimeFieldRule dayOfYearRule() {
-//        return DAY_OF_YEAR_RULE;
-//    }
-//
-//    /**
-//     * Gets the rule for the day of month field.
-//     *
-//     * @return the rule for the day of month field, never null
-//     */
-//    public TimeFieldRule dayOfMonthRule() {
-//        return DAY_OF_MONTH_RULE;
-//    }
-//
-//    /**
-//     * Gets the rule for the day of week field.
-//     *
-//     * @return the rule for the day of week field, never null
-//     */
-//    public TimeFieldRule dayOfWeekRule() {
-//        return null;
-//    }
-//
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for the year field in the ISO chronology.
+     *
+     * @return the rule for the year field, never null
+     */
+    public DateTimeFieldRule year() {
+        return YearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the month of year field in the ISO chronology.
+     *
+     * @return the rule for the month of year field, never null
+     */
+    public DateTimeFieldRule monthOfYear() {
+        return MonthOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the day of month field in the ISO chronology.
+     *
+     * @return the rule for the day of month field, never null
+     */
+    public DateTimeFieldRule dayOfMonth() {
+        return DayOfMonthRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the day of year field in the ISO chronology.
+     *
+     * @return the rule for the day of year field, never null
+     */
+    public DateTimeFieldRule dayOfYear() {
+        return DayOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week-based-year field in the ISO chronology.
+     *
+     * @return the rule for the week-based-year field, never null
+     */
+    public DateTimeFieldRule weekyear() {
+        return WeekyearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week of week-based-year field in the ISO chronology.
+     *
+     * @return the rule for the week of week-based-year field, never null
+     */
+    public DateTimeFieldRule weekOfWeekyear() {
+        return WeekOfWeekyearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the day of week field.
+     *
+     * @return the rule for the day of week field, never null
+     */
+    public DateTimeFieldRule dayOfWeek() {
+        return DayOfWeekRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the quarter of year field in the ISO chronology.
+     *
+     * @return the rule for the quarter of year field, never null
+     */
+    public DateTimeFieldRule quarterOfYear() {
+        return QuarterOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the month of quarter field in the ISO chronology.
+     *
+     * @return the rule for the month of quarter field, never null
+     */
+    public DateTimeFieldRule monthOfQuarter() {
+        return MonthOfQuarterRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week of month field in the ISO chronology.
+     *
+     * @return the rule for the week of month field, never null
+     */
+    public DateTimeFieldRule weekOfMonth() {
+        return WeekOfMonthRule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
 //    /**
 //     * Gets the rule for the hour of day field.
 //     *
 //     * @return the rule for the hour of day field, never null
 //     */
-//    public TimeFieldRule hourOfDayRule() {
+//    public TimeFieldRule hourOfDay() {
 //        return null;
 //    }
 //
@@ -318,7 +371,7 @@ public final class ISOChronology implements Serializable {
 //     *
 //     * @return the rule for the minute of hour field, never null
 //     */
-//    public TimeFieldRule minuteOfHourRule() {
+//    public TimeFieldRule minuteOfHour() {
 //        return null;
 //    }
 //
@@ -327,7 +380,7 @@ public final class ISOChronology implements Serializable {
 //     *
 //     * @return the rule for the second of minute field, never null
 //     */
-//    public TimeFieldRule secondOfMinuteRule() {
+//    public TimeFieldRule secondOfMinute() {
 //        return null;
 //    }
 //
@@ -336,7 +389,7 @@ public final class ISOChronology implements Serializable {
 //     *
 //     * @return the rule for the nano of second field, never null
 //     */
-//    public TimeFieldRule nanoOfSecondRule() {
+//    public TimeFieldRule nanoOfSecond() {
 //        return null;
 //    }
 
@@ -351,294 +404,554 @@ public final class ISOChronology implements Serializable {
         return "ISOChronology";
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * State implementation for the ISO8601 calendar system.
-//     */
-//    public static class State extends CalendricalState {
-//
-//        /** The months since the epoch of 0001-01-01 (ISO8601). */
-//        private final long months;
-//        /** The second of month. */
-//        private final long seconds;
-//
-//        /**
-//         * Constructor.
-//         *
-//         * @param months  the months since the epoch of 0001-01-01 (ISO8601)
-//         * @param seconds  the second of month
-//         */
-//        State(long months, long seconds) {
-//            super();
-//            this.months = months;
-//            this.seconds = seconds;
-//        }
-//
-//        /**
-//         * Constructor.
-//         *
-//         * @param year  the year, must be valid
-//         * @param monthOfYear  the month of year, from 1 to 12, must be valid
-//         * @param dayOfMonth  the day of month, from 1 to 31, must be valid
-//         */
-//        State(int year, int monthOfYear, int dayOfMonth) {
-//            super();
-//            this.months = ((year - 1) * MONTHS_PER_YEAR) + (monthOfYear - 1);
-//            this.seconds = (dayOfMonth - 1) * SECONDS_PER_DAY;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public PeriodUnit getPeriodUnit() {
-//            return null;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public PeriodUnit getPeriodRange() {
-//            return null;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public boolean isSupported(TimeFieldRule fieldRule) {
-//            return false;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public int get(TimeFieldRule fieldRule) {
-//            if (false) {
-//                throw new UnsupportedCalendarFieldException();
-//            }
-//            return 0; //fieldRule.getValue(this);
-//        }
-//
-//        /**
-//         * Gets the number of complete seconds within the month.
-//         *
-//         * @return the second of month
-//         */
-//        public long getEpochSeconds() {
-//            return seconds;
-//        }
-//
-//        /**
-//         * Gets the number of complete months since the epoch.
-//         *
-//         * @return the number of months since the epoch 0001-01-01 (ISO8601)
-//         */
-//        public long getEpochMonths() {
-//            return months;
-//        }
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new YearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private YearRule() {
+            super("Year", Periods.YEARS, Periods.FOREVER, Year.MIN_YEAR, Year.MAX_YEAR);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getYear().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private MonthOfYearRule() {
+            super("MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 12);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getMonthOfYear().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private DayOfMonthRule() {
+            super("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue() {
+            return 28;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getDayOfMonth().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private DayOfYearRule() {
+            super("DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue() {
+            return 365;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getDayOfYear().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class WeekyearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new WeekyearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private WeekyearRule() {
+            super("Weekyear", Periods.YEARS, Periods.FOREVER, Weekyear.MIN_YEAR, Weekyear.MAX_YEAR);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return Weekyear.weekyear(dateTime.getDate()).getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class WeekOfWeekyearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new WeekOfWeekyearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private WeekOfWeekyearRule() {
+            super("WeekOfWeekyear", Periods.WEEKS, Periods.YEARS, 1, 53);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private DayOfWeekRule() {
+            super("DayOfWeek", Periods.DAYS, Periods.WEEKS, 1, 7);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getDayOfWeek().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class QuarterOfYearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new QuarterOfYearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private QuarterOfYearRule() {
+            super("QuarterOfYear", Periods.WEEKS, Periods.YEARS, 1, 4);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getMonthOfYear().getQuarterOfYear().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class MonthOfQuarterRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new MonthOfQuarterRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private MonthOfQuarterRule() {
+            super("MonthOfQuarter", Periods.WEEKS, Periods.YEARS, 1, 4);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return dateTime.getDate().getMonthOfYear().getMonthOfQuarter();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class WeekOfMonthRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new WeekOfMonthRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private WeekOfMonthRule() {
+            super("WeekOfMonth", Periods.WEEKS, Periods.YEARS, 1, 5);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue() {
+            return 4;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getDate() != null) {
+                return WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
 
 //    //-----------------------------------------------------------------------
-//    /** Singleton instance of year rule. */
-//    private static final TimeFieldRule YEAR_RULE = new YearRule();
-//    /** Class implementing year rule. */
-//    static final class YearRule extends TimeFieldRule implements Serializable {
-//        /** Constructor. */
-//        public YearRule() {
-//            super("Year", Periods.YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR);
+//    /**
+//     * Rule implementation.
+//     */
+//    private static enum Rule implements Serializable {
+//        /** Year instance. */
+//        YEAR("Year", Periods.YEARS, Periods.FOREVER, Year.MIN_YEAR, Year.MAX_YEAR),
+//        /** Year instance. */
+//        MONTH_OF_YEAR("MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 12),
+//        /** Year instance. */
+//        DAY_OF_MONTH("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
+//
+//        /** The name of the rule, not null. */
+//        private final String name;
+//        /** The period unit, not null. */
+//        private final PeriodUnit periodUnit;
+//        /** The period range, not null. */
+//        private final PeriodUnit periodRange;
+//        /** The minimum value for the field. */
+//        private final int minimumValue;
+//        /** The maximum value for the field. */
+//        private final int maximumValue;
+//
+//        /**
+//         * Constructor.
+//         *
+//         * @param name  the name of the type, not null
+//         * @param periodUnit  the period unit, not null
+//         * @param periodRange  the period range, not null
+//         * @param minimumValue  the minimum value
+//         * @param maximumValue  the minimum value
+//         */
+//        private Rule(
+//                String name,
+//                PeriodUnit periodUnit,
+//                PeriodUnit periodRange,
+//                int minimumValue,
+//                int maximumValue) {
+//            this.name = name;
+//            this.periodUnit = periodUnit;
+//            this.periodRange = periodRange;
+//            this.minimumValue = minimumValue;
+//            this.maximumValue = maximumValue;
+//        }
+//
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Gets the name of the time field type.
+//         * <p>
+//         * Subclasses should use the form 'UnitOfRange' whenever possible.
+//         *
+//         * @return the name of the time field type, never null
+//         */
+//        public String getName() {
+//            return name;
 //        }
 //
 //        /**
-//         * Resolves singletons.
-//         * @return the singleton instance
+//         * Gets the period unit, which the element which alters within the range.
+//         * <p>
+//         * In the phrase 'hour of day', the unit is the hour.
+//         *
+//         * @return the rule for the unit period, never null
 //         */
-//        private Object readResolve() {
-//            return YEAR_RULE;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getValue(CalendricalState calState) {
-////            checkSupported(calState);
-////            long epochDays0 = calState.getEpochDays();
-////            return MathUtils.safeToInt((epochDays0 / MONTHS_PER_YEAR) + 1);
-//            return 0;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public CalendricalState setValue(CalendricalState calState, int newYear1) {
-////            // TODO: Validate year
-////            State state = (State) calState;
-////            long epochMonths0 = state.getEpochMonths();
-////            long currentYear0 = epochMonths0 / MONTHS_PER_YEAR;
-////            epochMonths0 += ((newYear1 - 1 - currentYear0) * MONTHS_PER_YEAR);
-////            State newState = new State(epochMonths0, state.getEpochSeconds());
-////            // TODO: resolve day of month
-////            return newState;
-//            return null;
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /** Singleton instance of month of year rule. */
-//    private static final TimeFieldRule MONTH_OF_YEAR_RULE = new MonthOfYearRule();
-//    /** Class implementing month of year rule. */
-//    static final class MonthOfYearRule extends TimeFieldRule implements Serializable {
-//        /** Constructor. */
-//        public MonthOfYearRule() {
-//            super("MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, MONTHS_PER_YEAR);
+//        public PeriodUnit getPeriodUnit() {
+//            return periodUnit;
 //        }
 //
 //        /**
-//         * Resolves singletons.
-//         * @return the singleton instance
+//         * Gets the period range, which the field is bound by.
+//         * <p>
+//         * In the phrase 'hour of day', the range is the day.
+//         *
+//         * @return the rule for the range period, never null
 //         */
-//        private Object readResolve() {
-//            return MONTH_OF_YEAR_RULE;
+//        public PeriodUnit getPeriodRange() {
+//            return periodRange;
 //        }
 //
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getValue(CalendricalState calState) {
-//            checkSupported(calState);
-//            State state = (State) calState;
-//            long epochMonths0 = state.getEpochMonths();
-//            return ((int) (epochMonths0 % MONTHS_PER_YEAR)) + 1;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
-//        public CalendricalState setValue(CalendricalState calState, int newMonth1) {
-////            // TODO: Validate month
-////            State state = (State) calState;
-////            long epochMonths0 = state.getEpochMonths();
-////            long currentMonth0 = epochMonths0 % MONTHS_PER_YEAR;
-////            epochMonths0 += (newMonth1 - 1 - currentMonth0);
-////            State newState = new State(epochMonths0, state.getEpochSeconds());
-////            // TODO: resolve day of month
-////            return newState;
-//            return null;
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /** Singleton instance of day of year rule. */
-//    private static final TimeFieldRule DAY_OF_YEAR_RULE = new DayOfYearRule();
-//    /** Class implementing day of year rule. */
-//    static final class DayOfYearRule extends TimeFieldRule implements Serializable {
-//        /** Constructor. */
-//        public DayOfYearRule() {
-//            super("DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Checks if the this field is supported using calendrical data that is
+//         * completely specified by the unit and range.
+//         * <p>
+//         * For example, a date object has a unit of days and a range of forever.
+//         * If this field is for hour of day, then that cannot be supported by the
+//         * unit and range from a date object.
+//         *
+//         * @param unit  the unit to check, not null
+//         * @param range  the range to check, not null
+//         * @return true if the field is supported
+//         */
+//        public boolean isSupported(PeriodUnit unit, PeriodUnit range) {
+//            return (periodUnit.compareTo(unit) >= 0) &&
+//                   (periodRange.compareTo(range) < 0);
 //        }
 //
 //        /**
-//         * Resolves singletons.
-//         * @return the singleton instance
+//         * Gets the value of this field.
+//         *
+//         * @param dateTime  the date time, not null
+//         * @return the value of the field
+//         * @throws UnsupportedCalendarFieldException if the value cannot be extracted
 //         */
-//        private Object readResolve() {
-//            return DAY_OF_YEAR_RULE;
+//        public int getValue(FlexiDateTime dateTime) {
+//            switch (this) {
+//                case YEAR:
+//                    return dateTime.getDate().getYear().getValue();
+//                default:
+//                    throw new UnsupportedCalendarFieldException(this, "FlexiDateTime");
+//            }
 //        }
 //
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getValue(CalendricalState calState) {
-//            checkSupported(calState);
-//            int monthOfYear1 = MONTH_OF_YEAR_RULE.getValue(calState);
-//            int dayOfMonth1 = DAY_OF_MONTH_RULE.getValue(calState);
-//            return (monthOfYear1 - 1) * 30 + dayOfMonth1;
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Checks if the value is invalid and throws an exception if it is.
+//         * This method has no context, so only the outer minimum and maximum
+//         * values are used.
+//         *
+//         * @param value  the value to check
+//         * @throws IllegalCalendarFieldValueException if the value is invalid
+//         */
+//        public void checkValue(int value) {
+//            if (value < getMinimumValue() || value > getMaximumValue()) {
+//                throw new IllegalCalendarFieldValueException(getName(), value, getMinimumValue(), getMaximumValue());
+//            }
 //        }
 //
-//        /** {@inheritDoc} */
-//        @Override
-//        public CalendricalState setValue(CalendricalState calState, int newDOY1) {
-//            // TODO: Validate day
-//            int newDOY0 = newDOY1 - 1;
-//            int newMonth0 = newDOY0 / 30;
-//            int newDOM0 = newDOY0 % 30;
-//            calState = MONTH_OF_YEAR_RULE.setValue(calState, newMonth0);
-//            calState = DAY_OF_MONTH_RULE.setValue(calState, newDOM0);
-//            return calState;
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Is the set of values, from the minimum value to the maximum, a fixed
+//         * set, or does it vary according to other fields.
+//         *
+//         * @return true if the set of values is fixed
+//         */
+//        public boolean isFixedValueSet() {
+//            return getMaximumValue() == getSmallestMaximumValue() &&
+//                    getMinimumValue() == getLargestMinimumValue();
 //        }
-//    }
 //
-//    //-----------------------------------------------------------------------
-//    /** Singleton instance of day of month rule. */
-//    private static final TimeFieldRule DAY_OF_MONTH_RULE = new DayOfMonthRule();
-//    /** Class implementing day of month rule. */
-//    static final class DayOfMonthRule extends TimeFieldRule implements Serializable {
-//        /** Constructor. */
-//        public DayOfMonthRule() {
-//            super("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Gets the minimum value that the field can take.
+//         *
+//         * @return the minimum value for this field
+//         */
+//        public int getMinimumValue() {
+//            return minimumValue;
 //        }
 //
 //        /**
-//         * Resolves singletons.
-//         * @return the singleton instance
+//         * Gets the largest possible minimum value that the field can take.
+//         *
+//         * @return the largest possible minimum value for this field
 //         */
-//        private Object readResolve() {
-//            return DAY_OF_MONTH_RULE;
+//        public int getLargestMinimumValue() {
+//            return getMinimumValue();
 //        }
 //
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getValue(CalendricalState calState) {
-//            checkSupported(calState);
-//            State state = (State) calState;
-//            return ((int) (state.getEpochSeconds() % SECONDS_PER_DAY)) + 1;
+////        /**
+////         * Gets the minimum value that the field can take using the specified
+////         * calendrical information to refine the accuracy of the response.
+////         *
+////         * @param calendricalContext  context datetime, null returns getMinimumValue()
+////         * @return the minimum value of the field given the context
+////         */
+////        public int getMinimumValue(Calendrical calendricalContext) {
+////            return getMinimumValue();
+////        }
+//    //
+////        /**
+////         * Gets the largest possible minimum value that the field can take using
+////         * the specified calendrical information to refine the accuracy of the response.
+////         *
+////         * @param calendricalContext  context datetime, null returns getLargestMinimumValue()
+////         * @return the largest possible minimum value of the field given the context
+////         */
+////        public int getLargestMinimumValue(Calendrical calendricalContext) {
+////            if (calendricalContext == null) {
+////                return getLargestMinimumValue();
+////            }
+////            return getMinimumValue(calendricalContext);
+////        }
+//
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Gets the maximum value that the field can take.
+//         *
+//         * @return the maximum value for this field
+//         */
+//        public int getMaximumValue() {
+//            return maximumValue;
 //        }
 //
-//        /** {@inheritDoc} */
-//        @Override
-//        public CalendricalState setValue(CalendricalState calState, int newDay1) {
-////            // TODO: Validate day
-////            State state = (State) calState;
-////            long epochSeconds0 = state.getEpochSeconds();
-////            long currentDay0 = epochSeconds0 % SECONDS_PER_DAY;
-////            epochSeconds0 += ((newDay1 - 1 - currentDay0) * SECONDS_PER_DAY);
-////            State newState = new State(state.getEpochMonths(), epochSeconds0);
-////            // TODO: resolve day of month
-////            return newState;
-//            return null;
-//        }
-//
-//        /** {@inheritDoc} */
-//        @Override
+//        /**
+//         * Gets the smallest possible maximum value that the field can take.
+//         *
+//         * @return the smallest possible maximum value for this field
+//         */
 //        public int getSmallestMaximumValue() {
-//            return 28;
+//            return getMaximumValue();
 //        }
 //
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getSmallestMaximumValue(Calendrical context) {
-//            // TODO: Need better algorithm
-//            if (context.getCalendricalState().isSupported(MONTH_OF_YEAR_RULE)) {
-//                int month = context.getCalendricalState().get(MONTH_OF_YEAR_RULE);
-//                if (month != 2) {
-//                    return 30;
-//                }
-//                if (context.getCalendricalState().isSupported(YEAR_RULE)) {
-//                    int year = context.getCalendricalState().get(YEAR_RULE);
-//                    return (INSTANCE.isLeapYear(year) ? 29 : 28);
-//                } else {
-//                    return 28;
-//                }
+////        /**
+////         * Gets the maximum value that the field can take using the specified
+////         * calendrical information to refine the accuracy of the response.
+////         *
+////         * @param calendricalContext  context datetime, null returns getMaximumValue()
+////         * @return the maximum value of the field given the context
+////         */
+////        public int getMaximumValue(Calendrical calendricalContext) {
+////            return getMaximumValue();
+////        }
+//    //
+////        /**
+////         * Gets the smallest possible maximum value that the field can take using
+////         * the specified calendrical information to refine the accuracy of the response.
+////         *
+////         * @param calendricalContext  context datetime, null returns getSmallestMaximumValue()
+////         * @return the smallest possible maximum value of the field given the context
+////         */
+////        public int getSmallestMaximumValue(Calendrical calendricalContext) {
+////            if (calendricalContext == null) {
+////                return getSmallestMaximumValue();
+////            }
+////            return getMaximumValue(calendricalContext);
+////        }
+//    //
+////        //-----------------------------------------------------------------------
+////        /**
+////         * Checks whether a given calendrical is supported or not.
+////         *
+////         * @param calState  the calendar state to check, not null
+////         * @throws UnsupportedCalendarFieldException if the field is unsupported
+////         */
+////        protected void checkSupported(CalendricalState calState) {
+////            if (calState.getPeriodUnit().compareTo(getPeriodUnit()) > 0 ||
+////                    calState.getPeriodRange().compareTo(getPeriodRange()) < 0) {
+////                throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
+////            }
+////        }
+//
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Compares this TimeFieldRule to another based on the period unit
+//         * followed by the period range.
+//         * <p>
+//         * The period unit is compared first, so MinuteOfHour will be less than
+//         * HourOfDay, which will be less than DayOfWeek. When the period unit is
+//         * the same, the period range is compared, so DayOfWeek is less than
+//         * DayOfMonth, which is less than DayOfYear.
+//         *
+//         * @param other  the other type to compare to, not null
+//         * @return the comparator result, negative if less, postive if greater, zero if equal
+//         * @throws NullPointerException if other is null
+//         */
+//        public int compareTo(DateTimeFieldRule other) {
+//            int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
+//            if (cmp != 0) {
+//                return cmp;
 //            }
-//            return 28;
+//            return this.getPeriodRange().compareTo(other.getPeriodRange());
 //        }
 //
-//        /** {@inheritDoc} */
+//        //-----------------------------------------------------------------------
+//        /**
+//         * Returns a string representation of the rule.
+//         *
+//         * @return a description of the rule
+//         */
 //        @Override
-//        public int getMaximumValue(Calendrical context) {
-//            // TODO: Need better algorithm
-//            if (context.getCalendricalState().isSupported(MONTH_OF_YEAR_RULE)) {
-//                int month = context.getCalendricalState().get(MONTH_OF_YEAR_RULE);
-//                if (month != 2) {
-//                    return 30;
-//                }
-//                if (context.getCalendricalState().isSupported(YEAR_RULE)) {
-//                    int year = context.getCalendricalState().get(YEAR_RULE);
-//                    return (INSTANCE.isLeapYear(year) ? 6 : 5);
-//                } else {
-//                    return 6;
-//                }
-//            }
-//            return 30;
+//        public String toString() {
+//            return getName();
 //        }
 //    }
 

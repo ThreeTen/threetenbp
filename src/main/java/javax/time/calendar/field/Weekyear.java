@@ -34,9 +34,10 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -74,9 +75,13 @@ import javax.time.calendar.format.FlexiDateTime;
 public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serializable {
 
     /**
-     * The rule implementation that defines how the week-based year field operates.
+     * Constant for the minimum week-based-year.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final int MIN_YEAR = Year.MIN_YEAR;
+    /**
+     * Constant for the maximum week-based-year.
+     */
+    public static final int MAX_YEAR = Year.MAX_YEAR;
     /**
      * A serialization identifier for this instance.
      */
@@ -89,6 +94,19 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule that defines how the week-based-year field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the week-based-year rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.weekyear();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of <code>Weekyear</code> from a value.
      *
      * @param weekyear  the week-based year to represent, from MIN_YEAR to MAX_YEAR
@@ -96,7 +114,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      * @throws IllegalCalendarFieldValueException if the weekyear is invalid
      */
     public static Weekyear weekyear(int weekyear) {
-        RULE.checkValue(weekyear);
+        rule().checkValue(weekyear);
         return new Weekyear(weekyear);
     }
 
@@ -140,7 +158,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -234,27 +252,6 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
     @Override
     public String toString() {
         return "Weekyear=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the week-based year field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("Weekyear", null, null, Integer.MIN_VALUE + 1, Integer.MAX_VALUE -1);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return Weekyear.weekyear(dateTime.getDate()).getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

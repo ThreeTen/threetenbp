@@ -72,11 +72,11 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_DATE;
     static {
         ISO_DATE = new DateTimeFormatterBuilder()
-            .appendValue(Year.RULE, 4, 10, '0', true, SignStyle.EXCEEDS_PAD)
+            .appendValue(Year.rule(), 4, 10, '0', true, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendValue(MonthOfYear.RULE, 2)
+            .appendValue(MonthOfYear.rule(), 2)
             .appendLiteral('-')
-            .appendValue(DayOfMonth.RULE, 2)
+            .appendValue(DayOfMonth.rule(), 2)
             .toFormatter();
     }
 
@@ -99,9 +99,9 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_ORDINAL_DATE;
     static {
         ISO_ORDINAL_DATE = new DateTimeFormatterBuilder()
-            .appendValue(Year.RULE, 4, 10, '0', true, SignStyle.EXCEEDS_PAD)
+            .appendValue(Year.rule(), 4, 10, '0', true, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendValue(DayOfYear.RULE, 3)
+            .appendValue(DayOfYear.rule(), 3)
             .toFormatter();
     }
 
@@ -124,9 +124,9 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter BASIC_ISO_DATE;
     static {
         BASIC_ISO_DATE = new DateTimeFormatterBuilder()
-            .appendValue(Year.RULE, 4, 10, '0', true, SignStyle.EXCEEDS_PAD)
-            .appendValue(MonthOfYear.RULE, 2)
-            .appendValue(DayOfMonth.RULE, 2)
+            .appendValue(Year.rule(), 4, 10, '0', true, SignStyle.EXCEEDS_PAD)
+            .appendValue(MonthOfYear.rule(), 2)
+            .appendValue(DayOfMonth.rule(), 2)
             .toFormatter();
     }
 

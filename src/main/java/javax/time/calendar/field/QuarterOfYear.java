@@ -33,10 +33,11 @@ package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -73,14 +74,24 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
     Q4(4),
     ;
     /**
-     * The rule implementation that defines how the quarter of year field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
 
     /**
      * The quarter of year being represented.
      */
     private final int quarterOfYear;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the quarter of year field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the quarter of year rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.quarterOfYear();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -151,7 +162,7 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -184,27 +195,6 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
      */
     public boolean matchesDate(LocalDate date) {
         return date.getMonthOfYear().getQuarterOfYear() == this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the quarter of year field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("QuarterOfYear", null, null, 1, 4);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getMonthOfYear().getQuarterOfYear().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

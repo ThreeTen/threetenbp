@@ -237,17 +237,17 @@ public class TestLocalDate {
 //        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
 //        assertTrue(TEST_2007_07_15.isSupported(CenturyOfEra.RULE));
 //        assertTrue(TEST_2007_07_15.isSupported(DecadeOfCentury.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(Year.RULE));
+        assertTrue(TEST_2007_07_15.isSupported(Year.rule()));
 //        assertTrue(TEST_2007_07_15.isSupported(YearOfEra.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(QuarterOfYear.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(MonthOfYear.RULE));
+        assertTrue(TEST_2007_07_15.isSupported(QuarterOfYear.rule()));
+        assertTrue(TEST_2007_07_15.isSupported(MonthOfYear.rule()));
 //        assertTrue(TEST_2007_07_15.isSupported(MonthOfQuarter.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(DayOfMonth.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(DayOfWeek.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(DayOfYear.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(WeekOfMonth.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(WeekOfWeekyear.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(Weekyear.RULE));
+        assertTrue(TEST_2007_07_15.isSupported(DayOfMonth.rule()));
+        assertTrue(TEST_2007_07_15.isSupported(DayOfWeek.rule()));
+        assertTrue(TEST_2007_07_15.isSupported(DayOfYear.rule()));
+        assertTrue(TEST_2007_07_15.isSupported(WeekOfMonth.rule()));
+        assertTrue(TEST_2007_07_15.isSupported(WeekOfWeekyear.rule()));
+        assertTrue(TEST_2007_07_15.isSupported(Weekyear.rule()));
 
         assertFalse(TEST_2007_07_15.isSupported(HourOfDay.RULE));
         assertFalse(TEST_2007_07_15.isSupported(MinuteOfHour.RULE));
@@ -264,17 +264,17 @@ public class TestLocalDate {
 //        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
 //        assertEquals(TEST_2007_07_15.get(CenturyOfEra.RULE), TEST_2007_07_15.getYear().getCenturyOfEra());
 //        assertEquals(TEST_2007_07_15.get(DecadeOfCentury.RULE), TEST_2007_07_15.getYear().getDecadeOfCentury());
-        assertEquals(TEST_2007_07_15.get(Year.RULE), TEST_2007_07_15.getYear().getValue());
+        assertEquals(TEST_2007_07_15.get(Year.rule()), TEST_2007_07_15.getYear().getValue());
 //        assertEquals(TEST_2007_07_15.get(YearOfEra.RULE), TEST_2007_07_15.getYear().getYearOfEra());
-        assertEquals(TEST_2007_07_15.get(QuarterOfYear.RULE), TEST_2007_07_15.getMonthOfYear().getQuarterOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(MonthOfYear.RULE), TEST_2007_07_15.getMonthOfYear().getValue());
+        assertEquals(TEST_2007_07_15.get(QuarterOfYear.rule()), TEST_2007_07_15.getMonthOfYear().getQuarterOfYear().getValue());
+        assertEquals(TEST_2007_07_15.get(MonthOfYear.rule()), TEST_2007_07_15.getMonthOfYear().getValue());
 //        assertEquals(TEST_2007_07_15.get(MonthOfQuarter.RULE), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
-        assertEquals(TEST_2007_07_15.get(DayOfMonth.RULE), TEST_2007_07_15.getDayOfMonth().getValue());
-        assertEquals(TEST_2007_07_15.get(DayOfWeek.RULE), TEST_2007_07_15.getDayOfWeek().getValue());
-        assertEquals(TEST_2007_07_15.get(DayOfYear.RULE), TEST_2007_07_15.getDayOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(WeekOfMonth.RULE), WeekOfMonth.weekOfMonth(TEST_2007_07_15).getValue());
-        assertEquals(TEST_2007_07_15.get(WeekOfWeekyear.RULE), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15).getValue());
-        assertEquals(TEST_2007_07_15.get(Weekyear.RULE), Weekyear.weekyear(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(DayOfMonth.rule()), TEST_2007_07_15.getDayOfMonth().getValue());
+        assertEquals(TEST_2007_07_15.get(DayOfWeek.rule()), TEST_2007_07_15.getDayOfWeek().getValue());
+        assertEquals(TEST_2007_07_15.get(DayOfYear.rule()), TEST_2007_07_15.getDayOfYear().getValue());
+        assertEquals(TEST_2007_07_15.get(WeekOfMonth.rule()), WeekOfMonth.weekOfMonth(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(WeekOfWeekyear.rule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(Weekyear.rule()), Weekyear.weekyear(TEST_2007_07_15).getValue());
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)

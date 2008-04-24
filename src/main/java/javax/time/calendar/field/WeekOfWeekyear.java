@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.ReadableDate;
 import javax.time.calendar.DateTimeFieldRule;
@@ -61,10 +62,6 @@ import javax.time.calendar.format.FlexiDateTime;
 public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeekyear>, Serializable {
 
     /**
-     * The rule implementation that defines how the week of week-based year field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
-    /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
@@ -77,6 +74,19 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      * The week of week-based year being represented.
      */
     private final int weekOfWeekyear;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the week of week-based-year field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the week of week-based-year rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.weekOfWeekyear();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -153,7 +163,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -217,27 +227,6 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
     @Override
     public String toString() {
         return "WeekOfWeekyear=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the week of week-based year field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("WeekOfWeekyear", null, null, 1, 53);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

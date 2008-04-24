@@ -52,10 +52,7 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDayOfMonthRule {
-
-    private static final int STANDARD_YEAR_LENGTH = 365;
-    private static final int LEAP_YEAR_LENGTH = 366;
-    private static final int MAX_LENGTH = 31;
+    // TODO: Refactor to test ISOChronology.monthOfYear()
 
     @BeforeMethod
     public void setUp() {
@@ -63,7 +60,7 @@ public class TestDayOfMonthRule {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(DateTimeFieldRule.class.isAssignableFrom(DayOfMonth.RULE.getClass()));
+        assertTrue(DateTimeFieldRule.class.isAssignableFrom(DayOfMonth.rule().getClass()));
     }
 
     public void test_immutable() {
@@ -83,7 +80,7 @@ public class TestDayOfMonthRule {
 
     //-----------------------------------------------------------------------
     public void test_singleton() {
-        assertSame(DayOfMonth.RULE, DayOfMonth.RULE);
+        assertSame(DayOfMonth.rule(), DayOfMonth.rule());
     }
 
     //-----------------------------------------------------------------------
@@ -93,32 +90,32 @@ public class TestDayOfMonthRule {
         LocalDate date = LocalDate.date(2007, 6, 20);
         FlexiDateTime dt = date.toFlexiDateTime();
         
-        assertEquals(DayOfMonth.RULE.getValue(dt), 20);
+        assertEquals(DayOfMonth.rule().getValue(dt), 20);
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_getValue_FlexiDateTime_noDate() {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null);
-        DayOfMonth.RULE.getValue(dt);
+        DayOfMonth.rule().getValue(dt);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getValue_FlexiDateTime_null() {
         FlexiDateTime dt = null;
-        DayOfMonth.RULE.getValue(dt);
+        DayOfMonth.rule().getValue(dt);
     }
 
     public void test_getValue_FlexiDateTime_monthDay() {
         MonthDay date = MonthDay.monthDay(6, 20);
         FlexiDateTime dt = date.toFlexiDateTime();
         
-        assertEquals(DayOfMonth.RULE.getValue(dt), 20);
+        assertEquals(DayOfMonth.rule().getValue(dt), 20);
     }
 
     public void test_getValue_FlexiDateTime_day() {
-        FlexiDateTime dt = new FlexiDateTime(DayOfMonth.RULE, 20);
+        FlexiDateTime dt = new FlexiDateTime(DayOfMonth.rule(), 20);
         
-        assertEquals(DayOfMonth.RULE.getValue(dt), 20);
+        assertEquals(DayOfMonth.rule().getValue(dt), 20);
     }
 
 }

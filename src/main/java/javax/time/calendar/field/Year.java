@@ -39,10 +39,11 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
@@ -64,10 +65,6 @@ public final class Year
         implements Calendrical, Comparable<Year>, Serializable, DateAdjustor, DateMatcher {
 
     /**
-     * The rule implementation that defines how the year field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
-    /**
      * Constant for the minimum year on the proleptic ISO calendar system.
      */
     public static final int MIN_YEAR = Integer.MIN_VALUE + 2;
@@ -88,6 +85,19 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule that defines how the year field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the year rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.year();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of <code>Year</code>.
      * <p>
      * This method accepts a year value from the proleptic ISO calendar system.
@@ -102,7 +112,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
     public static Year isoYear(int isoYear) {
-        Year.RULE.checkValue(isoYear);
+        rule().checkValue(isoYear);
         return new Year(isoYear);
     }
 
@@ -170,7 +180,7 @@ public final class Year
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     /**
@@ -485,7 +495,7 @@ public final class Year
      * @return a new updated Year, never null
      */
     public Year withISOYear(int isoYear) {
-        Year.RULE.checkValue(isoYear);
+        rule().checkValue(isoYear);
         return null;
     }
 
@@ -576,27 +586,6 @@ public final class Year
      */
     public int getMilleniumOfEra() {
         return getYearOfEra() / 1000;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the year field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("Year", Periods.YEARS, Periods.FOREVER, MIN_YEAR, MAX_YEAR);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getYear().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }

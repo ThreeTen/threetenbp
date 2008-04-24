@@ -132,9 +132,11 @@ public class TestFluentAPI {
         md = md.with(march());
         md = md.rollDayOfMonth(3);
         
-        DayOfMonth.RULE.getMaximumValue();
-        DayOfMonth.RULE.getMaximumValue(date);
-        DayOfMonth.RULE.getMaximumValue(february());
+        DayOfMonth.rule().getMaximumValue();
+        date.getMonthOfYear().maxLengthInDays();
+//        DayOfMonth.RULE.getMaximumValue(date);
+        february().maxLengthInDays();
+//        DayOfMonth.RULE.getMaximumValue(february());
         
         DayOfWeek dow = MONDAY;
         dow = dow.next();

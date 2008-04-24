@@ -426,7 +426,7 @@ public final class YearMonth
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(Year.RULE, year.getValue(), MonthOfYear.RULE, month.getValue());
+        return new FlexiDateTime(Year.rule(), year.getValue(), MonthOfYear.rule(), month.getValue());
     }
 
     //-----------------------------------------------------------------------

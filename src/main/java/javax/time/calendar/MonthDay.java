@@ -408,7 +408,7 @@ public final class MonthDay
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(MonthOfYear.RULE, month.getValue(), DayOfMonth.RULE, day.getValue());
+        return new FlexiDateTime(MonthOfYear.rule(), month.getValue(), DayOfMonth.rule(), day.getValue());
     }
 
     //-----------------------------------------------------------------------

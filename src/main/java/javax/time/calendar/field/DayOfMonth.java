@@ -39,10 +39,11 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -62,10 +63,6 @@ public final class DayOfMonth
         implements Calendrical, Comparable<DayOfMonth>, Serializable, DateAdjustor, DateMatcher {
 
     /**
-     * The rule implementation that defines how the day of month field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
-    /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
@@ -78,6 +75,19 @@ public final class DayOfMonth
      * The day of month being represented, from 1 to 31.
      */
     private final int dayOfMonth;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the day of month field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the day of month rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.dayOfMonth();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -154,7 +164,7 @@ public final class DayOfMonth
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -301,97 +311,5 @@ public final class DayOfMonth
 //     LEAP_YEAR_DAYS_IN_MONTH.putAll(STANDARD_DAYS_IN_MONTH);
 //     LEAP_YEAR_DAYS_IN_MONTH.put(MonthOfYear.FEBRUARY, days(29));
 // }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the day of month field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("DayOfMonth", null, null, 1, 31);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfMonth().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
-        /** {@inheritDoc} */
-        @Override
-        public boolean isFixedValueSet() {
-            return false;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public int getSmallestMaximumValue() {
-            return 28;
-        }
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getMaximumValue(Calendrical calendricalContext) {
-//            if (calendricalContext != null) {
-//                if (calendricalContext.toFlexiDateTime().isSupported(MonthOfYear.RULE)) {
-//                    int month = calendricalContext.toFlexiDateTime().get(MonthOfYear.RULE);
-//                    switch (month) {
-//                        case 2:
-//                            if (calendricalContext.toFlexiDateTime().isSupported(Year.RULE)) {
-//                                int year = calendricalContext.toFlexiDateTime().get(Year.RULE);
-//                                if (Year.isoYear(year).isLeap()) {
-//                                    return 29;
-//                                }
-//                            }
-//                            return 28;
-//                        case 4:
-//                        case 6:
-//                        case 9:
-//                        case 11:
-//                            return 30;
-//                        default:
-//                            return 31;
-//                    }
-//                }
-//            }
-//            return 31;
-//        }
-//        /** {@inheritDoc} */
-//        @Override
-//        public int getSmallestMaximumValue(Calendrical calendricalContext) {
-//            if (calendricalContext == null) {
-//                return 28;
-//            }
-//            if (calendricalContext.toFlexiDateTime().isSupported(MonthOfYear.RULE)) {
-//                int month = calendricalContext.toFlexiDateTime().get(MonthOfYear.RULE);
-//                switch (month) {
-//                    case 2:
-//                        if (calendricalContext.toFlexiDateTime().isSupported(Year.RULE)) {
-//                            int year = calendricalContext.toFlexiDateTime().get(Year.RULE);
-//                            if (Year.isoYear(year).isLeap()) {
-//                                return 29;
-//                            }
-//                        }
-//                        return 28;
-//                    case 4:
-//                    case 6:
-//                    case 9:
-//                    case 11:
-//                        return 30;
-//                    default:
-//                        return 31;
-//                }
-//            }
-//            if (calendricalContext.toFlexiDateTime().isSupported(Year.RULE)) {
-//                int year = calendricalContext.toFlexiDateTime().get(Year.RULE);
-//                if (Year.isoYear(year).isLeap()) {
-//                    return 29;
-//                }
-//            }
-//            return 28;
-//        }
-    }
 
 }

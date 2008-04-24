@@ -35,9 +35,12 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
+import javax.time.calendar.ReadableDate;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -54,12 +57,9 @@ import javax.time.calendar.format.FlexiDateTime;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, Serializable {
+public final class WeekOfMonth
+        implements Calendrical, Comparable<WeekOfMonth>, Serializable, DateMatcher {
 
-    /**
-     * The rule implementation that defines how the week of month field operates.
-     */
-    public static final DateTimeFieldRule RULE = new Rule();
     /**
      * A serialization identifier for this instance.
      */
@@ -67,12 +67,25 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<WeekOfMonth> cache = new AtomicReferenceArray<WeekOfMonth>(6);
+    private static final AtomicReferenceArray<WeekOfMonth> cache = new AtomicReferenceArray<WeekOfMonth>(5);
 
     /**
      * The week of month being represented.
      */
     private final int weekOfMonth;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the week of month field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the week of month rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.weekOfMonth();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -84,16 +97,15 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      */
     public static WeekOfMonth weekOfMonth(int weekOfMonth) {
         try {
-            WeekOfMonth result = cache.get(weekOfMonth);
+            WeekOfMonth result = cache.get(--weekOfMonth);
             if (result == null) {
-                WeekOfMonth temp = new WeekOfMonth(weekOfMonth);
+                WeekOfMonth temp = new WeekOfMonth(weekOfMonth + 1);
                 cache.compareAndSet(weekOfMonth, null, temp);
                 result = cache.get(weekOfMonth);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(
-                RULE.getName(), weekOfMonth, RULE.getMinimumValue(), RULE.getMaximumValue());
+            throw new IllegalCalendarFieldValueException("WeekOfMonth", weekOfMonth, 1, 5);
         }
     }
 
@@ -107,7 +119,9 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      * @return the WeekOfMonth instance, never null
      */
     public static WeekOfMonth weekOfMonth(ReadableDate dateProvider) {
-        return new WeekOfMonth(1);  // TODO
+        LocalDate date = dateProvider.toLocalDate();
+        int dom0  = date.getDayOfMonth().getValue() - 1;
+        return new WeekOfMonth(dom0 % 7);
     }
 
     //-----------------------------------------------------------------------
@@ -146,7 +160,18 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the value of this week of month matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return WeekOfMonth.weekOfMonth(date) == this;
     }
 
     //-----------------------------------------------------------------------
@@ -199,27 +224,6 @@ public final class WeekOfMonth implements Calendrical, Comparable<WeekOfMonth>, 
     @Override
     public String toString() {
         return "WeekOfMonth=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the week of month field.
-     */
-    private static class Rule extends DateTimeFieldRule {
-
-        /** Constructor. */
-        protected Rule() {
-            super("WeekOfMonth", null, null, 1, 5);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
-        }
     }
 
 }
