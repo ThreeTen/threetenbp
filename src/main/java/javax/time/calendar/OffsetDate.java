@@ -355,7 +355,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withLastDayOfMonth() {
-        LocalDate newDate = date.withLastDayOfMonth();
+        LocalDate newDate = date.with(DateAdjustors.lastDayOfMonth());
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -368,7 +368,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withDayOfYear(int dayOfYear) {
-        LocalDate newDate = date.withDayOfYear(dayOfYear);
+        LocalDate newDate = date.with(DayOfYear.dayOfYear(dayOfYear));
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -380,7 +380,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withLastDayOfYear() {
-        LocalDate newDate = date.withLastDayOfYear();
+        LocalDate newDate = date.with(DateAdjustors.lastDayOfYear());
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -393,7 +393,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withDayOfWeek(int dayOfWeek) {
-        LocalDate newDate = date.withDayOfWeek(dayOfWeek);
+        LocalDate newDate = date.with(DateAdjustors.nextOrCurrent(DayOfWeek.dayOfWeek(dayOfWeek)));
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 

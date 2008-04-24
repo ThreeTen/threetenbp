@@ -683,7 +683,7 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withLastDayOfMonth() {
-        LocalDate newDate = date.withLastDayOfMonth();
+        LocalDate newDate = date.with(DateAdjustors.lastDayOfMonth());
         return withDateTime(newDate, time);
     }
 
@@ -696,7 +696,7 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withDayOfYear(int dayOfYear) {
-        LocalDate newDate = date.withDayOfYear(dayOfYear);
+        LocalDate newDate = date.with(DayOfYear.dayOfYear(dayOfYear));
         return withDateTime(newDate, time);
     }
 
@@ -708,7 +708,7 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withLastDayOfYear() {
-        LocalDate newDate = date.withLastDayOfYear();
+        LocalDate newDate = date.with(DateAdjustors.lastDayOfYear());
         return withDateTime(newDate, time);
     }
 
@@ -721,7 +721,7 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      */
     public LocalDateTime withDayOfWeek(int dayOfWeek) {
-        LocalDate newDate = date.withDayOfWeek(dayOfWeek);
+        LocalDate newDate = date.with(DateAdjustors.nextOrCurrent(DayOfWeek.dayOfWeek(dayOfWeek)));
         return withDateTime(newDate, time);
     }
 

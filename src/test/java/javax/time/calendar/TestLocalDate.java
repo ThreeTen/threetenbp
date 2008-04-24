@@ -468,29 +468,29 @@ public class TestLocalDate {
         LocalDate.date(2007, 11, 30).withDayOfMonth(31);
     }
 
-    //-----------------------------------------------------------------------
-    // withLastDayOfMonth()
-    //-----------------------------------------------------------------------
-    public void test_withLastDayOfMonth_leap() {
-        Year year = Year.isoYear(2008);
-        for (MonthOfYear month : MonthOfYear.values()) {
-            LocalDate t = LocalDate.date(2008, month, 1).withLastDayOfMonth();
-            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
-        }
-    }
-
-    public void test_withLastDayOfMonth_standard() {
-        Year year = Year.isoYear(2007);
-        for (MonthOfYear month : MonthOfYear.values()) {
-            LocalDate t = LocalDate.date(2007, month, 1).withLastDayOfMonth();
-            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
-        }
-    }
-
-    public void test_withLastDayOfMonth_noChange() {
-        LocalDate t = LocalDate.date(2008, 10, 31).withLastDayOfMonth();
-        assertEquals(t, LocalDate.date(2008, 10, 31));
-    }
+//    //-----------------------------------------------------------------------
+//    // withLastDayOfMonth()
+//    //-----------------------------------------------------------------------
+//    public void test_withLastDayOfMonth_leap() {
+//        Year year = Year.isoYear(2008);
+//        for (MonthOfYear month : MonthOfYear.values()) {
+//            LocalDate t = LocalDate.date(2008, month, 1).withLastDayOfMonth();
+//            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
+//        }
+//    }
+//
+//    public void test_withLastDayOfMonth_standard() {
+//        Year year = Year.isoYear(2007);
+//        for (MonthOfYear month : MonthOfYear.values()) {
+//            LocalDate t = LocalDate.date(2007, month, 1).withLastDayOfMonth();
+//            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
+//        }
+//    }
+//
+//    public void test_withLastDayOfMonth_noChange() {
+//        LocalDate t = LocalDate.date(2008, 10, 31).withLastDayOfMonth();
+//        assertEquals(t, LocalDate.date(2008, 10, 31));
+//    }
 
     //-----------------------------------------------------------------------
     // plusYears()
