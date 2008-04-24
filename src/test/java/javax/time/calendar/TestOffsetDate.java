@@ -227,30 +227,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // withLastDayOfMonth()
-    //-----------------------------------------------------------------------
-    public void test_withLastDayOfMonth_leap() {
-        Year year = Year.isoYear(2008);
-        for (MonthOfYear month : MonthOfYear.values()) {
-            OffsetDate t = OffsetDate.date(2008, month, 1, OFFSET_PONE).withLastDayOfMonth();
-            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
-        }
-    }
-
-    public void test_withLastDayOfMonth_standard() {
-        Year year = Year.isoYear(2007);
-        for (MonthOfYear month : MonthOfYear.values()) {
-            OffsetDate t = OffsetDate.date(2007, month, 1, OFFSET_PONE).withLastDayOfMonth();
-            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
-        }
-    }
-
-    public void test_withLastDayOfMonth_noChange() {
-        OffsetDate t = OffsetDate.date(2008, 10, 31, OFFSET_PONE).withLastDayOfMonth();
-        assertEquals(t, OffsetDate.date(2008, 10, 31, OFFSET_PONE));
-    }
-
-    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears_normal() {

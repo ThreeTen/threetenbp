@@ -835,56 +835,6 @@ public final class OffsetDateTime
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the date set to the last day of month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated OffsetDateTime, never null
-     */
-    public OffsetDateTime withLastDayOfMonth() {
-        LocalDateTime newDT = dateTime.withLastDayOfMonth();
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the day of year value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day of year to represent, from 1 to 366
-     * @return a new updated OffsetDateTime, never null
-     */
-    public OffsetDateTime withDayOfYear(int dayOfYear) {
-        LocalDateTime newDT = dateTime.withDayOfYear(dayOfYear);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the date set to the last day of year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated OffsetDateTime, never null
-     */
-    public OffsetDateTime withLastDayOfYear() {
-        LocalDateTime newDT = dateTime.withLastDayOfYear();
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the day of week value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return a new updated OffsetDateTime, never null
-     */
-    public OffsetDateTime withDayOfWeek(int dayOfWeek) {
-        LocalDateTime newDT = dateTime.withDayOfWeek(dayOfWeek);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
      * Returns a copy of this OffsetDateTime with the date values altered.
      * <p>
      * This method will return a new instance with the same time fields,
@@ -902,6 +852,7 @@ public final class OffsetDateTime
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this OffsetDateTime with the hour of day value altered.
      * <p>

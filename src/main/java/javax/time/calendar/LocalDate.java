@@ -397,57 +397,6 @@ public final class LocalDate
         return date(year, month, DayOfMonth.dayOfMonth(dayOfMonth));
     }
 
-//    TODO: evaluate need; with(DateAdjustors.lastDayOfMonth()) does the same
-//    /**
-//     * Returns a copy of this LocalDate with the date set to the last day of month.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @return a new updated LocalDate, never null
-//     */
-//    public LocalDate withLastDayOfMonth() {
-//        return withDayOfMonth(month.lengthInDays(year));
-//    }
-
-//    TODO: evaluate need; with(DateAdjustors.lastDayOfYear()) does the same
-//    /**
-//     * Returns a copy of this LocalDate with the date set to the last day of year.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @return a new updated LocalDate, never null
-//     */
-//    public LocalDate withLastDayOfYear() {
-//        return new LocalDate(year, MonthOfYear.DECEMBER, DayOfMonth.dayOfMonth(31));
-//    }
-
-//    TODO: evaluate need; with(DayOfYear.dayOfYear(dayOfYear)) does the same
-//    /**
-//     * Returns a copy of this LocalDate with the day of year value altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param dayOfYear  the day of year to represent, from 1 to 365-366
-//     * @return a new updated LocalDate, never null
-//     * @throws IllegalCalendarFieldValueException if dayOfYear is invalid for the current year
-//     */
-//    public LocalDate withDayOfYear(int dayOfYear) {
-//        return DayOfYear.dayOfYear(dayOfYear).adjustDate(this);
-//    }
-
-//    TODO: evaluate need; with(DateAdjustors.nextOrCurrent(DayOfWeek)) does the same
-//    /**
-//     * Returns a copy of this LocalDate with the day of week value altered.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-//     * @return a new updated LocalDate, never null
-//     */
-//    public LocalDate withDayOfWeek(int dayOfWeek) {
-//        return null;
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDate with the specified period added.

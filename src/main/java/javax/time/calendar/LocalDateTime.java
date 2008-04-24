@@ -676,56 +676,6 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this LocalDateTime with the date set to the last day of month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated LocalDateTime, never null
-     */
-    public LocalDateTime withLastDayOfMonth() {
-        LocalDate newDate = date.with(DateAdjustors.lastDayOfMonth());
-        return withDateTime(newDate, time);
-    }
-
-    /**
-     * Returns a copy of this LocalDateTime with the day of year value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day of year to represent, from 1 to 366
-     * @return a new updated LocalDateTime, never null
-     */
-    public LocalDateTime withDayOfYear(int dayOfYear) {
-        LocalDate newDate = date.with(DayOfYear.dayOfYear(dayOfYear));
-        return withDateTime(newDate, time);
-    }
-
-    /**
-     * Returns a copy of this LocalDateTime with the date set to the last day of year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated LocalDateTime, never null
-     */
-    public LocalDateTime withLastDayOfYear() {
-        LocalDate newDate = date.with(DateAdjustors.lastDayOfYear());
-        return withDateTime(newDate, time);
-    }
-
-    /**
-     * Returns a copy of this LocalDateTime with the day of week value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return a new updated LocalDateTime, never null
-     */
-    public LocalDateTime withDayOfWeek(int dayOfWeek) {
-        LocalDate newDate = date.with(DateAdjustors.nextOrCurrent(DayOfWeek.dayOfWeek(dayOfWeek)));
-        return withDateTime(newDate, time);
-    }
-
-    /**
      * Returns a copy of this LocalDateTime with the date values altered.
      * <p>
      * This method will return a new instance with the same time fields,
@@ -748,6 +698,7 @@ public final class LocalDateTime
         return withDateTime(newDate, time);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDateTime with the hour of day value altered.
      * <p>

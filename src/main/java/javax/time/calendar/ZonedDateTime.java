@@ -725,60 +725,6 @@ public final class ZonedDateTime
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the date set to the last day of month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime withLastDayOfMonth() {
-        LocalDateTime newDT = dateTime.localDateTime().withLastDayOfMonth();
-        return (newDT == dateTime.localDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with the day of year value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day of year to represent, from 1 to 366
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime withDayOfYear(int dayOfYear) {
-        LocalDateTime newDT = dateTime.localDateTime().withDayOfYear(dayOfYear);
-        return (newDT == dateTime.localDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with the date set to the last day of year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime withLastDayOfYear() {
-        LocalDateTime newDT = dateTime.localDateTime().withLastDayOfYear();
-        return (newDT == dateTime.localDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with the day of week value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return a new updated ZonedDateTime, never null
-     */
-    public ZonedDateTime withDayOfWeek(int dayOfWeek) {
-        LocalDateTime newDT = dateTime.localDateTime().withDayOfWeek(dayOfWeek);
-        return (newDT == dateTime.localDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
      * Returns a copy of this ZonedDateTime with the date values altered.
      * <p>
      * This method will return a new instance with the same time fields,
@@ -797,6 +743,7 @@ public final class ZonedDateTime
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this ZonedDateTime with the hour of day value altered.
      * <p>

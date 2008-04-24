@@ -347,56 +347,6 @@ public final class OffsetDate
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
-    /**
-     * Returns a copy of this OffsetDate with the date set to the last day of month.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate withLastDayOfMonth() {
-        LocalDate newDate = date.with(DateAdjustors.lastDayOfMonth());
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetDate with the day of year value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day of year to represent, from 1 to 366
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate withDayOfYear(int dayOfYear) {
-        LocalDate newDate = date.with(DayOfYear.dayOfYear(dayOfYear));
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetDate with the date set to the last day of year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate withLastDayOfYear() {
-        LocalDate newDate = date.with(DateAdjustors.lastDayOfYear());
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetDate with the day of week value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate withDayOfWeek(int dayOfWeek) {
-        LocalDate newDate = date.with(DateAdjustors.nextOrCurrent(DayOfWeek.dayOfWeek(dayOfWeek)));
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this OffsetDate with the specified period added.
