@@ -43,6 +43,7 @@ import java.io.Serializable;
  * <p>
  * ISOChronology is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class ISOChronology implements Serializable {
@@ -55,14 +56,14 @@ public final class ISOChronology implements Serializable {
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
-    /** Number of months in one year. */
-    private static final int MONTHS_PER_YEAR = 12;
-    /** Number of seconds in one day. */
-    private static final int SECONDS_PER_DAY = 60 * 60 * 24;
-    /** Number of seconds in one hour. */
-    private static final int SECONDS_PER_HOUR = 60 * 60;
-    /** Number of seconds in one minute. */
-    private static final int SECONDS_PER_MINUTE = 60;
+//    /** Number of months in one year. */
+//    private static final int MONTHS_PER_YEAR = 12;
+//    /** Number of seconds in one day. */
+//    private static final int SECONDS_PER_DAY = 60 * 60 * 24;
+//    /** Number of seconds in one hour. */
+//    private static final int SECONDS_PER_HOUR = 60 * 60;
+//    /** Number of seconds in one minute. */
+//    private static final int SECONDS_PER_MINUTE = 60;
 //    /** The length of months in a standard year. */
 //    private static final int[] STANDARD_MONTH_LENGTHS = new int[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 //    /** The length of months in a leap year. */
@@ -89,18 +90,18 @@ public final class ISOChronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the specified year is a leap year.
-     * <p>
-     * ISO chronology leap years are every 4 years. A special rule applies
-     * for years divisible by 100, which are only leap if also divisible by 400.
-     *
-     * @param year  the year to check
-     * @return true if the year is a leap year
-     */
-    private boolean isLeapYear(int year) {
-        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
-    }
+//    /**
+//     * Checks if the specified year is a leap year.
+//     * <p>
+//     * ISO chronology leap years are every 4 years. A special rule applies
+//     * for years divisible by 100, which are only leap if also divisible by 400.
+//     *
+//     * @param year  the year to check
+//     * @return true if the year is a leap year
+//     */
+//    private boolean isLeapYear(int year) {
+//        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
+//    }
 
 //    //-----------------------------------------------------------------------
 //    /**
