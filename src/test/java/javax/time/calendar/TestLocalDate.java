@@ -42,19 +42,15 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendar.field.CenturyOfEra;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.DecadeOfCentury;
 import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.HourOfMeridiem;
 import javax.time.calendar.field.MeridiemOfDay;
-import javax.time.calendar.field.MilleniumOfEra;
 import javax.time.calendar.field.MinuteOfDay;
 import javax.time.calendar.field.MinuteOfHour;
-import javax.time.calendar.field.MonthOfQuarter;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.QuarterOfYear;
@@ -64,7 +60,6 @@ import javax.time.calendar.field.WeekOfMonth;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.field.YearOfEra;
 import javax.time.calendar.format.FlexiDateTime;
 
 import org.testng.annotations.BeforeMethod;
@@ -239,14 +234,14 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_isSupported() {
         assertTrue(TEST_2007_07_15.isSupported(Era.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(CenturyOfEra.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(DecadeOfCentury.RULE));
+//        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
+//        assertTrue(TEST_2007_07_15.isSupported(CenturyOfEra.RULE));
+//        assertTrue(TEST_2007_07_15.isSupported(DecadeOfCentury.RULE));
         assertTrue(TEST_2007_07_15.isSupported(Year.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(YearOfEra.RULE));
+//        assertTrue(TEST_2007_07_15.isSupported(YearOfEra.RULE));
         assertTrue(TEST_2007_07_15.isSupported(QuarterOfYear.RULE));
         assertTrue(TEST_2007_07_15.isSupported(MonthOfYear.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(MonthOfQuarter.RULE));
+//        assertTrue(TEST_2007_07_15.isSupported(MonthOfQuarter.RULE));
         assertTrue(TEST_2007_07_15.isSupported(DayOfMonth.RULE));
         assertTrue(TEST_2007_07_15.isSupported(DayOfWeek.RULE));
         assertTrue(TEST_2007_07_15.isSupported(DayOfYear.RULE));
@@ -266,14 +261,14 @@ public class TestLocalDate {
 
     public void test_get() {
         assertEquals(TEST_2007_07_15.get(Era.RULE), Era.AD.getValue());
-        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
-        assertEquals(TEST_2007_07_15.get(CenturyOfEra.RULE), TEST_2007_07_15.getYear().getCenturyOfEra());
-        assertEquals(TEST_2007_07_15.get(DecadeOfCentury.RULE), TEST_2007_07_15.getYear().getDecadeOfCentury());
+//        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
+//        assertEquals(TEST_2007_07_15.get(CenturyOfEra.RULE), TEST_2007_07_15.getYear().getCenturyOfEra());
+//        assertEquals(TEST_2007_07_15.get(DecadeOfCentury.RULE), TEST_2007_07_15.getYear().getDecadeOfCentury());
         assertEquals(TEST_2007_07_15.get(Year.RULE), TEST_2007_07_15.getYear().getValue());
-        assertEquals(TEST_2007_07_15.get(YearOfEra.RULE), TEST_2007_07_15.getYear().getYearOfEra());
+//        assertEquals(TEST_2007_07_15.get(YearOfEra.RULE), TEST_2007_07_15.getYear().getYearOfEra());
         assertEquals(TEST_2007_07_15.get(QuarterOfYear.RULE), TEST_2007_07_15.getMonthOfYear().getQuarterOfYear().getValue());
         assertEquals(TEST_2007_07_15.get(MonthOfYear.RULE), TEST_2007_07_15.getMonthOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(MonthOfQuarter.RULE), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
+//        assertEquals(TEST_2007_07_15.get(MonthOfQuarter.RULE), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
         assertEquals(TEST_2007_07_15.get(DayOfMonth.RULE), TEST_2007_07_15.getDayOfMonth().getValue());
         assertEquals(TEST_2007_07_15.get(DayOfWeek.RULE), TEST_2007_07_15.getDayOfWeek().getValue());
         assertEquals(TEST_2007_07_15.get(DayOfYear.RULE), TEST_2007_07_15.getDayOfYear().getValue());
