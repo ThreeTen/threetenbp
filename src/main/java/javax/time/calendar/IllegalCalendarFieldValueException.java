@@ -51,19 +51,19 @@ public class IllegalCalendarFieldValueException extends IllegalArgumentException
                 " is not in the range " + minValue + " to " + maxValue);
     }
 
-    /**
-     * Constructs a new illegal field value exception with no message.
-     *
-     * @param fieldName  the field name, not null
-     * @param actual  the actual invalid value, not null
-     * @param minValue  the minimum value allowed
-     * @param maxValue  the maximum value allowed
-     */
-    public IllegalCalendarFieldValueException(String fieldName, long actual, int minValue, int maxValue) {
-        super("Illegal value for " + fieldName + " field, value " + actual +
-                " is not in the range " + minValue + " to " + maxValue);
-    }
-
+//    /**
+//     * Constructs a new illegal field value exception with no message.
+//     *
+//     * @param fieldName  the field name, not null
+//     * @param actual  the actual invalid value, not null
+//     * @param minValue  the minimum value allowed
+//     * @param maxValue  the maximum value allowed
+//     */
+//    public IllegalCalendarFieldValueException(String fieldName, long actual, int minValue, int maxValue) {
+//        super("Illegal value for " + fieldName + " field, value " + actual +
+//                " is not in the range " + minValue + " to " + maxValue);
+//    }
+//
     /**
      * Constructs a new illegal field value exception with the specified message.
      *
