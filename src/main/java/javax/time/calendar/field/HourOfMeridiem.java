@@ -76,7 +76,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
     /**
      * Obtains an instance of <code>HourOfMeridiem</code>.
      *
-     * @param hourOfMeridiem  the hour of meridiem to represent
+     * @param hourOfMeridiem  the hour of meridiem to represent, from 0 to 11
      * @return the created HourOfMeridiem
      * @throws IllegalCalendarFieldValueException if the hourOfMeridiem is invalid
      */
@@ -118,7 +118,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
     /**
      * Gets the hour of meridiem value.
      *
-     * @return the hour of meridiem
+     * @return the hour of meridiem, from 0 to 11
      */
     public int getValue() {
         return hourOfMeridiem;

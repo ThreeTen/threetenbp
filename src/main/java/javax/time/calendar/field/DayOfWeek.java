@@ -189,7 +189,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
     /**
      * Gets the day of week value.
      *
-     * @return the day of week
+     * @return the day of week, from 1 (Monday) to 7 (Sunday)
      */
     public int getValue() {
         return dayOfWeek;

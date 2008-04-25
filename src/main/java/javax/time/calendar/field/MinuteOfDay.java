@@ -71,7 +71,7 @@ public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, 
     /**
      * Obtains an instance of <code>MinuteOfDay</code>.
      *
-     * @param minuteOfDay  the minute of day to represent
+     * @param minuteOfDay  the minute of day to represent, from 0 to 1439
      * @return the created MinuteOfDay
      * @throws IllegalCalendarFieldValueException if the minuteOfDay is invalid
      */
@@ -94,7 +94,7 @@ public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, 
     /**
      * Gets the minute of day value.
      *
-     * @return the minute of day
+     * @return the minute of day, from 0 to 1439
      */
     public int getValue() {
         return minuteOfDay;

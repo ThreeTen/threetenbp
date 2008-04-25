@@ -80,7 +80,7 @@ public final class MinuteOfHour
     /**
      * Obtains an instance of <code>MinuteOfHour</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return the created MinuteOfHour
      * @throws IllegalCalendarFieldValueException if the minuteOfHour is invalid
      */
@@ -122,7 +122,7 @@ public final class MinuteOfHour
     /**
      * Gets the minute of hour value.
      *
-     * @return the minute of hour
+     * @return the minute of hour, from 0 to 59
      */
     public int getValue() {
         return minuteOfHour;

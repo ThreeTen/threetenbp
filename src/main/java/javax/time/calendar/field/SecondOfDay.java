@@ -71,7 +71,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
     /**
      * Obtains an instance of <code>SecondOfDay</code>.
      *
-     * @param secondOfDay  the second of day to represent
+     * @param secondOfDay  the second of day to represent, from 0 to 86399
      * @return the created SecondOfDay
      * @throws IllegalCalendarFieldValueException if the secondOfDay is invalid
      */
@@ -94,7 +94,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
     /**
      * Gets the second of day value.
      *
-     * @return the second of day
+     * @return the second of day, from 0 to 86399
      */
     public int getValue() {
         return secondOfDay;

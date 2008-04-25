@@ -164,7 +164,7 @@ public final class DayOfYear
     /**
      * Gets the day of year value.
      *
-     * @return the day of year
+     * @return the day of year, from 1 to 366
      */
     public int getValue() {
         return dayOfYear;

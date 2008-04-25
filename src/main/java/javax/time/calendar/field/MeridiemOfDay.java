@@ -79,7 +79,7 @@ public enum MeridiemOfDay
     /**
      * Obtains an instance of <code>MeridiemOfDay</code>.
      *
-     * @param meridiemOfDay  the meridiem of day to represent
+     * @param meridiemOfDay  the meridiem of day to represent, from 0 (AM) to 1 (PM)
      * @return the existing MeridiemOfDay
      * @throws IllegalCalendarFieldValueException if the meridiem of day is invalid
      */
@@ -108,7 +108,7 @@ public enum MeridiemOfDay
     /**
      * Gets the meridiem of day value.
      *
-     * @return the meridiem of day
+     * @return the meridiem of day, from 0 (AM) to 1 (PM)
      */
     public int getValue() {
         return meridiemOfDay;

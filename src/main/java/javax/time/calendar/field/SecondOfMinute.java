@@ -80,7 +80,7 @@ public final class SecondOfMinute
     /**
      * Obtains an instance of <code>SecondOfMinute</code>.
      *
-     * @param secondOfMinute  the second of minute to represent
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return the created SecondOfMinute
      * @throws IllegalCalendarFieldValueException if the secondOfMinute is invalid
      */
@@ -122,7 +122,7 @@ public final class SecondOfMinute
     /**
      * Gets the second of minute value.
      *
-     * @return the second of minute
+     * @return the second of minute, from 0 to 59
      */
     public int getValue() {
         return secondOfMinute;

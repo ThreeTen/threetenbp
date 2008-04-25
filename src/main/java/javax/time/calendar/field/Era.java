@@ -86,7 +86,7 @@ public enum Era
      * Era is an enum, thus each instance is a singleton.
      * As a result, Era instances can be compared using ==.
      *
-     * @param era  the era to represent, from 0 to 1
+     * @param era  the era to represent, from 0 (BC/BCE) to 1 (AD/CE)
      * @return the Era singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
@@ -128,7 +128,7 @@ public enum Era
     /**
      * Gets the era value.
      *
-     * @return the era
+     * @return the era, from 0 (BC/BCE) to 1 (AD/CE)
      */
     public int getValue() {
         return era;

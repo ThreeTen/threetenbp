@@ -91,7 +91,7 @@ public final class WeekOfMonth
     /**
      * Obtains an instance of <code>WeekOfMonth</code>.
      *
-     * @param weekOfMonth  the week of month to represent
+     * @param weekOfMonth  the week of month to represent, from 1 to 5
      * @return the created WeekOfMonth
      * @throws IllegalCalendarFieldValueException if the weekOfMonth is invalid
      */
@@ -121,7 +121,7 @@ public final class WeekOfMonth
     public static WeekOfMonth weekOfMonth(ReadableDate dateProvider) {
         LocalDate date = dateProvider.toLocalDate();
         int dom0  = date.getDayOfMonth().getValue() - 1;
-        return new WeekOfMonth(dom0 % 7);
+        return new WeekOfMonth((dom0 % 7) + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -147,7 +147,7 @@ public final class WeekOfMonth
     /**
      * Gets the week of month value.
      *
-     * @return the week of month
+     * @return the week of month, from 1 to 5
      */
     public int getValue() {
         return weekOfMonth;

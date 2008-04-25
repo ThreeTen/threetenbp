@@ -145,7 +145,7 @@ public final class Weekyear implements Calendrical, Comparable<Weekyear>, Serial
     /**
      * Gets the week-based year value.
      *
-     * @return the week-based year
+     * @return the week-based year, from MIN_YEAR to MAX_YEAR
      */
     public int getValue() {
         return weekyear;

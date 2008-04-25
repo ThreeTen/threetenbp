@@ -197,7 +197,7 @@ public enum MonthOfYear
     /**
      * Gets the month of year value.
      *
-     * @return the month of year
+     * @return the month of year, from 1 (January) to 12 (December)
      */
     public int getValue() {
         return monthOfYear;

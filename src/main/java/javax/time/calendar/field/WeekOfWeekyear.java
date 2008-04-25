@@ -150,7 +150,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
     /**
      * Gets the week of week-based year value.
      *
-     * @return the week of week-based year
+     * @return the week of week-based year, from 1 to 53
      */
     public int getValue() {
         return weekOfWeekyear;

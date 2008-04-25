@@ -78,7 +78,7 @@ public final class NanoOfSecond
     /**
      * Obtains an instance of <code>NanoOfSecond</code>.
      *
-     * @param nanoOfSecond  the nano of second to represent
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return the created NanoOfSecond
      */
     public static NanoOfSecond nanoOfSecond(int nanoOfSecond) {
@@ -103,7 +103,7 @@ public final class NanoOfSecond
     /**
      * Gets the nano of second value.
      *
-     * @return the nano of second
+     * @return the nano of second, from 0 to 999,999,999
      */
     public int getValue() {
         return nanoOfSecond;

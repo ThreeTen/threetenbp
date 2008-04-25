@@ -149,7 +149,7 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
     /**
      * Gets the quarter of year value.
      *
-     * @return the quarter of year
+     * @return the quarter of year, from 1 to 4
      */
     public int getValue() {
         return quarterOfYear;

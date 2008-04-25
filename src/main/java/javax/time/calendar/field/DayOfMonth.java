@@ -151,7 +151,7 @@ public final class DayOfMonth
     /**
      * Gets the day of month value.
      *
-     * @return the day of month
+     * @return the day of month, from 1 to 31
      */
     public int getValue() {
         return dayOfMonth;

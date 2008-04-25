@@ -167,7 +167,7 @@ public final class Year
     /**
      * Gets the year value.
      *
-     * @return the year
+     * @return the year, from MIN_YEAR to MAX_YEAR
      */
     public int getValue() {
         return year;

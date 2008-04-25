@@ -80,7 +80,7 @@ public final class HourOfDay
     /**
      * Obtains an instance of <code>HourOfDay</code>.
      *
-     * @param hourOfDay  the hour of day to represent
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return the created HourOfDay, never null
      * @throws IllegalCalendarFieldValueException if the hourOfDay is invalid
      */
@@ -136,7 +136,7 @@ public final class HourOfDay
     /**
      * Gets the hour of day value.
      *
-     * @return the hour of day
+     * @return the hour of day, from 0 to 23
      */
     public int getValue() {
         return hourOfDay;
