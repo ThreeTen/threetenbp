@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time.calendar;
 /**
  * An exception used when a value specified for a calendar field is invalid.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public class IllegalCalendarFieldValueException extends IllegalArgumentException {
@@ -51,19 +52,19 @@ public class IllegalCalendarFieldValueException extends IllegalArgumentException
                 " is not in the range " + minValue + " to " + maxValue);
     }
 
-//    /**
-//     * Constructs a new illegal field value exception with no message.
-//     *
-//     * @param fieldName  the field name, not null
-//     * @param actual  the actual invalid value, not null
-//     * @param minValue  the minimum value allowed
-//     * @param maxValue  the maximum value allowed
-//     */
-//    public IllegalCalendarFieldValueException(String fieldName, long actual, int minValue, int maxValue) {
-//        super("Illegal value for " + fieldName + " field, value " + actual +
-//                " is not in the range " + minValue + " to " + maxValue);
-//    }
-//
+    /**
+     * Constructs a new illegal field value exception with no message.
+     *
+     * @param fieldName  the field name, not null
+     * @param actual  the actual invalid value, not null
+     * @param minValue  the minimum value allowed
+     * @param maxValue  the maximum value allowed
+     */
+    public IllegalCalendarFieldValueException(String fieldName, long actual, int minValue, int maxValue) {
+        super("Illegal value for " + fieldName + " field, value " + actual +
+                " is not in the range " + minValue + " to " + maxValue);
+    }
+
     /**
      * Constructs a new illegal field value exception with the specified message.
      *

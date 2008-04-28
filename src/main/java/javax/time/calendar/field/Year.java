@@ -245,10 +245,15 @@ public final class Year
      *
      * @param years  the years to add
      * @return a new updated Year, never null
-     * @throws ArithmeticException if the result cannot be stored
+     * @throws IllegalCalendarFieldValueException if the result is not in the range  MIN_YEAR to MAX_YEAR
      */
     public Year plusYears(int years) {
-        int newYear = MathUtils.safeAdd(year, years);
+        int newYear = 0;
+        try {
+            newYear = MathUtils.safeAdd(year, years);
+        } catch (ArithmeticException ae) {
+            throw new IllegalCalendarFieldValueException("Year", (((long)year) + years), MIN_YEAR, MAX_YEAR);
+        }
         return isoYear(newYear);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,9 +34,13 @@ package javax.time;
 /**
  * These methods are proposed for java.lang.Math.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public class MathUtils {
+public final class MathUtils {
+    /** Private constructor since this is an utility class */
+    private MathUtils() {
+    }
 
     //-----------------------------------------------------------------------
     /**

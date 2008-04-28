@@ -490,29 +490,28 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
-    public void test_plusYears_normal() {
+    public void test_plusYears_int_normal() {
         LocalDate t = TEST_2007_07_15.plusYears(1);
         assertEquals(t, LocalDate.date(2008, 7, 15));
     }
 
-    public void test_plusYears_noChange() {
+    public void test_plusYears_int_noChange() {
         LocalDate t = TEST_2007_07_15.plusYears(0);
         assertEquals(t, LocalDate.date(2007, 7, 15));
     }
 
-    public void test_plusYears_negative() {
+    public void test_plusYears_int_negative() {
         LocalDate t = TEST_2007_07_15.plusYears(-1);
         assertEquals(t, LocalDate.date(2006, 7, 15));
     }
 
-    public void test_plusYears_adjustDay() {
+    public void test_plusYears_int_adjustDay() {
         LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1);
         LocalDate expected = LocalDate.date(2009, 2, 28);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_plusYears_invalidTooLarge() {
+    public void test_plusYears_int_invalidTooLarge() {
         try {
             LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1);
             fail();
@@ -520,12 +519,10 @@ public class TestLocalDate {
             String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
             assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
                 " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-            throw ex;
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_plusYears_invalidTooSmall() {
+    public void test_plusYears_int_invalidTooSmall() {
         try {
             LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
             fail();
@@ -533,7 +530,49 @@ public class TestLocalDate {
             String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
             assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
                 " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-            throw ex;
+        }
+    }
+
+    public void test_plusYears_int_DateResolver_normal() {
+        LocalDate t = TEST_2007_07_15.plusYears(1, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2008, 7, 15));
+    }
+
+    public void test_plusYears_int_DateResolver_noChange() {
+        LocalDate t = TEST_2007_07_15.plusYears(0, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2007, 7, 15));
+    }
+
+    public void test_plusYears_int_DateResolver_negative() {
+        LocalDate t = TEST_2007_07_15.plusYears(-1, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2006, 7, 15));
+    }
+
+    public void test_plusYears_int_DateResolver_adjustDay() {
+        LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.date(2009, 3, 1);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusYears_int_DateResolver_invalidTooLarge() {
+        try {
+            LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
+            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
+                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+        }
+    }
+
+    public void test_plusYears_int_DateResolver_invalidTooSmall() {
+        try {
+            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
+            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
+                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
         }
     }
 
