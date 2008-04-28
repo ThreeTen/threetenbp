@@ -637,6 +637,29 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Converts the date to modified julian days (MJD).
+     *
+     * @return the modified julian day equivalent to this date
+     */
+    public long toMJDays() {
+        long y = year.getValue();
+        long m = month.getValue();
+        long total = 0;
+        total += 365 * y;
+        total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        total += ((367 * m - 362) / 12);
+        total += day.getValue() - 1;
+        if (m > 2) {
+            total--;
+            if (year.isLeap() == false) {
+                total--;
+            }
+        }
+        return total - 678941;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Compares this date to another date.
      *
      * @param other  the other date to compare to, not null
