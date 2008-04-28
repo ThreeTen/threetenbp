@@ -661,12 +661,9 @@ public final class LocalTime
      * Extracts the time as nanos of day,
      * from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>.
      *
-     * @return <code>this</code>, never null
+     * @return the nano of day equivalent to this time
      */
-    private long toNanoOfDay() {
-//        if (nanoOfDay > 0) {
-//            return nanoOfDay;
-//        }
+    public long toNanoOfDay() {
         if (this == MIDNIGHT) {
             return 0;
         }
@@ -674,7 +671,6 @@ public final class LocalTime
         total += minute.getValue() * NANOS_PER_MINUTE;
         total += second.getValue() * ((long) NANOS_PER_SECOND);
         total += total + nano.getValue();
-//        nanoOfDay = total;
         return total;
     }
 
