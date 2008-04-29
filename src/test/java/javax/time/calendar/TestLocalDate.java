@@ -456,30 +456,6 @@ public class TestLocalDate {
         LocalDate.date(2007, 11, 30).withDayOfMonth(31);
     }
 
-//    //-----------------------------------------------------------------------
-//    // withLastDayOfMonth()
-//    //-----------------------------------------------------------------------
-//    public void test_withLastDayOfMonth_leap() {
-//        Year year = Year.isoYear(2008);
-//        for (MonthOfYear month : MonthOfYear.values()) {
-//            LocalDate t = LocalDate.date(2008, month, 1).withLastDayOfMonth();
-//            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
-//        }
-//    }
-//
-//    public void test_withLastDayOfMonth_standard() {
-//        Year year = Year.isoYear(2007);
-//        for (MonthOfYear month : MonthOfYear.values()) {
-//            LocalDate t = LocalDate.date(2007, month, 1).withLastDayOfMonth();
-//            assertEquals(t.getDayOfMonth(), month.getLastDayOfMonth(year));
-//        }
-//    }
-//
-//    public void test_withLastDayOfMonth_noChange() {
-//        LocalDate t = LocalDate.date(2008, 10, 31).withLastDayOfMonth();
-//        assertEquals(t, LocalDate.date(2008, 10, 31));
-//    }
-
     //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
@@ -694,6 +670,15 @@ public class TestLocalDate {
     @DataProvider(name="samplePlusDaysTransitivity")
     Object[][] provider_samplePlusDaysTransitivity() {
         return new Object[][] {
+            {LocalDate.date(-1, 1, 1)},
+            {LocalDate.date(-1, 2, 28)},
+            {LocalDate.date(-1, 3, 1)},
+            {LocalDate.date(-1, 12, 31)},
+            {LocalDate.date(0, 1, 1)},
+            {LocalDate.date(0, 2, 28)},
+            {LocalDate.date(0, 2, 29)},
+            {LocalDate.date(0, 3, 1)},
+            {LocalDate.date(0, 12, 31)},
             {LocalDate.date(2007, 1, 1)},
             {LocalDate.date(2007, 2, 28)},
             {LocalDate.date(2007, 3, 1)},
@@ -716,7 +701,7 @@ public class TestLocalDate {
     
     @Test(dataProvider="samplePlusDaysTransitivity")
     private void test_plusDays_transitivity(LocalDate reference) {
-        for (int days = 0; days < 365 * 13; days++) {
+        for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.plusDays(days).plusDays(-days);
             assertEquals(t, reference, String.valueOf(days));
 
@@ -804,14 +789,12 @@ public class TestLocalDate {
             assertEquals(test.toMJDays(), i);
             test = test.plusDays(1);
         }
-        System.out.println(test);
         
-//        test = LocalDate.date(0, 1, 1);   // TODO: Complete testing negative dates
-//        for (int i = -678941; i > -1000000; i--) {
-//            assertEquals(test.toMJDays(), i);
-//            test = test.plusDays(-1);
-//        }
-//        System.out.println(test);
+        test = LocalDate.date(0, 1, 1);
+        for (int i = -678941; i > -200000; i--) {
+            assertEquals(test.toMJDays(), i);
+            test = test.plusDays(-1);
+        }
         
 //        assertEquals(LocalDate.date(0, 1, 1).toMJDays(), 0);
 //        assertEquals(LocalDate.date(0, 1, 2).toMJDays(), 1);
