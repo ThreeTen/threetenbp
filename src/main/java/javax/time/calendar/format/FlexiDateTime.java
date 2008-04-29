@@ -56,6 +56,7 @@ import javax.time.calendar.ZonedDateTime;
  * fields of a flexible date-time can be setup to be invalid, thus instances
  * must be treated with care.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class FlexiDateTime implements Calendrical {
@@ -63,23 +64,23 @@ public final class FlexiDateTime implements Calendrical {
     /**
      * The date time map.
      */
-    private Map<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>();
+    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>();
     /**
      * The date.
      */
-    private LocalDate date;
+    private final LocalDate date;
     /**
      * The time.
      */
-    private LocalTime time;
+    private final LocalTime time;
     /**
      * The offset.
      */
-    private ZoneOffset offset;
+    private final ZoneOffset offset;
     /**
      * The zone.
      */
-    private TimeZone zone;
+    private final TimeZone zone;
 
     /**
      * Constructor creating from the four main objects.
@@ -107,6 +108,10 @@ public final class FlexiDateTime implements Calendrical {
             throw new NullPointerException("The rule must not be null");
         }
         fieldValueMap.put(rule, value);
+        this.date = null;
+        this.time = null;
+        this.offset = null;
+        this.zone = null;
     }
 
     /**
@@ -123,6 +128,10 @@ public final class FlexiDateTime implements Calendrical {
         }
         fieldValueMap.put(rule1, value1);
         fieldValueMap.put(rule2, value2);
+        this.date = null;
+        this.time = null;
+        this.offset = null;
+        this.zone = null;
     }
 
     //-----------------------------------------------------------------------
@@ -385,4 +394,53 @@ public final class FlexiDateTime implements Calendrical {
         return buf.toString();
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Is this FlexiDateTime equal to the specified FlexiDateTime.
+     *
+     * @param o  the other FlexiDateTime to compare to, null returns false
+     * @return true if this instance is equal to the specified FlexiDateTime
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof FlexiDateTime)) {
+            return false;
+        }
+        final FlexiDateTime other = (FlexiDateTime)o;
+        if (this.fieldValueMap != other.fieldValueMap && (this.fieldValueMap == null || !this.fieldValueMap.equals(other.fieldValueMap))) {
+            return false;
+        }
+        if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
+            return false;
+        }
+        if (this.time != other.time && (this.time == null || !this.time.equals(other.time))) {
+            return false;
+        }
+        if (this.offset != other.offset && (this.offset == null || !this.offset.equals(other.offset))) {
+            return false;
+        }
+        if (this.zone != other.zone && (this.zone == null || !this.zone.equals(other.zone))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * A hashcode for this FlexiDateTime.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.fieldValueMap != null ? this.fieldValueMap.hashCode() : 0);
+        hash = 59 * hash + (this.date != null ? this.date.hashCode() : 0);
+        hash = 59 * hash + (this.time != null ? this.time.hashCode() : 0);
+        hash = 59 * hash + (this.offset != null ? this.offset.hashCode() : 0);
+        hash = 59 * hash + (this.zone != null ? this.zone.hashCode() : 0);
+        return hash;
+    }
 }

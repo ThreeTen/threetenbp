@@ -911,7 +911,7 @@ public final class LocalDateTime
      * @throws ArithmeticException if the calculation overflows
      */
     public LocalDateTime plusWeeks(int weeks) {
-        LocalDate newDate = date.plusWeeks(weeks);
+        LocalDate newDate = date.plusDays(weeks * 7);
         return withDateTime(newDate, time);
     }
 

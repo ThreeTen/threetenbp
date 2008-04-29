@@ -781,6 +781,42 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    // matches()
+    //-----------------------------------------------------------------------
+    public void test_matches() {
+        assertTrue(TEST_2007_07_15.matches(Era.AD));
+        assertFalse(TEST_2007_07_15.matches(Era.BC));
+        assertTrue(TEST_2007_07_15.matches(Year.isoYear(2007)));
+        assertFalse(TEST_2007_07_15.matches(Year.isoYear(2006)));
+        assertTrue(TEST_2007_07_15.matches(QuarterOfYear.Q3));
+        assertFalse(TEST_2007_07_15.matches(QuarterOfYear.Q2));
+        assertTrue(TEST_2007_07_15.matches(MonthOfYear.JULY));
+        assertFalse(TEST_2007_07_15.matches(MonthOfYear.JUNE));
+        assertTrue(TEST_2007_07_15.matches(DayOfMonth.dayOfMonth(15)));
+        assertFalse(TEST_2007_07_15.matches(DayOfMonth.dayOfMonth(14)));
+        assertTrue(TEST_2007_07_15.matches(DayOfWeek.SUNDAY));
+        assertFalse(TEST_2007_07_15.matches(DayOfWeek.MONDAY));
+    }
+
+    //-----------------------------------------------------------------------
+    // toLocalDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toLocalDate(int year, int month, int day) {
+        LocalDate t = LocalDate.date(year, month, day);
+        assertSame(t.toLocalDate(), t);
+    }
+
+    //-----------------------------------------------------------------------
+    // toFlexiDateTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toFlexiDateTime(int year, int month, int day) {
+        LocalDate t = LocalDate.date(year, month, day);
+        assertEquals(t.toFlexiDateTime(), new FlexiDateTime(t, null, null, null));
+    }
+
+    //-----------------------------------------------------------------------
     // toMJDays()
     //-----------------------------------------------------------------------
     public void test_toMJDays() {
@@ -924,6 +960,17 @@ public class TestLocalDate {
 
     public void test_equals_string_false() {
         assertEquals(TEST_2007_07_15.equals("2007-07-15"), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // hashCode()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_hashCode(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        assertEquals(a.hashCode(), a.hashCode());
+        LocalDate b = LocalDate.date(y, m, d);
+        assertEquals(a.hashCode(), b.hashCode());
     }
 
     //-----------------------------------------------------------------------
