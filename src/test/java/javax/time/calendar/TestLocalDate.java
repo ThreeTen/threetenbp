@@ -552,9 +552,7 @@ public class TestLocalDate {
             LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
         }
     }
 
@@ -563,70 +561,237 @@ public class TestLocalDate {
             LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
         }
     }
 
     //-----------------------------------------------------------------------
     // plusMonths()
     //-----------------------------------------------------------------------
-    public void test_plusMonths_normal() {
+    public void test_plusMonths_int_normal() {
         LocalDate t = TEST_2007_07_15.plusMonths(1);
         assertEquals(t, LocalDate.date(2007, 8, 15));
     }
 
-    public void test_plusMonths_noChange() {
+    public void test_plusMonths_int_noChange() {
         LocalDate t = TEST_2007_07_15.plusMonths(0);
         assertEquals(t, LocalDate.date(2007, 7, 15));
     }
 
-    public void test_plusMonths_negative() {
+    public void test_plusMonths_int_overYears() {
+        LocalDate t = TEST_2007_07_15.plusMonths(25);
+        assertEquals(t, LocalDate.date(2009, 8, 15));
+    }
+
+    public void test_plusMonths_int_negative() {
         LocalDate t = TEST_2007_07_15.plusMonths(-1);
         assertEquals(t, LocalDate.date(2007, 6, 15));
     }
 
-    public void test_plusMonths_negativeAcrossYear() {
+    public void test_plusMonths_int_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusMonths(-7);
         assertEquals(t, LocalDate.date(2006, 12, 15));
     }
 
-    public void test_plusMonths_adjustDayFromLeapYear() {
+    public void test_plusMonths_int_negativeOverYears() {
+        LocalDate t = TEST_2007_07_15.plusMonths(-31);
+        assertEquals(t, LocalDate.date(2004, 12, 15));
+    }
+
+    public void test_plusMonths_int_adjustDayFromLeapYear() {
         LocalDate t = LocalDate.date(2008, 2, 29).plusMonths(12);
         LocalDate expected = LocalDate.date(2009, 2, 28);
         assertEquals(t, expected);
     }
 
-    public void test_plusMonths_adjustDayFromMonthLength() {
+    public void test_plusMonths_int_adjustDayFromMonthLength() {
         LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1);
         LocalDate expected = LocalDate.date(2007, 4, 30);
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_plusMonths_invalidTooLarge() {
+    public void test_plusMonths_int_invalidTooLarge() {
         try {
             LocalDate.date(Year.MAX_YEAR, 12, 1).plusMonths(1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-            throw ex;
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_plusMonths_invalidTooSmall() {
+    public void test_plusMonths_int_invalidTooSmall() {
         try {
             LocalDate.date(Year.MIN_YEAR, 1, 1).plusMonths(-1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-            throw ex;
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusMonths_int_DateResolver_normal() {
+        LocalDate t = TEST_2007_07_15.plusMonths(1, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2007, 8, 15));
+    }
+
+    public void test_plusMonths_int_DateResolver_noChange() {
+        LocalDate t = TEST_2007_07_15.plusMonths(0, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2007, 7, 15));
+    }
+
+    public void test_plusMonths_int_DateResolver_overYears() {
+        LocalDate t = TEST_2007_07_15.plusMonths(25, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2009, 8, 15));
+    }
+
+    public void test_plusMonths_int_DateResolver_negative() {
+        LocalDate t = TEST_2007_07_15.plusMonths(-1, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2007, 6, 15));
+    }
+
+    public void test_plusMonths_int_DateResolver_negativeAcrossYear() {
+        LocalDate t = TEST_2007_07_15.plusMonths(-7, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2006, 12, 15));
+    }
+
+    public void test_plusMonths_int_DateResolver_negativeOverYears() {
+        LocalDate t = TEST_2007_07_15.plusMonths(-31, DateResolvers.nextValid());
+        assertEquals(t, LocalDate.date(2004, 12, 15));
+    }
+
+    public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
+        LocalDate t = LocalDate.date(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.date(2009, 3, 1);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
+        LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.date(2007, 5, 1);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusMonths_int_DateResolver_invalidTooLarge() {
+        try {
+            LocalDate.date(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusMonths_int_DateResolver_invalidTooSmall() {
+        try {
+            LocalDate.date(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // plusDays()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="samplePlusDaysTransitivity")
+    Object[][] provider_samplePlusDaysTransitivity() {
+        return new Object[][] {
+            {LocalDate.date(2007, 1, 1)},
+            {LocalDate.date(2007, 2, 28)},
+            {LocalDate.date(2007, 3, 1)},
+            {LocalDate.date(2007, 12, 31)},
+            {LocalDate.date(2008, 1, 1)},
+            {LocalDate.date(2008, 2, 28)},
+            {LocalDate.date(2008, 2, 29)},
+            {LocalDate.date(2008, 3, 1)},
+            {LocalDate.date(2008, 12, 31)},
+            {LocalDate.date(2099, 1, 1)},
+            {LocalDate.date(2099, 2, 28)},
+            {LocalDate.date(2099, 3, 1)},
+            {LocalDate.date(2099, 12, 31)},
+            {LocalDate.date(2100, 1, 1)},
+            {LocalDate.date(2100, 2, 28)},
+            {LocalDate.date(2100, 3, 1)},
+            {LocalDate.date(2100, 12, 31)},
+        };
+    }
+    
+    @Test(dataProvider="samplePlusDaysTransitivity")
+    private void test_plusDays_transitivity(LocalDate reference) {
+        for (int days = 0; days < 365 * 13; days++) {
+            LocalDate t = reference.plusDays(days).plusDays(-days);
+            assertEquals(t, reference, String.valueOf(days));
+
+            t = reference.plusDays(-days).plusDays(days);
+            assertEquals(t, reference, String.valueOf(-days));
+        }
+    }
+
+    public void test_plusDays_normal() {
+        LocalDate t = TEST_2007_07_15.plusDays(1);
+        assertEquals(t, LocalDate.date(2007, 7, 16));
+    }
+
+    public void test_plusDays_noChange() {
+        LocalDate t = TEST_2007_07_15.plusDays(0);
+        assertEquals(t, LocalDate.date(2007, 7, 15));
+    }
+
+    public void test_plusDays_overMonths() {
+        LocalDate t = TEST_2007_07_15.plusDays(62);
+        assertEquals(t, LocalDate.date(2007, 9, 15));
+    }
+
+    public void test_plusDays_overYears() {
+        LocalDate t = LocalDate.date(2006, 7, 14).plusDays(366);
+        assertEquals(t, TEST_2007_07_15);
+    }
+
+    public void test_plusDays_overLeapYears() {
+        LocalDate t = TEST_2007_07_15.plusYears(-1).plusDays(365 + 366);
+        assertEquals(t, LocalDate.date(2008, 7, 15));
+    }
+
+    public void test_plusDays_negative() {
+        LocalDate t = TEST_2007_07_15.plusDays(-1);
+        assertEquals(t, LocalDate.date(2007, 7, 14));
+    }
+
+    public void test_plusDays_negativeAcrossYear() {
+        LocalDate t = TEST_2007_07_15.plusDays(-196);
+        assertEquals(t, LocalDate.date(2006, 12, 31));
+    }
+
+    public void test_plusDays_negativeOverYears() {
+        LocalDate t = TEST_2007_07_15.plusDays(-730);
+        assertEquals(t, LocalDate.date(2005, 7, 15));
+    }
+
+    public void test_plusDays_maximum() {
+        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 30).plusDays(1);
+        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusDays_minimum() {
+        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 2).plusDays(-1);
+        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusDays_invalidTooLarge() {
+        try {
+            LocalDate.date(Year.MAX_YEAR, 12, 31).plusDays(1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), "Year is already at the maximum value");
+        }
+    }
+
+    public void test_plusDays_invalidTooSmall() {
+        try {
+            LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(-1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), "Year is already at the minimum value");
         }
     }
 

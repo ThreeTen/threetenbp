@@ -265,20 +265,20 @@ public final class MathUtils {
         return value - 1;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Safely convert a long to an int.
-//     *
-//     * @param value  the value to convert
-//     * @return the int value
-//     */
-//    public static int safeToInt(long value) {
-//        if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE) {
-////        if (value >>> 32 > 0) {
-//            throw new ArithmeticException("Calculation overflows an int: " + value);
-//        }
-//        return (int) value;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Safely convert a long to an int.
+     *
+     * @param value  the value to convert
+     * @return the int value
+     * @throws ArithmeticException if the result overflows an int
+     */
+    public static int safeToInt(long value) {
+        if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE) {
+            throw new ArithmeticException("Calculation overflows an int: " + value);
+        }
+        return (int) value;
+    }
 
     //-----------------------------------------------------------------------
     /**
