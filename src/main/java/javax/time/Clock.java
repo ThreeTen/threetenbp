@@ -114,7 +114,8 @@ public abstract class Clock {
      * @return a year object representing the current year, never null
      */
     public Year currentYear() {
-        return Year.isoYear(2007);
+        //TODO: optimize
+        return today().getYear();
     }
 
     //-----------------------------------------------------------------------
@@ -124,7 +125,8 @@ public abstract class Clock {
      * @return a month object representing the current month, never null
      */
     public YearMonth currentMonth() {
-        return YearMonth.yearMonth(2007, 6);
+        //TODO: optimize
+        return today().getYearMonth();
     }
 
     //-----------------------------------------------------------------------
@@ -134,7 +136,8 @@ public abstract class Clock {
      * @return a day object representing today, never null
      */
     public LocalDate today() {
-        return LocalDate.date(2007, 6, 1);
+        //TODO: optimize
+        return currentZonedDateTime().localDate();
     }
 
     /**
@@ -143,7 +146,7 @@ public abstract class Clock {
      * @return a day object representing yesterday, never null
      */
     public LocalDate yesterday() {
-        return LocalDate.date(2007, 6, 1);
+        return today().plusDays(-1);
     }
 
     /**
@@ -152,7 +155,7 @@ public abstract class Clock {
      * @return a day object representing tommorrow, never null
      */
     public LocalDate tomorrow() {
-        return LocalDate.date(2007, 6, 1);
+        return today().plusDays(1);
     }
 
     //-----------------------------------------------------------------------
@@ -162,7 +165,8 @@ public abstract class Clock {
      * @return a time object representing the current time of day, never null
      */
     public LocalTime currentTime() {
-        return LocalTime.time(12, 30);
+        //TODO: optimize
+        return currentZonedDateTime().localTime();
     }
 
     //-----------------------------------------------------------------------
@@ -172,7 +176,8 @@ public abstract class Clock {
      * @return a date-time object representing the current date and time, never null
      */
     public LocalDateTime currentDateTime() {
-        return LocalDateTime.dateTime(2007, 6, 1, 12, 30);
+        //TODO: optimize
+        return currentZonedDateTime().localDateTime();
     }
 
     //-----------------------------------------------------------------------
@@ -206,6 +211,7 @@ public abstract class Clock {
 
         /**
          * Restricted constructor.
+         * @param timeZone TimeZone to use for this clock
          */
         SystemMillis(TimeZone timeZone) {
             this.timeZone = timeZone;
