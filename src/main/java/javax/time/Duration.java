@@ -53,12 +53,13 @@ import java.io.Serializable;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public class Duration implements Comparable<Duration>, Serializable {
+public final class Duration implements Comparable<Duration>, Serializable {
     // TODO: Leap seconds (document or implement)
     // TODO: Serialized format
     // TODO: Evaluate hashcode
     // TODO: Optimise to 2 private subclasses (second/nano & millis)
     // TODO: Consider BigDecimal
+    // TODO: Check for potential overflows
 
     /**
      * Constant for a duration of zero.

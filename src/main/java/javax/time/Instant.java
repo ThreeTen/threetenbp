@@ -59,6 +59,7 @@ public final class Instant
     // TODO: Evaluate hashcode
     // TODO: Optimise to 2 private subclasses (second/nano & millis)
     // TODO: Consider BigDecimal
+    // TODO: Check for potential overflows
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
