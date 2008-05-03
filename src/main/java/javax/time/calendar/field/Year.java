@@ -268,7 +268,12 @@ public final class Year
      * @throws ArithmeticException if the result cannot be stored
      */
     public Year minusYears(int years) {
-        int newYear = MathUtils.safeSubtract(year, years);
+        int newYear = 0;
+        try {
+            newYear = MathUtils.safeSubtract(year, years);
+        } catch (ArithmeticException ae) {
+            throw new IllegalCalendarFieldValueException("Year", (((long)year) - years), MIN_YEAR, MAX_YEAR);
+        }
         return isoYear(newYear);
     }
 
