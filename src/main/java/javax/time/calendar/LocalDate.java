@@ -539,24 +539,24 @@ public final class LocalDate
         return dateResolver.resolveDate(newYear, newMonth, day);
     }
 
-//    /**
-//     * Returns a copy of this LocalDate with the specified period in weeks added.
-//     * <p>
-//     * This method add the specified amount in weeks to the days field incrementing
-//     * the month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param weeks  the weeks to add, may be negative
-//     * @return a new updated LocalDate, never null
-//     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
-//     */
-//    public LocalDate plusWeeks(int weeks) {
-//        return plusDays(7L * weeks);
-//    }
+    /**
+     * Returns a copy of this LocalDate with the specified period in weeks added.
+     * <p>
+     * This method add the specified amount in weeks to the days field incrementing
+     * the month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 plus one week would result in the 2009-01-07.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to add, may be negative
+     * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDate plusWeeks(int weeks) {
+        return plusDays(7L * weeks);
+    }
 
     /**
      * Returns a copy of this LocalDate with the specified period in days added.

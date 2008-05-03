@@ -665,10 +665,10 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    // plusDays()
+    // plusWeeks()
     //-----------------------------------------------------------------------
-    @DataProvider(name="samplePlusDaysTransitivity")
-    Object[][] provider_samplePlusDaysTransitivity() {
+    @DataProvider(name="samplePlusWeeksSymmetry")
+    Object[][] provider_samplePlusWeeksSymmetry() {
         return new Object[][] {
             {LocalDate.date(-1, 1, 1)},
             {LocalDate.date(-1, 2, 28)},
@@ -699,8 +699,124 @@ public class TestLocalDate {
         };
     }
     
-    @Test(dataProvider="samplePlusDaysTransitivity")
-    private void test_plusDays_transitivity(LocalDate reference) {
+    @Test(dataProvider="samplePlusWeeksSymmetry")
+    private void test_plusWeeks_symmetry(LocalDate reference) {
+        for (int weeks = 0; weeks < 365 * 8; weeks++) {
+            LocalDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
+            assertEquals(t, reference, String.valueOf(weeks));
+
+            t = reference.plusWeeks(-weeks).plusWeeks(weeks);
+            assertEquals(t, reference, String.valueOf(-weeks));
+        }
+    }
+
+    public void test_plusWeeks_normal() {
+        LocalDate t = TEST_2007_07_15.plusWeeks(1);
+        assertEquals(t, LocalDate.date(2007, 7, 22));
+    }
+
+    public void test_plusWeeks_noChange() {
+        LocalDate t = TEST_2007_07_15.plusWeeks(0);
+        assertEquals(t, LocalDate.date(2007, 7, 15));
+    }
+
+    public void test_plusWeeks_overMonths() {
+        LocalDate t = TEST_2007_07_15.plusWeeks(9);
+        assertEquals(t, LocalDate.date(2007, 9, 16));
+    }
+
+    public void test_plusWeeks_overYears() {
+        LocalDate t = LocalDate.date(2006, 7, 16).plusWeeks(52);
+        assertEquals(t, TEST_2007_07_15);
+    }
+
+    public void test_plusWeeks_overLeapYears() {
+        LocalDate t = TEST_2007_07_15.plusYears(-1).plusWeeks(104);
+        assertEquals(t, LocalDate.date(2008, 7, 12));
+    }
+
+    public void test_plusWeeks_negative() {
+        LocalDate t = TEST_2007_07_15.plusWeeks(-1);
+        assertEquals(t, LocalDate.date(2007, 7, 8));
+    }
+
+    public void test_plusWeeks_negativeAcrossYear() {
+        LocalDate t = TEST_2007_07_15.plusWeeks(-28);
+        assertEquals(t, LocalDate.date(2006, 12, 31));
+    }
+
+    public void test_plusWeeks_negativeOverYears() {
+        LocalDate t = TEST_2007_07_15.plusWeeks(-104);
+        assertEquals(t, LocalDate.date(2005, 7, 17));
+    }
+
+    public void test_plusWeeks_maximum() {
+        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 24).plusWeeks(1);
+        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusWeeks_minimum() {
+        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
+        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        assertEquals(t, expected);
+    }
+
+    public void test_plusWeeks_invalidTooLarge() {
+        try {
+            LocalDate.date(Year.MAX_YEAR, 12, 25).plusWeeks(1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), "Year is already at the maximum value");
+        }
+    }
+
+    public void test_plusWeeks_invalidTooSmall() {
+        try {
+            LocalDate.date(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), "Year is already at the minimum value");
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // plusDays()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="samplePlusDaysSymmetry")
+    Object[][] provider_samplePlusDaysSymmetry() {
+        return new Object[][] {
+            {LocalDate.date(-1, 1, 1)},
+            {LocalDate.date(-1, 2, 28)},
+            {LocalDate.date(-1, 3, 1)},
+            {LocalDate.date(-1, 12, 31)},
+            {LocalDate.date(0, 1, 1)},
+            {LocalDate.date(0, 2, 28)},
+            {LocalDate.date(0, 2, 29)},
+            {LocalDate.date(0, 3, 1)},
+            {LocalDate.date(0, 12, 31)},
+            {LocalDate.date(2007, 1, 1)},
+            {LocalDate.date(2007, 2, 28)},
+            {LocalDate.date(2007, 3, 1)},
+            {LocalDate.date(2007, 12, 31)},
+            {LocalDate.date(2008, 1, 1)},
+            {LocalDate.date(2008, 2, 28)},
+            {LocalDate.date(2008, 2, 29)},
+            {LocalDate.date(2008, 3, 1)},
+            {LocalDate.date(2008, 12, 31)},
+            {LocalDate.date(2099, 1, 1)},
+            {LocalDate.date(2099, 2, 28)},
+            {LocalDate.date(2099, 3, 1)},
+            {LocalDate.date(2099, 12, 31)},
+            {LocalDate.date(2100, 1, 1)},
+            {LocalDate.date(2100, 2, 28)},
+            {LocalDate.date(2100, 3, 1)},
+            {LocalDate.date(2100, 12, 31)},
+        };
+    }
+    
+    @Test(dataProvider="samplePlusDaysSymmetry")
+    private void test_plusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.plusDays(days).plusDays(-days);
             assertEquals(t, reference, String.valueOf(days));
