@@ -220,6 +220,24 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_fromMJDays() {
+        LocalDate test = LocalDate.date(0, 1, 1);
+        for (int i = -678941; i < 200000; i++) {
+            assertEquals(LocalDate.fromMJDays(i), test, String.valueOf(i));
+            test = test.plusDays(1);
+        }
+        
+        test = LocalDate.date(0, 1, 1);
+        for (int i = -678941; i > -200000; i--) {
+            assertEquals(LocalDate.fromMJDays(i), test, String.valueOf(i));
+            test = test.plusDays(-1);
+        }
+
+        assertEquals(LocalDate.fromMJDays(40587), LocalDate.date(1970, 1, 1));
+        assertEquals(LocalDate.fromMJDays(-678942), LocalDate.date(-1, 12, 31));
+    }
+
+    //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertSame(ISOChronology.INSTANCE, TEST_2007_07_15.getChronology());
     }

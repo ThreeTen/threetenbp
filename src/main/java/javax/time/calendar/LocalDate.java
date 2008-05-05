@@ -154,6 +154,55 @@ public final class LocalDate
         return result;
     }
 
+    /**
+     * Obtains an instance of <code>LocalDate</code> from a modified julian day.
+     *
+     * @param mjday  the modified julian day equivalent to the LocalDate
+     * @return a LocalDate object, never null
+     */
+    public static LocalDate fromMJDays(long mjday) {
+//        long total = mjday + 678941;
+//        long y = total / 365;
+//        total %= 365;
+//        total -= (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+//
+//        if (total < 0) {
+//            y--;
+//            total = total % -365 + total / -365 + 365 + (Year.isoYear((int)y).isLeap() ? 1 : 0);
+//        }
+        long total = mjday + 678941;
+        long y = 0;
+        long yearOffset = 0;
+        Year year = null;
+
+        do {
+            y += total / 365;
+            total %= 365;
+            total += yearOffset;
+            yearOffset = (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+            total -= yearOffset;
+
+            if (total < 0 && total / -365 == 0) {
+                y--;
+                year = Year.isoYear((int)y);
+                total = total % -365 + 365 + (year.isLeap() ? 1 : 0);
+            }
+        } while (total < 0);
+
+        if (year == null) {
+            year = Year.isoYear(MathUtils.safeToInt(y));
+        }
+        MonthOfYear month = MonthOfYear.JANUARY;
+        int monthLength;
+
+        while (total > (monthLength = month.lengthInDays(year)) - 1) {
+            total -= monthLength;
+            month = month.next();
+        }
+
+        return new LocalDate(year, month, DayOfMonth.dayOfMonth(MathUtils.safeToInt(total) + 1));
+    }
+    
     //-----------------------------------------------------------------------
     /**
      * Constructor, previously validated.

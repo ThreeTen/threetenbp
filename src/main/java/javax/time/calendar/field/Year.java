@@ -407,8 +407,8 @@ public final class Year
      * remainder. However, years divisible by 100, are not leap years, with
      * the exception of years divisible by 400 which are.
      * <p>
-     * For example, 1904 is a leap year it is divisble by 4.
-     * 1900 was not a leap year as it is divisble by 100, however 2000 was a
+     * For example, 1904 is a leap year it is divisible by 4.
+     * 1900 was not a leap year as it is divisible by 100, however 2000 was a
      * leap year as it is divisible by 400.
      * <p>
      * This calculation is proleptic - applying the same rules into prehistory.
