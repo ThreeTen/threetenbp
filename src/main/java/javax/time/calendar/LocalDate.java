@@ -172,26 +172,30 @@ public final class LocalDate
 //        }
         long total = mjday + 678941;
         long y = 0;
-        long yearOffset = 0;
+        long leapYearCount = 0;
         Year year = null;
 
         do {
             y += total / 365;
             total %= 365;
-            total += yearOffset;
-            yearOffset = (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
-            total -= yearOffset;
+            total += leapYearCount;
+            if (y >= 0) {
+                leapYearCount = (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+            } else {
+                leapYearCount = y / 4 - y / 100 + y / 400;
+            }
+            total -= leapYearCount;
 
             if (total < 0 && total / -365 == 0) {
                 y--;
                 year = Year.isoYear((int)y);
                 total = total % -365 + 365 + (year.isLeap() ? 1 : 0);
+            } else if (total >= 365) {
+                year = Year.isoYear((int)y);
             }
-        } while (total < 0);
+        } while (total < 0 || (year != null && total >= (year.isLeap() ? 366 : 365)));
 
-        if (year == null) {
-            year = Year.isoYear(MathUtils.safeToInt(y));
-        }
+        year = Year.isoYear(MathUtils.safeToInt(y));
         MonthOfYear month = MonthOfYear.JANUARY;
         int monthLength;
 
@@ -1060,7 +1064,11 @@ public final class LocalDate
         long m = month.getValue();
         long total = 0;
         total += 365 * y;
-        total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        if (y >= 0) {
+            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        } else {
+            total -= y / -4 - y / -100 + y / -400;
+        }
         total += ((367 * m - 362) / 12);
         total += day.getValue() - 1;
         if (m > 2) {

@@ -222,13 +222,13 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void factory_fromMJDays() {
         LocalDate test = LocalDate.date(0, 1, 1);
-        for (int i = -678941; i < 200000; i++) {
+        for (int i = -678941; i < 700000; i++) {
             assertEquals(LocalDate.fromMJDays(i), test, String.valueOf(i));
             test = test.plusDays(1);
         }
-        
+
         test = LocalDate.date(0, 1, 1);
-        for (int i = -678941; i > -200000; i--) {
+        for (int i = -678941; i > -2000000; i--) {
             assertEquals(LocalDate.fromMJDays(i), test, String.valueOf(i));
             test = test.plusDays(-1);
         }
@@ -1395,17 +1395,17 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_toMJDays() {
         LocalDate test = LocalDate.date(0, 1, 1);
-        for (int i = -678941; i < 200000; i++) {
+        for (int i = -678941; i < 700000; i++) {
             assertEquals(test.toMJDays(), i);
             test = test.plusDays(1);
         }
         
         test = LocalDate.date(0, 1, 1);
-        for (int i = -678941; i > -200000; i--) {
-            assertEquals(test.toMJDays(), i);
+        for (int i = -678941; i > -2000000; i--) {
+            assertEquals(test.toMJDays(), i, test + " " + test.plusDays(1));
             test = test.plusDays(-1);
         }
-        
+
 //        assertEquals(LocalDate.date(0, 1, 1).toMJDays(), 0);
 //        assertEquals(LocalDate.date(0, 1, 2).toMJDays(), 1);
 //        assertEquals(LocalDate.date(0, 1, 31).toMJDays(), 30);
