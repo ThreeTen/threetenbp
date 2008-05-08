@@ -33,10 +33,11 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.ReadableDate;
+import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
@@ -54,12 +55,17 @@ import javax.time.period.PeriodView;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class CopticDate implements Calendrical, Comparable<CopticDate>, Serializable {
+public final class CopticDate
+        implements ReadableDate, Calendrical, Comparable<CopticDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The date that this Coptic date wraps.
+     */
+    private final LocalDate date;
 
     //-----------------------------------------------------------------------
     /**
@@ -70,44 +76,33 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @param dayOfMonth  the day of month to represent
      * @return a CopticDate object
      */
-    public static CopticDate yearMonthDay(int year, CopticMonthOfYear monthOfYear, int dayOfMonth) {
-        return new CopticDate(year, monthOfYear, dayOfMonth);
+    public static CopticDate copticDate(int year, int monthOfYear, int dayOfMonth) {
+        LocalDate date = null;
+        return new CopticDate(date);
     }
 
     /**
-     * Obtains an instance of <code>CopticDate</code> from a set of moments.
-     * <p>
-     * This can be used to pass in any combination of moments that fully specify
-     * a calendar day. For example, Year + MonthOfYear + DayOfMonth, or
-     * Year + DayOfYear.
+     * Obtains an instance of <code>CopticDate</code> from a readable date.
      *
-     * @param moments  a set of moments that fully represent a calendar day
-     * @return a CopticDate object
+     * @param dateProvider  the date provider to use, not null
+     * @return a CopticDate object, never null
      */
-    public static CopticDate copticDate(Calendrical... moments) {
-        return null;
+    public static CopticDate copticDate(ReadableDate dateProvider) {
+        if (dateProvider == null) {
+            throw new NullPointerException("dateProvider must not be null");
+        }
+        return new CopticDate(dateProvider.toLocalDate());
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified date.
      *
-     * @param year  the year to represent
-     * @param monthOfYear  the month of year to represent
-     * @param dayOfMonth  the day of month to represent
+     * @param date  the date to wrap, not null
      */
-    private CopticDate(int year, CopticMonthOfYear monthOfYear, int dayOfMonth) {
-//        this.state = CopticChronology.INSTANCE.stateFromYearMonthDay(year, monthOfYear.getValue(), dayOfMonth);
+    private CopticDate(LocalDate date) {
+        this.date = date;
     }
-
-//    /**
-//     * Constructs an instance with the specified state.
-//     *
-//     * @param state  the calendrical state, not null
-//     */
-//    private CopticDate(CalendricalState state) {
-//        this.state = (CopticChronology.State) state;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -119,6 +114,20 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
         return CopticChronology.INSTANCE;
     }
 
+    /**
+     * Gets the value of the specified calendar field.
+     * <p>
+     * This method queries the value of the specified calendar field.
+     * If the calendar field is not supported then an exception is thrown.
+     *
+     * @param field  the field to query, not null
+     * @return the value for the field
+     * @throws UnsupportedCalendarFieldException if the field is not supported
+     */
+    public int get(DateTimeFieldRule field) {
+        return field.getValue(toFlexiDateTime());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the year value.
@@ -126,47 +135,16 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return the year
      */
     public int getYear() {
-        return 0;
-//        return CopticChronology.INSTANCE.yearRule().getValue(state);
+        return get(CopticChronology.INSTANCE.year());
     }
 
-//    /**
-//     * Gets the season of year value.
-//     *
-//     * @return the season of year, never null
-//     */
-//    public CopticSeasonOfYear getSeasonOfYear() {
-//        return getMonthOfYear().getSeasonOfYear();
-//    }
-//
-//    /**
-//     * Gets the month of season value.
-//     *
-//     * @return the month of season
-//     */
-//    public int getMonthOfSeason() {
-//        return getMonthOfYear().getMonthOfSeason();
-//    }
-//
     /**
      * Gets the month of year value.
      *
      * @return the month of year, never null
      */
-    public CopticMonthOfYear getMonthOfYear() {
-        return null;
-//        int value = CopticChronology.INSTANCE.monthOfYearRule().getValue(state);
-//        return CopticMonthOfYear.copticMonthOfYear(value);
-    }
-
-    /**
-     * Gets the day of year value.
-     *
-     * @return the day of year
-     */
-    public int getDayOfYear() {
-        return 0;
-//        return CopticChronology.INSTANCE.dayOfYearRule().getValue(state);
+    public int getMonthOfYear() {
+        return get(CopticChronology.INSTANCE.monthOfYear());
     }
 
     /**
@@ -175,8 +153,16 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return the day of month
      */
     public int getDayOfMonth() {
-        return 0;
-//        return CopticChronology.INSTANCE.dayOfMonthRule().getValue(state);
+        return get(CopticChronology.INSTANCE.dayOfMonth());
+    }
+
+    /**
+     * Gets the day of year value.
+     *
+     * @return the day of year
+     */
+    public int getDayOfYear() {
+        return get(CopticChronology.INSTANCE.dayOfYear());
     }
 
     /**
@@ -184,10 +170,8 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      *
      * @return the day of week
      */
-    public DayOfWeek getDayOfWeek() {
-        return null;
-//        int value = CopticChronology.INSTANCE.dayOfWeekRule().getValue(state);
-//        return DayOfWeek.dayOfWeek(value);
+    public int getDayOfWeek() {
+        return get(CopticChronology.INSTANCE.dayOfWeek());
     }
 
     //-----------------------------------------------------------------------
@@ -200,9 +184,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return a new updated CopticDate
      */
     public CopticDate withYear(int year) {
-        return null;
-//        CalendricalState newState = CopticChronology.INSTANCE.yearRule().setValue(state, year);
-//        return new CopticDate(newState);
+        return copticDate(year, getMonthOfYear(), getDayOfMonth());
     }
 
     /**
@@ -213,37 +195,8 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @param monthOfYear  the month of year to represent
      * @return a new updated CopticDate
      */
-    public CopticDate withMonthOfYear(CopticMonthOfYear monthOfYear) {
-        return null;
-//        CalendricalState newState = CopticChronology.INSTANCE.monthOfYearRule().setValue(state, monthOfYear.getValue());
-//        return new CopticDate(newState);
-    }
-
-    /**
-     * Returns a copy of this CopticDate with the day of yeare value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfYear  the day of year to represent
-     * @return a new updated CopticDate
-     */
-    public CopticDate withDayOfYear(int dayOfYear) {
-        return null;
-//        CalendricalState newState = CopticChronology.INSTANCE.dayOfYearRule().setValue(state, dayOfYear);
-//        return new CopticDate(newState);
-    }
-
-    /**
-     * Returns a copy of this CopticDate with the date set to the last day of year.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @return a new updated CopticDate
-     */
-    public CopticDate withLastDayOfYear() {
-        return null;
-//        int lastDOY = CopticChronology.INSTANCE.dayOfYearRule().getMaximumValue(this);
-//        return withDayOfYear(lastDOY);
+    public CopticDate withMonthOfYear(int monthOfYear) {
+        return copticDate(getYear(), monthOfYear, getDayOfMonth());
     }
 
     /**
@@ -255,36 +208,20 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return a new updated CopticDate
      */
     public CopticDate withDayOfMonth(int dayOfMonth) {
-        return null;
-//        CalendricalState newState = CopticChronology.INSTANCE.dayOfMonthRule().setValue(state, dayOfMonth);
-//        return new CopticDate(newState);
+        return copticDate(getYear(), getMonthOfYear(), dayOfMonth);
     }
 
     /**
-     * Returns a copy of this CopticDate with the date set to the last day of month.
+     * Returns a copy of this CopticDate with the day of yeare value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
+     * @param dayOfYear  the day of year to represent
      * @return a new updated CopticDate
      */
-    public CopticDate withLastDayOfMonth() {
-        return null;
-//        int lastDOM = CopticChronology.INSTANCE.dayOfMonthRule().getMaximumValue(this);
-//        return withDayOfYear(lastDOM);
-    }
-
-    /**
-     * Returns a copy of this CopticDate with the day of week value altered.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfWeek  the day of week to represent
-     * @return a new updated CopticDate
-     */
-    public CopticDate withDayOfWeek(DayOfWeek dayOfWeek) {
-        return null;
-//        CalendricalState newState = CopticChronology.INSTANCE.dayOfWeekRule().setValue(state, dayOfWeek.getValue());
-//        return new CopticDate(newState);
+    public CopticDate withDayOfYear(int dayOfYear) {
+        dayOfYear--;
+        return copticDate(getYear(), dayOfYear / 30 + 1, dayOfYear % 30 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -370,7 +307,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return the equivalent date in the ISO-8601 calendar system, never null
      */
     public LocalDate toLocalDate() {
-        return null;  // TODO
+        return date;
     }
 
     /**
@@ -379,68 +316,58 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(toLocalDate(), null, null, null);
+        return new FlexiDateTime(date, null, null, null);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
      *
-     * @param otherDay  the other day instance to compare to, not null
+     * @param otherDate  the other date instance to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherDay is null
      */
-    public int compareTo(CopticDate otherDay) {
-        int cmp = MathUtils.safeCompare(getYear(), otherDay.getYear());
-        if (cmp != 0) {
-            return cmp;
-        }
-        cmp = getMonthOfYear().compareTo(otherDay.getMonthOfYear());
-        if (cmp != 0) {
-            return cmp;
-        }
-        return MathUtils.safeCompare(getDayOfMonth(), otherDay.getDayOfMonth());
+    public int compareTo(CopticDate otherDate) {
+        return date.compareTo(otherDate.date);
     }
 
     /**
      * Is this instance after the specified one.
      *
-     * @param otherDay  the other day instance to compare to, not null
+     * @param otherDate  the other date instance to compare to, not null
      * @return true if this day is after the specified day
      * @throws NullPointerException if otherDay is null
      */
-    public boolean isAfter(CopticDate otherDay) {
-        return compareTo(otherDay) > 0;
+    public boolean isAfter(CopticDate otherDate) {
+        return compareTo(otherDate) > 0;
     }
 
     /**
      * Is this instance before the specified one.
      *
-     * @param otherDay  the other day instance to compare to, not null
+     * @param otherDate  the other date instance to compare to, not null
      * @return true if this day is before the specified day
      * @throws NullPointerException if otherDay is null
      */
-    public boolean isBefore(CopticDate otherDay) {
-        return compareTo(otherDay) < 0;
+    public boolean isBefore(CopticDate otherDate) {
+        return compareTo(otherDate) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
      *
-     * @param otherDay  the other day instance to compare to, null returns false
+     * @param otherDate  the other date instance to compare to, null returns false
      * @return true if this day is equal to the specified day
      */
     @Override
-    public boolean equals(Object otherDay) {
-        if (this == otherDay) {
+    public boolean equals(Object otherDate) {
+        if (this == otherDate) {
             return true;
         }
-        if (otherDay instanceof CopticDate) {
-            CopticDate other = (CopticDate) otherDay;
-            return  getDayOfMonth() == other.getDayOfMonth() &&
-                    getMonthOfYear() == other.getMonthOfYear() &&
-                    getYear() == other.getYear();
+        if (otherDate instanceof CopticDate) {
+            CopticDate other = (CopticDate) otherDate;
+            return date.equals(other.date);
         }
         return false;
     }
@@ -452,7 +379,7 @@ public final class CopticDate implements Calendrical, Comparable<CopticDate>, Se
      */
     @Override
     public int hashCode() {
-        return getYear() + 37 * getMonthOfYear().hashCode() + 37 * getDayOfMonth();
+        return date.hashCode();
     }
 
 }
