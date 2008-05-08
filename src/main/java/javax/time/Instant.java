@@ -33,6 +33,9 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.ZoneOffset;
+
 /**
  * An instantaneous point on the time-line.
  * <p>
@@ -546,8 +549,8 @@ public final class Instant
      */
     @Override
     public String toString() {
-        // TODO
-        return "TODO";
+        // TODO: optimize
+        return OffsetDateTime.dateTime(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
     }
 
 }
