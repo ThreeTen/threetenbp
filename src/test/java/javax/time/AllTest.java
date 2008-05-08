@@ -39,6 +39,7 @@ import javax.time.calendar.TestOffsetDateTime_creation;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.field.TestDayOfMonth;
 import javax.time.calendar.field.TestDayOfMonthRule;
+import javax.time.calendar.field.TestDayOfWeek;
 import javax.time.calendar.field.TestDayOfYear;
 import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.format.TestDateTimeFormatters;
@@ -75,8 +76,9 @@ public class AllTest {
             TestOffsetDateTime_creation.class,
             TestZoneOffset.class,
             // calendar fields
-            TestDayOfYear.class,
             TestDayOfMonth.class,
+            TestDayOfWeek.class,
+            TestDayOfYear.class,
             TestMonthOfYear.class,
             // calendar rules
             TestDayOfMonthRule.class,

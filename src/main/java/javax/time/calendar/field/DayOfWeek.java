@@ -152,27 +152,9 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      */
     public static DayOfWeek dayOfWeek(ReadableDate dateProvider) {
         LocalDate date = dateProvider.toLocalDate();
-        if (date.getYear().getValue() == 2007) {  // Jan 1 is Mon
-            int doy = date.getDayOfYear().getValue() - 1;
-            int dow = doy % 7 + 1;
-            return dayOfWeek(dow);
-        }
-        if (date.getYear().getValue() == 2008) {  // Jan 1 is Tue
-            int doy = date.getDayOfYear().getValue();
-            int dow = doy % 7 + 1;
-            return dayOfWeek(dow);
-        }
-        if (date.getYear().getValue() == 2010) {  // Jan 1 is Fri
-            int doy = date.getDayOfYear().getValue() + 3;
-            int dow = doy % 7 + 1;
-            return dayOfWeek(dow);
-        }
-        if (date.getYear().getValue() == 2011) {  // Jan 1 is Sat
-            int doy = date.getDayOfYear().getValue() + 4;
-            int dow = doy % 7 + 1;
-            return dayOfWeek(dow);
-        }
-        return DayOfWeek.MONDAY;  // TODO
+        long mjd = date.toMJDays();
+        int dow0 = (int) ((mjd + 2) % 7);
+        return dayOfWeek(dow0 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -293,6 +275,17 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      */
     public DayOfWeek minusDays(int days) {
         return values()[(ordinal() + (days % 7)) % 7];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * A string describing the day of week object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "DayOfWeek=" + name();
     }
 
 }
