@@ -42,6 +42,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import java.util.Iterator;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -223,13 +224,13 @@ public class TestLocalDate {
     public void factory_fromMJDays() {
         LocalDate test = LocalDate.date(0, 1, 1);
         for (int i = -678941; i < 700000; i++) {
-            assertEquals(LocalDate.fromMJDays(i), test, String.valueOf(i));
+            assertEquals(LocalDate.fromMJDays(i), test);
             test = test.plusDays(1);
         }
 
         test = LocalDate.date(0, 1, 1);
         for (int i = -678941; i > -2000000; i--) {
-            assertEquals(LocalDate.fromMJDays(i), test, String.valueOf(i));
+            assertEquals(LocalDate.fromMJDays(i), test);
             test = test.plusDays(-1);
         }
 
@@ -721,10 +722,10 @@ public class TestLocalDate {
     private void test_plusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             LocalDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
-            assertEquals(t, reference, String.valueOf(weeks));
+            assertEquals(t, reference);
 
             t = reference.plusWeeks(-weeks).plusWeeks(weeks);
-            assertEquals(t, reference, String.valueOf(-weeks));
+            assertEquals(t, reference);
         }
     }
 
@@ -837,10 +838,10 @@ public class TestLocalDate {
     private void test_plusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.plusDays(days).plusDays(-days);
-            assertEquals(t, reference, String.valueOf(days));
+            assertEquals(t, reference);
 
             t = reference.plusDays(-days).plusDays(days);
-            assertEquals(t, reference, String.valueOf(-days));
+            assertEquals(t, reference);
         }
     }
 
@@ -1402,7 +1403,7 @@ public class TestLocalDate {
         
         test = LocalDate.date(0, 1, 1);
         for (int i = -678941; i > -2000000; i--) {
-            assertEquals(test.toMJDays(), i, test + " " + test.plusDays(1));
+            assertEquals(test.toMJDays(), i);
             test = test.plusDays(-1);
         }
 
@@ -1426,6 +1427,20 @@ public class TestLocalDate {
 //        assertEquals(LocalDate.date(1, 1, 1).toMJDays(), 366);
         assertEquals(LocalDate.date(1970, 1, 1).toMJDays(), 40587);
         assertEquals(LocalDate.date(-1, 12, 31).toMJDays(), -678942);
+    }
+
+    public void test_toMJDays_fromMJDays_simmetry() {
+        LocalDate test = LocalDate.date(0, 1, 1);
+        for (int i = -678941; i < 700000; i++) {
+            assertEquals(LocalDate.fromMJDays(test.toMJDays()), test);
+            test = test.plusDays(1);
+        }
+
+        test = LocalDate.date(0, 1, 1);
+        for (int i = -678941; i > -2000000; i--) {
+            assertEquals(LocalDate.fromMJDays(test.toMJDays()), test);
+            test = test.plusDays(-1);
+        }
     }
 
     //-----------------------------------------------------------------------
