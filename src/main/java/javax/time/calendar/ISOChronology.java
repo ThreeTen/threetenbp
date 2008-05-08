@@ -110,15 +110,15 @@ public final class ISOChronology implements Serializable {
 //        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 //    }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the name of the chronology.
-//     *
-//     * @return the name of the chronology, never null
-//     */
-//    public String getName() {
-//        return "ISO";
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the name of the chronology.
+     *
+     * @return the name of the chronology, never null
+     */
+    public String getName() {
+        return "ISO";
+    }
 
     //-----------------------------------------------------------------------
 //    /**
@@ -327,6 +327,15 @@ public final class ISOChronology implements Serializable {
      */
     public DateTimeFieldRule dayOfWeek() {
         return DayOfWeekRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week of year field in the ISO chronology.
+     *
+     * @return the rule for the week of year field, never null
+     */
+    public DateTimeFieldRule weekOfYear() {
+        return WeekOfYearRule.INSTANCE;
     }
 
     /**
@@ -562,6 +571,11 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
+        public int getSmallestMaximumValue() {
+            return 52;
+        }
+        /** {@inheritDoc} */
+        @Override
         public int getValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
                 return WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue();
@@ -591,6 +605,38 @@ public final class ISOChronology implements Serializable {
         public int getValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
                 return dateTime.getDate().getDayOfWeek().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class WeekOfYearRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new WeekOfYearRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private WeekOfYearRule() {
+            super("WeekOfYear", Periods.WEEKS, Periods.YEARS, 1, 53);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getSmallestMaximumValue() {
+            return 52;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            LocalDate date = dateTime.getDate();
+            if (date != null) {
+                return ((date.getDayOfYear().getValue() - 1) % 7) + 1;
             }
             return dateTime.getFieldValueMapValue(this);
         }
