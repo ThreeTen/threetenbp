@@ -170,6 +170,7 @@ public final class LocalDate
 //            y--;
 //            total = total % -365 + total / -365 + 365 + (Year.isoYear((int)y).isLeap() ? 1 : 0);
 //        }
+        //TODO: remove useless Year object creation
         long total = mjday + 678941;
         long y = 0;
         long leapYearCount = 0;
@@ -195,7 +196,14 @@ public final class LocalDate
             }
         } while (total < 0 || (year != null && total >= (year.isLeap() ? 366 : 365)));
 
-        year = Year.isoYear(MathUtils.safeToInt(y));
+        int yAsInt = 0;
+        try {
+            yAsInt = MathUtils.safeToInt(y);
+        } catch (ArithmeticException ae) {
+            throw new IllegalCalendarFieldValueException("Year", y, Year.MIN_YEAR, Year.MAX_YEAR);
+        }
+
+        year = Year.isoYear(yAsInt);
         MonthOfYear month = MonthOfYear.JANUARY;
         int monthLength;
 
@@ -612,25 +620,6 @@ public final class LocalDate
     }
 
     /**
-     * Returns a copy of this LocalDate with the specified period in days added.
-     * <p>
-     * This method add the specified amount to the days field incrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 plus one day would result in the 2009-01-01.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, may be negative
-     * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
-     */
-    public LocalDate plusDays(int days) {
-        return plusDays((long) days);
-    }
-
-    /**
      * Returns a copy of this LocalDate with the specified number of days added.
      * <p>
      * This method add the specified amount to the days field incrementing the
@@ -645,85 +634,20 @@ public final class LocalDate
      * @return a new updated LocalDate, never null
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
-    private LocalDate plusDays(long days) {
+    public LocalDate plusDays(long days) {
         if (days == 0) {
             return this;
         }
 
-        //TODO: simplify and optimize
-        Year newYear = year;
-        while (days >= 365) {
-            Year reference = newYear;
-            int yearsToAdd = MathUtils.safeToInt(days / 365);
-            newYear = newYear.plusYears(yearsToAdd);
-            days = days % 365;
+        long mjDays = toMJDays();
 
-            if (reference.isLeap() && month.compareTo(MonthOfYear.MARCH) < 0) {
-                days--;
-            }
-
-            if (newYear.isLeap() && month.compareTo(MonthOfYear.FEBRUARY) > 0) {
-                days--;
-            }
-
-            Year referenceLeap = reference.nextLeap();
-
-            while (referenceLeap.isBefore(newYear)) {
-                days--;
-                referenceLeap = referenceLeap.nextLeap();
-            }
+        try {
+            mjDays = MathUtils.safeAdd(mjDays, days);
+        } catch (ArithmeticException ae) {
+            throw new IllegalCalendarFieldValueException(this + " + " + days + " exceeds the current capacity");
         }
 
-        while (days <= -365) {
-            Year reference = newYear;
-            int yearsToAdd = MathUtils.safeToInt(days / 365);
-            newYear = newYear.plusYears(yearsToAdd);
-            days = days % 365;
-
-            if (reference.isLeap() && month.compareTo(MonthOfYear.FEBRUARY) > 0) {
-                days++;
-            }
-
-            if (newYear.isLeap() && month.compareTo(MonthOfYear.MARCH) < 0) {
-                days++;
-            }
-
-            Year referenceLeap = reference.previousLeap();
-
-            while (referenceLeap.isAfter(newYear)) {
-                days++;
-                referenceLeap = referenceLeap.previousLeap();
-            }
-        }
-
-        MonthOfYear newMonth = month;
-        int newDay = day.getValue() + MathUtils.safeToInt(days);
-
-        while (newDay < 1) {
-            newMonth = newMonth.previous();
-            
-            if (newMonth == MonthOfYear.DECEMBER) {
-                newYear = newYear.previous();
-            }
-
-            newDay += newMonth.lengthInDays(newYear);
-        }
-
-        int monthLen;
-
-        while (newDay > 28 && newDay > (monthLen = newMonth.lengthInDays(newYear))) {
-            newDay -= monthLen;
-
-            newMonth = newMonth.next();
-            
-            if (newMonth == MonthOfYear.JANUARY) {
-                newYear = newYear.next();
-            }
-
-            monthLen = newMonth.lengthInDays(newYear);
-        }
-
-       return new LocalDate(newYear, newMonth, DayOfMonth.dayOfMonth(newDay));
+        return LocalDate.fromMJDays(mjDays);
     }
 
     //-----------------------------------------------------------------------
@@ -869,139 +793,47 @@ public final class LocalDate
         return dateResolver.resolveDate(newYear, newMonth, day);
     }
 
-//    /**
-//     * Returns a copy of this LocalDate with the specified period in weeks subtracted.
-//     * <p>
-//     * This method subtract the specified amount in weeks to the days field decrementing
-//     * the month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2009-01-07 minus one week would result in the 2008-12-31.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param weeks  the weeks to subtract, may be negative
-//     * @return a new updated LocalDate, never null
-//     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
-//     */
-//    public LocalDate minusWeeks(int weeks) {
-//        return minusDays(7L * weeks);
-//    }
-//
-//    /**
-//     * Returns a copy of this LocalDate with the specified period in days subtracted.
-//     * <p>
-//     * This method subtract the specified amount to the days field decrementing the
-//     * month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2009-01-01 minus one day would result in the 2008-12-31.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param days  the days to subtract, may be negative
-//     * @return a new updated LocalDate, never null
-//     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
-//     */
-//    public LocalDate minusDays(int days) {
-//        return minusDays((long) days);
-//    }
-//
-//    /**
-//     * Returns a copy of this LocalDate with the specified number of days subtracted.
-//     * <p>
-//     * This method subtract the specified amount to the days field decrementing the
-//     * month and year fields as necessary to ensure the result remains valid.
-//     * The result is only invalid if the maximum/minimum year is exceeded.
-//     * <p>
-//     * For example, 2009-01-01 minus one day would result in the 2008-12-31.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param days  the days to subtract, may be negative
-//     * @return a new updated LocalDate, never null
-//     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
-//     */
-//    private LocalDate minusDays(long days) {
-//        if (days == 0) {
-//            return this;
-//        }
-//
-//        //TODO: simplify and optimize
-//        Year newYear = year;
-//        while (days >= 365) {
-//            Year reference = newYear;
-//            int yearsToSubtract = MathUtils.safeToInt(days / 365);
-//            newYear = newYear.minusYears(yearsToSubtract);
-//            days = days % 365;
-//
-//            if (reference.isLeap() && month.compareTo(MonthOfYear.MARCH) < 0) {
-//                days--;
-//            }
-//
-//            if (newYear.isLeap() && month.compareTo(MonthOfYear.FEBRUARY) > 0) {
-//                days--;
-//            }
-//
-//            Year referenceLeap = reference.nextLeap();
-//
-//            while (referenceLeap.isBefore(newYear)) {
-//                days--;
-//                referenceLeap = referenceLeap.nextLeap();
-//            }
-//        }
-//
-//        while (days <= -365) {
-//            Year reference = newYear;
-//            int yearsToSubtract = MathUtils.safeToInt(days / 365);
-//            newYear = newYear.minusYears(yearsToSubtract);
-//            days = days % 365;
-//
-//            if (reference.isLeap() && month.compareTo(MonthOfYear.FEBRUARY) > 0) {
-//                days++;
-//            }
-//
-//            if (newYear.isLeap() && month.compareTo(MonthOfYear.MARCH) < 0) {
-//                days++;
-//            }
-//
-//            Year referenceLeap = reference.previousLeap();
-//
-//            while (referenceLeap.isAfter(newYear)) {
-//                days++;
-//                referenceLeap = referenceLeap.previousLeap();
-//            }
-//        }
-//
-//        MonthOfYear newMonth = month;
-//        int newDay = day.getValue() + MathUtils.safeToInt(days);
-//
-//        while (newDay < 1) {
-//            newMonth = newMonth.previous();
-//            
-//            if (newMonth == MonthOfYear.DECEMBER) {
-//                newYear = newYear.previous();
-//            }
-//
-//            newDay += newMonth.lengthInDays(newYear);
-//        }
-//
-//        int monthLen;
-//
-//        while (newDay > 28 && newDay > (monthLen = newMonth.lengthInDays(newYear))) {
-//            newDay -= monthLen;
-//
-//            newMonth = newMonth.next();
-//            
-//            if (newMonth == MonthOfYear.JANUARY) {
-//                newYear = newYear.next();
-//            }
-//
-//            monthLen = newMonth.lengthInDays(newYear);
-//        }
-//
-//       return new LocalDate(newYear, newMonth, DayOfMonth.dayOfMonth(newDay));
-//    }
+    /**
+     * Returns a copy of this LocalDate with the specified period in weeks subtracted.
+     * <p>
+     * This method subtract the specified amount in weeks to the days field decrementing
+     * the month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2009-01-07 minus one week would result in the 2008-12-31.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to subtract, may be negative
+     * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDate minusWeeks(int weeks) {
+        return minusDays(7L * weeks);
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the specified number of days subtracted.
+     * <p>
+     * This method subtract the specified amount to the days field decrementing the
+     * month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2009-01-01 minus one day would result in the 2008-12-31.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDate minusDays(long days) {
+        if (days == 0) {
+            return this;
+        }
+
+        return LocalDate.fromMJDays(MathUtils.safeSubtract(toMJDays(), days));
+    }
 
     //-----------------------------------------------------------------------
     /**
