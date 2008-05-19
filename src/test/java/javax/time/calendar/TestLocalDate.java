@@ -953,6 +953,16 @@ public class TestLocalDate {
         }
     }
 
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_plusDays_overflowTooLarge() {
+        LocalDate.date(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_plusDays_overflowTooSmall() {
+        LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+    }
+
     //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
@@ -1395,6 +1405,16 @@ public class TestLocalDate {
             assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
                     Year.MAX_YEAR).getMessage());
         }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_minusDays_overflowTooLarge() {
+        LocalDate.date(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_minusDays_overflowTooSmall() {
+        LocalDate.date(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------

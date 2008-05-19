@@ -644,7 +644,7 @@ public final class LocalDate
         try {
             mjDays = MathUtils.safeAdd(mjDays, days);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException(this + " + " + days + " exceeds the current capacity");
+            throw new IllegalCalendarFieldValueException(this + " + " + days + " days exceeds the current capacity");
         }
 
         return LocalDate.fromMJDays(mjDays);
@@ -832,7 +832,15 @@ public final class LocalDate
             return this;
         }
 
-        return LocalDate.fromMJDays(MathUtils.safeSubtract(toMJDays(), days));
+        long mjDays = toMJDays();
+
+        try {
+            mjDays = MathUtils.safeSubtract(mjDays, days);
+        } catch (ArithmeticException ae) {
+            throw new IllegalCalendarFieldValueException(this + " - " + days + " days exceeds the current capacity");
+        }
+
+        return LocalDate.fromMJDays(mjDays);
     }
 
     //-----------------------------------------------------------------------
