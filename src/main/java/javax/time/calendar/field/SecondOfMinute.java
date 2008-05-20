@@ -41,6 +41,7 @@ import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
+import javax.time.period.Periods;
 
 /**
  * A representation of a second of minute in the ISO-8601 calendar system.
@@ -53,6 +54,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * SecondOfMinute is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class SecondOfMinute
@@ -61,7 +63,7 @@ public final class SecondOfMinute
     /**
      * The rule implementation that defines how the second of minute field operates.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
     /**
      * A serialization identifier for this instance.
      */
@@ -225,11 +227,25 @@ public final class SecondOfMinute
     /**
      * Implementation of the rules for the second of minute field.
      */
-    private static class Rule extends DateTimeFieldRule {
-
+    private static class Rule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new Rule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
         /** Constructor. */
-        protected Rule() {
-            super("SecondOfMinute", null, null, 0, 59);
+        private Rule() {
+            super("SecondOfMinute", Periods.SECONDS, Periods.MINUTES, 0, 59);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getTime() != null) {
+                return dateTime.getTime().getSecondOfMinute().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 
