@@ -37,7 +37,6 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.ReadableDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
@@ -77,8 +76,11 @@ public final class CopticDate
      * @return a CopticDate object
      */
     public static CopticDate copticDate(int year, int monthOfYear, int dayOfMonth) {
-        LocalDate date = null;
-        return new CopticDate(date);
+        CopticChronology.INSTANCE.year().checkValue(year);
+        CopticChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
+        CopticChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        long mjDays = year * 365 + (year / 4) + 30 * (monthOfYear - 1) + dayOfMonth;
+        return new CopticDate(LocalDate.fromMJDays(mjDays));
     }
 
     /**
@@ -91,7 +93,12 @@ public final class CopticDate
         if (dateProvider == null) {
             throw new NullPointerException("dateProvider must not be null");
         }
-        return new CopticDate(dateProvider.toLocalDate());
+        LocalDate localDate = dateProvider.toLocalDate();
+        if (localDate == null) {
+            throw new NullPointerException("The ReadableDate implementation must not return null");
+        }
+
+        return new CopticDate(localDate);
     }
 
     //-----------------------------------------------------------------------
@@ -380,6 +387,38 @@ public final class CopticDate
     @Override
     public int hashCode() {
         return date.hashCode();
+    }
+
+
+    //-----------------------------------------------------------------------
+    /**
+     * Outputs the date as a <code>String</code>, such as '2007-13-01'.
+     * <p>
+     * The output will be in the format 'yyyy-MM-dd'.
+     *
+     * @return the formatted date string, never null
+     */
+    @Override
+    public String toString() {
+        int yearValue = getYear();
+        int monthValue = getMonthOfYear();
+        int dayValue = getDayOfMonth();
+        int absYear = Math.abs(yearValue);
+        StringBuilder buf = new StringBuilder(12);
+        if (absYear < 1000) {
+            if (yearValue < 0) {
+                buf.append(yearValue - 10000).deleteCharAt(1);
+            } else {
+                buf.append(yearValue + 10000).deleteCharAt(0);
+            }
+        } else {
+            buf.append(yearValue);
+        }
+        return buf.append(monthValue < 10 ? "-0" : "-")
+            .append(monthValue)
+            .append(dayValue < 10 ? "-0" : "-")
+            .append(dayValue)
+            .toString();
     }
 
 }
