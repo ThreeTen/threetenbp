@@ -42,7 +42,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import java.util.Iterator;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -208,7 +207,7 @@ public class TestLocalDate {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_ReadableDate_null_toDate() {
+    public void factory_date_ReadableDate_null_toLocalDate() {
         LocalDate.date(new ReadableDate() {
             public LocalDate toLocalDate() {
                 return null;
@@ -278,6 +277,7 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    //TODO: implement this test
     public void test_isSupported() {
 //        assertTrue(TEST_2007_07_15.isSupported(Era.RULE));
 //        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
@@ -305,6 +305,7 @@ public class TestLocalDate {
 //        assertFalse(TEST_2007_07_15.isSupported(MeridiemOfDay.RULE));
     }
 
+    // TODO: enable all assertions
     public void test_get() {
         assertEquals(TEST_2007_07_15.get(Era.RULE), Era.AD.getValue());
 //        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
@@ -1469,24 +1470,6 @@ public class TestLocalDate {
             test = previous(test);
         }
 
-//        assertEquals(LocalDate.date(0, 1, 1).toMJDays(), 0);
-//        assertEquals(LocalDate.date(0, 1, 2).toMJDays(), 1);
-//        assertEquals(LocalDate.date(0, 1, 31).toMJDays(), 30);
-//        assertEquals(LocalDate.date(0, 2, 1).toMJDays(), 31);
-//        assertEquals(LocalDate.date(0, 2, 28).toMJDays(), 58);
-//        assertEquals(LocalDate.date(0, 2, 29).toMJDays(), 59);
-//        assertEquals(LocalDate.date(0, 3, 1).toMJDays(), 60);
-//        assertEquals(LocalDate.date(0, 4, 1).toMJDays(), 91);
-//        assertEquals(LocalDate.date(0, 5, 1).toMJDays(), 121);
-//        assertEquals(LocalDate.date(0, 6, 1).toMJDays(), 152);
-//        assertEquals(LocalDate.date(0, 7, 1).toMJDays(), 182);
-//        assertEquals(LocalDate.date(0, 8, 1).toMJDays(), 213);
-//        assertEquals(LocalDate.date(0, 9, 1).toMJDays(), 244);
-//        assertEquals(LocalDate.date(0, 10, 1).toMJDays(), 274);
-//        assertEquals(LocalDate.date(0, 11, 1).toMJDays(), 305);
-//        assertEquals(LocalDate.date(0, 12, 1).toMJDays(), 335);
-//        assertEquals(LocalDate.date(0, 12, 31).toMJDays(), 365);
-//        assertEquals(LocalDate.date(1, 1, 1).toMJDays(), 366);
         assertEquals(LocalDate.date(1970, 1, 1).toMJDays(), 40587);
         assertEquals(LocalDate.date(-1, 12, 31).toMJDays(), -678942);
     }
@@ -1643,5 +1626,4 @@ public class TestLocalDate {
         String str = t.toString();
         assertEquals(str, expected);
     }
-
 }
