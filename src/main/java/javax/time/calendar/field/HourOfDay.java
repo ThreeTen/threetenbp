@@ -306,7 +306,7 @@ public final class HourOfDay
     /**
      * Implementation of the rules for the hour of day field.
      */
-    private static class Rule extends DateTimeFieldRule {
+    private static class Rule extends DateTimeFieldRule implements Serializable{
         /** Singleton instance. */
         private static final DateTimeFieldRule INSTANCE = new Rule();
         /** A serialization identifier for this class. */

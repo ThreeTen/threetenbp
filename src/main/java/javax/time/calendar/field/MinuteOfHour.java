@@ -227,7 +227,7 @@ public final class MinuteOfHour
     /**
      * Implementation of the rules for the minute of hour field.
      */
-    private static class Rule extends DateTimeFieldRule {
+    private static class Rule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
         private static final DateTimeFieldRule INSTANCE = new Rule();
         /** A serialization identifier for this class. */
