@@ -44,10 +44,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.HourOfMeridiem;
+import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 
+import javax.time.calendar.field.Year;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -384,15 +387,51 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    public void test_getChronology() {
+        assertSame(ISOChronology.INSTANCE, TEST_12_30_40_987654321.getChronology());
+    }
+
+    //-----------------------------------------------------------------------
+    //TODO: implement this test
     public void test_isSupported() {
-//        assertEquals(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.yearRule()), true);
-//        assertEquals(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.monthOfYearRule()), true);
-//        assertEquals(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfMonthRule()), true);
-//        assertEquals(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfWeekRule()), true);
-//        assertEquals(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfYearRule()), true);
-//        assertEquals(TEST_2007_07_15.isSupported(HourOfDay.RULE), false);
-//        assertEquals(TEST_2007_07_15.isSupported(MinuteOfHour.RULE), false);
-//        assertEquals(TEST_2007_07_15.isSupported(SecondOfMinute.RULE), false);
+//        assertTrue(TEST_12_30_40_987654321.isSupported(HourOfDay.RULE));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(MinuteOfHour.RULE));
+////        assertTrue(TEST_12_30_40_987654321.isSupported(MinuteOfDay.RULE));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(SecondOfMinute.RULE));
+////        assertTrue(TEST_12_30_40_987654321.isSupported(SecondOfDay.RULE));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(NanoOfSecond.RULE));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(HourOfMeridiem.RULE));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(MeridiemOfDay.RULE));
+//        
+//        assertFalse(TEST_12_30_40_987654321.isSupported(Era.RULE));
+////        assertFalse(TEST_12_30_40_987654321.isSupported(MilleniumOfEra.RULE));
+////        assertFalse(TEST_12_30_40_987654321.isSupported(CenturyOfEra.RULE));
+////        assertFalse(TEST_12_30_40_987654321.isSupported(DecadeOfCentury.RULE));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(Year.rule()));
+////        assertFalse(TEST_12_30_40_987654321.isSupported(YearOfEra.RULE));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(QuarterOfYear.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(MonthOfYear.rule()));
+////        assertFalse(TEST_12_30_40_987654321.isSupported(MonthOfQuarter.RULE));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(DayOfMonth.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(DayOfWeek.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(DayOfYear.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(WeekOfMonth.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(WeekOfWeekyear.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(Weekyear.rule()));
+    }
+
+    public void test_get() {
+        assertEquals(TEST_12_30_40_987654321.get(HourOfDay.RULE), 12);
+        assertEquals(TEST_12_30_40_987654321.get(MinuteOfHour.RULE), 30);
+        assertEquals(TEST_12_30_40_987654321.get(SecondOfMinute.RULE), 40);
+        assertEquals(TEST_12_30_40_987654321.get(NanoOfSecond.RULE), 987654321);
+        assertEquals(TEST_12_30_40_987654321.get(HourOfMeridiem.RULE), 0);
+        assertEquals(TEST_12_30_40_987654321.get(MeridiemOfDay.RULE), MeridiemOfDay.PM.getValue());
+    }
+
+    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    public void test_get_unsupported() {
+        TEST_12_30_40_987654321.get(Year.rule());
     }
 
     //-----------------------------------------------------------------------
