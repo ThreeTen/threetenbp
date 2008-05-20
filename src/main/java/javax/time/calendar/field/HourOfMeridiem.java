@@ -38,6 +38,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
+import javax.time.period.Periods;
 
 /**
  * A calendrical representation of a hour of meridiem.
@@ -57,7 +58,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
     /**
      * The rule implementation that defines how the hour of meridiem field operates.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
     /**
      * A serialization identifier for this instance.
      */
@@ -190,11 +191,25 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
     /**
      * Implementation of the rules for the hour of meridiem field.
      */
-    private static class Rule extends DateTimeFieldRule {
-
+    private static class Rule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new Rule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
         /** Constructor. */
-        protected Rule() {
-            super("HourOfMeridiem", null, null, 0, 11);
+        private Rule() {
+            super("HourOfMeridiem", Periods.HOURS, Periods.DAYS, 0, 11);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getTime() != null) {
+                return dateTime.getTime().getHourOfDay().getHourOfAmPm();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 
