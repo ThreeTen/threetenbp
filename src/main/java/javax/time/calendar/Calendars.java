@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -46,9 +46,15 @@ import javax.time.calendar.field.Year;
  * A set of utility methods for working with calendar based dates and times
  * in the Java Time Framework.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class Calendars {
+    /**
+     * Private constructor since this is a utility class
+     */
+    private Calendars() {
+    }
 
     /**
      * Provides access to the current date and time using the default time zone.
@@ -364,6 +370,7 @@ public final class Calendars {
 
     /**
      * Gets a builder.
+     * @return a CalendarBuilder instance
      */
     public static CalendarBuilder calendar() {
         return new CalendarBuilder();
