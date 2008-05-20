@@ -41,6 +41,7 @@ import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
+import javax.time.period.Periods;
 
 /**
  * A representation of a minute of hour in the ISO-8601 calendar system.
@@ -53,6 +54,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * MinuteOfHour is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour
@@ -61,7 +63,7 @@ public final class MinuteOfHour
     /**
      * The rule implementation that defines how the minute of hour field operates.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
     /**
      * A serialization identifier for this instance.
      */
@@ -226,10 +228,24 @@ public final class MinuteOfHour
      * Implementation of the rules for the minute of hour field.
      */
     private static class Rule extends DateTimeFieldRule {
-
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new Rule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
         /** Constructor. */
-        protected Rule() {
-            super("MinuteOfHour", null, null, 0, 59);
+        private Rule() {
+            super("MinuteOfHour", Periods.MINUTES, Periods.HOURS, 0, 59);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getTime() != null) {
+                return dateTime.getTime().getMinuteOfHour().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 
