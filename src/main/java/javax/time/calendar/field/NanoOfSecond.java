@@ -39,6 +39,7 @@ import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
+import javax.time.period.Periods;
 
 /**
  * A representation of a nano of second in the ISO-8601 calendar system.
@@ -51,6 +52,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * NanoOfSecond is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class NanoOfSecond
@@ -59,7 +61,7 @@ public final class NanoOfSecond
     /**
      * The rule implementation that defines how the nano of second field operates.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
     /**
      * A singleton instance for zero nanoseconds.
      */
@@ -216,11 +218,25 @@ public final class NanoOfSecond
     /**
      * Implementation of the rules for the nano of second field.
      */
-    private static class Rule extends DateTimeFieldRule {
-
+    private static class Rule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new Rule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
         /** Constructor. */
-        protected Rule() {
-            super("NanoOfSecond", null, null, 0, 999999999);
+        private Rule() {
+            super("NanoOfSecond", Periods.NANOS, Periods.SECONDS, 0, 999999999);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getTime() != null) {
+                return dateTime.getTime().getNanoOfSecond().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 
