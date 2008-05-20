@@ -41,6 +41,7 @@ import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
+import javax.time.period.Periods;
 
 /**
  * A representation of a hour of day in the ISO-8601 calendar system.
@@ -53,6 +54,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * HourOfDay is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class HourOfDay
@@ -61,7 +63,7 @@ public final class HourOfDay
     /**
      * The rule implementation that defines how the hour of day field operates.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
     /**
      * A serialization identifier for this instance.
      */
@@ -305,10 +307,24 @@ public final class HourOfDay
      * Implementation of the rules for the hour of day field.
      */
     private static class Rule extends DateTimeFieldRule {
-
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new Rule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
         /** Constructor. */
-        protected Rule() {
-            super("HourOfDay", null, null, 0, 23);
+        private Rule() {
+            super("HourOfDay", Periods.HOURS, Periods.DAYS, 0, 23);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getTime() != null) {
+                return dateTime.getTime().getHourOfDay().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
         }
     }
 
