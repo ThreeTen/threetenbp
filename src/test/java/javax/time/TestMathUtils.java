@@ -287,8 +287,31 @@ public class TestMathUtils {
     //-----------------------------------------------------------------------
     // safeIncrement()
     //-----------------------------------------------------------------------
-    @DataProvider(name="safeIncrementProvider")
-    Object[][] safeIncrementProvider() {
+    @DataProvider(name="safeIncrementIntProvider")
+    Object[][] safeIncrementIntProvider() {
+        return new Object[][] {
+            {Integer.MIN_VALUE, Integer.MIN_VALUE + 1},
+            {Integer.MIN_VALUE + 1, Integer.MIN_VALUE + 2},
+            {-1, 0},
+            {0, 1},
+            {1, 2},
+            {Integer.MAX_VALUE - 2, Integer.MAX_VALUE - 1},
+            {Integer.MAX_VALUE - 1, Integer.MAX_VALUE},
+        };
+    }
+
+    @Test(dataProvider="safeIncrementIntProvider")
+    public void test_safeIncrement(int a, int expected) {
+        assertEquals(MathUtils.safeIncrement(a), expected);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_safeIncrementInt_overflow() {
+        MathUtils.safeIncrement(Integer.MAX_VALUE);
+    }
+
+    @DataProvider(name="safeIncrementLongProvider")
+    Object[][] safeIncrementLongProvider() {
         return new Object[][] {
             {Long.MIN_VALUE, Long.MIN_VALUE + 1},
             {Long.MIN_VALUE + 1, Long.MIN_VALUE + 2},
@@ -300,21 +323,44 @@ public class TestMathUtils {
         };
     }
 
-    @Test(dataProvider="safeIncrementProvider")
+    @Test(dataProvider="safeIncrementLongProvider")
     public void test_safeIncrement(long a, long expected) {
         assertEquals(MathUtils.safeIncrement(a), expected);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeIncrement_overflow() {
+    public void test_safeIncrementLong_overflow() {
         MathUtils.safeIncrement(Long.MAX_VALUE);
     }
-    
+
     //-----------------------------------------------------------------------
     // safeDecrement()
     //-----------------------------------------------------------------------
-    @DataProvider(name="safeDecrementProvider")
-    Object[][] safeDecrementProvider() {
+    @DataProvider(name="safeDecrementIntProvider")
+    Object[][] safeDecrementIntProvider() {
+        return new Object[][] {
+            {Integer.MIN_VALUE + 1, Integer.MIN_VALUE},
+            {Integer.MIN_VALUE + 2, Integer.MIN_VALUE + 1},
+            {-1, -2},
+            {0, -1},
+            {1, 0},
+            {Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 2},
+            {Integer.MAX_VALUE, Integer.MAX_VALUE - 1},
+        };
+    }
+
+    @Test(dataProvider="safeDecrementIntProvider")
+    public void test_safeDecrement(int a, int expected) {
+        assertEquals(MathUtils.safeDecrement(a), expected);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_safeDecrementInt_overflow() {
+        MathUtils.safeDecrement(Integer.MIN_VALUE);
+    }
+
+    @DataProvider(name="safeDecrementLongProvider")
+    Object[][] safeDecrementLongProvider() {
         return new Object[][] {
             {Long.MIN_VALUE + 1, Long.MIN_VALUE},
             {Long.MIN_VALUE + 2, Long.MIN_VALUE + 1},
@@ -326,13 +372,13 @@ public class TestMathUtils {
         };
     }
 
-    @Test(dataProvider="safeDecrementProvider")
+    @Test(dataProvider="safeDecrementLongProvider")
     public void test_safeDecrement(long a, long expected) {
         assertEquals(MathUtils.safeDecrement(a), expected);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
-    public void test_safeDecrement_overflow() {
+    public void test_safeDecrementLong_overflow() {
         MathUtils.safeDecrement(Long.MIN_VALUE);
     }
 

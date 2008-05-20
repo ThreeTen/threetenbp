@@ -149,7 +149,7 @@ public final class LocalDate
         }
         LocalDate result = dateProvider.toLocalDate();
         if (result == null) {
-            throw new NullPointerException("The implementation of ReadableDate must not return null");
+            throw new NullPointerException("The ReadableDate implementation must not return null");
         }
         return result;
     }
@@ -161,21 +161,11 @@ public final class LocalDate
      * @return a LocalDate object, never null
      */
     public static LocalDate fromMJDays(long mjday) {
-//        long total = mjday + 678941;
-//        long y = total / 365;
-//        total %= 365;
-//        total -= (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
-//
-//        if (total < 0) {
-//            y--;
-//            total = total % -365 + total / -365 + 365 + (Year.isoYear((int)y).isLeap() ? 1 : 0);
-//        }
-        //TODO: remove useless Year object creation
         long total = mjday + 678941;
         long y = 0;
         long leapYearCount = 0;
-        Year year = null;
-
+        int yearLength = -1;
+        
         do {
             y += total / 365;
             total %= 365;
@@ -189,12 +179,12 @@ public final class LocalDate
 
             if (total < 0 && total / -365 == 0) {
                 y--;
-                year = Year.isoYear((int)y);
-                total = total % -365 + 365 + (year.isLeap() ? 1 : 0);
+                yearLength = 365 + (((y & 3) == 0) && ((y % 100) != 0 || (y % 400) == 0) ? 1 : 0);
+                total = total % -365 + yearLength;
             } else if (total >= 365) {
-                year = Year.isoYear((int)y);
+                yearLength = 365 + (((y & 3) == 0) && ((y % 100) != 0 || (y % 400) == 0) ? 1 : 0);
             }
-        } while (total < 0 || (year != null && total >= (year.isLeap() ? 366 : 365)));
+        } while (total < 0 || (yearLength != -1 && total >= yearLength));
 
         int yAsInt = 0;
         try {
@@ -203,7 +193,7 @@ public final class LocalDate
             throw new IllegalCalendarFieldValueException("Year", y, Year.MIN_YEAR, Year.MAX_YEAR);
         }
 
-        year = Year.isoYear(yAsInt);
+        Year year = Year.isoYear(yAsInt);
         MonthOfYear month = MonthOfYear.JANUARY;
         int monthLength;
 
@@ -593,7 +583,7 @@ public final class LocalDate
         newMonth0 = newMonth0 % 12;
         if (newMonth0 < 0) {
             newMonth0 += 12;
-            years--; //TODO: replace with safeDecrement(int)
+            years = MathUtils.safeDecrement(years);
         }
         Year newYear = year.plusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
@@ -783,10 +773,10 @@ public final class LocalDate
         newMonth0 = newMonth0 - (months % 12);
         if (newMonth0 >= 12) {
             newMonth0 = newMonth0 % 12;
-            years--; //TODO: replace with safeIncrement(int)
+            years = MathUtils.safeDecrement(years);
         } else if (newMonth0 < 0) {
             newMonth0 += 12;
-            years++;
+            years = MathUtils.safeIncrement(years);
         }
         Year newYear = year.minusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
@@ -1017,7 +1007,7 @@ public final class LocalDate
                 buf.append(yearValue + 10000).deleteCharAt(0);
             }
         } else {
-            buf.append(year);
+            buf.append(yearValue);
         }
         return buf.append(monthValue < 10 ? "-0" : "-")
             .append(monthValue)
@@ -1025,5 +1015,4 @@ public final class LocalDate
             .append(dayValue)
             .toString();
     }
-
 }
