@@ -405,7 +405,7 @@ public final class LocalTime
      * @return the nano of second, from 0 to 59.999,999,999
      */
     public double getFractionalSecondOfMinute() {
-        // TODO: check maths
+        // TODO: check maths and write tests
         return (((double) nano.getValue()) / 1000000000d) + second.getValue();
     }
 
@@ -415,7 +415,7 @@ public final class LocalTime
      * @return the nano of second, from 0 to &lt; 1
      */
     public double getFractionalDay() {
-        // TODO: check maths
+        // TODO: check maths and write tests
         return (((double) toNanoOfDay()) / ((double) NANOS_PER_DAY));
     }
 

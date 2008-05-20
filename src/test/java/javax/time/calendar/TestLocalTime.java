@@ -441,36 +441,33 @@ public class TestLocalTime {
             {0, 0, 0, 0},
             {0, 0, 0, 1},
             {0, 0, 1, 0},
+            {0, 0, 1, 1},
             {0, 1, 0, 0},
-            {1, 0, 0, 0},
-            {1, 0, 1, 0},
             {0, 1, 0, 1},
+            {0, 1, 1, 0},
+            {0, 1, 1, 1},
+            {1, 0, 0, 0},
+            {1, 0, 0, 1},
+            {1, 0, 1, 0},
+            {1, 0, 1, 1},
+            {1, 1, 0, 0},
+            {1, 1, 0, 1},
+            {1, 1, 1, 0},
             {1, 1, 1, 1},
         };
     }
 
-//    //-----------------------------------------------------------------------
-//    // get*()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_get(int y, int m, int d) {
-//        LocalTime a = LocalTime.time(y, m, d);
-//        assertEquals(a.getYear(), Year.isoYear(y));
-//        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
-//        assertEquals(a.getDayOfMonth(), DayOfMonth.dayOfMonth(d));
-//    }
-//
-//    @Test(dataProvider="sampleDates")
-//    public void test_getDOY(int y, int m, int d) {
-//        Year year = Year.isoYear(y);
-//        LocalTime a = LocalTime.time(y, m, d);
-//        int total = 0;
-//        for (int i = 1; i < m; i++) {
-//            total += MonthOfYear.monthOfYear(i).lengthInDays(year);
-//        }
-//        int doy = total + d;
-//        assertEquals(a.getDayOfYear(), DayOfYear.dayOfYear(doy));
-//    }
+    //-----------------------------------------------------------------------
+    // get*()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_get(int h, int m, int s, int ns) {
+        LocalTime a = LocalTime.time(h, m, s, ns);
+        assertEquals(a.getHourOfDay(), HourOfDay.hourOfDay(h));
+        assertEquals(a.getMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
+        assertEquals(a.getSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
+        assertEquals(a.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(ns));
+    }
 
     //-----------------------------------------------------------------------
     // withHourOfDay()
