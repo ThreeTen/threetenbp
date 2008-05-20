@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import java.io.Serializable;
+
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
@@ -68,7 +70,7 @@ public enum MeridiemOfDay
     /**
      * The rule implementation that defines how the meridiem of day field operates.
      */
-    public static final DateTimeFieldRule RULE = new Rule();
+    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
 
     /**
      * The meridiem of day being represented.
@@ -203,12 +205,25 @@ public enum MeridiemOfDay
     /**
      * Implementation of the rules for the meridiem of day field.
      */
-    private static class Rule extends DateTimeFieldRule {
-
+    private static class Rule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new Rule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
         /** Constructor. */
-        protected Rule() {
+        private Rule() {
             super("MeridiemOfDay", null, null, 0, 1);
         }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int getValue(FlexiDateTime dateTime) {
+            if (dateTime.getTime() != null) {
+                return dateTime.getTime().getHourOfDay().getAmPm().getValue();
+            }
+            return dateTime.getFieldValueMapValue(this);
+        }
     }
-
 }
