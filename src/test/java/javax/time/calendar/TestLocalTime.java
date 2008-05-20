@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,12 @@
  */
 package javax.time.calendar;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import javax.time.calendar.format.FlexiDateTime;
 import static org.testng.Assert.*;
 
 import java.io.Serializable;
@@ -41,7 +47,6 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.field.Year;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -50,13 +55,11 @@ import org.testng.annotations.Test;
 /**
  * Test LocalTime.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test(timeOut=5000)
 public class TestLocalTime {
-
-    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
-    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
     private LocalTime TEST_12_30_40_987654321;
 
     @BeforeMethod
@@ -77,6 +80,17 @@ public class TestLocalTime {
         assertTrue(TEST_12_30_40_987654321 instanceof Calendrical);
         assertTrue(TEST_12_30_40_987654321 instanceof Serializable);
         assertTrue(TEST_12_30_40_987654321 instanceof Comparable);
+    }
+
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(TEST_12_30_40_987654321);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertEquals(ois.readObject(), TEST_12_30_40_987654321);
     }
 
     public void test_immutable() {
@@ -101,6 +115,108 @@ public class TestLocalTime {
 
     public void constant_MIDDAY() {
         check(LocalTime.MIDDAY, 12, 0, 0, 0);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_time_2objects() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30));
+        check(test, 12, 30, 0, 0);
+    }
+
+    public void factory_time_2objects_midnightSingleton() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0));
+        assertSame(test, LocalTime.MIDNIGHT);
+    }
+
+    public void factory_time_2objects_middaySingleton() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0));
+        assertSame(test, LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_2objects_nullHour() {
+       LocalTime.time(null, MinuteOfHour.minuteOfHour(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_2objects_nullMinute() {
+       LocalTime.time(HourOfDay.hourOfDay(0), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_time_3objects() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(59));
+        check(test, 12, 30, 59, 0);
+    }
+
+    public void factory_time_3objects_midnightSingleton() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
+        assertSame(test, LocalTime.MIDNIGHT);
+    }
+
+    public void factory_time_3objects_middaySingleton() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
+        assertSame(test, LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_3objects_nullHour() {
+       LocalTime.time(null, MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_3objects_nullMinute() {
+       LocalTime.time(HourOfDay.hourOfDay(0), null, SecondOfMinute.secondOfMinute(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_3objects_nullSecond() {
+       LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_time_4objects() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(59), NanoOfSecond.nanoOfSecond(300));
+        check(test, 12, 30, 59, 300);
+    }
+
+    public void factory_time_4objects_nonSingletons() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(1), NanoOfSecond.nanoOfSecond(0));
+        check(test, 0, 0, 1, 0);
+        test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(1));
+        check(test, 0, 0, 0, 1);
+        test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(1));
+        check(test, 12, 0, 0, 1);
+    }
+
+    public void factory_time_4objects_midnightSingleton() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
+        assertSame(test, LocalTime.MIDNIGHT);
+    }
+
+    public void factory_time_4objects_middaySingleton() {
+        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
+        assertSame(test, LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_4objects_nullHour() {
+       LocalTime.time(null, MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_4objects_nullMinute() {
+       LocalTime.time(HourOfDay.hourOfDay(0), null, SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_4objects_nullSecond() {
+       LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), null, NanoOfSecond.nanoOfSecond(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_time_4objects_nullNano() {
+       LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), null);
     }
 
     //-----------------------------------------------------------------------
@@ -189,6 +305,8 @@ public class TestLocalTime {
     public void factory_time_4ints() {
         LocalTime test = LocalTime.time(12, 30, 40, 987654321);
         check(test, 12, 30, 40, 987654321);
+        test = LocalTime.time(12, 0, 40, 987654321);
+        check(test, 12, 0, 40, 987654321);
     }
 
     public void factory_time_4ints_midnightSingleton() {
@@ -239,6 +357,30 @@ public class TestLocalTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_time_4ints_nanoTooHigh() {
         LocalTime.time(0, 0, 0, 1000000000);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_time_ReadableTime() {
+        LocalTime localTime = LocalTime.time(TEST_12_30_40_987654321);
+        check(localTime, 12, 30, 40, 987654321);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_time_ReadableTime_null() {
+        LocalTime.time(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_time_ReadableTime_null_toLocalTime() {
+        LocalTime.time(new ReadableTime() {
+            public LocalTime toLocalTime() {
+                return null;
+            }
+
+            public FlexiDateTime toFlexiDateTime() {
+                return null;
+            }
+        });
     }
 
     //-----------------------------------------------------------------------
@@ -549,6 +691,85 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void test_toLocalTime() {
         assertSame(TEST_12_30_40_987654321.toLocalTime(), TEST_12_30_40_987654321);
+    }
+
+    //-----------------------------------------------------------------------
+    // compareTo()
+    //-----------------------------------------------------------------------
+    public void test_comparisons() {
+        doTest_comparisons_LocalTime(
+            LocalTime.MIDNIGHT,
+            LocalTime.time(0, 0, 0, 999999999),
+            LocalTime.time(0, 0, 59, 0),
+            LocalTime.time(0, 0, 59, 999999999),
+            LocalTime.time(0, 59, 0, 0),
+            LocalTime.time(0, 59, 0, 999999999),
+            LocalTime.time(0, 59, 59, 0),
+            LocalTime.time(0, 59, 59, 999999999),
+            LocalTime.MIDDAY,
+            LocalTime.time(12, 0, 0, 999999999),
+            LocalTime.time(12, 0, 59, 0),
+            LocalTime.time(12, 0, 59, 999999999),
+            LocalTime.time(12, 59, 0, 0),
+            LocalTime.time(12, 59, 0, 999999999),
+            LocalTime.time(12, 59, 59, 0),
+            LocalTime.time(12, 59, 59, 999999999),
+            LocalTime.time(23, 0, 0, 0),
+            LocalTime.time(23, 0, 0, 999999999),
+            LocalTime.time(23, 0, 59, 0),
+            LocalTime.time(23, 0, 59, 999999999),
+            LocalTime.time(23, 59, 0, 0),
+            LocalTime.time(23, 59, 0, 999999999),
+            LocalTime.time(23, 59, 59, 0),
+            LocalTime.time(23, 59, 59, 999999999)
+        );
+    }
+
+    void doTest_comparisons_LocalTime(LocalTime... localTimes) {
+        for (int i = 0; i < localTimes.length; i++) {
+            LocalTime a = localTimes[i];
+            for (int j = 0; j < localTimes.length; j++) {
+                LocalTime b = localTimes[j];
+                if (i < j) {
+                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else if (i > j) {
+                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else {
+                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                }
+            }
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_compareTo_ObjectNull() {
+        TEST_12_30_40_987654321.compareTo(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isBefore_ObjectNull() {
+        TEST_12_30_40_987654321.isBefore(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isAfter_ObjectNull() {
+        TEST_12_30_40_987654321.isAfter(null);
+    }
+
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonLocalTime() {
+       Comparable c = TEST_12_30_40_987654321;
+       c.compareTo(new Object());
     }
 
     //-----------------------------------------------------------------------

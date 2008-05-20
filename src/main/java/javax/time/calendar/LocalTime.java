@@ -67,7 +67,7 @@ public final class LocalTime
             HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0),
             SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
     /**
-     * Constant for the local time of midnight, 12:00.
+     * Constant for the local time of midday, 12:00.
      */
     public static final LocalTime MIDDAY = new LocalTime(
             HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0),
@@ -93,9 +93,9 @@ public final class LocalTime
     /** Nanos per minute. */
     private static final long NANOS_PER_MINUTE = ((long) NANOS_PER_SECOND) * SECONDS_PER_MINUTE;
     /** Nanos per hour. */
-    private static final long NANOS_PER_HOUR = ((long) NANOS_PER_MINUTE) * MINUTES_PER_HOUR;
+    private static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
     /** Nanos per day. */
-    private static final long NANOS_PER_DAY = ((long) NANOS_PER_HOUR) * HOURS_PER_DAY;
+    private static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
 
     /**
      * The hour, never null.
@@ -208,7 +208,7 @@ public final class LocalTime
     /**
      * Obtains an instance of <code>LocalTime</code>.
      * <p>
-     * The second field will be set to zero by this factory method.
+     * The nanosecond field will be set to zero by this factory method.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
@@ -283,6 +283,9 @@ public final class LocalTime
      * @return a LocalTime object, never null
      */
     public static LocalTime time(ReadableTime timeProvider) {
+        if (timeProvider == null) {
+            throw new NullPointerException("timeProvider must not be null");
+        }
         LocalTime result = timeProvider.toLocalTime();
         if (result == null) {
             throw new NullPointerException("The implementation of ReadableTime must not return null");
