@@ -37,6 +37,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.Periods;
 
@@ -53,7 +55,7 @@ import javax.time.period.Periods;
  *
  * @author Stephen Colebourne
  */
-public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMeridiem>, Serializable {
+public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMeridiem>, Serializable, TimeMatcher {
 
     /**
      * The rule implementation that defines how the hour of meridiem field operates.
@@ -185,6 +187,17 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
     @Override
     public String toString() {
         return "HourOfMeridiem=" + getValue();
+    }
+
+    /**
+     * Checks if the input time has the same hour of meridiem that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return hourOfMeridiem == time.getHourOfDay().getHourOfAmPm();
     }
 
     //-----------------------------------------------------------------------

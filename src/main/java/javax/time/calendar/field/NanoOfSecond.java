@@ -201,7 +201,7 @@ public final class NanoOfSecond
      * @return true if the time matches, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
-        return this == time.getNanoOfSecond();
+        return this.getValue() == time.getNanoOfSecond().getValue();
     }
 
     //-----------------------------------------------------------------------

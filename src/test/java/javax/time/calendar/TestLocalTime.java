@@ -1271,10 +1271,39 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // matches()
+    //-----------------------------------------------------------------------
+    public void test_matches() {
+        assertTrue(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(12)));
+        assertFalse(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(0)));
+        assertTrue(TEST_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(30)));
+        assertFalse(TEST_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(0)));
+        assertTrue(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(40)));
+        assertFalse(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
+        assertTrue(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
+        assertFalse(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
+        assertTrue(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(0)));
+        assertFalse(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
+        assertTrue(TEST_12_30_40_987654321.matches(MeridiemOfDay.PM));
+        assertFalse(TEST_12_30_40_987654321.matches(MeridiemOfDay.AM));
+    }
+
+    //-----------------------------------------------------------------------
     // toLocalTime()
     //-----------------------------------------------------------------------
-    public void test_toLocalTime() {
-        assertSame(TEST_12_30_40_987654321.toLocalTime(), TEST_12_30_40_987654321);
+    @Test(dataProvider="sampleTimes")
+    public void test_toLocalTime(int h, int m, int s, int ns) {
+        LocalTime t = LocalTime.time(h, m, s, ns);
+        assertSame(t.toLocalTime(), t);
+    }
+
+    //-----------------------------------------------------------------------
+    // toFlexiDateTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_toFlexiDateTime(int h, int m, int s, int ns) {
+        LocalTime t = LocalTime.time(h, m, s, ns);
+        assertSame(t.toFlexiDateTime(), new FlexiDateTime(null, t, null, null));
     }
 
     //-----------------------------------------------------------------------
