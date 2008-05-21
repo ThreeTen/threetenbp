@@ -43,6 +43,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import java.util.Iterator;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.HourOfMeridiem;
 import javax.time.calendar.field.MeridiemOfDay;
@@ -764,34 +765,55 @@ public class TestLocalTime {
         }
     }
 
-    public void test_plusSeconds_fromZero() {
-        LocalTime base = LocalTime.MIDNIGHT;
-        int hour;
-        int min;
-        int sec;
-        for (int i = -3700; i < 3700; i++) {
-            LocalTime t = base.plusSeconds(i);
-            if (i < -3600) {
-                hour = 22;
-                min = (i + 3600) / -60;
-                sec = i + 7200;
-            } else if (i < 0) {
-                hour = 23;
-                min = i / -60;
-                sec = i + 3600;
-            } else if (i >= 3600) {
-                hour = 1;
-                min = (i - 3600) /60;
-                sec = i - 3600;
-            } else {
-                hour = 0;
-                min = i / 60;
-                sec = i % 60;
+    @DataProvider(name="plusSeconds_fromZero")
+    Iterator<Object[]> plusSeconds_fromZero() {
+        return new Iterator<Object[]>() {
+            int delta = 30;
+            int i = -3660;
+            int hour = 22;
+            int min = 59;
+            int sec = 0;
+
+            public boolean hasNext() {
+                return i <= 3660;
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
-            assertEquals(t.getSecondOfMinute().getValue(), sec);
-        }
+
+            public Object[] next() {
+                final Object[] ret = new Object[] {i, hour, min, sec};
+                i += delta;
+                sec += delta;
+
+                if (sec >= 60) {
+                    min++;
+                    sec -= 60;
+
+                    if (min == 60) {
+                        hour++;
+                        min = 0;
+                        
+                        if (hour == 24) {
+                            hour = 0;
+                        }
+                    }
+                }
+
+                return ret;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+    }
+
+    @Test(dataProvider="plusSeconds_fromZero")
+    public void test_plusSeconds_fromZero(int seconds, int hour, int min, int sec) {
+        LocalTime base = LocalTime.MIDNIGHT;
+        LocalTime t = base.plusSeconds(seconds);
+
+        assertEquals(hour, t.getHourOfDay().getValue());
+        assertEquals(min, t.getMinuteOfHour().getValue());
+        assertEquals(sec, t.getSecondOfMinute().getValue());
     }
 
     public void test_plusSeconds_noChange() {
@@ -811,6 +833,115 @@ public class TestLocalTime {
 
     public void test_plusSeconds_toMidday() {
         LocalTime t = LocalTime.time(11, 59, 59).plusSeconds(1);
+        assertSame(t, LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusNanos()
+    //-----------------------------------------------------------------------
+    public void test_plusNanos_halfABillion() {
+        LocalTime t = LocalTime.MIDNIGHT;
+        int hour = 0;
+        int min = 0;
+        int sec = 0;
+        int nanos = 0;
+        for (long i = 0; i < 3700 * 1000000000L; i+= 500000000) {
+            t = t.plusNanos(500000000);
+            nanos += 500000000;
+            if (nanos == 1000000000) {
+                sec++;
+                nanos = 0;
+            }
+            if (sec == 60) {
+                min++;
+                sec = 0;
+            }
+            if (min == 60) {
+                hour++;
+                min = 0;
+            }
+            assertEquals(t.getHourOfDay().getValue(), hour);
+            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getSecondOfMinute().getValue(), sec);
+            assertEquals(t.getNanoOfSecond().getValue(), nanos);
+        }
+    }
+
+    @DataProvider(name="plusNanos_fromZero")
+    Iterator<Object[]> plusNanos_fromZero() {
+        return new Iterator<Object[]>() {
+            long delta = 7500000000L;
+            long i = -3660 * 1000000000L;
+            int hour = 22;
+            int min = 59;
+            int sec = 0;
+            long nanos = 0;
+
+            public boolean hasNext() {
+                return i <= 3660 * 1000000000L;
+            }
+
+            public Object[] next() {
+                final Object[] ret = new Object[] {i, hour, min, sec, (int)nanos};
+                i += delta;
+                nanos += delta;
+
+                if (nanos >= 1000000000L) {
+                    sec += nanos / 1000000000L;
+                    nanos %= 1000000000L;
+
+                    if (sec >= 60) {
+                        min++;
+                        sec %= 60;
+
+                        if (min == 60) {
+                            hour++;
+                            min = 0;
+
+                            if (hour == 24) {
+                                hour = 0;
+                            }
+                        }
+                    }
+                }
+
+                return ret;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+    }
+
+    @Test(dataProvider="plusNanos_fromZero")
+    public void test_plusNanos_fromZero(long nanoseconds, int hour, int min, int sec, int nanos) {
+        LocalTime base = LocalTime.MIDNIGHT;
+        LocalTime t = base.plusNanos(nanoseconds);
+
+        assertEquals(hour, t.getHourOfDay().getValue());
+        assertEquals(min, t.getMinuteOfHour().getValue());
+        assertEquals(sec, t.getSecondOfMinute().getValue());
+        assertEquals(nanos, t.getNanoOfSecond().getValue());
+    }
+
+    public void test_plusNanos_noChange() {
+        LocalTime t = TEST_12_30_40_987654321.plusNanos(0);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_plusNanos_noChange_oneDay() {
+        LocalTime t = TEST_12_30_40_987654321.plusNanos(24 * 60 * 60 * 1000000000L);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_plusNanos_toMidnight() {
+        LocalTime t = LocalTime.time(23, 59, 59, 999999999).plusNanos(1);
+        assertSame(t, LocalTime.MIDNIGHT);
+    }
+
+    public void test_plusNanos_toMidday() {
+        LocalTime t = LocalTime.time(11, 59, 59, 999999999).plusNanos(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 

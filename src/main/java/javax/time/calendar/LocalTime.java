@@ -612,12 +612,15 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in nanoseconds added.
      * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param nanos  the nanos to add, may be negative
      * @return a new updated LocalTime, never null
      */
-    public LocalTime plusNanos(int nanos) {
+    public LocalTime plusNanos(long nanos) {
         if (nanos == 0) {
             return this;
         }
@@ -628,7 +631,7 @@ public final class LocalTime
         }
         HourOfDay newHour = HourOfDay.hourOfDay((int) (newNofd / NANOS_PER_HOUR));
         MinuteOfHour newMinute = MinuteOfHour.minuteOfHour((int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR));
-        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute((int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_HOUR));
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute((int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE));
         NanoOfSecond newNano = NanoOfSecond.nanoOfSecond((int) (newNofd % NANOS_PER_SECOND));
         return time(newHour, newMinute, newSecond, newNano);
     }
@@ -682,7 +685,7 @@ public final class LocalTime
         long total = hour.getValue() * NANOS_PER_HOUR;
         total += minute.getValue() * NANOS_PER_MINUTE;
         total += second.getValue() * ((long) NANOS_PER_SECOND);
-        total += total + nano.getValue();
+        total += nano.getValue();
         return total;
     }
 
