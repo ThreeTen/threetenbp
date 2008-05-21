@@ -1303,7 +1303,24 @@ public class TestLocalTime {
     @Test(dataProvider="sampleTimes")
     public void test_toFlexiDateTime(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
-        assertSame(t.toFlexiDateTime(), new FlexiDateTime(null, t, null, null));
+        assertEquals(t.toFlexiDateTime(), new FlexiDateTime(null, t, null, null));
+    }
+
+    //-----------------------------------------------------------------------
+    // toNanoOfDay()
+    //-----------------------------------------------------------------------
+    public void test_toNanoOfDay() {
+        LocalTime t = LocalTime.time(0, 0);
+        for (int i = 0; i < 1000000; i++) {
+            assertEquals(t.toNanoOfDay(), i);
+            t = t.plusNanos(1);
+        }
+        
+        t = LocalTime.time(0, 0);
+        for (int i = 1; i <= 1000000; i++) {
+            t = t.minusNanos(1);
+            assertEquals(t.toNanoOfDay(), -i + 24 * 60 * 60 * 1000000000L);
+        }
     }
 
     //-----------------------------------------------------------------------
