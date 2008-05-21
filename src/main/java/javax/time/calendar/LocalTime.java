@@ -638,6 +638,132 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this LocalTime with the specified period subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return a new updated LocalTime, never null
+     */
+    public LocalTime minus(PeriodView period) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Returns a copy of this LocalTime with the specified periods subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periods  the periods to subtract, no nulls
+     * @return a new updated LocalTime, never null
+     */
+    public LocalTime minus(PeriodView... periods) {
+        // TODO
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this LocalTime with the specified period in hours subtracted.
+     * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, may be negative
+     * @return a new updated LocalTime, never null
+     */
+    public LocalTime minusHours(int hours) {
+        if (hours == 0) {
+            return this;
+        }
+        int newHour = (-(hours % HOURS_PER_DAY) + hour.getValue() + HOURS_PER_DAY) % HOURS_PER_DAY;
+        return withHourOfDay(newHour);
+    }
+
+    /**
+     * Returns a copy of this LocalTime with the specified period in minutes subtracted.
+     * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param minutes  the minutes to subtract, may be negative
+     * @return a new updated LocalTime, never null
+     */
+    public LocalTime minusMinutes(int minutes) {
+        if (minutes == 0) {
+            return this;
+        }
+        int mofd = hour.getValue() * MINUTES_PER_HOUR + minute.getValue();
+        int newMofd = (-(minutes % MINUTES_PER_DAY) + mofd + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+        if (mofd == newMofd) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay(newMofd / MINUTES_PER_HOUR);
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour(newMofd % MINUTES_PER_HOUR);
+        return time(newHour, newMinute, second, nano);
+    }
+
+    /**
+     * Returns a copy of this LocalTime with the specified period in seconds subtracted.
+     * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract, may be negative
+     * @return a new updated LocalTime, never null
+     */
+    public LocalTime minusSeconds(int seconds) {
+        if (seconds == 0) {
+            return this;
+        }
+        int sofd = hour.getValue() * SECONDS_PER_HOUR +
+                    minute.getValue() * SECONDS_PER_MINUTE + second.getValue();
+        int newSofd = (-(seconds % SECONDS_PER_DAY) + sofd + SECONDS_PER_DAY) % SECONDS_PER_DAY;
+        if (sofd == newSofd) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay(newSofd / SECONDS_PER_HOUR);
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour((newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR);
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute(newSofd % SECONDS_PER_MINUTE);
+        return time(newHour, newMinute, newSecond, nano);
+    }
+
+    /**
+     * Returns a copy of this LocalTime with the specified period in nanoseconds subtracted.
+     * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanos to subtract, may be negative
+     * @return a new updated LocalTime, never null
+     */
+    public LocalTime minusNanos(long nanos) {
+        if (nanos == 0) {
+            return this;
+        }
+        long nofd = toNanoOfDay();
+        long newNofd = (-(nanos % NANOS_PER_DAY) + nofd + NANOS_PER_DAY) % NANOS_PER_DAY;
+        if (nofd == newNofd) {
+            return this;
+        }
+        HourOfDay newHour = HourOfDay.hourOfDay((int) (newNofd / NANOS_PER_HOUR));
+        MinuteOfHour newMinute = MinuteOfHour.minuteOfHour((int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR));
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute((int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE));
+        NanoOfSecond newNano = NanoOfSecond.nanoOfSecond((int) (newNofd % NANOS_PER_SECOND));
+        return time(newHour, newMinute, newSecond, newNano);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks whether the time matches the specified matcher.
      * <p>
      * Matchers can be used to query the time.
