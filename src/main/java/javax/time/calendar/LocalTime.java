@@ -541,6 +541,9 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in hours added.
      * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
@@ -556,6 +559,9 @@ public final class LocalTime
 
     /**
      * Returns a copy of this LocalTime with the specified period in minutes added.
+     * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -579,6 +585,9 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in seconds added.
      * <p>
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
+     * 24 becomes 0 and -1 becomes 23.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
@@ -596,7 +605,7 @@ public final class LocalTime
         }
         HourOfDay newHour = HourOfDay.hourOfDay(newSofd / SECONDS_PER_HOUR);
         MinuteOfHour newMinute = MinuteOfHour.minuteOfHour((newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR);
-        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute(newSofd % SECONDS_PER_HOUR);
+        SecondOfMinute newSecond = SecondOfMinute.secondOfMinute(newSofd % SECONDS_PER_MINUTE);
         return time(newHour, newMinute, newSecond, nano);
     }
 

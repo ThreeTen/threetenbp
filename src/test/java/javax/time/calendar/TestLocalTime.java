@@ -470,6 +470,23 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // with()
+    //-----------------------------------------------------------------------
+    public void test_with() {
+        TimeAdjustor timeAdjustor = MeridiemOfDay.AM;
+        assertEquals(TEST_12_30_40_987654321.with(timeAdjustor).getHourOfDay().getValue(), 0);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_with_null_adjustDate() {
+        TEST_12_30_40_987654321.with(new TimeAdjustor() {
+            public LocalTime adjustTime(LocalTime time) {
+                return null;
+            }
+        });
+    }
+
+    //-----------------------------------------------------------------------
     // withHourOfDay()
     //-----------------------------------------------------------------------
     public void test_withHourOfDay_normal() {
@@ -532,12 +549,12 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_withMinuteOfHour_hourTooLow() {
+    public void test_withMinuteOfHour_minuteTooLow() {
         TEST_12_30_40_987654321.withMinuteOfHour(-1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_withMinuteOfHour_hourTooHigh() {
+    public void test_withMinuteOfHour_minuteTooHigh() {
         TEST_12_30_40_987654321.withMinuteOfHour(60);
     }
 
@@ -568,12 +585,12 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_withSecondOfMinute_hourTooLow() {
+    public void test_withSecondOfMinute_secondTooLow() {
         TEST_12_30_40_987654321.withSecondOfMinute(-1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_withSecondOfMinute_hourTooHigh() {
+    public void test_withSecondOfMinute_secondTooHigh() {
         TEST_12_30_40_987654321.withSecondOfMinute(60);
     }
 
@@ -608,12 +625,12 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_withNanoOfSecond_hourTooLow() {
+    public void test_withNanoOfSecond_nanoTooLow() {
         TEST_12_30_40_987654321.withNanoOfSecond(-1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_withNanoOfSecond_hourTooHigh() {
+    public void test_withNanoOfSecond_nanoTooHigh() {
         TEST_12_30_40_987654321.withNanoOfSecond(1000000000);
     }
 
@@ -680,8 +697,8 @@ public class TestLocalTime {
 
     public void test_plusMinutes_fromZero() {
         LocalTime base = LocalTime.MIDNIGHT;
-        int hour = 0;
-        int min = 0;
+        int hour;
+        int min;
         for (int i = -70; i < 70; i++) {
             LocalTime t = base.plusMinutes(i);
             if (i < -60) {
@@ -719,6 +736,81 @@ public class TestLocalTime {
 
     public void test_plusMinutes_toMidday() {
         LocalTime t = LocalTime.time(11, 59).plusMinutes(1);
+        assertSame(t, LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusSeconds()
+    //-----------------------------------------------------------------------
+    public void test_plusSeconds_one() {
+        LocalTime t = LocalTime.MIDNIGHT;
+        int hour = 0;
+        int min = 0;
+        int sec = 0;
+        for (int i = 0; i < 3700; i++) {
+            t = t.plusSeconds(1);
+            sec++;
+            if (sec == 60) {
+                min++;
+                sec = 0;
+            }
+            if (min == 60) {
+                hour++;
+                min = 0;
+            }
+            assertEquals(t.getHourOfDay().getValue(), hour);
+            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getSecondOfMinute().getValue(), sec);
+        }
+    }
+
+    public void test_plusSeconds_fromZero() {
+        LocalTime base = LocalTime.MIDNIGHT;
+        int hour;
+        int min;
+        int sec;
+        for (int i = -3700; i < 3700; i++) {
+            LocalTime t = base.plusSeconds(i);
+            if (i < -3600) {
+                hour = 22;
+                min = (i + 3600) / -60;
+                sec = i + 7200;
+            } else if (i < 0) {
+                hour = 23;
+                min = i / -60;
+                sec = i + 3600;
+            } else if (i >= 3600) {
+                hour = 1;
+                min = (i - 3600) /60;
+                sec = i - 3600;
+            } else {
+                hour = 0;
+                min = i / 60;
+                sec = i % 60;
+            }
+            assertEquals(t.getHourOfDay().getValue(), hour);
+            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getSecondOfMinute().getValue(), sec);
+        }
+    }
+
+    public void test_plusSeconds_noChange() {
+        LocalTime t = TEST_12_30_40_987654321.plusSeconds(0);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_plusSeconds_noChange_oneDay() {
+        LocalTime t = TEST_12_30_40_987654321.plusSeconds(24 * 60 * 60);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_plusSeconds_toMidnight() {
+        LocalTime t = LocalTime.time(23, 59, 59).plusSeconds(1);
+        assertSame(t, LocalTime.MIDNIGHT);
+    }
+
+    public void test_plusSeconds_toMidday() {
+        LocalTime t = LocalTime.time(11, 59, 59).plusSeconds(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
