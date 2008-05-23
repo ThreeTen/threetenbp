@@ -49,6 +49,7 @@ import org.testng.annotations.Test;
 /**
  * Test DayOfYear.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -105,7 +106,7 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_ReadableDate_notLeapYear() {
+    public void test_factory_DateProvider_notLeapYear() {
         LocalDate date = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.dayOfYear(date);
@@ -114,7 +115,7 @@ public class TestDayOfYear {
         }
     }
 
-    public void test_factory_ReadableDate_leapYear() {
+    public void test_factory_DateProvider_leapYear() {
         LocalDate date = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.dayOfYear(date);
@@ -124,7 +125,7 @@ public class TestDayOfYear {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullReadableDate() {
+    public void test_factory_nullDateProvider() {
         LocalDate date = null;
         DayOfYear.dayOfYear(date);
     }

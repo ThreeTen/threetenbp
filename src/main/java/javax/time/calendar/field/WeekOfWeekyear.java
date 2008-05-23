@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
@@ -118,12 +118,12 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
      * Obtains an instance of <code>WeekOfWeekyear</code> from a date provider.
      * <p>
      * This can be used extract a week of week-based year object directly from
-     * any implementation of ReadableDate, including those in other calendar systems.
+     * any implementation of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the WeekOfWeekyear singleton, never null
      */
-    public static WeekOfWeekyear weekOfWeekyear(ReadableDate dateProvider) {
+    public static WeekOfWeekyear weekOfWeekyear(DateProvider dateProvider) {
         return new WeekOfWeekyear(1);  // TODO
     }
 

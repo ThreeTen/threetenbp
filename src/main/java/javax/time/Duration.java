@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -54,7 +54,6 @@ import java.io.Serializable;
  * @author Stephen Colebourne
  */
 public final class Duration implements Comparable<Duration>, Serializable {
-    // TODO: Leap seconds (document or implement)
     // TODO: Serialized format
     // TODO: Evaluate hashcode
     // TODO: Optimise to 2 private subclasses (second/nano & millis)
@@ -189,7 +188,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @param endExclusive  the end instant, exclusive, not null
      * @return the created Duration, never null
      */
-    public static Duration durationBetween(ReadableInstant startInclusive, ReadableInstant endExclusive) {
+    public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
         Instant start = startInclusive.toInstant();
         Instant end = endExclusive.toInstant();
 

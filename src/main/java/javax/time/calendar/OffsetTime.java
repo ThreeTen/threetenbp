@@ -57,7 +57,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements ReadableTime, Calendrical, Comparable<OffsetTime>, Serializable {
+        implements TimeProvider, Calendrical, Comparable<OffsetTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -180,7 +180,7 @@ public final class OffsetTime
      * @param offset  the zone offset, not null
      * @return an OffsetTime object, never null
      */
-    public static OffsetTime time(ReadableTime timeProvider, ZoneOffset offset) {
+    public static OffsetTime time(TimeProvider timeProvider, ZoneOffset offset) {
         LocalTime time = timeProvider.toLocalTime();
         return new OffsetTime(time, offset);
     }

@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.Instant;
-import javax.time.ReadableInstant;
+import javax.time.InstantProvider;
 import javax.time.calendar.TimeZone.Discontinuity;
 import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.DayOfMonth;
@@ -66,7 +66,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements ReadableInstant, ReadableDateTime, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, DateTimeProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -171,7 +171,7 @@ public final class ZonedDateTime
      * @return a ZonedDateTime object, never null
      * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
      */
-    public static ZonedDateTime dateTime(ReadableDateTime dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
+    public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = dateTimeProvider.toLocalDateTime();
         return dateTime(dt, zone, resolver);
     }

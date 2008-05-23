@@ -59,7 +59,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements ReadableDate, Calendrical, Comparable<OffsetDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -128,7 +128,7 @@ public final class OffsetDate
      * @param offset  the zone offset, not null
      * @return an OffsetDate object, never null
      */
-    public static OffsetDate date(ReadableDate dateProvider, ZoneOffset offset) {
+    public static OffsetDate date(DateProvider dateProvider, ZoneOffset offset) {
         LocalDate date = dateProvider.toLocalDate();
         return new OffsetDate(date, offset);
     }

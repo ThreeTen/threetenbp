@@ -46,7 +46,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.Year;
@@ -144,18 +144,18 @@ public class TestCopticDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_ReadableDate() {
+    public void factory_date_DateProvider() {
         assertEquals(TEST_2007_07_15, CopticDate.copticDate(TEST_2007_07_15));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_ReadableDate_null() {
+    public void factory_date_DateProvider_null() {
         CopticDate.copticDate(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_ReadableDate_null_toDate() {
-        CopticDate.copticDate(new ReadableDate() {
+    public void factory_date_DateProvider_null_toDate() {
+        CopticDate.copticDate(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
             }

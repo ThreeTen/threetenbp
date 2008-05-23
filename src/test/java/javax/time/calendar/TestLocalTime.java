@@ -364,29 +364,29 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_time_ReadableTime() {
+    public void factory_time_TimeProvider() {
         LocalTime localTime = LocalTime.time(TEST_12_30_40_987654321);
         check(localTime, 12, 30, 40, 987654321);
     }
 
-    public void test_factory_time_ReadableTime_midnightSingleton() {
+    public void test_factory_time_TimeProvider_midnightSingleton() {
         LocalTime localTime = LocalTime.time(LocalTime.MIDNIGHT);
         assertSame(localTime, LocalTime.MIDNIGHT);
     }
 
-    public void test_factory_time_ReadableTime_middaySingleton() {
+    public void test_factory_time_TimeProvider_middaySingleton() {
         LocalTime localTime = LocalTime.time(LocalTime.MIDDAY);
         assertSame(localTime, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_time_ReadableTime_null() {
+    public void test_factory_time_TimeProvider_null() {
         LocalTime.time(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_time_ReadableTime_null_toLocalTime() {
-        LocalTime.time(new ReadableTime() {
+    public void test_factory_time_TimeProvider_null_toLocalTime() {
+        LocalTime.time(new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
             }

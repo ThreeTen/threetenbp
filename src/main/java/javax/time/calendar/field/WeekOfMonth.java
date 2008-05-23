@@ -40,7 +40,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -113,12 +113,12 @@ public final class WeekOfMonth
      * Obtains an instance of <code>WeekOfMonth</code> from a date provider.
      * <p>
      * This can be used extract a week of month object directly from any
-     * implementation of ReadableDate, including those in other calendar systems.
+     * implementation of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the WeekOfMonth instance, never null
      */
-    public static WeekOfMonth weekOfMonth(ReadableDate dateProvider) {
+    public static WeekOfMonth weekOfMonth(DateProvider dateProvider) {
         LocalDate date = dateProvider.toLocalDate();
         int dom0  = date.getDayOfMonth().getValue() - 1;
         return new WeekOfMonth((dom0 % 7) + 1);

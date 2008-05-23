@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,56 +29,52 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time;
 
 /**
- * Provides read-only access to a time in the ISO-8601 calendar system.
+ * Provides read-only access to an instant on the time-line.
  * <p>
- * ReadableTime is a simple interface that provides uniform access to any
- * object that can provide access to a time in the ISO-8601 calendar system.
+ * InstantProvider is a simple interface that provides uniform access to any
+ * object that can provide access to an <code>Instant</code>.
  * <p>
- * NOTE: The implementation of <code>ReadableTime</code> may be mutable.
- * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
- * mutable implementation of this interface.
- * The result of {@link #toLocalTime()}, however, is immutable.
+ * NOTE: The implementation of <code>InstantProvider</code> may be mutable.
+ * For example, {@link java.util.Date Date} is a mutable implementation of
+ * this interface.
+ * The result of {@link #toInstant()}, however, is immutable.
  * <p>
- * NOTE: The implementation of <code>ReadableTime</code> may provide more
- * information than just a local time. For example, {@link ZonedDateTime},
- * implements this interface and also provides a date and a time zone.
+ * NOTE: The implementation of <code>InstantProvider</code> may provide more
+ * information than just an instant. For example,
+ * {@link javax.time.calendar.ZonedDateTime ZonedDateTime}, implements this
+ * interface and also provides full date, time and time zone information.
  * <p>
- * ReadableTime makes no guarantees about the thread-safety or immutability
+ * InstantProvider makes no guarantees about the thread-safety or immutability
  * of implementations.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public interface ReadableTime extends Calendrical {
+public interface InstantProvider {
 
     /**
-     * Returns an instance of <code>LocalTime</code> initialised from the
+     * Returns an instance of <code>Instant</code> initialised from the
      * state of this object.
      * <p>
-     * This method will take the time represented by this object and return
-     * a {@link LocalTime} constructed using the hour, minute, second and
-     * nanosecond. If this object is already a <code>LocalTime</code> then
-     * it is simply returned.
+     * This method will take the instant represented by this object and return
+     * an {@link Instant}. If this object is already a <code>Instant</code>
+     * then it is simply returned.
      * <p>
      * If this object does not support nanosecond precision, then all fields
      * below the precision it does support must be set to zero. For example,
-     * if this instance only stores hours, minutes and seconds, then the
-     * nanoseconds part will be set to zero.
+     * if this instance only stores millisecond precision, then the
+     * nanoseconds part of the <code>Instant</code> will be set to zero.
      * <p>
      * It is recommended that only classes that provide time information to
      * at least minute precision implement this interface.
-     * For example, a class that only represents the
-     * {@link javax.time.calendar.field.HourOfDay hour of day} should not
-     * implement <code>ReadableTime</code>.
-     * <p>
-     * The result of this method is a <code>LocalTime</code> which represents
-     * a time in the ISO calendar system. Implementors may perform conversion
-     * when implementing this method to convert from alternate calendar systems.
+     * For example, a class that only represents the date and hour should not
+     * implement <code>InstantProvider</code>.
      *
-     * @return the <code>LocalTime</code> equivalent to this object, never null
+     * @return the <code>Instant</code> equivalent to this object, never null
      */
-    LocalTime toLocalTime();
+    Instant toInstant();
 
 }

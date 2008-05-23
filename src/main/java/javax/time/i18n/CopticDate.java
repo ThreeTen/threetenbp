@@ -34,9 +34,10 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
@@ -55,7 +56,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class CopticDate
-        implements ReadableDate, Calendrical, Comparable<CopticDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<CopticDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -84,18 +85,18 @@ public final class CopticDate
     }
 
     /**
-     * Obtains an instance of <code>CopticDate</code> from a readable date.
+     * Obtains an instance of <code>CopticDate</code> from a date provider.
      *
      * @param dateProvider  the date provider to use, not null
      * @return a CopticDate object, never null
      */
-    public static CopticDate copticDate(ReadableDate dateProvider) {
+    public static CopticDate copticDate(DateProvider dateProvider) {
         if (dateProvider == null) {
             throw new NullPointerException("dateProvider must not be null");
         }
         LocalDate localDate = dateProvider.toLocalDate();
         if (localDate == null) {
-            throw new NullPointerException("The ReadableDate implementation must not return null");
+            throw new NullPointerException("The DateProvider implementation must not return null");
         }
 
         return new CopticDate(localDate);

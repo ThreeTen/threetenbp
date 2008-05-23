@@ -34,7 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.Instant;
-import javax.time.ReadableInstant;
+import javax.time.InstantProvider;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -63,7 +63,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements ReadableInstant, ReadableDateTime, Calendrical, Comparable<OffsetDateTime>, Serializable {
+        implements InstantProvider, DateTimeProvider, Calendrical, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -161,7 +161,7 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
      */
-    public static OffsetDateTime dateMidnight(ReadableDate dateProvider, ZoneOffset offset) {
+    public static OffsetDateTime dateMidnight(DateProvider dateProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.dateMidnight(dateProvider);
         return new OffsetDateTime(dt, offset);
     }
@@ -386,7 +386,7 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
      */
-    public static OffsetDateTime dateTime(ReadableDate dateProvider, ReadableTime timeProvider, ZoneOffset offset) {
+    public static OffsetDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
         return new OffsetDateTime(dt, offset);
     }
@@ -398,7 +398,7 @@ public final class OffsetDateTime
      * @param offset  the zone offset, not null
      * @return an OffsetDateTime object, never null
      */
-    public static OffsetDateTime dateTime(ReadableDateTime dateTimeProvider, ZoneOffset offset) {
+    public static OffsetDateTime dateTime(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
         LocalDateTime dt = dateTimeProvider.toLocalDateTime();
         return new OffsetDateTime(dt, offset);
     }
@@ -412,7 +412,7 @@ public final class OffsetDateTime
      * @return an OffsetDateTime object, never null
      * @throws IllegalCalendarFieldValueException if the instant cannot be represented as a date
      */
-    public static OffsetDateTime dateTime(ReadableInstant instant, ZoneOffset offset) {
+    public static OffsetDateTime dateTime(InstantProvider instant, ZoneOffset offset) {
         if (instant == null) {
             throw new NullPointerException("The instant must not be null");
         }

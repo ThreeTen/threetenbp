@@ -43,7 +43,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -57,6 +57,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * DayOfMonth is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
@@ -119,12 +120,12 @@ public final class DayOfMonth
      * Obtains an instance of <code>DayOfMonth</code> from a date provider.
      * <p>
      * This can be used extract a day of month object directly from any implementation
-     * of ReadableDate, including those in other calendar systems.
+     * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the DayOfMonth singleton, never null
      */
-    public static DayOfMonth dayOfMonth(ReadableDate dateProvider) {
+    public static DayOfMonth dayOfMonth(DateProvider dateProvider) {
         return dateProvider.toLocalDate().getDayOfMonth();
     }
 

@@ -58,7 +58,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements ReadableTime, Calendrical, Comparable<LocalTime>, Serializable {
+        implements TimeProvider, Calendrical, Comparable<LocalTime>, Serializable {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -301,18 +301,18 @@ public final class LocalTime
     }
 
     /**
-     * Obtains an instance of <code>LocalTime</code> from a readable time.
+     * Obtains an instance of <code>LocalTime</code> from a time provider.
      *
      * @param timeProvider  the time provider to use, not null
      * @return a LocalTime object, never null
      */
-    public static LocalTime time(ReadableTime timeProvider) {
+    public static LocalTime time(TimeProvider timeProvider) {
         if (timeProvider == null) {
             throw new NullPointerException("timeProvider must not be null");
         }
         LocalTime result = timeProvider.toLocalTime();
         if (result == null) {
-            throw new NullPointerException("The implementation of ReadableTime must not return null");
+            throw new NullPointerException("The implementation of TimeProvider must not return null");
         }
         return result;
     }

@@ -41,7 +41,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -55,6 +55,7 @@ import javax.time.calendar.format.FlexiDateTime;
  * <p>
  * DayOfYear is thread-safe and immutable.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class DayOfYear
@@ -125,12 +126,12 @@ public final class DayOfYear
      * Obtains an instance of <code>DayOfYear</code> from a date provider.
      * <p>
      * This can be used extract a day of year object directly from any implementation
-     * of ReadableDate, including those in other calendar systems.
+     * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the DayOfWeek singleton, never null
      */
-    public static DayOfYear dayOfYear(ReadableDate dateProvider) {
+    public static DayOfYear dayOfYear(DateProvider dateProvider) {
         LocalDate date = dateProvider.toLocalDate();
         int moy0 = date.getMonthOfYear().ordinal();
         int dom = date.getDayOfMonth().getValue();

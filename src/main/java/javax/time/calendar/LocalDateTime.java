@@ -64,7 +64,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements ReadableDateTime, Calendrical, Comparable<LocalDateTime>, Serializable {
+        implements DateTimeProvider, Calendrical, Comparable<LocalDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -141,7 +141,7 @@ public final class LocalDateTime
      * @param dateProvider  the date provider to use, not null
      * @return a LocalDateTime object, never null
      */
-    public static LocalDateTime dateMidnight(ReadableDate dateProvider) {
+    public static LocalDateTime dateMidnight(DateProvider dateProvider) {
         LocalDate date = dateProvider.toLocalDate();
         if (date == null) {
             throw new NullPointerException("The date provider must not return null");
@@ -358,7 +358,7 @@ public final class LocalDateTime
      * @param timeProvider  the time provider to use, not null
      * @return a LocalDateTime object, never null
      */
-    public static LocalDateTime dateTime(ReadableDate dateProvider, ReadableTime timeProvider) {
+    public static LocalDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider) {
         LocalDate date = dateProvider.toLocalDate();
         if (date == null) {
             throw new NullPointerException("The date provider must not return null");

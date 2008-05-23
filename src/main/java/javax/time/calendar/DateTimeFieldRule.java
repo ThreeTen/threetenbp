@@ -40,10 +40,12 @@ import javax.time.period.PeriodUnit;
  * Time field rule implementations define how a field like 'day of month' operates.
  * This includes the field name and minimum/maximum values.
  * <p>
- * TimeFieldRule is an abstract class and must be implemented with care to
+ * DateTimeFieldRule is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe.
+ * All instantiable subclasses must be final, immutable and thread-safe. It is 
+ * recommended subclasses implement <code>Serializable</code>
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule> {
@@ -74,8 +76,18 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
             PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
-        super();
-        // TODO: Validate not null
+//        if (name == null) {
+//            throw new NullPointerException("name must not be null");
+//        }
+//
+//        if (periodUnit == null) {
+//            throw new NullPointerException("periodUnit must not be null");
+//        }
+//
+//        if (periodRange == null) {
+//            throw new NullPointerException("periodRange must not be null");
+//        }
+
         this.name = name;
         this.periodUnit = periodUnit;
         this.periodRange = periodRange;
@@ -277,7 +289,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this TimeFieldRule to another based on the period unit
+     * Compares this DateTimeFieldRule to another based on the period unit
      * followed by the period range.
      * <p>
      * The period unit is compared first, so MinuteOfHour will be less than

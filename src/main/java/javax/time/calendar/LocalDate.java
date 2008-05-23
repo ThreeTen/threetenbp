@@ -60,7 +60,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements ReadableDate, Calendrical, Comparable<LocalDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -138,18 +138,18 @@ public final class LocalDate
     }
 
     /**
-     * Obtains an instance of <code>LocalDate</code> from a readable date.
+     * Obtains an instance of <code>LocalDate</code> from a date provider.
      *
      * @param dateProvider  the date provider to use, not null
      * @return a LocalDate object, never null
      */
-    public static LocalDate date(ReadableDate dateProvider) {
+    public static LocalDate date(DateProvider dateProvider) {
         if (dateProvider == null) {
             throw new NullPointerException("dateProvider must not be null");
         }
         LocalDate result = dateProvider.toLocalDate();
         if (result == null) {
-            throw new NullPointerException("The ReadableDate implementation must not return null");
+            throw new NullPointerException("The DateProvider implementation must not return null");
         }
         return result;
     }

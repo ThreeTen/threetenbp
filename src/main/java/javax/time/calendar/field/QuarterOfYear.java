@@ -37,7 +37,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.format.FlexiDateTime;
 
 /**
@@ -126,12 +126,12 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
      * Obtains an instance of <code>QuarterOfYear</code> from a date provider.
      * <p>
      * This can be used extract a quarter of year object directly from any implementation
-     * of ReadableDate, including those in other calendar systems.
+     * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the QuarterOfYear singleton, never null
      */
-    public static QuarterOfYear quarterOfYear(ReadableDate dateProvider) {
+    public static QuarterOfYear quarterOfYear(DateProvider dateProvider) {
         return dateProvider.toLocalDate().getMonthOfYear().getQuarterOfYear();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,7 +38,7 @@ import javax.time.calendar.DateMatcher;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
@@ -145,12 +145,12 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      * Obtains an instance of <code>DayOfWeek</code> from a date provider.
      * <p>
      * This can be used extract a day of week object directly from any implementation
-     * of ReadableDate, including those in other calendar systems.
+     * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the DayOfWeek singleton, never null
      */
-    public static DayOfWeek dayOfWeek(ReadableDate dateProvider) {
+    public static DayOfWeek dayOfWeek(DateProvider dateProvider) {
         LocalDate date = dateProvider.toLocalDate();
         long mjd = date.toMJDays();
         int dow0 = (int) ((mjd + 2) % 7);

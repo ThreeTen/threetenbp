@@ -56,8 +56,7 @@ import javax.time.calendar.ZoneOffset;
  * @author Stephen Colebourne
  */
 public final class Instant
-        implements ReadableInstant, Comparable<Instant>, Serializable {
-    // TODO: Leap seconds (document or implement)
+        implements InstantProvider, Comparable<Instant>, Serializable {
     // TODO: Serialized format
     // TODO: Evaluate hashcode
     // TODO: Optimise to 2 private subclasses (second/nano & millis)

@@ -197,18 +197,18 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_ReadableDate() {
+    public void factory_date_DateProvider() {
         assertEquals(TEST_2007_07_15, LocalDate.date(TEST_2007_07_15));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_ReadableDate_null() {
+    public void factory_date_DateProvider_null() {
         LocalDate.date(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_ReadableDate_null_toLocalDate() {
-        LocalDate.date(new ReadableDate() {
+    public void factory_date_DateProvider_null_toLocalDate() {
+        LocalDate.date(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
             }

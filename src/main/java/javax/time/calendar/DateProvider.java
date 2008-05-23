@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,52 +32,42 @@
 package javax.time.calendar;
 
 /**
- * Provides read-only access to a date-time in the ISO-8601 calendar system.
+ * Provides read-only access to a date in the ISO-8601 calendar system.
  * <p>
- * ReadableDateTime is a simple interface that provides uniform access to any
- * object that can provide access to a date-time in the ISO-8601 calendar system.
+ * DateProvider is a simple interface that provides uniform access to any
+ * object that can provide access to a date in the ISO-8601 calendar system.
  * <p>
- * NOTE: The implementation of <code>ReadableDateTime</code> may be mutable.
+ * NOTE: The implementation of <code>DateProvider</code> may be mutable.
  * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
  * mutable implementation of this interface.
- * The result of {@link #toLocalDateTime()}, however, is immutable.
+ * The result of {@link #toLocalDate()}, however, is immutable.
  * <p>
- * NOTE: The implementation of <code>ReadableDateTime</code> may provide more
- * information than just a local date-time. For example, {@link ZonedDateTime},
- * implements this interface and also provides a time zone.
+ * NOTE: The implementation of <code>DateProvider</code> may provide more
+ * information than just a local date. For example, {@link ZonedDateTime},
+ * implements this interface and also provides a time and a time zone.
  * <p>
- * ReadableDateTime makes no guarantees about the thread-safety or immutability
+ * DateProvider makes no guarantees about the thread-safety or immutability
  * of implementations.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public interface ReadableDateTime extends ReadableDate, ReadableTime {
+public interface DateProvider extends Calendrical {
 
     /**
-     * Returns an instance of <code>LocalDateTime</code> initialised from the
+     * Returns an instance of <code>LocalDate</code> initialised from the
      * state of this object.
      * <p>
-     * This method will take the date-time represented by this object and return
-     * a {@link LocalDateTime} constructed using the year, month, day, hour,
-     * minute, second and nanosecond. If this object is already a
-     * <code>LocalDateTime</code> then it is simply returned.
+     * This method will take the date represented by this object and return
+     * a {@link LocalDate} constructed using the year, month and day. If this
+     * object is already a <code>LocalDate</code> then it is simply returned.
      * <p>
-     * If this object does not support nanosecond precision, then all fields
-     * below the precision it does support must be set to zero. For example,
-     * if this instance only stores hours, minutes and seconds, then the
-     * nanoseconds part will be set to zero.
-     * <p>
-     * It is recommended that only classes that provide time information to
-     * at least minute precision implement this interface.
-     * For example, a class that only represents the date and hour of day
-     * should not implement <code>ReadableDateTime</code>.
-     * <p>
-     * The result of this method is a <code>LocalDateTime</code> which represents
+     * The result of this method is a <code>LocalDate</code> which represents
      * a date in the ISO calendar system. Implementors may perform conversion
      * when implementing this method to convert from alternate calendar systems.
      *
-     * @return the <code>LocalDateTime</code> equivalent to this object, never null
+     * @return the <code>LocalDate</code> equivalent to this object, never null
      */
-    LocalDateTime toLocalDateTime();
+    LocalDate toLocalDate();
 
 }

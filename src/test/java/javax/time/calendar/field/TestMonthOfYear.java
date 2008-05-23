@@ -49,6 +49,7 @@ import org.testng.annotations.Test;
 /**
  * Test MonthOfYear.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -92,7 +93,7 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_ReadableDate_notLeapYear() {
+    public void test_factory_DateProvider_notLeapYear() {
         LocalDate date = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(MonthOfYear.monthOfYear(date).getValue(), 1);
@@ -144,7 +145,7 @@ public class TestMonthOfYear {
         }
     }
 
-    public void test_factory_ReadableDate_leapYear() {
+    public void test_factory_DateProvider_leapYear() {
         LocalDate date = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(MonthOfYear.monthOfYear(date).getValue(), 1);
@@ -161,7 +162,7 @@ public class TestMonthOfYear {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullReadableDate() {
+    public void test_factory_nullDateProvider() {
         LocalDate date = null;
         MonthOfYear.monthOfYear(date);
     }

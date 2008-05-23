@@ -48,6 +48,7 @@ import org.testng.annotations.Test;
 /**
  * Test DayOfWeek.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -101,7 +102,7 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_ReadableDate() {
+    public void test_factory_DateProvider() {
         LocalDate date = LocalDate.date(2007, 1, 1);  // Monday
         for (int i = 0; i <= 1500; i++) {
             DayOfWeek test = DayOfWeek.dayOfWeek(date);
@@ -111,7 +112,7 @@ public class TestDayOfWeek {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullReadableDate() {
+    public void test_factory_nullDateProvider() {
         LocalDate date = null;
         DayOfWeek.dayOfWeek(date);
     }

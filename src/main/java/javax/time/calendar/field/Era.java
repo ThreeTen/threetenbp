@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,7 @@ import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.FlexiDateTime;
 
@@ -105,12 +105,12 @@ public enum Era
      * Obtains an instance of <code>Era</code> from a date provider.
      * <p>
      * This can be used extract an era object directly from any implementation
-     * of ReadableDate, including those in other calendar systems.
+     * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the Era singleton, never null
      */
-    public static Era era(ReadableDate dateProvider) {
+    public static Era era(DateProvider dateProvider) {
         return dateProvider.toLocalDate().getYear().getEra();
     }
 

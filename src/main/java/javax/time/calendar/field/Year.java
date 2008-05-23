@@ -43,7 +43,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.ReadableDate;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
@@ -144,12 +144,12 @@ public final class Year
      * Obtains an instance of <code>Year</code> from a date provider.
      * <p>
      * This can be used extract a year object directly from any implementation
-     * of ReadableDate, including those in other calendar systems.
+     * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
      * @return a Year object, never null
      */
-    public static Year year(ReadableDate dateProvider) {
+    public static Year year(DateProvider dateProvider) {
         return dateProvider.toLocalDate().getYear();
     }
 
