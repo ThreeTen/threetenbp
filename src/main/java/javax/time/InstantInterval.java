@@ -247,7 +247,7 @@ public abstract class InstantInterval
      * @param instant  the instant to compare to, not null
      * @return true if this interval is completely before the instant
      */
-    public boolean isBefore(ReadableInstant instant) {
+    public boolean isBefore(InstantProvider instant) {
         return false;   // subclasses override this
     }
 
@@ -257,7 +257,7 @@ public abstract class InstantInterval
      * @param instant  the instant to compare to, not null
      * @return true if this interval is completely after the instant
      */
-    public boolean isAfter(ReadableInstant instant) {
+    public boolean isAfter(InstantProvider instant) {
         return false;   // subclasses override this
     }
 
@@ -267,7 +267,7 @@ public abstract class InstantInterval
      * @param instant  the instant to compare to, not null
      * @return true if this interval contains the instant
      */
-    public boolean contains(ReadableInstant instant) {
+    public boolean contains(InstantProvider instant) {
         return false;   // subclasses override this
     }
 
@@ -441,17 +441,17 @@ public abstract class InstantInterval
         }
         /** {@inheritDoc} */
         @Override
-        public boolean isBefore(ReadableInstant instant) {
+        public boolean isBefore(InstantProvider instant) {
             return maximum.compareTo(instant.toInstant()) < 0;
         }
         /** {@inheritDoc} */
         @Override
-        public boolean isAfter(ReadableInstant instant) {
+        public boolean isAfter(InstantProvider instant) {
             return false;
         }
         /** {@inheritDoc} */
         @Override
-        public boolean contains(ReadableInstant instant) {
+        public boolean contains(InstantProvider instant) {
             return instant.toInstant().compareTo(maximum) <= 0;
         }
         /** {@inheritDoc} */
@@ -506,17 +506,17 @@ public abstract class InstantInterval
         }
         /** {@inheritDoc} */
         @Override
-        public boolean isBefore(ReadableInstant instant) {
+        public boolean isBefore(InstantProvider instant) {
             return maximum.compareTo(instant.toInstant()) <= 0;
         }
         /** {@inheritDoc} */
         @Override
-        public boolean isAfter(ReadableInstant instant) {
+        public boolean isAfter(InstantProvider instant) {
             return false;
         }
         /** {@inheritDoc} */
         @Override
-        public boolean contains(ReadableInstant instant) {
+        public boolean contains(InstantProvider instant) {
             return instant.toInstant().compareTo(maximum) < 0;
         }
         /** {@inheritDoc} */
@@ -577,17 +577,17 @@ public abstract class InstantInterval
         }
         /** {@inheritDoc} */
         @Override
-        public boolean isBefore(ReadableInstant instant) {
+        public boolean isBefore(InstantProvider instant) {
             return endAndBefore.isBefore(instant);
         }
         /** {@inheritDoc} */
         @Override
-        public boolean isAfter(ReadableInstant instant) {
+        public boolean isAfter(InstantProvider instant) {
             return startAndAfter.isAfter(instant);
         }
         /** {@inheritDoc} */
         @Override
-        public boolean contains(ReadableInstant instant) {
+        public boolean contains(InstantProvider instant) {
             return startAndAfter.contains(instant) && endAndBefore.contains(instant);
         }
         /** {@inheritDoc} */
