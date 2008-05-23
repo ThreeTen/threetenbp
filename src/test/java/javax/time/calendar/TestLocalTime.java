@@ -31,27 +31,27 @@
  */
 package javax.time.calendar;
 
+import static org.testng.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import javax.time.calendar.format.FlexiDateTime;
-import static org.testng.Assert.*;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
 import java.util.Iterator;
+
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.HourOfMeridiem;
 import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
-
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.FlexiDateTime;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -369,6 +369,16 @@ public class TestLocalTime {
         check(localTime, 12, 30, 40, 987654321);
     }
 
+    public void test_factory_time_ReadableTime_midnightSingleton() {
+        LocalTime localTime = LocalTime.time(LocalTime.MIDNIGHT);
+        assertSame(localTime, LocalTime.MIDNIGHT);
+    }
+
+    public void test_factory_time_ReadableTime_middaySingleton() {
+        LocalTime localTime = LocalTime.time(LocalTime.MIDDAY);
+        assertSame(localTime, LocalTime.MIDDAY);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_time_ReadableTime_null() {
         LocalTime.time(null);
@@ -385,6 +395,32 @@ public class TestLocalTime {
                 return null;
             }
         });
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_fromNanoOfDay() {
+        LocalTime localTime = LocalTime.fromNanoOfDay(60 * 60 * 1000000000L + 17);
+        check(localTime, 1, 0, 0, 17);
+    }
+
+    public void test_factory_fromNanoOfDay_midnightSingleton() {
+        LocalTime localTime = LocalTime.fromNanoOfDay(0);
+        assertSame(localTime, LocalTime.MIDNIGHT);
+    }
+
+    public void test_factory_fromNanoOfDay_middaySingleton() {
+        LocalTime localTime = LocalTime.fromNanoOfDay(12 * 60 * 60 * 1000000000L);
+        assertSame(localTime, LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_factory_fromNanoOfDay_tooLow() {
+        LocalTime.fromNanoOfDay(-1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_factory_fromNanoOfDay_tooHigh() {
+        LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -1320,6 +1356,20 @@ public class TestLocalTime {
         for (int i = 1; i <= 1000000; i++) {
             t = t.minusNanos(1);
             assertEquals(t.toNanoOfDay(), -i + 24 * 60 * 60 * 1000000000L);
+        }
+    }
+
+    public void test_toNanoOfDay_fromNanoOfDay_simmetry() {
+        LocalTime t = LocalTime.time(0, 0);
+        for (int i = 0; i < 1000000; i++) {
+            assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
+            t = t.plusNanos(1);
+        }
+        
+        t = LocalTime.time(0, 0);
+        for (int i = 1; i <= 1000000; i++) {
+            t = t.minusNanos(1);
+            assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
         }
     }
 

@@ -277,6 +277,30 @@ public final class LocalTime
     }
 
     /**
+     * Obtains an instance of <code>LocalTime</code> from a number of nanos of day.
+     *
+     * @param nanoOfDay  the nano of day, from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>
+     * @return a LocalTime object, never null
+     */
+    public static LocalTime fromNanoOfDay(long nanoOfDay) {
+        if (nanoOfDay < 0) {
+            throw new IllegalCalendarFieldValueException("nanoOfDay must be a positive number");
+        }
+        if (nanoOfDay >= NANOS_PER_DAY) {
+            throw new IllegalCalendarFieldValueException("nanoOfDay must be lesser than " + NANOS_PER_DAY);
+        }
+
+        int hours = (int)(nanoOfDay / NANOS_PER_HOUR);
+        nanoOfDay -= hours * NANOS_PER_HOUR;
+        int minutes = (int)(nanoOfDay / NANOS_PER_MINUTE);
+        nanoOfDay -= minutes * NANOS_PER_MINUTE;
+        int seconds = (int)(nanoOfDay / NANOS_PER_SECOND);
+        nanoOfDay -= seconds * NANOS_PER_SECOND;
+
+        return time(hours, minutes, seconds, (int)nanoOfDay);
+    }
+
+    /**
      * Obtains an instance of <code>LocalTime</code> from a readable time.
      *
      * @param timeProvider  the time provider to use, not null
