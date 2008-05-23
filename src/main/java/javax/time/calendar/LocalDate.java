@@ -60,7 +60,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements DateProvider, Calendrical, Comparable<LocalDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<LocalDate>, Serializable, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -965,9 +965,7 @@ public final class LocalDate
         }
         if (other instanceof LocalDate) {
             LocalDate otherDate = (LocalDate) other;
-            return (year.equals(otherDate.year) &&
-                    month == otherDate.month &&
-                    day.equals(otherDate.day));
+            return matchesDate(otherDate);
         }
         return false;
     }
@@ -1014,5 +1012,16 @@ public final class LocalDate
             .append(dayValue < 10 ? "-0" : "-")
             .append(dayValue)
             .toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this date is equal to the input date
+     *
+     * @param date  the date to match, not null
+     * @return true if the two dates are equal, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return (year.equals(date.year) && month == date.month && day.equals(date.day));
     }
 }

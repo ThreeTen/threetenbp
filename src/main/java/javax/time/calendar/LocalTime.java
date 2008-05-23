@@ -58,7 +58,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements TimeProvider, Calendrical, Comparable<LocalTime>, Serializable {
+        implements TimeProvider, Calendrical, Comparable<LocalTime>, Serializable, TimeMatcher {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -899,8 +899,7 @@ public final class LocalTime
         if (other instanceof LocalTime) {
             LocalTime localTime = (LocalTime) other;
 //            return toNanoOfDay() == localTime.toNanoOfDay();
-            return hour.equals(localTime.hour) && minute.equals(localTime.minute) &&
-                    second.equals(localTime.second) && nano.equals(localTime.nano);
+            return matchesTime(localTime);
         }
         return false;
     }
@@ -956,6 +955,18 @@ public final class LocalTime
             }
         }
         return buf.toString();
+    }
+
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this time is equal to the input time
+     *
+     * @param time the time to match, not null
+     * @return true if the two times are equal, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return hour.equals(time.hour) && minute.equals(time.minute) && second.equals(time.second) && nano.equals(time.nano);
     }
 
     //-----------------------------------------------------------------------

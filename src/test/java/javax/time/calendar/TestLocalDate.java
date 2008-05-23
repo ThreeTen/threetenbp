@@ -1596,6 +1596,10 @@ public class TestLocalDate {
         assertEquals(TEST_2007_07_15.equals("2007-07-15"), false);
     }
 
+    public void test_equals_null_false() {
+        assertEquals(TEST_2007_07_15.equals(null), false);
+    }
+
     //-----------------------------------------------------------------------
     // hashCode()
     //-----------------------------------------------------------------------
@@ -1625,5 +1629,42 @@ public class TestLocalDate {
         LocalDate t = LocalDate.date(y, m, d);
         String str = t.toString();
         assertEquals(str, expected);
+    }
+    
+    //-----------------------------------------------------------------------
+    // matchesDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_true(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y, m, d);
+        assertEquals(a.matchesDate(b), true);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_year_differs(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y + 1, m, d);
+        assertEquals(a.matchesDate(b), false);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_month_differs(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y, m + 1, d);
+        assertEquals(a.matchesDate(b), false);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_day_differs(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.date(y, m, d + 1);
+        assertEquals(a.matchesDate(b), false);
+    }
+
+    public void test_matchesDate_itself_true() {
+        assertEquals(TEST_2007_07_15.matchesDate(TEST_2007_07_15), true);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesDate_null() {
+        TEST_2007_07_15.matchesDate(null);
     }
 }

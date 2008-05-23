@@ -1578,4 +1578,47 @@ public class TestLocalTime {
         assertEquals(str, expected);
     }
 
+    //-----------------------------------------------------------------------
+    // matchesTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_true(int h, int m, int s, int n) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m, s, n);
+        assertEquals(a.matchesTime(b), true);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_hour_differs(int h, int m, int s, int n) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        LocalTime b = LocalTime.time(h + 1, m, s, n);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_minute_differs(int h, int m, int s, int n) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m + 1, s, n);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_second_differs(int h, int m, int s, int n) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m, s + 1, n);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_nano_differs(int h, int m, int s, int n) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m, s, n + 1);
+        assertEquals(a.matchesTime(b), false);
+    }
+
+    public void test_matchesTime_itself_true() {
+        assertEquals(TEST_12_30_40_987654321.matchesTime(TEST_12_30_40_987654321), true);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesTime_null() {
+        TEST_12_30_40_987654321.matchesTime(null);
+    }
+
 }
