@@ -219,9 +219,10 @@ public class TestDateAdjustors {
     public void test_dayOfWeekInMonth_firstToForth() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
+                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+
                 for (DayOfWeek dow : DayOfWeek.values()) {
                     for (int ordinal = 1; ordinal <= 4; ordinal++) {
-                        LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
                         LocalDate test = DateAdjustors.dayOfWeekInMonth(ordinal, dow).adjustDate(date);
                         assertEquals(test.getYear(), YEAR_2007);
                         assertEquals(test.getMonthOfYear(), month);
@@ -237,8 +238,9 @@ public class TestDateAdjustors {
     public void test_dayOfWeekInMonth_fifth() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
+                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
                     LocalDate test = DateAdjustors.dayOfWeekInMonth(5, dow).adjustDate(date);
 
                     assertEquals(test.getDayOfWeek(), dow);
@@ -315,8 +317,9 @@ public class TestDateAdjustors {
     public void test_firstInMonth() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
+                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
                     LocalDate test = DateAdjustors.firstInMonth(dow).adjustDate(date);
                     assertEquals(test.getYear(), YEAR_2007);
                     assertEquals(test.getMonthOfYear(), month);
@@ -501,8 +504,9 @@ public class TestDateAdjustors {
     public void test_next() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
+                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
                     LocalDate test = DateAdjustors.next(dow).adjustDate(date);
 
                     assertSame(test.getDayOfWeek(), dow, date + " " + test);
@@ -568,8 +572,9 @@ public class TestDateAdjustors {
     public void test_nextOrCurrent() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
+                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
                     LocalDate test = DateAdjustors.nextOrCurrent(dow).adjustDate(date);
 
                     assertSame(test.getDayOfWeek(), dow);
