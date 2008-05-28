@@ -64,7 +64,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements DateTimeProvider, Calendrical, Comparable<LocalDateTime>, Serializable {
+        implements DateTimeProvider, Calendrical, Comparable<LocalDateTime>, Serializable, DateMatcher, TimeMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -142,6 +142,9 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      */
     public static LocalDateTime dateMidnight(DateProvider dateProvider) {
+        if (dateProvider == null) {
+            throw new NullPointerException("dateProvider must not be null");
+        }
         LocalDate date = dateProvider.toLocalDate();
         if (date == null) {
             throw new NullPointerException("The date provider must not return null");
@@ -359,9 +362,15 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      */
     public static LocalDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider) {
+        if (dateProvider == null) {
+            throw new NullPointerException("dateProvider must not be null");
+        }
         LocalDate date = dateProvider.toLocalDate();
         if (date == null) {
             throw new NullPointerException("The date provider must not return null");
+        }
+        if (timeProvider == null) {
+            throw new NullPointerException("dateProvider must not be null");
         }
         LocalTime time = timeProvider.toLocalTime();
         if (time == null) {
@@ -1151,4 +1160,25 @@ public final class LocalDateTime
         return date + "T" + time;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the date part of this object is equal to the input date
+     *
+     * @param otherDate  the date to match, not null
+     * @return true if the date part matches the other date, false otherwise
+     */
+    public boolean matchesDate(LocalDate otherDate) {
+        return date.matchesDate(otherDate);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the time part of this object is equal to the input time
+     *
+     * @param otherTime the time to match, not null
+     * @return true if the time part matches the other time, false otherwise
+     */
+    public boolean matchesTime(LocalTime otherTime) {
+        return this.time.matchesTime(otherTime);
+    }
 }
