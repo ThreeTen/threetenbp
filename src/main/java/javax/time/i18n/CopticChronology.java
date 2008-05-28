@@ -186,7 +186,7 @@ public final class CopticChronology implements Serializable {
         @Override
         public int getValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
-                long mjd = dateTime.getDate().toMJDays();  // adjust to epoch
+                long mjd = dateTime.getDate().toModifiedJulianDays();  // adjust to epoch
                 return (int) (mjd * 4 / DAYS_IN_CYCLE);  // TODO: overflow
             }
             return dateTime.getFieldValueMapValue(this);

@@ -160,7 +160,7 @@ public final class LocalDate
      * @param mjday  the modified julian day equivalent to the LocalDate
      * @return a LocalDate object, never null
      */
-    public static LocalDate fromMJDays(long mjday) {
+    public static LocalDate fromModifiedJulianDays(long mjday) {
         long total = mjday + 678941;
         long y = 0;
         long leapYearCount = 0;
@@ -629,7 +629,7 @@ public final class LocalDate
             return this;
         }
 
-        long mjDays = toMJDays();
+        long mjDays = toModifiedJulianDays();
 
         try {
             mjDays = MathUtils.safeAdd(mjDays, days);
@@ -637,7 +637,7 @@ public final class LocalDate
             throw new IllegalCalendarFieldValueException(this + " + " + days + " days exceeds the current capacity");
         }
 
-        return LocalDate.fromMJDays(mjDays);
+        return LocalDate.fromModifiedJulianDays(mjDays);
     }
 
     //-----------------------------------------------------------------------
@@ -822,7 +822,7 @@ public final class LocalDate
             return this;
         }
 
-        long mjDays = toMJDays();
+        long mjDays = toModifiedJulianDays();
 
         try {
             mjDays = MathUtils.safeSubtract(mjDays, days);
@@ -830,7 +830,7 @@ public final class LocalDate
             throw new IllegalCalendarFieldValueException(this + " - " + days + " days exceeds the current capacity");
         }
 
-        return LocalDate.fromMJDays(mjDays);
+        return LocalDate.fromModifiedJulianDays(mjDays);
     }
 
     //-----------------------------------------------------------------------
@@ -889,7 +889,7 @@ public final class LocalDate
      *
      * @return the modified julian day equivalent to this date
      */
-    public long toMJDays() {
+    public long toModifiedJulianDays() {
         long y = year.getValue();
         long m = month.getValue();
         long total = 0;

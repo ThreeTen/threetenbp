@@ -81,7 +81,7 @@ public final class CopticDate
         CopticChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
         CopticChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
         long mjDays = year * 365 + (year / 4) + 30 * (monthOfYear - 1) + dayOfMonth;
-        return new CopticDate(LocalDate.fromMJDays(mjDays));
+        return new CopticDate(LocalDate.fromModifiedJulianDays(mjDays));
     }
 
     /**

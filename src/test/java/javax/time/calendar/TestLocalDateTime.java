@@ -771,18 +771,18 @@ public class TestLocalDateTime {
 //    public void factory_fromMJDays() {
 //        LocalDate test = LocalDate.date(0, 1, 1);
 //        for (int i = -678941; i < 700000; i++) {
-//            assertEquals(LocalDate.fromMJDays(i), test);
+//            assertEquals(LocalDate.fromModifiedJulianDays(i), test);
 //            test = next(test);
 //        }
 //
 //        test = LocalDate.date(0, 1, 1);
 //        for (int i = -678941; i > -2000000; i--) {
-//            assertEquals(LocalDate.fromMJDays(i), test);
+//            assertEquals(LocalDate.fromModifiedJulianDays(i), test);
 //            test = previous(test);
 //        }
 //
-//        assertEquals(LocalDate.fromMJDays(40587), LocalDate.date(1970, 1, 1));
-//        assertEquals(LocalDate.fromMJDays(-678942), LocalDate.date(-1, 12, 31));
+//        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.date(1970, 1, 1));
+//        assertEquals(LocalDate.fromModifiedJulianDays(-678942), LocalDate.date(-1, 12, 31));
 //    }
 //
 //    //-----------------------------------------------------------------------
@@ -1969,35 +1969,35 @@ public class TestLocalDateTime {
 //    }
 //
 //    //-----------------------------------------------------------------------
-//    // toMJDays()
+//    // toModifiedJulianDays()
 //    //-----------------------------------------------------------------------
 //    public void test_toMJDays() {
 //        LocalDate test = LocalDate.date(0, 1, 1);
 //        for (int i = -678941; i < 700000; i++) {
-//            assertEquals(test.toMJDays(), i);
+//            assertEquals(test.toModifiedJulianDays(), i);
 //            test = next(test);
 //        }
 //        
 //        test = LocalDate.date(0, 1, 1);
 //        for (int i = -678941; i > -2000000; i--) {
-//            assertEquals(test.toMJDays(), i);
+//            assertEquals(test.toModifiedJulianDays(), i);
 //            test = previous(test);
 //        }
 //
-//        assertEquals(LocalDate.date(1970, 1, 1).toMJDays(), 40587);
-//        assertEquals(LocalDate.date(-1, 12, 31).toMJDays(), -678942);
+//        assertEquals(LocalDate.date(1970, 1, 1).toModifiedJulianDays(), 40587);
+//        assertEquals(LocalDate.date(-1, 12, 31).toModifiedJulianDays(), -678942);
 //    }
 //
 //    public void test_toMJDays_fromMJDays_simmetry() {
 //        LocalDate test = LocalDate.date(0, 1, 1);
 //        for (int i = -678941; i < 700000; i++) {
-//            assertEquals(LocalDate.fromMJDays(test.toMJDays()), test);
+//            assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
 //            test = next(test);
 //        }
 //
 //        test = LocalDate.date(0, 1, 1);
 //        for (int i = -678941; i > -2000000; i--) {
-//            assertEquals(LocalDate.fromMJDays(test.toMJDays()), test);
+//            assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
 //            test = previous(test);
 //        }
 //    }
