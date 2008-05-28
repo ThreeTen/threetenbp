@@ -82,6 +82,8 @@ public class TestLocalDate {
         assertTrue(TEST_2007_07_15 instanceof Calendrical);
         assertTrue(TEST_2007_07_15 instanceof Serializable);
         assertTrue(TEST_2007_07_15 instanceof Comparable);
+        assertTrue(TEST_2007_07_15 instanceof DateProvider);
+        assertTrue(TEST_2007_07_15 instanceof DateMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {

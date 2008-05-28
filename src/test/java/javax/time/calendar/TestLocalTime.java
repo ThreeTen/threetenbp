@@ -73,10 +73,10 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     private void check(LocalTime time, int h, int m, int s, int n) {
-        assertEquals(time.getHourOfDay(), HourOfDay.hourOfDay(h));
-        assertEquals(time.getMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
-        assertEquals(time.getSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
-        assertEquals(time.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(n));
+        assertEquals(time.getHourOfDay().getValue(), h);
+        assertEquals(time.getMinuteOfHour().getValue(), m);
+        assertEquals(time.getSecondOfMinute().getValue(), s);
+        assertEquals(time.getNanoOfSecond().getValue(), n);
     }
 
     //-----------------------------------------------------------------------
@@ -84,6 +84,8 @@ public class TestLocalTime {
         assertTrue(TEST_12_30_40_987654321 instanceof Calendrical);
         assertTrue(TEST_12_30_40_987654321 instanceof Serializable);
         assertTrue(TEST_12_30_40_987654321 instanceof Comparable);
+        assertTrue(TEST_12_30_40_987654321 instanceof TimeMatcher);
+        assertTrue(TEST_12_30_40_987654321 instanceof TimeProvider);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
