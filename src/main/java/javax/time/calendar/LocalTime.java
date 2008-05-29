@@ -58,7 +58,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements TimeProvider, Calendrical, Comparable<LocalTime>, Serializable, TimeMatcher {
+        implements TimeProvider, Calendrical, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjustor {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -971,6 +971,17 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Adjusts a time to have the value of this time.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        return matchesTime(time) ? time : this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Adds the specified period to create a new LocalTime returning any
      * overflow in days.
      * <p>
@@ -1035,5 +1046,4 @@ public final class LocalTime
             return getResultTime().toString() + " P" + days + "D";
         }
     }
-
 }

@@ -1623,4 +1623,23 @@ public class TestLocalTime {
         TEST_12_30_40_987654321.matchesTime(null);
     }
 
+    
+    //-----------------------------------------------------------------------
+    // adjustTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_adjustTime(int h, int m, int s, int n) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        assertSame(a.adjustTime(TEST_12_30_40_987654321), a);
+        assertSame(TEST_12_30_40_987654321.adjustTime(a), TEST_12_30_40_987654321);
+    }
+
+    public void test_adjustTime_same() {
+        assertSame(LocalTime.time(12, 30, 40, 987654321).adjustTime(TEST_12_30_40_987654321), TEST_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustTime_null() {
+        TEST_12_30_40_987654321.adjustTime(null);
+    }
 }

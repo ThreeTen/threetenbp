@@ -1686,4 +1686,23 @@ public class TestLocalDate {
     public void test_matchesDate_null() {
         TEST_2007_07_15.matchesDate(null);
     }
+    
+    //-----------------------------------------------------------------------
+    // adjustDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_adjustDate(int y, int m, int d) {
+        LocalDate a = LocalDate.date(y, m, d);
+        assertSame(a.adjustDate(TEST_2007_07_15), a);
+        assertSame(TEST_2007_07_15.adjustDate(a), TEST_2007_07_15);
+    }
+
+    public void test_adjustDate_same() {
+        assertSame(LocalDate.date(2007, 7, 15).adjustDate(TEST_2007_07_15), TEST_2007_07_15);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustDate_null() {
+        TEST_2007_07_15.adjustDate(null);
+    }
 }

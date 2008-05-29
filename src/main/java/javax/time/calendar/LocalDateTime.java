@@ -64,7 +64,8 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements DateTimeProvider, Calendrical, Comparable<LocalDateTime>, Serializable, DateMatcher, TimeMatcher {
+        implements DateTimeProvider, Calendrical, Comparable<LocalDateTime>, Serializable, DateMatcher, TimeMatcher, DateAdjustor, 
+        TimeAdjustor {
 
     /**
      * A serialization identifier for this class.
@@ -1213,5 +1214,27 @@ public final class LocalDateTime
      */
     public boolean matchesTime(LocalTime otherTime) {
         return time.matchesTime(otherTime);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the value of the date part of this object.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return matchesDate(date) ? date : this.date;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the value of the time part of this object.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        return matchesTime(time) ? time : this.time;
     }
 }
