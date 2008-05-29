@@ -442,16 +442,7 @@ public final class LocalDateTime
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        if (!isSupported(field)) {
-            throw new UnsupportedCalendarFieldException(field, "date-time");
-        }
-        if (date.isSupported(field)) {
-            return date.get(field);
-        } else if (time.isSupported(field)) {
-            return time.get(field);
-        } else {
-            return field.getValue(toFlexiDateTime());
-        }
+        return field.getValue(toFlexiDateTime());
     }
 
     //-----------------------------------------------------------------------
@@ -647,11 +638,16 @@ public final class LocalDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDateTime with the year value altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if year is invalid
+     * @see #withYear(int,DateResolver)
      */
     public LocalDateTime withYear(int year) {
         LocalDate newDate = date.withYear(year);
@@ -659,15 +655,52 @@ public final class LocalDateTime
     }
 
     /**
+     * Returns a copy of this LocalDateTime with the year value altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if year is invalid
+     */
+    public LocalDateTime withYear(int year, DateResolver dateResolver) {
+        LocalDate newDate = date.withYear(year, dateResolver);
+        return withDateTime(newDate, time);
+    }
+
+    /**
      * Returns a copy of this LocalDateTime with the month of year value altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if monthOfYear is invalid
+     * @see #withMonthOfYear(int,DateResolver)
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
         LocalDate newDate = date.withMonthOfYear(monthOfYear);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the month of year value altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if monthOfYear is invalid
+     */
+    public LocalDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
+        LocalDate newDate = date.withMonthOfYear(monthOfYear, dateResolver);
         return withDateTime(newDate, time);
     }
 
@@ -1179,6 +1212,6 @@ public final class LocalDateTime
      * @return true if the time part matches the other time, false otherwise
      */
     public boolean matchesTime(LocalTime otherTime) {
-        return this.time.matchesTime(otherTime);
+        return time.matchesTime(otherTime);
     }
 }

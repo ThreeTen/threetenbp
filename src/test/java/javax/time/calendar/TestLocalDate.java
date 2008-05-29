@@ -378,6 +378,23 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    // getDayOfWeek()
+    //-----------------------------------------------------------------------
+    public void test_getDayOfWeek() {
+        DayOfWeek dow = DayOfWeek.MONDAY;
+        Year year = Year.isoYear(2007);
+
+        for (MonthOfYear month : MonthOfYear.values()) {
+            int length = month.lengthInDays(year);
+            for (int i = 1; i <= length; i++) {
+                LocalDate d = LocalDate.date(year, month, DayOfMonth.dayOfMonth(i));
+                assertSame(d.getDayOfWeek(), dow);
+                dow = dow.next();
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {
@@ -404,7 +421,7 @@ public class TestLocalDate {
 
     public void test_withYear_int_noChange() {
         LocalDate t = TEST_2007_07_15.withYear(2007);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
     
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -425,7 +442,7 @@ public class TestLocalDate {
 
     public void test_withYear_int_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.withYear(2007, DateResolvers.strict());
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
     
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -454,7 +471,7 @@ public class TestLocalDate {
 
     public void test_withMonthOfYear_int_noChange() {
         LocalDate t = TEST_2007_07_15.withMonthOfYear(7);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -475,7 +492,7 @@ public class TestLocalDate {
 
     public void test_withMonthOfYear_int_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.withMonthOfYear(7, DateResolvers.strict());
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -504,7 +521,7 @@ public class TestLocalDate {
 
     public void test_withDayOfMonth_noChange() {
         LocalDate t = TEST_2007_07_15.withDayOfMonth(15);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)

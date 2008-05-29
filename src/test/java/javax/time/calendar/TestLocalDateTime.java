@@ -43,15 +43,25 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.field.DayOfMonth;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.HourOfMeridiem;
+import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
+import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.calendar.field.WeekOfMonth;
+import javax.time.calendar.field.WeekOfWeekyear;
+import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
 
 import javax.time.calendar.format.FlexiDateTime;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -733,6 +743,316 @@ public class TestLocalDateTime {
         });
     }
 
+    //-----------------------------------------------------------------------
+    public void test_getChronology() {
+        assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_12_30_40_987654321.getChronology());
+    }
+
+    //-----------------------------------------------------------------------
+    //TODO: implement this test
+    public void test_isSupported() {
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(Era.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(MilleniumOfEra.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(CenturyOfEra.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DecadeOfCentury.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(Year.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(YearOfEra.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(QuarterOfYear.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(MonthOfYear.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(MonthOfQuarter.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DayOfMonth.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DayOfWeek.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DayOfYear.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(WeekOfMonth.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(WeekOfWeekyear.rule()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(Weekyear.rule()));
+//
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(HourOfDay.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(MinuteOfHour.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(MinuteOfDay.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(SecondOfMinute.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(SecondOfDay.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(NanoOfSecond.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(HourOfMeridiem.RULE));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(MeridiemOfDay.RULE));
+    }
+
+    // TODO: enable all assertions
+    public void test_get() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Era.RULE), Era.AD.getValue());
+//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MilleniumOfEra.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getMilleniumOfEra());
+//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(CenturyOfEra.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getCenturyOfEra());
+//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DecadeOfCentury.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getDecadeOfCentury());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Year.rule()), 2007);
+//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(YearOfEra.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getYearOfEra());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(QuarterOfYear.rule()), 3);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MonthOfYear.rule()), 7);
+//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MonthOfQuarter.RULE), TEST_2007_07_15_12_30_40_987654321.getMonthOfYear().getMonthOfQuarter());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DayOfMonth.rule()), 15);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DayOfWeek.rule()), TEST_2007_07_15_12_30_40_987654321.getDayOfWeek().getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DayOfYear.rule()), TEST_2007_07_15_12_30_40_987654321.getDayOfYear().getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(WeekOfMonth.rule()), WeekOfMonth.weekOfMonth(TEST_2007_07_15_12_30_40_987654321).getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(WeekOfWeekyear.rule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Weekyear.rule()), Weekyear.weekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
+
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(HourOfDay.RULE), 12);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MinuteOfHour.RULE), 30);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(SecondOfMinute.RULE), 40);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(NanoOfSecond.RULE), 987654321);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(HourOfMeridiem.RULE), 0);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MeridiemOfDay.RULE), MeridiemOfDay.PM.getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sampleDates")
+    Object[][] provider_sampleDates() {
+        return new Object[][] {
+            {2008, 7, 5},
+            {2007, 7, 5},
+            {2006, 7, 5},
+            {2005, 7, 5},
+            {2004, 1, 1},
+            {-1, 1, 2},
+        };
+    }
+
+    @DataProvider(name="sampleTimes")
+    Object[][] provider_sampleTimes() {
+        return new Object[][] {
+            {0, 0, 0, 0},
+            {0, 0, 0, 1},
+            {0, 0, 1, 0},
+            {0, 0, 1, 1},
+            {0, 1, 0, 0},
+            {0, 1, 0, 1},
+            {0, 1, 1, 0},
+            {0, 1, 1, 1},
+            {1, 0, 0, 0},
+            {1, 0, 0, 1},
+            {1, 0, 1, 0},
+            {1, 0, 1, 1},
+            {1, 1, 0, 0},
+            {1, 1, 0, 1},
+            {1, 1, 1, 0},
+            {1, 1, 1, 1},
+        };
+    }
+
+    //-----------------------------------------------------------------------
+    // get*()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_getYearMonth(int y, int m, int d) {
+        assertEquals(LocalDateTime.dateTime(y, m, d, 12, 30).getYearMonth(), YearMonth.yearMonth(y, m));
+    }
+
+    @Test(dataProvider="sampleDates")
+    public void test_getMonthDay(int y, int m, int d) {
+        assertEquals(LocalDateTime.dateTime(y, m, d, 12, 30).getMonthDay(), MonthDay.monthDay(m, d));
+    }
+
+    @Test(dataProvider="sampleDates")
+    public void test_get(int y, int m, int d) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12, 30);
+        assertEquals(a.getYear(), Year.isoYear(y));
+        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        assertEquals(a.getDayOfMonth(), DayOfMonth.dayOfMonth(d));
+    }
+
+    @Test(dataProvider="sampleDates")
+    public void test_getDOY(int y, int m, int d) {
+        Year year = Year.isoYear(y);
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12 ,30);
+        int total = 0;
+        for (int i = 1; i < m; i++) {
+            total += MonthOfYear.monthOfYear(i).lengthInDays(year);
+        }
+        int doy = total + d;
+        assertEquals(a.getDayOfYear(), DayOfYear.dayOfYear(doy));
+    }
+
+    @Test(dataProvider="sampleTimes")
+    public void test_get(int h, int m, int s, int ns) {
+        LocalDateTime a = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, LocalTime.time(h, m, s, ns));
+        assertEquals(a.getHourOfDay(), HourOfDay.hourOfDay(h));
+        assertEquals(a.getMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
+        assertEquals(a.getSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
+        assertEquals(a.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(ns));
+    }
+
+    //-----------------------------------------------------------------------
+    // getDayOfWeek()
+    //-----------------------------------------------------------------------
+    public void test_getDayOfWeek() {
+        DayOfWeek dow = DayOfWeek.MONDAY;
+        Year year = Year.isoYear(2007);
+
+        for (MonthOfYear month : MonthOfYear.values()) {
+            int length = month.lengthInDays(year);
+            for (int i = 1; i <= length; i++) {
+                LocalDateTime d = LocalDateTime.dateTime(LocalDate.date(year, month, DayOfMonth.dayOfMonth(i)),
+                        TEST_2007_07_15_12_30_40_987654321);
+                assertSame(d.getDayOfWeek(), dow);
+                dow = dow.next();
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // with()
+    //-----------------------------------------------------------------------
+    public void test_with_DateAdjustor() {
+        DateAdjustor dateAdjustor = DateAdjustors.lastDayOfMonth();
+        LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(dateAdjustor);
+        assertEquals(adjusted.toLocalDate(), dateAdjustor.adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()));
+        assertSame(adjusted.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_with_null_adjustDate() {
+        TEST_2007_07_15_12_30_40_987654321.with(new DateAdjustor() {
+            public LocalDate adjustDate(LocalDate date) {
+                return null;
+            }
+        });
+    }
+
+    public void test_with_TimeAdjustor() {
+        TimeAdjustor timeAdjustor = MeridiemOfDay.AM;
+        LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(timeAdjustor);
+        assertSame(adjusted.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
+        assertSame(adjusted.toLocalTime().getHourOfDay().getValue(), 0);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_with_null_adjustTime() {
+        TEST_2007_07_15_12_30_40_987654321.with(new TimeAdjustor() {
+            public LocalTime adjustTime(LocalTime time) {
+                return null;
+            }
+        });
+    }
+
+    //-----------------------------------------------------------------------
+    // withYear()
+    //-----------------------------------------------------------------------
+    public void test_withYear_int_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withYear(2008);
+        check(t, 2008, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_withYear_int_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withYear(2007);
+        assertSame(t.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
+        assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
+    }
+    
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withYear_int_invalid() {
+        TEST_2007_07_15_12_30_40_987654321.withYear(Year.MIN_YEAR - 1);
+    }
+
+    public void test_withYear_int_adjustDay() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007);
+        LocalDateTime expected = LocalDateTime.dateTime(2007, 2, 28, 12, 30);
+        assertEquals(t, expected);
+    }
+
+    public void test_withYear_int_DateResolver_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withYear(2008, DateResolvers.strict());
+        check(t, 2008, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_withYear_int_DateResolver_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withYear(2007, DateResolvers.strict());
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+    
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withYear_int_DateResolver_invalid() {
+        TEST_2007_07_15_12_30_40_987654321.withYear(Year.MIN_YEAR - 1, DateResolvers.nextValid());
+    }
+
+    public void test_withYear_int_DateResolver_adjustDay() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.nextValid());
+        LocalDateTime expected = LocalDateTime.dateTime(2007, 3, 1, 12, 30);
+        assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withYear_int_DateResolver_adjustDay_invalid() {
+        LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.strict());
+    }
+
+    //-----------------------------------------------------------------------
+    // withMonthOfYear()
+    //-----------------------------------------------------------------------
+    public void test_withMonthOfYear_int_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(1);
+        check(t, 2007, 1, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_withMonthOfYear_int_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(7);
+        assertSame(t.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
+        assertSame(t.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMonthOfYear_int_invalid() {
+        TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(13);
+    }
+
+    public void test_withMonthOfYear_int_adjustDay() {
+        LocalDateTime t = LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11);
+        LocalDateTime expected = LocalDateTime.dateTime(2007, 11, 30, 12, 30);
+        assertEquals(t, expected);
+    }
+
+    public void test_withMonthOfYear_int_DateResolver_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(1, DateResolvers.strict());
+        check(t, 2007, 1, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_withMonthOfYear_int_DateResolver_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(7, DateResolvers.strict());
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMonthOfYear_int_DateResolver_invalid() {
+        TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(13, DateResolvers.nextValid());
+    }
+
+    public void test_withMonthOfYear_int_DateResolver_adjustDay() {
+        LocalDateTime t = LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.nextValid());
+        LocalDateTime expected = LocalDateTime.dateTime(2007, 12, 1, 12, 30);
+        assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
+        LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.strict());
+    }
+
+    //-----------------------------------------------------------------------
+    // withDayOfMonth()
+    //-----------------------------------------------------------------------
+    public void test_withDayOfMonth_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDayOfMonth(1);
+        check(t, 2007, 7, 1, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDayOfMonth_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDayOfMonth(15);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDayOfMonth_invalid() {
+        LocalDateTime.dateTime(2007, 11, 30, 12, 30).withDayOfMonth(31);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
 //    private LocalDate next(LocalDate date) {
@@ -783,245 +1103,6 @@ public class TestLocalDateTime {
 //
 //        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.date(1970, 1, 1));
 //        assertEquals(LocalDate.fromModifiedJulianDays(-678942), LocalDate.date(-1, 12, 31));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void test_getChronology() {
-//        assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_12_30_40_987654321.getChronology());
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    //TODO: implement this test
-//    public void test_isSupported() {
-////        assertTrue(TEST_2007_07_15.isSupported(Era.RULE));
-////        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
-////        assertTrue(TEST_2007_07_15.isSupported(CenturyOfEra.RULE));
-////        assertTrue(TEST_2007_07_15.isSupported(DecadeOfCentury.RULE));
-////        assertTrue(TEST_2007_07_15.isSupported(Year.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(YearOfEra.RULE));
-////        assertTrue(TEST_2007_07_15.isSupported(QuarterOfYear.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(MonthOfYear.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(MonthOfQuarter.RULE));
-////        assertTrue(TEST_2007_07_15.isSupported(DayOfMonth.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(DayOfWeek.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(DayOfYear.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(WeekOfMonth.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(WeekOfWeekyear.rule()));
-////        assertTrue(TEST_2007_07_15.isSupported(Weekyear.rule()));
-////
-////        assertFalse(TEST_2007_07_15.isSupported(HourOfDay.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(MinuteOfHour.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(MinuteOfDay.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(SecondOfMinute.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(SecondOfDay.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(NanoOfSecond.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(HourOfMeridiem.RULE));
-////        assertFalse(TEST_2007_07_15.isSupported(MeridiemOfDay.RULE));
-//    }
-//
-//    // TODO: enable all assertions
-//    public void test_get() {
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Era.RULE), Era.AD.getValue());
-////        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
-////        assertEquals(TEST_2007_07_15.get(CenturyOfEra.RULE), TEST_2007_07_15.getYear().getCenturyOfEra());
-////        assertEquals(TEST_2007_07_15.get(DecadeOfCentury.RULE), TEST_2007_07_15.getYear().getDecadeOfCentury());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Year.rule()), TEST_2007_07_15_12_30_40_987654321.getYear().getValue());
-////        assertEquals(TEST_2007_07_15.get(YearOfEra.RULE), TEST_2007_07_15.getYear().getYearOfEra());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(QuarterOfYear.rule()), TEST_2007_07_15_12_30_40_987654321.getMonthOfYear().getQuarterOfYear().getValue());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MonthOfYear.rule()), TEST_2007_07_15_12_30_40_987654321.getMonthOfYear().getValue());
-////        assertEquals(TEST_2007_07_15.get(MonthOfQuarter.RULE), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DayOfMonth.rule()), TEST_2007_07_15_12_30_40_987654321.getDayOfMonth().getValue());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DayOfWeek.rule()), TEST_2007_07_15_12_30_40_987654321.getDayOfWeek().getValue());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DayOfYear.rule()), TEST_2007_07_15_12_30_40_987654321.getDayOfYear().getValue());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(WeekOfMonth.rule()), WeekOfMonth.weekOfMonth(TEST_2007_07_15_12_30_40_987654321).getValue());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(WeekOfWeekyear.rule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Weekyear.rule()), Weekyear.weekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
-//    }
-//
-//    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-//    public void test_get_unsupported() {
-//        TEST_2007_07_15_12_30_40_987654321.get(HourOfDay.RULE);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="sampleDates")
-//    Object[][] provider_sampleDates() {
-//        return new Object[][] {
-//            {2008, 7, 5},
-//            {2007, 7, 5},
-//            {2006, 7, 5},
-//            {2005, 7, 5},
-//            {2004, 1, 1},
-//            {-1, 1, 2},
-//        };
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // get*()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_getYearMonth(int y, int m, int d) {
-//        assertEquals(LocalDate.date(y, m, d).getYearMonth(), YearMonth.yearMonth(y, m));
-//    }
-//
-//    @Test(dataProvider="sampleDates")
-//    public void test_getMonthDay(int y, int m, int d) {
-//        assertEquals(LocalDate.date(y, m, d).getMonthDay(), MonthDay.monthDay(m, d));
-//    }
-//
-//    @Test(dataProvider="sampleDates")
-//    public void test_get(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        assertEquals(a.getYear(), Year.isoYear(y));
-//        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
-//        assertEquals(a.getDayOfMonth(), DayOfMonth.dayOfMonth(d));
-//    }
-//
-//    @Test(dataProvider="sampleDates")
-//    public void test_getDOY(int y, int m, int d) {
-//        Year year = Year.isoYear(y);
-//        LocalDate a = LocalDate.date(y, m, d);
-//        int total = 0;
-//        for (int i = 1; i < m; i++) {
-//            total += MonthOfYear.monthOfYear(i).lengthInDays(year);
-//        }
-//        int doy = total + d;
-//        assertEquals(a.getDayOfYear(), DayOfYear.dayOfYear(doy));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // with()
-//    //-----------------------------------------------------------------------
-//    public void test_with() {
-//        DateAdjustor dateAdjustor = DateAdjustors.lastDayOfMonth();
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.with(dateAdjustor), dateAdjustor.adjustDate(TEST_2007_07_15_12_30_40_987654321));
-//    }
-//
-//    @Test(expectedExceptions=IllegalArgumentException.class)
-//    public void test_with_null_adjustDate() {
-//        TEST_2007_07_15_12_30_40_987654321.with(new DateAdjustor() {
-//            public LocalDate adjustDate(LocalDate date) {
-//                return null;
-//            }
-//        });
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // withYear()
-//    //-----------------------------------------------------------------------
-//    public void test_withYear_int_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withYear(2008);
-//        assertEquals(t, LocalDate.date(2008, 7, 15));
-//    }
-//
-//    public void test_withYear_int_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withYear(2007);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//    
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withYear_int_invalid() {
-//        TEST_2007_07_15_12_30_40_987654321.withYear(Year.MIN_YEAR - 1);
-//    }
-//
-//    public void test_withYear_int_adjustDay() {
-//        LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007);
-//        LocalDate expected = LocalDate.date(2007, 2, 28);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_withYear_int_DateResolver_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withYear(2008, DateResolvers.strict());
-//        assertEquals(t, LocalDate.date(2008, 7, 15));
-//    }
-//
-//    public void test_withYear_int_DateResolver_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withYear(2007, DateResolvers.strict());
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//    
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withYear_int_DateResolver_invalid() {
-//        TEST_2007_07_15_12_30_40_987654321.withYear(Year.MIN_YEAR - 1, DateResolvers.nextValid());
-//    }
-//
-//    public void test_withYear_int_DateResolver_adjustDay() {
-//        LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.nextValid());
-//        LocalDate expected = LocalDate.date(2007, 3, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withYear_int_DateResolver_adjustDay_invalid() {
-//        LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.strict());
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // withMonthOfYear()
-//    //-----------------------------------------------------------------------
-//    public void test_withMonthOfYear_int_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(1);
-//        assertEquals(t, LocalDate.date(2007, 1, 15));
-//    }
-//
-//    public void test_withMonthOfYear_int_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(7);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withMonthOfYear_int_invalid() {
-//        TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(13);
-//    }
-//
-//    public void test_withMonthOfYear_int_adjustDay() {
-//        LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11);
-//        LocalDate expected = LocalDate.date(2007, 11, 30);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_withMonthOfYear_int_DateResolver_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(1, DateResolvers.strict());
-//        assertEquals(t, LocalDate.date(2007, 1, 15));
-//    }
-//
-//    public void test_withMonthOfYear_int_DateResolver_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(7, DateResolvers.strict());
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withMonthOfYear_int_DateResolver_invalid() {
-//        TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(13, DateResolvers.nextValid());
-//    }
-//
-//    public void test_withMonthOfYear_int_DateResolver_adjustDay() {
-//        LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.nextValid());
-//        LocalDate expected = LocalDate.date(2007, 12, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
-//        LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.strict());
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // withDayOfMonth()
-//    //-----------------------------------------------------------------------
-//    public void test_withDayOfMonth_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withDayOfMonth(1);
-//        assertEquals(t, LocalDate.date(2007, 7, 1));
-//    }
-//
-//    public void test_withDayOfMonth_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.withDayOfMonth(15);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_withDayOfMonth_invalid() {
-//        LocalDate.date(2007, 11, 30).withDayOfMonth(31);
 //    }
 //
 //    //-----------------------------------------------------------------------

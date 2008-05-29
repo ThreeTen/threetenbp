@@ -517,7 +517,7 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_with_null_adjustDate() {
+    public void test_with_null_adjustTime() {
         TEST_12_30_40_987654321.with(new TimeAdjustor() {
             public LocalTime adjustTime(LocalTime time) {
                 return null;
