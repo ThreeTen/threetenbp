@@ -559,7 +559,7 @@ public final class OffsetDateTime
      * @return the date object, never null
      */
     public LocalDate localDate() {
-        return dateTime.date();
+        return dateTime.getDate();
     }
 
     /**
@@ -579,7 +579,7 @@ public final class OffsetDateTime
      * @return the time object, never null
      */
     public LocalTime localTime() {
-        return dateTime.time();
+        return dateTime.getTime();
     }
 
     /**

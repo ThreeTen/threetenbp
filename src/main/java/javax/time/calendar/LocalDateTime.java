@@ -473,7 +473,7 @@ public final class LocalDateTime
      *
      * @return the date object, never null
      */
-    public LocalDate date() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -483,7 +483,7 @@ public final class LocalDateTime
      *
      * @return the time object, never null
      */
-    public LocalTime time() {
+    public LocalTime getTime() {
         return time;
     }
 

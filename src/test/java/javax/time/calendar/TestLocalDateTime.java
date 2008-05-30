@@ -881,6 +881,26 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // getDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_getDate(int year, int month, int day) {
+        LocalDate d = LocalDate.date(year, month, day);
+        LocalDateTime dt = LocalDateTime.dateTime(year, month, day, 12, 30);
+        assertEquals(dt.getDate(), d);
+    }
+
+    //-----------------------------------------------------------------------
+    // getTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_getTime(int h, int m, int s, int ns) {
+        LocalTime t = LocalTime.time(h, m, s, ns);
+        LocalDateTime dt = LocalDateTime.dateTime(2007, 7, 15, h, m, s, ns);
+        assertEquals(dt.getTime(), t);
+    }
+
+    //-----------------------------------------------------------------------
     // getDayOfWeek()
     //-----------------------------------------------------------------------
     public void test_getDayOfWeek() {
