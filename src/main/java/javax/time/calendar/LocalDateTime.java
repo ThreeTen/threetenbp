@@ -729,7 +729,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated ZonedDateTime
+     * @return a new updated LocalDateTime
      */
     public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         if (year == getYear().getValue() &&

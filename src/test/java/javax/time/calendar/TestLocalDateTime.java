@@ -192,12 +192,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_dateMidnight_ints_dayTooLow() {
-        LocalDateTime.dateMidnight(2008, MonthOfYear.FEBRUARY, -1);
+        LocalDateTime.dateMidnight(2008, 2, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_dateMidnight_ints_dayTooHigh() {
-        LocalDateTime.dateMidnight(2008, MonthOfYear.MARCH, 32);
+        LocalDateTime.dateMidnight(2008, 3, 32);
     }
 
     //-----------------------------------------------------------------------
@@ -1051,6 +1051,192 @@ public class TestLocalDateTime {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDayOfMonth_invalid() {
         LocalDateTime.dateTime(2007, 11, 30, 12, 30).withDayOfMonth(31);
+    }
+
+    //-----------------------------------------------------------------------
+    // withDate()
+    //-----------------------------------------------------------------------
+    public void test_withDate() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, 29);
+        check(t, 2008, 2, 29, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, 7, 15);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_yearTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, 2, 29);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_monthTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 0, 29);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_monthTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 13, 29);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_dayTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_dayTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 3, 32);
+    }
+
+    //-----------------------------------------------------------------------
+    // withHourOfDay()
+    //-----------------------------------------------------------------------
+    public void test_withHourOfDay_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321;
+        for (int i = 0; i < 24; i++) {
+            t = t.withHourOfDay(i);
+            assertEquals(t.getHourOfDay().getValue(), i);
+        }
+    }
+
+    public void test_withHourOfDay_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withHourOfDay(12);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_withHourOfDay_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(1, 0)).withHourOfDay(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_withHourOfDay_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(1, 0)).withHourOfDay(12);
+        assertSame(t.toLocalTime(), LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withHourOfDay_hourTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withHourOfDay(-1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withHourOfDay_hourTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withHourOfDay(24);
+    }
+
+    //-----------------------------------------------------------------------
+    // withMinuteOfHour()
+    //-----------------------------------------------------------------------
+    public void test_withMinuteOfHour_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321;
+        for (int i = 0; i < 60; i++) {
+            t = t.withMinuteOfHour(i);
+            assertEquals(t.getMinuteOfHour().getValue(), i);
+        }
+    }
+
+    public void test_withMinuteOfHour_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withMinuteOfHour(30);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_withMinuteOfHour_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(0, 1)).withMinuteOfHour(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_withMinuteOfHour_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 1)).withMinuteOfHour(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMinuteOfHour_minuteTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withMinuteOfHour(-1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withMinuteOfHour_minuteTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withMinuteOfHour(60);
+    }
+
+    //-----------------------------------------------------------------------
+    // withSecondOfMinute()
+    //-----------------------------------------------------------------------
+    public void test_withSecondOfMinute_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321;
+        for (int i = 0; i < 60; i++) {
+            t = t.withSecondOfMinute(i);
+            assertEquals(t.getSecondOfMinute().getValue(), i);
+        }
+    }
+
+    public void test_withSecondOfMinute_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withSecondOfMinute(40);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_withSecondOfMinute_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(0, 0, 1)).withSecondOfMinute(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_withSecondOfMinute_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 0, 1)).withSecondOfMinute(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withSecondOfMinute_secondTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withSecondOfMinute(-1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withSecondOfMinute_secondTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withSecondOfMinute(60);
+    }
+
+    //-----------------------------------------------------------------------
+    // withNanoOfSecond()
+    //-----------------------------------------------------------------------
+    public void test_withNanoOfSecond_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321;
+        t = t.withNanoOfSecond(1);
+        assertEquals(t.getNanoOfSecond().getValue(), 1);
+        t = t.withNanoOfSecond(10);
+        assertEquals(t.getNanoOfSecond().getValue(), 10);
+        t = t.withNanoOfSecond(100);
+        assertEquals(t.getNanoOfSecond().getValue(), 100);
+        t = t.withNanoOfSecond(999999999);
+        assertEquals(t.getNanoOfSecond().getValue(), 999999999);
+    }
+
+    public void test_withNanoOfSecond_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withNanoOfSecond(987654321);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_withNanoOfSecond_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(0, 0, 0, 1)).withNanoOfSecond(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_withNanoOfSecond_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 0, 0, 1)).withNanoOfSecond(0);
+        assertSame(t.toLocalTime(), LocalTime.MIDDAY);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withNanoOfSecond_nanoTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withNanoOfSecond(-1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withNanoOfSecond_nanoTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withNanoOfSecond(1000000000);
     }
 
 //    //-----------------------------------------------------------------------
