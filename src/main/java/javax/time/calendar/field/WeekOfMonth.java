@@ -37,11 +37,11 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a week of month.

@@ -34,9 +34,9 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A calendrical representation of a second of day.

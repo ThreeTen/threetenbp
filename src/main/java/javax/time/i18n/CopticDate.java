@@ -36,9 +36,9 @@ import java.io.Serializable;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
 /**
@@ -133,7 +133,7 @@ public final class CopticDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------

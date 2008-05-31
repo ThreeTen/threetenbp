@@ -38,7 +38,6 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
 /**
@@ -187,7 +186,7 @@ public final class OffsetDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------

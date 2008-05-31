@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.Periods;
 
 /**
@@ -146,6 +145,24 @@ public final class MonthDay
     }
 
     /**
+     * Obtains an instance of <code>MonthDay</code> from a FlexiDateTime.
+     * <p>
+     * This method will create a MonthDay from the FlexiDateTime using either
+     * the fields or the date. If both are present, the values in the field-value
+     * map must match those in the date.
+     *
+     * @param dateTime  the date-time to use, not null
+     * @return a MonthDay object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws CalendarConversionException if the date-time cannot be converted
+     */
+    public static MonthDay monthDay(FlexiDateTime dateTime) {
+        int month = dateTime.getValue(MonthOfYear.rule());
+        int dom = dateTime.getValue(DayOfMonth.rule());
+        return monthDay(month, dom);
+    }
+
+    /**
      * Obtains an instance of <code>MonthDay</code> from a date provider.
      * <p>
      * This can be used extract a month-day object directly from any implementation
@@ -211,7 +228,7 @@ public final class MonthDay
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------

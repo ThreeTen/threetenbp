@@ -36,11 +36,11 @@ import static org.testng.Assert.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.calendar.format.FlexiDateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -117,5 +117,40 @@ public class TestDayOfMonthRule {
         
         assertEquals(DayOfMonth.rule().getValue(dt), 20);
     }
+
+//    //-----------------------------------------------------------------------
+//    // extractValue(FlexiDateTime)
+//    //-----------------------------------------------------------------------
+//    public void test_extractValue_FlexiDateTime_date() {
+//        LocalDate date = LocalDate.date(2007, 6, 20);
+//        FlexiDateTime dt = date.toFlexiDateTime();
+//        
+//        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
+//    }
+//
+//    public void test_extractValue_FlexiDateTime_noDate() {
+//        FlexiDateTime dt = new FlexiDateTime(null, null, null, null);
+//        
+//        assertEquals(DayOfMonth.rule().extractValue(dt), null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_extractValue_FlexiDateTime_null() {
+//        FlexiDateTime dt = null;
+//        DayOfMonth.rule().extractValue(dt);
+//    }
+//
+//    public void test_extractValue_FlexiDateTime_monthDay() {
+//        MonthDay date = MonthDay.monthDay(6, 20);
+//        FlexiDateTime dt = date.toFlexiDateTime();
+//        
+//        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
+//    }
+//
+//    public void test_extractValue_FlexiDateTime_day() {
+//        FlexiDateTime dt = new FlexiDateTime(DayOfMonth.rule(), 20);
+//        
+//        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
+//    }
 
 }

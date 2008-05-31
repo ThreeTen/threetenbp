@@ -46,7 +46,6 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 
 /**
@@ -305,7 +304,7 @@ public final class ZonedDateTime
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------

@@ -40,11 +40,11 @@ import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a day of month in the ISO-8601 calendar system.

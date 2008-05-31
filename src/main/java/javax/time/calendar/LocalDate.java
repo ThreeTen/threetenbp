@@ -39,7 +39,6 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -255,7 +254,7 @@ public final class LocalDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -865,6 +864,27 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this date is equal to the input date
+     *
+     * @param date  the date to match, not null
+     * @return true if the two dates are equal, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return (year.equals(date.year) && month == date.month && day.equals(date.day));
+    }
+
+    /**
+     * Adjusts a date to have the value of this date.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return matchesDate(date) ? date : this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date to a <code>LocalDate</code>, trivially
      * returning <code>this</code>.
      *
@@ -1014,25 +1034,4 @@ public final class LocalDate
             .toString();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this date is equal to the input date
-     *
-     * @param date  the date to match, not null
-     * @return true if the two dates are equal, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return (year.equals(date.year) && month == date.month && day.equals(date.day));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adjusts a date to have the value of this date.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        return matchesDate(date) ? date : this;
-    }
 }

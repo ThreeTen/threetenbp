@@ -34,6 +34,8 @@ package javax.time.calendar.format;
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.time.calendar.FlexiDateTime;
+
 /**
  * Prints a literal.
  *

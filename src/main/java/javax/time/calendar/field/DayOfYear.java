@@ -38,11 +38,11 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a day of year in the ISO-8601 calendar system.
@@ -172,6 +172,76 @@ public final class DayOfYear
     }
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Gets the month that this day falls in given a year.
+//     *
+//     * @param year  the year that the day of year occurs in, not null
+//     * @return the month, never null
+//     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
+//     */
+//    public MonthOfYear getMonthOfYear(Year year) {
+//        if (isValid(year) == false) {
+//            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+//        }
+//        int doy0 = dayOfYear - 1;
+//        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
+//        int month = 1;
+//        for ( ; month < 12; month++) {
+//            if (doy0 < array[month]) {
+//                break;
+//            }
+//        }
+//        return MonthOfYear.monthOfYear(month);
+//    }
+//
+//    /**
+//     * Gets the day of month that this day falls in given a year.
+//     *
+//     * @param year  the year that the day of year occurs in, not null
+//     * @return the day of month, never null
+//     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
+//     */
+//    public DayOfMonth getDayOfMonth(Year year) {
+//        if (isValid(year) == false) {
+//            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+//        }
+//        int doy0 = dayOfYear - 1;
+//        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
+//        int month = 1;
+//        for ( ; month < 12; month++) {
+//            if (doy0 < array[month]) {
+//                break;
+//            }
+//        }
+//        return DayOfMonth.dayOfMonth(dayOfYear - array[month - 1]);
+//    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a date using this day of year and the given year.
+     *
+     * @param year  the year that the day of year occurs in, not null
+     * @return the date, never null
+     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
+     */
+    public LocalDate createDate(Year year) {
+        if (isValid(year) == false) {
+            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+        }
+        int doy0 = dayOfYear - 1;
+        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
+        int month = 1;
+        for ( ; month < 12; month++) {
+            if (doy0 < array[month]) {
+                break;
+            }
+        }
+        MonthOfYear moy = MonthOfYear.monthOfYear(month);
+        DayOfMonth dom = DayOfMonth.dayOfMonth(dayOfYear - array[month - 1]);
+        return LocalDate.date(year, moy, dom);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Converts this field to a <code>FlexiDateTime</code>.
      *
@@ -195,21 +265,7 @@ public final class DayOfYear
      * @throws IllegalCalendarFieldValueException if the day of year is invalid for the input year
      */
     public LocalDate adjustDate(LocalDate date) {
-        Year year = date.getYear();
-        if (isValid(year) == false) {
-            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
-        }
-        int doy0 = dayOfYear - 1;
-        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
-        int month = 1;
-        for ( ; month < 12; month++) {
-            if (doy0 < array[month]) {
-                break;
-            }
-        }
-        MonthOfYear moy = MonthOfYear.monthOfYear(month);
-        DayOfMonth dom = DayOfMonth.dayOfMonth(doy0 - array[month - 1] + 1);
-        return LocalDate.date(year, moy, dom);
+        return createDate(date.getYear());
     }
 
     /**

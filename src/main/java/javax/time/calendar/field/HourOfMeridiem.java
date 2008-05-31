@@ -35,11 +35,11 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeMatcher;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.Periods;
 
 /**
@@ -218,11 +218,8 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getTime() != null) {
-                return dateTime.getTime().getHourOfDay().getHourOfAmPm();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getHourOfAmPm() : null;
         }
     }
 

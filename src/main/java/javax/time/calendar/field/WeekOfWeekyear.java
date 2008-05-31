@@ -35,11 +35,11 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a week of week-based year in the ISO-8601 calendar system.

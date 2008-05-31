@@ -40,12 +40,12 @@ import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -207,7 +207,7 @@ public final class Year
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -252,7 +252,7 @@ public final class Year
         try {
             newYear = MathUtils.safeAdd(year, years);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException("Year", (((long)year) + years), MIN_YEAR, MAX_YEAR);
+            throw new IllegalCalendarFieldValueException("Year", (((long) year) + years), MIN_YEAR, MAX_YEAR);
         }
         return isoYear(newYear);
     }
@@ -272,7 +272,7 @@ public final class Year
         try {
             newYear = MathUtils.safeSubtract(year, years);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException("Year", (((long)year) - years), MIN_YEAR, MAX_YEAR);
+            throw new IllegalCalendarFieldValueException("Year", (((long) year) - years), MIN_YEAR, MAX_YEAR);
         }
         return isoYear(newYear);
     }

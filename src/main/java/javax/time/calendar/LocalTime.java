@@ -37,7 +37,6 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -371,7 +370,7 @@ public final class LocalTime
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------

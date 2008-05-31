@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
@@ -100,7 +101,7 @@ class NumberPrinter implements DateTimePrinter {
 
     /** {@inheritDoc} */
     public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
-        int value = fieldRule.getValue(dateTime);
+        int value = dateTime.getValue(fieldRule);
         String str = Integer.toString(Math.abs(value));
         if (str.length() > maxWidth) {
             throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);

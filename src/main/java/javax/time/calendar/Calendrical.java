@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * The basic interface which all calendrical implementations should provide.

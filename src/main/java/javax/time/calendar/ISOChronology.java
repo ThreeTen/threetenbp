@@ -32,12 +32,14 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.Map;
 
+import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekOfMonth;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.Periods;
 
 /**
@@ -431,11 +433,17 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getYear().getValue();
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getYear().getValue() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            Integer yearValue = dateTime.getFieldValueMap().remove(this);
+            if (yearValue != null) {
+                checkValue(yearValue, dateTime.getDate());
             }
-            return dateTime.getFieldValueMapValue(this);
+            return dateTime;
         }
     }
 
@@ -457,11 +465,17 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getMonthOfYear().getValue();
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getValue() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            Integer moy = dateTime.getFieldValueMap().remove(this);
+            if (moy != null) {
+                checkValue(moy, dateTime.getDate());
             }
-            return dateTime.getFieldValueMapValue(this);
+            return dateTime;
         }
     }
 
@@ -488,11 +502,26 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfMonth().getValue();
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getDayOfMonth().getValue() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+            Integer domValue = map.remove(this);
+            if (domValue != null) {
+                checkValue(domValue, dateTime.getDate());
+                if (dateTime.getDate() == null) {
+                    Integer year = map.remove(Year.rule());
+                    Integer month = map.remove(MonthOfYear.rule());
+                    if (year != null && month != null) {
+                        LocalDate date = LocalDate.date(year, month, domValue);
+                        return dateTime.withFieldValueMap(map).withDate(date);
+                    }
+                }
             }
-            return dateTime.getFieldValueMapValue(this);
+            return dateTime;
         }
     }
 
@@ -519,11 +548,26 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfYear().getValue();
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getDayOfYear().getValue() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+            Integer doyValue = map.remove(this);
+            if (doyValue != null) {
+                checkValue(doyValue, dateTime.getDate());
+                if (dateTime.getDate() == null) {
+                    Integer year = map.remove(Year.rule());
+                    if (year != null) {
+                        DayOfYear doy = DayOfYear.dayOfYear(doyValue);
+                        LocalDate date = doy.createDate(Year.isoYear(year));
+                        return dateTime.withFieldValueMap(map).withDate(date);
+                    }
+                }
             }
-            return dateTime.getFieldValueMapValue(this);
+            return dateTime;
         }
     }
 
@@ -545,11 +589,8 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return Weekyear.weekyear(dateTime.getDate()).getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? Weekyear.weekyear(dateTime.getDate()).getValue() : null;
         }
     }
 
@@ -576,11 +617,8 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue() : null;
         }
     }
 
@@ -602,11 +640,8 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfWeek().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getDayOfWeek().getValue() : null;
         }
     }
 
@@ -633,12 +668,12 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
+        protected Integer extractValue(FlexiDateTime dateTime) {
             LocalDate date = dateTime.getDate();
             if (date != null) {
                 return ((date.getDayOfYear().getValue() - 1) % 7) + 1;
             }
-            return dateTime.getFieldValueMapValue(this);
+            return null;
         }
     }
 
@@ -660,11 +695,17 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getMonthOfYear().getQuarterOfYear().getValue();
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getQuarterOfYear().getValue() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            Integer qoy = dateTime.getFieldValueMap().remove(this);
+            if (qoy != null) {
+                checkValue(qoy, dateTime.getDate());
             }
-            return dateTime.getFieldValueMapValue(this);
+            return dateTime;
         }
     }
 
@@ -686,11 +727,33 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getMonthOfYear().getMonthOfQuarter();
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getMonthOfQuarter() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+            Integer moq = map.remove(this);
+            if (moq != null) {
+                checkValue(moq, dateTime.getDate());
+                if (dateTime.getDate() == null) {
+                    Integer qoy = map.remove(ISOChronology.INSTANCE.quarterOfYear());
+                    if (qoy != null) {
+                        checkValue(qoy, dateTime.getDate());
+                        int moy = (qoy - 1) * 3 + moq;
+                        Integer existingMoy = map.get(MonthOfYear.rule());
+                        if (existingMoy != null && existingMoy != moy) {
+                            throw new IllegalCalendarFieldValueException(
+                                    "Merge of Month of Quarter and Quarter of Year created value " +
+                                    moy + " that does not match the existing Month of Year value " + existingMoy);
+                        }
+                        map.put(MonthOfYear.rule(), moy);
+                        return dateTime.withFieldValueMap(map);
+                    }
+                }
             }
-            return dateTime.getFieldValueMapValue(this);
+            return dateTime;
         }
     }
 
@@ -717,11 +780,8 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue() : null;
         }
     }
 

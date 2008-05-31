@@ -34,11 +34,11 @@ package javax.time.calendar.field;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.format.FlexiDateTime;
 
 /**
  * A representation of a era in the ISO-8601 calendar system.
@@ -203,11 +203,8 @@ public enum Era
 
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getDate() != null) {
-                return dateTime.getDate().getYear().getEra().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getDate() != null ? dateTime.getDate().getYear().getEra().getValue() : null;
         }
     }
 

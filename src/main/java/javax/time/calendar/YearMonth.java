@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
 
@@ -111,6 +110,24 @@ public final class YearMonth
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
         return yearMonth(Year.isoYear(year), MonthOfYear.monthOfYear(monthOfYear));
+    }
+
+    /**
+     * Obtains an instance of <code>YearMonth</code> from a FlexiDateTime.
+     * <p>
+     * This method will create a YearMonth from the FlexiDateTime using either
+     * the fields or the date. If both are present, the values in the field-value
+     * map must match those in the date.
+     *
+     * @param dateTime  the date-time to use, not null
+     * @return a YearMonth object, never null
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws CalendarConversionException if the date-time cannot be converted
+     */
+    public static YearMonth yearMonth(FlexiDateTime dateTime) {
+        int year = dateTime.getValue(Year.rule());
+        int month = dateTime.getValue(MonthOfYear.rule());
+        return yearMonth(year, month);
     }
 
     /**
@@ -190,7 +207,7 @@ public final class YearMonth
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return field.getValue(toFlexiDateTime());
+        return toFlexiDateTime().getValue(field);
     }
 
     //-----------------------------------------------------------------------

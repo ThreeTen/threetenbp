@@ -34,11 +34,11 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.Periods;
 
 /**
@@ -232,11 +232,8 @@ public final class NanoOfSecond
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
-            if (dateTime.getTime() != null) {
-                return dateTime.getTime().getNanoOfSecond().getValue();
-            }
-            return dateTime.getFieldValueMapValue(this);
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getTime() != null ? dateTime.getTime().getNanoOfSecond().getValue() : null;
         }
     }
 

@@ -50,7 +50,6 @@ import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;

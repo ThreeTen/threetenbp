@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -60,6 +59,8 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     private final int minimumValue;
     /** The maximum value for the field. */
     private final int maximumValue;
+    /** True if this is a date field, false for a time field. */
+    private final boolean isDate;
 
     /**
      * Constructor.
@@ -93,6 +94,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         this.periodRange = periodRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
+        this.isDate = true;  // TODO pass in isDate
     }
 
     //-----------------------------------------------------------------------
@@ -107,6 +109,30 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return name;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the field represents part of the date, as opposed to part
+     * of the time.
+     *
+     * @return true if this is a date field, false if this is a time field
+     * @see #isTimeField()
+     */
+    public boolean isDateField() {
+        return isDate;
+    }
+
+    /**
+     * Checks if the field represents part of the time, as opposed to part
+     * of the date.
+     *
+     * @return true if this is a time field, false if this is a date field
+     * @see #isDateField()
+     */
+    public boolean isTimeField() {
+        return !isDate;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the period unit, which the element which alters within the range.
      * <p>
@@ -148,14 +174,66 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     /**
-     * Gets the value of this field.
+     * Gets the value for this field throwing an exception if the field cannot be obtained.
+     * <p>
+     * The value will be checked for basic validity.
+     * The value returned will be within the valid range for the field.
+     * Also, if the value is present in both the date/time and the field-value
+     * map then the two values must be the same.
      *
-     * @param dateTime  the date time, not null
+     * @param dateTime  the date-time, not null
      * @return the value of the field
      * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
     public int getValue(FlexiDateTime dateTime) {
-        throw new UnsupportedCalendarFieldException(this, "FlexiDateTime");
+        return dateTime.getValue(this);
+    }
+
+    /**
+     * Extracts the value of this field from the date or time on the specified
+     * FlexiDateTime.
+     *
+     * @param dateTime  the date-time, not null
+     * @return the value of the field, null if unable to extract field
+     */
+    protected Integer extractValue(FlexiDateTime dateTime) {
+        return null;
+    }
+
+    /**
+     * Merges this field with other fields in the given date-time to create
+     * more complete and meaningful date-time objects.
+     * <p>
+     * This method is used to combine individual date-time fields into more
+     * significant concepts such as date and time. The full merge process
+     * requires this method to be called repeatedly on each of the fields until
+     * no more changes occur.
+     * <p>
+     * Since the merge process is cooperative, it is not necessary to include
+     * the full merge code in each field. Thus, the code to merge a year, month
+     * and day of month into a date only needs to be in one of the three rules.
+     * In this example it will be the day of month rule. The merged fields are
+     * removed from the field map.
+     * <p>
+     * The merge process will also merge minor fields into major ones. For example,
+     * the month of quarter and quarter of year fields would be merged to form the
+     * month of year. In this case, the original two fields are removed from the
+     * field map and the month of year added. If the field map already contained
+     * the month of year then the value must match.
+     * <p>
+     * If this method is called with the date or time already created then the
+     * implementation must validate the value for this rule against the date/time.
+     * <p>
+     * Implementors must ensure that the input parameter is returned if there is
+     * no change to the date-time.
+     *
+     * @param dateTime  the date-time to merge, not null
+     * @return the merged date-time with the processed fields removed, never null,
+     *  the input date-time must be retuned if no change is made
+     * @throws IllegalCalendarFieldValueException if the values cannot be merged
+     */
+    public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+        return dateTime;
     }
 
     //-----------------------------------------------------------------------
@@ -170,6 +248,30 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     public void checkValue(int value) {
         if (value < getMinimumValue() || value > getMaximumValue()) {
             throw new IllegalCalendarFieldValueException(getName(), value, getMinimumValue(), getMaximumValue());
+        }
+    }
+
+    /**
+     * Checks if the value is invalid or does not match the value in the given date.
+     * <p>
+     * If the date is non-null, then the value specified is checked against the
+     * value obtained from the date.
+     * <p>
+     * If the date is null, then the value is checked against the outer bounds
+     * for the field using {@link #checkValue(int)}.
+     *
+     * @param value  the value to check
+     * @param date  the date to check against, may be null
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     */
+    protected void checkValue(int value, LocalDate date) {
+        if (date != null) {
+            if (date.get(this) != value) {
+                throw new IllegalCalendarFieldValueException(getName() + " value " + value +
+                        " does not match date " + date);
+            }
+        } else {
+            checkValue(value);
         }
     }
 

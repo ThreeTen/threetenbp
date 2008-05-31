@@ -44,13 +44,13 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 

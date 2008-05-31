@@ -34,8 +34,8 @@ package javax.time.i18n;
 import java.io.Serializable;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.format.FlexiDateTime;
 import javax.time.period.Periods;
 
 /**
@@ -184,12 +184,12 @@ public final class CopticChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
+        protected Integer extractValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
                 long mjd = dateTime.getDate().toModifiedJulianDays();  // adjust to epoch
                 return (int) (mjd * 4 / DAYS_IN_CYCLE);  // TODO: overflow
             }
-            return dateTime.getFieldValueMapValue(this);
+            return null;
         }
     }
 
@@ -211,11 +211,11 @@ public final class CopticChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
+        protected Integer extractValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
-                return dateTime.getDate().getMonthOfYear().getValue();
+                return dateTime.getDate().getMonthOfYear().getValue();  // TODO
             }
-            return dateTime.getFieldValueMapValue(this);
+            return null;
         }
     }
 
@@ -242,11 +242,11 @@ public final class CopticChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
+        protected Integer extractValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfMonth().getValue();
+                return dateTime.getDate().getDayOfMonth().getValue();  // TODO
             }
-            return dateTime.getFieldValueMapValue(this);
+            return null;
         }
     }
 
@@ -273,11 +273,11 @@ public final class CopticChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
+        protected Integer extractValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
-                return dateTime.getDate().getDayOfYear().getValue();
+                return dateTime.getDate().getDayOfYear().getValue();  // TODO
             }
-            return dateTime.getFieldValueMapValue(this);
+            return null;
         }
     }
 
@@ -299,11 +299,11 @@ public final class CopticChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public int getValue(FlexiDateTime dateTime) {
+        protected Integer extractValue(FlexiDateTime dateTime) {
             if (dateTime.getDate() != null) {
                 return dateTime.getDate().getDayOfWeek().getValue();
             }
-            return dateTime.getFieldValueMapValue(this);
+            return null;
         }
     }
 
