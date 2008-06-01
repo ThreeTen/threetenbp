@@ -53,13 +53,23 @@ import javax.time.period.Periods;
  * This class does not store or represent a time or time zone.
  * Thus, for example, the value "2nd October 2007" can be stored in a LocalDate.
  * <p>
+ * The ISO-8601 calendar system is the modern civil calendar system used today
+ * in most of the world. It is equivalent to the proleptic Gregorian calendar
+ * system, in which todays's rules for leap years are applied for all time.
+ * For most applications written today, the ISO-8601 rules are entirely suitable.
+ * <p>
+ * However, any application that makes use of historical dates and requires them
+ * to be accurate will find the ISO-8601 rules unsuitable. In this case, the
+ * application code should use <code>HistoricDate</code> and define an explicit
+ * cutover date between the Julian and Gregorian calendar systems.
+ * <p>
  * LocalDate is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements DateProvider, Calendrical, Comparable<LocalDate>, Serializable, DateMatcher, DateAdjustor {
+        implements Calendrical, DateProvider, DateMatcher, DateAdjustor, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.

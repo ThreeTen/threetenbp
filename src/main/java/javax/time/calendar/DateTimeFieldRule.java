@@ -41,8 +41,8 @@ import javax.time.period.PeriodUnit;
  * <p>
  * DateTimeFieldRule is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe. It is 
- * recommended subclasses implement <code>Serializable</code>
+ * All instantiable subclasses must be final, immutable and thread-safe.
+ * It is recommended that subclasses implement <code>Serializable</code>
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
