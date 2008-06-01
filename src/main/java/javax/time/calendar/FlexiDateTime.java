@@ -682,51 +682,6 @@ public final class FlexiDateTime implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the flexi date-time as a <code>String</code>.
-     * <p>
-     * The output will use the following format:
-     * <ul>
-     * <li>Field-Value map, followed by space if non-empty</li>
-     * <li>Date</li>
-     * <li>Time, prefixed by 'T' if non-null</li>
-     * <li>Offset</li>
-     * <li>Zone, prefixed by a space if non-null</li>
-     * </ul>
-     * If an instance of LocalDate, LocalTime, LocalDateTime, OffsetDate, OffsetTime,
-     * OffsetDateTime or ZonedDateTime is converted to a FlexiDateTime then the
-     * toString output will remain the same.
-     *
-     * @return the formatted date-time string, never null
-     */
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        if (getFieldValueMap().size() > 0) {
-            buf.append(getFieldValueMap());
-            if (date != null || time != null || offset != null) {
-                buf.append(' ');
-            }
-        }
-        if (date != null) {
-            buf.append(date);
-        }
-        if (time != null) {
-            buf.append('T').append(time);
-        }
-        if (offset != null) {
-            buf.append(offset);
-        }
-        if (zone != null) {
-            if (date != null || time != null || offset != null) {
-                buf.append(' ');
-            }
-            buf.append(zone);
-        }
-        return buf.toString();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Is this FlexiDateTime equal to the specified FlexiDateTime.
      *
      * @param o  the other FlexiDateTime to compare to, null returns false
@@ -773,6 +728,51 @@ public final class FlexiDateTime implements Calendrical {
         hash = 59 * hash + (this.offset != null ? this.offset.hashCode() : 0);
         hash = 59 * hash + (this.zone != null ? this.zone.hashCode() : 0);
         return hash;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Outputs the flexi date-time as a <code>String</code>.
+     * <p>
+     * The output will use the following format:
+     * <ul>
+     * <li>Field-Value map, followed by space if non-empty</li>
+     * <li>Date</li>
+     * <li>Time, prefixed by 'T' if non-null</li>
+     * <li>Offset</li>
+     * <li>Zone, prefixed by a space if non-null</li>
+     * </ul>
+     * If an instance of LocalDate, LocalTime, LocalDateTime, OffsetDate, OffsetTime,
+     * OffsetDateTime or ZonedDateTime is converted to a FlexiDateTime then the
+     * toString output will remain the same.
+     *
+     * @return the formatted date-time string, never null
+     */
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        if (getFieldValueMap().size() > 0) {
+            buf.append(getFieldValueMap());
+            if (date != null || time != null || offset != null) {
+                buf.append(' ');
+            }
+        }
+        if (date != null) {
+            buf.append(date);
+        }
+        if (time != null) {
+            buf.append('T').append(time);
+        }
+        if (offset != null) {
+            buf.append(offset);
+        }
+        if (zone != null) {
+            if (date != null || time != null || offset != null) {
+                buf.append(' ');
+            }
+            buf.append(zone);
+        }
+        return buf.toString();
     }
 
 }
