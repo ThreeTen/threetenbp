@@ -914,7 +914,7 @@ public final class LocalDateTime
     }
 
     /**
-     * Returns a copy of this LocalDate with the specified period in years added.
+     * Returns a copy of this LocalDateTime with the specified period in years added.
      * <p>
      * This method add the specified amount to the years field in three steps:
      * <ol>
@@ -927,7 +927,7 @@ public final class LocalDateTime
      *
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated LocalDate, never null
+     * @return a new updated LocalDateTime, never null
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public LocalDateTime plusYears(int years, DateResolver dateResolver) {
@@ -949,15 +949,39 @@ public final class LocalDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
+     * This method does the same as <code>plusMonts(months, DateResolvers.previousValid())</code>.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
      * @return a new updated LocalDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
     public LocalDateTime plusMonths(int months) {
         LocalDate newDate = date.plusMonths(months);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in months added.
+     * <p>
+     * This method add the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Add the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to add, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDateTime plusMonths(int months, DateResolver dateResolver) {
+        LocalDate newDate = date.plusMonths(months, dateResolver);
         return withDateTime(newDate, time);
     }
 
@@ -974,10 +998,10 @@ public final class LocalDateTime
      *
      * @param weeks  the weeks to add, may be negative
      * @return a new updated LocalDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
     public LocalDateTime plusWeeks(int weeks) {
-        LocalDate newDate = date.plusDays(weeks * 7);
+        LocalDate newDate = date.plusWeeks(weeks);
         return withDateTime(newDate, time);
     }
 
@@ -994,8 +1018,9 @@ public final class LocalDateTime
      *
      * @param days  the days to add, may be negative
      * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
      */
-    public LocalDateTime plusDays(int days) {
+    public LocalDateTime plusDays(long days) {
         LocalDate newDate = date.plusDays(days);
         return withDateTime(newDate, time);
     }

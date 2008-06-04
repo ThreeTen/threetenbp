@@ -1102,6 +1102,11 @@ public class TestLocalDateTime {
         check(t, 2006, 6, 15, 12, 30, 40, 987654321);
     }
 
+    public void test_withDate_dayChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, 7, 16);
+        check(t, 2007, 7, 16, 12, 30, 40, 987654321);
+    }
+
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDate_yearTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, 2, 29);
@@ -1540,6 +1545,367 @@ public class TestLocalDateTime {
         }
     }
 
+    //-----------------------------------------------------------------------
+    // plusMonths()
+    //-----------------------------------------------------------------------
+    public void test_plusMonths_int_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(1);
+        check(t, 2007, 8, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusMonths_int_overYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(25);
+        check(t, 2009, 8, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_negative() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-1);
+        check(t, 2007, 6, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_negativeAcrossYear() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-7);
+        check(t, 2006, 12, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_negativeOverYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-31);
+        check(t, 2004, 12, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_adjustDayFromLeapYear() {
+        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusMonths(12);
+        check(t, 2009, 2, 28, 0, 0, 0, 0);
+    }
+
+    public void test_plusMonths_int_adjustDayFromMonthLength() {
+        LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).plusMonths(1);
+        check(t, 2007, 4, 30, 0, 0, 0, 0);
+    }
+
+    public void test_plusMonths_int_invalidTooLarge() {
+        try {
+            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusMonths_int_invalidTooSmall() {
+        try {
+            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusMonths_int_DateResolver_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(1, DateResolvers.nextValid());
+        check(t, 2007, 8, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_DateResolver_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(0, DateResolvers.nextValid());
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusMonths_int_DateResolver_overYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(25, DateResolvers.nextValid());
+        check(t, 2009, 8, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_DateResolver_negative() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-1, DateResolvers.nextValid());
+        check(t, 2007, 6, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_DateResolver_negativeAcrossYear() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-7, DateResolvers.nextValid());
+        check(t, 2006, 12, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_DateResolver_negativeOverYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-31, DateResolvers.nextValid());
+        check(t, 2004, 12, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
+        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
+        check(t, 2009, 3, 1, 0, 0, 0, 0);
+    }
+
+    public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
+        LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
+        check(t, 2007, 5, 1, 0, 0, 0, 0);
+    }
+
+    public void test_plusMonths_int_DateResolver_invalidTooLarge() {
+        try {
+            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusMonths_int_DateResolver_invalidTooSmall() {
+        try {
+            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // plusWeeks()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="samplePlusWeeksSymmetry")
+    Object[][] provider_samplePlusWeeksSymmetry() {
+        return new Object[][] {
+            {LocalDateTime.dateMidnight(-1, 1, 1)},
+            {LocalDateTime.dateMidnight(-1, 2, 28)},
+            {LocalDateTime.dateMidnight(-1, 3, 1)},
+            {LocalDateTime.dateMidnight(-1, 12, 31)},
+            {LocalDateTime.dateMidnight(0, 1, 1)},
+            {LocalDateTime.dateMidnight(0, 2, 28)},
+            {LocalDateTime.dateMidnight(0, 2, 29)},
+            {LocalDateTime.dateMidnight(0, 3, 1)},
+            {LocalDateTime.dateMidnight(0, 12, 31)},
+            {LocalDateTime.dateMidnight(2007, 1, 1)},
+            {LocalDateTime.dateMidnight(2007, 2, 28)},
+            {LocalDateTime.dateMidnight(2007, 3, 1)},
+            {LocalDateTime.dateMidnight(2007, 12, 31)},
+            {LocalDateTime.dateMidnight(2008, 1, 1)},
+            {LocalDateTime.dateMidnight(2008, 2, 28)},
+            {LocalDateTime.dateMidnight(2008, 2, 29)},
+            {LocalDateTime.dateMidnight(2008, 3, 1)},
+            {LocalDateTime.dateMidnight(2008, 12, 31)},
+            {LocalDateTime.dateMidnight(2099, 1, 1)},
+            {LocalDateTime.dateMidnight(2099, 2, 28)},
+            {LocalDateTime.dateMidnight(2099, 3, 1)},
+            {LocalDateTime.dateMidnight(2099, 12, 31)},
+            {LocalDateTime.dateMidnight(2100, 1, 1)},
+            {LocalDateTime.dateMidnight(2100, 2, 28)},
+            {LocalDateTime.dateMidnight(2100, 3, 1)},
+            {LocalDateTime.dateMidnight(2100, 12, 31)},
+        };
+    }
+    
+    @Test(dataProvider="samplePlusWeeksSymmetry")
+    public void test_plusWeeks_symmetry(LocalDateTime reference) {
+        for (int weeks = 0; weeks < 365 * 8; weeks++) {
+            LocalDateTime t = reference.plusWeeks(weeks).plusWeeks(-weeks);
+            assertEquals(t, reference);
+
+            t = reference.plusWeeks(-weeks).plusWeeks(weeks);
+            assertEquals(t, reference);
+        }
+    }
+
+    public void test_plusWeeks_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(1);
+        check(t, 2007, 7, 22, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusWeeks_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusWeeks_overMonths() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(9);
+        check(t, 2007, 9, 16, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusWeeks_overYears() {
+        LocalDateTime t = LocalDateTime.dateTime(2006, 7, 16, 12, 30, 40, 987654321).plusWeeks(52);
+        assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusWeeks_overLeapYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1).plusWeeks(104);
+        check(t, 2008, 7, 12, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusWeeks_negative() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(-1);
+        check(t, 2007, 7, 8, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusWeeks_negativeAcrossYear() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(-28);
+        check(t, 2006, 12, 31, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusWeeks_negativeOverYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(-104);
+        check(t, 2005, 7, 17, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusWeeks_maximum() {
+        LocalDateTime t = LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 24).plusWeeks(1);
+        check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
+    }
+
+    public void test_plusWeeks_minimum() {
+        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
+        check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
+    }
+
+    public void test_plusWeeks_invalidTooLarge() {
+        try {
+            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
+                    Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusWeeks_invalidTooSmall() {
+        try {
+            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
+                    Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // plusDays()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="samplePlusDaysSymmetry")
+    Object[][] provider_samplePlusDaysSymmetry() {
+        return new Object[][] {
+            {LocalDateTime.dateMidnight(-1, 1, 1)},
+            {LocalDateTime.dateMidnight(-1, 2, 28)},
+            {LocalDateTime.dateMidnight(-1, 3, 1)},
+            {LocalDateTime.dateMidnight(-1, 12, 31)},
+            {LocalDateTime.dateMidnight(0, 1, 1)},
+            {LocalDateTime.dateMidnight(0, 2, 28)},
+            {LocalDateTime.dateMidnight(0, 2, 29)},
+            {LocalDateTime.dateMidnight(0, 3, 1)},
+            {LocalDateTime.dateMidnight(0, 12, 31)},
+            {LocalDateTime.dateMidnight(2007, 1, 1)},
+            {LocalDateTime.dateMidnight(2007, 2, 28)},
+            {LocalDateTime.dateMidnight(2007, 3, 1)},
+            {LocalDateTime.dateMidnight(2007, 12, 31)},
+            {LocalDateTime.dateMidnight(2008, 1, 1)},
+            {LocalDateTime.dateMidnight(2008, 2, 28)},
+            {LocalDateTime.dateMidnight(2008, 2, 29)},
+            {LocalDateTime.dateMidnight(2008, 3, 1)},
+            {LocalDateTime.dateMidnight(2008, 12, 31)},
+            {LocalDateTime.dateMidnight(2099, 1, 1)},
+            {LocalDateTime.dateMidnight(2099, 2, 28)},
+            {LocalDateTime.dateMidnight(2099, 3, 1)},
+            {LocalDateTime.dateMidnight(2099, 12, 31)},
+            {LocalDateTime.dateMidnight(2100, 1, 1)},
+            {LocalDateTime.dateMidnight(2100, 2, 28)},
+            {LocalDateTime.dateMidnight(2100, 3, 1)},
+            {LocalDateTime.dateMidnight(2100, 12, 31)},
+        };
+    }
+    
+    @Test(dataProvider="samplePlusDaysSymmetry")
+    public void test_plusDays_symmetry(LocalDateTime reference) {
+        for (int days = 0; days < 365 * 8; days++) {
+            LocalDateTime t = reference.plusDays(days).plusDays(-days);
+            assertEquals(t, reference);
+
+            t = reference.plusDays(-days).plusDays(days);
+            assertEquals(t, reference);
+        }
+    }
+
+    public void test_plusDays_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusDays(1);
+        check(t, 2007, 7, 16, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusDays_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusDays(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusDays_overMonths() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusDays(62);
+        check(t, 2007, 9, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusDays_overYears() {
+        LocalDateTime t = LocalDateTime.dateTime(2006, 7, 14, 12, 30, 40, 987654321).plusDays(366);
+        assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusDays_overLeapYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1).plusDays(365 + 366);
+        check(t, 2008, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusDays_negative() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusDays(-1);
+        check(t, 2007, 7, 14, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusDays_negativeAcrossYear() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusDays(-196);
+        check(t, 2006, 12, 31, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusDays_negativeOverYears() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusDays(-730);
+        check(t, 2005, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusDays_maximum() {
+        LocalDateTime t = LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 30).plusDays(1);
+        check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
+    }
+
+    public void test_plusDays_minimum() {
+        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 2).plusDays(-1);
+        check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
+    }
+
+    public void test_plusDays_invalidTooLarge() {
+        try {
+            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
+                    Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusDays_invalidTooSmall() {
+        try {
+            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
+                    Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_plusDays_overflowTooLarge() {
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_plusDays_overflowTooSmall() {
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+    }
+
 //    // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
 //    private LocalDate next(LocalDate date) {
 //        int newDayOfMonth = date.getDayOfMonth().getValue() + 1;
@@ -1589,375 +1955,6 @@ public class TestLocalDateTime {
 //
 //        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.date(1970, 1, 1));
 //        assertEquals(LocalDate.fromModifiedJulianDays(-678942), LocalDate.date(-1, 12, 31));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // plusMonths()
-//    //-----------------------------------------------------------------------
-//    public void test_plusMonths_int_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(1);
-//        assertEquals(t, LocalDate.date(2007, 8, 15));
-//    }
-//
-//    public void test_plusMonths_int_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(0);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    public void test_plusMonths_int_overYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(25);
-//        assertEquals(t, LocalDate.date(2009, 8, 15));
-//    }
-//
-//    public void test_plusMonths_int_negative() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-1);
-//        assertEquals(t, LocalDate.date(2007, 6, 15));
-//    }
-//
-//    public void test_plusMonths_int_negativeAcrossYear() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-7);
-//        assertEquals(t, LocalDate.date(2006, 12, 15));
-//    }
-//
-//    public void test_plusMonths_int_negativeOverYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-31);
-//        assertEquals(t, LocalDate.date(2004, 12, 15));
-//    }
-//
-//    public void test_plusMonths_int_adjustDayFromLeapYear() {
-//        LocalDate t = LocalDate.date(2008, 2, 29).plusMonths(12);
-//        LocalDate expected = LocalDate.date(2009, 2, 28);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusMonths_int_adjustDayFromMonthLength() {
-//        LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1);
-//        LocalDate expected = LocalDate.date(2007, 4, 30);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusMonths_int_invalidTooLarge() {
-//        try {
-//            LocalDate.date(Year.MAX_YEAR, 12, 1).plusMonths(1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    public void test_plusMonths_int_invalidTooSmall() {
-//        try {
-//            LocalDate.date(Year.MIN_YEAR, 1, 1).plusMonths(-1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(1, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2007, 8, 15));
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(0, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_overYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(25, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2009, 8, 15));
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_negative() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-1, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2007, 6, 15));
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_negativeAcrossYear() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-7, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2006, 12, 15));
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_negativeOverYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusMonths(-31, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2004, 12, 15));
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
-//        LocalDate t = LocalDate.date(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
-//        LocalDate expected = LocalDate.date(2009, 3, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
-//        LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
-//        LocalDate expected = LocalDate.date(2007, 5, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_invalidTooLarge() {
-//        try {
-//            LocalDate.date(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    public void test_plusMonths_int_DateResolver_invalidTooSmall() {
-//        try {
-//            LocalDate.date(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // plusWeeks()
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="samplePlusWeeksSymmetry")
-//    Object[][] provider_samplePlusWeeksSymmetry() {
-//        return new Object[][] {
-//            {LocalDate.date(-1, 1, 1)},
-//            {LocalDate.date(-1, 2, 28)},
-//            {LocalDate.date(-1, 3, 1)},
-//            {LocalDate.date(-1, 12, 31)},
-//            {LocalDate.date(0, 1, 1)},
-//            {LocalDate.date(0, 2, 28)},
-//            {LocalDate.date(0, 2, 29)},
-//            {LocalDate.date(0, 3, 1)},
-//            {LocalDate.date(0, 12, 31)},
-//            {LocalDate.date(2007, 1, 1)},
-//            {LocalDate.date(2007, 2, 28)},
-//            {LocalDate.date(2007, 3, 1)},
-//            {LocalDate.date(2007, 12, 31)},
-//            {LocalDate.date(2008, 1, 1)},
-//            {LocalDate.date(2008, 2, 28)},
-//            {LocalDate.date(2008, 2, 29)},
-//            {LocalDate.date(2008, 3, 1)},
-//            {LocalDate.date(2008, 12, 31)},
-//            {LocalDate.date(2099, 1, 1)},
-//            {LocalDate.date(2099, 2, 28)},
-//            {LocalDate.date(2099, 3, 1)},
-//            {LocalDate.date(2099, 12, 31)},
-//            {LocalDate.date(2100, 1, 1)},
-//            {LocalDate.date(2100, 2, 28)},
-//            {LocalDate.date(2100, 3, 1)},
-//            {LocalDate.date(2100, 12, 31)},
-//        };
-//    }
-//    
-//    @Test(dataProvider="samplePlusWeeksSymmetry")
-//    private void test_plusWeeks_symmetry(LocalDate reference) {
-//        for (int weeks = 0; weeks < 365 * 8; weeks++) {
-//            LocalDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
-//            assertEquals(t, reference);
-//
-//            t = reference.plusWeeks(-weeks).plusWeeks(weeks);
-//            assertEquals(t, reference);
-//        }
-//    }
-//
-//    public void test_plusWeeks_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(1);
-//        assertEquals(t, LocalDate.date(2007, 7, 22));
-//    }
-//
-//    public void test_plusWeeks_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(0);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    public void test_plusWeeks_overMonths() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(9);
-//        assertEquals(t, LocalDate.date(2007, 9, 16));
-//    }
-//
-//    public void test_plusWeeks_overYears() {
-//        LocalDate t = LocalDate.date(2006, 7, 16).plusWeeks(52);
-//        assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
-//    }
-//
-//    public void test_plusWeeks_overLeapYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1).plusWeeks(104);
-//        assertEquals(t, LocalDate.date(2008, 7, 12));
-//    }
-//
-//    public void test_plusWeeks_negative() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(-1);
-//        assertEquals(t, LocalDate.date(2007, 7, 8));
-//    }
-//
-//    public void test_plusWeeks_negativeAcrossYear() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(-28);
-//        assertEquals(t, LocalDate.date(2006, 12, 31));
-//    }
-//
-//    public void test_plusWeeks_negativeOverYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusWeeks(-104);
-//        assertEquals(t, LocalDate.date(2005, 7, 17));
-//    }
-//
-//    public void test_plusWeeks_maximum() {
-//        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 24).plusWeeks(1);
-//        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusWeeks_minimum() {
-//        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
-//        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusWeeks_invalidTooLarge() {
-//        try {
-//            LocalDate.date(Year.MAX_YEAR, 12, 25).plusWeeks(1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
-//                    Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    public void test_plusWeeks_invalidTooSmall() {
-//        try {
-//            LocalDate.date(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
-//                    Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // plusDays()
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="samplePlusDaysSymmetry")
-//    Object[][] provider_samplePlusDaysSymmetry() {
-//        return new Object[][] {
-//            {LocalDate.date(-1, 1, 1)},
-//            {LocalDate.date(-1, 2, 28)},
-//            {LocalDate.date(-1, 3, 1)},
-//            {LocalDate.date(-1, 12, 31)},
-//            {LocalDate.date(0, 1, 1)},
-//            {LocalDate.date(0, 2, 28)},
-//            {LocalDate.date(0, 2, 29)},
-//            {LocalDate.date(0, 3, 1)},
-//            {LocalDate.date(0, 12, 31)},
-//            {LocalDate.date(2007, 1, 1)},
-//            {LocalDate.date(2007, 2, 28)},
-//            {LocalDate.date(2007, 3, 1)},
-//            {LocalDate.date(2007, 12, 31)},
-//            {LocalDate.date(2008, 1, 1)},
-//            {LocalDate.date(2008, 2, 28)},
-//            {LocalDate.date(2008, 2, 29)},
-//            {LocalDate.date(2008, 3, 1)},
-//            {LocalDate.date(2008, 12, 31)},
-//            {LocalDate.date(2099, 1, 1)},
-//            {LocalDate.date(2099, 2, 28)},
-//            {LocalDate.date(2099, 3, 1)},
-//            {LocalDate.date(2099, 12, 31)},
-//            {LocalDate.date(2100, 1, 1)},
-//            {LocalDate.date(2100, 2, 28)},
-//            {LocalDate.date(2100, 3, 1)},
-//            {LocalDate.date(2100, 12, 31)},
-//        };
-//    }
-//    
-//    @Test(dataProvider="samplePlusDaysSymmetry")
-//    private void test_plusDays_symmetry(LocalDate reference) {
-//        for (int days = 0; days < 365 * 8; days++) {
-//            LocalDate t = reference.plusDays(days).plusDays(-days);
-//            assertEquals(t, reference);
-//
-//            t = reference.plusDays(-days).plusDays(days);
-//            assertEquals(t, reference);
-//        }
-//    }
-//
-//    public void test_plusDays_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusDays(1);
-//        assertEquals(t, LocalDate.date(2007, 7, 16));
-//    }
-//
-//    public void test_plusDays_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusDays(0);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    public void test_plusDays_overMonths() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusDays(62);
-//        assertEquals(t, LocalDate.date(2007, 9, 15));
-//    }
-//
-//    public void test_plusDays_overYears() {
-//        LocalDate t = LocalDate.date(2006, 7, 14).plusDays(366);
-//        assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
-//    }
-//
-//    public void test_plusDays_overLeapYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1).plusDays(365 + 366);
-//        assertEquals(t, LocalDate.date(2008, 7, 15));
-//    }
-//
-//    public void test_plusDays_negative() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusDays(-1);
-//        assertEquals(t, LocalDate.date(2007, 7, 14));
-//    }
-//
-//    public void test_plusDays_negativeAcrossYear() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusDays(-196);
-//        assertEquals(t, LocalDate.date(2006, 12, 31));
-//    }
-//
-//    public void test_plusDays_negativeOverYears() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusDays(-730);
-//        assertEquals(t, LocalDate.date(2005, 7, 15));
-//    }
-//
-//    public void test_plusDays_maximum() {
-//        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 30).plusDays(1);
-//        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusDays_minimum() {
-//        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 2).plusDays(-1);
-//        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusDays_invalidTooLarge() {
-//        try {
-//            LocalDate.date(Year.MAX_YEAR, 12, 31).plusDays(1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
-//                    Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    public void test_plusDays_invalidTooSmall() {
-//        try {
-//            LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(-1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
-//                    Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_plusDays_overflowTooLarge() {
-//        LocalDate.date(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_plusDays_overflowTooSmall() {
-//        LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
 //    }
 //
 //    //-----------------------------------------------------------------------
@@ -2204,7 +2201,7 @@ public class TestLocalDateTime {
 //    }
 //    
 //    @Test(dataProvider="sampleMinusWeeksSymmetry")
-//    private void test_minusWeeks_symmetry(LocalDate reference) {
+//    public void test_minusWeeks_symmetry(LocalDate reference) {
 //        for (int weeks = 0; weeks < 365 * 8; weeks++) {
 //            LocalDate t = reference.minusWeeks(weeks).minusWeeks(-weeks);
 //            assertEquals(t, reference);
@@ -2322,7 +2319,7 @@ public class TestLocalDateTime {
 //    }
 //    
 //    @Test(dataProvider="sampleMinusDaysSymmetry")
-//    private void test_minusDays_symmetry(LocalDate reference) {
+//    public void test_minusDays_symmetry(LocalDate reference) {
 //        for (int days = 0; days < 365 * 8; days++) {
 //            LocalDate t = reference.minusDays(days).minusDays(-days);
 //            assertEquals(t, reference);

@@ -623,7 +623,7 @@ public class TestLocalDate {
 
     public void test_plusMonths_int_noChange() {
         LocalDate t = TEST_2007_07_15.plusMonths(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_plusMonths_int_overYears() {
@@ -683,7 +683,7 @@ public class TestLocalDate {
 
     public void test_plusMonths_int_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.plusMonths(0, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_plusMonths_int_DateResolver_overYears() {
@@ -772,7 +772,7 @@ public class TestLocalDate {
     }
     
     @Test(dataProvider="samplePlusWeeksSymmetry")
-    private void test_plusWeeks_symmetry(LocalDate reference) {
+    public void test_plusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             LocalDate t = reference.plusWeeks(weeks).plusWeeks(-weeks);
             assertEquals(t, reference);
@@ -789,7 +789,7 @@ public class TestLocalDate {
 
     public void test_plusWeeks_noChange() {
         LocalDate t = TEST_2007_07_15.plusWeeks(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_plusWeeks_overMonths() {
@@ -890,7 +890,7 @@ public class TestLocalDate {
     }
     
     @Test(dataProvider="samplePlusDaysSymmetry")
-    private void test_plusDays_symmetry(LocalDate reference) {
+    public void test_plusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.plusDays(days).plusDays(-days);
             assertEquals(t, reference);
@@ -907,7 +907,7 @@ public class TestLocalDate {
 
     public void test_plusDays_noChange() {
         LocalDate t = TEST_2007_07_15.plusDays(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_plusDays_overMonths() {
@@ -1226,7 +1226,7 @@ public class TestLocalDate {
     }
     
     @Test(dataProvider="sampleMinusWeeksSymmetry")
-    private void test_minusWeeks_symmetry(LocalDate reference) {
+    public void test_minusWeeks_symmetry(LocalDate reference) {
         for (int weeks = 0; weeks < 365 * 8; weeks++) {
             LocalDate t = reference.minusWeeks(weeks).minusWeeks(-weeks);
             assertEquals(t, reference);
@@ -1344,7 +1344,7 @@ public class TestLocalDate {
     }
     
     @Test(dataProvider="sampleMinusDaysSymmetry")
-    private void test_minusDays_symmetry(LocalDate reference) {
+    public void test_minusDays_symmetry(LocalDate reference) {
         for (int days = 0; days < 365 * 8; days++) {
             LocalDate t = reference.minusDays(days).minusDays(-days);
             assertEquals(t, reference);
