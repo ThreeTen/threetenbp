@@ -71,6 +71,8 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestLocalDateTime {
+    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
+    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
     private LocalDateTime TEST_2007_07_15_12_30_40_987654321;
 
     @BeforeMethod
@@ -1085,6 +1087,21 @@ public class TestLocalDateTime {
         assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
+    public void test_withDate_sameYear() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, 6, 14);
+        check(t, 2007, 6, 14, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_sameMonth() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, 7, 14);
+        check(t, 2006, 7, 14, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_sameDay() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, 6, 15);
+        check(t, 2006, 6, 15, 12, 30, 40, 987654321);
+    }
+
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDate_yearTooLow() {
         TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, 2, 29);
@@ -1258,7 +1275,271 @@ public class TestLocalDateTime {
         TEST_2007_07_15_12_30_40_987654321.withNanoOfSecond(1000000000);
     }
 
-//    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // withTime()
+    //-----------------------------------------------------------------------
+    public void test_withTime_2ints() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(13, 40);
+        check(t, 2007, 7, 15, 13, 40, 0, 0);
+    }
+
+    public void test_withTime_2ints_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30));
+        LocalDateTime wt = t.withTime(12, 30);
+        assertSame(t, wt);
+    }
+
+    public void test_withTime_2ints_sameHour() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20);
+        check(t, 2007, 7, 15, 12, 20, 0, 0);
+    }
+
+    public void test_withTime_2ints_sameMinute() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30);
+        check(t, 2007, 7, 15, 11, 30, 0, 0);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_2ints_hourTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_2ints_hourTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(24, 30);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_2ints_minuteTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_2ints_minuteTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 60);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withTime_3ints() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(13, 40, 50);
+        check(t, 2007, 7, 15, 13, 40, 50, 0);
+    }
+
+    public void test_withTime_3ints_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        LocalDateTime wt = t.withTime(12, 30, 40);
+        assertSame(t, wt);
+    }
+
+    public void test_withTime_3ints_sameHour() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20, 30);
+        check(t, 2007, 7, 15, 12, 20, 30, 0);
+    }
+
+    public void test_withTime_3ints_sameMinute() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30, 30);
+        check(t, 2007, 7, 15, 11, 30, 30, 0);
+    }
+
+    public void test_withTime_3ints_sameSecond() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 40);
+        check(t, 2007, 7, 15, 11, 20, 40, 0);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_3ints_hourTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_3ints_hourTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(24, 30, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_3ints_minuteTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, -1, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_3ints_minuteTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 60, 40);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_3ints_secondTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_3ints_secondTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 60);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withTime_4ints() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(13, 40, 50, 987654322);
+        check(t, 2007, 7, 15, 13, 40, 50, 987654322);
+    }
+
+    public void test_withTime_4ints_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime wt = t.withTime(12, 30, 40, 987654321);
+        assertSame(t, wt);
+    }
+
+    public void test_withTime_4ints_sameHour() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20, 30, 987654320);
+        check(t, 2007, 7, 15, 12, 20, 30, 987654320);
+    }
+
+    public void test_withTime_4ints_sameMinute() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30, 30, 987654320);
+        check(t, 2007, 7, 15, 11, 30, 30, 987654320);
+    }
+
+    public void test_withTime_4ints_sameSecond() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 40, 987654320);
+        check(t, 2007, 7, 15, 11, 20, 40, 987654320);
+    }
+
+    public void test_withTime_4ints_sameNano() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 30, 987654321);
+        check(t, 2007, 7, 15, 11, 20, 30, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_hourTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(-1, 30, 40, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_hourTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(24, 30, 40, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_minuteTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, -1, 40, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_minuteTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 60, 40, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_secondTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, -1, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_secondTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 60, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_nanoTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 40, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withTime_4ints_nanoTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withTime(12, 30, 40, 1000000000);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusYears()
+    //-----------------------------------------------------------------------
+    public void test_plusYears_int_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(1);
+        check(t, 2008, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusYears_int_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(0);
+        assertSame(TEST_2007_07_15_12_30_40_987654321, t);
+    }
+
+    public void test_plusYears_int_negative() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1);
+        check(t, 2006, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusYears_int_adjustDay() {
+        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusYears(1);
+        check(t, 2009, 2, 28, 0, 0, 0, 0);
+    }
+
+    public void test_plusYears_int_invalidTooLarge() {
+        try {
+            LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
+            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
+                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+        }
+    }
+
+    public void test_plusYears_int_invalidTooSmall() {
+        try {
+            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
+            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
+                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+        }
+    }
+
+    public void test_plusYears_int_DateResolver_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(1, DateResolvers.nextValid());
+        check(t, 2008, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusYears_int_DateResolver_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(0, DateResolvers.nextValid());
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusYears_int_DateResolver_negative() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1, DateResolvers.nextValid());
+        check(t, 2006, 7, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_plusYears_int_DateResolver_adjustDay() {
+        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
+        check(t, 2009, 3, 1, 0, 0, 0, 0);
+    }
+
+    public void test_plusYears_int_DateResolver_invalidTooLarge() {
+        try {
+            LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
+    public void test_plusYears_int_DateResolver_invalidTooSmall() {
+        try {
+            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
+            fail();
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
+        }
+    }
+
 //    // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
 //    private LocalDate next(LocalDate date) {
 //        int newDayOfMonth = date.getDayOfMonth().getValue() + 1;
@@ -1308,91 +1589,6 @@ public class TestLocalDateTime {
 //
 //        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.date(1970, 1, 1));
 //        assertEquals(LocalDate.fromModifiedJulianDays(-678942), LocalDate.date(-1, 12, 31));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // plusYears()
-//    //-----------------------------------------------------------------------
-//    public void test_plusYears_int_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(1);
-//        assertEquals(t, LocalDate.date(2008, 7, 15));
-//    }
-//
-//    public void test_plusYears_int_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(0);
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    public void test_plusYears_int_negative() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1);
-//        assertEquals(t, LocalDate.date(2006, 7, 15));
-//    }
-//
-//    public void test_plusYears_int_adjustDay() {
-//        LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1);
-//        LocalDate expected = LocalDate.date(2009, 2, 28);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusYears_int_invalidTooLarge() {
-//        try {
-//            LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
-//            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-//                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-//        }
-//    }
-//
-//    public void test_plusYears_int_invalidTooSmall() {
-//        try {
-//            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
-//            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-//                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-//        }
-//    }
-//
-//    public void test_plusYears_int_DateResolver_normal() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(1, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2008, 7, 15));
-//    }
-//
-//    public void test_plusYears_int_DateResolver_noChange() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(0, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2007, 7, 15));
-//    }
-//
-//    public void test_plusYears_int_DateResolver_negative() {
-//        LocalDate t = TEST_2007_07_15_12_30_40_987654321.plusYears(-1, DateResolvers.nextValid());
-//        assertEquals(t, LocalDate.date(2006, 7, 15));
-//    }
-//
-//    public void test_plusYears_int_DateResolver_adjustDay() {
-//        LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
-//        LocalDate expected = LocalDate.date(2009, 3, 1);
-//        assertEquals(t, expected);
-//    }
-//
-//    public void test_plusYears_int_DateResolver_invalidTooLarge() {
-//        try {
-//            LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-//        }
-//    }
-//
-//    public void test_plusYears_int_DateResolver_invalidTooSmall() {
-//        try {
-//            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
-//            fail();
-//        } catch (IllegalCalendarFieldValueException ex) {
-//            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-//        }
 //    }
 //
 //    //-----------------------------------------------------------------------

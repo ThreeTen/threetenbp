@@ -538,7 +538,7 @@ public class TestLocalDate {
 
     public void test_plusYears_int_noChange() {
         LocalDate t = TEST_2007_07_15.plusYears(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_plusYears_int_negative() {
@@ -581,7 +581,7 @@ public class TestLocalDate {
 
     public void test_plusYears_int_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.plusYears(0, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_plusYears_int_DateResolver_negative() {

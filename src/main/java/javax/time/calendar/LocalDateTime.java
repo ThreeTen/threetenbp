@@ -853,7 +853,7 @@ public final class LocalDateTime
                 secondOfMinute == getSecondOfMinute().getValue() && nanoOfSecond == getNanoOfSecond().getValue()) {
             return this;
         }
-        LocalTime newTime = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        LocalTime newTime = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return withDateTime(date, newTime);
     }
 
@@ -899,15 +899,39 @@ public final class LocalDateTime
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
+     * This method does the same as <code>plusYears(years, DateResolvers.previousValid())</code>.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
      * @return a new updated LocalDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
      * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
     public LocalDateTime plusYears(int years) {
         LocalDate newDate = date.plusYears(years);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the specified period in years added.
+     * <p>
+     * This method add the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Add the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to add, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDate, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDateTime plusYears(int years, DateResolver dateResolver) {
+        LocalDate newDate = date.plusYears(years, dateResolver);
         return withDateTime(newDate, time);
     }
 
