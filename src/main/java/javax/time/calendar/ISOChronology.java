@@ -703,22 +703,20 @@ public final class ISOChronology implements Serializable {
         @Override
         protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
             int moq = dateTime.getValue(this);
-            if (dateTime.getDate() == null) {
-                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
-                map.remove(this);
-                Integer qoyObj = map.remove(ISOChronology.INSTANCE.quarterOfYear());
-                if (qoyObj != null) {
-                    int qoy = dateTime.getValue(ISOChronology.INSTANCE.quarterOfYear());  // cross-check value
-                    int moy = (qoy - 1) * 3 + moq;
-                    Integer existingMoy = map.get(MonthOfYear.rule());
-                    if (existingMoy != null && existingMoy != moy) {
-                        throw new IllegalCalendarFieldValueException(
-                                "Merge of Month of Quarter and Quarter of Year created value " +
-                                moy + " that does not match the existing Month of Year value " + existingMoy);
-                    }
-                    map.put(MonthOfYear.rule(), moy);
-                    return dateTime.withFieldValueMap(map);
+            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+            map.remove(this);
+            Integer qoyObj = map.remove(ISOChronology.INSTANCE.quarterOfYear());
+            if (qoyObj != null) {
+                int qoy = dateTime.getValue(ISOChronology.INSTANCE.quarterOfYear());  // cross-check value
+                int moy = (qoy - 1) * 3 + moq;
+                Integer existingMoy = map.get(MonthOfYear.rule());
+                if (existingMoy != null && existingMoy != moy) {
+                    throw new IllegalCalendarFieldValueException(
+                            "Merge of Month of Quarter and Quarter of Year created value " +
+                            moy + " that does not match the existing Month of Year value " + existingMoy);
                 }
+                map.put(MonthOfYear.rule(), moy);
+                return dateTime.withFieldValueMap(map);
             }
             return dateTime;
         }
