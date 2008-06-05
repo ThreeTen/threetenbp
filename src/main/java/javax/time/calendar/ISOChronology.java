@@ -368,41 +368,41 @@ public final class ISOChronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Gets the rule for the hour of day field.
-//     *
-//     * @return the rule for the hour of day field, never null
-//     */
-//    public TimeFieldRule hourOfDay() {
-//        return null;
-//    }
-//
-//    /**
-//     * Gets the rule for the minute of hour field.
-//     *
-//     * @return the rule for the minute of hour field, never null
-//     */
-//    public TimeFieldRule minuteOfHour() {
-//        return null;
-//    }
-//
-//    /**
-//     * Gets the rule for the second of minute field.
-//     *
-//     * @return the rule for the second of minute field, never null
-//     */
-//    public TimeFieldRule secondOfMinute() {
-//        return null;
-//    }
-//
-//    /**
-//     * Gets the rule for the nano of second field.
-//     *
-//     * @return the rule for the nano of second field, never null
-//     */
-//    public TimeFieldRule nanoOfSecond() {
-//        return null;
-//    }
+    /**
+     * Gets the rule for the hour of day field.
+     *
+     * @return the rule for the hour of day field, never null
+     */
+    public DateTimeFieldRule hourOfDay() {
+        return HourOfDayRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the minute of hour field.
+     *
+     * @return the rule for the minute of hour field, never null
+     */
+    public DateTimeFieldRule minuteOfHour() {
+        return MinuteOfHourRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the second of minute field.
+     *
+     * @return the rule for the second of minute field, never null
+     */
+    public DateTimeFieldRule secondOfMinute() {
+        return SecondOfMinuteRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the nano of second field.
+     *
+     * @return the rule for the nano of second field, never null
+     */
+    public DateTimeFieldRule nanoOfSecond() {
+        return NanoOfSecondRule.INSTANCE;
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -706,9 +706,9 @@ public final class ISOChronology implements Serializable {
             if (dateTime.getDate() == null) {
                 Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
                 map.remove(this);
-                Integer qoy = map.remove(ISOChronology.INSTANCE.quarterOfYear());
-                if (qoy != null) {
-                    checkValue(qoy, dateTime.getDate());
+                Integer qoyObj = map.remove(ISOChronology.INSTANCE.quarterOfYear());
+                if (qoyObj != null) {
+                    int qoy = dateTime.getValue(ISOChronology.INSTANCE.quarterOfYear());  // cross-check value
                     int moy = (qoy - 1) * 3 + moq;
                     Integer existingMoy = map.get(MonthOfYear.rule());
                     if (existingMoy != null && existingMoy != moy) {
@@ -749,6 +749,114 @@ public final class ISOChronology implements Serializable {
         @Override
         protected Integer extractValue(FlexiDateTime dateTime) {
             return dateTime.getDate() != null ? WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue() : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class HourOfDayRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new HourOfDayRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private HourOfDayRule() {
+            super("HourOfDay", Periods.HOURS, Periods.DAYS, 0, 23);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getValue() : null;
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            int hour = dateTime.getValue(this);
+            if (dateTime.getTime() == null) {
+                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+                map.remove(this);
+                Integer minute = map.remove(ISOChronology.INSTANCE.minuteOfHour());
+                Integer second = map.remove(ISOChronology.INSTANCE.secondOfMinute());
+                Integer nano = map.remove(ISOChronology.INSTANCE.nanoOfSecond());
+                LocalTime time = LocalTime.time(hour, minute == null ? 0 : minute,
+                        second == null ? 0 : second, nano == null ? 0 : nano);
+                return dateTime.withFieldValueMap(map).withTime(time);
+            }
+            return dateTime;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class MinuteOfHourRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new MinuteOfHourRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private MinuteOfHourRule() {
+            super("MinuteOfHour", Periods.MINUTES, Periods.HOURS, 0, 59);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getTime() != null ? dateTime.getTime().getMinuteOfHour().getValue() : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class SecondOfMinuteRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new SecondOfMinuteRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private SecondOfMinuteRule() {
+            super("SecondOfMinute", Periods.SECONDS, Periods.MINUTES, 0, 59);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getTime() != null ? dateTime.getTime().getSecondOfMinute().getValue() : null;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class NanoOfSecondRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new NanoOfSecondRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private NanoOfSecondRule() {
+            super("NanoOfSecond", Periods.NANOS, Periods.SECONDS, 0, 999999999);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected Integer extractValue(FlexiDateTime dateTime) {
+            return dateTime.getTime() != null ? dateTime.getTime().getNanoOfSecond().getValue() : null;
         }
     }
 
