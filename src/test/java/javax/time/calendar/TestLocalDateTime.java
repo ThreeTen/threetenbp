@@ -42,6 +42,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import java.util.Iterator;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -2383,286 +2384,403 @@ public class TestLocalDateTime {
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(MeridiemOfDay.AM));
     }
 
-//    // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
-//    private LocalDate next(LocalDate date) {
-//        int newDayOfMonth = date.getDayOfMonth().getValue() + 1;
-//
-//        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(date.getYear())) {
-//            return date.withDayOfMonth(newDayOfMonth);
-//        }
-//
-//        date = date.withDayOfMonth(1);
-//
-//        if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-//            date = date.with(date.getYear().next());
-//        }
-//
-//        return date.with(date.getMonthOfYear().next());
-//    }
-//
-//    private LocalDate previous(LocalDate date) {
-//        int newDayOfMonth = date.getDayOfMonth().getValue() - 1;
-//
-//        if (newDayOfMonth > 0) {
-//            return date.withDayOfMonth(newDayOfMonth);
-//        }
-//
-//        date = date.with(date.getMonthOfYear().previous());
-//
-//        if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
-//            date = date.with(date.getYear().previous());
-//        }
-//
-//        return date.with(date.getMonthOfYear().getLastDayOfMonth(date.getYear()));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void factory_fromMJDays() {
-//        LocalDate test = LocalDate.date(0, 1, 1);
-//        for (int i = -678941; i < 700000; i++) {
-//            assertEquals(LocalDate.fromModifiedJulianDays(i), test);
-//            test = next(test);
-//        }
-//
-//        test = LocalDate.date(0, 1, 1);
-//        for (int i = -678941; i > -2000000; i--) {
-//            assertEquals(LocalDate.fromModifiedJulianDays(i), test);
-//            test = previous(test);
-//        }
-//
-//        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.date(1970, 1, 1));
-//        assertEquals(LocalDate.fromModifiedJulianDays(-678942), LocalDate.date(-1, 12, 31));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // toLocalDate()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_toLocalDate(int year, int month, int day) {
-//        LocalDate t = LocalDate.date(year, month, day);
-//        assertSame(t.toLocalDate(), t);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // toFlexiDateTime()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_toFlexiDateTime(int year, int month, int day) {
-//        LocalDate t = LocalDate.date(year, month, day);
-//        assertEquals(t.toFlexiDateTime(), new FlexiDateTime(t, null, null, null));
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // toModifiedJulianDays()
-//    //-----------------------------------------------------------------------
-//    public void test_toMJDays() {
-//        LocalDate test = LocalDate.date(0, 1, 1);
-//        for (int i = -678941; i < 700000; i++) {
-//            assertEquals(test.toModifiedJulianDays(), i);
-//            test = next(test);
-//        }
-//        
-//        test = LocalDate.date(0, 1, 1);
-//        for (int i = -678941; i > -2000000; i--) {
-//            assertEquals(test.toModifiedJulianDays(), i);
-//            test = previous(test);
-//        }
-//
-//        assertEquals(LocalDate.date(1970, 1, 1).toModifiedJulianDays(), 40587);
-//        assertEquals(LocalDate.date(-1, 12, 31).toModifiedJulianDays(), -678942);
-//    }
-//
-//    public void test_toMJDays_fromMJDays_simmetry() {
-//        LocalDate test = LocalDate.date(0, 1, 1);
-//        for (int i = -678941; i < 700000; i++) {
-//            assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
-//            test = next(test);
-//        }
-//
-//        test = LocalDate.date(0, 1, 1);
-//        for (int i = -678941; i > -2000000; i--) {
-//            assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
-//            test = previous(test);
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // compareTo()
-//    //-----------------------------------------------------------------------
-//    public void test_comparisons() {
-//        doTest_comparisons_LocalDate(
-//            LocalDate.date(Year.MIN_YEAR, 1, 1),
-//            LocalDate.date(Year.MIN_YEAR, 12, 31),
-//            LocalDate.date(-1, 1, 1),
-//            LocalDate.date(-1, 12, 31),
-//            LocalDate.date(0, 1, 1),
-//            LocalDate.date(0, 12, 31),
-//            LocalDate.date(1, 1, 1),
-//            LocalDate.date(1, 12, 31),
-//            LocalDate.date(2006, 1, 1),
-//            LocalDate.date(2006, 12, 31),
-//            LocalDate.date(2007, 1, 1),
-//            LocalDate.date(2007, 12, 31),
-//            LocalDate.date(2008, 1, 1),
-//            LocalDate.date(2008, 2, 29),
-//            LocalDate.date(2008, 12, 31),
-//            LocalDate.date(Year.MAX_YEAR, 1, 1),
-//            LocalDate.date(Year.MAX_YEAR, 12, 31)
-//        );
-//    }
-//
-//    void doTest_comparisons_LocalDate(LocalDate... LocalDates) {
-//        for (int i = 0; i < LocalDates.length; i++) {
-//            LocalDate a = LocalDates[i];
-//            for (int j = 0; j < LocalDates.length; j++) {
-//                LocalDate b = LocalDates[j];
-//                if (i < j) {
-//                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
-//                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
-//                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-//                    assertEquals(a.equals(b), false, a + " <=> " + b);
-//                } else if (i > j) {
-//                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
-//                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-//                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
-//                    assertEquals(a.equals(b), false, a + " <=> " + b);
-//                } else {
-//                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
-//                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
-//                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
-//                    assertEquals(a.equals(b), true, a + " <=> " + b);
-//                }
-//            }
-//        }
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_compareTo_ObjectNull() {
-//        TEST_2007_07_15_12_30_40_987654321.compareTo(null);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_isBefore_ObjectNull() {
-//        TEST_2007_07_15_12_30_40_987654321.isBefore(null);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_isAfter_ObjectNull() {
-//        TEST_2007_07_15_12_30_40_987654321.isAfter(null);
-//    }
-//
-//    @Test(expectedExceptions=ClassCastException.class)
-//    @SuppressWarnings("unchecked")
-//    public void compareToNonLocalDate() {
-//       Comparable c = TEST_2007_07_15_12_30_40_987654321;
-//       c.compareTo(new Object());
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // equals()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_true(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y, m, d);
-//        assertEquals(a.equals(b), true);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_year_differs(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y + 1, m, d);
-//        assertEquals(a.equals(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_month_differs(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y, m + 1, d);
-//        assertEquals(a.equals(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_day_differs(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y, m, d + 1);
-//        assertEquals(a.equals(b), false);
-//    }
-//
-//    public void test_equals_itself_true() {
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.equals(TEST_2007_07_15_12_30_40_987654321), true);
-//    }
-//
-//    public void test_equals_string_false() {
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.equals("2007-07-15"), false);
-//    }
-//
-//    public void test_equals_null_false() {
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.equals(null), false);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // hashCode()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_hashCode(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        assertEquals(a.hashCode(), a.hashCode());
-//        LocalDate b = LocalDate.date(y, m, d);
-//        assertEquals(a.hashCode(), b.hashCode());
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // toString()
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="sampleToString")
-//    Object[][] provider_sampleToString() {
-//        return new Object[][] {
-//            {2008, 7, 5, "2008-07-05"},
-//            {2007, 12, 31, "2007-12-31"},
-//            {999, 12, 31, "0999-12-31"},
-//            {-1, 1, 2, "-0001-01-02"},
-//        };
-//    }
-//
-//    @Test(dataProvider="sampleToString")
-//    public void test_toString(int y, int m, int d, String expected) {
-//        LocalDate t = LocalDate.date(y, m, d);
-//        String str = t.toString();
-//        assertEquals(str, expected);
-//    }
-//    
-//    //-----------------------------------------------------------------------
-//    // matchesDate()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_matchesDate_true(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y, m, d);
-//        assertEquals(a.matchesDate(b), true);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_matchesDate_false_year_differs(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y + 1, m, d);
-//        assertEquals(a.matchesDate(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_matchesDate_false_month_differs(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y, m + 1, d);
-//        assertEquals(a.matchesDate(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_matchesDate_false_day_differs(int y, int m, int d) {
-//        LocalDate a = LocalDate.date(y, m, d);
-//        LocalDate b = LocalDate.date(y, m, d + 1);
-//        assertEquals(a.matchesDate(b), false);
-//    }
-//
-//    public void test_matchesDate_itself_true() {
-//        assertEquals(TEST_2007_07_15_12_30_40_987654321.matchesDate(TEST_2007_07_15_12_30_40_987654321), true);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_matchesDate_null() {
-//        TEST_2007_07_15_12_30_40_987654321.matchesDate(null);
-//    }
+    //-----------------------------------------------------------------------
+    // toLocalDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toLocalDate(int year, int month, int day) {
+        LocalDate d = LocalDate.date(year, month, day);
+        LocalDateTime dt = LocalDateTime.dateMidnight(d);
+        assertSame(dt.toLocalDate(), d);
+    }
+
+    //-----------------------------------------------------------------------
+    // toLocalTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_toLocalTime(int h, int m, int s, int ns) {
+        LocalTime t = LocalTime.time(h, m, s, ns);
+        LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
+        assertSame(dt.toLocalTime(), t);
+    }
+
+    //-----------------------------------------------------------------------
+    // toFlexiDateTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toFlexiDateTime(int year, int month, int day) {
+        LocalDate d = LocalDate.date(year, month, day);
+        LocalDateTime dt = LocalDateTime.dateMidnight(d);
+        assertEquals(dt.toFlexiDateTime(), new FlexiDateTime(d, LocalTime.MIDNIGHT, null, null));
+    }
+
+    @Test(dataProvider="sampleTimes")
+    public void test_toFlexiDateTime(int h, int m, int s, int ns) {
+        LocalTime t = LocalTime.time(h, m, s, ns);
+        LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
+        assertEquals(dt.toFlexiDateTime(), new FlexiDateTime(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), t, null, null));
+    }
+
+    //-----------------------------------------------------------------------
+    // compareTo()
+    //-----------------------------------------------------------------------
+    public void test_comparisons() {
+        test_comparisons_LocalDateTime(
+            LocalDate.date(Year.MIN_YEAR, 1, 1),
+            LocalDate.date(Year.MIN_YEAR, 12, 31),
+            LocalDate.date(-1, 1, 1),
+            LocalDate.date(-1, 12, 31),
+            LocalDate.date(0, 1, 1),
+            LocalDate.date(0, 12, 31),
+            LocalDate.date(1, 1, 1),
+            LocalDate.date(1, 12, 31),
+            LocalDate.date(2008, 1, 1),
+            LocalDate.date(2008, 2, 29),
+            LocalDate.date(2008, 12, 31),
+            LocalDate.date(Year.MAX_YEAR, 1, 1),
+            LocalDate.date(Year.MAX_YEAR, 12, 31)
+        );
+    }
+
+    void test_comparisons_LocalDateTime(LocalDate... localDates) {
+        test_comparisons_LocalDateTime(
+            localDates,
+            LocalTime.MIDNIGHT,
+            LocalTime.time(0, 0, 0, 999999999),
+            LocalTime.time(0, 0, 59, 0),
+            LocalTime.time(0, 0, 59, 999999999),
+            LocalTime.time(0, 59, 0, 0),
+            LocalTime.time(0, 59, 59, 999999999),
+            LocalTime.MIDDAY,
+            LocalTime.time(12, 0, 0, 999999999),
+            LocalTime.time(12, 0, 59, 0),
+            LocalTime.time(12, 0, 59, 999999999),
+            LocalTime.time(12, 59, 0, 0),
+            LocalTime.time(12, 59, 59, 999999999),
+            LocalTime.time(23, 0, 0, 0),
+            LocalTime.time(23, 0, 0, 999999999),
+            LocalTime.time(23, 0, 59, 0),
+            LocalTime.time(23, 0, 59, 999999999),
+            LocalTime.time(23, 59, 0, 0),
+            LocalTime.time(23, 59, 59, 999999999)
+        );
+    }
+
+    void test_comparisons_LocalDateTime(LocalDate[] localDates, LocalTime... localTimes) {
+        LocalDateTime[] localDateTimes = new LocalDateTime[localDates.length * localTimes.length];
+        int i = 0;
+
+        for (LocalDate localDate : localDates) {
+            for (LocalTime localTime : localTimes) {
+                localDateTimes[i++] = LocalDateTime.dateTime(localDate, localTime);
+            }
+        }
+
+        doTest_comparisons_LocalDateTime(localDateTimes);
+    }
+
+    void doTest_comparisons_LocalDateTime(LocalDateTime[] localDateTimes) {
+        for (int i = 0; i < localDateTimes.length; i++) {
+            LocalDateTime a = localDateTimes[i];
+            for (int j = 0; j < localDateTimes.length; j++) {
+                LocalDateTime b = localDateTimes[j];
+                if (i < j) {
+                    assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), true, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else if (i > j) {
+                    assertTrue(a.compareTo(b) > 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), true, a + " <=> " + b);
+                    assertEquals(a.equals(b), false, a + " <=> " + b);
+                } else {
+                    assertEquals(a.compareTo(b), 0, a + " <=> " + b);
+                    assertEquals(a.isBefore(b), false, a + " <=> " + b);
+                    assertEquals(a.isAfter(b), false, a + " <=> " + b);
+                    assertEquals(a.equals(b), true, a + " <=> " + b);
+                }
+            }
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_compareTo_ObjectNull() {
+        TEST_2007_07_15_12_30_40_987654321.compareTo(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isBefore_ObjectNull() {
+        TEST_2007_07_15_12_30_40_987654321.isBefore(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isAfter_ObjectNull() {
+        TEST_2007_07_15_12_30_40_987654321.isAfter(null);
+    }
+
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonLocalDate() {
+       Comparable c = TEST_2007_07_15_12_30_40_987654321;
+       c.compareTo(new Object());
+    }
+
+    //-----------------------------------------------------------------------
+    // equals()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sampleDateTimes") 
+    Iterator<Object[]> provider_sampleDateTimes() {
+        return new Iterator<Object[]>() {
+            Object[][] sampleDates = provider_sampleDates();
+            Object[][] sampleTimes = provider_sampleTimes();
+            int datesIndex = 0;
+            int timesIndex = 0;
+
+            public boolean hasNext() {
+                return datesIndex < sampleDates.length;
+            }
+
+            public Object[] next() {
+                Object[] sampleDate = sampleDates[datesIndex];
+                Object[] sampleTime = sampleTimes[timesIndex];
+
+                Object[] ret = new Object[sampleDate.length + sampleTime.length];
+
+                System.arraycopy(sampleDate, 0, ret, 0, sampleDate.length);
+                System.arraycopy(sampleTime, 0, ret, sampleDate.length, sampleTime.length);
+
+                if (++timesIndex == sampleTimes.length) {
+                    datesIndex++;
+                    timesIndex = 0;
+                }
+                
+                return ret;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_true(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        assertTrue(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_year_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y + 1, m, d, h, mi, s, n);
+        assertFalse(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_month_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m + 1, d, h, mi, s, n);
+        assertFalse(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_day_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d + 1, h, mi, s, n);
+        assertFalse(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_hour_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h + 1, mi, s, n);
+        assertFalse(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_minute_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi + 1, s, n);
+        assertFalse(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_second_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s + 1, n);
+        assertFalse(a.equals(b));
+    }
+
+    @Test(dataProvider="sampleDateTimes")
+    public void test_equals_false_nano_differs(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s, n + 1);
+        assertFalse(a.equals(b));
+    }
+    
+    public void test_equals_itself_true() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.equals(TEST_2007_07_15_12_30_40_987654321), true);
+    }
+
+    public void test_equals_string_false() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.equals("2007-07-15T12:30:40.987654321"), false);
+    }
+
+    public void test_equals_null_false() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.equals(null), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // hashCode()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDateTimes")
+    public void test_hashCode(int y, int m, int d, int h, int mi, int s, int n) {
+        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        assertEquals(a.hashCode(), a.hashCode());
+        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    //-----------------------------------------------------------------------
+    // toString()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sampleToString")
+    Object[][] provider_sampleToString() {
+        return new Object[][] {
+            {2008, 7, 5, 2, 1, 0, 0, "2008-07-05T02:01"},
+            {2007, 12, 31, 23, 59, 1, 0, "2007-12-31T23:59:01"},
+            {999, 12, 31, 23, 59, 59, 990000000, "0999-12-31T23:59:59.990"},
+            {-1, 1, 2, 23, 59, 59, 999990000, "-0001-01-02T23:59:59.999990"},
+            {-2008, 1, 2, 23, 59, 59, 999999990, "-2008-01-02T23:59:59.999999990"},
+        };
+    }
+
+    @Test(dataProvider="sampleToString")
+    public void test_toString(int y, int m, int d, int h, int mi, int s, int n, String expected) {
+        LocalDateTime t = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        String str = t.toString();
+        assertEquals(str, expected);
+    }
+    
+    //-----------------------------------------------------------------------
+    // matchesDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_true(int y, int m, int d) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withDate(y, m, d);
+        LocalDate b = LocalDate.date(y, m, d);
+        assertEquals(a.matchesDate(b), true);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_year_differs(int y, int m, int d) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withDate(y, m, d);
+        LocalDate b = LocalDate.date(y + 1, m, d);
+        assertEquals(a.matchesDate(b), false);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_month_differs(int y, int m, int d) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withDate(y, m, d);
+        LocalDate b = LocalDate.date(y, m + 1, d);
+        assertEquals(a.matchesDate(b), false);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_day_differs(int y, int m, int d) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withDate(y, m, d);
+        LocalDate b = LocalDate.date(y, m, d + 1);
+        assertEquals(a.matchesDate(b), false);
+    }
+
+    public void test_matchesDate_itself_true() {
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.matchesDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesDate_null() {
+        TEST_2007_07_15_12_30_40_987654321.matchesDate(null);
+    }
+    
+    //-----------------------------------------------------------------------
+    // matchesTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_true(int h, int m, int s, int n) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m, s, n);
+        assertEquals(a.matchesTime(b), true);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_hour_differs(int h, int m, int s, int n) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
+        LocalTime b = LocalTime.time(h + 1, m, s, n);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_minute_differs(int h, int m, int s, int n) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m + 1, s, n);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_second_differs(int h, int m, int s, int n) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m, s + 1, n);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_nano_differs(int h, int m, int s, int n) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
+        LocalTime b = LocalTime.time(h, m, s, n + 1);
+        assertEquals(a.matchesTime(b), false);
+    }
+
+    public void test_matchesTime_itself_true() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.matchesTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), true);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesTime_null() {
+        TEST_2007_07_15_12_30_40_987654321.matchesTime(null);
+    }
+    
+    //-----------------------------------------------------------------------
+    // adjustDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_adjustDate(int y, int m, int d) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withDate(y, m, d);
+        assertSame(a.adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), a.toLocalDate());
+        assertSame(TEST_2007_07_15_12_30_40_987654321.adjustDate(a.toLocalDate()), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
+    }
+
+    public void test_adjustDate_same() {
+        assertSame(LocalDate.date(2007, 7, 15).adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), 
+                TEST_2007_07_15_12_30_40_987654321.toLocalDate());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustDate_null() {
+        TEST_2007_07_15_12_30_40_987654321.adjustDate(null);
+    }
+    
+    //-----------------------------------------------------------------------
+    // adjustTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_adjustTime(int h, int m, int s, int n) {
+        LocalDateTime a = TEST_2007_07_15_12_30_40_987654321.withTime(h, m, s, n);
+        assertSame(a.adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), a.toLocalTime());
+        assertSame(TEST_2007_07_15_12_30_40_987654321.adjustTime(a.toLocalTime()), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
+    }
+
+    public void test_adjustTime_same() {
+        assertSame(LocalTime.time(12, 30, 40, 987654321).adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), 
+                TEST_2007_07_15_12_30_40_987654321.toLocalTime());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustTime_null() {
+        TEST_2007_07_15_12_30_40_987654321.adjustTime(null);
+    }
 }

@@ -1531,11 +1531,11 @@ public class TestLocalDate {
         );
     }
 
-    void doTest_comparisons_LocalDate(LocalDate... LocalDates) {
-        for (int i = 0; i < LocalDates.length; i++) {
-            LocalDate a = LocalDates[i];
-            for (int j = 0; j < LocalDates.length; j++) {
-                LocalDate b = LocalDates[j];
+    void doTest_comparisons_LocalDate(LocalDate... localDates) {
+        for (int i = 0; i < localDates.length; i++) {
+            LocalDate a = localDates[i];
+            for (int j = 0; j < localDates.length; j++) {
+                LocalDate b = localDates[j];
                 if (i < j) {
                     assertTrue(a.compareTo(b) < 0, a + " <=> " + b);
                     assertEquals(a.isBefore(b), true, a + " <=> " + b);
