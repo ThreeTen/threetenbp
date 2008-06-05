@@ -992,7 +992,7 @@ public class TestLocalDate {
 
     public void test_minusYears_int_noChange() {
         LocalDate t = TEST_2007_07_15.minusYears(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_minusYears_int_negative() {
@@ -1035,7 +1035,7 @@ public class TestLocalDate {
 
     public void test_minusYears_int_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.minusYears(0, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_minusYears_int_DateResolver_negative() {
@@ -1077,7 +1077,7 @@ public class TestLocalDate {
 
     public void test_minusMonths_int_noChange() {
         LocalDate t = TEST_2007_07_15.minusMonths(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_minusMonths_int_overYears() {
@@ -1137,7 +1137,7 @@ public class TestLocalDate {
 
     public void test_minusMonths_int_DateResolver_noChange() {
         LocalDate t = TEST_2007_07_15.minusMonths(0, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_minusMonths_int_DateResolver_overYears() {
@@ -1243,7 +1243,7 @@ public class TestLocalDate {
 
     public void test_minusWeeks_noChange() {
         LocalDate t = TEST_2007_07_15.minusWeeks(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_minusWeeks_overMonths() {
@@ -1361,7 +1361,7 @@ public class TestLocalDate {
 
     public void test_minusDays_noChange() {
         LocalDate t = TEST_2007_07_15.minusDays(0);
-        assertEquals(t, LocalDate.date(2007, 7, 15));
+        assertSame(t, TEST_2007_07_15);
     }
 
     public void test_minusDays_overMonths() {

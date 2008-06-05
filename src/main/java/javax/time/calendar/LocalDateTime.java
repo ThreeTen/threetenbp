@@ -1083,6 +1083,230 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this LocalDateTime with the specified period subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime minus(PeriodView period) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified periods subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periods  the periods to subtract, no nulls
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime minus(PeriodView... periods) {
+        // TODO
+        return null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in years subtracted.
+     * <p>
+     * This method subtract the specified amount to the years field in three steps:
+     * <ol>
+     * <li>subtract the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2008-02-29 (leap year) minus one year would result in the
+     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
+     * result, the last valid day of the month, 2009-02-28, is selected instead.
+     * <p>
+     * This method does the same as <code>minusYears(years, DateResolvers.previousValid())</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @see #minusYears(int, javax.time.calendar.DateResolver)
+     */
+    public LocalDateTime minusYears(int years) {
+        LocalDate newDate = date.minusYears(years);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in years subtracted.
+     * <p>
+     * This method subtract the specified amount to the years field in three steps:
+     * <ol>
+     * <li>subtract the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDateTime minusYears(int years, DateResolver dateResolver) {
+        LocalDate newDate = date.minusYears(years, dateResolver);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in months subtracted.
+     * <p>
+     * This method subtract the specified amount to the months field in three steps:
+     * <ol>
+     * <li>subtract the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2007-03-31 minus one month would result in the invalid date
+     * 2007-04-31. Instead of returning an invalid result, the last valid day
+     * of the month, 2007-04-30, is selected instead.
+     * <p>
+     * This method does the same as <code>minusMonts(months, DateResolvers.previousValid())</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @see #minusMonths(int, javax.time.calendar.DateResolver)
+     */
+    public LocalDateTime minusMonths(int months) {
+        LocalDate newDate = date.minusMonths(months);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in months subtracted.
+     * <p>
+     * This method subtract the specified amount to the months field in three steps:
+     * <ol>
+     * <li>subtract the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDateTime minusMonths(int months, DateResolver dateResolver) {
+        LocalDate newDate = date.minusMonths(months, dateResolver);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in weeks subtracted.
+     * <p>
+     * This method subtract the specified amount in weeks to the days field incrementing
+     * the month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDateTime minusWeeks(int weeks) {
+        LocalDate newDate = date.minusWeeks(weeks);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in days subtracted.
+     * <p>
+     * This method subtract the specified amount to the days field incrementing the
+     * month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     */
+    public LocalDateTime minusDays(long days) {
+        LocalDate newDate = date.minusDays(days);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in hours subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime minusHours(int hours) {
+        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.hours(hours));
+        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in minutes subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param minutes  the minutes to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime minusMinutes(int minutes) {
+        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.minutes(minutes));
+        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime minusSeconds(int seconds) {
+        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.seconds(seconds));
+        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the specified period in nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanos to subtract, may be negative
+     * @return a new updated LocalDateTime, never null
+     */
+    public LocalDateTime minusNanos(int nanos) {
+        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.nanos(nanos));
+        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        return withDateTime(newDate, overflow.getResultTime());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks whether the date matches the specified matcher.
      * <p>
      * Matchers can be used to query the date.

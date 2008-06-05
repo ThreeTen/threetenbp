@@ -1001,6 +1001,26 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Subtracts the specified period to create a new LocalTime returning any
+     * overflow in days.
+     * <p>
+     * This method returns an {@link Overflow} instance with the result of the
+     * subtraction and any overflow in days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return a new updated LocalTime, never null
+     */
+    public Overflow minusWithOverflow(PeriodView period) {
+        // TODO
+        LocalTime resultTime = null;
+        int excessDays = 0;
+        return new Overflow(resultTime, excessDays);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Class to return the result of addition when the addition overflows
      * the capacity of a LocalTime.
      */
