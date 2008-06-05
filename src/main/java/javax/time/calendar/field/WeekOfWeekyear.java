@@ -110,7 +110,7 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException("WeekOfWeekyear", weekOfWeekyear, 1, 53);
+            throw new IllegalCalendarFieldValueException(rule(), weekOfWeekyear, 1, 53);
         }
     }
 

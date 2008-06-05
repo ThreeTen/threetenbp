@@ -118,7 +118,7 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
             case 4:
                 return Q4;
             default:
-                throw new IllegalCalendarFieldValueException("QuarterOfYear", quarterOfYear, 1, 4);
+                throw new IllegalCalendarFieldValueException(rule(), quarterOfYear, 1, 4);
         }
     }
 

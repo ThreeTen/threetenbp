@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,30 +31,39 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
+
 /**
- * An exception used when querying a calendar for a field that is not supported.
+ * An exception used when a calendar field is in error.
  *
  * @author Stephen Colebourne
  */
-public class UnsupportedCalendarFieldException extends CalendarFieldException {
+public class CalendarFieldException extends CalendricalException {
+
+    /**
+     * The field that caused the exception
+     */
+    private final DateTimeFieldRule fieldRule;
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
      *
+     * @param message  the message describing the problem, should not be null
      * @param fieldRule  the rule of the field that is not supported, may be null
      */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported", fieldRule);
+    public CalendarFieldException(String message, DateTimeFieldRule fieldRule) {
+        super(message);
+        this.fieldRule = fieldRule;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Constructs a new unsupported field exception creating a standard error message.
+     * Gets the rule of the field that caused the exception.
      *
-     * @param fieldRule  the rule of the field that is not supported, may be null
-     * @param objectDescription  the description of the calendrical that does not support the field, may be null
+     * @return the field rule, null if unknown
      */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule, String objectDescription) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported on " + objectDescription, fieldRule);
+    public DateTimeFieldRule getFieldRule() {
+        return fieldRule;
     }
 
 }

@@ -91,7 +91,7 @@ public final class MonthDay
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
      * @return a MonthDay object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
         if (monthOfYear == null) {
@@ -101,7 +101,8 @@ public final class MonthDay
             throw new NullPointerException("DayOfMonth must not be null");
         }
         if (dayOfMonth.isValid(SAMPLE_YEAR, monthOfYear) == false) {
-            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(SAMPLE_YEAR));
+            throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth.getValue() +
+                    " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
         }
         return new MonthDay(monthOfYear, dayOfMonth);
     }
@@ -119,7 +120,8 @@ public final class MonthDay
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a MonthDay object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, int dayOfMonth) {
         return monthDay(monthOfYear, DayOfMonth.dayOfMonth(dayOfMonth));
@@ -138,7 +140,8 @@ public final class MonthDay
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a MonthDay object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
         return monthDay(MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
@@ -153,8 +156,8 @@ public final class MonthDay
      *
      * @param dateTime  the date-time to use, not null
      * @return a MonthDay object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     * @throws CalendarConversionException if the date-time cannot be converted
+     * @throws UnsupportedCalendarFieldException if either field cannot be found
+     * @throws InvalidCalendarFieldException if the either field is invalid
      */
     public static MonthDay monthDay(FlexiDateTime dateTime) {
         int month = dateTime.getValue(MonthOfYear.rule());
@@ -225,7 +228,8 @@ public final class MonthDay
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -285,12 +289,12 @@ public final class MonthDay
      *
      * @param dayOfMonth  the day of month to represent, not null
      * @return a new updated MonthDay, never null
-     * @throws IllegalCalendarFieldValueException if the day of month is invalid for the month
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public MonthDay with(DayOfMonth dayOfMonth) {
         if (dayOfMonth.isValid(SAMPLE_YEAR, month) == false) {
-            throw new IllegalCalendarFieldValueException("Day of month cannot be changed to " +
-                    dayOfMonth + " for the month " + month);
+            throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
+                    dayOfMonth + " for the month " + month, DayOfMonth.rule());
         }
         return withMonthDay(month, dayOfMonth);
     }
@@ -306,7 +310,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated MonthDay, never null
-     * @throws IllegalCalendarFieldValueException if the month of year is invalid
+     * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
         return with(MonthOfYear.monthOfYear(monthOfYear));
@@ -322,7 +326,8 @@ public final class MonthDay
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated MonthDay, never null
-     * @throws IllegalCalendarFieldValueException if the day of month is invalid
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
         return with(DayOfMonth.dayOfMonth(dayOfMonth));

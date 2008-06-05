@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.calendar.TimeZone.Discontinuity;
 
@@ -67,14 +68,14 @@ public class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            throw new IllegalCalendarFieldValueException("Local time " + newDateTime + " does not exist in time zone " + zone);
+            throw new CalendricalException("Local time " + newDateTime + " does not exist in time zone " + zone);
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            throw new IllegalCalendarFieldValueException("Local time " + newDateTime +
+            throw new CalendricalException("Local time " + newDateTime +
                     " has two matching offsets, " + discontinuity.getOffsetBefore() +
                     " and " + discontinuity.getOffsetAfter() + ", in time zone " + zone);
         }

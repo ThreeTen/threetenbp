@@ -31,12 +31,14 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
+
 /**
  * An exception used when conversion of a calendrical date-time object fails.
  *
  * @author Stephen Colebourne
  */
-public class CalendarConversionException extends RuntimeException {
+public class CalendarConversionException extends CalendricalException {
 
     /**
      * Constructs a new conversion exception with the specified message.

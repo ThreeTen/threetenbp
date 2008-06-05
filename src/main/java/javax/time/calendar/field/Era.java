@@ -97,7 +97,7 @@ public enum Era
             case 1:
                 return AD;
             default:
-                throw new IllegalCalendarFieldValueException("Era", era, 0, 1);
+                throw new IllegalCalendarFieldValueException(RULE, era, 0, 1);
         }
     }
 

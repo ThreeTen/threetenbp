@@ -112,10 +112,6 @@ public final class LocalTime
      * The nanosecond, never null.
      */
     private final NanoOfSecond nano;
-//    /**
-//     * The nanosecond of day.
-//     */
-//    private transient volatile long nanoOfDay;
 
     //-----------------------------------------------------------------------
     /**
@@ -188,7 +184,7 @@ public final class LocalTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a LocalTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour) {
         if (hourOfDay == 0 && minuteOfHour == 0) {
@@ -213,7 +209,7 @@ public final class LocalTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a LocalTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         if (hourOfDay == 0 && minuteOfHour == 0 && secondOfMinute == 0) {
@@ -259,7 +255,7 @@ public final class LocalTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a LocalTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         if (hourOfDay == 0 && minuteOfHour == 0 && secondOfMinute == 0 && nanoOfSecond == 0) {
@@ -280,23 +276,25 @@ public final class LocalTime
      *
      * @param nanoOfDay  the nano of day, from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>
      * @return a LocalTime object, never null
+     * @throws CalendarConversionException if the nanos of day value is invalid
      */
     public static LocalTime fromNanoOfDay(long nanoOfDay) {
         if (nanoOfDay < 0) {
-            throw new IllegalCalendarFieldValueException("nanoOfDay must be a positive number");
+            throw new CalendarConversionException("Cannot create LocalTime from nanos of day as value " +
+                    nanoOfDay + " must not be negative");
         }
         if (nanoOfDay >= NANOS_PER_DAY) {
-            throw new IllegalCalendarFieldValueException("nanoOfDay must be lesser than " + NANOS_PER_DAY);
+            throw new CalendarConversionException("Cannot create LocalTime from nanos of day as value " +
+                    nanoOfDay + " must be less than " + NANOS_PER_DAY);
         }
-
-        int hours = (int)(nanoOfDay / NANOS_PER_HOUR);
+        
+        int hours = (int) (nanoOfDay / NANOS_PER_HOUR);
         nanoOfDay -= hours * NANOS_PER_HOUR;
-        int minutes = (int)(nanoOfDay / NANOS_PER_MINUTE);
+        int minutes = (int) (nanoOfDay / NANOS_PER_MINUTE);
         nanoOfDay -= minutes * NANOS_PER_MINUTE;
-        int seconds = (int)(nanoOfDay / NANOS_PER_SECOND);
+        int seconds = (int) (nanoOfDay / NANOS_PER_SECOND);
         nanoOfDay -= seconds * NANOS_PER_SECOND;
-
-        return time(hours, minutes, seconds, (int)nanoOfDay);
+        return time(hours, minutes, seconds, (int) nanoOfDay);
     }
 
     /**
@@ -367,7 +365,8 @@ public final class LocalTime
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -472,7 +471,7 @@ public final class LocalTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated LocalTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public LocalTime withHourOfDay(int hourOfDay) {
         if (hourOfDay == getHourOfDay().getValue()) {
@@ -489,7 +488,7 @@ public final class LocalTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated LocalTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public LocalTime withMinuteOfHour(int minuteOfHour) {
         if (minuteOfHour == getMinuteOfHour().getValue()) {
@@ -506,7 +505,7 @@ public final class LocalTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated LocalTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public LocalTime withSecondOfMinute(int secondOfMinute) {
         if (secondOfMinute == getSecondOfMinute().getValue()) {
@@ -523,7 +522,7 @@ public final class LocalTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated LocalTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public LocalTime withNanoOfSecond(int nanoOfSecond) {
         if (nanoOfSecond == getNanoOfSecond().getValue()) {
@@ -564,8 +563,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in hours added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -583,8 +582,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in minutes added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -608,8 +607,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in seconds added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -635,8 +634,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in nanoseconds added.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -690,8 +689,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in hours subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -709,8 +708,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in minutes subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -734,8 +733,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in seconds subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -761,8 +760,8 @@ public final class LocalTime
     /**
      * Returns a copy of this LocalTime with the specified period in nanoseconds subtracted.
      * <p>
-     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>. For instance,
-     * 24 becomes 0 and -1 becomes 23.
+     * If the resulting hour is lesser than 0 or greater than 23, the hour field <b>rolls</b>.
+     * For instance, 24 becomes 0 and -1 becomes 23.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -798,6 +797,29 @@ public final class LocalTime
      */
     public boolean matches(TimeMatcher matcher) {
         return matcher.matchesTime(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the value of this time.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        return matchesTime(time) ? time : this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this time is equal to the input time
+     *
+     * @param time the time to match, not null
+     * @return true if the two times are equal, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return hour.equals(time.hour) && minute.equals(time.minute) &&
+                second.equals(time.second) && nano.equals(time.nano);
     }
 
     //-----------------------------------------------------------------------
@@ -847,7 +869,6 @@ public final class LocalTime
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(LocalTime other) {
-//        return MathUtils.safeCompare(toNanoOfDay(), other.toNanoOfDay());
         int cmp = hour.compareTo(other.hour);
         if (cmp == 0) {
             cmp = minute.compareTo(other.minute);
@@ -897,7 +918,6 @@ public final class LocalTime
         }
         if (other instanceof LocalTime) {
             LocalTime localTime = (LocalTime) other;
-//            return toNanoOfDay() == localTime.toNanoOfDay();
             return matchesTime(localTime);
         }
         return false;
@@ -954,29 +974,6 @@ public final class LocalTime
             }
         }
         return buf.toString();
-    }
-
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this time is equal to the input time
-     *
-     * @param time the time to match, not null
-     * @return true if the two times are equal, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return hour.equals(time.hour) && minute.equals(time.minute) && second.equals(time.second) && nano.equals(time.nano);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adjusts a time to have the value of this time.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        return matchesTime(time) ? time : this;
     }
 
     //-----------------------------------------------------------------------

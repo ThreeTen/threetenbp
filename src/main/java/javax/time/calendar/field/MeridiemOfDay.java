@@ -92,7 +92,7 @@ public enum MeridiemOfDay
             case 1:
                 return PM;
             default:
-                throw new IllegalCalendarFieldValueException("MeridiemOfDay cannot have the value " + meridiemOfDay);
+                throw new IllegalCalendarFieldValueException(RULE, meridiemOfDay, 0, 1);
         }
     }
 

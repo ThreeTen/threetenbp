@@ -32,7 +32,11 @@
 package javax.time;
 
 import javax.time.calendar.TestDateAdjustors;
+import javax.time.calendar.TestDateMatchers;
+import javax.time.calendar.TestDateResolvers;
+import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestLocalDate;
+import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
 import javax.time.calendar.TestOffsetDate;
 import javax.time.calendar.TestOffsetDateTime_creation;
@@ -66,11 +70,17 @@ public class AllTest {
         TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
+            TestClock.class,
             TestDuration.class,
             TestInstant.class,
+            TestMathUtils.class,
             // calendar classes
             TestDateAdjustors.class,
+            TestDateMatchers.class,
+            TestDateResolvers.class,
+            TestISOChronology.class,
             TestLocalDate.class,
+            TestLocalDateTime.class,
             TestLocalTime.class,
             TestOffsetDate.class,
             TestOffsetDateTime_creation.class,

@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -97,7 +98,7 @@ public final class LocalDate
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
      * @return a LocalDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
         if (year == null) {
@@ -111,10 +112,11 @@ public final class LocalDate
         }
         if (dayOfMonth.isValid(year, monthOfYear) == false) {
             if (dayOfMonth.getValue() == 29) {
-                throw new IllegalCalendarFieldValueException("Illegal value for DayOfMonth field, value 29 is not valid as " +
-                        year + " is not a leap year");
+                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
+                        year + " is not a leap year", DayOfMonth.rule());
             } else {
-                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(year));
+                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth.getValue() +
+                        " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
             }
         }
         return new LocalDate(year, monthOfYear, dayOfMonth);
@@ -127,7 +129,8 @@ public final class LocalDate
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a LocalDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDate date(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         return date(Year.isoYear(year), monthOfYear, DayOfMonth.dayOfMonth(dayOfMonth));
@@ -140,7 +143,8 @@ public final class LocalDate
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a LocalDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDate date(int year, int monthOfYear, int dayOfMonth) {
         return date(Year.isoYear(year), MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
@@ -164,13 +168,14 @@ public final class LocalDate
     }
 
     /**
-     * Obtains an instance of <code>LocalDate</code> from a modified julian day.
+     * Obtains an instance of <code>LocalDate</code> from a modified julian days.
      *
-     * @param mjday  the modified julian day equivalent to the LocalDate
+     * @param mjDays  the modified julian day equivalent to the LocalDate
      * @return a LocalDate object, never null
+     * @throws CalendarConversionException if the modified julian days value is outside the supported range
      */
-    public static LocalDate fromModifiedJulianDays(long mjday) {
-        long total = mjday + 678941;
+    public static LocalDate fromModifiedJulianDays(long mjDays) {
+        long total = mjDays + 678941;
         long y = 0;
         long leapYearCount = 0;
         int yearLength = -1;
@@ -194,23 +199,26 @@ public final class LocalDate
                 yearLength = 365 + (((y & 3) == 0) && ((y % 100) != 0 || (y % 400) == 0) ? 1 : 0);
             }
         } while (total < 0 || (yearLength != -1 && total >= yearLength));
-
+        
         int yAsInt = 0;
         try {
             yAsInt = MathUtils.safeToInt(y);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException("Year", y, Year.MIN_YEAR, Year.MAX_YEAR);
+            if (mjDays < 0) {
+                throw new CalendarConversionException("Cannot create LocalDate from modified julian days as value " +
+                        mjDays + " is outside the supported range of years");
+            }
         }
-
+        
         Year year = Year.isoYear(yAsInt);
         MonthOfYear month = MonthOfYear.JANUARY;
         int monthLength;
-
+        
         while (total > (monthLength = month.lengthInDays(year)) - 1) {
             total -= monthLength;
             month = month.next();
         }
-
+        
         return new LocalDate(year, month, DayOfMonth.dayOfMonth(MathUtils.safeToInt(total) + 1));
     }
     
@@ -261,7 +269,8 @@ public final class LocalDate
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -382,7 +391,7 @@ public final class LocalDate
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if year is invalid
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      * @see #withYear(int,DateResolver)
      */
     public LocalDate withYear(int year) {
@@ -398,7 +407,7 @@ public final class LocalDate
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if year is invalid
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDate withYear(int year, DateResolver dateResolver) {
         if (this.year.getValue() == year) {
@@ -417,7 +426,7 @@ public final class LocalDate
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if monthOfYear is invalid
+     * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      * @see #withMonthOfYear(int,DateResolver)
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
@@ -433,7 +442,7 @@ public final class LocalDate
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if monthOfYear is invalid
+     * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      */
     public LocalDate withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
         if (this.month.getValue() == monthOfYear) {
@@ -449,7 +458,8 @@ public final class LocalDate
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 28-31
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if dayOfMonth is invalid for the month-year combination
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public LocalDate withDayOfMonth(int dayOfMonth) {
         if (this.day.getValue() == dayOfMonth) {
@@ -466,6 +476,7 @@ public final class LocalDate
      *
      * @param period  the period to add, not null
      * @return a new updated LocalDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodView period) {
         // TODO
@@ -479,6 +490,7 @@ public final class LocalDate
      *
      * @param periods  the periods to add, no nulls
      * @return a new updated LocalDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plus(PeriodView... periods) {
         // TODO
@@ -506,7 +518,7 @@ public final class LocalDate
      *
      * @param years  the years to add, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
     public LocalDate plusYears(int years) {
@@ -528,7 +540,7 @@ public final class LocalDate
      * @param years  the years to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusYears(int years, DateResolver dateResolver) {
         if (years == 0) {
@@ -558,7 +570,7 @@ public final class LocalDate
      *
      * @param months  the months to add, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
     public LocalDate plusMonths(int months) {
@@ -580,7 +592,7 @@ public final class LocalDate
      * @param months  the months to add, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusMonths(int months, DateResolver dateResolver) {
         if (months == 0) {
@@ -612,7 +624,7 @@ public final class LocalDate
      *
      * @param weeks  the weeks to add, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusWeeks(int weeks) {
         return plusDays(7L * weeks);
@@ -631,7 +643,7 @@ public final class LocalDate
      *
      * @param days  the days to add, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate plusDays(long days) {
         if (days == 0) {
@@ -643,7 +655,7 @@ public final class LocalDate
         try {
             mjDays = MathUtils.safeAdd(mjDays, days);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException(this + " + " + days + " days exceeds the current capacity");
+            throw new CalendricalException(this + " + " + days + " days exceeds the current capacity");
         }
 
         return LocalDate.fromModifiedJulianDays(mjDays);
@@ -657,6 +669,7 @@ public final class LocalDate
      *
      * @param period  the period to subtract, not null
      * @return a new updated LocalDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodView period) {
         // TODO
@@ -670,6 +683,7 @@ public final class LocalDate
      *
      * @param periods  the periods to subtract, no nulls
      * @return a new updated LocalDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minus(PeriodView... periods) {
         // TODO
@@ -697,7 +711,7 @@ public final class LocalDate
      *
      * @param years  the years to subtract, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusYears(int, javax.time.calendar.DateResolver)
      */
     public LocalDate minusYears(int years) {
@@ -719,7 +733,7 @@ public final class LocalDate
      * @param years  the years to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusYears(int years, DateResolver dateResolver) {
         if (years == 0) {
@@ -749,7 +763,7 @@ public final class LocalDate
      *
      * @param months  the months to subtract, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      * @see #minusMonths(int, javax.time.calendar.DateResolver)
      */
     public LocalDate minusMonths(int months) {
@@ -771,7 +785,7 @@ public final class LocalDate
      * @param months  the months to subtract, may be negative
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusMonths(int months, DateResolver dateResolver) {
         if (months == 0) {
@@ -805,7 +819,7 @@ public final class LocalDate
      *
      * @param weeks  the weeks to subtract, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusWeeks(int weeks) {
         return minusDays(7L * weeks);
@@ -824,7 +838,7 @@ public final class LocalDate
      *
      * @param days  the days to subtract, may be negative
      * @return a new updated LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDate minusDays(long days) {
         if (days == 0) {
@@ -836,7 +850,7 @@ public final class LocalDate
         try {
             mjDays = MathUtils.safeSubtract(mjDays, days);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException(this + " - " + days + " days exceeds the current capacity");
+            throw new CalendricalException(this + " - " + days + " days exceeds the current capacity");
         }
 
         return LocalDate.fromModifiedJulianDays(mjDays);

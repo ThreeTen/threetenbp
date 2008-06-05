@@ -97,7 +97,7 @@ public final class SecondOfMinute
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException(
-                RULE.getName(), secondOfMinute, RULE.getMinimumValue(), RULE.getMaximumValue());
+                RULE, secondOfMinute, RULE.getMinimumValue(), RULE.getMaximumValue());
         }
     }
 

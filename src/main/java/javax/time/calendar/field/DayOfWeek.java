@@ -137,7 +137,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
             case 7:
                 return SUNDAY;
             default:
-                throw new IllegalCalendarFieldValueException("DayOfWeek", dayOfWeek, 1, 7);
+                throw new IllegalCalendarFieldValueException(rule(), dayOfWeek, 1, 7);
         }
     }
 

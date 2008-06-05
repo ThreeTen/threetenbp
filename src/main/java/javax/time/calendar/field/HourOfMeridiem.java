@@ -94,7 +94,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException(
-                RULE.getName(), hourOfMeridiem, RULE.getMinimumValue(), RULE.getMaximumValue());
+                RULE, hourOfMeridiem, RULE.getMinimumValue(), RULE.getMaximumValue());
         }
     }
 

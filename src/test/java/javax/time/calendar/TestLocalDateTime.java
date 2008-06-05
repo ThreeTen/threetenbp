@@ -43,6 +43,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import java.util.Iterator;
+
+import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -1528,22 +1530,14 @@ public class TestLocalDateTime {
         check(t, 2009, 3, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusYears_int_DateResolver_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusYears_int_DateResolver_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1589,22 +1583,14 @@ public class TestLocalDateTime {
         check(t, 2007, 4, 30, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
     }
 
     public void test_plusMonths_int_DateResolver_normal() {
@@ -1647,22 +1633,14 @@ public class TestLocalDateTime {
         check(t, 2007, 5, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_DateResolver_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_DateResolver_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1761,24 +1739,14 @@ public class TestLocalDateTime {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusWeeks_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusWeeks_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -1877,24 +1845,14 @@ public class TestLocalDateTime {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusDays_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_plusDays_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -1972,22 +1930,14 @@ public class TestLocalDateTime {
         check(t, 2007, 3, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusYears_int_DateResolver_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusYears_int_DateResolver_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -2033,22 +1983,14 @@ public class TestLocalDateTime {
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooSmall() {
-        try {
-            LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
-            fail(t.toString());
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
     public void test_minusMonths_int_DateResolver_normal() {
@@ -2091,22 +2033,14 @@ public class TestLocalDateTime {
         check(t, 2007, 3, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_DateResolver_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MAX_YEAR) + 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_DateResolver_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", ((long) Year.MIN_YEAR) - 1, Year.MIN_YEAR, Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -2205,24 +2139,14 @@ public class TestLocalDateTime {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusWeeks_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusWeeks_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
     }
 
     //-----------------------------------------------------------------------
@@ -2321,24 +2245,14 @@ public class TestLocalDateTime {
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusDays_invalidTooLarge() {
-        try {
-            LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MAX_YEAR + 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
     }
 
+    @Test(expectedExceptions={CalendricalException.class})
     public void test_minusDays_invalidTooSmall() {
-        try {
-            LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getMessage(), new IllegalCalendarFieldValueException("Year", Year.MIN_YEAR - 1L, Year.MIN_YEAR, 
-                    Year.MAX_YEAR).getMessage());
-        }
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)

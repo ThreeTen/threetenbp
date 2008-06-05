@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -83,7 +84,7 @@ public final class OffsetDate
      * @param dayOfMonth  the day of month to represent, not null
      * @param offset  the zone offset, not null
      * @return an OffsetDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
@@ -98,7 +99,8 @@ public final class OffsetDate
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return an OffsetDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
@@ -113,7 +115,8 @@ public final class OffsetDate
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return an OffsetDate object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDate date(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
@@ -183,7 +186,8 @@ public final class OffsetDate
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -314,6 +318,7 @@ public final class OffsetDate
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated OffsetDate, never null
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public OffsetDate withYear(int year) {
         LocalDate newDate = date.withYear(year);
@@ -327,6 +332,7 @@ public final class OffsetDate
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated OffsetDate, never null
+     * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public OffsetDate withMonthOfYear(int monthOfYear) {
         LocalDate newDate = date.withMonthOfYear(monthOfYear);
@@ -340,6 +346,8 @@ public final class OffsetDate
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated OffsetDate, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public OffsetDate withDayOfMonth(int dayOfMonth) {
         LocalDate newDate = date.withDayOfMonth(dayOfMonth);
@@ -354,6 +362,7 @@ public final class OffsetDate
      *
      * @param period  the period to add, not null
      * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(PeriodView period) {
         LocalDate newDate = date.plus(period);
@@ -367,6 +376,7 @@ public final class OffsetDate
      *
      * @param periods  the periods to add, no nulls
      * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(PeriodView... periods) {
         LocalDate newDate = date.plus(periods);
@@ -392,8 +402,7 @@ public final class OffsetDate
      *
      * @param years  the years to add, may be negative
      * @return a new updated OffsetDate, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusYears(int years) {
         LocalDate newDate = date.plusYears(years);
@@ -418,8 +427,7 @@ public final class OffsetDate
      *
      * @param months  the months to add, may be negative
      * @return a new updated OffsetDate, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusMonths(int months) {
         LocalDate newDate = date.plusMonths(months);
@@ -439,7 +447,7 @@ public final class OffsetDate
      *
      * @param weeks  the weeks to add, may be negative
      * @return a new updated OffsetDate, never null
-     * @throws ArithmeticException if the calculation overflows
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusWeeks(int weeks) {
         LocalDate newDate = date.plusDays(weeks * 7);
@@ -459,6 +467,7 @@ public final class OffsetDate
      *
      * @param days  the days to add, may be negative
      * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusDays(int days) {
         LocalDate newDate = date.plusDays(days);

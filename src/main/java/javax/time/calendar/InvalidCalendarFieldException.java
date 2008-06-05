@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,29 +32,20 @@
 package javax.time.calendar;
 
 /**
- * An exception used when querying a calendar for a field that is not supported.
+ * An exception used when a field is invalid.
  *
  * @author Stephen Colebourne
  */
-public class UnsupportedCalendarFieldException extends CalendarFieldException {
+public class InvalidCalendarFieldException extends CalendarFieldException {
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
      *
+     * @param message  the message describing the problem, should not be null
      * @param fieldRule  the rule of the field that is not supported, may be null
      */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported", fieldRule);
-    }
-
-    /**
-     * Constructs a new unsupported field exception creating a standard error message.
-     *
-     * @param fieldRule  the rule of the field that is not supported, may be null
-     * @param objectDescription  the description of the calendrical that does not support the field, may be null
-     */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule, String objectDescription) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported on " + objectDescription, fieldRule);
+    public InvalidCalendarFieldException(String message, DateTimeFieldRule fieldRule) {
+        super(message, fieldRule);
     }
 
 }

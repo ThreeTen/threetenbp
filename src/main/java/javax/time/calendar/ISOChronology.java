@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekOfMonth;
@@ -711,7 +712,7 @@ public final class ISOChronology implements Serializable {
                 int moy = (qoy - 1) * 3 + moq;
                 Integer existingMoy = map.get(MonthOfYear.rule());
                 if (existingMoy != null && existingMoy != moy) {
-                    throw new IllegalCalendarFieldValueException(
+                    throw new CalendricalException(
                             "Merge of Month of Quarter and Quarter of Year created value " +
                             moy + " that does not match the existing Month of Year value " + existingMoy);
                 }

@@ -166,7 +166,7 @@ public enum MonthOfYear
             case 12:
                 return DECEMBER;
             default:
-                throw new IllegalCalendarFieldValueException("MonthOfYear", monthOfYear, 1, 12);
+                throw new IllegalCalendarFieldValueException(rule(), monthOfYear, 1, 12);
         }
     }
 

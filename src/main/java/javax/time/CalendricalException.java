@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,32 +29,25 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time;
 
 /**
- * An exception used when querying a calendar for a field that is not supported.
+ * The base class for all exceptions in the Java Time Framework.
+ * <p>
+ * All exceptions in the Java Time Framework extend this class. This allows
+ * catch blocks to catch just this exception, or more specific ones.
  *
  * @author Stephen Colebourne
  */
-public class UnsupportedCalendarFieldException extends CalendarFieldException {
+public class CalendricalException extends RuntimeException {
 
     /**
-     * Constructs a new unsupported field exception creating a standard error message.
+     * Constructs a new conversion exception with the specified message.
      *
-     * @param fieldRule  the rule of the field that is not supported, may be null
+     * @param message  the message to use for this exception, may be null
      */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported", fieldRule);
-    }
-
-    /**
-     * Constructs a new unsupported field exception creating a standard error message.
-     *
-     * @param fieldRule  the rule of the field that is not supported, may be null
-     * @param objectDescription  the description of the calendrical that does not support the field, may be null
-     */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule, String objectDescription) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported on " + objectDescription, fieldRule);
+    public CalendricalException(String message) {
+        super(message);
     }
 
 }

@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.PeriodView;
@@ -94,7 +95,7 @@ public final class YearMonth
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      * @return a YearMonth object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
         return yearMonth(Year.isoYear(year), monthOfYear);
@@ -106,7 +107,7 @@ public final class YearMonth
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a YearMonth object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
         return yearMonth(Year.isoYear(year), MonthOfYear.monthOfYear(monthOfYear));
@@ -121,8 +122,8 @@ public final class YearMonth
      *
      * @param dateTime  the date-time to use, not null
      * @return a YearMonth object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     * @throws CalendarConversionException if the date-time cannot be converted
+     * @throws UnsupportedCalendarFieldException if either field cannot be found
+     * @throws InvalidCalendarFieldException if the either field is invalid
      */
     public static YearMonth yearMonth(FlexiDateTime dateTime) {
         int year = dateTime.getValue(Year.rule());
@@ -204,7 +205,8 @@ public final class YearMonth
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -274,6 +276,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated YearMonth, never null
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
         if (this.year.getValue() == year) {
@@ -289,6 +292,7 @@ public final class YearMonth
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated YearMonth, never null
+     * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
         if (this.month.getValue() == monthOfYear) {
@@ -305,6 +309,7 @@ public final class YearMonth
      *
      * @param period  the period to add, not null
      * @return a new updated YearMonth, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plus(PeriodView period) {
         // TODO
@@ -318,6 +323,7 @@ public final class YearMonth
      *
      * @param periods  the periods to add, no nulls
      * @return a new updated YearMonth, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plus(PeriodView... periods) {
         // TODO
@@ -332,8 +338,7 @@ public final class YearMonth
      *
      * @param years  the years to add, positive or negative
      * @return a new updated YearMonth, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plusYears(int years) {
         if (years == 0) {
@@ -350,8 +355,7 @@ public final class YearMonth
      *
      * @param months  the months to add, positive or negative
      * @return a new updated YearMonth, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plusMonths(int months) {
         if (months == 0) {

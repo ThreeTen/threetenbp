@@ -129,6 +129,7 @@ public final class FlexiDateTime implements Calendrical {
      * @param time  the optional local time, such as '10:15:30', may be null
      * @param offset  the optional time zone offset, such as '+02:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
+     * @throws IllegalArgumentException if the map contains null keys or values
      */
     public FlexiDateTime(
             Map<DateTimeFieldRule, Integer> fieldValueMap,
@@ -163,7 +164,8 @@ public final class FlexiDateTime implements Calendrical {
      *
      * @param rule  the rule to query from the map, not null
      * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field cannot be obtained
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int getValue(DateTimeFieldRule rule) {
         if (rule == null) {
@@ -176,8 +178,8 @@ public final class FlexiDateTime implements Calendrical {
         }
         if (value != null) {
             if (mapValue != null && mapValue.equals(value) == false) {
-                throw new CalendarConversionException("Field " + rule.getName() + " has two different values " +
-                        value + " and " + mapValue);  // TODO: Exception type
+                throw new InvalidCalendarFieldException("Field " + rule.getName() + " has two different values " +
+                        value + " and " + mapValue, rule);
             }
             return value;
         }
@@ -277,6 +279,7 @@ public final class FlexiDateTime implements Calendrical {
      *
      * @param fieldValueMap  the new map of fields, not null
      * @return a new, updated FlexiDateTime, never null
+     * @throws IllegalArgumentException if the map contains null keys or values
      */
     public FlexiDateTime withFieldValueMap(Map<DateTimeFieldRule, Integer> fieldValueMap) {
         return new FlexiDateTime(fieldValueMap, date, time, offset, zone);
@@ -482,7 +485,7 @@ public final class FlexiDateTime implements Calendrical {
      * validate.
      *
      * @return this, for chaining, never null
-     * @throws IllegalCalendarFieldValueException if invalid
+     * @throws InvalidCalendarFieldException if any field is invalid
      */
     public FlexiDateTime validate() {
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
@@ -492,8 +495,8 @@ public final class FlexiDateTime implements Calendrical {
             for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
                 DateTimeFieldRule rule = entry.getKey();
                 if (date.isSupported(rule) && date.get(rule) != entry.getValue()) {
-                    throw new IllegalCalendarFieldValueException("Value " + entry.getValue() +
-                            " for " + rule.getName() + " does not match value for date " + date);
+                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
+                            " for " + rule.getName() + " does not match value for date " + date, rule);
                 }
             }
         }
@@ -501,8 +504,8 @@ public final class FlexiDateTime implements Calendrical {
             for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
                 DateTimeFieldRule rule = entry.getKey();
                 if (time.isSupported(rule) && time.get(rule) != entry.getValue()) {
-                    throw new IllegalCalendarFieldValueException("Value " + entry.getValue() +
-                            " for " + rule.getName() + " does not match value for time " + time);
+                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
+                            " for " + rule.getName() + " does not match value for time " + time, rule);
                 }
             }
         }
@@ -524,7 +527,7 @@ public final class FlexiDateTime implements Calendrical {
      * LocalDate occurs.
      *
      * @return this, for chaining, never null
-     * @throws IllegalCalendarFieldValueException if invalid
+     * @throws InvalidCalendarFieldException if any field is invalid
      */
     public FlexiDateTime validateDate() {
         if (date == null) {
@@ -538,8 +541,8 @@ public final class FlexiDateTime implements Calendrical {
             for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
                 DateTimeFieldRule rule = entry.getKey();
                 if (rule.isDateField() && date.isSupported(rule) && date.get(rule) != entry.getValue()) {
-                    throw new IllegalCalendarFieldValueException("Value " + entry.getValue() +
-                            " for " + rule.getName() + " does not match value for date " + date);
+                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
+                            " for " + rule.getName() + " does not match value for date " + date, rule);
                 }
             }
         }

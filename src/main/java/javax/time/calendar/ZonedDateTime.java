@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.TimeZone.Discontinuity;
@@ -94,7 +95,8 @@ public final class ZonedDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, TimeZone zone) {
@@ -114,7 +116,8 @@ public final class ZonedDateTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, TimeZone zone) {
@@ -133,7 +136,9 @@ public final class ZonedDateTime
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws CalendricalException if the date-time cannot be resolved due to daylight savings
      */
     public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
@@ -147,6 +152,7 @@ public final class ZonedDateTime
      * @param instant  the instant to convert, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
+     * @throws CalendarConversionException if the result exceeds the supported date range
      */
     public static ZonedDateTime dateTime(Instant instant, TimeZone zone) {
         if (instant == null) {
@@ -168,7 +174,7 @@ public final class ZonedDateTime
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
+     * @throws CalendricalException if the date-time cannot be resolved
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = dateTimeProvider.toLocalDateTime();
@@ -182,7 +188,7 @@ public final class ZonedDateTime
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the offset is invalid for the time zone at the date-time
+     * @throws CalendricalException if the offset is invalid for the time zone at the date-time
      */
     public static ZonedDateTime dateTime(OffsetDateTime dateTime, TimeZone zone) {
         if (dateTime == null) {
@@ -195,16 +201,16 @@ public final class ZonedDateTime
         OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
         if (info instanceof ZoneOffset) {
             if (info.equals(inputOffset) == false) {
-                throw new IllegalCalendarFieldValueException("The offset " + inputOffset +
+                throw new CalendricalException("The offset " + inputOffset +
                         " specified in the OffsetDateTime is invalid for the time zone " + zone);
             }
         } else {
             Discontinuity disc = (Discontinuity) info;
             if (disc.isGap()) {
-                throw new IllegalCalendarFieldValueException("The local time " + dateTime +
+                throw new CalendricalException("The local time " + dateTime +
                         " does not exist in time zone " + zone + " due to a daylight savings gap");
             } else if (disc.containsOffset(inputOffset) == false) {
-                throw new IllegalCalendarFieldValueException("The offset in the date-time " + dateTime +
+                throw new CalendricalException("The offset in the date-time " + dateTime +
                         " is invalid for the time zone " + zone);
             }
         }
@@ -219,7 +225,7 @@ public final class ZonedDateTime
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
+     * @throws CalendricalException if the date-time cannot be resolved
      */
     private static ZonedDateTime dateTime(LocalDateTime dateTime, TimeZone zone, ZoneResolver resolver) {
         if (dateTime == null) {
@@ -243,7 +249,7 @@ public final class ZonedDateTime
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws CalendricalException if the date-time cannot be resolved
      */
     private static ZonedDateTime dateTime(LocalDateTime dateTime, OffsetDateTime oldDateTime, TimeZone zone, ZoneResolver resolver) {
         OffsetDateTime offsetDT = resolver.resolve(zone, dateTime, oldDateTime);
@@ -301,7 +307,8 @@ public final class ZonedDateTime
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -481,6 +488,7 @@ public final class ZonedDateTime
      *
      * @param zone  the time zone to change to, not null
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendarConversionException if the result exceeds the supported date range
      */
     public ZonedDateTime withZoneSameInstant(TimeZone zone) {
         return zone == this.zone ? this :
@@ -688,6 +696,7 @@ public final class ZonedDateTime
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
         LocalDateTime newDT = dateTime.localDateTime().withYear(year);
@@ -702,6 +711,7 @@ public final class ZonedDateTime
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
         LocalDateTime newDT = dateTime.localDateTime().withMonthOfYear(monthOfYear);
@@ -716,6 +726,8 @@ public final class ZonedDateTime
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
         LocalDateTime newDT = dateTime.localDateTime().withDayOfMonth(dayOfMonth);
@@ -735,6 +747,8 @@ public final class ZonedDateTime
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated ZonedDateTime
+     * @throws IllegalCalendarFieldValueException if the any field value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         LocalDateTime newDT = dateTime.localDateTime().withDate(year, monthOfYear, dayOfMonth);
@@ -750,7 +764,7 @@ public final class ZonedDateTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
         LocalDateTime newDT = dateTime.localDateTime().withHourOfDay(hourOfDay);
@@ -765,7 +779,7 @@ public final class ZonedDateTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
         LocalDateTime newDT = dateTime.localDateTime().withMinuteOfHour(minuteOfHour);
@@ -780,7 +794,7 @@ public final class ZonedDateTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
         LocalDateTime newDT = dateTime.localDateTime().withSecondOfMinute(secondOfMinute);
@@ -795,7 +809,7 @@ public final class ZonedDateTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalDateTime newDT = dateTime.localDateTime().withNanoOfSecond(nanoOfSecond);
@@ -816,6 +830,7 @@ public final class ZonedDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
         LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour);
@@ -832,9 +847,28 @@ public final class ZonedDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
+        return (newDT == dateTime.localDateTime() ? this :
+            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the time values altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @return a new updated ZonedDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     */
+    public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return (newDT == dateTime.localDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
@@ -847,6 +881,7 @@ public final class ZonedDateTime
      *
      * @param period  the period to add, not null
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plus(PeriodView period) {
         LocalDateTime newDT = dateTime.localDateTime().plus(period);
@@ -861,6 +896,7 @@ public final class ZonedDateTime
      *
      * @param periods  the periods to add, no nulls
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plus(PeriodView... periods) {
         LocalDateTime newDT = dateTime.localDateTime().plus(periods);
@@ -887,8 +923,7 @@ public final class ZonedDateTime
      *
      * @param years  the years to add, may be negative
      * @return a new updated ZonedDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusYears(int years) {
         LocalDateTime newDT = dateTime.localDateTime().plusYears(years);
@@ -914,8 +949,7 @@ public final class ZonedDateTime
      *
      * @param months  the months to add, may be negative
      * @return a new updated ZonedDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMonths(int months) {
         LocalDateTime newDT = dateTime.localDateTime().plusMonths(months);
@@ -936,7 +970,7 @@ public final class ZonedDateTime
      *
      * @param weeks  the weeks to add, may be negative
      * @return a new updated ZonedDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusWeeks(int weeks) {
         LocalDateTime newDT = dateTime.localDateTime().plusWeeks(weeks);
@@ -957,6 +991,7 @@ public final class ZonedDateTime
      *
      * @param days  the days to add, may be negative
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusDays(int days) {
         LocalDateTime newDT = dateTime.localDateTime().plusDays(days);
@@ -981,6 +1016,7 @@ public final class ZonedDateTime
      *
      * @param hours  the hours to add, may be negative
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusHours(int hours) {
         LocalDateTime newDT = dateTime.localDateTime().plusHours(hours);
@@ -995,6 +1031,7 @@ public final class ZonedDateTime
      *
      * @param minutes  the minutes to add, may be negative
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMinutes(int minutes) {
         LocalDateTime newDT = dateTime.localDateTime().plusMinutes(minutes);
@@ -1009,6 +1046,7 @@ public final class ZonedDateTime
      *
      * @param seconds  the seconds to add, may be negative
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusSeconds(int seconds) {
         LocalDateTime newDT = dateTime.localDateTime().plusSeconds(seconds);
@@ -1023,6 +1061,7 @@ public final class ZonedDateTime
      *
      * @param nanos  the nanos to add, may be negative
      * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusNanos(int nanos) {
         LocalDateTime newDT = dateTime.localDateTime().plusNanos(nanos);

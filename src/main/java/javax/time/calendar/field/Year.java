@@ -33,10 +33,12 @@ package javax.time.calendar.field;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -44,7 +46,6 @@ import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.period.PeriodView;
 import javax.time.period.Periods;
@@ -128,10 +129,11 @@ public final class Year
      */
     public static Year year(Era era, int yearOfEra) {
         if (era == null) {
-            throw new IllegalCalendarFieldValueException("era must not be null");
+            throw new NullPointerException("era must not be null");
         }
         if (yearOfEra < 1) {
-            throw new IllegalCalendarFieldValueException("year of era", yearOfEra, 1, MAX_YEAR);
+            // TODO: Field should be yearOfEra
+            throw new IllegalCalendarFieldValueException(ISOChronology.INSTANCE.year(), yearOfEra, 1, MAX_YEAR);
         }
         if (era == Era.AD) {
             return Year.isoYear(yearOfEra);
@@ -245,14 +247,14 @@ public final class Year
      *
      * @param years  the years to add
      * @return a new updated Year, never null
-     * @throws IllegalCalendarFieldValueException if the result is not in the range  MIN_YEAR to MAX_YEAR
+     * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year plusYears(int years) {
         int newYear = 0;
         try {
             newYear = MathUtils.safeAdd(year, years);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException("Year", (((long) year) + years), MIN_YEAR, MAX_YEAR);
+            throw new CalendricalException("Year " + (((long) year) + years) + " exceeds the supported year range");
         }
         return isoYear(newYear);
     }
@@ -265,14 +267,14 @@ public final class Year
      *
      * @param years  the years to subtract
      * @return a new updated Year, never null
-     * @throws ArithmeticException if the result cannot be stored
+     * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year minusYears(int years) {
         int newYear = 0;
         try {
             newYear = MathUtils.safeSubtract(year, years);
         } catch (ArithmeticException ae) {
-            throw new IllegalCalendarFieldValueException("Year", (((long) year) - years), MIN_YEAR, MAX_YEAR);
+            throw new CalendricalException("Year " + (((long) year) + years) + " exceeds the supported year range");
         }
         return isoYear(newYear);
     }
@@ -424,11 +426,11 @@ public final class Year
      * Returns the next year.
      *
      * @return the next year, never null
-     * @throws IllegalCalendarFieldValueException if the maximum year is reached
+     * @throws CalendricalException if the maximum year is reached
      */
     public Year next() {
         if (year == MAX_YEAR) {
-            throw new IllegalCalendarFieldValueException("Year is already at the maximum value");
+            throw new CalendricalException("Year is already at the maximum value");
         }
         return isoYear(year + 1);
     }
@@ -452,11 +454,11 @@ public final class Year
      * Returns the previous year.
      *
      * @return the previous year, never null
-     * @throws IllegalCalendarFieldValueException if the maximum year is reached
+     * @throws CalendricalException if the maximum year is reached
      */
     public Year previous() {
         if (year == MIN_YEAR) {
-            throw new IllegalCalendarFieldValueException("Year is already at the minimum value");
+            throw new CalendricalException("Year is already at the minimum value");
         }
         return isoYear(year - 1);
     }

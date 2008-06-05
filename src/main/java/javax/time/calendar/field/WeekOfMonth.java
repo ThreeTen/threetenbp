@@ -105,7 +105,7 @@ public final class WeekOfMonth
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException("WeekOfMonth", weekOfMonth, 1, 5);
+            throw new IllegalCalendarFieldValueException(rule(), weekOfMonth, 1, 5);
         }
     }
 

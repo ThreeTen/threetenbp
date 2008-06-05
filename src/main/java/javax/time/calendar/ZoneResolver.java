@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.TimeZone.Discontinuity;
 
 /**
@@ -93,7 +94,7 @@ public abstract class ZoneResolver {
      * @param newDateTime  the new date-time, not null
      * @param oldDateTime  the old date-time before the adjustment, may be null
      * @return the resolved values, returned as a (year,month,day) tuple, never null
-     * @throws IllegalCalendarFieldValueException if a field cannot be resolved
+     * @throws CalendricalException if a field cannot be resolved
      */
     OffsetDateTime doResolveDate(
             TimeZone zone,
@@ -111,14 +112,14 @@ public abstract class ZoneResolver {
         
         // validate the result
         if (result == null) {
-            throw new IllegalCalendarFieldValueException(
+            throw new CalendricalException(
                     "ZoneResolver implementation must not return null: " + getClass().getName());
         }
         if (result.localDateTime().equals(newDateTime)) {
             offsetInfo = zone.getOffsetInfo(result.localDateTime());
             if (offsetInfo instanceof ZoneOffset) {
                 if (result.getOffset().equals(offsetInfo) == false) {
-                    throw new IllegalCalendarFieldValueException(
+                    throw new CalendricalException(
                             "ZoneResolver implementation must return a valid offset for the zone: " + getClass().getName());
                 }
                 return result;
@@ -126,7 +127,7 @@ public abstract class ZoneResolver {
             discontinuity = (Discontinuity) offsetInfo;
         }
         if (discontinuity.containsOffset(result.getOffset()) == false) {
-            throw new IllegalCalendarFieldValueException(
+            throw new CalendricalException(
                     "ZoneResolver implementation must return a valid offset for the zone: " + getClass().getName());
         }
         return result;

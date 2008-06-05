@@ -132,7 +132,7 @@ public final class OffsetTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return an OffsetTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
@@ -149,7 +149,7 @@ public final class OffsetTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return an OffsetTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
@@ -165,7 +165,7 @@ public final class OffsetTime
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return an OffsetTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
         LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
@@ -235,7 +235,8 @@ public final class OffsetTime
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -378,7 +379,7 @@ public final class OffsetTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated OffsetTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public OffsetTime withHourOfDay(int hourOfDay) {
         LocalTime newTime = time.withHourOfDay(hourOfDay);
@@ -392,7 +393,7 @@ public final class OffsetTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated OffsetTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public OffsetTime withMinuteOfHour(int minuteOfHour) {
         LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
@@ -406,7 +407,7 @@ public final class OffsetTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated OffsetTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public OffsetTime withSecondOfMinute(int secondOfMinute) {
         LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
@@ -420,7 +421,7 @@ public final class OffsetTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated OffsetTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public OffsetTime withNanoOfSecond(int nanoOfSecond) {
         LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);

@@ -97,7 +97,7 @@ public final class MinuteOfHour
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException(
-                RULE.getName(), minuteOfHour, RULE.getMinimumValue(), RULE.getMaximumValue());
+                RULE, minuteOfHour, RULE.getMinimumValue(), RULE.getMaximumValue());
         }
     }
 

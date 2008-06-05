@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.field.DayOfMonth;
@@ -104,7 +105,7 @@ public final class OffsetDateTime
      * @param dayOfMonth  the day of month to represent, not null
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateMidnight(
             Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth, ZoneOffset offset) {
@@ -123,7 +124,8 @@ public final class OffsetDateTime
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateMidnight(
             int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
@@ -142,7 +144,8 @@ public final class OffsetDateTime
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateMidnight(
             int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
@@ -177,7 +180,7 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
@@ -199,7 +202,7 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, not null
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
@@ -223,7 +226,7 @@ public final class OffsetDateTime
      * @param nanoOfSecond  the nano of second to represent, not null
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth,
@@ -248,7 +251,8 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -272,7 +276,8 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -295,7 +300,8 @@ public final class OffsetDateTime
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
@@ -319,7 +325,8 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             int year, int monthOfYear, int dayOfMonth,
@@ -343,7 +350,8 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             int year, int monthOfYear, int dayOfMonth,
@@ -366,7 +374,8 @@ public final class OffsetDateTime
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return a OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
             int year, int monthOfYear, int dayOfMonth,
@@ -409,7 +418,7 @@ public final class OffsetDateTime
      * @param instant  the instant to convert, not null
      * @param offset  the zone offset, not null
      * @return an OffsetDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the instant cannot be represented as a date
+     * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     public static OffsetDateTime dateTime(InstantProvider instant, ZoneOffset offset) {
         if (instant == null) {
@@ -458,11 +467,11 @@ public final class OffsetDateTime
         
         // check year now we are certain it is correct
         if (yearEst > Year.MAX_YEAR) {
-            throw new IllegalCalendarFieldValueException(
+            throw new CalendarConversionException(
                     "Instant cannot be converted to a date-time as the year is greater than the maximum supported year");
         }
         if (yearEst < Year.MIN_YEAR) {
-            throw new IllegalCalendarFieldValueException(
+            throw new CalendarConversionException(
                     "Instant cannot be converted to a date-time as the year is less than the minimum supported year");
         }
         int year = (int) yearEst;
@@ -534,7 +543,8 @@ public final class OffsetDateTime
      *
      * @param field  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
         return toFlexiDateTime().getValue(field);
@@ -632,6 +642,7 @@ public final class OffsetDateTime
      *
      * @param offset  the zone offset to change to, not null
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime adjustLocalDateTime(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
@@ -801,6 +812,7 @@ public final class OffsetDateTime
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public OffsetDateTime withYear(int year) {
         LocalDateTime newDT = dateTime.withYear(year);
@@ -814,6 +826,7 @@ public final class OffsetDateTime
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear) {
         LocalDateTime newDT = dateTime.withMonthOfYear(monthOfYear);
@@ -827,6 +840,8 @@ public final class OffsetDateTime
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public OffsetDateTime withDayOfMonth(int dayOfMonth) {
         LocalDateTime newDT = dateTime.withDayOfMonth(dayOfMonth);
@@ -845,6 +860,8 @@ public final class OffsetDateTime
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated OffsetDateTime
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public OffsetDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
         LocalDateTime newDT = dateTime.withDate(year, monthOfYear, dayOfMonth);
@@ -859,7 +876,7 @@ public final class OffsetDateTime
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public OffsetDateTime withHourOfDay(int hourOfDay) {
         LocalDateTime newDT = dateTime.withHourOfDay(hourOfDay);
@@ -873,7 +890,7 @@ public final class OffsetDateTime
      *
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public OffsetDateTime withMinuteOfHour(int minuteOfHour) {
         LocalDateTime newDT = dateTime.withMinuteOfHour(minuteOfHour);
@@ -887,7 +904,7 @@ public final class OffsetDateTime
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public OffsetDateTime withSecondOfMinute(int secondOfMinute) {
         LocalDateTime newDT = dateTime.withSecondOfMinute(secondOfMinute);
@@ -901,7 +918,7 @@ public final class OffsetDateTime
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the value if invalid
+     * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public OffsetDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalDateTime newDT = dateTime.withNanoOfSecond(nanoOfSecond);
@@ -921,6 +938,7 @@ public final class OffsetDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public OffsetDateTime withTime(int hourOfDay, int minuteOfHour) {
         LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour);
@@ -936,9 +954,27 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public OffsetDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour, secondOfMinute);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the time values altered.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     */
+    public OffsetDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        LocalDateTime newDT = dateTime.withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -950,6 +986,7 @@ public final class OffsetDateTime
      *
      * @param period  the period to add, not null
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plus(PeriodView period) {
         LocalDateTime newDT = dateTime.plus(period);
@@ -963,6 +1000,7 @@ public final class OffsetDateTime
      *
      * @param periods  the periods to add, no nulls
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plus(PeriodView... periods) {
         LocalDateTime newDT = dateTime.plus(periods);
@@ -988,8 +1026,7 @@ public final class OffsetDateTime
      *
      * @param years  the years to add, may be negative
      * @return a new updated OffsetDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusYears(int years) {
         LocalDateTime newDT = dateTime.plusYears(years);
@@ -1014,8 +1051,7 @@ public final class OffsetDateTime
      *
      * @param months  the months to add, may be negative
      * @return a new updated OffsetDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
-     * @throws IllegalCalendarFieldValueException if the result contains an invalid field
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMonths(int months) {
         LocalDateTime newDT = dateTime.plusMonths(months);
@@ -1035,7 +1071,7 @@ public final class OffsetDateTime
      *
      * @param weeks  the weeks to add, may be negative
      * @return a new updated OffsetDateTime, never null
-     * @throws ArithmeticException if the calculation overflows
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusWeeks(int weeks) {
         LocalDateTime newDT = dateTime.plusWeeks(weeks);
@@ -1055,6 +1091,7 @@ public final class OffsetDateTime
      *
      * @param days  the days to add, may be negative
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusDays(int days) {
         LocalDateTime newDT = dateTime.plusDays(days);
@@ -1078,6 +1115,7 @@ public final class OffsetDateTime
      *
      * @param hours  the hours to add, may be negative
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusHours(int hours) {
         LocalDateTime newDT = dateTime.plusHours(hours);
@@ -1091,6 +1129,7 @@ public final class OffsetDateTime
      *
      * @param minutes  the minutes to add, may be negative
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMinutes(int minutes) {
         LocalDateTime newDT = dateTime.plusMinutes(minutes);
@@ -1104,6 +1143,7 @@ public final class OffsetDateTime
      *
      * @param seconds  the seconds to add, may be negative
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusSeconds(int seconds) {
         LocalDateTime newDT = dateTime.plusSeconds(seconds);
@@ -1117,6 +1157,7 @@ public final class OffsetDateTime
      *
      * @param nanos  the nanos to add, may be negative
      * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusNanos(int nanos) {
         LocalDateTime newDT = dateTime.plusNanos(nanos);

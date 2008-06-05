@@ -231,7 +231,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @param dateTime  the date-time to merge, not null
      * @return the merged date-time with the processed fields removed, never null,
      *  the input date-time must be retuned if no change is made
-     * @throws IllegalCalendarFieldValueException if the values cannot be merged
+     * @throws CalendarFieldException if the values cannot be merged
      */
     protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
         dateTime.getValue(this);  // validates the value of this field
@@ -249,31 +249,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      */
     public void checkValue(int value) {
         if (value < getMinimumValue() || value > getMaximumValue()) {
-            throw new IllegalCalendarFieldValueException(getName(), value, getMinimumValue(), getMaximumValue());
-        }
-    }
-
-    /**
-     * Checks if the value is invalid or does not match the value in the given date.
-     * <p>
-     * If the date is non-null, then the value specified is checked against the
-     * value obtained from the date.
-     * <p>
-     * If the date is null, then the value is checked against the outer bounds
-     * for the field using {@link #checkValue(int)}.
-     *
-     * @param value  the value to check
-     * @param date  the date to check against, may be null
-     * @throws IllegalCalendarFieldValueException if the value is invalid
-     */
-    protected void checkValue(int value, LocalDate date) {
-        if (date != null) {
-            if (date.get(this) != value) {
-                throw new IllegalCalendarFieldValueException(getName() + " value " + value +
-                        " does not match date " + date);
-            }
-        } else {
-            checkValue(value);
+            throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
         }
     }
 

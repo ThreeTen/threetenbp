@@ -41,6 +41,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
 
@@ -118,7 +119,7 @@ public final class DayOfYear
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException("DayOfYear", dayOfYear, 1, 366);
+            throw new IllegalCalendarFieldValueException(rule(), dayOfYear, 1, 366);
         }
     }
 
@@ -222,11 +223,11 @@ public final class DayOfYear
      *
      * @param year  the year that the day of year occurs in, not null
      * @return the date, never null
-     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
+     * @throws InvalidCalendarFieldException if the day does not occur in the year
      */
     public LocalDate createDate(Year year) {
         if (isValid(year) == false) {
-            throw new IllegalCalendarFieldValueException("DayOfYear 366 is invalid for year " + year);
+            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, rule());
         }
         int doy0 = dayOfYear - 1;
         int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
