@@ -207,7 +207,8 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * This method is used to combine individual date-time fields into more
      * significant concepts such as date and time. The full merge process
      * requires this method to be called repeatedly on each of the fields until
-     * no more changes occur.
+     * no more changes occur. This method will only be called if the field is
+     * present in the field-value map of the input FlexiDateTime.
      * <p>
      * Since the merge process is cooperative, it is not necessary to include
      * the full merge code in each field. Thus, the code to merge a year, month
@@ -232,7 +233,8 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      *  the input date-time must be retuned if no change is made
      * @throws IllegalCalendarFieldValueException if the values cannot be merged
      */
-    public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+    protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+        dateTime.getValue(this);  // validates the value of this field
         return dateTime;
     }
 

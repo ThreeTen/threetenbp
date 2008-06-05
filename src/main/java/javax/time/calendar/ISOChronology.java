@@ -436,15 +436,6 @@ public final class ISOChronology implements Serializable {
         protected Integer extractValue(FlexiDateTime dateTime) {
             return dateTime.getDate() != null ? dateTime.getDate().getYear().getValue() : null;
         }
-        /** {@inheritDoc} */
-        @Override
-        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            Integer yearValue = dateTime.getFieldValueMap().remove(this);
-            if (yearValue != null) {
-                checkValue(yearValue, dateTime.getDate());
-            }
-            return dateTime;
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -467,15 +458,6 @@ public final class ISOChronology implements Serializable {
         @Override
         protected Integer extractValue(FlexiDateTime dateTime) {
             return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getValue() : null;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            Integer moy = dateTime.getFieldValueMap().remove(this);
-            if (moy != null) {
-                checkValue(moy, dateTime.getDate());
-            }
-            return dateTime;
         }
     }
 
@@ -507,18 +489,16 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
-            Integer domValue = map.remove(this);
-            if (domValue != null) {
-                checkValue(domValue, dateTime.getDate());
-                if (dateTime.getDate() == null) {
-                    Integer year = map.remove(Year.rule());
-                    Integer month = map.remove(MonthOfYear.rule());
-                    if (year != null && month != null) {
-                        LocalDate date = LocalDate.date(year, month, domValue);
-                        return dateTime.withFieldValueMap(map).withDate(date);
-                    }
+        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            int domValue = dateTime.getValue(this);
+            if (dateTime.getDate() == null) {
+                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+                map.remove(this);
+                Integer year = map.remove(Year.rule());
+                Integer month = map.remove(MonthOfYear.rule());
+                if (year != null && month != null) {
+                    LocalDate date = LocalDate.date(year, month, domValue);
+                    return dateTime.withFieldValueMap(map).withDate(date);
                 }
             }
             return dateTime;
@@ -553,18 +533,16 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
-            Integer doyValue = map.remove(this);
-            if (doyValue != null) {
-                checkValue(doyValue, dateTime.getDate());
-                if (dateTime.getDate() == null) {
-                    Integer year = map.remove(Year.rule());
-                    if (year != null) {
-                        DayOfYear doy = DayOfYear.dayOfYear(doyValue);
-                        LocalDate date = doy.createDate(Year.isoYear(year));
-                        return dateTime.withFieldValueMap(map).withDate(date);
-                    }
+        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            int doyValue = dateTime.getValue(this);
+            if (dateTime.getDate() == null) {
+                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+                map.remove(this);
+                Integer year = map.remove(Year.rule());
+                if (year != null) {
+                    DayOfYear doy = DayOfYear.dayOfYear(doyValue);
+                    LocalDate date = doy.createDate(Year.isoYear(year));
+                    return dateTime.withFieldValueMap(map).withDate(date);
                 }
             }
             return dateTime;
@@ -698,15 +676,6 @@ public final class ISOChronology implements Serializable {
         protected Integer extractValue(FlexiDateTime dateTime) {
             return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getQuarterOfYear().getValue() : null;
         }
-        /** {@inheritDoc} */
-        @Override
-        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            Integer qoy = dateTime.getFieldValueMap().remove(this);
-            if (qoy != null) {
-                checkValue(qoy, dateTime.getDate());
-            }
-            return dateTime;
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -732,25 +701,23 @@ public final class ISOChronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
-            Integer moq = map.remove(this);
-            if (moq != null) {
-                checkValue(moq, dateTime.getDate());
-                if (dateTime.getDate() == null) {
-                    Integer qoy = map.remove(ISOChronology.INSTANCE.quarterOfYear());
-                    if (qoy != null) {
-                        checkValue(qoy, dateTime.getDate());
-                        int moy = (qoy - 1) * 3 + moq;
-                        Integer existingMoy = map.get(MonthOfYear.rule());
-                        if (existingMoy != null && existingMoy != moy) {
-                            throw new IllegalCalendarFieldValueException(
-                                    "Merge of Month of Quarter and Quarter of Year created value " +
-                                    moy + " that does not match the existing Month of Year value " + existingMoy);
-                        }
-                        map.put(MonthOfYear.rule(), moy);
-                        return dateTime.withFieldValueMap(map);
+        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
+            int moq = dateTime.getValue(this);
+            if (dateTime.getDate() == null) {
+                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+                map.remove(this);
+                Integer qoy = map.remove(ISOChronology.INSTANCE.quarterOfYear());
+                if (qoy != null) {
+                    checkValue(qoy, dateTime.getDate());
+                    int moy = (qoy - 1) * 3 + moq;
+                    Integer existingMoy = map.get(MonthOfYear.rule());
+                    if (existingMoy != null && existingMoy != moy) {
+                        throw new IllegalCalendarFieldValueException(
+                                "Merge of Month of Quarter and Quarter of Year created value " +
+                                moy + " that does not match the existing Month of Year value " + existingMoy);
                     }
+                    map.put(MonthOfYear.rule(), moy);
+                    return dateTime.withFieldValueMap(map);
                 }
             }
             return dateTime;
