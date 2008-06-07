@@ -410,7 +410,11 @@ public final class MonthDay
         if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
             return date;
         }
-        return resolver.resolveDate(date.getYear(), month, day);
+        LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
+        if (resolved == null) {
+            throw new NullPointerException("The implementation of DateResolver must not return null");
+        }
+        return resolved;
     }
 
     /**

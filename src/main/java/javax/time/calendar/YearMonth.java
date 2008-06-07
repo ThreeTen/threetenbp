@@ -427,7 +427,11 @@ public final class YearMonth
         if (year.equals(date.getYear()) && month == date.getMonthOfYear()) {
             return date;
         }
-        return resolver.resolveDate(year, month, date.getDayOfMonth());
+        LocalDate resolved = resolver.resolveDate(year, month, date.getDayOfMonth());
+        if (resolved == null) {
+            throw new NullPointerException("The implementation of DateResolver must not return null");
+        }
+        return resolved;
     }
 
     /**

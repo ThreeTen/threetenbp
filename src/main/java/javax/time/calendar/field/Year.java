@@ -386,7 +386,11 @@ public final class Year
         if (this.equals(date.getYear())) {
             return date;
         }
-        return resolver.resolveDate(this, date.getMonthOfYear(), date.getDayOfMonth());
+        LocalDate resolved = resolver.resolveDate(this, date.getMonthOfYear(), date.getDayOfMonth());
+        if (resolved == null) {
+            throw new NullPointerException("The implementation of DateResolver must not return null");
+        }
+        return resolved;
     }
 
     /**

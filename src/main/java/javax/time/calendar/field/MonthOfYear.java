@@ -275,7 +275,11 @@ public enum MonthOfYear
         if (this == date.getMonthOfYear()) {
             return date;
         }
-        return resolver.resolveDate(date.getYear(), this, date.getDayOfMonth());
+        LocalDate resolved = resolver.resolveDate(date.getYear(), this, date.getDayOfMonth());
+        if (resolved == null) {
+            throw new NullPointerException("The implementation of DateResolver must not return null");
+        }
+        return resolved;
     }
 
     /**

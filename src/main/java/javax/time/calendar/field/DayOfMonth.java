@@ -205,7 +205,11 @@ public final class DayOfMonth
         if (this == date.getDayOfMonth()) {
             return date;
         }
-        return resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
+        LocalDate resolved = resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
+        if (resolved == null) {
+            throw new NullPointerException("The implementation of DateResolver must not return null");
+        }
+        return resolved;
     }
 
     /**
