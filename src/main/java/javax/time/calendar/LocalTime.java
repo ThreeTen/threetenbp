@@ -305,7 +305,7 @@ public final class LocalTime
      */
     public static LocalTime time(TimeProvider timeProvider) {
         if (timeProvider == null) {
-            throw new NullPointerException("timeProvider must not be null");
+            throw new NullPointerException("TimeProvider must not be null");
         }
         LocalTime result = timeProvider.toLocalTime();
         if (result == null) {
@@ -453,12 +453,11 @@ public final class LocalTime
      *
      * @param adjustor  the adjustor to use, not null
      * @return a new updated LocalTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
      */
     public LocalTime with(TimeAdjustor adjustor) {
         LocalTime time = adjustor.adjustTime(this);
         if (time == null) {
-            throw new IllegalArgumentException("The implementation of TimeAdjustor must not return null");
+            throw new NullPointerException("The implementation of TimeAdjustor must not return null");
         }
         return time;
     }

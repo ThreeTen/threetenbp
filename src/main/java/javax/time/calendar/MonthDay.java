@@ -175,8 +175,8 @@ public final class MonthDay
      * @return a MonthDay object, never null
      */
     public static MonthDay monthDay(DateProvider dateProvider) {
-        LocalDate localDate = dateProvider.toLocalDate();
-        return new MonthDay(localDate.getMonthOfYear(), localDate.getDayOfMonth());
+        LocalDate date = LocalDate.date(dateProvider);
+        return new MonthDay(date.getMonthOfYear(), date.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------

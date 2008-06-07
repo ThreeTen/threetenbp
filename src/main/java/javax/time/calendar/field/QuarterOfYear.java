@@ -132,7 +132,7 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
      * @return the QuarterOfYear singleton, never null
      */
     public static QuarterOfYear quarterOfYear(DateProvider dateProvider) {
-        return dateProvider.toLocalDate().getMonthOfYear().getQuarterOfYear();
+        return LocalDate.date(dateProvider).getMonthOfYear().getQuarterOfYear();
     }
 
     //-----------------------------------------------------------------------

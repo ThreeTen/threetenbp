@@ -152,7 +152,7 @@ public final class Year
      * @return a Year object, never null
      */
     public static Year year(DateProvider dateProvider) {
-        return dateProvider.toLocalDate().getYear();
+        return LocalDate.date(dateProvider).getYear();
     }
 
     //-----------------------------------------------------------------------

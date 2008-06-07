@@ -119,8 +119,7 @@ public final class WeekOfMonth
      * @return the WeekOfMonth instance, never null
      */
     public static WeekOfMonth weekOfMonth(DateProvider dateProvider) {
-        LocalDate date = dateProvider.toLocalDate();
-        int dom0  = date.getDayOfMonth().getValue() - 1;
+        int dom0  = LocalDate.date(dateProvider).getDayOfMonth().getValue() - 1;
         return new WeekOfMonth((dom0 % 7) + 1);
     }
 

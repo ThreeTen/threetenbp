@@ -180,7 +180,7 @@ public final class OffsetTime
      * @return an OffsetTime object, never null
      */
     public static OffsetTime time(TimeProvider timeProvider, ZoneOffset offset) {
-        LocalTime time = timeProvider.toLocalTime();
+        LocalTime time = LocalTime.time(timeProvider);
         return new OffsetTime(time, offset);
     }
 
@@ -367,7 +367,7 @@ public final class OffsetTime
      * @throws IllegalArgumentException if the adjustor returned null
      */
     public OffsetTime with(TimeAdjustor adjustor) {
-        LocalTime newTime = adjustor.adjustTime(time);
+        LocalTime newTime = time.with(adjustor);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
 

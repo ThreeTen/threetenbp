@@ -158,7 +158,7 @@ public final class LocalDate
      */
     public static LocalDate date(DateProvider dateProvider) {
         if (dateProvider == null) {
-            throw new NullPointerException("dateProvider must not be null");
+            throw new NullPointerException("DateProvider must not be null");
         }
         LocalDate result = dateProvider.toLocalDate();
         if (result == null) {
@@ -360,6 +360,24 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Resolves the date, handling incorrcetly implemented resolvers.
+     *
+     * @param dateResolver  the resolver, not null
+     * @param year  the year, not null
+     * @param month  the month, not null
+     * @param day  the day of month, not null
+     * @return the resolved date, never null
+     * @throws NullPointerException if the resolver returned null
+     */
+    private LocalDate resolveDate(DateResolver dateResolver, Year year, MonthOfYear month, DayOfMonth day) {
+        LocalDate date = dateResolver.resolveDate(year, month, day);
+        if (date == null) {
+            throw new NullPointerException("The implementation of DateResolver must not return null");
+        }
+        return date;
+    }
+
+    /**
      * Returns a copy of this LocalDate with the date altered using the adjustor.
      * <p>
      * Adjustors can be used to alter the date in unusual ways. Examples might
@@ -370,17 +388,15 @@ public final class LocalDate
      *
      * @param adjustor  the adjustor to use, not null
      * @return a new updated LocalDate, never null
-     * @throws IllegalArgumentException if the adjustor returned null
      */
     public LocalDate with(DateAdjustor adjustor) {
         LocalDate date = adjustor.adjustDate(this);
         if (date == null) {
-            throw new IllegalArgumentException("The implementation of DateAdjustor must not return null");
+            throw new NullPointerException("The implementation of DateAdjustor must not return null");
         }
         return date;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDate with the year value altered.
      * If the resulting <code>LocalDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
@@ -413,7 +429,7 @@ public final class LocalDate
         if (this.year.getValue() == year) {
             return this;
         }
-        return dateResolver.resolveDate(Year.isoYear(year), month, day);
+        return resolveDate(dateResolver, Year.isoYear(year), month, day);
     }
 
     /**
@@ -448,7 +464,7 @@ public final class LocalDate
         if (this.month.getValue() == monthOfYear) {
             return this;
         }
-        return dateResolver.resolveDate(year, MonthOfYear.monthOfYear(monthOfYear), day);
+        return resolveDate(dateResolver, year, MonthOfYear.monthOfYear(monthOfYear), day);
     }
 
     /**
@@ -547,7 +563,7 @@ public final class LocalDate
             return this;
         }
         Year newYear = year.plusYears(years);
-        return dateResolver.resolveDate(newYear, month, day);
+        return resolveDate(dateResolver, newYear, month, day);
     }
 
     /**
@@ -608,7 +624,7 @@ public final class LocalDate
         }
         Year newYear = year.plusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return dateResolver.resolveDate(newYear, newMonth, day);
+        return resolveDate(dateResolver, newYear, newMonth, day);
     }
 
     /**
@@ -740,7 +756,7 @@ public final class LocalDate
             return this;
         }
         Year newYear = year.minusYears(years);
-        return dateResolver.resolveDate(newYear, month, day);
+        return resolveDate(dateResolver, newYear, month, day);
     }
 
     /**
@@ -803,7 +819,7 @@ public final class LocalDate
         }
         Year newYear = year.minusYears(years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return dateResolver.resolveDate(newYear, newMonth, day);
+        return resolveDate(dateResolver, newYear, newMonth, day);
     }
 
     /**

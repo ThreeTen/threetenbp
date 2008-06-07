@@ -111,7 +111,7 @@ public enum Era
      * @return the Era singleton, never null
      */
     public static Era era(DateProvider dateProvider) {
-        return dateProvider.toLocalDate().getYear().getEra();
+        return LocalDate.date(dateProvider).getYear().getEra();
     }
 
     //-----------------------------------------------------------------------

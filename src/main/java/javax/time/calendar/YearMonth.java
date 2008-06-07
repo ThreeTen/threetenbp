@@ -141,8 +141,8 @@ public final class YearMonth
      * @return a YearMonth object, never null
      */
     public static YearMonth yearMonth(DateProvider dateProvider) {
-        LocalDate localDate = dateProvider.toLocalDate();
-        return new YearMonth(localDate.getYear(), localDate.getMonthOfYear());
+        LocalDate date = LocalDate.date(dateProvider);
+        return new YearMonth(date.getYear(), date.getMonthOfYear());
     }
 
     //-----------------------------------------------------------------------

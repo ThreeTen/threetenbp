@@ -91,15 +91,8 @@ public final class CopticDate
      * @return a CopticDate object, never null
      */
     public static CopticDate copticDate(DateProvider dateProvider) {
-        if (dateProvider == null) {
-            throw new NullPointerException("dateProvider must not be null");
-        }
-        LocalDate localDate = dateProvider.toLocalDate();
-        if (localDate == null) {
-            throw new NullPointerException("The DateProvider implementation must not return null");
-        }
-
-        return new CopticDate(localDate);
+        LocalDate date = LocalDate.date(dateProvider);
+        return new CopticDate(date);
     }
 
     //-----------------------------------------------------------------------

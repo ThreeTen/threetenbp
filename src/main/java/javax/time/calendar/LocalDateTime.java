@@ -145,13 +145,7 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      */
     public static LocalDateTime dateMidnight(DateProvider dateProvider) {
-        if (dateProvider == null) {
-            throw new NullPointerException("dateProvider must not be null");
-        }
-        LocalDate date = dateProvider.toLocalDate();
-        if (date == null) {
-            throw new NullPointerException("The date provider must not return null");
-        }
+        LocalDate date = LocalDate.date(dateProvider);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -371,20 +365,8 @@ public final class LocalDateTime
      * @return a LocalDateTime object, never null
      */
     public static LocalDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider) {
-        if (dateProvider == null) {
-            throw new NullPointerException("dateProvider must not be null");
-        }
-        LocalDate date = dateProvider.toLocalDate();
-        if (date == null) {
-            throw new NullPointerException("The date provider must not return null");
-        }
-        if (timeProvider == null) {
-            throw new NullPointerException("dateProvider must not be null");
-        }
-        LocalTime time = timeProvider.toLocalTime();
-        if (time == null) {
-            throw new NullPointerException("The time provider must not return null");
-        }
+        LocalDate date = LocalDate.date(dateProvider);
+        LocalTime time = LocalTime.time(timeProvider);
         return new LocalDateTime(date, time);
     }
 
@@ -620,7 +602,6 @@ public final class LocalDateTime
      *
      * @param adjustor  the adjustor to use, not null
      * @return a new updated LocalDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
      */
     public LocalDateTime with(DateAdjustor adjustor) {
         return withDateTime(date.with(adjustor), time);
@@ -639,7 +620,6 @@ public final class LocalDateTime
      *
      * @param adjustor  the adjustor to use, not null
      * @return a new updated LocalDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
      */
     public LocalDateTime with(TimeAdjustor adjustor) {
         return withDateTime(date, time.with(adjustor));

@@ -90,7 +90,7 @@ public final class DateAdjustors {
         /** {@inheritDoc} */
         public LocalDate adjustDate(LocalDate date) {
             DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.getYear());
-            return dom.adjustDate(date);
+            return date.with(dom);
         }
     }
 

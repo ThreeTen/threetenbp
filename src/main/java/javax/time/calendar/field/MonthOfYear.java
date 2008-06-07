@@ -180,7 +180,7 @@ public enum MonthOfYear
      * @return the MonthOfYear singleton, never null
      */
     public static MonthOfYear monthOfYear(DateProvider dateProvider) {
-        return dateProvider.toLocalDate().getMonthOfYear();
+        return LocalDate.date(dateProvider).getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------

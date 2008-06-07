@@ -131,7 +131,7 @@ public final class OffsetDate
      * @return an OffsetDate object, never null
      */
     public static OffsetDate date(DateProvider dateProvider, ZoneOffset offset) {
-        LocalDate date = dateProvider.toLocalDate();
+        LocalDate date = LocalDate.date(dateProvider);
         return new OffsetDate(date, offset);
     }
 

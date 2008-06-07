@@ -133,7 +133,7 @@ public final class DayOfYear
      * @return the DayOfWeek singleton, never null
      */
     public static DayOfYear dayOfYear(DateProvider dateProvider) {
-        LocalDate date = dateProvider.toLocalDate();
+        LocalDate date = LocalDate.date(dateProvider);
         int moy0 = date.getMonthOfYear().ordinal();
         int dom = date.getDayOfMonth().getValue();
         if (date.getYear().isLeap()) {
