@@ -274,7 +274,7 @@ public final class Year
         try {
             newYear = MathUtils.safeSubtract(year, years);
         } catch (ArithmeticException ae) {
-            throw new CalendricalException("Year " + (((long) year) + years) + " exceeds the supported year range");
+            throw new CalendricalException("Year " + (((long) year) - ((long) years)) + " exceeds the supported year range");
         }
         return isoYear(newYear);
     }

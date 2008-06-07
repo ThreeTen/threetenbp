@@ -135,12 +135,12 @@ public class TestLocalDate {
         LocalDate.date(Year.isoYear(2007), MonthOfYear.JULY, null);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void factory_date_objects_nonleapYear() {
         LocalDate.date(Year.isoYear(2007), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void factory_date_objects_dayTooBig() {
         LocalDate.date(Year.isoYear(2007), MonthOfYear.APRIL, DayOfMonth.dayOfMonth(31));
     }
@@ -200,7 +200,7 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void factory_date_DateProvider() {
-        assertEquals(TEST_2007_07_15, LocalDate.date(TEST_2007_07_15));
+        assertSame(LocalDate.date(TEST_2007_07_15), TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -210,53 +210,37 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateProvider_null_toLocalDate() {
-        LocalDate.date(new DateProvider() {
-            public LocalDate toLocalDate() {
-                return null;
-            }
-
-            public FlexiDateTime toFlexiDateTime() {
-                return null;
-            }
-        });
+        LocalDate.date(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth().getValue() + 1;
-
         if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(date.getYear())) {
             return date.withDayOfMonth(newDayOfMonth);
         }
-
         date = date.withDayOfMonth(1);
-
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
             date = date.with(date.getYear().next());
         }
-
         return date.with(date.getMonthOfYear().next());
     }
 
     private LocalDate previous(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth().getValue() - 1;
-
         if (newDayOfMonth > 0) {
             return date.withDayOfMonth(newDayOfMonth);
         }
-
         date = date.with(date.getMonthOfYear().previous());
-
         if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
             date = date.with(date.getYear().previous());
         }
-
         return date.with(date.getMonthOfYear().getLastDayOfMonth(date.getYear()));
     }
 
     //-----------------------------------------------------------------------
-    public void factory_fromMJDays() {
+    public void factory_fromModifiedJulianDays() {
         LocalDate test = LocalDate.date(0, 1, 1);
         for (int i = -678941; i < 700000; i++) {
             assertEquals(LocalDate.fromModifiedJulianDays(i), test);
@@ -402,13 +386,14 @@ public class TestLocalDate {
         assertEquals(TEST_2007_07_15.with(dateAdjustor), dateAdjustor.adjustDate(TEST_2007_07_15));
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_with_null() {
+        TEST_2007_07_15.with((DateAdjustor) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_with_null_adjustDate() {
-        TEST_2007_07_15.with(new DateAdjustor() {
-            public LocalDate adjustDate(LocalDate date) {
-                return null;
-            }
-        });
+        TEST_2007_07_15.with(new MockDateAdjusterReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -456,7 +441,7 @@ public class TestLocalDate {
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withYear_int_DateResolver_adjustDay_invalid() {
         LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.strict());
     }
@@ -506,7 +491,7 @@ public class TestLocalDate {
         assertEquals(t, expected);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
         LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.strict());
     }
@@ -524,7 +509,7 @@ public class TestLocalDate {
         assertSame(t, TEST_2007_07_15);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withDayOfMonth_invalid() {
         LocalDate.date(2007, 11, 30).withDayOfMonth(31);
     }
@@ -557,10 +542,9 @@ public class TestLocalDate {
         try {
             LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1);
             fail();
-        } catch (IllegalCalendarFieldValueException ex) {
+        } catch (CalendricalException ex) {
             String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+            assertEquals(ex.getMessage(), "Year " + actual + " exceeds the supported year range");
         }
     }
 
@@ -602,7 +586,7 @@ public class TestLocalDate {
             fail();
         } catch (CalendricalException ex) {
             long year = ((long) Year.MAX_YEAR) + 1;
-            assertEquals(ex.getMessage(), new CalendricalException("Year " + year + " exceeds supported range").getMessage());
+            assertEquals(ex.getMessage(), "Year " + year + " exceeds the supported year range");
         }
     }
 
@@ -612,7 +596,7 @@ public class TestLocalDate {
             fail();
         } catch (CalendricalException ex) {
             long year = ((long) Year.MIN_YEAR) - 1;
-            assertEquals(ex.getMessage(), new CalendricalException("Year " + year + " exceeds supported range").getMessage());
+            assertTrue(ex.getMessage().startsWith("Illegal value for Year field, value " + year));
         }
     }
 
@@ -977,10 +961,9 @@ public class TestLocalDate {
         try {
             LocalDate.date(Year.MAX_YEAR, 1, 1).minusYears(-1);
             fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MAX_YEAR) + 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+        } catch (CalendricalException ex) {
+            long actual = ((long) Year.MAX_YEAR) + 1L;
+            assertEquals(ex.getMessage(), "Year " + actual + " exceeds the supported year range");
         }
     }
 
@@ -990,8 +973,7 @@ public class TestLocalDate {
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
+            assertEquals(ex.getMessage(), "Year " + actual + " exceeds the supported year range");
         }
     }
 
