@@ -43,4 +43,9 @@ public class MockDateProviderReturnsNull implements DateProvider {
         return null;
     }
 
+    /** {@inheritDoc} */
+    public FlexiDateTime toFlexiDateTime() {
+        return null;
+    }
+
 }
