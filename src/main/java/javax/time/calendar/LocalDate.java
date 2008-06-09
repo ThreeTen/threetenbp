@@ -204,10 +204,8 @@ public final class LocalDate
         try {
             yAsInt = MathUtils.safeToInt(y);
         } catch (ArithmeticException ae) {
-            if (mjDays < 0) {
-                throw new CalendarConversionException("Cannot create LocalDate from modified julian days as value " +
-                        mjDays + " is outside the supported range of years");
-            }
+            throw new CalendarConversionException("Cannot create LocalDate from modified julian days as value " +
+                    mjDays + " is outside the supported range of years");
         }
         
         Year year = Year.isoYear(yAsInt);
