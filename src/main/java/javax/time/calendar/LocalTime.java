@@ -421,25 +421,25 @@ public final class LocalTime
         return nano;
     }
 
-    /**
-     * Gets the second and nanosecond, expressed as a double in seconds.
-     *
-     * @return the nano of second, from 0 to 59.999,999,999
-     */
-    public double getFractionalSecondOfMinute() {
-        // TODO: check maths and write tests
-        return (((double) nano.getValue()) / 1000000000d) + second.getValue();
-    }
-
-    /**
-     * Gets the time as a fraction of a day, expressed as a double in days.
-     *
-     * @return the nano of second, from 0 to &lt; 1
-     */
-    public double getFractionalDay() {
-        // TODO: check maths and write tests
-        return (((double) toNanoOfDay()) / ((double) NANOS_PER_DAY));
-    }
+//    /**
+//     * Gets the second and nanosecond, expressed as a double in seconds.
+//     *
+//     * @return the nano of second, from 0 to 59.999,999,999
+//     */
+//    public double getFractionalSecondOfMinute() {
+//        // TODO: check maths and write tests
+//        return (((double) nano.getValue()) / 1000000000d) + second.getValue();
+//    }
+//
+//    /**
+//     * Gets the time as a fraction of a day, expressed as a double in days.
+//     *
+//     * @return the nano of second, from 0 to &lt; 1
+//     */
+//    public double getFractionalDay() {
+//        // TODO: check maths and write tests
+//        return (((double) toNanoOfDay()) / ((double) NANOS_PER_DAY));
+//    }
 
     //-----------------------------------------------------------------------
     /**
