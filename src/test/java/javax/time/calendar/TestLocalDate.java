@@ -957,24 +957,14 @@ public class TestLocalDate {
         assertEquals(t, expected);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooLarge() {
-        try {
-            LocalDate.date(Year.MAX_YEAR, 1, 1).minusYears(-1);
-            fail();
-        } catch (CalendricalException ex) {
-            long actual = ((long) Year.MAX_YEAR) + 1L;
-            assertEquals(ex.getMessage(), "Year " + actual + " exceeds the supported year range");
-        }
+        LocalDate.date(Year.MAX_YEAR, 1, 1).minusYears(-1);
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooSmall() {
-        try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).minusYears(1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
-            assertEquals(ex.getMessage(), "Year " + actual + " exceeds the supported year range");
-        }
+        LocalDate.date(Year.MIN_YEAR, 1, 1).minusYears(1);
     }
 
     public void test_minusYears_int_DateResolver_normal() {

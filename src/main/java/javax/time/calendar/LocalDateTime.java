@@ -654,6 +654,7 @@ public final class LocalDateTime
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
      * @return a new updated LocalDateTime, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws InvalidCalendarFieldException if the year is invalid for the day-month combination
      */
     public LocalDateTime withYear(int year, DateResolver dateResolver) {
         LocalDate newDate = date.withYear(year, dateResolver);

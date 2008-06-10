@@ -414,12 +414,12 @@ public class TestLocalTime {
         assertSame(localTime, LocalTime.MIDDAY);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendarConversionException.class)
     public void test_factory_fromNanoOfDay_tooLow() {
         LocalTime.fromNanoOfDay(-1);
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=CalendarConversionException.class)
     public void test_factory_fromNanoOfDay_tooHigh() {
         LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L + 1);
     }
@@ -515,13 +515,9 @@ public class TestLocalTime {
         assertEquals(TEST_12_30_40_987654321.with(timeAdjustor).getHourOfDay().getValue(), 0);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_with_null_adjustTime() {
-        TEST_12_30_40_987654321.with(new TimeAdjustor() {
-            public LocalTime adjustTime(LocalTime time) {
-                return null;
-            }
-        });
+        TEST_12_30_40_987654321.with(new MockTimeAdjusterReturnsNull());
     }
 
     //-----------------------------------------------------------------------

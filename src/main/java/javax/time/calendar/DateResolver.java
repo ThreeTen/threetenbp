@@ -58,7 +58,7 @@ public interface DateResolver {
      * @param monthOfYear  the month of year, not null
      * @param dayOfMonth  the proposed day of month, not null
      * @return the resolved date, never null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved
+     * @throws InvalidCalendarFieldException if the date cannot be resolved
      */
     LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth);
 

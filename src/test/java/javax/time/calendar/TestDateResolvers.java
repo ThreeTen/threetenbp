@@ -106,7 +106,7 @@ public class TestDateResolvers {
                     assertEquals(test.getYear(), year);
                     assertSame(test.getMonthOfYear(), month);
                     assertEquals(test.getDayOfMonth(), dayOfMonth);
-                } catch (IllegalCalendarFieldValueException icfve) {
+                } catch (InvalidCalendarFieldException icfe) {
                     assertTrue(month.lengthInDays(year) < dayOfMonth.getValue(), "M" + month + "D" + dayOfMonth);
                 }
             }
