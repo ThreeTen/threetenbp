@@ -441,6 +441,11 @@ public class TestLocalDate {
         assertEquals(t, expected);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withYear_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15.withYear(2008, new MockDateResolverReturnsNull());
+    }
+
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withYear_int_DateResolver_adjustDay_invalid() {
         LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.strict());
@@ -489,6 +494,11 @@ public class TestLocalDate {
         LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.nextValid());
         LocalDate expected = LocalDate.date(2007, 12, 1);
         assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withMonthOfYear_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15.withMonthOfYear(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
@@ -578,6 +588,11 @@ public class TestLocalDate {
         LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.date(2009, 3, 1);
         assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plusYears_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15.plusYears(1, new MockDateResolverReturnsNull());
     }
 
     public void test_plusYears_int_DateResolver_invalidTooLarge() {
@@ -695,6 +710,11 @@ public class TestLocalDate {
         LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.date(2007, 5, 1);
         assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plusMonths_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15.plusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
@@ -988,6 +1008,11 @@ public class TestLocalDate {
         assertEquals(t, expected);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minusYears_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15.minusYears(1, new MockDateResolverReturnsNull());
+    }
+
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusYears_int_DateResolver_invalidTooLarge() {
         LocalDate.date(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
@@ -1093,6 +1118,11 @@ public class TestLocalDate {
         LocalDate t = LocalDate.date(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
         LocalDate expected = LocalDate.date(2007, 3, 1);
         assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minusMonths_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15.minusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions={CalendricalException.class})

@@ -995,6 +995,11 @@ public class TestLocalDateTime {
         assertEquals(t, expected);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withYear_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15_12_30_40_987654321.withYear(2008, new MockDateResolverReturnsNull());
+    }
+
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withYear_int_DateResolver_adjustDay_invalid() {
         LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.strict());
@@ -1044,6 +1049,11 @@ public class TestLocalDateTime {
         LocalDateTime t = LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.nextValid());
         LocalDateTime expected = LocalDateTime.dateTime(2007, 12, 1, 12, 30);
         assertEquals(t, expected);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withMonthOfYear_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15_12_30_40_987654321.withMonthOfYear(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
@@ -1515,6 +1525,11 @@ public class TestLocalDateTime {
         check(t, 2009, 3, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plusYears_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15_12_30_40_987654321.plusYears(1, new MockDateResolverReturnsNull());
+    }
+
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooLarge() {
         LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
@@ -1616,6 +1631,11 @@ public class TestLocalDateTime {
     public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
         LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
         check(t, 2007, 5, 1, 0, 0, 0, 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plusMonths_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15_12_30_40_987654321.plusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
@@ -1903,6 +1923,11 @@ public class TestLocalDateTime {
         check(t, 2007, 3, 1, 0, 0, 0, 0);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minusYears_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15_12_30_40_987654321.minusYears(1, new MockDateResolverReturnsNull());
+    }
+
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_DateResolver_invalidTooLarge() {
         LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
@@ -2004,6 +2029,11 @@ public class TestLocalDateTime {
     public void test_minusMonths_int_DateResolver_adjustDayFromMonthLength() {
         LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
         check(t, 2007, 3, 1, 0, 0, 0, 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minusMonths_int_DateResolver_null_adjustDay() {
+        TEST_2007_07_15_12_30_40_987654321.minusMonths(1, new MockDateResolverReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
@@ -2642,7 +2672,7 @@ public class TestLocalDateTime {
     }
 
     public void test_adjustDate_same() {
-        assertSame(LocalDate.date(2007, 7, 15).adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), 
+        assertSame(LocalDateTime.dateMidnight(2007, 7, 15).adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), 
                 TEST_2007_07_15_12_30_40_987654321.toLocalDate());
     }
 
@@ -2662,7 +2692,7 @@ public class TestLocalDateTime {
     }
 
     public void test_adjustTime_same() {
-        assertSame(LocalTime.time(12, 30, 40, 987654321).adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), 
+        assertSame(LocalDateTime.dateTime(1, 1, 1, 12, 30, 40, 987654321).adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), 
                 TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
 
