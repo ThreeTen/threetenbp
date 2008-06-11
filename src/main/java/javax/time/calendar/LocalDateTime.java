@@ -1035,7 +1035,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusHours(int hours) {
-        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.hours(hours));
+        LocalTime.Overflow overflow = time.plusHoursWithOverflow(hours);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }

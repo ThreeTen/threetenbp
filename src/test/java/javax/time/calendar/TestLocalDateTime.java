@@ -1871,6 +1871,77 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // plusHours()
+    //-----------------------------------------------------------------------
+    public void test_plusHours_one() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDate d = t.getDate();
+
+        for (int i = 0; i < 50; i++) {
+            t = t.plusHours(1);
+
+            if ((i + 1) % 24 == 0) {
+                d = d.plusDays(1);
+            }
+
+            assertEquals(t.getDate(), d);
+            assertEquals(t.getHourOfDay().getValue(), (i + 1) % 24);
+        }
+    }
+
+    public void test_plusHours_fromZero() {
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDate d = base.getDate().minusDays(3);
+        LocalTime t = LocalTime.time(21, 0);
+        
+        for (int i = -50; i < 50; i++) {
+            LocalDateTime dt = base.plusHours(i);
+            t = t.plusHours(1);
+
+            if (t.getHourOfDay().getValue() == 0) {
+                d = d.plusDays(1);
+            }
+
+            assertEquals(dt.getDate(), d);
+            assertEquals(dt.getTime(), t);
+        }
+    }
+
+    public void test_plusHours_fromOne() {
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.withTime(1, 0);
+        LocalDate d = base.getDate().minusDays(3);
+        LocalTime t = LocalTime.time(22, 0);
+
+        for (int i = -50; i < 50; i++) {
+            LocalDateTime dt = base.plusHours(i);
+
+            t = t.plusHours(1);
+
+            if (t.getHourOfDay().getValue() == 0) {
+                d = d.plusDays(1);
+            }
+
+            assertEquals(dt.getDate(), d);
+            assertEquals(dt.getTime(), t);
+        }
+    }
+
+    public void test_plusHours_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusHours(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusHours_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(23, 0).plusHours(1);
+        assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_plusHours_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 0).plusHours(1);
+        assertSame(t.toLocalTime(), LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
     public void test_minusYears_int_normal() {

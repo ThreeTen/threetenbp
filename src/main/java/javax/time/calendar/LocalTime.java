@@ -986,13 +986,42 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param period  the period to add, not null
-     * @return a new updated LocalTime, never null
+     * @return a new updated Overflow, never null
      */
-    public Overflow plusWithOverflow(PeriodView period) {
+    Overflow plusWithOverflow(PeriodView period) {
         // TODO
         LocalTime resultTime = null;
         int excessDays = 0;
         return new Overflow(resultTime, excessDays);
+    }
+
+    /**
+     * Returns a copy of this LocalTime with the specified period in hours added, 
+     * returning any overflow in days
+     * <p>
+     * This method returns an {@link Overflow} instance with the result of the
+     * addition and any overflow in days.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to add, may be negative
+     * @return a new updated Overflow, never null
+     */
+    Overflow plusHoursWithOverflow(int hours) {
+        if (hours == 0) {
+            return new Overflow(this, 0);
+        }
+
+        long newHour = (long)hours + hour.getValue();
+        int days = (int)(newHour / HOURS_PER_DAY);
+        newHour %= HOURS_PER_DAY;
+        
+        if (newHour < 0) {
+            newHour += HOURS_PER_DAY;
+            days--;
+        }
+
+        return new Overflow(withHourOfDay((int)newHour), days);
     }
 
     //-----------------------------------------------------------------------
@@ -1008,7 +1037,7 @@ public final class LocalTime
      * @param period  the period to subtract, not null
      * @return a new updated LocalTime, never null
      */
-    public Overflow minusWithOverflow(PeriodView period) {
+    Overflow minusWithOverflow(PeriodView period) {
         // TODO
         LocalTime resultTime = null;
         int excessDays = 0;
@@ -1020,7 +1049,7 @@ public final class LocalTime
      * Class to return the result of addition when the addition overflows
      * the capacity of a LocalTime.
      */
-    public static class Overflow {
+    static class Overflow {
         /** The LocalTime after the addition. */
         private final LocalTime time;
         /** The overflow in days. */
