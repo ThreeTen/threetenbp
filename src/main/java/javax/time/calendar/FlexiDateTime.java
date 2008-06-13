@@ -129,7 +129,7 @@ public final class FlexiDateTime implements Calendrical {
      * @param time  the optional local time, such as '10:15:30', may be null
      * @param offset  the optional time zone offset, such as '+02:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
-     * @throws IllegalArgumentException if the map contains null keys or values
+     * @throws NullPointerException if the map contains null keys or values
      */
     public FlexiDateTime(
             Map<DateTimeFieldRule, Integer> fieldValueMap,
@@ -139,10 +139,10 @@ public final class FlexiDateTime implements Calendrical {
             TimeZone zone) {
         if (fieldValueMap != null) {
             if (fieldValueMap.containsKey(null)) {
-                throw new IllegalArgumentException("Null keys are not permitted in field-value map");
+                throw new NullPointerException("Null keys are not permitted in field-value map");
             }
             if (fieldValueMap.containsValue(null)) {
-                throw new IllegalArgumentException("Null values are not permitted in field-value map");
+                throw new NullPointerException("Null values are not permitted in field-value map");
             }
             fieldValueMap.putAll(fieldValueMap);
         }
@@ -282,6 +282,22 @@ public final class FlexiDateTime implements Calendrical {
      * @throws IllegalArgumentException if the map contains null keys or values
      */
     public FlexiDateTime withFieldValueMap(Map<DateTimeFieldRule, Integer> fieldValueMap) {
+        return new FlexiDateTime(fieldValueMap, date, time, offset, zone);
+    }
+
+    /**
+     * Returns a copy of this FlexiDateTime with the map of fields altered.
+     *
+     * @param fieldRule  the field to set in the field-value map, not null
+     * @param value  the value to set in the field-value map
+     * @return a new, updated FlexiDateTime, never null
+     */
+    public FlexiDateTime withFieldValue(DateTimeFieldRule fieldRule, int value) {
+        if (fieldRule == null) {
+            throw new NullPointerException("The field rule must not be null");
+        }
+        Map<DateTimeFieldRule, Integer> map = getFieldValueMap();
+        map.put(fieldRule, value);
         return new FlexiDateTime(fieldValueMap, date, time, offset, zone);
     }
 
