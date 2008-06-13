@@ -1942,6 +1942,297 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // plusMinutes()
+    //-----------------------------------------------------------------------
+    public void test_plusMinutes_one() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDate d = t.getDate();
+
+        int hour = 0;
+        int min = 0;
+
+        for (int i = 0; i < 70; i++) {
+            t = t.plusMinutes(1);
+            min++;
+            if (min == 60) {
+                hour++;
+                min = 0;
+            }
+
+            assertEquals(t.getDate(), d);
+            assertEquals(t.getHourOfDay().getValue(), hour);
+            assertEquals(t.getMinuteOfHour().getValue(), min);
+        }
+    }
+
+    public void test_plusMinutes_fromZero() {
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDate d = base.getDate().minusDays(1);
+        LocalTime t = LocalTime.time(22, 49);
+
+        for (int i = -70; i < 70; i++) {
+            LocalDateTime dt = base.plusMinutes(i);
+            t = t.plusMinutes(1);
+
+            if (t == LocalTime.MIDNIGHT) {
+                d = d.plusDays(1);
+            }
+
+            assertEquals(dt.getDate(), d, String.valueOf(i));
+            assertEquals(dt.getTime(), t, String.valueOf(i));
+        }
+    }
+
+    public void test_plusMinutes_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMinutes(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusMinutes_noChange_oneDay() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusMinutes(24 * 60);
+        assertEquals(t.getDate(), TEST_2007_07_15_12_30_40_987654321.getDate().plusDays(1));
+        assertSame(t.getTime(), TEST_2007_07_15_12_30_40_987654321.getTime());
+    }
+
+    public void test_plusMinutes_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(23, 59).plusMinutes(1);
+        assertSame(t.getTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_plusMinutes_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 59).plusMinutes(1);
+        assertSame(t.getTime(), LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusSeconds()
+    //-----------------------------------------------------------------------
+    public void test_plusSeconds_one() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDate d = t.getDate();
+
+        int hour = 0;
+        int min = 0;
+        int sec = 0;
+
+        for (int i = 0; i < 3700; i++) {
+            t = t.plusSeconds(1);
+            sec++;
+            if (sec == 60) {
+                min++;
+                sec = 0;
+            }
+            if (min == 60) {
+                hour++;
+                min = 0;
+            }
+
+            assertEquals(t.getDate(), d);
+            assertEquals(t.getHourOfDay().getValue(), hour);
+            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getSecondOfMinute().getValue(), sec);
+        }
+    }
+
+    @DataProvider(name="plusSeconds_fromZero")
+    Iterator<Object[]> plusSeconds_fromZero() {
+        return new Iterator<Object[]>() {
+            int delta = 30;
+
+            int i = -3660;
+            LocalDate date = TEST_2007_07_15_12_30_40_987654321.getDate().minusDays(1);
+            int hour = 22;
+            int min = 59;
+            int sec = 0;
+
+            public boolean hasNext() {
+                return i <= 3660;
+            }
+
+            public Object[] next() {
+                final Object[] ret = new Object[] {i, date, hour, min, sec};
+                i += delta;
+                sec += delta;
+
+                if (sec >= 60) {
+                    min++;
+                    sec -= 60;
+
+                    if (min == 60) {
+                        hour++;
+                        min = 0;
+                        
+                        if (hour == 24) {
+                            hour = 0;
+                        }
+                    }
+                }
+                
+                if (i == 0) {
+                    date = date.plusDays(1);
+                }
+
+                return ret;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+    }
+
+    @Test(dataProvider="plusSeconds_fromZero")
+    public void test_plusSeconds_fromZero(int seconds, LocalDate date, int hour, int min, int sec) {
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDateTime t = base.plusSeconds(seconds);
+
+        assertEquals(date, t.getDate());
+        assertEquals(hour, t.getHourOfDay().getValue());
+        assertEquals(min, t.getMinuteOfHour().getValue());
+        assertEquals(sec, t.getSecondOfMinute().getValue());
+    }
+
+    public void test_plusSeconds_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusSeconds(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusSeconds_noChange_oneDay() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusSeconds(24 * 60 * 60);
+        assertEquals(t.getDate(), TEST_2007_07_15_12_30_40_987654321.getDate().plusDays(1));
+        assertSame(t.getTime(), TEST_2007_07_15_12_30_40_987654321.getTime());
+    }
+
+    public void test_plusSeconds_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(23, 59, 59).plusSeconds(1);
+        assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_plusSeconds_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 59, 59).plusSeconds(1);
+        assertSame(t.toLocalTime(), LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // plusNanos()
+    //-----------------------------------------------------------------------
+    public void test_plusNanos_halfABillion() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDate d = t.getDate();
+
+        int hour = 0;
+        int min = 0;
+        int sec = 0;
+        int nanos = 0;
+
+        for (long i = 0; i < 3700 * 1000000000L; i+= 500000000) {
+            t = t.plusNanos(500000000);
+            nanos += 500000000;
+            if (nanos == 1000000000) {
+                sec++;
+                nanos = 0;
+            }
+            if (sec == 60) {
+                min++;
+                sec = 0;
+            }
+            if (min == 60) {
+                hour++;
+                min = 0;
+            }
+
+            assertEquals(t.getDate(), d, String.valueOf(i));
+            assertEquals(t.getHourOfDay().getValue(), hour);
+            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getSecondOfMinute().getValue(), sec);
+            assertEquals(t.getNanoOfSecond().getValue(), nanos);
+        }
+    }
+
+    @DataProvider(name="plusNanos_fromZero")
+    Iterator<Object[]> plusNanos_fromZero() {
+        return new Iterator<Object[]>() {
+            long delta = 7500000000L;
+
+            long i = -3660 * 1000000000L;
+            LocalDate date = TEST_2007_07_15_12_30_40_987654321.getDate().minusDays(1);
+            int hour = 22;
+            int min = 59;
+            int sec = 0;
+            long nanos = 0;
+
+            public boolean hasNext() {
+                return i <= 3660 * 1000000000L;
+            }
+
+            public Object[] next() {
+                final Object[] ret = new Object[] {i, date, hour, min, sec, (int)nanos};
+                i += delta;
+                nanos += delta;
+
+                if (nanos >= 1000000000L) {
+                    sec += nanos / 1000000000L;
+                    nanos %= 1000000000L;
+
+                    if (sec >= 60) {
+                        min++;
+                        sec %= 60;
+
+                        if (min == 60) {
+                            hour++;
+                            min = 0;
+
+                            if (hour == 24) {
+                                hour = 0;
+                                date = date.plusDays(1);
+                            }
+                        }
+                    }
+                }
+
+                return ret;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+    }
+
+    @Test(dataProvider="plusNanos_fromZero")
+    public void test_plusNanos_fromZero(long nanoseconds, LocalDate date, int hour, int min, int sec, int nanos) {
+        LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
+        LocalDateTime t = base.plusNanos(nanoseconds);
+
+        assertEquals(date, t.getDate());
+        assertEquals(hour, t.getHourOfDay().getValue());
+        assertEquals(min, t.getMinuteOfHour().getValue());
+        assertEquals(sec, t.getSecondOfMinute().getValue());
+        assertEquals(nanos, t.getNanoOfSecond().getValue());
+    }
+
+    public void test_plusNanos_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusNanos(0);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_plusNanos_noChange_oneDay() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plusNanos(24 * 60 * 60 * 1000000000L);
+        assertEquals(t.getDate(), TEST_2007_07_15_12_30_40_987654321.getDate().plusDays(1));
+        assertSame(t.getTime(), TEST_2007_07_15_12_30_40_987654321.getTime());
+    }
+
+    public void test_plusNanos_toMidnight() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(23, 59, 59, 999999999).plusNanos(1);
+        assertSame(t.getTime(), LocalTime.MIDNIGHT);
+    }
+
+    public void test_plusNanos_toMidday() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 59, 59, 999999999).plusNanos(1);
+        assertSame(t.getTime(), LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
     public void test_minusYears_int_normal() {

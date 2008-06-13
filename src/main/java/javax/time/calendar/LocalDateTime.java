@@ -1050,7 +1050,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusMinutes(int minutes) {
-        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.minutes(minutes));
+        LocalTime.Overflow overflow = time.plusMinutesWithOverflow(minutes);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
@@ -1065,7 +1065,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusSeconds(int seconds) {
-        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.seconds(seconds));
+        LocalTime.Overflow overflow = time.plusSecondsWithOverflow(seconds);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
@@ -1079,8 +1079,8 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plusNanos(int nanos) {
-        LocalTime.Overflow overflow = time.plusWithOverflow(Periods.nanos(nanos));
+    public LocalDateTime plusNanos(long nanos) {
+        LocalTime.Overflow overflow = time.plusNanosWithOverflow(nanos);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
