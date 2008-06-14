@@ -41,7 +41,7 @@ import javax.time.calendar.FlexiDateTime;
  *
  * @author Stephen Colebourne
  */
-class StringLiteralPrinter implements DateTimePrinter, DateTimeParser {
+class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The literal to print or parse.
@@ -53,7 +53,7 @@ class StringLiteralPrinter implements DateTimePrinter, DateTimeParser {
      *
      * @param literal  the literal to print or parse, not null
      */
-    StringLiteralPrinter(String literal) {
+    StringLiteralPrinterParser(String literal) {
         this.literal = literal;
     }
 
@@ -62,26 +62,12 @@ class StringLiteralPrinter implements DateTimePrinter, DateTimeParser {
         appendable.append(literal);
     }
 
-//    /** {@inheritDoc} */
-//    public FlexiDateTime parse(CharSequence parseText, ParsePosition parsePosition, FlexiDateTime dateTime, Locale locale) {
-//        int length = parseText.length();
-//        int pos = parsePosition.getIndex();
-//        int endPos = pos + literal.length();
-//        if (endPos > length) {
-//            parsePosition.setErrorIndex(pos);
-//        } else {
-//            if (literal.contentEquals(parseText.subSequence(pos, endPos))) {
-//                parsePosition.setIndex(endPos);
-//            } else {
-//                parsePosition.setErrorIndex(pos);
-//            }
-//        }
-//        return dateTime;
-//    }
-
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
+        if (position > length) {
+            throw new IndexOutOfBoundsException();
+        }
         int endPos = position + literal.length();
         if (endPos > length) {
             return ~position;

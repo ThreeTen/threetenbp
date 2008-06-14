@@ -49,7 +49,10 @@ public class DateTimeFormatterBuilder {
      * The list of printers that will be used.
      */
     private final List<DateTimePrinter> printers = new ArrayList<DateTimePrinter>();
-
+    /**
+     * The list of parsers that will be used.
+     */
+    private final List<DateTimeParser> parsers = new ArrayList<DateTimeParser>();
 
     //-----------------------------------------------------------------------
     /**
@@ -140,6 +143,8 @@ public class DateTimeFormatterBuilder {
         }
         NumberPrinter printer = new NumberPrinter(fieldRule, minWidth, maxWidth, padChar, padOnLeft, signStyle);
         printers.add(printer);
+        NumberParser parser = new NumberParser(fieldRule, minWidth, maxWidth, padChar, padOnLeft, signStyle);
+        parsers.add(parser);
         return this;
     }
 
@@ -152,7 +157,9 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
-        printers.add(new CharLiteralPrinterParser(literal));
+        CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal);
+        printers.add(pp);
+        parsers.add(pp);
         return this;
     }
 
@@ -168,23 +175,29 @@ public class DateTimeFormatterBuilder {
         if (literal == null) {
             throw new NullPointerException("String must not be null");
         }
-        printers.add(new StringLiteralPrinter(literal));
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
+        printers.add(pp);
+        parsers.add(pp);
         return this;
     }
 
     /**
-     * Appends a printer to the formatter.
+     * Appends a printer and/or parser to the formatter.
      * <p>
-     * This printer will be called during a print.
+     * If one of the two parameters is null then the formatter will only be able
+     * to print or parse. If both are null, an exception is thrown.
      *
-     * @param printer  the printer to add, not null
+     * @param printer  the printer to add, null prevents the formatter from printing
+     * @param parser  the parser to add, null prevents the formatter from parsing
      * @return this, for chaining, never null
+     * @throws NullPointerException if both printer and parser are null
      */
-    public DateTimeFormatterBuilder appendPrinter(DateTimePrinter printer) {
-        if (printer == null) {
-            throw new NullPointerException("DateTimePrinter must not be null");
+    public DateTimeFormatterBuilder append(DateTimePrinter printer, DateTimeParser parser) {
+        if (printer == null && parser == null) {
+            throw new NullPointerException("One of DateTimePrinter or DateTimeParser must be non-null");
         }
         printers.add(printer);
+        parsers.add(parser);
         return this;
     }
 

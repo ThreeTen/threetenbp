@@ -56,14 +56,14 @@ import javax.time.calendar.ZoneOffset;
  */
 public final class DateTimeParseContext implements Calendrical {
 
-    /**
-     * The text being parsed.
-     */
-    private String text;
-    /**
-     * The current parse position.
-     */
-    private int parsePosition;
+//    /**
+//     * The text being parsed.
+//     */
+//    private String text;
+//    /**
+//     * The current parse position.
+//     */
+//    private int parsePosition;
 
     /**
      * The locale for printing and parsing text.
@@ -105,42 +105,48 @@ public final class DateTimeParseContext implements Calendrical {
 
     /**
      * Constructor.
-     *
-     * @param text  the text to be parsed, not null
-     * @param parsePosition  the starting parse position
      */
-    public DateTimeParseContext(String text, int parsePosition) {
-        this.text = text;
-        this.parsePosition = parsePosition;
+    public DateTimeParseContext() {
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the text to be parsed.
-     *
-     * @return the text to be parsed, never null
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * Gets the current parse position.
-     *
-     * @return the current parse position
-     */
-    public int getParsePosition() {
-        return parsePosition;
-    }
-
-    /**
-     * Sets the current parse position.
-     *
-     * @param parsePosition  the new parse position
-     */
-    public void setParsePosition(int parsePosition) {
-        this.parsePosition = parsePosition;
-    }
+//    /**
+//     * Constructor.
+//     *
+//     * @param text  the text to be parsed, not null
+//     * @param parsePosition  the starting parse position
+//     */
+//    public DateTimeParseContext(String text, int parsePosition) {
+//        this.text = text;
+//        this.parsePosition = parsePosition;
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the text to be parsed.
+//     *
+//     * @return the text to be parsed, never null
+//     */
+//    public String getText() {
+//        return text;
+//    }
+//
+//    /**
+//     * Gets the current parse position.
+//     *
+//     * @return the current parse position
+//     */
+//    public int getParsePosition() {
+//        return parsePosition;
+//    }
+//
+//    /**
+//     * Sets the current parse position.
+//     *
+//     * @param parsePosition  the new parse position
+//     */
+//    public void setParsePosition(int parsePosition) {
+//        this.parsePosition = parsePosition;
+//    }
 
     //-----------------------------------------------------------------------
     /**

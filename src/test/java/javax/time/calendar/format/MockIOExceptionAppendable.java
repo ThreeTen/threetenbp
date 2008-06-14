@@ -32,46 +32,28 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
-
-import javax.time.calendar.FlexiDateTime;
 
 /**
- * Prints or parses a character literal.
+ * Mock Appendable that throws IOException.
  *
  * @author Stephen Colebourne
  */
-class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
+public class MockIOExceptionAppendable implements Appendable {
 
-    /**
-     * The literal to print or parse.
-     */
-    private final char literal;
-
-    /**
-     * Constructor.
-     *
-     * @param literal  the literal to print or parse, not null
-     */
-    CharLiteralPrinterParser(char literal) {
-        this.literal = literal;
+    /** {@inheritDoc} */
+    public Appendable append(CharSequence csq) throws IOException {
+        throw new IOException();
     }
 
     /** {@inheritDoc} */
-    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
-        appendable.append(literal);
+    public Appendable append(char c) throws IOException {
+        throw new IOException();
     }
 
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
-        int length = parseText.length();
-        if (position == length) {
-            return ~position;
-        }
-        if (parseText.charAt(position) != literal) {
-            return ~position;
-        }
-        return position + 1;
+    public Appendable append(CharSequence csq, int start, int end)
+            throws IOException {
+        throw new IOException();
     }
 
 }

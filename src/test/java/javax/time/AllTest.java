@@ -46,7 +46,11 @@ import javax.time.calendar.field.TestDayOfMonthRule;
 import javax.time.calendar.field.TestDayOfWeek;
 import javax.time.calendar.field.TestDayOfYear;
 import javax.time.calendar.field.TestMonthOfYear;
+import javax.time.calendar.format.TestCharLiteralParser;
+import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatters;
+import javax.time.calendar.format.TestStringLiteralParser;
+import javax.time.calendar.format.TestStringLiteralPrinter;
 import javax.time.period.field.TestDays;
 import javax.time.period.field.TestHours;
 import javax.time.period.field.TestMinutes;
@@ -94,6 +98,10 @@ public class AllTest {
             TestDayOfMonthRule.class,
             // format
             TestDateTimeFormatters.class,
+            TestCharLiteralParser.class,
+            TestCharLiteralPrinter.class,
+            TestStringLiteralPrinter.class,
+            TestStringLiteralParser.class,
             // period fields
             TestDays.class,
             TestHours.class,
