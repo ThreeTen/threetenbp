@@ -37,29 +37,57 @@ import java.util.Locale;
 import javax.time.calendar.FlexiDateTime;
 
 /**
- * Prints a literal.
+ * Prints or parses a character literal.
  *
  * @author Stephen Colebourne
  */
-class CharLiteralPrinter implements DateTimePrinter {
+class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The literal to print.
+     * The literal to print or parse.
      */
     private final char literal;
 
     /**
      * Constructor.
      *
-     * @param literal  the literal to print, not null
+     * @param literal  the literal to print or parse, not null
      */
-    CharLiteralPrinter(char literal) {
+    CharLiteralPrinterParser(char literal) {
         this.literal = literal;
     }
 
     /** {@inheritDoc} */
     public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
         appendable.append(literal);
+    }
+
+//    /** {@inheritDoc} */
+//    public FlexiDateTime parse(CharSequence parseText, ParsePosition parsePosition, FlexiDateTime dateTime, Locale locale) {
+//        int length = parseText.length();
+//        int pos = parsePosition.getIndex();
+//        if (pos >= length) {
+//            parsePosition.setErrorIndex(pos);
+//        } else {
+//            if (parseText.charAt(pos) != literal) {
+//                parsePosition.setErrorIndex(pos);
+//            } else {
+//                parsePosition.setIndex(++pos);
+//            }
+//        }
+//        return dateTime;
+//    }
+
+    /** {@inheritDoc} */
+    public int parse(DateTimeParseContext context, String parseText, int position) {
+        int length = parseText.length();
+        if (position >= length) {
+            return ~position;
+        }
+        if (parseText.charAt(position) != literal) {
+            return ~position;
+        }
+        return position + 1;
     }
 
 }

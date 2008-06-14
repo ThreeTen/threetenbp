@@ -37,21 +37,21 @@ import java.util.Locale;
 import javax.time.calendar.FlexiDateTime;
 
 /**
- * Prints a literal.
+ * Prints or parses a string literal.
  *
  * @author Stephen Colebourne
  */
-class StringLiteralPrinter implements DateTimePrinter {
+class StringLiteralPrinter implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The literal to print.
+     * The literal to print or parse.
      */
     private final String literal;
 
     /**
      * Constructor.
      *
-     * @param literal  the literal to print, not null
+     * @param literal  the literal to print or parse, not null
      */
     StringLiteralPrinter(String literal) {
         this.literal = literal;
@@ -60,6 +60,36 @@ class StringLiteralPrinter implements DateTimePrinter {
     /** {@inheritDoc} */
     public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
         appendable.append(literal);
+    }
+
+//    /** {@inheritDoc} */
+//    public FlexiDateTime parse(CharSequence parseText, ParsePosition parsePosition, FlexiDateTime dateTime, Locale locale) {
+//        int length = parseText.length();
+//        int pos = parsePosition.getIndex();
+//        int endPos = pos + literal.length();
+//        if (endPos > length) {
+//            parsePosition.setErrorIndex(pos);
+//        } else {
+//            if (literal.contentEquals(parseText.subSequence(pos, endPos))) {
+//                parsePosition.setIndex(endPos);
+//            } else {
+//                parsePosition.setErrorIndex(pos);
+//            }
+//        }
+//        return dateTime;
+//    }
+
+    /** {@inheritDoc} */
+    public int parse(DateTimeParseContext context, String parseText, int position) {
+        int length = parseText.length();
+        int endPos = position + literal.length();
+        if (endPos > length) {
+            return ~position;
+        }
+        if (literal.equals(parseText.substring(position, endPos)) == false) {
+            return ~position;
+        }
+        return endPos;
     }
 
 }

@@ -108,17 +108,12 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
-        if (fieldRule == null) {
-            throw new NullPointerException("TimeFieldRule must not be null");
-        }
-        NumberPrinter printer = new NumberPrinter(fieldRule, width, width, '0', true, SignStyle.NEGATIVE_ERROR);
-        printers.add(printer);
-        return this;
+        return appendValue(fieldRule, width, width, '0', true, SignStyle.NEGATIVE_ERROR);
     }
 
     /**
-     * Appends the value of a date-time field to the formatter using a fixed
-     * width, zero-padded approach.
+     * Appends the value of a date-time field to the formatter providing full
+     * control over printing.
      * <p>
      * The value of the field will be output during a print. If the value
      * cannot be obtained from the date-time then printing will stop.
@@ -138,10 +133,10 @@ public class DateTimeFormatterBuilder {
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth,
             char padChar, boolean padOnLeft, SignStyle signStyle) {
         if (fieldRule == null) {
-            throw new NullPointerException("TimeFieldRule must not be null");
+            throw new NullPointerException("The field rule must not be null");
         }
         if (signStyle == null) {
-            throw new NullPointerException("NegativeStyle must not be null");
+            throw new NullPointerException("The sign style must not be null");
         }
         NumberPrinter printer = new NumberPrinter(fieldRule, minWidth, maxWidth, padChar, padOnLeft, signStyle);
         printers.add(printer);
@@ -157,7 +152,7 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
-        printers.add(new CharLiteralPrinter(literal));
+        printers.add(new CharLiteralPrinterParser(literal));
         return this;
     }
 
@@ -229,7 +224,7 @@ public class DateTimeFormatterBuilder {
         // TODO: I18N: The minus sign varies by locale
 
         /**
-         * Style to never output the negative sign, only outputting the absolute value.
+         * Style to throw an exception if trying to output a negative value.
          */
         NEGATIVE_ERROR {
             /** {@inheritDoc} */
@@ -241,16 +236,16 @@ public class DateTimeFormatterBuilder {
             }
         },
         /**
-         * Style to never output the negative sign, only outputting the absolute value.
+         * Style to never output a sign, only outputting the absolute value.
          */
-        ABS {
+        NEVER {
             /** {@inheritDoc} */
             @Override
             void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
             }
         },
         /**
-         * Style to output the negative sign only if the value is negative.
+         * Style to output the a sign only if the value is negative.
          */
         NORMAL {
             /** {@inheritDoc} */
