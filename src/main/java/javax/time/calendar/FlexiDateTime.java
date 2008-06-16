@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
 
 
@@ -50,11 +49,11 @@ import java.util.Map.Entry;
  * @author Stephen Colebourne
  */
 public final class FlexiDateTime implements Calendrical {
-
+// TODO: Use TreeMap
     /**
      * The date time map, never null, may be empty.
      */
-    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>();
+    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
     /**
      * The date, may be null.
      */
@@ -144,7 +143,7 @@ public final class FlexiDateTime implements Calendrical {
             if (fieldValueMap.containsValue(null)) {
                 throw new NullPointerException("Null values are not permitted in field-value map");
             }
-            fieldValueMap.putAll(fieldValueMap);
+            this.fieldValueMap.putAll(fieldValueMap);
         }
         this.date = date;
         this.time = time;
@@ -185,6 +184,43 @@ public final class FlexiDateTime implements Calendrical {
         }
         rule.checkValue(mapValue);
         return mapValue;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the raw value for the specified field throwing an exception if the
+     * field cannot be obtained.
+     * <p>
+     * This methods obtains the raw value by first examining the field-value
+     * map, and then by examining the date and/or time.
+     * <p>
+     * If the rule is found in the field-value map then the value is returned
+     * immediately. The value might differ from the value stored in the
+     * date and/or time. The value might also be invalid, such as a day of
+     * month of 50.
+     * <p>
+     * If the rule is not found in the field-value map then the date and/or
+     * time is queried. If the value cannot be obtained then an exception
+     * is thrown.
+     *
+     * @param rule  the rule to query from the map, not null
+     * @return the value mapped to the specified field
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
+     */
+    public int getRawValue(DateTimeFieldRule rule) {
+        if (rule == null) {
+            throw new NullPointerException("The rule must not be null");
+        }
+        Integer mapValue = fieldValueMap.get(rule);
+        if (mapValue != null) {
+            return mapValue;
+        }
+        Integer value = rule.extractValue(this);
+        if (value != null) {
+            return value;
+        }
+        throw new UnsupportedCalendarFieldException(rule, "FlexiDateTime");
     }
 
     //-----------------------------------------------------------------------
@@ -298,7 +334,7 @@ public final class FlexiDateTime implements Calendrical {
         }
         Map<DateTimeFieldRule, Integer> map = getFieldValueMap();
         map.put(fieldRule, value);
-        return new FlexiDateTime(fieldValueMap, date, time, offset, zone);
+        return new FlexiDateTime(map, date, time, offset, zone);
     }
 
     /**

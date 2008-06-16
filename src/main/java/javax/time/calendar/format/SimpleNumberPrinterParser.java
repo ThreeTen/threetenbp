@@ -39,35 +39,27 @@ import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
- * Prints an integer with padding.
+ * Prints and parses a numeric date-time field with optional padding.
  *
  * @author Stephen Colebourne
  */
-class NumberPrinter implements DateTimePrinter {
+class SimpleNumberPrinterParser implements DateTimePrinter {
     // TODO: I18N: The numeric output varies by locale
 
     /**
-     * The field to output.
+     * The field to output, not null.
      */
     private final DateTimeFieldRule fieldRule;
     /**
-     * The minimum width allowed, padding is used up to this width.
+     * The minimum width allowed, zero padding is used up to this width, from 1 to 10.
      */
     private final int minWidth;
     /**
-     * The maximum width allowed.
+     * The maximum width allowed, from 1 to 10.
      */
     private final int maxWidth;
     /**
-     * The pad character.
-     */
-    private final char padChar;
-    /**
-     * Whether to left pad (true) or right pad (false).
-     */
-    private final boolean padOnLeft;
-    /**
-     * The positive/negative sign style.
+     * The positive/negative sign style, not null.
      */
     private final SignStyle signStyle;
 
@@ -75,49 +67,86 @@ class NumberPrinter implements DateTimePrinter {
      * Constructor.
      *
      * @param fieldRule  the rule of the field to print, not null
-     */
-    public NumberPrinter(DateTimeFieldRule fieldRule) {
-        this(fieldRule, 0, Integer.MAX_VALUE, '0', true, SignStyle.NORMAL);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param fieldRule  the rule of the field to print, not null
-     * @param minWidth  the minimum field width
-     * @param maxWidth  the maximum field width
-     * @param padChar  the padding character
-     * @param padOnLeft  whether to left pad (true) or right pad (false)
+     * @param minWidth  the minimum field width, from 1 to 10
+     * @param maxWidth  the maximum field width, from 1 to 10
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberPrinter(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, char padChar, boolean padOnLeft, SignStyle signStyle) {
+    SimpleNumberPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
         this.fieldRule = fieldRule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
-        this.padChar = padChar;
-        this.padOnLeft = padOnLeft;
         this.signStyle = signStyle;
     }
 
     /** {@inheritDoc} */
     public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
         int value = dateTime.getRawValue(fieldRule);
-        String str = Integer.toString(Math.abs(value));
+        String str = (value == Integer.MIN_VALUE ? Long.toString(Math.abs((long) value)) : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
             throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);
         }
         signStyle.print(appendable, fieldRule, value, minWidth);
-        if (padOnLeft) {
-            for (int i = 0; i < minWidth - str.length(); i++) {
-                appendable.append(padChar);
+        for (int i = 0; i < minWidth - str.length(); i++) {
+            appendable.append('0');
+        }
+        appendable.append(str);
+    }
+
+    /** {@inheritDoc} */
+    public int parse(DateTimeParseContext context, String parseText, int position) {
+        int length = parseText.length();
+        if (position == length) {
+            return ~position;
+        }
+        char sign = parseText.charAt(position);  // IOOBE if invalid position
+        if (sign == '+') {
+            switch (signStyle) {
+                case ALWAYS:
+                case EXCEEDS_PAD:
+                    position++;
+                    break;
+                default:
+                    return ~position;
             }
-            appendable.append(str);
-        } else {
-            appendable.append(str);
-            for (int i = 0; i < minWidth - str.length(); i++) {
-                appendable.append(padChar);
+        } else if (sign == '-') {
+            switch (signStyle) {
+                case ALWAYS:
+                case EXCEEDS_PAD:
+                case NORMAL:
+                    position++;
+                    break;
+                default:
+                    return ~position;
             }
         }
+        int minEndPos = position + minWidth;
+        if (minEndPos > length) {
+            return ~position;
+        }
+        int total = 0;
+        while (position < minEndPos) {
+            char ch = parseText.charAt(position++);
+            int digit = context.digit(ch);
+            if (digit < 0) {
+                return ~(position - 1);
+            }
+            total *= 10;
+            total += digit;
+        }
+        int maxEndPos = Math.max(position + maxWidth, length);
+        while (position < maxEndPos) {
+            char ch = parseText.charAt(position++);
+            int digit = context.digit(ch);
+            if (digit < 0) {
+                position--;
+                break;
+            }
+            total *= 10;
+            total += digit;
+        }
+        total = (sign == '-' ? -total : total);
+        context.setFieldValue(fieldRule, total);
+        return position;
     }
 
 }

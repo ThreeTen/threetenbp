@@ -227,6 +227,54 @@ public class DateTimeFormatterBuilder {
         return new DateTimeFormatter(locale, false, printers);
     }
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Enumeration of ways to pad the output.
+//     *
+//     * @author Stephen Colebourne
+//     */
+//    public enum PadStyle {
+//        /**
+//         * Style to pad before any output.
+//         */
+//        BEFORE {
+//            /** {@inheritDoc} */
+//            @Override
+//            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+//            }
+//        },
+//        /**
+//         * Style to pad a number being output.
+//         */
+//        NUMBER {
+//            /** {@inheritDoc} */
+//            @Override
+//            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+//            }
+//        },
+//        /**
+//         * Style to pad after the output.
+//         */
+//        AFTER {
+//            /** {@inheritDoc} */
+//            @Override
+//            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
+//            }
+//        };
+//
+//        /**
+//         * Prints the sign to the output appendable.
+//         *
+//         * @param appendable  the appendable to output to, not null
+//         * @param fieldRule  the rule of the field to output, not null
+//         * @param value  the value being output
+//         * @param padWidth  the pad width
+//         * @throws IOException if an error occurs
+//         */
+//        abstract void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException;
+//
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Enumeration of ways to handle the positive/negative sign.
@@ -244,7 +292,7 @@ public class DateTimeFormatterBuilder {
             @Override
             void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
                 if (value < 0) {
-                    throw new CalendricalFormatException("The field " + fieldRule.getName() + " cannot be printed as it is negative");
+                    throw new CalendricalFormatFieldException(fieldRule, value);
                 }
             }
         },
@@ -326,6 +374,14 @@ public class DateTimeFormatterBuilder {
          * @throws IOException if an error occurs
          */
         abstract void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException;
+
+//        /**
+//         * Prints the sign to the output appendable.
+//         *
+//         * @param ch  is the character valid
+//         * @throws IOException if an error occurs
+//         */
+//        abstract boolean isParseValid(char ch);
 
     }
 

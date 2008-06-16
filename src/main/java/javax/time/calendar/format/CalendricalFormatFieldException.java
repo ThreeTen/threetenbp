@@ -65,6 +65,21 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
 
     /**
      * Constructs a new exception creating a standard error message for
+     * unable to print a negative value.
+     *
+     * @param fieldRule  the rule of the field that caused the exception, may be null
+     * @param value  the value of the field that caused the exception
+     */
+    public CalendricalFormatFieldException(DateTimeFieldRule fieldRule, int value) {
+        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) +
+                " cannot be printed as the value " + value +
+                " cannot be negative according to the SignStyle");
+        this.fieldRule = fieldRule;
+        this.value = value;
+    }
+
+    /**
+     * Constructs a new exception creating a standard error message for
      * exceeding padding width.
      *
      * @param fieldRule  the rule of the field that caused the exception, may be null
