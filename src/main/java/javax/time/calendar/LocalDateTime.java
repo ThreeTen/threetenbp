@@ -1265,8 +1265,8 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusHours(int hours) {
-        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.hours(hours));
-        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        LocalTime.Overflow overflow = time.minusHoursWithOverflow(hours);
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
 
@@ -1280,8 +1280,8 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusMinutes(int minutes) {
-        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.minutes(minutes));
-        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        LocalTime.Overflow overflow = time.minusMinutesWithOverflow(minutes);
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
 
@@ -1295,8 +1295,8 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusSeconds(int seconds) {
-        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.seconds(seconds));
-        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+        LocalTime.Overflow overflow = time.minusSecondsWithOverflow(seconds);
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
 
@@ -1309,9 +1309,9 @@ public final class LocalDateTime
      * @return a new updated LocalDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minusNanos(int nanos) {
-        LocalTime.Overflow overflow = time.minusWithOverflow(Periods.nanos(nanos));
-        LocalDate newDate = date.minusDays(overflow.getOverflowDays());
+    public LocalDateTime minusNanos(long nanos) {
+        LocalTime.Overflow overflow = time.minusNanosWithOverflow(nanos);
+        LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
 
