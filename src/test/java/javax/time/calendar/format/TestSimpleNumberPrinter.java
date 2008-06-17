@@ -278,4 +278,26 @@ public class TestSimpleNumberPrinter {
         }
     }
 
+    @Test(dataProvider="Pad") 
+    public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, int value, String result) throws Exception {
+        FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), value);
+        SimpleNumberPrinterParser pp = new SimpleNumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.EXCEEDS_PAD);
+        try {
+            pp.print(buf, dt, locale);
+            if (result == null) {
+                fail("Expected exception");
+            }
+            if (result.length() > minPad || value < 0) {
+                result = (value < 0 ? "-" + result : "+" + result);
+            }
+            assertEquals(buf.toString(), result);
+        } catch (CalendricalFormatFieldException ex) {
+            if (result != null) {
+                throw ex;
+            }
+            assertEquals(ex.getFieldRule(), DayOfMonth.rule());
+            assertEquals(ex.getValue(), (Integer) value);
+        }
+    }
+
 }
