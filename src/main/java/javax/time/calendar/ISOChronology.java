@@ -44,7 +44,7 @@ import javax.time.calendar.field.Year;
 import javax.time.period.Periods;
 
 /**
- * The ISO8601 calendar system, which follows the rules of the current
+ * The ISO-8601 calendar system, which follows the rules of the current
  * <i>de facto</i> world calendar.
  * <p>
  * ISOChronology follows the rules of the Gregorian calendar for all time.
@@ -56,7 +56,7 @@ import javax.time.period.Periods;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class ISOChronology implements Serializable {
+public final class ISOChronology extends Chronology implements Serializable {
 
     /**
      * The singleton instance of <code>ISOChronology</code>.
@@ -119,154 +119,10 @@ public final class ISOChronology implements Serializable {
      *
      * @return the name of the chronology, never null
      */
+    @Override
     public String getName() {
         return "ISO";
     }
-
-    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the calendrical state from year, month, day.
-//     *
-//     * @param year  the year
-//     * @param month  the month of year
-//     * @param day  the day of month
-//     * @return the state, never null
-//     */
-//    public CalendricalState stateFromYearMonthDay(int year, int month, int day) {
-//        year--;
-//        month--;
-//        day--;
-//        long epochMonths = year;
-//        epochMonths *= 13 + month;
-//        long epochSeconds = ((long) day) * 24 * 60 * 60;
-//        return new State(epochMonths, epochSeconds);
-//    }
-
-//    /**
-//     * Validates the date from a year, month and day.
-//     *
-//     * @param year  the year
-//     * @param monthOfYear  the month of year
-//     * @param dayOfMonth  the day of month
-//     * @return true if valid
-//     */
-//    public boolean validateDate(int year, int monthOfYear, int dayOfMonth) {
-//        if (year == Integer.MIN_VALUE) {
-//            return false;
-//        }
-//        if (monthOfYear < 1 || monthOfYear > 12) {
-//            return false;
-//        }
-//        if (dayOfMonth < 1 || dayOfMonth > 28) {
-//            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(Year.isoYear(year));
-//            if (dayOfMonth < 1 || dayOfMonth > length) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
-//    /**
-//     * Validates the date from a year, month and day.
-//     *
-//     * @param year  the year, not null
-//     * @param monthOfYear  the month of year, not null
-//     * @param dayOfMonth  the day of month, not null
-//     * @throws IllegalCalendarFieldValueException if any field is invalid
-//     */
-//    public void checkValidDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-//        if (year == null) {
-//            throw new NullPointerException("Year must not be null");
-//        }
-//        if (monthOfYear == null) {
-//            throw new NullPointerException("MonthOfYear must not be null");
-//        }
-//        if (dayOfMonth == null) {
-//            throw new NullPointerException("DayOfMonth must not be null");
-//        }
-//        if (dayOfMonth.isValid(year, monthOfYear) == false) {
-//            throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth.getValue(), 1, monthOfYear.lengthInDays(year));
-//        }
-//    }
-
-//    /**
-//     * Validates the date from a year, month and day.
-//     *
-//     * @param year  the year
-//     * @param monthOfYear  the month of year
-//     * @param dayOfMonth  the day of month
-//     * @throws IllegalCalendarFieldValueException if any field is invalid
-//     */
-//    public void checkValidDate(int year, int monthOfYear, int dayOfMonth) {
-//        if (year == Integer.MIN_VALUE) {
-//            throw new IllegalCalendarFieldValueException("Year", year, Integer.MIN_VALUE + 1, Integer.MAX_VALUE);
-//        }
-//        if (monthOfYear < 1 || monthOfYear > 12) {
-//            throw new IllegalCalendarFieldValueException("MonthOfYear", monthOfYear, 1, 12);
-//        }
-//        if (dayOfMonth < 1 || dayOfMonth > 28) {
-//            int length = MonthOfYear.monthOfYear(monthOfYear).lengthInDays(Year.isoYear(year));
-//            if (dayOfMonth < 1 || dayOfMonth > length) {
-//                throw new IllegalCalendarFieldValueException("DayOfMonth", dayOfMonth, 1, length);
-//            }
-//        }
-//    }
-
-//    /**
-//     * Gets the day of year from a year, month and day.
-//     *
-//     * @param year  the year, must be valid, must be valid
-//     * @param monthOfYear  the month of year, from 1 to 12, must be valid
-//     * @return the length of the month in days
-//     */
-//    int getMonthLength(int year, int monthOfYear) {
-//        if (isLeapYear(year)) {
-//            return LEAP_MONTH_LENGTHS[monthOfYear - 1];
-//        } else {
-//            return STANDARD_MONTH_LENGTHS[monthOfYear - 1];
-//        }
-//    }
-
-//    /**
-//     * Gets the day of year from a year, month and day.
-//     *
-//     * @param year  the year, must be valid, must be valid
-//     * @param monthOfYear  the month of year, from 1 to 12, must be valid
-//     * @param dayOfMonth  the day of month, from 1 to 31, must be valid
-//     * @return the day of year, from 1 to 366
-//     */
-//    int getDayOfYear(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-//        if (year.isLeap()) {
-//            return LEAP_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
-//        } else {
-//            return STANDARD_MONTH_START[monthOfYear.ordinal()] + dayOfMonth.getValue();
-//        }
-//    }
-
-//    /**
-//     * Gets the day of week from a year, month and day.
-//     *
-//     * @param year  the year, must be valid, must be valid
-//     * @param monthOfYear  the month of year, from 1 to 12, must be valid
-//     * @param dayOfMonth  the day of month, from 1 to 31, must be valid
-//     * @return the day of week, from 1 to 7
-//     */
-//    int getDayOfWeek(int year, int monthOfYear, int dayOfMonth) {
-//        return 1;
-//    }
-
-    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the calendrical state from year, month, day.
-//     *
-//     * @param year  the year
-//     * @param month  the month of year
-//     * @param day  the day of month
-//     * @return the state, never null
-//     */
-//    public long convert(long amount, PeriodUnit fromUnit, PeriodUnit toUnit) {
-//        return 0;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -274,6 +130,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the year field, never null
      */
+    @Override
     public DateTimeFieldRule year() {
         return YearRule.INSTANCE;
     }
@@ -283,6 +140,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the month of year field, never null
      */
+    @Override
     public DateTimeFieldRule monthOfYear() {
         return MonthOfYearRule.INSTANCE;
     }
@@ -292,6 +150,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the day of month field, never null
      */
+    @Override
     public DateTimeFieldRule dayOfMonth() {
         return DayOfMonthRule.INSTANCE;
     }
@@ -301,6 +160,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the day of year field, never null
      */
+    @Override
     public DateTimeFieldRule dayOfYear() {
         return DayOfYearRule.INSTANCE;
     }
@@ -328,6 +188,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the day of week field, never null
      */
+    @Override
     public DateTimeFieldRule dayOfWeek() {
         return DayOfWeekRule.INSTANCE;
     }
@@ -374,6 +235,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the hour of day field, never null
      */
+    @Override
     public DateTimeFieldRule hourOfDay() {
         return HourOfDayRule.INSTANCE;
     }
@@ -383,6 +245,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the minute of hour field, never null
      */
+    @Override
     public DateTimeFieldRule minuteOfHour() {
         return MinuteOfHourRule.INSTANCE;
     }
@@ -392,6 +255,7 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the second of minute field, never null
      */
+    @Override
     public DateTimeFieldRule secondOfMinute() {
         return SecondOfMinuteRule.INSTANCE;
     }
@@ -401,19 +265,9 @@ public final class ISOChronology implements Serializable {
      *
      * @return the rule for the nano of second field, never null
      */
+    @Override
     public DateTimeFieldRule nanoOfSecond() {
         return NanoOfSecondRule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * A debugging description of this class.
-     *
-     * @return a string form for debugging, never null
-     */
-    @Override
-    public String toString() {
-        return "ISOChronology";
     }
 
     //-----------------------------------------------------------------------
@@ -427,7 +281,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule() {
-            super("Year", Periods.YEARS, Periods.FOREVER, Year.MIN_YEAR, Year.MAX_YEAR);
+            super(ISOChronology.INSTANCE, "Year", Periods.YEARS, Periods.FOREVER, Year.MIN_YEAR, Year.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -450,7 +304,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super("MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 12);
+            super(ISOChronology.INSTANCE, "MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -473,7 +327,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
+            super(ISOChronology.INSTANCE, "DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -517,7 +371,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super("DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
+            super(ISOChronology.INSTANCE, "DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -561,7 +415,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekyearRule() {
-            super("Weekyear", Periods.YEARS, Periods.FOREVER, Weekyear.MIN_YEAR, Weekyear.MAX_YEAR);
+            super(ISOChronology.INSTANCE, "Weekyear", Periods.YEARS, Periods.FOREVER, Weekyear.MIN_YEAR, Weekyear.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -584,7 +438,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfWeekyearRule() {
-            super("WeekOfWeekyear", Periods.WEEKS, Periods.YEARS, 1, 53);
+            super(ISOChronology.INSTANCE, "WeekOfWeekyear", Periods.WEEKS, Periods.YEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -612,7 +466,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super("DayOfWeek", Periods.DAYS, Periods.WEEKS, 1, 7);
+            super(ISOChronology.INSTANCE, "DayOfWeek", Periods.DAYS, Periods.WEEKS, 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -635,7 +489,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfYearRule() {
-            super("WeekOfYear", Periods.WEEKS, Periods.YEARS, 1, 53);
+            super(ISOChronology.INSTANCE, "WeekOfYear", Periods.WEEKS, Periods.YEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -667,7 +521,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private QuarterOfYearRule() {
-            super("QuarterOfYear", Periods.WEEKS, Periods.YEARS, 1, 4);
+            super(ISOChronology.INSTANCE, "QuarterOfYear", Periods.WEEKS, Periods.YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -690,7 +544,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfQuarterRule() {
-            super("MonthOfQuarter", Periods.WEEKS, Periods.YEARS, 1, 4);
+            super(ISOChronology.INSTANCE, "MonthOfQuarter", Periods.WEEKS, Periods.YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -734,7 +588,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfMonthRule() {
-            super("WeekOfMonth", Periods.WEEKS, Periods.YEARS, 1, 5);
+            super(ISOChronology.INSTANCE, "WeekOfMonth", Periods.WEEKS, Periods.YEARS, 1, 5);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -762,7 +616,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private HourOfDayRule() {
-            super("HourOfDay", Periods.HOURS, Periods.DAYS, 0, 23);
+            super(ISOChronology.INSTANCE, "HourOfDay", Periods.HOURS, Periods.DAYS, 0, 23);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -801,7 +655,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MinuteOfHourRule() {
-            super("MinuteOfHour", Periods.MINUTES, Periods.HOURS, 0, 59);
+            super(ISOChronology.INSTANCE, "MinuteOfHour", Periods.MINUTES, Periods.HOURS, 0, 59);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -824,7 +678,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private SecondOfMinuteRule() {
-            super("SecondOfMinute", Periods.SECONDS, Periods.MINUTES, 0, 59);
+            super(ISOChronology.INSTANCE, "SecondOfMinute", Periods.SECONDS, Periods.MINUTES, 0, 59);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -847,7 +701,7 @@ public final class ISOChronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private NanoOfSecondRule() {
-            super("NanoOfSecond", Periods.NANOS, Periods.SECONDS, 0, 999999999);
+            super(ISOChronology.INSTANCE, "NanoOfSecond", Periods.NANOS, Periods.SECONDS, 0, 999999999);
         }
         private Object readResolve() {
             return INSTANCE;

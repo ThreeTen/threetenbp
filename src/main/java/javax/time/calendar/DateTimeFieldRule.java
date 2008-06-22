@@ -50,6 +50,10 @@ import javax.time.period.PeriodUnit;
 public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule> {
 
     /** The name of the rule, not null. */
+    private final Chronology chronology;
+    /** The id of the rule, not null. */
+    private final String id;
+    /** The name of the rule, not null. */
     private final String name;
     /** The period unit, not null. */
     private final PeriodUnit periodUnit;
@@ -65,6 +69,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     /**
      * Constructor.
      *
+     * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
      * @param periodRange  the period range, not null
@@ -72,23 +77,26 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @param maximumValue  the minimum value
      */
     protected DateTimeFieldRule(
+            Chronology chronology,
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
-//        if (name == null) {
-//            throw new NullPointerException("name must not be null");
-//        }
-//
+        if (chronology == null) {
+            throw new NullPointerException("The chronology must not be null");
+        }
+        if (name == null) {
+            throw new NullPointerException("The name must not be null");
+        }
 //        if (periodUnit == null) {
 //            throw new NullPointerException("periodUnit must not be null");
 //        }
-//
 //        if (periodRange == null) {
 //            throw new NullPointerException("periodRange must not be null");
 //        }
-
+        this.chronology = chronology;
+        this.id = chronology.getName() + '.' + name;
         this.name = name;
         this.periodUnit = periodUnit;
         this.periodRange = periodRange;
@@ -99,11 +107,23 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the name of the time field type.
+     * Gets the id of the field.
+     * <p>
+     * The id is of the form 'ChronologyName.FieldName'.
+     * No two fields should have the same id.
+     *
+     * @return the id of the field, never null
+     */
+    public final String getID() {
+        return id;
+    }
+
+    /**
+     * Gets the name of the field.
      * <p>
      * Subclasses should use the form 'UnitOfRange' whenever possible.
      *
-     * @return the name of the time field type, never null
+     * @return the name of the field, never null
      */
     public String getName() {
         return name;

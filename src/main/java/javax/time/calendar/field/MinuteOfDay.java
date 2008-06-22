@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
 
@@ -170,7 +171,7 @@ public final class MinuteOfDay implements Calendrical, Comparable<MinuteOfDay>, 
 
         /** Constructor. */
         protected Rule() {
-            super("MinuteOfDay", null, null, 0, 1439);
+            super(ISOChronology.INSTANCE, "MinuteOfDay", null, null, 0, 1439);
         }
     }
 

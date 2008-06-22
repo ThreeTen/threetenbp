@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
 
@@ -170,7 +171,7 @@ public final class SecondOfDay implements Calendrical, Comparable<SecondOfDay>, 
 
         /** Constructor. */
         protected Rule() {
-            super("SecondOfDay", null, null, 0, 86399);
+            super(ISOChronology.INSTANCE, "SecondOfDay", null, null, 0, 86399);
         }
     }
 

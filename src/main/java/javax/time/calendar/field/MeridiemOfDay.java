@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
@@ -212,7 +213,7 @@ public enum MeridiemOfDay
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private Rule() {
-            super("MeridiemOfDay", null, null, 0, 1);
+            super(ISOChronology.INSTANCE, "MeridiemOfDay", null, null, 0, 1);
         }
         private Object readResolve() {
             return INSTANCE;

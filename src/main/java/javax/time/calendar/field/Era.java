@@ -35,6 +35,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
@@ -198,7 +199,7 @@ public enum Era
 
         /** Constructor. */
         protected Rule() {
-            super("Era", null, null, 0, 1);
+            super(ISOChronology.INSTANCE, "Era", null, null, 0, 1);
         }
 
         /** {@inheritDoc} */

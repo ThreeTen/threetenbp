@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalTime;
@@ -211,7 +212,7 @@ public final class HourOfMeridiem implements Calendrical, Comparable<HourOfMerid
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private Rule() {
-            super("HourOfMeridiem", Periods.HOURS, Periods.DAYS, 0, 11);
+            super(ISOChronology.INSTANCE, "HourOfMeridiem", Periods.HOURS, Periods.DAYS, 0, 11);
         }
         private Object readResolve() {
             return INSTANCE;
