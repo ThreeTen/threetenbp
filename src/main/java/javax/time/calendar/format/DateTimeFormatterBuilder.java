@@ -107,7 +107,7 @@ public class DateTimeFormatterBuilder {
      * If the value of the field is negative then an exception is thrown.
      *
      * @param fieldRule  the rule of the field to print, not null
-     * @param width  the width of the printed field
+     * @param width  the width of the printed field, from 1 to 10
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
@@ -125,8 +125,8 @@ public class DateTimeFormatterBuilder {
      * padding and the positive/negative sign.
      *
      * @param fieldRule  the rule of the field to print, not null
-     * @param minWidth  the minimum field width of the printed field
-     * @param maxWidth  the maximum field width of the printed field
+     * @param minWidth  the minimum field width of the printed field, from 1 to 10
+     * @param maxWidth  the maximum field width of the printed field, from 1 to 10
      * @param padChar  the padding character
      * @param padOnLeft  whether to left pad (true) or right pad (false)
      * @param signStyle  the postive/negative output style, not null
