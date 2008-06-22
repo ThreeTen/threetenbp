@@ -35,13 +35,13 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
-import javax.time.period.Periods;
 
 /**
  * A representation of a hour of day in the ISO-8601 calendar system.
@@ -61,10 +61,6 @@ public final class HourOfDay
         implements Calendrical, Comparable<HourOfDay>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
-     * The rule implementation that defines how the hour of day field operates.
-     */
-    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
-    /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
@@ -77,6 +73,19 @@ public final class HourOfDay
      * The hour of day being represented.
      */
     private final int hourOfDay;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the hour of day field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the hour of day rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.hourOfDay();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -97,7 +106,7 @@ public final class HourOfDay
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException(
-                RULE, hourOfDay, RULE.getMinimumValue(), RULE.getMaximumValue());
+                rule(), hourOfDay, rule().getMinimumValue(), rule().getMaximumValue());
         }
     }
 
@@ -151,7 +160,7 @@ public final class HourOfDay
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -300,29 +309,6 @@ public final class HourOfDay
      */
     public int getClockHourOfDay() {
         return (hourOfDay == 0 ? 24 : hourOfDay);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the hour of day field.
-     */
-    private static class Rule extends DateTimeFieldRule implements Serializable{
-        /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new Rule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private Rule() {
-            super("HourOfDay", Periods.HOURS, Periods.DAYS, 0, 23);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getValue() : null;
-        }
     }
 
 }

@@ -459,10 +459,10 @@ public class TestLocalTime {
     }
 
     public void test_get() {
-        assertEquals(TEST_12_30_40_987654321.get(HourOfDay.RULE), 12);
-        assertEquals(TEST_12_30_40_987654321.get(MinuteOfHour.RULE), 30);
-        assertEquals(TEST_12_30_40_987654321.get(SecondOfMinute.RULE), 40);
-        assertEquals(TEST_12_30_40_987654321.get(NanoOfSecond.RULE), 987654321);
+        assertEquals(TEST_12_30_40_987654321.get(HourOfDay.rule()), 12);
+        assertEquals(TEST_12_30_40_987654321.get(MinuteOfHour.rule()), 30);
+        assertEquals(TEST_12_30_40_987654321.get(SecondOfMinute.rule()), 40);
+        assertEquals(TEST_12_30_40_987654321.get(NanoOfSecond.rule()), 987654321);
         assertEquals(TEST_12_30_40_987654321.get(HourOfMeridiem.RULE), 0);
         assertEquals(TEST_12_30_40_987654321.get(MeridiemOfDay.RULE), MeridiemOfDay.PM.getValue());
     }

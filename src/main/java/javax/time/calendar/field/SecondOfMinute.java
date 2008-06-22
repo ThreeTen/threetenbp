@@ -35,13 +35,13 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
-import javax.time.period.Periods;
 
 /**
  * A representation of a second of minute in the ISO-8601 calendar system.
@@ -61,10 +61,6 @@ public final class SecondOfMinute
         implements Calendrical, Comparable<SecondOfMinute>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
-     * The rule implementation that defines how the second of minute field operates.
-     */
-    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
-    /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
@@ -77,6 +73,19 @@ public final class SecondOfMinute
      * The second of minute being represented.
      */
     private final int secondOfMinute;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the second of minute field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the second of minute rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.secondOfMinute();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -97,7 +106,7 @@ public final class SecondOfMinute
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException(
-                RULE, secondOfMinute, RULE.getMinimumValue(), RULE.getMaximumValue());
+                rule(), secondOfMinute, rule().getMinimumValue(), rule().getMaximumValue());
         }
     }
 
@@ -137,7 +146,7 @@ public final class SecondOfMinute
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -221,29 +230,6 @@ public final class SecondOfMinute
      */
     public boolean matchesTime(LocalTime time) {
         return this == time.getSecondOfMinute();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the second of minute field.
-     */
-    private static class Rule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new Rule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private Rule() {
-            super("SecondOfMinute", Periods.SECONDS, Periods.MINUTES, 0, 59);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getSecondOfMinute().getValue() : null;
-        }
     }
 
 }

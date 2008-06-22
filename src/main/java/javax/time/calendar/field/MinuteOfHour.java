@@ -35,13 +35,13 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
-import javax.time.period.Periods;
 
 /**
  * A representation of a minute of hour in the ISO-8601 calendar system.
@@ -61,10 +61,6 @@ public final class MinuteOfHour
         implements Calendrical, Comparable<MinuteOfHour>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
-     * The rule implementation that defines how the minute of hour field operates.
-     */
-    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
-    /**
      * A serialization identifier for this instance.
      */
     private static final long serialVersionUID = 1L;
@@ -77,6 +73,19 @@ public final class MinuteOfHour
      * The minute of hour being represented.
      */
     private final int minuteOfHour;
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the minute of hour field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the minute of hour rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.minuteOfHour();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -97,7 +106,7 @@ public final class MinuteOfHour
             return result;
         } catch (IndexOutOfBoundsException ex) {
             throw new IllegalCalendarFieldValueException(
-                RULE, minuteOfHour, RULE.getMinimumValue(), RULE.getMaximumValue());
+                rule(), minuteOfHour, rule().getMinimumValue(), rule().getMaximumValue());
         }
     }
 
@@ -137,7 +146,7 @@ public final class MinuteOfHour
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -221,29 +230,6 @@ public final class MinuteOfHour
      */
     public boolean matchesTime(LocalTime time) {
         return this == time.getMinuteOfHour();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the minute of hour field.
-     */
-    private static class Rule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new Rule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private Rule() {
-            super("MinuteOfHour", Periods.MINUTES, Periods.HOURS, 0, 59);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getMinuteOfHour().getValue() : null;
-        }
     }
 
 }

@@ -34,12 +34,12 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
-import javax.time.period.Periods;
 
 /**
  * A representation of a nano of second in the ISO-8601 calendar system.
@@ -59,10 +59,6 @@ public final class NanoOfSecond
         implements Calendrical, Comparable<NanoOfSecond>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
-     * The rule implementation that defines how the nano of second field operates.
-     */
-    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
-    /**
      * A singleton instance for zero nanoseconds.
      */
     public static final NanoOfSecond NANO_0 = new NanoOfSecond(0);
@@ -78,13 +74,26 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the rule that defines how the nano of second field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the nano of second rule, never null
+     */
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.nanoOfSecond();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of <code>NanoOfSecond</code>.
      *
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @return the created NanoOfSecond
      */
     public static NanoOfSecond nanoOfSecond(int nanoOfSecond) {
-        RULE.checkValue(nanoOfSecond);
+        rule().checkValue(nanoOfSecond);
         if (nanoOfSecond == 0) {
             return NANO_0;
         }
@@ -118,7 +127,7 @@ public final class NanoOfSecond
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -212,29 +221,6 @@ public final class NanoOfSecond
      */
     public double getFractionalValue() {
         return ((double) nanoOfSecond) / 1000000000d;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the nano of second field.
-     */
-    private static class Rule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new Rule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private Rule() {
-            super("NanoOfSecond", Periods.NANOS, Periods.SECONDS, 0, 999999999);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getNanoOfSecond().getValue() : null;
-        }
     }
 
 }

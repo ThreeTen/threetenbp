@@ -208,7 +208,7 @@ public class TestCopticDate {
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupported() {
-        TEST_2007_07_15.get(HourOfDay.RULE);
+        TEST_2007_07_15.get(HourOfDay.rule());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
