@@ -53,6 +53,14 @@ public class DateTimeFormatterBuilder {
      * The list of parsers that will be used.
      */
     private final List<DateTimeParser> parsers = new ArrayList<DateTimeParser>();
+    /**
+     * The width to pad the next field to.
+     */
+    private int padNextWidth;
+    /**
+     * The character to pad the next field with.
+     */
+    private char padNextChar;
 
     //-----------------------------------------------------------------------
     /**
@@ -65,34 +73,22 @@ public class DateTimeFormatterBuilder {
         return new DateTimeFormatterBuilder();
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Appends the value of the ISO year date-time field to the formatter.
-//     *
-//     * @return this, for chaining, never null
-//     */
-//    public DateTimeFormatterBuilder appendYear() {
-//        appendValue(Year.RULE, 4, Integer.MAX_VALUE, '0', true, SignStyle.EXCEEDS_PAD);
-//        return this;
-//    }
-
     //-----------------------------------------------------------------------
     /**
-     * Appends the value of a date-time field to the formatter.
+     * Appends the value of a date-time field to the formatter using a normal
+     * output style.
      * <p>
      * The value of the field will be output during a print. If the value
      * cannot be obtained from the date-time then printing will stop.
+     * <p>
+     * The value will be printed as per the normal print of an integer value.
+     * Only negative numbers will be signed. No padding will be added.
      *
      * @param fieldRule  the rule of the field to print, not null
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            throw new NullPointerException("TimeFieldRule must not be null");
-        }
-        NumberPrinter printer = new NumberPrinter(fieldRule);
-        printers.add(printer);
-        return this;
+        return appendValue(fieldRule, 1, 10, SignStyle.NORMAL);
     }
 
     /**
@@ -111,7 +107,7 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
-        return appendValue(fieldRule, width, width, '0', true, SignStyle.NEGATIVE_ERROR);
+        return appendValue(fieldRule, width, width, SignStyle.NEGATIVE_ERROR);
     }
 
     /**
@@ -127,24 +123,15 @@ public class DateTimeFormatterBuilder {
      * @param fieldRule  the rule of the field to print, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 10
      * @param maxWidth  the maximum field width of the printed field, from 1 to 10
-     * @param padChar  the padding character
-     * @param padOnLeft  whether to left pad (true) or right pad (false)
      * @param signStyle  the postive/negative output style, not null
      * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule or sign style is null
+     * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
-            DateTimeFieldRule fieldRule, int minWidth, int maxWidth,
-            char padChar, boolean padOnLeft, SignStyle signStyle) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        if (signStyle == null) {
-            throw new NullPointerException("The sign style must not be null");
-        }
-        NumberPrinter printer = new NumberPrinter(fieldRule, minWidth, maxWidth, padChar, padOnLeft, signStyle);
-        printers.add(printer);
-        NumberParser parser = new NumberParser(fieldRule, minWidth, maxWidth, padChar, padOnLeft, signStyle);
-        parsers.add(parser);
+            DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
+        NumberPrinterParser pp = new NumberPrinterParser(fieldRule, minWidth, maxWidth, signStyle);
+        appendInternal(pp, pp);
         return this;
     }
 
@@ -158,8 +145,7 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal);
-        printers.add(pp);
-        parsers.add(pp);
+        appendInternal(pp, pp);
         return this;
     }
 
@@ -176,8 +162,7 @@ public class DateTimeFormatterBuilder {
             throw new NullPointerException("String must not be null");
         }
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
-        printers.add(pp);
-        parsers.add(pp);
+        appendInternal(pp, pp);
         return this;
     }
 
@@ -196,8 +181,67 @@ public class DateTimeFormatterBuilder {
         if (printer == null && parser == null) {
             throw new NullPointerException("One of DateTimePrinter or DateTimeParser must be non-null");
         }
+        appendInternal(printer, parser);
+        return this;
+    }
+
+    /**
+     * Appends a printer and/or parser to the internal list handling padding.
+     *
+     * @param printer  the printer to add, null prevents the formatter from printing
+     * @param parser  the parser to add, null prevents the formatter from parsing
+     * @return this, for chaining, never null
+     */
+    private DateTimeFormatterBuilder appendInternal(DateTimePrinter printer, DateTimeParser parser) {
+        if (padNextWidth > 0) {
+            if (printer != null) {
+                printer = new PadPrinterDecorator(printer, padNextWidth, padNextChar);
+            }
+            padNextWidth = 0;
+            padNextChar = 0;
+        }
         printers.add(printer);
         parsers.add(parser);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Causes the next added printer/parser to pad to a fixed width using a space.
+     * <p>
+     * This padding will pad to a fixed width using spaces.
+     * <p>
+     * An exception will be thrown during printing if the pad width
+     * is exceeded.
+     *
+     * @param padWidth  the pad width, 1 or greater
+     * @return this, for chaining, never null
+     * @throws IllegalArgumentException if pad width is too small
+     */
+    public DateTimeFormatterBuilder padNext(int padWidth) {
+        return padNext(padWidth, ' ');
+    }
+
+    /**
+     * Causes the next added printer/parser to pad to a fixed width.
+     * <p>
+     * This padding is intended for padding other than zero-padding.
+     * Zero-padding should be achieved using the appendValue methods.
+     * <p>
+     * An exception will be thrown during printing if the pad width
+     * is exceeded.
+     *
+     * @param padWidth  the pad width, 1 or greater
+     * @param padChar  the pad character
+     * @return this, for chaining, never null
+     * @throws IllegalArgumentException if pad width is too small
+     */
+    public DateTimeFormatterBuilder padNext(int padWidth, char padChar) {
+        if (padWidth < 1) {
+            throw new IllegalArgumentException("The pad width must be at least one but was " + padWidth);
+        }
+        this.padNextWidth = padWidth;
+        this.padNextChar = padChar;
         return this;
     }
 

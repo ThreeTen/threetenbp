@@ -31,39 +31,35 @@
  */
 package javax.time.calendar.format;
 
+import java.io.IOException;
+import java.util.Locale;
+
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
- * Prints an integer with padding.
+ * Prints and parses a numeric date-time field with optional padding.
  *
  * @author Stephen Colebourne
  */
-class NumberParser implements DateTimeParser {
+class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     // TODO: I18N: The numeric output varies by locale
 
     /**
-     * The field to output.
+     * The field to output, not null.
      */
     private final DateTimeFieldRule fieldRule;
     /**
-     * The minimum width allowed, padding is used up to this width.
+     * The minimum width allowed, zero padding is used up to this width, from 1 to 10.
      */
     private final int minWidth;
     /**
-     * The maximum width allowed.
+     * The maximum width allowed, from 1 to 10.
      */
     private final int maxWidth;
     /**
-     * The pad character.
-     */
-    private final char padChar;
-    /**
-     * Whether to left pad (true) or right pad (false).
-     */
-    private final boolean padOnLeft;
-    /**
-     * The positive/negative sign style.
+     * The positive/negative sign style, not null.
      */
     private final SignStyle signStyle;
 
@@ -71,81 +67,79 @@ class NumberParser implements DateTimeParser {
      * Constructor.
      *
      * @param fieldRule  the rule of the field to print, not null
-     */
-    public NumberParser(DateTimeFieldRule fieldRule) {
-        this(fieldRule, 0, Integer.MAX_VALUE, '0', true, SignStyle.NORMAL);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param fieldRule  the rule of the field to print, not null
-     * @param minWidth  the minimum field width
-     * @param maxWidth  the maximum field width
-     * @param padChar  the padding character
-     * @param padOnLeft  whether to left pad (true) or right pad (false)
+     * @param minWidth  the minimum field width, from 1 to 10
+     * @param maxWidth  the maximum field width, from minWidth to 10
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, char padChar, boolean padOnLeft, SignStyle signStyle) {
+    NumberPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
+        if (fieldRule == null) {
+            throw new NullPointerException("The field rule must not be null");
+        }
+        if (minWidth < 1 || minWidth > 10) {
+            throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
+        }
+        if (maxWidth < 1 || maxWidth > 10) {
+            throw new IllegalArgumentException("The maximum width must be from 1 to 10 inclusive but was " + minWidth);
+        }
+        if (maxWidth < minWidth) {
+            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
+                    maxWidth + " < " + minWidth);
+        }
+        if (signStyle == null) {
+            throw new NullPointerException("The sign style must not be null");
+        }
         this.fieldRule = fieldRule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
-        this.padChar = padChar;
-        this.padOnLeft = padOnLeft;
         this.signStyle = signStyle;
     }
 
-//    /** {@inheritDoc} */
-//    public FlexiDateTime parse(CharSequence parseText, ParsePosition parsePosition, FlexiDateTime dateTime, Locale locale) {
-//        int length = parseText.length();
-//        int pos = parsePosition.getIndex();
-//        int minEndPos = pos + minWidth;
-//        if (minEndPos > length) {
-//            parsePosition.setErrorIndex(pos);
-//            return dateTime;
-//        }
-//        int total = 0;
-//        while (pos < minEndPos) {
-//            char ch = parseText.charAt(pos++);
-//            if (ch >= '0' && ch <= '9') {  // TODO: I18N
-//                total *= 10;
-//                total += (ch - '0');
-//            } else {
-//                parsePosition.setErrorIndex(pos - 1);
-//                return dateTime;
-//            }
-//        }
-//        int maxEndPos = pos + maxWidth;
-//        while (pos < maxEndPos) {
-//            char ch = parseText.charAt(pos++);
-//            if (ch >= '0' && ch <= '9') {
-//                total *= 10;
-//                total += (ch - '0');
-//            } else {
-//                break;
-//            }
-//        }
-//        parsePosition.setIndex(pos);
-//        return dateTime.withFieldValue(fieldRule, total);
-//    }
+    /** {@inheritDoc} */
+    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+        int value = dateTime.getRawValue(fieldRule);
+        String str = (value == Integer.MIN_VALUE ? Long.toString(Math.abs((long) value)) : Integer.toString(Math.abs(value)));
+        if (str.length() > maxWidth) {
+            throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);
+        }
+        signStyle.print(appendable, fieldRule, value, minWidth);
+        for (int i = 0; i < minWidth - str.length(); i++) {
+            appendable.append('0');
+        }
+        appendable.append(str);
+    }
 
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
+        if (position == length) {
+            return ~position;
+        }
+        char sign = parseText.charAt(position);  // IOOBE if invalid position
+        if (sign == '+') {
+            switch (signStyle) {
+                case ALWAYS:
+                case EXCEEDS_PAD:
+                    position++;
+                    break;
+                default:
+                    return ~position;
+            }
+        } else if (sign == '-') {
+            switch (signStyle) {
+                case ALWAYS:
+                case EXCEEDS_PAD:
+                case NORMAL:
+                    position++;
+                    break;
+                default:
+                    return ~position;
+            }
+        }
         int minEndPos = position + minWidth;
         if (minEndPos > length) {
             return ~position;
         }
         int total = 0;
-        if (minWidth > 1) {
-            while (position < minEndPos - 1) {
-                char ch = parseText.charAt(position);
-                if (ch != padChar) {
-                    break;
-                }
-                position++;
-            }
-        }
         while (position < minEndPos) {
             char ch = parseText.charAt(position++);
             int digit = context.digit(ch);
@@ -155,7 +149,7 @@ class NumberParser implements DateTimeParser {
             total *= 10;
             total += digit;
         }
-        int maxEndPos = position + maxWidth;
+        int maxEndPos = Math.max(position + maxWidth, length);
         while (position < maxEndPos) {
             char ch = parseText.charAt(position++);
             int digit = context.digit(ch);
@@ -166,6 +160,7 @@ class NumberParser implements DateTimeParser {
             total *= 10;
             total += digit;
         }
+        total = (sign == '-' ? -total : total);
         context.setFieldValue(fieldRule, total);
         return position;
     }
