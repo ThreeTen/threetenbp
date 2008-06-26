@@ -261,8 +261,9 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     //-----------------------------------------------------------------------
     /**
      * Checks if the value is invalid and throws an exception if it is.
-     * This method has no context, so only the outer minimum and maximum
-     * values are used.
+     * <p>
+     * This method has no knowledge of other date-time fields, thus only the
+     * outer minimum and maximum range for the field is validated.
      *
      * @param value  the value to check
      * @throws IllegalCalendarFieldValueException if the value is invalid
