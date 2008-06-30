@@ -31,6 +31,10 @@
  */
 package javax.time.calendar;
 
+import java.util.Locale;
+
+import javax.time.calendar.format.DateTimeFormatSymbols;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -212,6 +216,9 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     /**
      * Extracts the value of this field from the date or time on the specified
      * FlexiDateTime.
+     * <p>
+     * The implementation of this method is only responsible for querying the
+     * date and time fields. The field-value map will be queried separately.
      *
      * @param dateTime  the date-time, not null
      * @return the value of the field, null if unable to extract field
@@ -347,6 +354,28 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      */
     public int getSmallestMaximumValue() {
         return getMaximumValue();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the text for this field throwing an exception if the field cannot
+     * be obtained.
+     * <p>
+     * The value is queried using {@link #getValue(FlexiDateTime)}. The text
+     * is then obtained for that value. If there is no textual mapping, then
+     * the value is returned as per {@link Integer#toString()}.
+     *
+     * @param dateTime  the date-time, not null
+     * @param locale  the locale to use, not null
+     * @param textStyle  the text style, not null
+     * @return the text of the field, never null
+     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
+     */
+    public String getText(FlexiDateTime dateTime, Locale locale, TextStyle textStyle) {
+        int value = dateTime.getValue(this);
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(this, textStyle, value);
+        return text == null ? Integer.toString(value) : text;
     }
 
 //    /**

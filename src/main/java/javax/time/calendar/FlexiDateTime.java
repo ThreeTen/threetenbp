@@ -72,6 +72,14 @@ public final class FlexiDateTime implements Calendrical {
     private final TimeZone zone;
 
     /**
+     * Constructor creating an empty instance which places no restriction
+     * on the date-time.
+     */
+    public FlexiDateTime() {
+        this(null, null, null, null, null);
+    }
+
+    /**
      * Constructor creating from the four main objects.
      *
      * @param date  the optional local date, such as '2007-12-03', may be null

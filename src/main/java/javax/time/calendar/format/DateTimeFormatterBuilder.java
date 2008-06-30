@@ -84,7 +84,7 @@ public class DateTimeFormatterBuilder {
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
      *
-     * @param fieldRule  the rule of the field to print, not null
+     * @param fieldRule  the rule of the field to append, not null
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
@@ -102,7 +102,7 @@ public class DateTimeFormatterBuilder {
      * means that it cannot be printed within the width then an exception is thrown.
      * If the value of the field is negative then an exception is thrown.
      *
-     * @param fieldRule  the rule of the field to print, not null
+     * @param fieldRule  the rule of the field to append, not null
      * @param width  the width of the printed field, from 1 to 10
      * @return this, for chaining, never null
      */
@@ -120,7 +120,7 @@ public class DateTimeFormatterBuilder {
      * This method provides full control of the numeric formatting, including
      * padding and the positive/negative sign.
      *
-     * @param fieldRule  the rule of the field to print, not null
+     * @param fieldRule  the rule of the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 10
      * @param maxWidth  the maximum field width of the printed field, from 1 to 10
      * @param signStyle  the postive/negative output style, not null
@@ -135,12 +135,52 @@ public class DateTimeFormatterBuilder {
         return this;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Appends the text of a date-time field to the formatter using the full
+     * text style.
+     * <p>
+     * The text of the field will be output during a print. If the value
+     * cannot be obtained from the date-time then printing will stop. If the
+     * field has no textual representation, then the numeric value will be used.
+     * <p>
+     * The value will be printed as per the normal print of an integer value.
+     * Only negative numbers will be signed. No padding will be added.
+     *
+     * @param fieldRule  the rule of the field to append, not null
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule) {
+        return appendText(fieldRule, TextStyle.FULL);
+    }
+
+    /**
+     * Appends the text of a date-time field to the formatter.
+     * <p>
+     * The text of the field will be output during a print. If the value
+     * cannot be obtained from the date-time then printing will stop. If the
+     * field has no textual representation, then the numeric value will be used.
+     * <p>
+     * The value will be printed as per the normal print of an integer value.
+     * Only negative numbers will be signed. No padding will be added.
+     *
+     * @param fieldRule  the rule of the field to append, not null
+     * @param textStyle  the text style to use, not null
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule, TextStyle textStyle) {
+        TextPrinterParser pp = new TextPrinterParser(fieldRule, textStyle);
+        appendInternal(pp, null);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Appends a character literal to the formatter.
      * <p>
      * This character will be output during a print.
      *
-     * @param literal  the literal to print, not null
+     * @param literal  the literal to append, not null
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendLiteral(char literal) {
@@ -154,7 +194,7 @@ public class DateTimeFormatterBuilder {
      * <p>
      * This string will be output during a print.
      *
-     * @param literal  the literal to print, not null
+     * @param literal  the literal to append, not null
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
@@ -185,6 +225,7 @@ public class DateTimeFormatterBuilder {
         return this;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Appends a printer and/or parser to the internal list handling padding.
      *
@@ -268,7 +309,10 @@ public class DateTimeFormatterBuilder {
      * @return the created formatter, never null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
-        return new DateTimeFormatter(locale, false, printers);
+        if (locale == null) {
+            throw new NullPointerException("Locale must not be null");
+        }
+        return new DateTimeFormatter(locale, false, printers, parsers);
     }
 
 //    //-----------------------------------------------------------------------
@@ -427,6 +471,27 @@ public class DateTimeFormatterBuilder {
 //         */
 //        abstract boolean isParseValid(char ch);
 
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Enumeration of the style of text output to use.
+     *
+     * @author Stephen Colebourne
+     */
+    public enum TextStyle {
+        /**
+         * Narrow text, typically a single letter.
+         */
+        NARROW,
+        /**
+         * Short text, typically an abreviation.
+         */
+        SHORT,
+        /**
+         * Full text, typically the full description.
+         */
+        FULL;
     }
 
 }

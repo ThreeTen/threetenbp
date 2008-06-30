@@ -32,6 +32,9 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,6 +61,10 @@ public class DateTimeFormatter {
      * The list of printers that will be used, treated as immutable.
      */
     private final DateTimePrinter[] printers;
+    /**
+     * The list of parsers that will be used, treated as immutable.
+     */
+    private final DateTimeParser[] parsers;
 
 //    //-----------------------------------------------------------------------
 //    /**
@@ -99,17 +106,14 @@ public class DateTimeFormatter {
      * @param locale  the locale to use for text formatting, not null
      * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
      * @param printers  the printers to use, cloned by this method, not null
+     * @param parsers  the parsers to use, cloned by this method, not null
      */
-    public DateTimeFormatter(Locale locale, boolean asciiNumerics, List<DateTimePrinter> printers) {
-        if (locale == null) {
-            throw new NullPointerException("Locale must not be null");
-        }
-        if (printers == null) {
-            throw new NullPointerException("Printers must not be null");
-        }
+    DateTimeFormatter(Locale locale, boolean asciiNumerics, List<DateTimePrinter> printers, List<DateTimeParser> parsers) {
+        // validated by caller
         this.locale = locale;
         this.asciiNumerics = asciiNumerics;
-        this.printers = printers.toArray(new DateTimePrinter[printers.size()]);
+        this.printers = printers.contains(null) ? null : printers.toArray(new DateTimePrinter[printers.size()]);
+        this.parsers = parsers.contains(null) ? null : parsers.toArray(new DateTimeParser[parsers.size()]);
     }
 
     /**
@@ -118,11 +122,13 @@ public class DateTimeFormatter {
      * @param locale  the locale to use for text formatting, not null
      * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
      * @param printers  the printers to use, assigned by this method, not null
+     * @param parsers  the parsers to use, assigned by this method, not null
      */
-    private DateTimeFormatter(Locale locale, boolean asciiNumerics, DateTimePrinter[] printers) {
+    private DateTimeFormatter(Locale locale, boolean asciiNumerics, DateTimePrinter[] printers, DateTimeParser[] parsers) {
         this.locale = locale;
         this.asciiNumerics = asciiNumerics;
         this.printers = printers;
+        this.parsers = parsers;
     }
 
     //-----------------------------------------------------------------------
@@ -150,7 +156,21 @@ public class DateTimeFormatter {
         if (locale.equals(this.locale)) {
             return this;
         }
-        return new DateTimeFormatter(locale, asciiNumerics, printers);
+        return new DateTimeFormatter(locale, asciiNumerics, printers, parsers);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this formatter can print.
+     * <p>
+     * Depending on how this formatter is initialised, it may not be possible
+     * for it to print at all. This method allows the caller to check whether
+     * the print methods will throw UnsupportedOperationException or not.
+     *
+     * @return true if the formatter supports printing
+     */
+    public boolean isPrintSupported() {
+        return printers != null;
     }
 
     //-----------------------------------------------------------------------
@@ -161,61 +181,14 @@ public class DateTimeFormatter {
      *
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, never null
+     * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalFormatException if an error occurs during printing
      */
     public String print(Calendrical calendrical) {
-        StringBuilder buf = new StringBuilder();
+        StringBuilder buf = new StringBuilder(32);
         print(calendrical, buf);
         return buf.toString();
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Prints the calendrical to a StringBuilder using this formatter.
-//     * <p>
-//     * This method prints the calendrical to the specified StringBuffer
-//     * avoiding the undesirable IOException from Appendable.
-//     *
-//     * @param calendrical  the calendrical to print, not null
-//     * @param buffer  the buffer to print to, not null
-//     * @throws CalendricalFormatException if an error occurs during printing
-//     */
-//    public void print(Calendrical calendrical, StringBuilder buffer) {
-//        FlexiDateTime dateTime = calendrical.toFlexiDateTime();
-//        try {
-//            for (DateTimePrinter printer : printers) {
-//                printer.print(buffer, dateTime, locale);
-//            }
-//        } catch (UnsupportedCalendarFieldException ex) {
-//            throw new CalendricalFormatFieldException(ex);
-//        } catch (IOException ex) {
-//            throw new CalendricalFormatException("Unexpected IOException", ex);
-//        }
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Prints the calendrical to a StringBuffer using this formatter.
-//     * <p>
-//     * This method prints the calendrical to the specified StringBuffer
-//     * avoiding the undesirable IOException from Appendable.
-//     *
-//     * @param calendrical  the calendrical to print, not null
-//     * @param buffer  the buffer to print to, not null
-//     * @throws CalendricalFormatException if an error occurs during printing
-//     */
-//    public void print(Calendrical calendrical, StringBuffer buffer) {
-//        FlexiDateTime dateTime = calendrical.toFlexiDateTime();
-//        try {
-//            for (DateTimePrinter printer : printers) {
-//                printer.print(buffer, dateTime, locale);
-//            }
-//        } catch (UnsupportedCalendarFieldException ex) {
-//            throw new CalendricalFormatFieldException(ex);
-//        } catch (IOException ex) {
-//            throw new CalendricalFormatException("Unexpected IOException", ex);
-//        }
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -233,9 +206,13 @@ public class DateTimeFormatter {
      *
      * @param calendrical  the calendrical to print, not null
      * @param buffer  the buffer to print to, not null
+     * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalFormatException if an error occurs during printing
      */
     public void print(Calendrical calendrical, Appendable buffer) {
+        if (printers == null) {
+            throw new UnsupportedOperationException("Formatter does not support printing");
+        }
         FlexiDateTime dateTime = calendrical.toFlexiDateTime();
         try {
             for (DateTimePrinter printer : printers) {
@@ -245,6 +222,125 @@ public class DateTimeFormatter {
             throw new CalendricalFormatFieldException(ex);
         } catch (IOException ex) {
             throw new CalendricalFormatException(ex);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks whether this formatter can parse.
+     * <p>
+     * Depending on how this formatter is initialised, it may not be possible
+     * for it to parse at all. This method allows the caller to check whether
+     * the parse methods will throw UnsupportedOperationException or not.
+     *
+     * @return true if the formatter supports parsing
+     */
+    public boolean isParseSupported() {
+        return parsers != null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Parses the text into a FlexiDateTime.
+     * <p>
+     * The result may be invalid including out of range values such as
+     * a month of 65. The methods on FlexiDateTime allow you to handle the
+     * invalid input.
+     *
+     * @param text  the text to parse, not null
+     * @return the parsed text, never null
+     * @throws UnsupportedOperationException if this formatter cannot parse
+     * @throws NullPointerException if the text is null
+     * @throws IndexOutOfBoundsException if the position is invalid
+     */
+    public FlexiDateTime parse(String text) {
+        ParsePosition pp = new ParsePosition(0);
+        return parse(text, pp);
+    }
+
+    /**
+     * Parses the text into a FlexiDateTime.
+     * <p>
+     * The result may be invalid including out of range values such as
+     * a month of 65. The methods on FlexiDateTime allow you to handle the
+     * invalid input.
+     *
+     * @param text  the text to parse, not null
+     * @param position  the position to parse from, updated with length parsed
+     *  and the index of any error, not null
+     * @return the parsed text, null only if the parse results in an error
+     * @throws UnsupportedOperationException if this formatter cannot parse
+     * @throws NullPointerException if the text is null
+     * @throws IndexOutOfBoundsException if the position is invalid
+     */
+    public FlexiDateTime parse(String text, ParsePosition position) {
+        if (text == null) {
+            throw new UnsupportedOperationException("Text to parse must not be null");
+        }
+        if (position == null) {
+            throw new UnsupportedOperationException("Position to parse from must not be null");
+        }
+        if (parsers == null) {
+            throw new UnsupportedOperationException("Formatter does not support printing");
+        }
+        DateTimeParseContext context = new DateTimeParseContext();
+        int pos = position.getIndex();
+        for (DateTimeParser parser : parsers) {
+            pos = parser.parse(context, text, pos);
+            if (pos < 0) {
+                position.setErrorIndex(~pos);
+                return null;
+            }
+        }
+        return context.toFlexiDateTime();
+    }
+
+    /**
+     * Returns this formatter as a <code>java.text.Format</code> instance.
+     * <p>
+     * The format instance will print any {@link Calendrical} and parses to
+     * a {@link FlexiDateTime}.
+     * <p>
+     * The format will throw exceptions in line with those thrown by the
+     * {@link #print(Calendrical, Appendable) print} and
+     * {@link #parse(String, ParsePosition) parse} methods.
+     * <p>
+     * The format does not support attributing of the returned format string.
+     *
+     * @return this formatter as a classic format instance, never null
+     */
+    public Format asFormat() {
+        return new ClassicFormat();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implements the classic Java Format API.
+     */
+    private class ClassicFormat extends Format {
+
+        /** Serialization version. */
+        private static final long serialVersionUID = 1L;
+
+        /** {@inheritDoc} */
+        @Override
+        public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+            FlexiDateTime fdt = null;
+            if (obj instanceof Calendrical) {
+                fdt = ((Calendrical) obj).toFlexiDateTime();
+            } else {
+                throw new IllegalArgumentException("DateTimeFormatter can format Calendrical instances");
+            }
+            pos.setBeginIndex(0);
+            pos.setEndIndex(0);
+            print(fdt, toAppendTo);
+            return toAppendTo;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Object parseObject(String source, ParsePosition pos) {
+            return parse(source, pos);
         }
     }
 
