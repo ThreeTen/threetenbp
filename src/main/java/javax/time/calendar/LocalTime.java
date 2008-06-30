@@ -1281,14 +1281,16 @@ public final class LocalTime
         public int getOverflowDays() {
             return days;
         }
-        /**
-         * Returns a string describing the state of this instance.
-         *
-         * @return the string, never null
-         */
-        @Override
-        public String toString() {
-            return getResultTime().toString() + " P" + days + "D";
-        }
+
+// TODO: consider removal if class remains not-public
+//        /**
+//         * Returns a string describing the state of this instance.
+//         *
+//         * @return the string, never null
+//         */
+//        @Override
+//        public String toString() {
+//            return getResultTime().toString() + " P" + days + "D";
+//        }
     }
 }
