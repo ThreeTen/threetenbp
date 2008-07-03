@@ -31,11 +31,18 @@
  */
 package javax.time.calendar.format;
 
+import java.util.Locale;
+
 import javax.time.calendar.field.DayOfMonth;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * Provides common implementations of <code>DateTimeFormatter</code>.
@@ -128,6 +135,43 @@ public class DateTimeFormatters {
             .appendValue(MonthOfYear.rule(), 2)
             .appendValue(DayOfMonth.rule(), 2)
             .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the RFC-2822 date-time formatter.
+     * <p>
+     * This is the RFC-2822 format: EEE, dd MMM yyyy HH:mm:ss Z.
+     * <p>
+     * The year will print 4 digits, and only the range 0000 to 9999 is supported.
+     *
+     * @return the ISO date formatter, never null
+     */
+    public static DateTimeFormatter rfc2822() {
+        return RFC_DATE_TIME;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter RFC_DATE_TIME;
+    static {
+        RFC_DATE_TIME = new DateTimeFormatterBuilder()
+            .appendText(DayOfWeek.rule(), TextStyle.SHORT)
+            .appendLiteral(", ")
+            .appendValue(DayOfMonth.rule(), 2)
+            .appendLiteral(' ')
+            .appendText(MonthOfYear.rule(), TextStyle.SHORT)
+            .appendLiteral(' ')
+            .appendValue(Year.rule(), 4, 4, SignStyle.NEGATIVE_ERROR)
+            .appendLiteral(' ')
+            .appendValue(HourOfDay.rule(), 2)
+            .appendLiteral(':')
+            .appendValue(MinuteOfHour.rule(), 2)
+            .appendLiteral(':')
+            .appendValue(SecondOfMinute.rule(), 2)
+            .appendLiteral(' ')
+            .appendLiteral('Z')  // TODO
+            .toFormatter()
+            .withLocale(Locale.US);
     }
 
 }

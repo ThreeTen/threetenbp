@@ -170,7 +170,7 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule, TextStyle textStyle) {
         TextPrinterParser pp = new TextPrinterParser(fieldRule, textStyle);
-        appendInternal(pp, null);
+        appendInternal(pp, pp);
         return this;
     }
 

@@ -43,7 +43,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  *
  * @author Stephen Colebourne
  */
-class TextPrinterParser implements DateTimePrinter {
+class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The field to output, not null.
@@ -73,23 +73,30 @@ class TextPrinterParser implements DateTimePrinter {
 
     /** {@inheritDoc} */
     public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
-        appendable.append(fieldRule.getText(dateTime, locale, textStyle));
+        int value = dateTime.getRawValue(fieldRule);
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(fieldRule, textStyle, value);
+        appendable.append(text == null ? Integer.toString(value) : text);
     }
 
-//    /** {@inheritDoc} */
-//    public int parse(DateTimeParseContext context, String parseText, int position) {
-//        int length = parseText.length();
-//        if (position > length) {
-//            throw new IndexOutOfBoundsException();
-//        }
-//        int endPos = position + literal.length();
-//        if (endPos > length) {
-//            return ~position;
-//        }
-//        if (literal.equals(parseText.substring(position, endPos)) == false) {
-//            return ~position;
-//        }
-//        return endPos;
-//    }
+    /** {@inheritDoc} */
+    public int parse(DateTimeParseContext context, String parseText, int position) {
+        int length = parseText.length();
+        if (position > length) {
+            throw new IndexOutOfBoundsException();
+        }
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(context.getLocale());
+        int[] match = symbols.matchFieldText(fieldRule, textStyle, false, parseText.substring(position));
+        if (match == null) {
+            // TODO parse numbers
+            return ~position;
+        } else if (match[0] == 0) {
+            return ~position;
+        } else {
+            position += match[0];
+            context.setFieldValue(fieldRule, match[1]);
+        }
+        return position;
+    }
 
 }

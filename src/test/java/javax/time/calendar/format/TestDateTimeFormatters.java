@@ -153,4 +153,10 @@ public class TestDateTimeFormatters {
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
+    //-----------------------------------------------------------------------
+    public void test_print_basicRfc2822_OffsetDateTime_UTC() {
+        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+        assertEquals(DateTimeFormatters.rfc2822().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
+    }
+
 }
