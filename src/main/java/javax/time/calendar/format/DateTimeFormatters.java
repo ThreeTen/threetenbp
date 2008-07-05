@@ -169,7 +169,7 @@ public class DateTimeFormatters {
             .appendLiteral(':')
             .appendValue(SecondOfMinute.rule(), 2)
             .appendLiteral(' ')
-            .appendLiteral('Z')  // TODO
+            .appendOffset("Z", false, true)
             .toFormatter()
             .withLocale(Locale.US);
     }

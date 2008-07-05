@@ -176,6 +176,54 @@ public class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Appends the zone offset to the formatter.
+     * <p>
+     * The zone offset id will be output during a print. If the calendrical
+     * has no offset then printing will stop.
+     * <p>
+     * The output id is minor variation to the standard ISO-8601 format.
+     * There are three formats:
+     * <ul>
+     * <li>'Z' - for UTC (ISO-8601)
+     * <li>'&plusmn;hh:mm' - if the seconds are zero (ISO-8601)
+     * <li>'&plusmn;hh:mm:ss' - if the seconds are non-zero (not ISO-8601)
+     * </ul>
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder appendOffset() {
+        return appendOffset("Z", true, false);
+    }
+
+    /**
+     * Appends the zone offset to the formatter controlling the format.
+     * <p>
+     * The zone offset will be output during a print. If the calendrical
+     * has no offset then printing will stop. The output format is controlled
+     * by the specified parameters.
+     * <p>
+     * The utc text controls what text is printed when the offset is zero.
+     * Example values would be 'Z', '+00:00', 'UTC' or 'GMT'.
+     * <p>
+     * The include colon parameter controls whether a colon should separate the
+     * numeric fields or not.
+     * <p>
+     * The exclude seconds parameter controls whether seconds should be excluded
+     * or not. If false, seconds are only output if non-zero.
+     *
+     * @param utcText  the text to use for UTC, not null
+     * @param includeColon  whether to include a colon
+     * @param excludeSeconds  whether to exclude seconds
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean excludeSeconds) {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, excludeSeconds);
+        appendInternal(pp, pp);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Appends a character literal to the formatter.
      * <p>
      * This character will be output during a print.
