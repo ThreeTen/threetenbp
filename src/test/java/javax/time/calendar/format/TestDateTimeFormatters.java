@@ -34,15 +34,11 @@ package javax.time.calendar.format;
 import static org.testng.Assert.*;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.OffsetDate;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.OffsetTime;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.TimeZone;
-import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZonedDateTime;
+import javax.time.calendar.field.Year;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,97 +62,71 @@ public class TestDateTimeFormatters {
     }
 
     //-----------------------------------------------------------------------
-    public void test_print_isoDate_LocalDate() {
-        LocalDate test = LocalDate.date(2008, 6, 3);
+    public void test_print_isoDate() {
+        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
     }
 
-    public void test_print_isoDate_LocalDateTime() {
-        LocalDateTime test = LocalDateTime.dateTime(2008, 6, 3, 12, 30);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
-    }
-
-    public void test_print_isoDate_OffsetDate() {
-        OffsetDate test = OffsetDate.date(2008, 6, 3, ZoneOffset.zoneOffset(2));
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
-    }
-
-    public void test_print_isoDate_OffsetDateTime() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 3, 12, 30, ZoneOffset.zoneOffset(2));
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
-    }
-
-    public void test_print_isoDate_ZonedDateTime() {
-        ZonedDateTime test = ZonedDateTime.dateTime(2008, 6, 3, 12, 30, TimeZone.UTC);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
-    }
-
-    @Test(expectedExceptions=CalendricalFormatFieldException.class)
-    public void test_print_isoDate_LocalTime() {
-        DateTimeFormatters.isoDate().print(LocalTime.time(12, 30));
-    }
-
-    @Test(expectedExceptions=CalendricalFormatFieldException.class)
-    public void test_print_isoDate_OffsetTime() {
-        DateTimeFormatters.isoDate().print(OffsetTime.time(12, 30, ZoneOffset.zoneOffset(2)));
+    public void test_print_isoDate_missingField() {
+        try {
+            Calendrical test = YearMonth.yearMonth(2008, 6).toFlexiDateTime();
+            DateTimeFormatters.isoDate().print(test);
+            fail();
+        } catch (CalendricalFormatFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getValue(), null);
+        }
     }
 
     //-----------------------------------------------------------------------
-    public void test_print_isoOrdinalDate_LocalDate() {
-        LocalDate test = LocalDate.date(2008, 6, 3);
+    public void test_print_isoOrdinalDate() {
+        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
     }
 
-    public void test_print_isoOrdinalDate_LocalDateTime() {
-        LocalDateTime test = LocalDateTime.dateTime(2008, 6, 3, 12, 30);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
-    }
-
-    public void test_print_isoOrdinalDate_OffsetDate() {
-        OffsetDate test = OffsetDate.date(2008, 6, 3, ZoneOffset.zoneOffset(2));
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
-    }
-
-    public void test_print_isoOrdinalDate_OffsetDateTime() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 3, 12, 30, ZoneOffset.zoneOffset(2));
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
-    }
-
-    public void test_print_isoOrdinalDate_ZonedDateTime() {
-        ZonedDateTime test = ZonedDateTime.dateTime(2008, 6, 3, 12, 30, TimeZone.UTC);
-        assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
+    public void test_print_isoOrdinalDate_missingField() {
+        try {
+            Calendrical test = Year.isoYear(2008).toFlexiDateTime();
+            DateTimeFormatters.isoOrdinalDate().print(test);
+            fail();
+        } catch (CalendricalFormatFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfYear());
+            assertEquals(ex.getValue(), null);
+        }
     }
 
     //-----------------------------------------------------------------------
-    public void test_print_basicIsoDate_LocalDate() {
-        LocalDate test = LocalDate.date(2008, 6, 3);
+    public void test_print_basicIsoDate() {
+        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
-    public void test_print_basicIsoDate_LocalDateTime() {
-        LocalDateTime test = LocalDateTime.dateTime(2008, 6, 3, 12, 30);
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
-    }
-
-    public void test_print_basicIsoDate_OffsetDate() {
-        OffsetDate test = OffsetDate.date(2008, 6, 3, ZoneOffset.zoneOffset(2));
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
-    }
-
-    public void test_print_basicIsoDate_OffsetDateTime() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 3, 12, 30, ZoneOffset.zoneOffset(2));
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
-    }
-
-    public void test_print_basicIsoDate_ZonedDateTime() {
-        ZonedDateTime test = ZonedDateTime.dateTime(2008, 6, 3, 12, 30, TimeZone.UTC);
-        assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
+    public void test_print_basicIsoDate_missingField() {
+        try {
+            Calendrical test = YearMonth.yearMonth(2008, 6).toFlexiDateTime();
+            DateTimeFormatters.basicIsoDate().print(test);
+            fail();
+        } catch (CalendricalFormatFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getValue(), null);
+        }
     }
 
     //-----------------------------------------------------------------------
-    public void test_print_basicRfc2822_OffsetDateTime_UTC() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+    public void test_print_rfc2822() {
+        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.rfc2822().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
+    }
+
+    public void test_print_rfc2822_missingField() {
+        try {
+            Calendrical test = YearMonth.yearMonth(2008, 6).toFlexiDateTime();
+            DateTimeFormatters.rfc2822().print(test);
+            fail();
+        } catch (CalendricalFormatFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfWeek());
+            assertEquals(ex.getValue(), null);
+        }
     }
 
 }
