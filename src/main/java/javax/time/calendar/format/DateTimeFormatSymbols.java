@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -232,14 +233,14 @@ public final class DateTimeFormatSymbols {
         map.put(DayOfWeek.SUNDAY.getValue(), array[Calendar.SUNDAY]);
         textMap.get(id).put(TextStyle.SHORT, new TextStore(map));
         
-//        // am pm
-//        id = ISOChronology.INSTANCE.amPm().getID();
-//        textMap.put(id, new HashMap<TextStyle, TextStore>());
-//        map.clear();
-//        array = oldSymbols.getWeekdays();
-//        map.put(MeridiemOfDay.AM.getValue(), array[0]);
-//        map.put(MeridiemOfDay.PM.getValue(), array[1]);
-//        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
+        // am pm
+        id = ISOChronology.INSTANCE.amPmOfDay().getID();
+        textMap.put(id, new HashMap<TextStyle, TextStore>());
+        map.clear();
+        array = oldSymbols.getAmPmStrings();
+        map.put(MeridiemOfDay.AM.getValue(), array[Calendar.AM]);
+        map.put(MeridiemOfDay.PM.getValue(), array[Calendar.PM]);
+        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
     }
 
     //-----------------------------------------------------------------------

@@ -70,6 +70,10 @@ public final class Periods {
      */
     public static final PeriodUnit DAYS = PeriodUnit.createUnit("Days");
     /**
+     * Period unit for half days.
+     */
+    public static final PeriodUnit HALF_DAYS = PeriodUnit.createUnit("HalfDays");
+    /**
      * Period unit for hours.
      */
     public static final PeriodUnit HOURS = PeriodUnit.createUnit("Hours");
