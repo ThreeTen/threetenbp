@@ -119,7 +119,7 @@ public final class HourOfDay
      * @throws IllegalCalendarFieldValueException if the input is invalid
      */
     public static HourOfDay hourOfDay(MeridiemOfDay amPm, int hourOfAmPm) {
-        HourOfMeridiem.RULE.checkValue(hourOfAmPm);
+        ISOChronology.INSTANCE.hourOfAmPm().checkValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return hourOfDay(hourOfDay);
     }
