@@ -59,7 +59,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements DateProvider, Calendrical, Comparable<OffsetDate>, Serializable {
+        implements DateProvider, CalendricalProvider, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -190,7 +190,7 @@ public final class OffsetDate
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -504,12 +504,12 @@ public final class OffsetDate
     }
 
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(date, null, offset, null);
+    public Calendrical toCalendrical() {
+        return new Calendrical(date, null, offset, null);
     }
 
     //-----------------------------------------------------------------------

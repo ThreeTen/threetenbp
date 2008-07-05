@@ -35,9 +35,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeZone;
@@ -54,7 +54,7 @@ import javax.time.calendar.ZoneOffset;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class DateTimeParseContext implements Calendrical {
+public final class DateTimeParseContext implements CalendricalProvider {
 
     /**
      * The date time format symbols, not null.
@@ -161,7 +161,7 @@ public final class DateTimeParseContext implements Calendrical {
         if (value != null) {
             return value;
         }
-        throw new UnsupportedCalendarFieldException(rule, "FlexiDateTime");
+        throw new UnsupportedCalendarFieldException(rule, "Calendrical");
     }
 
     //-----------------------------------------------------------------------
@@ -257,17 +257,17 @@ public final class DateTimeParseContext implements Calendrical {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this object to a FlexiDateTime with the same fields.
+     * Converts this object to a Calendrical with the same fields.
      *
-     * @return a new FlexiDateTime with the parsed fields, never null
+     * @return a new Calendrical with the parsed fields, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(fieldValueMap, null, null, offset, zone);
+    public Calendrical toCalendrical() {
+        return new Calendrical(fieldValueMap, null, null, offset, zone);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the flexi date-time as a <code>String</code>.
+     * Outputs the calendrical as a <code>String</code>.
      * <p>
      * The output will use the following format:
      * <ul>
@@ -278,7 +278,7 @@ public final class DateTimeParseContext implements Calendrical {
      * <li>Zone, prefixed by a space if non-null</li>
      * </ul>
      * If an instance of LocalDate, LocalTime, LocalDateTime, OffsetDate, OffsetTime,
-     * OffsetDateTime or ZonedDateTime is converted to a FlexiDateTime then the
+     * OffsetDateTime or ZonedDateTime is converted to a Calendrical then the
      * toString output will remain the same.
      *
      * @return the formatted date-time string, never null

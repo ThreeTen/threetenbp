@@ -31,9 +31,9 @@
  */
 package javax.time.calendar.field;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
@@ -55,7 +55,7 @@ import javax.time.calendar.TimeMatcher;
  * @author Stephen Colebourne
  */
 public enum AmPmOfDay
-        implements Calendrical, TimeAdjustor, TimeMatcher {
+        implements CalendricalProvider, TimeAdjustor, TimeMatcher {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -126,12 +126,12 @@ public enum AmPmOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

@@ -79,7 +79,7 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_2007_07_15 instanceof Calendrical);
+        assertTrue(TEST_2007_07_15 instanceof CalendricalProvider);
         assertTrue(TEST_2007_07_15 instanceof Serializable);
         assertTrue(TEST_2007_07_15 instanceof Comparable);
         assertTrue(TEST_2007_07_15 instanceof DateProvider);
@@ -1389,12 +1389,12 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    // toFlexiDateTime()
+    // toCalendrical()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
-    public void test_toFlexiDateTime(int year, int month, int day) {
+    public void test_toCalendrical(int year, int month, int day) {
         LocalDate t = LocalDate.date(year, month, day);
-        assertEquals(t.toFlexiDateTime(), new FlexiDateTime(t, null, null, null));
+        assertEquals(t.toCalendrical(), new Calendrical(t, null, null, null));
     }
 
     //-----------------------------------------------------------------------

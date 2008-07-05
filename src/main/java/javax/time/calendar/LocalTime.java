@@ -58,7 +58,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements TimeProvider, Calendrical, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjustor {
+        implements TimeProvider, CalendricalProvider, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjustor {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -370,7 +370,7 @@ public final class LocalTime
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -835,12 +835,12 @@ public final class LocalTime
     }
 
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(null, this, null, null);
+    public Calendrical toCalendrical() {
+        return new Calendrical(null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

@@ -35,14 +35,14 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -63,7 +63,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class Year
-        implements Calendrical, Comparable<Year>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<Year>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system.
@@ -177,12 +177,12 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     /**
@@ -209,7 +209,7 @@ public final class Year
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------

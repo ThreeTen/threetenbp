@@ -36,7 +36,7 @@ import static org.testng.Assert.*;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfMonth;
 
@@ -53,96 +53,96 @@ public class TestPadPrinterDecorator {
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
-    private FlexiDateTime emptyDateTime;
+    private Calendrical emptyCalendrical;
     private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyDateTime = new FlexiDateTime(null, null, null, null, null);
+        emptyCalendrical = new Calendrical(null, null, null, null, null);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), 3);
+        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), 3);
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(dt, (Appendable) null, symbols);
+        pp.print(calendrical, (Appendable) null, symbols);
     }
 
 // NPE is not required
 //    @Test(expectedExceptions=NullPointerException.class)
 //    public void test_print_nullDateTime() throws Exception {
 //        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-//        pp.print(buf, (FlexiDateTime) null, locale);
+//        pp.print(buf, (Calendrical) null, locale);
 //    }
 
 // NPE is not required
 //    @Test(expectedExceptions=NullPointerException.class)
 //    public void test_print_nullLocale() throws Exception {
 //        SimplePadPrinterDecorator pp = new SimplePadPrinterDecorator("hello");
-//        pp.print(buf, emptyDateTime, (Locale) null);
+//        pp.print(buf, emptyCalendrical, (Locale) null);
 //        assertEquals(buf, "EXISTINGhello");
 //    }
 
     //-----------------------------------------------------------------------
-    public void test_print_emptyDateTime() throws Exception {
+    public void test_print_emptyCalendrical() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_fullDateTime() throws Exception {
-        FlexiDateTime dateTime = LocalDate.date(2008, 12, 3).toFlexiDateTime();
+        Calendrical calendrical = LocalDate.date(2008, 12, 3).toCalendrical();
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(dateTime, buf, symbols);
+        pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_append() throws Exception {
         buf.append("EXISTING");
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTING--Z");
     }
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(emptyDateTime, exceptionAppenable, symbols);
+        pp.print(emptyCalendrical, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_noPadRequiredSingle() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 1, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "Z");
     }
 
     public void test_print_padRequiredSingle() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 5, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "----Z");
     }
 
     public void test_print_noPadRequiredMultiple() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 4, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "WXYZ");
     }
 
     public void test_print_padRequiredMultiple() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 5, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "-WXYZ");
     }
 
     @Test(expectedExceptions=CalendricalFormatException.class)
     public void test_print_overPad() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 3, '-');
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
     }
 
 }

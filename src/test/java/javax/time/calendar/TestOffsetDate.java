@@ -68,7 +68,7 @@ public class TestOffsetDate {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_2007_07_15 instanceof Calendrical);
+        assertTrue(TEST_2007_07_15 instanceof CalendricalProvider);
         assertTrue(TEST_2007_07_15 instanceof Serializable);
         assertTrue(TEST_2007_07_15 instanceof Comparable);
     }

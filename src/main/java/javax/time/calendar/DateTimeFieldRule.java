@@ -205,37 +205,37 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * Also, if the value is present in both the date/time and the field-value
      * map then the two values must be the same.
      *
-     * @param dateTime  the date-time, not null
+     * @param calendricalProvider  the calendrical provider, not null
      * @return the value of the field
      * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
-    public int getValue(FlexiDateTime dateTime) {
-        return dateTime.getValue(this);
+    public int getValue(CalendricalProvider calendricalProvider) {
+        return calendricalProvider.toCalendrical().getValue(this);
     }
 
     /**
      * Extracts the value of this field from the date or time on the specified
-     * FlexiDateTime.
+     * Calendrical.
      * <p>
      * The implementation of this method is only responsible for querying the
      * date and time fields. The field-value map will be queried separately.
      *
-     * @param dateTime  the date-time, not null
+     * @param calendrical  the calendrical, not null
      * @return the value of the field, null if unable to extract field
      */
-    protected Integer extractValue(FlexiDateTime dateTime) {
+    protected Integer extractValue(Calendrical calendrical) {
         return null;
     }
 
     /**
-     * Merges this field with other fields in the given date-time to create
-     * more complete and meaningful date-time objects.
+     * Merges this field with other fields in the given calendrical to create
+     * more complete and meaningful calendrical objects.
      * <p>
-     * This method is used to combine individual date-time fields into more
+     * This method is used to combine individual calendrical fields into more
      * significant concepts such as date and time. The full merge process
      * requires this method to be called repeatedly on each of the fields until
      * no more changes occur. This method will only be called if the field is
-     * present in the field-value map of the input FlexiDateTime.
+     * present in the field-value map of the input Calendrical.
      * <p>
      * Since the merge process is cooperative, it is not necessary to include
      * the full merge code in each field. Thus, the code to merge a year, month
@@ -253,23 +253,23 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * implementation must validate the value for this rule against the date/time.
      * <p>
      * Implementors must ensure that the input parameter is returned if there is
-     * no change to the date-time.
+     * no change to the calendrical.
      *
-     * @param dateTime  the date-time to merge, not null
-     * @return the merged date-time with the processed fields removed, never null,
-     *  the input date-time must be retuned if no change is made
+     * @param calendrical  the calendrical to merge, not null
+     * @return the merged calendrical with the processed fields removed, never null,
+     *  the input calendrical must be retuned if no change is made
      * @throws CalendarFieldException if the values cannot be merged
      */
-    protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-        dateTime.getValue(this);  // validates the value of this field
-        return dateTime;
+    protected Calendrical mergeFields(Calendrical calendrical) {
+        calendrical.getValue(this);  // validates the value of this field
+        return calendrical;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if the value is invalid and throws an exception if it is.
      * <p>
-     * This method has no knowledge of other date-time fields, thus only the
+     * This method has no knowledge of other calendrical fields, thus only the
      * outer minimum and maximum range for the field is validated.
      *
      * @param value  the value to check
@@ -361,61 +361,22 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * Gets the text for this field throwing an exception if the field cannot
      * be obtained.
      * <p>
-     * The value is queried using {@link #getValue(FlexiDateTime)}. The text
+     * The value is queried using {@link #getValue(CalendricalProvider)}. The text
      * is then obtained for that value. If there is no textual mapping, then
      * the value is returned as per {@link Integer#toString()}.
      *
-     * @param dateTime  the date-time, not null
+     * @param calendricalProvider  the calendrical provider, not null
      * @param locale  the locale to use, not null
      * @param textStyle  the text style, not null
      * @return the text of the field, never null
      * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
-    public String getText(FlexiDateTime dateTime, Locale locale, TextStyle textStyle) {
-        int value = dateTime.getValue(this);
+    public String getText(CalendricalProvider calendricalProvider, Locale locale, TextStyle textStyle) {
+        int value = getValue(calendricalProvider);
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
         String text = symbols.getFieldValueText(this, textStyle, value);
         return text == null ? Integer.toString(value) : text;
     }
-
-//    /**
-//     * Gets the maximum value that the field can take using the specified
-//     * calendrical information to refine the accuracy of the response.
-//     *
-//     * @param calendricalContext  context datetime, null returns getMaximumValue()
-//     * @return the maximum value of the field given the context
-//     */
-//    public int getMaximumValue(Calendrical calendricalContext) {
-//        return getMaximumValue();
-//    }
-//
-//    /**
-//     * Gets the smallest possible maximum value that the field can take using
-//     * the specified calendrical information to refine the accuracy of the response.
-//     *
-//     * @param calendricalContext  context datetime, null returns getSmallestMaximumValue()
-//     * @return the smallest possible maximum value of the field given the context
-//     */
-//    public int getSmallestMaximumValue(Calendrical calendricalContext) {
-//        if (calendricalContext == null) {
-//            return getSmallestMaximumValue();
-//        }
-//        return getMaximumValue(calendricalContext);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Checks whether a given calendrical is supported or not.
-//     *
-//     * @param calState  the calendar state to check, not null
-//     * @throws UnsupportedCalendarFieldException if the field is unsupported
-//     */
-//    protected void checkSupported(CalendricalState calState) {
-//        if (calState.getPeriodUnit().compareTo(getPeriodUnit()) > 0 ||
-//                calState.getPeriodRange().compareTo(getPeriodRange()) < 0) {
-//            throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
-//        }
-//    }
 
     //-----------------------------------------------------------------------
     /**

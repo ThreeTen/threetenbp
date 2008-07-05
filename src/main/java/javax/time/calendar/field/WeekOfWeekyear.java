@@ -34,8 +34,8 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateProvider;
@@ -59,7 +59,7 @@ import javax.time.calendar.DateTimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeekyear>, Serializable {
+public final class WeekOfWeekyear implements CalendricalProvider, Comparable<WeekOfWeekyear>, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -158,12 +158,12 @@ public final class WeekOfWeekyear implements Calendrical, Comparable<WeekOfWeeky
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.*;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.YearMonth;
@@ -62,18 +62,18 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullCalendrical() {
-        DateTimeFormatters.isoDate().print((Calendrical) null);
+        DateTimeFormatters.isoDate().print((CalendricalProvider) null);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_isoDate() {
-        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
     }
 
     public void test_print_isoDate_missingField() {
         try {
-            Calendrical test = YearMonth.yearMonth(2008, 6).toFlexiDateTime();
+            CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
             DateTimeFormatters.isoDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {
@@ -84,13 +84,13 @@ public class TestDateTimeFormatters {
 
     //-----------------------------------------------------------------------
     public void test_print_isoOrdinalDate() {
-        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
     }
 
     public void test_print_isoOrdinalDate_missingField() {
         try {
-            Calendrical test = Year.isoYear(2008).toFlexiDateTime();
+            CalendricalProvider test = Year.isoYear(2008).toCalendrical();
             DateTimeFormatters.isoOrdinalDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {
@@ -101,13 +101,13 @@ public class TestDateTimeFormatters {
 
     //-----------------------------------------------------------------------
     public void test_print_basicIsoDate() {
-        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
     public void test_print_basicIsoDate_missingField() {
         try {
-            Calendrical test = YearMonth.yearMonth(2008, 6).toFlexiDateTime();
+            CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
             DateTimeFormatters.basicIsoDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {
@@ -118,13 +118,13 @@ public class TestDateTimeFormatters {
 
     //-----------------------------------------------------------------------
     public void test_print_rfc2822() {
-        Calendrical test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.rfc2822().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 
     public void test_print_rfc2822_missingField() {
         try {
-            Calendrical test = YearMonth.yearMonth(2008, 6).toFlexiDateTime();
+            CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
             DateTimeFormatters.rfc2822().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {

@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 
 /**
  * Prints or parses a string literal.
@@ -57,7 +57,7 @@ class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         appendable.append(literal);
     }
 

@@ -35,7 +35,7 @@ import static org.testng.Assert.*;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
@@ -65,7 +65,7 @@ public class TestMonthOfYear {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(MonthOfYear.class));
+        assertTrue(CalendricalProvider.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(DateAdjustor.class.isAssignableFrom(MonthOfYear.class));

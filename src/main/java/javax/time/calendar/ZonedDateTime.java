@@ -66,7 +66,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, DateTimeProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, DateTimeProvider, CalendricalProvider, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -311,7 +311,7 @@ public final class ZonedDateTime
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -1140,12 +1140,12 @@ public final class ZonedDateTime
     }
 
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(toLocalDate(), toLocalTime(), getOffset(), zone);
+    public Calendrical toCalendrical() {
+        return new Calendrical(toLocalDate(), toLocalTime(), getOffset(), zone);
     }
 
     //-----------------------------------------------------------------------

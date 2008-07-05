@@ -36,7 +36,7 @@ import static org.testng.Assert.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.DateTimeFieldRule;
@@ -84,71 +84,71 @@ public class TestDayOfMonthRule {
     }
 
     //-----------------------------------------------------------------------
-    // getValue(FlexiDateTime)
+    // getValue(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_getValue_FlexiDateTime_date() {
+    public void test_getValue_Calendrical_date() {
         LocalDate date = LocalDate.date(2007, 6, 20);
-        FlexiDateTime dt = date.toFlexiDateTime();
+        Calendrical calendrical = date.toCalendrical();
         
-        assertEquals(DayOfMonth.rule().getValue(dt), 20);
+        assertEquals(DayOfMonth.rule().getValue(calendrical), 20);
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_getValue_FlexiDateTime_noDate() {
-        FlexiDateTime dt = new FlexiDateTime(null, null, null, null);
-        DayOfMonth.rule().getValue(dt);
+    public void test_getValue_Calendrical_noDate() {
+        Calendrical calendrical = new Calendrical(null, null, null, null);
+        DayOfMonth.rule().getValue(calendrical);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_getValue_FlexiDateTime_null() {
-        FlexiDateTime dt = null;
-        DayOfMonth.rule().getValue(dt);
+    public void test_getValue_Calendrical_null() {
+        Calendrical calendrical = null;
+        DayOfMonth.rule().getValue(calendrical);
     }
 
-    public void test_getValue_FlexiDateTime_monthDay() {
+    public void test_getValue_Calendrical_monthDay() {
         MonthDay date = MonthDay.monthDay(6, 20);
-        FlexiDateTime dt = date.toFlexiDateTime();
+        Calendrical calendrical = date.toCalendrical();
         
-        assertEquals(DayOfMonth.rule().getValue(dt), 20);
+        assertEquals(DayOfMonth.rule().getValue(calendrical), 20);
     }
 
-    public void test_getValue_FlexiDateTime_day() {
-        FlexiDateTime dt = new FlexiDateTime(DayOfMonth.rule(), 20);
+    public void test_getValue_Calendrical_day() {
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 20);
         
-        assertEquals(DayOfMonth.rule().getValue(dt), 20);
+        assertEquals(DayOfMonth.rule().getValue(calendrical), 20);
     }
 
 //    //-----------------------------------------------------------------------
-//    // extractValue(FlexiDateTime)
+//    // extractValue(Calendrical)
 //    //-----------------------------------------------------------------------
-//    public void test_extractValue_FlexiDateTime_date() {
+//    public void test_extractValue_Calendrical_date() {
 //        LocalDate date = LocalDate.date(2007, 6, 20);
-//        FlexiDateTime dt = date.toFlexiDateTime();
+//        Calendrical dt = date.toCalendrical();
 //        
 //        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
 //    }
 //
-//    public void test_extractValue_FlexiDateTime_noDate() {
-//        FlexiDateTime dt = new FlexiDateTime(null, null, null, null);
+//    public void test_extractValue_Calendrical_noDate() {
+//        Calendrical dt = new Calendrical(null, null, null, null);
 //        
 //        assertEquals(DayOfMonth.rule().extractValue(dt), null);
 //    }
 //
 //    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_extractValue_FlexiDateTime_null() {
-//        FlexiDateTime dt = null;
+//    public void test_extractValue_Calendrical_null() {
+//        Calendrical dt = null;
 //        DayOfMonth.rule().extractValue(dt);
 //    }
 //
-//    public void test_extractValue_FlexiDateTime_monthDay() {
+//    public void test_extractValue_Calendrical_monthDay() {
 //        MonthDay date = MonthDay.monthDay(6, 20);
-//        FlexiDateTime dt = date.toFlexiDateTime();
+//        Calendrical dt = date.toCalendrical();
 //        
 //        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
 //    }
 //
-//    public void test_extractValue_FlexiDateTime_day() {
-//        FlexiDateTime dt = new FlexiDateTime(DayOfMonth.rule(), 20);
+//    public void test_extractValue_Calendrical_day() {
+//        Calendrical dt = new Calendrical(DayOfMonth.rule(), 20);
 //        
 //        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
 //    }

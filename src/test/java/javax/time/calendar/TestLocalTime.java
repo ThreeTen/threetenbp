@@ -79,7 +79,7 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_12_30_40_987654321 instanceof Calendrical);
+        assertTrue(TEST_12_30_40_987654321 instanceof CalendricalProvider);
         assertTrue(TEST_12_30_40_987654321 instanceof Serializable);
         assertTrue(TEST_12_30_40_987654321 instanceof Comparable);
         assertTrue(TEST_12_30_40_987654321 instanceof TimeMatcher);
@@ -391,7 +391,7 @@ public class TestLocalTime {
                 return null;
             }
 
-            public FlexiDateTime toFlexiDateTime() {
+            public Calendrical toCalendrical() {
                 return null;
             }
         });
@@ -1330,12 +1330,12 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // toFlexiDateTime()
+    // toCalendrical()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
-    public void test_toFlexiDateTime(int h, int m, int s, int ns) {
+    public void test_toCalendrical(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
-        assertEquals(t.toFlexiDateTime(), new FlexiDateTime(null, t, null, null));
+        assertEquals(t.toCalendrical(), new Calendrical(null, t, null, null));
     }
 
     //-----------------------------------------------------------------------

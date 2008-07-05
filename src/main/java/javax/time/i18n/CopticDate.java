@@ -33,10 +33,10 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.period.PeriodView;
@@ -56,7 +56,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class CopticDate
-        implements DateProvider, Calendrical, Comparable<CopticDate>, Serializable {
+        implements DateProvider, CalendricalProvider, Comparable<CopticDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -126,7 +126,7 @@ public final class CopticDate
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -312,12 +312,12 @@ public final class CopticDate
     }
 
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(date, null, null, null);
+    public Calendrical toCalendrical() {
+        return new Calendrical(date, null, null, null);
     }
 
     //-----------------------------------------------------------------------

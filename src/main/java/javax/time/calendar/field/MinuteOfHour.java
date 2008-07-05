@@ -34,9 +34,9 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
@@ -58,7 +58,7 @@ import javax.time.calendar.TimeMatcher;
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour
-        implements Calendrical, Comparable<MinuteOfHour>, Serializable, TimeAdjustor, TimeMatcher {
+        implements CalendricalProvider, Comparable<MinuteOfHour>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
      * A serialization identifier for this instance.
@@ -141,12 +141,12 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

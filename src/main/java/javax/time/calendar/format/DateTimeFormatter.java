@@ -38,8 +38,8 @@ import java.text.ParsePosition;
 import java.util.List;
 import java.util.Locale;
 
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 
 /**
@@ -189,7 +189,7 @@ public class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalFormatException if an error occurs during printing
      */
-    public String print(Calendrical calendrical) {
+    public String print(CalendricalProvider calendrical) {
         StringBuilder buf = new StringBuilder(32);
         print(calendrical, buf);
         return buf.toString();
@@ -209,19 +209,19 @@ public class DateTimeFormatter {
      * See {@link CalendricalFormatException#rethrowIOException()} for a means
      * to extract the IOException.
      *
-     * @param calendrical  the provider of the calendrical to print, not null
+     * @param calendricalProvider  the provider of the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalFormatException if an error occurs during printing
      */
-    public void print(Calendrical calendrical, Appendable appendable) {
+    public void print(CalendricalProvider calendricalProvider, Appendable appendable) {
         if (printers == null) {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
-        FlexiDateTime dateTime = calendrical.toFlexiDateTime();
+        Calendrical calendrical = calendricalProvider.toCalendrical();
         try {
             for (DateTimePrinter printer : printers) {
-                printer.print(dateTime, appendable, symbols);
+                printer.print(calendrical, appendable, symbols);
             }
         } catch (UnsupportedCalendarFieldException ex) {
             throw new CalendricalFormatFieldException(ex);
@@ -246,10 +246,10 @@ public class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Parses the text into a FlexiDateTime.
+     * Parses the text into a Calendrical.
      * <p>
      * The result may be invalid including out of range values such as
-     * a month of 65. The methods on FlexiDateTime allow you to handle the
+     * a month of 65. The methods on Calendrical allow you to handle the
      * invalid input.
      *
      * @param text  the text to parse, not null
@@ -258,16 +258,16 @@ public class DateTimeFormatter {
      * @throws NullPointerException if the text is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    public FlexiDateTime parse(String text) {
+    public Calendrical parse(String text) {
         ParsePosition pp = new ParsePosition(0);
         return parse(text, pp);
     }
 
     /**
-     * Parses the text into a FlexiDateTime.
+     * Parses the text into a Calendrical.
      * <p>
      * The result may be invalid including out of range values such as
-     * a month of 65. The methods on FlexiDateTime allow you to handle the
+     * a month of 65. The methods on Calendrical allow you to handle the
      * invalid input.
      *
      * @param text  the text to parse, not null
@@ -278,7 +278,7 @@ public class DateTimeFormatter {
      * @throws NullPointerException if the text is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    public FlexiDateTime parse(String text, ParsePosition position) {
+    public Calendrical parse(String text, ParsePosition position) {
         if (text == null) {
             throw new UnsupportedOperationException("Text to parse must not be null");
         }
@@ -297,17 +297,17 @@ public class DateTimeFormatter {
                 return null;
             }
         }
-        return context.toFlexiDateTime();
+        return context.toCalendrical();
     }
 
     /**
      * Returns this formatter as a <code>java.text.Format</code> instance.
      * <p>
-     * The format instance will print any {@link Calendrical} and parses to
-     * a {@link FlexiDateTime}.
+     * The format instance will print any {@link CalendricalProvider} and parses to
+     * a {@link Calendrical}.
      * <p>
      * The format will throw exceptions in line with those thrown by the
-     * {@link #print(Calendrical, Appendable) print} and
+     * {@link #print(CalendricalProvider, Appendable) print} and
      * {@link #parse(String, ParsePosition) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
@@ -330,9 +330,9 @@ public class DateTimeFormatter {
         /** {@inheritDoc} */
         @Override
         public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-            FlexiDateTime fdt = null;
-            if (obj instanceof Calendrical) {
-                fdt = ((Calendrical) obj).toFlexiDateTime();
+            Calendrical fdt = null;
+            if (obj instanceof CalendricalProvider) {
+                fdt = ((CalendricalProvider) obj).toCalendrical();
             } else {
                 throw new IllegalArgumentException("DateTimeFormatter can format Calendrical instances");
             }

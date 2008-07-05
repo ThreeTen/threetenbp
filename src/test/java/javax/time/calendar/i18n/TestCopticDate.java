@@ -42,9 +42,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
@@ -78,7 +78,7 @@ public class TestCopticDate {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_2007_07_15 instanceof Calendrical);
+        assertTrue(TEST_2007_07_15 instanceof CalendricalProvider);
         assertTrue(TEST_2007_07_15 instanceof Serializable);
         assertTrue(TEST_2007_07_15 instanceof Comparable);
     }
@@ -159,7 +159,7 @@ public class TestCopticDate {
             public LocalDate toLocalDate() {
                 return null;
             }
-            public FlexiDateTime toFlexiDateTime() {
+            public Calendrical toCalendrical() {
                 return null;
             }
         });

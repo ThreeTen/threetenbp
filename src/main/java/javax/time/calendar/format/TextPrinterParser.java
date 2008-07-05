@@ -34,7 +34,7 @@ package javax.time.calendar.format;
 import java.io.IOException;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -71,8 +71,8 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = dateTime.getRawValue(fieldRule);
+    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+        int value = calendrical.getRawValue(fieldRule);
         String text = symbols.getFieldValueText(fieldRule, textStyle, value);
         appendable.append(text == null ? Integer.toString(value) : text);
     }

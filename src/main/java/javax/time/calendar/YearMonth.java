@@ -55,7 +55,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class YearMonth
-        implements Calendrical, Comparable<YearMonth>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<YearMonth>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -114,20 +114,20 @@ public final class YearMonth
     }
 
     /**
-     * Obtains an instance of <code>YearMonth</code> from a FlexiDateTime.
+     * Obtains an instance of <code>YearMonth</code> from a Calendrical.
      * <p>
-     * This method will create a YearMonth from the FlexiDateTime using either
+     * This method will create a YearMonth from the Calendrical using either
      * the fields or the date. If both are present, the values in the field-value
      * map must match those in the date.
      *
-     * @param dateTime  the date-time to use, not null
+     * @param calendrical  the calendrical to use, not null
      * @return a YearMonth object, never null
      * @throws UnsupportedCalendarFieldException if either field cannot be found
      * @throws InvalidCalendarFieldException if the either field is invalid
      */
-    public static YearMonth yearMonth(FlexiDateTime dateTime) {
-        int year = dateTime.getValue(Year.rule());
-        int month = dateTime.getValue(MonthOfYear.rule());
+    public static YearMonth yearMonth(Calendrical calendrical) {
+        int year = calendrical.getValue(Year.rule());
+        int month = calendrical.getValue(MonthOfYear.rule());
         return yearMonth(year, month);
     }
 
@@ -209,7 +209,7 @@ public final class YearMonth
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -446,12 +446,12 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(Year.rule(), year.getValue(), MonthOfYear.rule(), month.getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(Year.rule(), year.getValue(), MonthOfYear.rule(), month.getValue());
     }
 
     //-----------------------------------------------------------------------

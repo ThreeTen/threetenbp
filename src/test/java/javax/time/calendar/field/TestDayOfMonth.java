@@ -37,7 +37,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
@@ -67,7 +67,7 @@ public class TestDayOfMonth {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(DayOfMonth.class));
+        assertTrue(CalendricalProvider.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(DateAdjustor.class.isAssignableFrom(DayOfMonth.class));

@@ -31,10 +31,10 @@
  */
 package javax.time.calendar.field;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -54,7 +54,7 @@ import javax.time.calendar.DateProvider;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear implements Calendrical, DateMatcher {
+public enum QuarterOfYear implements CalendricalProvider, DateMatcher {
 
     /**
      * The singleton instance for the first quarter of year, from January to March.
@@ -157,12 +157,12 @@ public enum QuarterOfYear implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

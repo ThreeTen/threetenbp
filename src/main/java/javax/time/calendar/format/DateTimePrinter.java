@@ -33,12 +33,12 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 
 /**
  * Strategy for printing a date to an appenable.
  * <p>
- * The printer may print any part, or the whole, of the input FlexiDateTime.
+ * The printer may print any part, or the whole, of the input Calendrical.
  * Typically, a complete print is constructed from a number of smaller
  * units, each outputting a single field.
  * <p>
@@ -51,14 +51,14 @@ import javax.time.calendar.FlexiDateTime;
 public interface DateTimePrinter {
 
     /**
-     * Prints the date-time object to the appendable.
+     * Prints the calendrical object to the appendable.
      *
-     * @param dateTime  the datetime to print, not null
+     * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to add to, not null
      * @param symbols  the formatting symbols to use, not null
      * @throws CalendricalFormatException if the date time cannot be printed successfully
      * @throws IOException if the append throws an exception
      */
-    void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException;
+    void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException;
 
 }

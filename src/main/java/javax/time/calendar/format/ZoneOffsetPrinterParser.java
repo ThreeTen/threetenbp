@@ -33,7 +33,7 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ZoneOffset;
 
 /**
@@ -73,8 +73,8 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        ZoneOffset offset = dateTime.getOffset();
+    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+        ZoneOffset offset = calendrical.getOffset();
         if (offset == null) {
             throw new CalendricalFormatException("Unable to print ZoneOffset");
         }

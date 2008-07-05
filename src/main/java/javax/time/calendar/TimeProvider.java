@@ -52,7 +52,7 @@ package javax.time.calendar;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public interface TimeProvider extends Calendrical {
+public interface TimeProvider extends CalendricalProvider {
 
     /**
      * Returns an instance of <code>LocalTime</code> initialised from the

@@ -58,7 +58,7 @@ package javax.time.calendar.format;
 public interface DateTimeParser {
 
     /**
-     * Parses from the supplied text and position into the date-time.
+     * Parses from the supplied text and position into the calendrical.
      *
      * @param context  the context to use and parse into, not null
      * @param parseText  the input text to parse, not null

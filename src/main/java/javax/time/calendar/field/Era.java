@@ -31,10 +31,10 @@
  */
 package javax.time.calendar.field;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -56,7 +56,7 @@ import javax.time.calendar.DateTimeFieldRule;
  * @author Stephen Colebourne
  */
 public enum Era
-        implements Calendrical, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, DateAdjustor, DateMatcher {
 
     /**
      * The singleton instance for the last Era, BC/BCE.
@@ -137,12 +137,12 @@ public enum Era
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -204,8 +204,8 @@ public enum Era
 
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getYear().getEra().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getYear().getEra().getValue() : null;
         }
     }
 

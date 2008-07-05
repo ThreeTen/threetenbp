@@ -35,7 +35,7 @@ import java.io.IOException;
 
 import javax.time.MathUtils;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
@@ -94,8 +94,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = dateTime.getRawValue(fieldRule);
+    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+        int value = calendrical.getRawValue(fieldRule);
         String str = (value == Integer.MIN_VALUE ? Long.toString(Math.abs((long) value)) : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
             throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);

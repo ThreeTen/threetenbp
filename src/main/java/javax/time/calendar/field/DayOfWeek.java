@@ -33,9 +33,9 @@ package javax.time.calendar.field;
 
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -56,7 +56,7 @@ import javax.time.calendar.DateTimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek implements Calendrical, DateMatcher {
+public enum DayOfWeek implements CalendricalProvider, DateMatcher {
 
     /**
      * The singleton instance for the day of week of Monday.
@@ -202,12 +202,12 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

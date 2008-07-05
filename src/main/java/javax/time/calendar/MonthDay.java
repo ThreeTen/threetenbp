@@ -56,7 +56,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, Comparable<MonthDay>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<MonthDay>, Serializable, DateAdjustor, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -148,20 +148,20 @@ public final class MonthDay
     }
 
     /**
-     * Obtains an instance of <code>MonthDay</code> from a FlexiDateTime.
+     * Obtains an instance of <code>MonthDay</code> from a Calendrical.
      * <p>
-     * This method will create a MonthDay from the FlexiDateTime using either
+     * This method will create a MonthDay from the Calendrical using either
      * the fields or the date. If both are present, the values in the field-value
      * map must match those in the date.
      *
-     * @param dateTime  the date-time to use, not null
+     * @param calendrical  the calendrical to convert, not null
      * @return a MonthDay object, never null
      * @throws UnsupportedCalendarFieldException if either field cannot be found
      * @throws InvalidCalendarFieldException if the either field is invalid
      */
-    public static MonthDay monthDay(FlexiDateTime dateTime) {
-        int month = dateTime.getValue(MonthOfYear.rule());
-        int dom = dateTime.getValue(DayOfMonth.rule());
+    public static MonthDay monthDay(Calendrical calendrical) {
+        int month = calendrical.getValue(MonthOfYear.rule());
+        int dom = calendrical.getValue(DayOfMonth.rule());
         return monthDay(month, dom);
     }
 
@@ -232,7 +232,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -429,12 +429,12 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(MonthOfYear.rule(), month.getValue(), DayOfMonth.rule(), day.getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(MonthOfYear.rule(), month.getValue(), DayOfMonth.rule(), day.getValue());
     }
 
     //-----------------------------------------------------------------------

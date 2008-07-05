@@ -65,7 +65,7 @@ public class TestOffsetDateTime_creation {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         OffsetDateTime test = OffsetDateTime.dateMidnight(2007, 7, 15, OFFSET_PONE);
-        assertTrue(test instanceof Calendrical);
+        assertTrue(test instanceof CalendricalProvider);
         assertTrue(test instanceof Serializable);
         assertTrue(test instanceof Comparable);
     }

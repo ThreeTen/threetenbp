@@ -37,7 +37,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -60,7 +60,7 @@ public class TestDayOfWeek {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(DayOfWeek.class));
+        assertTrue(CalendricalProvider.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
 //        assertTrue(DateAdjustor.class.isAssignableFrom(DayOfWeek.class));

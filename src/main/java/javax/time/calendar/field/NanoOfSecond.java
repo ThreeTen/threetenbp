@@ -33,9 +33,9 @@ package javax.time.calendar.field;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
@@ -56,7 +56,7 @@ import javax.time.calendar.TimeMatcher;
  * @author Stephen Colebourne
  */
 public final class NanoOfSecond
-        implements Calendrical, Comparable<NanoOfSecond>, Serializable, TimeAdjustor, TimeMatcher {
+        implements CalendricalProvider, Comparable<NanoOfSecond>, Serializable, TimeAdjustor, TimeMatcher {
 
     /**
      * A singleton instance for zero nanoseconds.
@@ -122,12 +122,12 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>FlexiDateTime</code>.
+     * Converts this field to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(rule(), getValue());
+    public Calendrical toCalendrical() {
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

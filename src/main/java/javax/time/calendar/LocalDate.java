@@ -70,7 +70,7 @@ import javax.time.period.Periods;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, DateProvider, DateMatcher, DateAdjustor, Comparable<LocalDate>, Serializable {
+        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjustor, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -271,7 +271,7 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule field) {
-        return toFlexiDateTime().getValue(field);
+        return toCalendrical().getValue(field);
     }
 
     //-----------------------------------------------------------------------
@@ -933,12 +933,12 @@ public final class LocalDate
     }
 
     /**
-     * Converts this date to a <code>FlexiDateTime</code>.
+     * Converts this date to a <code>Calendrical</code>.
      *
-     * @return the flexible date-time representation for this instance, never null
+     * @return the calendrical representation for this instance, never null
      */
-    public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(this, null, null, null);
+    public Calendrical toCalendrical() {
+        return new Calendrical(this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

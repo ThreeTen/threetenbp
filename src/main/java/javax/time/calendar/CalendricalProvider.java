@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,48 +29,37 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar.format;
-
-import java.io.IOException;
-
-import javax.time.calendar.Calendrical;
+package javax.time.calendar;
 
 /**
- * Prints or parses a character literal.
+ * Provides read-only access to a calendrical object.
+ * <p>
+ * CalendricalProvider is a simple interface that provides uniform access to
+ * any object that can provide access to a calendrical.
+ * <p>
+ * NOTE: The implementation of <code>CalendricalProvider</code> may be mutable.
+ * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
+ * mutable implementation of this interface.
+ * The result of {@link #toCalendrical()}, however, is immutable.
+ * <p>
+ * CalendricalProvider makes no guarantees about the thread-safety or
+ * immutability of implementations.
  *
  * @author Stephen Colebourne
  */
-class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
+public interface CalendricalProvider {
 
     /**
-     * The literal to print or parse.
-     */
-    private final char literal;
-
-    /**
-     * Constructor.
+     * Returns an instance of <code>Calendrical</code> initialised from the
+     * state of this object.
+     * <p>
+     * This method will take the calendrical information represented by this
+     * object and return the best matching {@link Calendrical}. For example,
+     * a <code>LocalDate</code> will create a calendrical with year, month
+     * and day fields populated.
      *
-     * @param literal  the literal to print or parse, not null
+     * @return the <code>Calendrical</code> equivalent to this object, never null
      */
-    CharLiteralPrinterParser(char literal) {
-        this.literal = literal;
-    }
-
-    /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        appendable.append(literal);
-    }
-
-    /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
-        int length = parseText.length();
-        if (position == length) {
-            return ~position;
-        }
-        if (parseText.charAt(position) != literal) {
-            return ~position;
-        }
-        return position + 1;
-    }
+    Calendrical toCalendrical() ;
 
 }

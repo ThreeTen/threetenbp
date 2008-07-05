@@ -44,7 +44,7 @@ public class MockDateProviderReturnsNull implements DateProvider {
     }
 
     /** {@inheritDoc} */
-    public FlexiDateTime toFlexiDateTime() {
+    public Calendrical toCalendrical() {
         return null;
     }
 

@@ -397,8 +397,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getYear().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getYear().getValue() : null;
         }
     }
 
@@ -420,8 +420,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getMonthOfYear().getValue() : null;
         }
     }
 
@@ -448,24 +448,24 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getDayOfMonth().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getDayOfMonth().getValue() : null;
         }
         /** {@inheritDoc} */
         @Override
-        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            int domValue = dateTime.getValue(this);
-            if (dateTime.getDate() == null) {
-                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+        protected Calendrical mergeFields(Calendrical calendrical) {
+            int domValue = calendrical.getValue(this);
+            if (calendrical.getDate() == null) {
+                Map<DateTimeFieldRule, Integer> map = calendrical.getFieldValueMap();
                 map.remove(this);
                 Integer year = map.remove(Year.rule());
                 Integer month = map.remove(MonthOfYear.rule());
                 if (year != null && month != null) {
                     LocalDate date = LocalDate.date(year, month, domValue);
-                    return dateTime.withFieldValueMap(map).withDate(date);
+                    return calendrical.withFieldValueMap(map).withDate(date);
                 }
             }
-            return dateTime;
+            return calendrical;
         }
     }
 
@@ -492,24 +492,24 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getDayOfYear().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getDayOfYear().getValue() : null;
         }
         /** {@inheritDoc} */
         @Override
-        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            int doyValue = dateTime.getValue(this);
-            if (dateTime.getDate() == null) {
-                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+        protected Calendrical mergeFields(Calendrical calendrical) {
+            int doyValue = calendrical.getValue(this);
+            if (calendrical.getDate() == null) {
+                Map<DateTimeFieldRule, Integer> map = calendrical.getFieldValueMap();
                 map.remove(this);
                 Integer year = map.remove(Year.rule());
                 if (year != null) {
                     DayOfYear doy = DayOfYear.dayOfYear(doyValue);
                     LocalDate date = doy.createDate(Year.isoYear(year));
-                    return dateTime.withFieldValueMap(map).withDate(date);
+                    return calendrical.withFieldValueMap(map).withDate(date);
                 }
             }
-            return dateTime;
+            return calendrical;
         }
     }
 
@@ -531,8 +531,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? Weekyear.weekyear(dateTime.getDate()).getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? Weekyear.weekyear(calendrical.getDate()).getValue() : null;
         }
     }
 
@@ -559,8 +559,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? WeekOfWeekyear.weekOfWeekyear(dateTime.getDate()).getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? WeekOfWeekyear.weekOfWeekyear(calendrical.getDate()).getValue() : null;
         }
     }
 
@@ -582,8 +582,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getDayOfWeek().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getDayOfWeek().getValue() : null;
         }
     }
 
@@ -610,8 +610,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            LocalDate date = dateTime.getDate();
+        protected Integer extractValue(Calendrical calendrical) {
+            LocalDate date = calendrical.getDate();
             if (date != null) {
                 return ((date.getDayOfYear().getValue() - 1) % 7) + 1;
             }
@@ -637,8 +637,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getQuarterOfYear().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getMonthOfYear().getQuarterOfYear().getValue() : null;
         }
     }
 
@@ -660,18 +660,18 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? dateTime.getDate().getMonthOfYear().getMonthOfQuarter() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? calendrical.getDate().getMonthOfYear().getMonthOfQuarter() : null;
         }
         /** {@inheritDoc} */
         @Override
-        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            int moq = dateTime.getValue(this);
-            Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+        protected Calendrical mergeFields(Calendrical calendrical) {
+            int moq = calendrical.getValue(this);
+            Map<DateTimeFieldRule, Integer> map = calendrical.getFieldValueMap();
             map.remove(this);
             Integer qoyObj = map.remove(ISOChronology.INSTANCE.quarterOfYear());
             if (qoyObj != null) {
-                int qoy = dateTime.getValue(ISOChronology.INSTANCE.quarterOfYear());  // cross-check value
+                int qoy = calendrical.getValue(ISOChronology.INSTANCE.quarterOfYear());  // cross-check value
                 int moy = (qoy - 1) * 3 + moq;
                 Integer existingMoy = map.get(MonthOfYear.rule());
                 if (existingMoy != null && existingMoy != moy) {
@@ -680,9 +680,9 @@ public final class ISOChronology extends Chronology implements Serializable {
                             moy + " that does not match the existing Month of Year value " + existingMoy);
                 }
                 map.put(MonthOfYear.rule(), moy);
-                return dateTime.withFieldValueMap(map);
+                return calendrical.withFieldValueMap(map);
             }
-            return dateTime;
+            return calendrical;
         }
     }
 
@@ -709,8 +709,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getDate() != null ? WeekOfMonth.weekOfMonth(dateTime.getDate()).getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getDate() != null ? WeekOfMonth.weekOfMonth(calendrical.getDate()).getValue() : null;
         }
     }
 
@@ -732,24 +732,24 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getTime() != null ? calendrical.getTime().getHourOfDay().getValue() : null;
         }
         /** {@inheritDoc} */
         @Override
-        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            int hour = dateTime.getValue(this);
-            if (dateTime.getTime() == null) {
-                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+        protected Calendrical mergeFields(Calendrical calendrical) {
+            int hour = calendrical.getValue(this);
+            if (calendrical.getTime() == null) {
+                Map<DateTimeFieldRule, Integer> map = calendrical.getFieldValueMap();
                 map.remove(this);
                 Integer minute = map.remove(ISOChronology.INSTANCE.minuteOfHour());
                 Integer second = map.remove(ISOChronology.INSTANCE.secondOfMinute());
                 Integer nano = map.remove(ISOChronology.INSTANCE.nanoOfSecond());
                 LocalTime time = LocalTime.time(hour, minute == null ? 0 : minute,
                         second == null ? 0 : second, nano == null ? 0 : nano);
-                return dateTime.withFieldValueMap(map).withTime(time);
+                return calendrical.withFieldValueMap(map).withTime(time);
             }
-            return dateTime;
+            return calendrical;
         }
     }
 
@@ -771,8 +771,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getMinuteOfHour().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getTime() != null ? calendrical.getTime().getMinuteOfHour().getValue() : null;
         }
     }
 
@@ -794,8 +794,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getSecondOfMinute().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getTime() != null ? calendrical.getTime().getSecondOfMinute().getValue() : null;
         }
     }
 
@@ -817,8 +817,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getNanoOfSecond().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getTime() != null ? calendrical.getTime().getNanoOfSecond().getValue() : null;
         }
     }
 
@@ -840,8 +840,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getAmPm().getValue() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getTime() != null ? calendrical.getTime().getHourOfDay().getAmPm().getValue() : null;
         }
     }
 
@@ -863,24 +863,24 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getHourOfAmPm() : null;
+        protected Integer extractValue(Calendrical calendrical) {
+            return calendrical.getTime() != null ? calendrical.getTime().getHourOfDay().getHourOfAmPm() : null;
         }
         /** {@inheritDoc} */
         @Override
-        protected FlexiDateTime mergeFields(FlexiDateTime dateTime) {
-            int hourOfAmPm = dateTime.getValue(this);
-            if (dateTime.getTime() == null) {
-                Map<DateTimeFieldRule, Integer> map = dateTime.getFieldValueMap();
+        protected Calendrical mergeFields(Calendrical calendrical) {
+            int hourOfAmPm = calendrical.getValue(this);
+            if (calendrical.getTime() == null) {
+                Map<DateTimeFieldRule, Integer> map = calendrical.getFieldValueMap();
                 map.remove(this);
                 Integer amPm = map.remove(ISOChronology.INSTANCE.amPmOfDay());
                 if (amPm != null) {
                     HourOfDay hour = HourOfDay.hourOfDay(AmPmOfDay.amPmOfDay(amPm), hourOfAmPm);
                     map.put(ISOChronology.INSTANCE.hourOfDay(), hour.getValue());
-                    return dateTime.withFieldValueMap(map);
+                    return calendrical.withFieldValueMap(map);
                 }
             }
-            return dateTime;
+            return calendrical;
         }
     }
 
@@ -984,16 +984,16 @@ public final class ISOChronology extends Chronology implements Serializable {
 //        /**
 //         * Gets the value of this field.
 //         *
-//         * @param dateTime  the date time, not null
+//         * @param calendrical  the date time, not null
 //         * @return the value of the field
 //         * @throws UnsupportedCalendarFieldException if the value cannot be extracted
 //         */
-//        public int getValue(FlexiDateTime dateTime) {
+//        public int getValue(Calendrical calendrical) {
 //            switch (this) {
 //                case YEAR:
-//                    return dateTime.getDate().getYear().getValue();
+//                    return calendrical.getDate().getYear().getValue();
 //                default:
-//                    throw new UnsupportedCalendarFieldException(this, "FlexiDateTime");
+//                    throw new UnsupportedCalendarFieldException(this, "Calendrical");
 //            }
 //        }
 //

@@ -36,7 +36,7 @@ import static org.testng.Assert.*;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.time.calendar.FlexiDateTime;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDateTime;
 
 import org.testng.annotations.BeforeMethod;
@@ -52,16 +52,16 @@ public class TestStringLiteralPrinter {
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
-    private FlexiDateTime emptyDateTime;
-    private FlexiDateTime dateTime;
+    private Calendrical emptyCalendrical;
+    private Calendrical calendrical;
     private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder("EXISTING");
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyDateTime = new FlexiDateTime(null, null, null, null, null);
-        dateTime = LocalDateTime.dateTime(2008, 12, 3, 10, 15).toFlexiDateTime();
+        emptyCalendrical = new Calendrical(null, null, null, null, null);
+        calendrical = LocalDateTime.dateTime(2008, 12, 3, 10, 15).toCalendrical();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -69,14 +69,14 @@ public class TestStringLiteralPrinter {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.print(emptyDateTime, (Appendable) null, symbols);
+        pp.print(emptyCalendrical, (Appendable) null, symbols);
     }
 
 // NPE is not required
 //    @Test(expectedExceptions=NullPointerException.class)
 //    public void test_print_nullDateTime() throws Exception {
 //        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-//        pp.print(buf, (FlexiDateTime) null, locale);
+//        pp.print(buf, (Calendrical) null, locale);
 //        assertEquals(buf, "EXISTINGhello");
 //    }
 
@@ -84,34 +84,34 @@ public class TestStringLiteralPrinter {
 //    @Test(expectedExceptions=NullPointerException.class)
 //    public void test_print_nullLocale() throws Exception {
 //        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-//        pp.print(buf, emptyDateTime, (Locale) null);
+//        pp.print(buf, emptyCalendrical, (Locale) null);
 //        assertEquals(buf, "EXISTINGhello");
 //    }
 
     //-----------------------------------------------------------------------
-    public void test_print_emptyDateTime() throws Exception {
+    public void test_print_emptyCalendrical() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.print(emptyDateTime, buf, symbols);
+        pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTINGhello");
     }
 
     public void test_print_dateTime() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.print(dateTime, buf, symbols);
+        pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTINGhello");
     }
 
     public void test_print_emptyAppendable() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         buf.setLength(0);
-        pp.print(dateTime, buf, symbols);
+        pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "hello");
     }
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
-        pp.print(dateTime, exceptionAppenable, symbols);
+        pp.print(calendrical, exceptionAppenable, symbols);
     }
 
 }
