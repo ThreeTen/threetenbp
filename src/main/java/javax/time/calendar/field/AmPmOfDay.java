@@ -31,32 +31,30 @@
  */
 package javax.time.calendar.field;
 
-import java.io.Serializable;
-
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.TimeMatcher;
 
 /**
- * A representation of a meridiem of day in the ISO-8601 calendar system.
+ * A representation of the half-day AM/PM value in the ISO-8601 calendar system.
  * <p>
- * MeridiemOfDay is an immutable time field that can only store a meridiem of day.
- * It is a type-safe way of representing a meridiem of day in an application.
+ * AmPmOfDay is an enum that represents the half-day concepts of AM and PM.
+ * AM is defined as from 00:00 to 11:59, while PM is defined from 12:00 to 23:59.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MeridiemOfDay
+ * <b>Do not use ordinal() to obtain the numeric representation of a AmPmOfDay
  * instance. Use getValue() instead.</b>
  * <p>
- * MeridiemOfDay is thread-safe and immutable.
+ * AmPmOfDay is thread-safe and immutable.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MeridiemOfDay
+public enum AmPmOfDay
         implements Calendrical, TimeAdjustor, TimeMatcher {
 
     /**
@@ -68,53 +66,62 @@ public enum MeridiemOfDay
      */
     PM(1),
     ;
-    /**
-     * The rule implementation that defines how the meridiem of day field operates.
-     */
-    public static final DateTimeFieldRule RULE = Rule.INSTANCE;
 
     /**
-     * The meridiem of day being represented.
+     * The AM/PM being represented.
      */
-    private final int meridiemOfDay;
+    private final int amPmOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MeridiemOfDay</code>.
+     * Gets the rule that defines how the AM/PM field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
      *
-     * @param meridiemOfDay  the meridiem of day to represent, from 0 (AM) to 1 (PM)
-     * @return the existing MeridiemOfDay
-     * @throws IllegalCalendarFieldValueException if the meridiem of day is invalid
+     * @return the AM/PM rule, never null
      */
-    public static MeridiemOfDay meridiemOfDay(int meridiemOfDay) {
-        switch (meridiemOfDay) {
+    public static DateTimeFieldRule rule() {
+        return ISOChronology.INSTANCE.amPmOfDay();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>AmPmOfDay</code>.
+     *
+     * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
+     * @return the singleton AmPmOfDay instance
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     */
+    public static AmPmOfDay amPmOfDay(int amPmOfDay) {
+        switch (amPmOfDay) {
             case 0:
                 return AM;
             case 1:
                 return PM;
             default:
-                throw new IllegalCalendarFieldValueException(RULE, meridiemOfDay, 0, 1);
+                throw new IllegalCalendarFieldValueException(rule(), amPmOfDay, 0, 1);
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified meridiem of day.
+     * Constructs an instance with the specified AM/PM value.
      *
-     * @param meridiemOfDay  the meridiem of day to represent
+     * @param amPmOfDay  the AM/PM value to represent
      */
-    private MeridiemOfDay(int meridiemOfDay) {
-        this.meridiemOfDay = meridiemOfDay;
+    private AmPmOfDay(int amPmOfDay) {
+        this.amPmOfDay = amPmOfDay;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the meridiem of day value.
+     * Gets the AM/PM value.
      *
-     * @return the meridiem of day, from 0 (AM) to 1 (PM)
+     * @return the AM/PM value, from 0 (AM) to 1 (PM)
      */
     public int getValue() {
-        return meridiemOfDay;
+        return amPmOfDay;
     }
 
     //-----------------------------------------------------------------------
@@ -124,28 +131,7 @@ public enum MeridiemOfDay
      * @return the flexible date-time representation for this instance, never null
      */
     public FlexiDateTime toFlexiDateTime() {
-        return new FlexiDateTime(RULE, getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the next meridiem of day wrapping so that the next meridiem of day
-     * is always returned.
-     *
-     * @return the next meridiem of day, never null
-     */
-    public MeridiemOfDay next() {
-        return values()[(ordinal() + 1) % 2];
-    }
-
-    /**
-     * Gets the previous meridiem of day wrapping so that the previous meridiem of day
-     * is always returned.
-     *
-     * @return the previous meridiem of day, never null
-     */
-    public MeridiemOfDay previous() {
-        return values()[(ordinal() + 2 - 1) % 2];
+        return new FlexiDateTime(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -169,11 +155,12 @@ public enum MeridiemOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a time to have the the meridem of day represented by this object,
+     * Adjusts a time to have the the am/pm value represented by this object,
      * returning a new time.
      * <p>
-     * Only the meridiem of day field is adjusted in the result. The other time
-     * fields are unaffected.
+     * Only the AM/PM value is adjusted. The other date and time fields are
+     * unaffected. Changing from AM to PM will effectively add 12 hours,
+     * while changing from PM to AM will effectively subtract 12 hours.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -192,7 +179,7 @@ public enum MeridiemOfDay
     }
 
     /**
-     * Checks if the input time has the same meridiem of day that is represented
+     * Checks if the input time has the same AM/PM value that is represented
      * by this object.
      *
      * @param time  the time to match, not null
@@ -202,26 +189,4 @@ public enum MeridiemOfDay
         return this == time.getHourOfDay().getAmPm();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the rules for the meridiem of day field.
-     */
-    private static class Rule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new Rule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private Rule() {
-            super(ISOChronology.INSTANCE, "MeridiemOfDay", null, null, 0, 1);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        @Override
-        protected Integer extractValue(FlexiDateTime dateTime) {
-            return dateTime.getTime() != null ? dateTime.getTime().getHourOfDay().getAmPm().getValue() : null;
-        }
-    }
 }

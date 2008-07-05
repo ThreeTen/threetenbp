@@ -38,7 +38,7 @@ import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MeridiemOfDay;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekOfMonth;
 import javax.time.calendar.field.WeekOfWeekyear;
@@ -357,7 +357,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * defined as AM, while the hours from 12 to 23 are defined as PM.
      * AM is defined with the value 0, while PM is defined with the value 1.
      * <p>
-     * The enum {@link MeridiemOfDay} should be used wherever possible in
+     * The enum {@link AmPmOfDay} should be used wherever possible in
      * applications when referring to the day of the week to avoid
      * hard-coding the values.
      *
@@ -875,7 +875,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 map.remove(this);
                 Integer amPm = map.remove(ISOChronology.INSTANCE.amPmOfDay());
                 if (amPm != null) {
-                    HourOfDay hour = HourOfDay.hourOfDay(MeridiemOfDay.meridiemOfDay(amPm), hourOfAmPm);
+                    HourOfDay hour = HourOfDay.hourOfDay(AmPmOfDay.amPmOfDay(amPm), hourOfAmPm);
                     map.put(ISOChronology.INSTANCE.hourOfDay(), hour.getValue());
                     return dateTime.withFieldValueMap(map);
                 }

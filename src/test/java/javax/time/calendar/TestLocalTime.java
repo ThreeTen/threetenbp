@@ -43,9 +43,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.HourOfMeridiem;
-import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
@@ -463,8 +462,8 @@ public class TestLocalTime {
         assertEquals(TEST_12_30_40_987654321.get(MinuteOfHour.rule()), 30);
         assertEquals(TEST_12_30_40_987654321.get(SecondOfMinute.rule()), 40);
         assertEquals(TEST_12_30_40_987654321.get(NanoOfSecond.rule()), 987654321);
-        assertEquals(TEST_12_30_40_987654321.get(HourOfMeridiem.RULE), 0);
-        assertEquals(TEST_12_30_40_987654321.get(MeridiemOfDay.RULE), MeridiemOfDay.PM.getValue());
+        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.INSTANCE.hourOfAmPm()), 0);
+        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.INSTANCE.amPmOfDay()), AmPmOfDay.PM.getValue());
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
@@ -511,7 +510,7 @@ public class TestLocalTime {
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {
-        TimeAdjustor timeAdjustor = MeridiemOfDay.AM;
+        TimeAdjustor timeAdjustor = AmPmOfDay.AM;
         assertEquals(TEST_12_30_40_987654321.with(timeAdjustor).getHourOfDay().getValue(), 0);
     }
 
@@ -1315,10 +1314,10 @@ public class TestLocalTime {
         assertFalse(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
         assertTrue(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
         assertFalse(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-        assertTrue(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(0)));
-        assertFalse(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
-        assertTrue(TEST_12_30_40_987654321.matches(MeridiemOfDay.PM));
-        assertFalse(TEST_12_30_40_987654321.matches(MeridiemOfDay.AM));
+//        assertTrue(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(0)));
+//        assertFalse(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
+        assertTrue(TEST_12_30_40_987654321.matches(AmPmOfDay.PM));
+        assertFalse(TEST_12_30_40_987654321.matches(AmPmOfDay.AM));
     }
 
     //-----------------------------------------------------------------------

@@ -41,17 +41,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
 import java.util.Iterator;
 
 import javax.time.CalendricalException;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.HourOfMeridiem;
-import javax.time.calendar.field.MeridiemOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
@@ -803,8 +801,8 @@ public class TestLocalDateTime {
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MinuteOfHour.rule()), 30);
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(SecondOfMinute.rule()), 40);
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(NanoOfSecond.rule()), 987654321);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(HourOfMeridiem.RULE), 0);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MeridiemOfDay.RULE), MeridiemOfDay.PM.getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.INSTANCE.hourOfAmPm()), 0);
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.INSTANCE.amPmOfDay()), AmPmOfDay.PM.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -938,7 +936,7 @@ public class TestLocalDateTime {
     }
 
     public void test_with_TimeAdjustor() {
-        TimeAdjustor timeAdjustor = MeridiemOfDay.AM;
+        TimeAdjustor timeAdjustor = AmPmOfDay.AM;
         LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(timeAdjustor);
         assertSame(adjusted.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
         assertSame(adjusted.toLocalTime().getHourOfDay().getValue(), 0);
@@ -3034,10 +3032,10 @@ public class TestLocalDateTime {
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(0)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(MeridiemOfDay.PM));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(MeridiemOfDay.AM));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(0)));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.PM));
+        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.AM));
     }
 
     //-----------------------------------------------------------------------

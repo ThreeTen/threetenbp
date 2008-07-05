@@ -113,12 +113,12 @@ public final class HourOfDay
     /**
      * Obtains an instance of <code>HourOfDay</code> using am/pm.
      *
-     * @param amPm  whether the hour is am or pm, not null
-     * @param hourOfAmPm  the hour within am/pm, from 0 to 11
+     * @param amPm  whether the hour is AM or PM, not null
+     * @param hourOfAmPm  the hour within AM/PM, from 0 to 11
      * @return the created HourOfDay, never null
      * @throws IllegalCalendarFieldValueException if the input is invalid
      */
-    public static HourOfDay hourOfDay(MeridiemOfDay amPm, int hourOfAmPm) {
+    public static HourOfDay hourOfDay(AmPmOfDay amPm, int hourOfAmPm) {
         ISOChronology.INSTANCE.hourOfAmPm().checkValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return hourOfDay(hourOfDay);
@@ -255,8 +255,8 @@ public final class HourOfDay
      *
      * @return true is the time is in the morning
      */
-    public MeridiemOfDay getAmPm() {
-        return MeridiemOfDay.meridiemOfDay(hourOfDay / 12);
+    public AmPmOfDay getAmPm() {
+        return AmPmOfDay.amPmOfDay(hourOfDay / 12);
     }
 
     /**

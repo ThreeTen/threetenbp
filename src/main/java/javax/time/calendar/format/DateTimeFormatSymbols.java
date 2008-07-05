@@ -42,7 +42,7 @@ import java.util.Map.Entry;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MeridiemOfDay;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -238,8 +238,8 @@ public final class DateTimeFormatSymbols {
         textMap.put(id, new HashMap<TextStyle, TextStore>());
         map.clear();
         array = oldSymbols.getAmPmStrings();
-        map.put(MeridiemOfDay.AM.getValue(), array[Calendar.AM]);
-        map.put(MeridiemOfDay.PM.getValue(), array[Calendar.PM]);
+        map.put(AmPmOfDay.AM.getValue(), array[Calendar.AM]);
+        map.put(AmPmOfDay.PM.getValue(), array[Calendar.PM]);
         textMap.get(id).put(TextStyle.FULL, new TextStore(map));
     }
 

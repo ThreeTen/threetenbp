@@ -43,7 +43,7 @@ import javax.time.calendar.MonthDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Era;
-import javax.time.calendar.field.MeridiemOfDay;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.Period;
 import javax.time.period.field.Days;
@@ -59,7 +59,7 @@ public class TestFluentAPI {
         LocalTime tod = clock().currentTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
-        if (tod.matches(MeridiemOfDay.AM)) {
+        if (tod.matches(AmPmOfDay.AM)) {
             tod = tod.with(hourOfDay(9));
         }
         
