@@ -32,7 +32,6 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.ZoneOffset;
@@ -74,7 +73,7 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         ZoneOffset offset = dateTime.getOffset();
         if (offset == null) {
             throw new CalendricalFormatException("Unable to print ZoneOffset");

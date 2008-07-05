@@ -32,7 +32,6 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
@@ -72,9 +71,8 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = dateTime.getRawValue(fieldRule);
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
         String text = symbols.getFieldValueText(fieldRule, textStyle, value);
         appendable.append(text == null ? Integer.toString(value) : text);
     }
@@ -85,8 +83,7 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         if (position > length) {
             throw new IndexOutOfBoundsException();
         }
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(context.getLocale());
-        int[] match = symbols.matchFieldText(fieldRule, textStyle, false, parseText.substring(position));
+        int[] match = context.getSymbols().matchFieldText(fieldRule, textStyle, false, parseText.substring(position));
         if (match == null) {
             // TODO parse numbers
             return ~position;

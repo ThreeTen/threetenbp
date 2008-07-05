@@ -54,7 +54,7 @@ public class TestCharLiteralPrinter {
     private Appendable exceptionAppenable;
     private FlexiDateTime emptyDateTime;
     private FlexiDateTime dateTime;
-    private Locale locale;
+    private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
@@ -62,14 +62,14 @@ public class TestCharLiteralPrinter {
         exceptionAppenable = new MockIOExceptionAppendable();
         emptyDateTime = new FlexiDateTime(null, null, null, null, null);
         dateTime = LocalDateTime.dateTime(2008, 12, 3, 10, 15).toFlexiDateTime();
-        locale = Locale.ENGLISH;
+        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.print((Appendable) null, emptyDateTime, locale);
+        pp.print(emptyDateTime, (Appendable) null, symbols);
     }
 
 // NPE is not required
@@ -82,36 +82,36 @@ public class TestCharLiteralPrinter {
 
 // NPE is not required
 //    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_print_nullLocale() throws Exception {
+//    public void test_print_nullSymbols() throws Exception {
 //        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-//        pp.print(buf, emptyDateTime, (Locale) null);
+//        pp.print(buf, emptyDateTime, (DateTimeFormatSymbols) null);
 //        assertEquals(buf, "EXISTINGa");
 //    }
 
     //-----------------------------------------------------------------------
     public void test_print_emptyDateTime() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "EXISTINGa");
     }
 
     public void test_print_dateTime() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.print(buf, dateTime, locale);
+        pp.print(dateTime, buf, symbols);
         assertEquals(buf.toString(), "EXISTINGa");
     }
 
     public void test_print_emptyAppendable() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         buf.setLength(0);
-        pp.print(buf, dateTime, locale);
+        pp.print(dateTime, buf, symbols);
         assertEquals(buf.toString(), "a");
     }
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
-        pp.print(exceptionAppenable, dateTime, locale);
+        pp.print(dateTime, exceptionAppenable, symbols);
     }
 
 }

@@ -32,7 +32,6 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.time.calendar.FlexiDateTime;
 
@@ -58,7 +57,7 @@ class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         appendable.append(literal);
     }
 

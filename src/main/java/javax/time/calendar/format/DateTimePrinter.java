@@ -32,7 +32,6 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.time.calendar.FlexiDateTime;
 
@@ -54,12 +53,12 @@ public interface DateTimePrinter {
     /**
      * Prints the date-time object to the appendable.
      *
+     * @param dateTime  the datetime to print, not null
      * @param appendable  the appendable to add to, not null
-     * @param dateTime  the datetime to format, not null
-     * @param locale  the locale to use, not null
+     * @param symbols  the formatting symbols to use, not null
      * @throws CalendricalFormatException if the date time cannot be printed successfully
      * @throws IOException if the append throws an exception
      */
-    void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException;
+    void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException;
 
 }

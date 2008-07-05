@@ -50,9 +50,9 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
 public class DateTimeFormatter {
 
     /**
-     * The locale to use for text formatting.
+     * The symbols to use for formatting, not null.
      */
-    private final Locale locale;
+    private final DateTimeFormatSymbols symbols;
     /**
      * Whether to use standard ASCII numerics (true) or use the locale (false).
      */
@@ -110,7 +110,7 @@ public class DateTimeFormatter {
      */
     DateTimeFormatter(Locale locale, boolean asciiNumerics, List<DateTimePrinter> printers, List<DateTimeParser> parsers) {
         // validated by caller
-        this.locale = locale;
+        this.symbols = DateTimeFormatSymbols.getInstance(locale);
         this.asciiNumerics = asciiNumerics;
         this.printers = printers.contains(null) ? null : printers.toArray(new DateTimePrinter[printers.size()]);
         this.parsers = parsers.contains(null) ? null : parsers.toArray(new DateTimeParser[parsers.size()]);
@@ -119,13 +119,17 @@ public class DateTimeFormatter {
     /**
      * Constructor used by immutable copying.
      *
-     * @param locale  the locale to use for text formatting, not null
+     * @param symbols  the symbols to use for text formatting, not null
      * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
      * @param printers  the printers to use, assigned by this method, not null
      * @param parsers  the parsers to use, assigned by this method, not null
      */
-    private DateTimeFormatter(Locale locale, boolean asciiNumerics, DateTimePrinter[] printers, DateTimeParser[] parsers) {
-        this.locale = locale;
+    private DateTimeFormatter(
+            DateTimeFormatSymbols symbols,
+            boolean asciiNumerics,
+            DateTimePrinter[] printers,
+            DateTimeParser[] parsers) {
+        this.symbols = symbols;
         this.asciiNumerics = asciiNumerics;
         this.printers = printers;
         this.parsers = parsers;
@@ -138,7 +142,7 @@ public class DateTimeFormatter {
      * @return the locale of this DateTimeFormatter, never null
      */
     public Locale getLocale() {
-        return locale;
+        return symbols.getLocale();
     }
 
     /**
@@ -153,10 +157,11 @@ public class DateTimeFormatter {
         if (locale == null) {
             throw new NullPointerException("Locale must not be null");
         }
-        if (locale.equals(this.locale)) {
+        if (locale.equals(this.getLocale())) {
             return this;
         }
-        return new DateTimeFormatter(locale, asciiNumerics, printers, parsers);
+        DateTimeFormatSymbols newSymbols = DateTimeFormatSymbols.getInstance(locale);
+        return new DateTimeFormatter(newSymbols, asciiNumerics, printers, parsers);
     }
 
     //-----------------------------------------------------------------------
@@ -204,19 +209,19 @@ public class DateTimeFormatter {
      * See {@link CalendricalFormatException#rethrowIOException()} for a means
      * to extract the IOException.
      *
-     * @param calendrical  the calendrical to print, not null
-     * @param buffer  the buffer to print to, not null
+     * @param calendrical  the provider of the calendrical to print, not null
+     * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws CalendricalFormatException if an error occurs during printing
      */
-    public void print(Calendrical calendrical, Appendable buffer) {
+    public void print(Calendrical calendrical, Appendable appendable) {
         if (printers == null) {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
         FlexiDateTime dateTime = calendrical.toFlexiDateTime();
         try {
             for (DateTimePrinter printer : printers) {
-                printer.print(buffer, dateTime, locale);
+                printer.print(dateTime, appendable, symbols);
             }
         } catch (UnsupportedCalendarFieldException ex) {
             throw new CalendricalFormatFieldException(ex);

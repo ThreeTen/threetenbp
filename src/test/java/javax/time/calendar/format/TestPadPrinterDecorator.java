@@ -54,14 +54,14 @@ public class TestPadPrinterDecorator {
     private StringBuilder buf;
     private Appendable exceptionAppenable;
     private FlexiDateTime emptyDateTime;
-    private Locale locale;
+    private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
         emptyDateTime = new FlexiDateTime(null, null, null, null, null);
-        locale = Locale.ENGLISH;
+        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
@@ -69,7 +69,7 @@ public class TestPadPrinterDecorator {
     public void test_print_nullAppendable() throws Exception {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), 3);
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print((Appendable) null, dt, locale);
+        pp.print(dt, (Appendable) null, symbols);
     }
 
 // NPE is not required
@@ -90,59 +90,59 @@ public class TestPadPrinterDecorator {
     //-----------------------------------------------------------------------
     public void test_print_emptyDateTime() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_fullDateTime() throws Exception {
         FlexiDateTime dateTime = LocalDate.date(2008, 12, 3).toFlexiDateTime();
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(buf, dateTime, locale);
+        pp.print(dateTime, buf, symbols);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_append() throws Exception {
         buf.append("EXISTING");
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "EXISTING--Z");
     }
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
-        pp.print(exceptionAppenable, emptyDateTime, locale);
+        pp.print(emptyDateTime, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_noPadRequiredSingle() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 1, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "Z");
     }
 
     public void test_print_padRequiredSingle() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 5, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "----Z");
     }
 
     public void test_print_noPadRequiredMultiple() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 4, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "WXYZ");
     }
 
     public void test_print_padRequiredMultiple() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 5, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
         assertEquals(buf.toString(), "-WXYZ");
     }
 
     @Test(expectedExceptions=CalendricalFormatException.class)
     public void test_print_overPad() throws Exception {
         PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 3, '-');
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
     }
 
 }

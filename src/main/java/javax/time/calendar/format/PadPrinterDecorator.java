@@ -32,7 +32,6 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.time.calendar.FlexiDateTime;
 
@@ -71,9 +70,9 @@ class PadPrinterDecorator implements DateTimePrinter {
     }
 
     /** {@inheritDoc} */
-    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         StringBuilder buf = new StringBuilder(32);
-        printer.print(buf, dateTime, locale);
+        printer.print(dateTime, buf, symbols);
         int len = buf.length();
         if (len > padWidth) {
             throw new CalendricalFormatException("Output of " + len + " characters exceeds pad width of " + padWidth);

@@ -56,31 +56,10 @@ import javax.time.calendar.ZoneOffset;
  */
 public final class DateTimeParseContext implements Calendrical {
 
-//    /**
-//     * The text being parsed.
-//     */
-//    private String text;
-//    /**
-//     * The current parse position.
-//     */
-//    private int parsePosition;
-
     /**
-     * The locale for printing and parsing text.
+     * The date time format symbols, not null.
      */
-    private Locale locale;
-    /**
-     * The zero character.
-     */
-    private char zeroChar = '0';
-    /**
-     * The positive sign character.
-     */
-    private char positiveSignChar = '+';
-    /**
-     * The negative sign character.
-     */
-    private char negativeSignChar = '-';
+    private DateTimeFormatSymbols symbols;
 
     /**
      * The date time map, never null, may be empty.
@@ -109,101 +88,35 @@ public final class DateTimeParseContext implements Calendrical {
     public DateTimeParseContext() {
     }
 
-//    /**
-//     * Constructor.
-//     *
-//     * @param text  the text to be parsed, not null
-//     * @param parsePosition  the starting parse position
-//     */
-//    public DateTimeParseContext(String text, int parsePosition) {
-//        this.text = text;
-//        this.parsePosition = parsePosition;
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the text to be parsed.
-//     *
-//     * @return the text to be parsed, never null
-//     */
-//    public String getText() {
-//        return text;
-//    }
-//
-//    /**
-//     * Gets the current parse position.
-//     *
-//     * @return the current parse position
-//     */
-//    public int getParsePosition() {
-//        return parsePosition;
-//    }
-//
-//    /**
-//     * Sets the current parse position.
-//     *
-//     * @param parsePosition  the new parse position
-//     */
-//    public void setParsePosition(int parsePosition) {
-//        this.parsePosition = parsePosition;
-//    }
+    /**
+     * Constructor.
+     *
+     * @param symbols  the symbols to use during parsing, not null
+     */
+    public DateTimeParseContext(DateTimeFormatSymbols symbols) {
+        if (symbols == null) {
+            throw new NullPointerException("The symbols must not be null");
+        }
+        this.symbols = symbols;
+    }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the locale to use for printing and parsing text.
-     * <p>
-     * The locale information for printing and parsing numbers is defined in
-     * the zero, negative and positive characters.
      *
-     * @return the character for zero
+     * @return the locale, never null
      */
     public Locale getLocale() {
-        return locale;
+        return symbols.getLocale();
     }
 
     /**
-     * Gets the character that represents zero.
-     * <p>
-     * This character can vary by locale.
-     * The characters for one to nine are implied to be the following characters.
+     * Gets the formatting symbols.
      *
-     * @return the character for zero
+     * @return the formatting symbols, never null
      */
-    public char getZeroChar() {
-        return zeroChar;
-    }
-
-    /**
-     * Checks whether the character is a digit, based on the currently set zero character.
-     *
-     * @param ch  the character to check
-     * @return the value, 0 to 9, of the character, or -1 if not a digit
-     */
-    public int digit(char ch) {
-        int val = ch - zeroChar;
-        return (val >= 0 && val <= 9) ? val : -1;
-    }
-
-    /**
-     * Gets the character that represents the positive sign.
-     * <p>
-     * This character can vary by locale.
-     *
-     * @return the character for the positive sign
-     */
-    public char getPositiveSignChar() {
-        return positiveSignChar;
-    }
-
-    /**
-     * Gets the character that represents the negative sign.
-     * <p>
-     * This character can vary by locale.
-     *
-     * @return the character for the negative sign
-     */
-    public char getNegativeSignChar() {
-        return negativeSignChar;
+    public DateTimeFormatSymbols getSymbols() {
+        return symbols;
     }
 
     //-----------------------------------------------------------------------

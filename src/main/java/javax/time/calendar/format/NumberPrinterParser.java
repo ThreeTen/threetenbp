@@ -32,8 +32,8 @@
 package javax.time.calendar.format;
 
 import java.io.IOException;
-import java.util.Locale;
 
+import javax.time.MathUtils;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.FlexiDateTime;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
@@ -44,7 +44,6 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
  * @author Stephen Colebourne
  */
 class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
-    // TODO: I18N: The numeric output varies by locale
 
     /**
      * The field to output, not null.
@@ -95,7 +94,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
-    public void print(Appendable appendable, FlexiDateTime dateTime, Locale locale) throws IOException {
+    public void print(FlexiDateTime dateTime, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = dateTime.getRawValue(fieldRule);
         String str = (value == Integer.MIN_VALUE ? Long.toString(Math.abs((long) value)) : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
@@ -103,7 +102,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         signStyle.print(appendable, fieldRule, value, minWidth);
         for (int i = 0; i < minWidth - str.length(); i++) {
-            appendable.append('0');
+            appendable.append(symbols.getZeroChar());
         }
         appendable.append(str);
     }
@@ -115,7 +114,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             return ~position;
         }
         char sign = parseText.charAt(position);  // IOOBE if invalid position
-        if (sign == '+') {
+        boolean negative = false;
+        if (sign == context.getSymbols().getPositiveSignChar()) {
             switch (signStyle) {
                 case ALWAYS:
                 case EXCEEDS_PAD:
@@ -124,7 +124,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 default:
                     return ~position;
             }
-        } else if (sign == '-') {
+        } else if (sign == context.getSymbols().getNegativeSignChar()) {
+            negative = true;
             switch (signStyle) {
                 case ALWAYS:
                 case EXCEEDS_PAD:
@@ -139,10 +140,10 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         if (minEndPos > length) {
             return ~position;
         }
-        int total = 0;
+        long total = 0;
         while (position < minEndPos) {
             char ch = parseText.charAt(position++);
-            int digit = context.digit(ch);
+            int digit = context.getSymbols().convertToDigit(ch);
             if (digit < 0) {
                 return ~(position - 1);
             }
@@ -152,7 +153,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         int maxEndPos = Math.max(position + maxWidth, length);
         while (position < maxEndPos) {
             char ch = parseText.charAt(position++);
-            int digit = context.digit(ch);
+            int digit = context.getSymbols().convertToDigit(ch);
             if (digit < 0) {
                 position--;
                 break;
@@ -160,8 +161,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             total *= 10;
             total += digit;
         }
-        total = (sign == '-' ? -total : total);
-        context.setFieldValue(fieldRule, total);
+        total = (negative ? -total : total);
+        context.setFieldValue(fieldRule, MathUtils.safeToInt(total));
         return position;
     }
 

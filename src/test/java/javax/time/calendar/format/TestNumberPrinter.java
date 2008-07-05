@@ -56,14 +56,14 @@ public class TestNumberPrinter {
     private StringBuilder buf;
     private Appendable exceptionAppenable;
     private FlexiDateTime emptyDateTime;
-    private Locale locale;
+    private DateTimeFormatSymbols symbols;
 
     @BeforeMethod
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
         emptyDateTime = new FlexiDateTime(null, null, null, null, null);
-        locale = Locale.ENGLISH;
+        symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
@@ -71,13 +71,13 @@ public class TestNumberPrinter {
     public void test_print_nullAppendable() throws Exception {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
-        pp.print((Appendable) null, dt, locale);
+        pp.print(dt, (Appendable) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullDateTime() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
-        pp.print(buf, (FlexiDateTime) null, locale);
+        pp.print((FlexiDateTime) null, buf, symbols);
     }
 
 // NPE is not required
@@ -92,14 +92,14 @@ public class TestNumberPrinter {
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_print_emptyDateTime() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
-        pp.print(buf, emptyDateTime, locale);
+        pp.print(emptyDateTime, buf, symbols);
     }
 
     public void test_print_append() throws Exception {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
         buf.append("EXISTING");
-        pp.print(buf, dt, locale);
+        pp.print(dt, buf, symbols);
         assertEquals(buf.toString(), "EXISTING3");
     }
 
@@ -107,7 +107,7 @@ public class TestNumberPrinter {
     public void test_print_appendIO() throws Exception {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
-        pp.print(exceptionAppenable, dt, locale);
+        pp.print(dt, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------
@@ -206,7 +206,7 @@ public class TestNumberPrinter {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NEGATIVE_ERROR);
         try {
-            pp.print(buf, dt, locale);
+            pp.print(dt, buf, symbols);
             if (result == null || value < 0) {
                 fail("Expected exception");
             }
@@ -226,7 +226,7 @@ public class TestNumberPrinter {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NEVER);
         try {
-            pp.print(buf, dt, locale);
+            pp.print(dt, buf, symbols);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -245,7 +245,7 @@ public class TestNumberPrinter {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NORMAL);
         try {
-            pp.print(buf, dt, locale);
+            pp.print(dt, buf, symbols);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -264,7 +264,7 @@ public class TestNumberPrinter {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.ALWAYS);
         try {
-            pp.print(buf, dt, locale);
+            pp.print(dt, buf, symbols);
             if (result == null) {
                 fail("Expected exception");
             }
@@ -283,7 +283,7 @@ public class TestNumberPrinter {
         FlexiDateTime dt = new FlexiDateTime(null, null, null, null, null).withFieldValue(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
-            pp.print(buf, dt, locale);
+            pp.print(dt, buf, symbols);
             if (result == null) {
                 fail("Expected exception");
             }

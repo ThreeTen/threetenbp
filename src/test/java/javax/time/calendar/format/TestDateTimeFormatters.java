@@ -53,6 +53,10 @@ public class TestDateTimeFormatters {
 
     @BeforeMethod
     public void setUp() {
+        int i = 1000000000;
+        System.out.println(i);
+        i = i * 4;
+        System.out.println(i);
     }
 
     //-----------------------------------------------------------------------
