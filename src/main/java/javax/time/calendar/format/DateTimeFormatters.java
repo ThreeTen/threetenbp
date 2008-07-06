@@ -139,22 +139,23 @@ public class DateTimeFormatters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the RFC-2822 date-time formatter.
+     * Returns the RFC-1123 date-time formatter.
      * <p>
-     * This is the RFC-2822 format: EEE, dd MMM yyyy HH:mm:ss Z.
+     * This is the RFC-1123 format: EEE, dd MMM yyyy HH:mm:ss Z.
+     * This is the updated replacement for RFC-822 which had a two digit year.
      * <p>
      * The year will print 4 digits, and only the range 0000 to 9999 is supported.
      *
      * @return the ISO date formatter, never null
      */
-    public static DateTimeFormatter rfc2822() {
-        return RFC_DATE_TIME;
+    public static DateTimeFormatter rfc1123() {
+        return RFC_1123_DATE_TIME;
     }
 
     /** Singleton date formatter. */
-    private static final DateTimeFormatter RFC_DATE_TIME;
+    private static final DateTimeFormatter RFC_1123_DATE_TIME;
     static {
-        RFC_DATE_TIME = new DateTimeFormatterBuilder()
+        RFC_1123_DATE_TIME = new DateTimeFormatterBuilder()
             .appendText(DayOfWeek.rule(), TextStyle.SHORT)
             .appendLiteral(", ")
             .appendValue(DayOfMonth.rule(), 2)
@@ -171,7 +172,7 @@ public class DateTimeFormatters {
             .appendLiteral(' ')
             .appendOffset("Z", false, true)
             .toFormatter()
-            .withLocale(Locale.US);
+            .withLocale(Locale.ENGLISH);
     }
 
 }

@@ -117,15 +117,15 @@ public class TestDateTimeFormatters {
     }
 
     //-----------------------------------------------------------------------
-    public void test_print_rfc2822() {
+    public void test_print_rfc1123() {
         CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
-        assertEquals(DateTimeFormatters.rfc2822().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
+        assertEquals(DateTimeFormatters.rfc1123().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 
-    public void test_print_rfc2822_missingField() {
+    public void test_print_rfc1123_missingField() {
         try {
             CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
-            DateTimeFormatters.rfc2822().print(test);
+            DateTimeFormatters.rfc1123().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {
             assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfWeek());
