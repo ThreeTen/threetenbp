@@ -31,7 +31,6 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -418,107 +417,28 @@ public class DateTimeFormatterBuilder {
      * @author Stephen Colebourne
      */
     public enum SignStyle {
-        // TODO: I18N: The minus sign varies by locale
-
         /**
          * Style to throw an exception if trying to output a negative value.
          */
-        NEGATIVE_ERROR {
-            /** {@inheritDoc} */
-            @Override
-            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-                if (value < 0) {
-                    throw new CalendricalFormatFieldException(fieldRule, value);
-                }
-            }
-        },
+        NEGATIVE_ERROR,
         /**
          * Style to never output a sign, only outputting the absolute value.
          */
-        NEVER {
-            /** {@inheritDoc} */
-            @Override
-            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-            }
-        },
+        NEVER,
         /**
          * Style to output the a sign only if the value is negative.
          */
-        NORMAL {
-            /** {@inheritDoc} */
-            @Override
-            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-                if (value < 0) {
-                    appendable.append('-');
-                }
-            }
-        },
+        NORMAL,
         /**
          * Style to always output the sign if the value exceeds the pad width.
          * A negative value will always output the '-' sign.
          */
-        EXCEEDS_PAD {
-            /** {@inheritDoc} */
-            @Override
-            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-                if (value < 0) {
-                    appendable.append('-');
-                } else if (padWidth < 10 && value >= EXCEED_POINTS[padWidth]) {
-                    appendable.append('+');
-                }
-            }
-        },
+        EXCEEDS_PAD,
         /**
          * Style to always output the sign.
          * Zero will output '+'.
          */
-        ALWAYS {
-            /** {@inheritDoc} */
-            @Override
-            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-                if (value < 0) {
-                    appendable.append('-');
-                } else {
-                    appendable.append('+');
-                }
-            }
-        };
-
-        /**
-         * Array of 10 to the power of n
-         */
-        private static final int[] EXCEED_POINTS = new int[] {
-            0,
-            10,
-            100,
-            1000,
-            10000,
-            100000,
-            1000000,
-            10000000,
-            100000000,
-            1000000000,
-            };
-
-        /**
-         * Prints the sign to the output appendable.
-         *
-         * @param appendable  the appendable to output to, not null
-         * @param fieldRule  the rule of the field to output, not null
-         * @param value  the value being output
-         * @param padWidth  the pad width
-         * @throws IOException if an error occurs
-         */
-        abstract void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException;
-
-//        /**
-//         * Prints the sign to the output appendable.
-//         *
-//         * @param ch  is the character valid
-//         * @throws IOException if an error occurs
-//         */
-//        abstract boolean isParseValid(char ch);
-
+        ALWAYS;
     }
 
     //-----------------------------------------------------------------------
