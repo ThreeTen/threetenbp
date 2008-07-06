@@ -154,9 +154,7 @@ public class DateTimeFormatter {
      * @return a new DateTimeFormatter with the same format and the new locale, never null
      */
     public DateTimeFormatter withLocale(Locale locale) {
-        if (locale == null) {
-            throw new NullPointerException("Locale must not be null");
-        }
+        DateTimeFormatterBuilder.checkNotNull(locale, "locale");
         if (locale.equals(this.getLocale())) {
             return this;
         }

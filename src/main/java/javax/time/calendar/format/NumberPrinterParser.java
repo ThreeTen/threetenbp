@@ -87,22 +87,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param signStyle  the positive/negative sign style, not null
      */
     NumberPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        if (minWidth < 1 || minWidth > 10) {
-            throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
-        }
-        if (maxWidth < 1 || maxWidth > 10) {
-            throw new IllegalArgumentException("The maximum width must be from 1 to 10 inclusive but was " + minWidth);
-        }
-        if (maxWidth < minWidth) {
-            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
-                    maxWidth + " < " + minWidth);
-        }
-        if (signStyle == null) {
-            throw new NullPointerException("The sign style must not be null");
-        }
+        // validated by caller
         this.fieldRule = fieldRule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;

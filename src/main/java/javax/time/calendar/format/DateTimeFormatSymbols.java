@@ -133,6 +133,7 @@ public final class DateTimeFormatSymbols {
 //            }
 //        }
 //
+        DateTimeFormatterBuilder.checkNotNull(locale, "locale");
         DateFormatSymbols symbols = DateFormatSymbols.getInstance(locale);
         return new DateTimeFormatSymbols(locale, symbols);
     }
@@ -143,10 +144,8 @@ public final class DateTimeFormatSymbols {
      *
      * @param locale  the locale, not null
      */
-    public DateTimeFormatSymbols(Locale locale) {
-        if (locale == null) {
-            throw new NullPointerException("The locale must not be null");
-        }
+    private DateTimeFormatSymbols(Locale locale) {
+        DateTimeFormatterBuilder.checkNotNull(locale, "locale");
         this.locale = locale;
         textMap = new HashMap<String, Map<TextStyle, TextStore>>();
     }
@@ -159,9 +158,7 @@ public final class DateTimeFormatSymbols {
      */
     private DateTimeFormatSymbols(Locale locale, DateFormatSymbols oldSymbols) {
         this(locale);
-        if (oldSymbols == null) {
-            throw new NullPointerException("The symbols to convert must not be null");
-        }
+        DateTimeFormatterBuilder.checkNotNull(oldSymbols, "symbols to convert");
         
         Map<Integer, String> map = new HashMap<Integer, String>();
         String[] array = null;
@@ -361,7 +358,8 @@ public final class DateTimeFormatSymbols {
      *
      * @param fieldRule  the field to get text for, not null
      * @param textStyle  the text style, not null
-     * @return the map of value to text for the field rule and style, null if no text defined
+     * @return the map of value to text for the field rule and style, null if
+     *  no text defined or parsing is not supported
      */
     public Map<String, Integer> getFieldTextValueMap(DateTimeFieldRule fieldRule, TextStyle textStyle) {
         TextStore store = getTextStore(fieldRule, textStyle);
@@ -384,9 +382,7 @@ public final class DateTimeFormatSymbols {
      */
     public int[] matchFieldText(DateTimeFieldRule fieldRule, TextStyle textStyle, boolean ignoreCase, String searchText) {
         TextStore store = getTextStore(fieldRule, textStyle);
-        if (searchText == null) {
-            throw new NullPointerException("The search text must not be null");
-        }
+        DateTimeFormatterBuilder.checkNotNull(searchText, "search text");
         if (store == null) {
             return null;
         }
@@ -428,12 +424,8 @@ public final class DateTimeFormatSymbols {
      * @return the text store, null if no text defined
      */
     private TextStore getTextStore(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        if (textStyle == null) {
-            throw new NullPointerException("The text style must not be null");
-        }
+        DateTimeFormatterBuilder.checkNotNull(fieldRule, "field rule");
+        DateTimeFormatterBuilder.checkNotNull(textStyle, "text style");
         String id = fieldRule.getID();
         Map<TextStyle, TextStore> styleMap = textMap.get(id);
         return styleMap == null ? null : styleMap.get(textStyle);
@@ -458,15 +450,13 @@ public final class DateTimeFormatSymbols {
         /**
          * Constructor.
          *
-         * @param textArray  an array of text, not null
-         * @param valueOffset  the offset to add to the array index to get the value
+         * @param map  the map of value to text, not null
+         * @throws IllegalArgumentException if the map contains null or empty text
          */
         private TextStore(Map<Integer, String> map) {
-            if (map == null || map.containsKey(null) || map.containsValue(null)) {
-                throw new NullPointerException("The map must not contain null");
-            }
-            if (map.containsValue("")) {
-                throw new NullPointerException("The map must not contain empty text");
+            DateTimeFormatterBuilder.checkNotNull(map, "text map");
+            if (map.containsKey(null) || map.containsValue(null) || map.containsValue("")) {
+                throw new IllegalArgumentException("The map must not contain null or empty text");
             }
             Map<Integer, String> copy = new HashMap<Integer, String>(map);
             Map<String, Integer> reverse = new HashMap<String, Integer>();
@@ -482,18 +472,18 @@ public final class DateTimeFormatSymbols {
                 insensitive.put(text.toUpperCase(locale), value);
                 insensitiveMaxLength = Math.max(maxLength, text.length());
             }
-            // check for duplicate text and block parsing
             if (reverse.size() < copy.size()) {
-                reverse.clear();
+                // duplicate text for a given value, so parsing is not supported
+                this.textValueMap = null;
                 maxLength = 0;
-                insensitive.clear();
+                this.insensitiveTextValueMap = null;
                 insensitiveMaxLength = 0;
+            } else {
+                textValueMap = Collections.unmodifiableMap(reverse);
+                insensitiveTextValueMap = Collections.unmodifiableMap(insensitive);
             }
-            // store
             this.valueTextMap = Collections.unmodifiableMap(copy);
-            this.textValueMap = Collections.unmodifiableMap(reverse);
             this.maxLength = maxLength;
-            this.insensitiveTextValueMap = Collections.unmodifiableMap(insensitive);
             this.insensitiveMaxLength = insensitiveMaxLength;
         }
     }

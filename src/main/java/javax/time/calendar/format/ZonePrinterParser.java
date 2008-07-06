@@ -34,32 +34,51 @@ package javax.time.calendar.format;
 import java.io.IOException;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
- * Prints or parses a string literal.
+ * Prints or parses a zone offset.
  *
  * @author Stephen Colebourne
  */
-class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
+class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The literal to print or parse.
+     * The text style to output, null means the id.
      */
-    private final String literal;
+    private final TextStyle textStyle;
+
+    /**
+     * Constructor.
+     */
+    ZonePrinterParser() {
+        this.textStyle = null;
+    }
 
     /**
      * Constructor.
      *
-     * @param literal  the literal to print or parse, not null
+     * @param textStyle  the test style to output, not null
      */
-    StringLiteralPrinterParser(String literal) {
+    ZonePrinterParser(TextStyle textStyle) {
         // validated by caller
-        this.literal = literal;
+        this.textStyle = textStyle;
     }
 
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        appendable.append(literal);
+        TimeZone zone = calendrical.getZone();
+        if (zone == null) {
+            throw new CalendricalFormatException("Unable to print TimeZone");
+        }
+        if (textStyle == null) {
+            appendable.append(zone.getID());
+        } else if (textStyle == TextStyle.FULL) {
+            appendable.append(zone.getName());  // TODO: Use symbols
+        } else {
+            appendable.append(zone.getShortName());  // TODO: Use symbols
+        }
     }
 
     /** {@inheritDoc} */
@@ -68,14 +87,8 @@ class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
         if (position > length) {
             throw new IndexOutOfBoundsException();
         }
-        int endPos = position + literal.length();
-        if (endPos > length) {
-            return ~position;
-        }
-        if (literal.equals(parseText.substring(position, endPos)) == false) {
-            return ~position;
-        }
-        return endPos;
+        // TODO
+        return position;
     }
 
 }

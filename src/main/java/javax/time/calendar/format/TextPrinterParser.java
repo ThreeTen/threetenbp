@@ -60,12 +60,7 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param textStyle  the text style, not null
      */
     TextPrinterParser(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        if (textStyle == null) {
-            throw new NullPointerException("The text style must not be null");
-        }
+        // validated by caller
         this.fieldRule = fieldRule;
         this.textStyle = textStyle;
     }

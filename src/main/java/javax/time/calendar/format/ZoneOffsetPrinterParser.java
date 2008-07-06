@@ -64,9 +64,7 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
      * @param excludeSeconds  whether to exclude seconds
      */
     ZoneOffsetPrinterParser(String utcText, boolean includeColon, boolean excludeSeconds) {
-        if (utcText == null) {
-            throw new NullPointerException("The utc text must not be null");
-        }
+        // validated by caller
         this.utcText = utcText;
         this.includeColon = includeColon;
         this.excludeSeconds = excludeSeconds;

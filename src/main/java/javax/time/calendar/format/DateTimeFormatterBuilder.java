@@ -61,15 +61,24 @@ public class DateTimeFormatterBuilder {
      */
     private char padNextChar;
 
+    /**
+     * Constructs a new instance of the builder.
+     */
+    public DateTimeFormatterBuilder() {
+        super();
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Returns the strict zone resolver which rejects all gaps and overlaps
-     * as invalid, resulting in an exception.
+     * Checks if the object is not null throwing an exception if it is.
      *
-     * @return the strict resolver, never null
+     * @param object  the object to check for null
+     * @param description  the description to use in the exception if the object is null
      */
-    public static  DateTimeFormatterBuilder builder() {
-        return new DateTimeFormatterBuilder();
+    static void checkNotNull(Object object, String description) {
+        if (object == null) {
+            throw new NullPointerException("The " + description + " must not be null");
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -129,6 +138,18 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValue(
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
+        checkNotNull(fieldRule, "field rule");
+        checkNotNull(signStyle, "sign style");
+        if (minWidth < 1 || minWidth > 10) {
+            throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
+        }
+        if (maxWidth < 1 || maxWidth > 10) {
+            throw new IllegalArgumentException("The maximum width must be from 1 to 10 inclusive but was " + minWidth);
+        }
+        if (maxWidth < minWidth) {
+            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
+                    maxWidth + " < " + minWidth);
+        }
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, minWidth, maxWidth, signStyle);
         appendInternal(pp, pp);
         return this;
@@ -168,6 +189,8 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule, TextStyle textStyle) {
+        checkNotNull(fieldRule, "field rule");
+        checkNotNull(textStyle, "text style");
         TextPrinterParser pp = new TextPrinterParser(fieldRule, textStyle);
         appendInternal(pp, pp);
         return this;
@@ -175,7 +198,7 @@ public class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the zone offset to the formatter.
+     * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
      * The zone offset id will be output during a print. If the calendrical
      * has no offset then printing will stop.
@@ -195,7 +218,7 @@ public class DateTimeFormatterBuilder {
     }
 
     /**
-     * Appends the zone offset to the formatter controlling the format.
+     * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
      * The zone offset will be output during a print. If the calendrical
      * has no offset then printing will stop. The output format is controlled
@@ -216,7 +239,39 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean excludeSeconds) {
+        checkNotNull(utcText, "UTC text");
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, excludeSeconds);
+        appendInternal(pp, pp);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Appends the time zone rule id, such as 'Europe/Paris', to the formatter.
+     * <p>
+     * The time zone id will be output during a print. If the calendrical
+     * has no zone then printing will stop.
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder appendZoneId() {
+        ZonePrinterParser pp = new ZonePrinterParser();
+        appendInternal(pp, pp);
+        return this;
+    }
+
+    /**
+     * Appends the time zone rule name, such as 'British Summer Time', to the formatter.
+     * <p>
+     * The time zone name will be output during a print. If the calendrical
+     * has no zone then printing will stop.
+     *
+     * @param textStyle  the text style to use, not null
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
+        checkNotNull(textStyle, "text style");
+        ZonePrinterParser pp = new ZonePrinterParser(textStyle);
         appendInternal(pp, pp);
         return this;
     }
@@ -245,9 +300,7 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
-        if (literal == null) {
-            throw new NullPointerException("String must not be null");
-        }
+        checkNotNull(literal, "literal");
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
         appendInternal(pp, pp);
         return this;
@@ -356,59 +409,9 @@ public class DateTimeFormatterBuilder {
      * @return the created formatter, never null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
-        if (locale == null) {
-            throw new NullPointerException("Locale must not be null");
-        }
+        checkNotNull(locale, "locale");
         return new DateTimeFormatter(locale, false, printers, parsers);
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Enumeration of ways to pad the output.
-//     *
-//     * @author Stephen Colebourne
-//     */
-//    public enum PadStyle {
-//        /**
-//         * Style to pad before any output.
-//         */
-//        BEFORE {
-//            /** {@inheritDoc} */
-//            @Override
-//            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-//            }
-//        },
-//        /**
-//         * Style to pad a number being output.
-//         */
-//        NUMBER {
-//            /** {@inheritDoc} */
-//            @Override
-//            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-//            }
-//        },
-//        /**
-//         * Style to pad after the output.
-//         */
-//        AFTER {
-//            /** {@inheritDoc} */
-//            @Override
-//            void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException {
-//            }
-//        };
-//
-//        /**
-//         * Prints the sign to the output appendable.
-//         *
-//         * @param appendable  the appendable to output to, not null
-//         * @param fieldRule  the rule of the field to output, not null
-//         * @param value  the value being output
-//         * @param padWidth  the pad width
-//         * @throws IOException if an error occurs
-//         */
-//        abstract void print(Appendable appendable, DateTimeFieldRule fieldRule, int value, int padWidth) throws IOException;
-//
-//    }
 
     //-----------------------------------------------------------------------
     /**

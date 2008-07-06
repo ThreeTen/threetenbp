@@ -86,6 +86,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * Constructor.
      */
     public DateTimeParseContext() {
+        super();
     }
 
     /**
@@ -94,9 +95,8 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param symbols  the symbols to use during parsing, not null
      */
     public DateTimeParseContext(DateTimeFormatSymbols symbols) {
-        if (symbols == null) {
-            throw new NullPointerException("The symbols must not be null");
-        }
+        super();
+        DateTimeFormatterBuilder.checkNotNull(symbols, "symbols");
         this.symbols = symbols;
     }
 
