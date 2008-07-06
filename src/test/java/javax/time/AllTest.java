@@ -49,6 +49,8 @@ import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatters;
+import javax.time.calendar.format.TestNumberPrinter;
+import javax.time.calendar.format.TestPadPrinterDecorator;
 import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
 import javax.time.period.field.TestDays;
@@ -100,6 +102,9 @@ public class AllTest {
             TestDateTimeFormatters.class,
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,
+            TestDateTimeFormatters.class,
+            TestNumberPrinter.class,
+            TestPadPrinterDecorator.class,
             TestStringLiteralPrinter.class,
             TestStringLiteralParser.class,
             // period fields
