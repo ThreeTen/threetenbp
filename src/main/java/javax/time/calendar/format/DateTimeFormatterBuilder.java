@@ -86,8 +86,8 @@ public class DateTimeFormatterBuilder {
      * Appends the value of a date-time field to the formatter using a normal
      * output style.
      * <p>
-     * The value of the field will be output during a print. If the value
-     * cannot be obtained from the date-time then printing will stop.
+     * The value of the field will be output during a print.
+     * If the value cannot be obtained then an exception will be thrown.
      * <p>
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
@@ -103,8 +103,8 @@ public class DateTimeFormatterBuilder {
      * Appends the value of a date-time field to the formatter using a fixed
      * width, zero-padded approach.
      * <p>
-     * The value of the field will be output during a print. If the value
-     * cannot be obtained from the date-time then printing will stop.
+     * The value of the field will be output during a print.
+     * If the value cannot be obtained then an exception will be thrown.
      * <p>
      * The value will be zero-padded on the left. If the size of the value
      * means that it cannot be printed within the width then an exception is thrown.
@@ -122,8 +122,8 @@ public class DateTimeFormatterBuilder {
      * Appends the value of a date-time field to the formatter providing full
      * control over printing.
      * <p>
-     * The value of the field will be output during a print. If the value
-     * cannot be obtained from the date-time then printing will stop.
+     * The value of the field will be output during a print.
+     * If the value cannot be obtained then an exception will be thrown.
      * <p>
      * This method provides full control of the numeric formatting, including
      * padding and the positive/negative sign.
@@ -160,9 +160,9 @@ public class DateTimeFormatterBuilder {
      * Appends the text of a date-time field to the formatter using the full
      * text style.
      * <p>
-     * The text of the field will be output during a print. If the value
-     * cannot be obtained from the date-time then printing will stop. If the
-     * field has no textual representation, then the numeric value will be used.
+     * The text of the field will be output during a print.
+     * If the value cannot be obtained then an exception will be thrown.
+     * If the field has no textual representation, then the numeric value will be used.
      * <p>
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
@@ -177,9 +177,9 @@ public class DateTimeFormatterBuilder {
     /**
      * Appends the text of a date-time field to the formatter.
      * <p>
-     * The text of the field will be output during a print. If the value
-     * cannot be obtained from the date-time then printing will stop. If the
-     * field has no textual representation, then the numeric value will be used.
+     * The text of the field will be output during a print.
+     * If the value cannot be obtained then an exception will be thrown.
+     * If the field has no textual representation, then the numeric value will be used.
      * <p>
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
@@ -200,8 +200,8 @@ public class DateTimeFormatterBuilder {
     /**
      * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
-     * The zone offset id will be output during a print. If the calendrical
-     * has no offset then printing will stop.
+     * The zone offset id will be output during a print.
+     * If the offset cannot be obtained then an exception will be thrown.
      * <p>
      * The output id is minor variation to the standard ISO-8601 format.
      * There are three formats:
@@ -213,18 +213,18 @@ public class DateTimeFormatterBuilder {
      *
      * @return this, for chaining, never null
      */
-    public DateTimeFormatterBuilder appendOffset() {
+    public DateTimeFormatterBuilder appendOffsetId() {
         return appendOffset("Z", true, false);
     }
 
     /**
      * Appends the zone offset, such as '+01:00', to the formatter.
      * <p>
-     * The zone offset will be output during a print. If the calendrical
-     * has no offset then printing will stop. The output format is controlled
-     * by the specified parameters.
+     * The zone offset will be output during a print.
+     * If the offset cannot be obtained then an exception will be thrown.
+     * The output format is controlled by the specified parameters.
      * <p>
-     * The utc text controls what text is printed when the offset is zero.
+     * The UTC text controls what text is printed when the offset is zero.
      * Example values would be 'Z', '+00:00', 'UTC' or 'GMT'.
      * <p>
      * The include colon parameter controls whether a colon should separate the
@@ -249,8 +249,8 @@ public class DateTimeFormatterBuilder {
     /**
      * Appends the time zone rule id, such as 'Europe/Paris', to the formatter.
      * <p>
-     * The time zone id will be output during a print. If the calendrical
-     * has no zone then printing will stop.
+     * The time zone id will be output during a print.
+     * If the zone cannot be obtained then an exception will be thrown.
      *
      * @return this, for chaining, never null
      */
@@ -263,8 +263,15 @@ public class DateTimeFormatterBuilder {
     /**
      * Appends the time zone rule name, such as 'British Summer Time', to the formatter.
      * <p>
-     * The time zone name will be output during a print. If the calendrical
-     * has no zone then printing will stop.
+     * The time zone name will be output during a print.
+     * If the zone cannot be obtained then an exception will be thrown.
+     * <p>
+     * The zone name is obtained from the formatting symbols.
+     * Different names may be output depending on whether daylight savings time applies.
+     * <p>
+     * If the date, time or offset cannot be obtained it may not be possible to
+     * determine which text to output. In this case, the text representing time
+     * without daylight savings (winter time) will be used.
      *
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, never null
