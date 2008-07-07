@@ -70,6 +70,10 @@ public final class DateTimeFormatSymbols {
      */
     private final char negativeSignChar = '-';
     /**
+     * The decimal point character.
+     */
+    private final char decimalPointChar = '.';
+    /**
      * The date format symbols.
      */
     private final Map<String, Map<TextStyle, TextStore>> textMap;
@@ -310,6 +314,18 @@ public final class DateTimeFormatSymbols {
      */
     public char getNegativeSignChar() {
         return negativeSignChar;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the character that represents the decimal point.
+     * <p>
+     * This character can vary by locale.
+     *
+     * @return the character for the decimal point
+     */
+    public char getDecimalPointChar() {
+        return decimalPointChar;
     }
 
     //-----------------------------------------------------------------------

@@ -79,6 +79,38 @@ public class TestDateTimeFormatters {
     }
 
     //-----------------------------------------------------------------------
+    public void test_print_isoTime() {
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
+        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30");
+    }
+
+    public void test_print_isoTime_nanos1() {
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, 1, TimeZone.UTC);
+        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.000000001");
+    }
+
+    public void test_print_isoTime_nanos2() {
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, 500000000, TimeZone.UTC);
+        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.5");
+    }
+
+    public void test_print_isoTime_nanos3() {
+        CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, 123456000, TimeZone.UTC);
+        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.123456");
+    }
+
+    public void test_print_isoTime_missingField() {
+        try {
+            CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
+            DateTimeFormatters.isoTime().print(test);
+            fail();
+        } catch (CalendricalFormatFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.hourOfDay());
+            assertEquals(ex.getValue(), null);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     public void test_print_isoOrdinalDate() {
         CalendricalProvider test = ZonedDateTime.dateTime(2008, 6, 3, 11, 5, 30, TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");

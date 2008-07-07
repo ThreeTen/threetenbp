@@ -94,9 +94,13 @@ public class DateTimeFormatterBuilder {
      *
      * @param fieldRule  the rule of the field to append, not null
      * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule is null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
-        return appendValue(fieldRule, 1, 10, SignStyle.NORMAL);
+        checkNotNull(fieldRule, "field rule");
+        NumberPrinterParser pp = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
+        appendInternal(pp, pp);
+        return this;
     }
 
     /**
@@ -113,9 +117,17 @@ public class DateTimeFormatterBuilder {
      * @param fieldRule  the rule of the field to append, not null
      * @param width  the width of the printed field, from 1 to 10
      * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule is null
+     * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
-        return appendValue(fieldRule, width, width, SignStyle.NEGATIVE_ERROR);
+        checkNotNull(fieldRule, "field rule");
+        if (width < 1 || width > 10) {
+            throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
+        }
+        NumberPrinterParser pp = new NumberPrinterParser(fieldRule, width, width, SignStyle.NEGATIVE_ERROR);
+        appendInternal(pp, pp);
+        return this;
     }
 
     /**
@@ -126,7 +138,7 @@ public class DateTimeFormatterBuilder {
      * If the value cannot be obtained then an exception will be thrown.
      * <p>
      * This method provides full control of the numeric formatting, including
-     * padding and the positive/negative sign.
+     * zero-padding and the positive/negative sign.
      *
      * @param fieldRule  the rule of the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 10
@@ -144,13 +156,63 @@ public class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
         }
         if (maxWidth < 1 || maxWidth > 10) {
-            throw new IllegalArgumentException("The maximum width must be from 1 to 10 inclusive but was " + minWidth);
+            throw new IllegalArgumentException("The maximum width must be from 1 to 10 inclusive but was " + maxWidth);
         }
         if (maxWidth < minWidth) {
             throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
                     maxWidth + " < " + minWidth);
         }
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, minWidth, maxWidth, signStyle);
+        appendInternal(pp, pp);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Appends the fractional value of a date-time field to the formatter.
+     * <p>
+     * The fractional value of the field will be output during a print
+     * including the preceeding decimal point.
+     * If the value cannot be obtained then an exception will be thrown.
+     * If the value is negative an exception will be thrown.
+     * If the field does not have a fixed set of valid values then an
+     * exception will be thrown.
+     * If the field value in the calendrical to be printed is invalid it
+     * cannot be printed and an exception will be thrown.
+     *
+     * @param fieldRule  the rule of the field to append, not null
+     * @param minWidth  the minimum field width of the printed field, from 0 to 9
+     * @param maxWidth  the maximum field width of the printed field, from 1 to 9
+     * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule or sign style is null
+     * @throws IllegalArgumentException if the field has a variable set of valid values
+     * @throws IllegalArgumentException if the field has a non-zero minimum
+     * @throws IllegalArgumentException if the widths are invalid
+     */
+    public DateTimeFormatterBuilder appendFraction(
+            DateTimeFieldRule fieldRule, int minWidth, int maxWidth) {
+        checkNotNull(fieldRule, "field rule");
+        if (fieldRule.isFixedValueSet() == false) {
+            throw new IllegalArgumentException("The field does not have a fixed set of values");
+        }
+        if (fieldRule.getMinimumValue() != 0) {
+            throw new IllegalArgumentException("The field does not have a minimum value of zero");
+        }
+        if (minWidth < 0 || minWidth > 9) {
+            throw new IllegalArgumentException("The minimum width must be from 0 to 9 inclusive but was " + minWidth);
+        }
+        if (maxWidth < 1 || maxWidth > 9) {
+            throw new IllegalArgumentException("The maximum width must be from 1 to 9 inclusive but was " + maxWidth);
+        }
+        if (maxWidth < minWidth) {
+            throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
+                    maxWidth + " < " + minWidth);
+        }
+        int[] scaleWidths = new int[10];
+        for (int i = 0; i < 10; i++) {
+            scaleWidths[i] = Math.min(Math.max(i, minWidth), maxWidth);
+        }
+        FractionPrinterParser pp = new FractionPrinterParser(fieldRule, scaleWidths);
         appendInternal(pp, pp);
         return this;
     }
@@ -169,6 +231,7 @@ public class DateTimeFormatterBuilder {
      *
      * @param fieldRule  the rule of the field to append, not null
      * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule is null
      */
     public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule) {
         return appendText(fieldRule, TextStyle.FULL);
@@ -187,6 +250,7 @@ public class DateTimeFormatterBuilder {
      * @param fieldRule  the rule of the field to append, not null
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, never null
+     * @throws NullPointerException if the field rule or text style is null
      */
     public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule, TextStyle textStyle) {
         checkNotNull(fieldRule, "field rule");
@@ -237,6 +301,7 @@ public class DateTimeFormatterBuilder {
      * @param includeColon  whether to include a colon
      * @param excludeSeconds  whether to exclude seconds
      * @return this, for chaining, never null
+     * @throws NullPointerException if the UTC text is null
      */
     public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean excludeSeconds) {
         checkNotNull(utcText, "UTC text");
@@ -275,6 +340,7 @@ public class DateTimeFormatterBuilder {
      *
      * @param textStyle  the text style to use, not null
      * @return this, for chaining, never null
+     * @throws NullPointerException if the text style is null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
         checkNotNull(textStyle, "text style");
@@ -305,6 +371,7 @@ public class DateTimeFormatterBuilder {
      *
      * @param literal  the literal to append, not null
      * @return this, for chaining, never null
+     * @throws NullPointerException if the literal is null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
         checkNotNull(literal, "literal");

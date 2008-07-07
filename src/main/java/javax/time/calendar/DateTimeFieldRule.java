@@ -31,6 +31,9 @@
  */
 package javax.time.calendar;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Locale;
 
 import javax.time.calendar.format.DateTimeFormatSymbols;
@@ -52,6 +55,9 @@ import javax.time.period.PeriodUnit;
  * @author Stephen Colebourne
  */
 public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule> {
+
+    /** A Math context for calculating fractions. */
+    private static final MathContext FRACTION_CONTEXT = new MathContext(9, RoundingMode.FLOOR);
 
     /** The name of the rule, not null. */
     private final Chronology chronology;
@@ -211,6 +217,39 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      */
     public int getValue(CalendricalProvider calendricalProvider) {
         return calendricalProvider.toCalendrical().getValue(this);
+    }
+
+    /**
+     * Gets the fractional value for this field throwing an exception if the field
+     * cannot be obtained.
+     * <p>
+     * The fractional value is between 0 (inclusive) and 1 (exclusive).
+     * It can only be returned if {@link #isFixedValueSet()} returns true and the
+     * {@link #getMinimumValue()} returns zero.
+     * The value is obtained by calculation from {@link #getValue} and the field range
+     * using 9 decimal places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
+     * <p>
+     * For example, the second of minute value of 15 would be returned as 0.25,
+     * assuming the standard definition of 60 seconds in a minute.
+     *
+     * @param calendricalProvider  the calendrical provider, not null
+     * @return the fractional value of the field
+     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
+     */
+    public BigDecimal getFractionalValue(CalendricalProvider calendricalProvider) {
+        if (isFixedValueSet() == false) {
+            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+                    " cannot be obtained as the range is not fixed");
+        }
+        if (getMinimumValue() != 0) {
+            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+                    " cannot be obtained as the minimum field value is not zero");
+        }
+        int value = getValue(calendricalProvider);
+        long range = getMaximumValue();
+        range++;
+        BigDecimal decimal = new BigDecimal(value);
+        return decimal.divide(new BigDecimal(range), FRACTION_CONTEXT);
     }
 
     /**
