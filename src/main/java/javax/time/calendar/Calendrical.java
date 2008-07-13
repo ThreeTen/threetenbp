@@ -45,6 +45,9 @@ import java.util.Map.Entry;
  * you will receive, just that it will be some form of date-time. The various
  * fields of a calendrical can be setup to be invalid, thus instances
  * must be treated with care.
+ * <p>
+ * For example, it is perfectly possible to setup the calendrical with the
+ * value for the month of 75.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -54,7 +57,7 @@ public final class Calendrical implements CalendricalProvider {
     /**
      * The date time map, never null, may be empty.
      */
-    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
+    private final Map<DateTimeFieldRule, Integer> fieldValueMap;
     /**
      * The date, may be null.
      */
@@ -73,7 +76,7 @@ public final class Calendrical implements CalendricalProvider {
     private final TimeZone zone;
 
     /**
-     * Constructor creating an empty instance which places no restriction
+     * Constructor creating an empty instance which places no restrictions
      * on the date-time.
      */
     public Calendrical() {
@@ -81,7 +84,97 @@ public final class Calendrical implements CalendricalProvider {
     }
 
     /**
-     * Constructor creating from the four main date-time objects.
+     * Constructor creating a calendrical from a field-value pair.
+     * <p>
+     * A calendrical can hold state that is not a valid date-time.
+     * Thus, this constructor does not check to see if the value is valid for the field.
+     * For example, you could setup a calendrical with a day of month of 75.
+     *
+     * @param fieldRule  the rule, not null
+     * @param value  the field value, may be invalid
+     * @throws NullPointerException if the field is null
+     */
+    public Calendrical(DateTimeFieldRule fieldRule, int value) {
+        if (fieldRule == null) {
+            throw new NullPointerException("The field rule must not be null");
+        }
+        this.fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
+        fieldValueMap.put(fieldRule, value);
+        this.date = null;
+        this.time = null;
+        this.offset = null;
+        this.zone = null;
+    }
+
+    /**
+     * Constructor creating a calendrical from two field-value pairs.
+     * <p>
+     * A calendrical can hold state that is not a valid date-time.
+     * Thus, this constructor does not check to see if the value is valid for the field.
+     * For example, you could setup a calendrical with a day of month of 75.
+     *
+     * @param fieldRule1  the first rule, not null
+     * @param value1  the first field value
+     * @param fieldRule2  the second rule, not null
+     * @param value2  the second field value
+     * @throws NullPointerException if either field is null
+     */
+    public Calendrical(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
+        if (fieldRule1 == null || fieldRule2 == null) {
+            throw new NullPointerException("The field rules must not be null");
+        }
+        this.fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
+        fieldValueMap.put(fieldRule1, value1);
+        fieldValueMap.put(fieldRule2, value2);
+        this.date = null;
+        this.time = null;
+        this.offset = null;
+        this.zone = null;
+    }
+
+    /**
+     * Constructor creating a calendrical from date-time fields, offset and zone.
+     * <p>
+     * A calendrical can hold state that is not a valid date-time.
+     * This constructor does not check to see if the value is valid for the field.
+     * For example, you could setup a calendrical with a day of month of 75.
+     * <p>
+     * This constructor also does not cross reference the date or time with the offset or zone.
+     * For example, the zone could be set to America/New_York and the offset could be
+     * set to +01:00, even though that is never a valid offset for the New York zone.
+     *
+     * @param fieldValueMap  the map of field rules and their values, may be null
+     * @param offset  the optional time zone offset, such as '+02:00', may be null
+     * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
+     * @throws NullPointerException if the map contains null keys or values
+     */
+    public Calendrical(
+            Map<DateTimeFieldRule, Integer> fieldValueMap,
+            ZoneOffset offset,
+            TimeZone zone) {
+        this.fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
+        if (fieldValueMap != null) {
+            if (fieldValueMap.containsKey(null)) {
+                throw new NullPointerException("Null keys are not permitted in field-value map");
+            }
+            if (fieldValueMap.containsValue(null)) {
+                throw new NullPointerException("Null values are not permitted in field-value map");
+            }
+            this.fieldValueMap.putAll(fieldValueMap);
+        }
+        this.date = null;
+        this.time = null;
+        this.offset = offset;
+        this.zone = zone;
+    }
+
+    /**
+     * Constructor creating a calendrical from the four main date-time objects.
+     * <p>
+     * A calendrical can hold state that is not a valid date-time.
+     * Thus, this constructor does not cross reference the date or time with the offset or zone.
+     * For example, the zone could be set to America/New_York and the offset could be
+     * set to +01:00, even though that is never a valid offset for the New York zone.
      *
      * @param date  the optional local date, such as '2007-12-03', may be null
      * @param time  the optional local time, such as '10:15:30', may be null
@@ -93,67 +186,24 @@ public final class Calendrical implements CalendricalProvider {
     }
 
     /**
-     * Constructor creating from a field-value pair.
+     * Copy constructor for immutability.
+     * <p>
+     * The field map is assigned, so the caller must be treating it as immutable.
      *
-     * @param fieldRule  the rule, not null
-     * @param value  the field value
-     */
-    public Calendrical(DateTimeFieldRule fieldRule, int value) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        fieldValueMap.put(fieldRule, value);
-        this.date = null;
-        this.time = null;
-        this.offset = null;
-        this.zone = null;
-    }
-
-    /**
-     * Constructor creating from two field-value pairs.
-     *
-     * @param fieldRule1  the first rule, not null
-     * @param value1  the first field value
-     * @param fieldRule2  the second rule, not null
-     * @param value2  the second field value
-     */
-    public Calendrical(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
-        if (fieldRule1 == null || fieldRule2 == null) {
-            throw new NullPointerException("The field rules must not be null");
-        }
-        fieldValueMap.put(fieldRule1, value1);
-        fieldValueMap.put(fieldRule2, value2);
-        this.date = null;
-        this.time = null;
-        this.offset = null;
-        this.zone = null;
-    }
-
-    /**
-     * Constructor creating from with any combination of date and time information.
-     *
-     * @param fieldValueMap  the map of field rules and their values, may be null
+     * @param fieldValueMap  the map of field rules and their values, assigned, may be null
      * @param date  the optional local date, such as '2007-12-03', may be null
      * @param time  the optional local time, such as '10:15:30', may be null
      * @param offset  the optional time zone offset, such as '+02:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
      * @throws NullPointerException if the map contains null keys or values
      */
-    public Calendrical(
+    private Calendrical(
             Map<DateTimeFieldRule, Integer> fieldValueMap,
             LocalDate date,
             LocalTime time,
             ZoneOffset offset,
             TimeZone zone) {
-        if (fieldValueMap != null) {
-            if (fieldValueMap.containsKey(null)) {
-                throw new NullPointerException("Null keys are not permitted in field-value map");
-            }
-            if (fieldValueMap.containsValue(null)) {
-                throw new NullPointerException("Null values are not permitted in field-value map");
-            }
-            this.fieldValueMap.putAll(fieldValueMap);
-        }
+        this.fieldValueMap = (fieldValueMap == null ? new HashMap<DateTimeFieldRule, Integer>() : fieldValueMap);
         this.date = date;
         this.time = time;
         this.offset = offset;
@@ -170,28 +220,28 @@ public final class Calendrical implements CalendricalProvider {
      * Also, if the value is present in both the date/time and the field-value
      * map then the two values must be the same.
      *
-     * @param rule  the rule to query from the map, not null
+     * @param fieldRule  the field rule to query from the map, not null
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
-    public int getValue(DateTimeFieldRule rule) {
-        if (rule == null) {
-            throw new NullPointerException("The rule must not be null");
+    public int getValue(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
+            throw new NullPointerException("The field rule must not be null");
         }
-        Integer value = rule.extractValue(this);
-        Integer mapValue = fieldValueMap.get(rule);
+        Integer value = fieldRule.extractValue(this);
+        Integer mapValue = fieldValueMap.get(fieldRule);
         if (mapValue == null && value == null) {
-            throw new UnsupportedCalendarFieldException(rule);
+            throw new UnsupportedCalendarFieldException(fieldRule);
         }
         if (value != null) {
             if (mapValue != null && mapValue.equals(value) == false) {
-                throw new InvalidCalendarFieldException("Field " + rule.getName() + " has two different values " +
-                        value + " and " + mapValue, rule);
+                throw new InvalidCalendarFieldException("Field " + fieldRule.getName() + " has two different values " +
+                        value + " and " + mapValue, fieldRule);
             }
             return value;
         }
-        rule.checkValue(mapValue);
+        fieldRule.checkValue(mapValue);
         return mapValue;
     }
 
@@ -206,30 +256,30 @@ public final class Calendrical implements CalendricalProvider {
      * If the rule is found in the field-value map then the value is returned
      * immediately. The value might differ from the value stored in the
      * date and/or time. The value might also be invalid, such as a day of
-     * month of 50.
+     * month of 75.
      * <p>
      * If the rule is not found in the field-value map then the date and/or
      * time is queried. If the value cannot be obtained then an exception
      * is thrown.
      *
-     * @param rule  the rule to query from the map, not null
+     * @param fieldRule  the field rule to query from the map, not null
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
-    public int getRawValue(DateTimeFieldRule rule) {
-        if (rule == null) {
+    public int getRawValue(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
             throw new NullPointerException("The rule must not be null");
         }
-        Integer mapValue = fieldValueMap.get(rule);
+        Integer mapValue = fieldValueMap.get(fieldRule);
         if (mapValue != null) {
             return mapValue;
         }
-        Integer value = rule.extractValue(this);
+        Integer value = fieldRule.extractValue(this);
         if (value != null) {
             return value;
         }
-        throw new UnsupportedCalendarFieldException(rule, "Calendrical");
+        throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
     }
 
     //-----------------------------------------------------------------------
@@ -240,7 +290,7 @@ public final class Calendrical implements CalendricalProvider {
      * The values contained in the map might contradict the date or time, or
      * be out of range for the rule.
      * <p>
-     * For example, the day of month might be set to 50, or the hour to 1000.
+     * For example, the day of month might be set to 75, or the hour to 1000.
      * The purpose of this class is simply to store the values, not to provide
      * any guarantees as to their validity.
      *
@@ -327,7 +377,8 @@ public final class Calendrical implements CalendricalProvider {
      * @throws IllegalArgumentException if the map contains null keys or values
      */
     public Calendrical withFieldValueMap(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-        return new Calendrical(fieldValueMap, date, time, offset, zone);
+        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+        return new Calendrical(clonedMap, date, time, offset, zone);
     }
 
     /**
@@ -341,9 +392,9 @@ public final class Calendrical implements CalendricalProvider {
         if (fieldRule == null) {
             throw new NullPointerException("The field rule must not be null");
         }
-        Map<DateTimeFieldRule, Integer> map = getFieldValueMap();
-        map.put(fieldRule, value);
-        return new Calendrical(map, date, time, offset, zone);
+        Map<DateTimeFieldRule, Integer> clonedMap = getFieldValueMap();
+        clonedMap.put(fieldRule, value);
+        return new Calendrical(clonedMap, date, time, offset, zone);
     }
 
     /**
