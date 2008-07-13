@@ -46,8 +46,8 @@ import java.io.Serializable;
  * <p>
  * Duration is thread-safe and immutable.
  * <p>
- * NOTE: Since the number of nanoseconds is represented by a positive integer, 
- * negative durations such as <code>PT-0.1S</code> are represented as -1 second 
+ * NOTE: Since the number of nanoseconds is represented by a positive integer,
+ * negative durations such as <code>PT-0.1S</code> are represented as -1 second
  * and 900,000,000 nanoseconds.
  *
  * @author Michael Nascimento Santos
@@ -261,7 +261,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             secs = MathUtils.safeIncrement(secs);
         }
 
-        return new Duration(secs, (int)nos);
+        return new Duration(secs, (int) nos);
      }
 
     //-----------------------------------------------------------------------
@@ -366,7 +366,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             secs = MathUtils.safeDecrement(secs);
         }
 
-        return new Duration(secs, (int)nos);
+        return new Duration(secs, (int) nos);
      }
 
     //-----------------------------------------------------------------------
@@ -540,7 +540,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
             newNanoOfSecond = NANOS_PER_SECOND - newNanoOfSecond;
         }
 
-        return new Duration(newDurationSeconds, (int)newNanoOfSecond);
+        return new Duration(newDurationSeconds, (int) newNanoOfSecond);
      }
 
     //-----------------------------------------------------------------------

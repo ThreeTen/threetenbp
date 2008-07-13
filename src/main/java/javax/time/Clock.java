@@ -53,9 +53,9 @@ public abstract class Clock {
      * Gets an instance of <code>Clock</code> that obtains the current datetime
      * using the system millisecond clock - {@link System#currentTimeMillis()}
      * and the default time zone - {@link #timeZone()}.
-     * 
-     * All objects produced by this implementation have at best millisecond 
-     * precision, since this is the maximum precision supported by 
+     * <p>
+     * All objects produced by this implementation have at best millisecond
+     * precision, since this is the maximum precision supported by
      * <code>System</code>.
      *
      * @return an instance of <code>Clock</code> that uses the system clock in the default time zone
@@ -69,9 +69,9 @@ public abstract class Clock {
      * Gets an instance of <code>Clock</code> that obtains the current datetime
      * using the system millisecond clock - {@link System#currentTimeMillis()}
      * and the specified <code>timeZone</code> - {@link #timeZone()}.
-     * 
-     * All objects produced by this implementation have at best millisecond 
-     * precision, since this is the maximum precision supported by 
+     * <p>
+     * All objects produced by this implementation have at best millisecond
+     * precision, since this is the maximum precision supported by
      * <code>System</code>.
      *
      * @param timeZone a <code>TimeZone</code> instance used to create <code>ZonedDateTime</code> instances, never null
@@ -91,9 +91,9 @@ public abstract class Clock {
     /**
      * Gets an instance of <code>Instant</code> representing the current
      * instant on the time line.
-     * 
+     * <p>
      * The instant precision depends on the underlying implementation.
-     * 
+     *
      * @return a <code>Instant</code> representing the current instant, never null
      */
     public abstract Instant instant();
@@ -101,7 +101,7 @@ public abstract class Clock {
     //-----------------------------------------------------------------------
     /**
      * Gets the <code>TimeZone</code> instance used to produce <code>ZonedDateTime</code> instances.
-     * 
+     *
      * @return the <code>TimeZone</code>
      * @see #currentZonedDateTime()
      */
@@ -183,7 +183,7 @@ public abstract class Clock {
     //-----------------------------------------------------------------------
     /**
      * Gets an instance of <code>ZonedDateTime</code> representing date and time in the default <code>TimeZone</code>.
-     * 
+     * <p>
      * It is a shortcut for <code>ZonedDateTime.dateTime(clock.instant(), clock.timeZone())</code> for this <code>Clock</code> instance.
      *
      * @return a zoned date-time object representing date and time in the default <code>TimeZone</code>, never null
@@ -245,7 +245,7 @@ public abstract class Clock {
             if (!(obj instanceof SystemMillis)) {
                 return false;
             }
-            final SystemMillis other = (SystemMillis)obj;
+            final SystemMillis other = (SystemMillis) obj;
             if (timeZone != other.timeZone && !timeZone.equals(other.timeZone)) {
                 return false;
             }

@@ -34,7 +34,7 @@ package javax.time;
 import java.io.Serializable;
 
 /**
- * An interval of instants. This class can represent inclusive, exclusive or 
+ * An interval of instants. This class can represent inclusive, exclusive or
  * unbounded intervals on one or both ends.
  * <p>
  * InstantInterval is thread-safe and immutable.
@@ -60,7 +60,7 @@ public abstract class InstantInterval
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>InstantInterval</code>, where the interval
-     * contains all instants from <code>startInclusive</code> up to, but not 
+     * contains all instants from <code>startInclusive</code> up to, but not
      * including, <code>endExclusive</code>.
      *
      * @param startInclusive  the start of the interval, inclusive, not null
