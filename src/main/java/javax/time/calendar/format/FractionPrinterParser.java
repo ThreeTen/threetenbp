@@ -50,46 +50,44 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     private final DateTimeFieldRule fieldRule;
     /**
-     * The array of widths of length 10.
-     * The array index is the scale of the fraction.
-     * The array value is the scale to print.
+     * The minimum width, from 0 to 9.
      */
-    private final int[] widths;
+    private final int minWidth;
+    /**
+     * The maximum width, from 0 to 9.
+     */
+    private final int maxWidth;
 
     /**
      * Constructor.
      *
-     * @param fieldRule  the rule of the field to print, not null
-     * @param scaleWidths  the valid widths, not null, array size 10, assigned not copied
+     * @param fieldRule  the rule of the field to output, not null
+     * @param minWidth  the minimum width to output, from 0 to 9
+     * @param maxWidth  the maximum width to output, from 0 to 9
      */
-    FractionPrinterParser(DateTimeFieldRule fieldRule, int[] scaleWidths) {
+    FractionPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth) {
         // validated by caller
         this.fieldRule = fieldRule;
-        widths = scaleWidths;
+        this.minWidth = minWidth;
+        this.maxWidth = maxWidth;
     }
 
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        BigDecimal fraction = fieldRule.getFractionalValue(calendrical);
-        int outputScale = widths[fraction.scale()];
-        if (fraction.scale() == 0) {
-            if (outputScale > 0) {
+        int value = fieldRule.getValue(calendrical);
+        BigDecimal fraction = fieldRule.convertValueToFraction(value);
+        if (fraction.scale() == 0) {  // scale is zero if value is zero
+            if (minWidth > 0) {
                 appendable.append(symbols.getDecimalPointChar());
-                for (int i = 0; i < outputScale; i++) {
+                for (int i = 0; i < minWidth; i++) {
                     appendable.append(symbols.getZeroChar());
                 }
             }
         } else {
+            int outputScale = Math.min(Math.max(fraction.scale(), minWidth), maxWidth);
             fraction = fraction.setScale(outputScale, RoundingMode.FLOOR);
             String str = fraction.toPlainString().substring(2);
-            if (symbols.getZeroChar() != '0') {
-                int diff = symbols.getZeroChar() - '0';
-                char[] array = str.toCharArray();
-                for (int i = 0; i < array.length; i++) {
-                    array[i] = (char) (array[i] + diff);
-                }
-                str = new String(array);
-            }
+            str = FormatUtil.convertToI18N(str, symbols);
             appendable.append(symbols.getDecimalPointChar());
             appendable.append(str);
         }
@@ -97,61 +95,46 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
-//        int length = parseText.length();
-//        if (position == length) {
-//            return ~position;
-//        }
-//        char sign = parseText.charAt(position);  // IOOBE if invalid position
-//        boolean negative = false;
-//        if (sign == context.getSymbols().getPositiveSignChar()) {
-//            switch (signStyle) {
-//                case ALWAYS:
-//                case EXCEEDS_PAD:
-//                    position++;
-//                    break;
-//                default:
-//                    return ~position;
-//            }
-//        } else if (sign == context.getSymbols().getNegativeSignChar()) {
-//            negative = true;
-//            switch (signStyle) {
-//                case ALWAYS:
-//                case EXCEEDS_PAD:
-//                case NORMAL:
-//                    position++;
-//                    break;
-//                default:
-//                    return ~position;
-//            }
-//        }
-//        int minEndPos = position + minWidth;
-//        if (minEndPos > length) {
-//            return ~position;
-//        }
-//        long total = 0;
-//        while (position < minEndPos) {
-//            char ch = parseText.charAt(position++);
-//            int digit = context.getSymbols().convertToDigit(ch);
-//            if (digit < 0) {
-//                return ~(position - 1);
-//            }
-//            total *= 10;
-//            total += digit;
-//        }
-//        int maxEndPos = Math.max(position + maxWidth, length);
-//        while (position < maxEndPos) {
-//            char ch = parseText.charAt(position++);
-//            int digit = context.getSymbols().convertToDigit(ch);
-//            if (digit < 0) {
-//                position--;
-//                break;
-//            }
-//            total *= 10;
-//            total += digit;
-//        }
-//        total = (negative ? -total : total);
-//        context.setFieldValue(fieldRule, MathUtils.safeToInt(total));
-        return position;
+        int length = parseText.length();
+        if (position == length) {
+            if (minWidth > 0) {
+                return ~position;  // invalid, as minimum width not met
+            }
+            context.setFieldValue(fieldRule, 0);
+            return position;  // valid, as whole field is optional
+        }
+        char point = parseText.charAt(position);  // IOOBE if invalid position
+        if (point != context.getSymbols().getDecimalPointChar()) {
+            if (minWidth > 0) {
+                return ~position;  // invalid, as minimum width not met
+            }
+            context.setFieldValue(fieldRule, 0);
+            return position;  // valid, as whole field is optional
+        }
+        position++;
+        int minEndPos = position + minWidth;
+        if (minEndPos > length) {
+            return ~position;  // need at least min width digits
+        }
+        int maxEndPos = Math.min(position + maxWidth, length);
+        int total = 0;  // can use int because we are only parsing up to 9 digits
+        int pos = position;
+        while (pos < maxEndPos) {
+            char ch = parseText.charAt(pos++);
+            int digit = context.getSymbols().convertToDigit(ch);
+            if (digit < 0) {
+                if (pos < minEndPos) {
+                    return ~position;  // need at least min width digits
+                }
+                pos--;
+                break;
+            }
+            total = total * 10 + digit;
+        }
+        BigDecimal fraction = new BigDecimal(total).movePointLeft(pos - position);
+        int value = fieldRule.convertFractionToValue(fraction);
+        context.setFieldValue(fieldRule, value);
+        return pos;
     }
 
 }

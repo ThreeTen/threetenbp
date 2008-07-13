@@ -56,8 +56,10 @@ import javax.time.period.PeriodUnit;
  */
 public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule> {
 
-    /** A Math context for calculating fractions. */
+    /** A Math context for calculating fractions from values. */
     private static final MathContext FRACTION_CONTEXT = new MathContext(9, RoundingMode.FLOOR);
+    /** A Math context for calculating values from fractions. */
+    private static final MathContext VALUE_CONTEXT = new MathContext(0, RoundingMode.FLOOR);
 
     /** The name of the rule, not null. */
     private final Chronology chronology;
@@ -217,39 +219,6 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      */
     public int getValue(CalendricalProvider calendricalProvider) {
         return calendricalProvider.toCalendrical().getValue(this);
-    }
-
-    /**
-     * Gets the fractional value for this field throwing an exception if the field
-     * cannot be obtained.
-     * <p>
-     * The fractional value is between 0 (inclusive) and 1 (exclusive).
-     * It can only be returned if {@link #isFixedValueSet()} returns true and the
-     * {@link #getMinimumValue()} returns zero.
-     * The value is obtained by calculation from {@link #getValue} and the field range
-     * using 9 decimal places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
-     * <p>
-     * For example, the second of minute value of 15 would be returned as 0.25,
-     * assuming the standard definition of 60 seconds in a minute.
-     *
-     * @param calendricalProvider  the calendrical provider, not null
-     * @return the fractional value of the field
-     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
-     */
-    public BigDecimal getFractionalValue(CalendricalProvider calendricalProvider) {
-        if (isFixedValueSet() == false) {
-            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
-                    " cannot be obtained as the range is not fixed");
-        }
-        if (getMinimumValue() != 0) {
-            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
-                    " cannot be obtained as the minimum field value is not zero");
-        }
-        int value = getValue(calendricalProvider);
-        long range = getMaximumValue();
-        range++;
-        BigDecimal decimal = new BigDecimal(value);
-        return decimal.divide(new BigDecimal(range), FRACTION_CONTEXT);
     }
 
     /**
@@ -415,6 +384,79 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
         String text = symbols.getFieldValueText(this, textStyle, value);
         return text == null ? Integer.toString(value) : text;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts a value for this field to a fraction between 0 and 1.
+     * <p>
+     * The fractional value is between 0 (inclusive) and 1 (exclusive).
+     * It can only be returned if {@link #isFixedValueSet()} returns true and the
+     * {@link #getMinimumValue()} returns zero.
+     * The fraction is obtained by calculation from the field range using 9 decimal
+     * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
+     * <p>
+     * For example, the second of minute value of 15 would be returned as 0.25,
+     * assuming the standard definition of 60 seconds in a minute.
+     *
+     * @param value  the value to convert, not null
+     * @return the fractional value of the field
+     * @throws UnsupportedCalendarFieldException if the value cannot be converted
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     */
+    public BigDecimal convertValueToFraction(int value) {
+        if (isFixedValueSet() == false) {
+            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+                    " cannot be obtained as the range is not fixed");
+        }
+        if (getMinimumValue() != 0) {
+            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+                    " cannot be obtained as the minimum field value is not zero");
+        }
+        checkValue(value);
+        long range = getMaximumValue();
+        range++;
+        BigDecimal decimal = new BigDecimal(value);
+        return decimal.divide(new BigDecimal(range), FRACTION_CONTEXT);
+    }
+
+    /**
+     * Converts a fraction from 0 to 1 for this field to a value.
+     * <p>
+     * The fractional value must be between 0 (inclusive) and 1 (exclusive).
+     * It can only be returned if {@link #isFixedValueSet()} returns true and the
+     * {@link #getMinimumValue()} returns zero.
+     * The value is obtained by calculation from the field range and a rounding
+     * mode of {@link RoundingMode#FLOOR FLOOR}.
+     * <p>
+     * For example, the fractional second of minute of 0.25 would be converted to 15,
+     * assuming the standard definition of 60 seconds in a minute.
+     *
+     * @param fraction  the fraction to convert, not null
+     * @return the value of the field, checked for validity
+     * @throws UnsupportedCalendarFieldException if the value cannot be converted
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     */
+    public int convertFractionToValue(BigDecimal fraction) {
+        if (isFixedValueSet() == false) {
+            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+                    " cannot be converted as the range is not fixed");
+        }
+        if (getMinimumValue() != 0) {
+            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+                    " cannot be converted as the minimum field value is not zero");
+        }
+        long range = getMaximumValue();
+        range++;
+        BigDecimal decimal = fraction.multiply(new BigDecimal(range), VALUE_CONTEXT);
+        try {
+            int value = decimal.intValueExact();
+            checkValue(value);
+            return value;
+        } catch (ArithmeticException ex) {
+            throw new IllegalCalendarFieldValueException("The fractional value " + fraction + " of " + getName() +
+                    " cannot be converted as it is not in the range 0 (inclusive) to 1 (exclusive)", this);
+        }
     }
 
     //-----------------------------------------------------------------------

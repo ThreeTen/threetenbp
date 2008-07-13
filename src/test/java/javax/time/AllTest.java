@@ -49,6 +49,7 @@ import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatters;
+import javax.time.calendar.format.TestFractionPrinterParser;
 import javax.time.calendar.format.TestNumberPrinter;
 import javax.time.calendar.format.TestPadPrinterDecorator;
 import javax.time.calendar.format.TestStringLiteralParser;
@@ -103,6 +104,7 @@ public class AllTest {
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,
             TestDateTimeFormatters.class,
+            TestFractionPrinterParser.class,
             TestNumberPrinter.class,
             TestPadPrinterDecorator.class,
             TestStringLiteralPrinter.class,

@@ -177,8 +177,8 @@ public class DateTimeFormatterBuilder {
      * cannot be printed and an exception will be thrown.
      *
      * @param fieldRule  the rule of the field to append, not null
-     * @param minWidth  the minimum field width of the printed field, from 0 to 9
-     * @param maxWidth  the maximum field width of the printed field, from 1 to 9
+     * @param minWidth  the minimum width of the field excluding the decimal point, from 0 to 9
+     * @param maxWidth  the maximum width of the field excluding the decimal point, from 1 to 9
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule or sign style is null
      * @throws IllegalArgumentException if the field has a variable set of valid values
@@ -204,11 +204,7 @@ public class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The maximum width must exceed or equal the minimum width but " +
                     maxWidth + " < " + minWidth);
         }
-        int[] scaleWidths = new int[10];
-        for (int i = 0; i < 10; i++) {
-            scaleWidths[i] = Math.min(Math.max(i, minWidth), maxWidth);
-        }
-        FractionPrinterParser pp = new FractionPrinterParser(fieldRule, scaleWidths);
+        FractionPrinterParser pp = new FractionPrinterParser(fieldRule, minWidth, maxWidth);
         appendInternal(pp, pp);
         return this;
     }

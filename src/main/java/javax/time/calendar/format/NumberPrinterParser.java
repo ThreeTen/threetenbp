@@ -164,30 +164,24 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         if (minEndPos > length) {
             return ~position;
         }
-        long total = 0;
-        while (position < minEndPos) {
-            char ch = parseText.charAt(position++);
+        int maxEndPos = Math.min(position + maxWidth, length);
+        long total = 0;  // long to handle large numbers
+        int pos = position;
+        while (pos < maxEndPos) {
+            char ch = parseText.charAt(pos++);
             int digit = context.getSymbols().convertToDigit(ch);
             if (digit < 0) {
-                return ~(position - 1);
-            }
-            total *= 10;
-            total += digit;
-        }
-        int maxEndPos = Math.max(position + maxWidth, length);
-        while (position < maxEndPos) {
-            char ch = parseText.charAt(position++);
-            int digit = context.getSymbols().convertToDigit(ch);
-            if (digit < 0) {
-                position--;
+                if (pos < minEndPos) {
+                    return ~position;  // need at least min width digits
+                }
+                pos--;
                 break;
             }
-            total *= 10;
-            total += digit;
+            total = total * 10 + digit;
         }
         total = (negative ? -total : total);
         context.setFieldValue(fieldRule, MathUtils.safeToInt(total));
-        return position;
+        return pos;
     }
 
 }
