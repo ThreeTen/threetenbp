@@ -70,19 +70,6 @@ public class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the object is not null throwing an exception if it is.
-     *
-     * @param object  the object to check for null
-     * @param description  the description to use in the exception if the object is null
-     */
-    static void checkNotNull(Object object, String description) {
-        if (object == null) {
-            throw new NullPointerException("The " + description + " must not be null");
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Appends the value of a date-time field to the formatter using a normal
      * output style.
      * <p>
@@ -97,7 +84,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the field rule is null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
-        checkNotNull(fieldRule, "field rule");
+        FormatUtil.checkNotNull(fieldRule, "field rule");
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
         appendInternal(pp, pp);
         return this;
@@ -121,7 +108,7 @@ public class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
-        checkNotNull(fieldRule, "field rule");
+        FormatUtil.checkNotNull(fieldRule, "field rule");
         if (width < 1 || width > 10) {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
         }
@@ -150,8 +137,8 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValue(
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
-        checkNotNull(fieldRule, "field rule");
-        checkNotNull(signStyle, "sign style");
+        FormatUtil.checkNotNull(fieldRule, "field rule");
+        FormatUtil.checkNotNull(signStyle, "sign style");
         if (minWidth < 1 || minWidth > 10) {
             throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
         }
@@ -171,8 +158,17 @@ public class DateTimeFormatterBuilder {
     /**
      * Appends the fractional value of a date-time field to the formatter.
      * <p>
-     * The fractional value of the field will be output during a print
-     * including the preceeding decimal point.
+     * The fractional value of the field will be output including the
+     * preceeding decimal point. The preceeding value is not output.
+     * The raw value for this field is obtained from
+     * {@link DateTimeFieldRule#getFractionalValue getFractionalValue}.
+     * <p>
+     * The width of the output fraction can be controlled. Setting the
+     * minimum width to zero will cause no output to be generated.
+     * The output fraction will have the minimum width necessary between
+     * the minimum and maximum widths - trailing zeroes are omitted.
+     * No rounding occurs due to the maximum width - digits are simply dropped.
+     * <p>
      * If the value cannot be obtained then an exception will be thrown.
      * If the value is negative an exception will be thrown.
      * If the field does not have a fixed set of valid values then an
@@ -191,7 +187,7 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendFraction(
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth) {
-        checkNotNull(fieldRule, "field rule");
+        FormatUtil.checkNotNull(fieldRule, "field rule");
         if (fieldRule.isFixedValueSet() == false) {
             throw new IllegalArgumentException("The field does not have a fixed set of values");
         }
@@ -253,8 +249,8 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the field rule or text style is null
      */
     public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-        checkNotNull(fieldRule, "field rule");
-        checkNotNull(textStyle, "text style");
+        FormatUtil.checkNotNull(fieldRule, "field rule");
+        FormatUtil.checkNotNull(textStyle, "text style");
         TextPrinterParser pp = new TextPrinterParser(fieldRule, textStyle);
         appendInternal(pp, pp);
         return this;
@@ -304,7 +300,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the UTC text is null
      */
     public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean excludeSeconds) {
-        checkNotNull(utcText, "UTC text");
+        FormatUtil.checkNotNull(utcText, "UTC text");
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, excludeSeconds);
         appendInternal(pp, pp);
         return this;
@@ -343,7 +339,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the text style is null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
-        checkNotNull(textStyle, "text style");
+        FormatUtil.checkNotNull(textStyle, "text style");
         ZonePrinterParser pp = new ZonePrinterParser(textStyle);
         appendInternal(pp, pp);
         return this;
@@ -374,7 +370,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the literal is null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
-        checkNotNull(literal, "literal");
+        FormatUtil.checkNotNull(literal, "literal");
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
         appendInternal(pp, pp);
         return this;
@@ -483,7 +479,7 @@ public class DateTimeFormatterBuilder {
      * @return the created formatter, never null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
-        checkNotNull(locale, "locale");
+        FormatUtil.checkNotNull(locale, "locale");
         return new DateTimeFormatter(locale, false, printers, parsers);
     }
 

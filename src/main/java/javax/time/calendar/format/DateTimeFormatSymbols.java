@@ -137,7 +137,7 @@ public final class DateTimeFormatSymbols {
 //            }
 //        }
 //
-        DateTimeFormatterBuilder.checkNotNull(locale, "locale");
+        FormatUtil.checkNotNull(locale, "locale");
         DateFormatSymbols symbols = DateFormatSymbols.getInstance(locale);
         return new DateTimeFormatSymbols(locale, symbols);
     }
@@ -149,7 +149,7 @@ public final class DateTimeFormatSymbols {
      * @param locale  the locale, not null
      */
     private DateTimeFormatSymbols(Locale locale) {
-        DateTimeFormatterBuilder.checkNotNull(locale, "locale");
+        FormatUtil.checkNotNull(locale, "locale");
         this.locale = locale;
         textMap = new HashMap<String, Map<TextStyle, TextStore>>();
     }
@@ -162,7 +162,7 @@ public final class DateTimeFormatSymbols {
      */
     private DateTimeFormatSymbols(Locale locale, DateFormatSymbols oldSymbols) {
         this(locale);
-        DateTimeFormatterBuilder.checkNotNull(oldSymbols, "symbols to convert");
+        FormatUtil.checkNotNull(oldSymbols, "symbols to convert");
         
         Map<Integer, String> map = new HashMap<Integer, String>();
         String[] array = null;
@@ -398,7 +398,7 @@ public final class DateTimeFormatSymbols {
      */
     public int[] matchFieldText(DateTimeFieldRule fieldRule, TextStyle textStyle, boolean ignoreCase, String searchText) {
         TextStore store = getTextStore(fieldRule, textStyle);
-        DateTimeFormatterBuilder.checkNotNull(searchText, "search text");
+        FormatUtil.checkNotNull(searchText, "search text");
         if (store == null) {
             return null;
         }
@@ -440,8 +440,8 @@ public final class DateTimeFormatSymbols {
      * @return the text store, null if no text defined
      */
     private TextStore getTextStore(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-        DateTimeFormatterBuilder.checkNotNull(fieldRule, "field rule");
-        DateTimeFormatterBuilder.checkNotNull(textStyle, "text style");
+        FormatUtil.checkNotNull(fieldRule, "field rule");
+        FormatUtil.checkNotNull(textStyle, "text style");
         String id = fieldRule.getID();
         Map<TextStyle, TextStore> styleMap = textMap.get(id);
         return styleMap == null ? null : styleMap.get(textStyle);
@@ -470,7 +470,7 @@ public final class DateTimeFormatSymbols {
          * @throws IllegalArgumentException if the map contains null or empty text
          */
         private TextStore(Map<Integer, String> map) {
-            DateTimeFormatterBuilder.checkNotNull(map, "text map");
+            FormatUtil.checkNotNull(map, "text map");
             if (map.containsKey(null) || map.containsValue(null) || map.containsValue("")) {
                 throw new IllegalArgumentException("The map must not contain null or empty text");
             }

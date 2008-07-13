@@ -96,7 +96,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     public DateTimeParseContext(DateTimeFormatSymbols symbols) {
         super();
-        DateTimeFormatterBuilder.checkNotNull(symbols, "symbols");
+        FormatUtil.checkNotNull(symbols, "symbols");
         this.symbols = symbols;
     }
 

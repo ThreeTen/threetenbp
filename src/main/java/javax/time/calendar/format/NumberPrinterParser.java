@@ -101,14 +101,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         if (str.length() > maxWidth) {
             throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);
         }
-        if (symbols.getZeroChar() != '0') {
-            int diff = symbols.getZeroChar() - '0';
-            char[] array = str.toCharArray();
-            for (int i = 0; i < array.length; i++) {
-                array[i] = (char) (array[i] + diff);
-            }
-            str = new String(array);
-        }
+        str = FormatUtil.convertToI18N(str, symbols);
         
         if (value >= 0) {
             switch (signStyle) {
