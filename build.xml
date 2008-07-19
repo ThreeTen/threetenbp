@@ -45,9 +45,15 @@
 		</fileset>
 	</path>
 
+    <path id="emma.lib" >
+        <pathelement location="${lib.coverage}/emma-2.0.5312.jar" />
+        <pathelement location="${lib.coverage}/emma_ant-2.0.5312.jar" />
+    </path>
+
 	<target name="resolve-deps">
 		<mkdir dir="${lib.main}" />
 		<mkdir dir="${lib.test}" />
+        <mkdir dir="${lib.coverage}" />
 
 		<get-dependency group="velocity" artifact="velocity" version="1.5" dest="${lib.main}" />
 		<get-dependency group="commons-collections" artifact="commons-collections" version="3.1" dest="${lib.main}" />
@@ -55,6 +61,9 @@
 		<get-dependency group="oro" artifact="oro" version="2.0.8" dest="${lib.main}" />
 
 		<get-dependency group="org/testng" artifact="testng" version="5.1" variant="-jdk15" dest="${lib.test}" />
+
+		<get-dependency group="emma" artifact="emma" version="2.0.5312" dest="${lib.coverage}" />
+        <get-dependency group="emma" artifact="emma_ant" version="2.0.5312" dest="${lib.coverage}" />
 	</target>
 
 	<target name="init" depends="resolve-deps">
@@ -95,6 +104,20 @@
 			<classfileset dir="${build.test}" includes="**/Test*.class" />
 		</testng>
 	</target>
+
+    <target name="coverage" depends="compile-tests" description="test coverage">
+        <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+        <mkdir dir="${coverage}" />
+       	<emmajava libclasspathref="emma.lib" 
+       	        fullmetadata="yes"
+       		    sourcepath="${src.main}"
+       	        classname="javax.time.AllTest"
+                classpathref="test.path">
+       		<filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*" />
+      	    <txt outfile="${coverage}/coverage.txt" />
+       	    <html outfile="${coverage}/coverage.html" metrics="method:90,block:90,line:90,class:100" />
+        </emmajava>
+    </target>
 
 	<target name="dist" depends="test" description="generate the distribution">
 		<mkdir dir="${dist}" />
