@@ -434,6 +434,110 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    // withFields(Map)
+    //-----------------------------------------------------------------------
+    public void test_withFields_map() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(DOM_RULE, 30);
+        DateTimeFields test = base.withFields(map);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+        // check original immutable
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6);
+    }
+
+    public void test_withFields_map_invalidValueOK() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(DOM_RULE, -1);
+        DateTimeFields test = base.withFields(map);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, -1);
+    }
+
+    public void test_withFields_map_sameFieldOverwrites() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(MOY_RULE, 1);
+        DateTimeFields test = base.withFields(map);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 1);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withFields_map_null() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        test.withFields(NULL_MAP);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withFields_map_nullKey() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(null, 1);
+        test.withFields(map);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withFields_map_nullValue() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(DOM_RULE, null);
+        test.withFields(map);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withFields_map_nullBoth() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(null, null);
+        test.withFields(map);
+    }
+
+    //-----------------------------------------------------------------------
+    // withFields(DateTimeFields)
+    //-----------------------------------------------------------------------
+    public void test_withFields_fields() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields fields = DateTimeFields.fields(DOM_RULE, 30);
+        DateTimeFields test = base.withFields(fields);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+        // check original immutable
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6);
+    }
+
+    public void test_withFields_fields_invalidValueOK() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields fields = DateTimeFields.fields(DOM_RULE, -1);
+        DateTimeFields test = base.withFields(fields);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, -1);
+    }
+
+    public void test_withFields_fields_sameFieldOverwrites() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields fields = DateTimeFields.fields(MOY_RULE, 1);
+        DateTimeFields test = base.withFields(fields);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 1);
+    }
+
+    public void test_withFields_fields_self() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = base.withFields(base);
+        assertSame(test, base);
+    }
+
+    public void test_withFields_fields_emptyAdd() {
+        DateTimeFields base = DateTimeFields.fields();
+        DateTimeFields test = base.withFields(base);
+        assertSame(test, base);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withFields_fields_null() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields fields = null;
+        test.withFields(fields);
+    }
+
+    //-----------------------------------------------------------------------
     // withFieldRemoved()
     //-----------------------------------------------------------------------
     public void test_withFieldRemoved() {
@@ -885,7 +989,7 @@ public class TestDateTimeFields {
         try {
             test.validateMatchesDate(date);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), DOW_RULE);
+            assertEquals(ex.getFieldRule(), DOM_RULE);
             throw ex;
         }
     }

@@ -316,7 +316,7 @@ public final class DateTimeFields
         if (fieldValueMap.containsValue(null)) {
             throw new NullPointerException("Null values are not permitted in field-value map");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(this.fieldValueMap);
         clonedMap.putAll(fieldValueMap);
         return new DateTimeFields(clonedMap);
     }
@@ -336,7 +336,7 @@ public final class DateTimeFields
         if (fields == null) {
             throw new NullPointerException("The fields must not be null");
         }
-        if (fields.size() == 0) {
+        if (fields.size() == 0 || fields == this) {
             return this;
         }
         Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
