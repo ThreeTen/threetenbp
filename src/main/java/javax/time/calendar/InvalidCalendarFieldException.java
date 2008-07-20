@@ -39,10 +39,10 @@ package javax.time.calendar;
 public class InvalidCalendarFieldException extends CalendarFieldException {
 
     /**
-     * Constructs a new unsupported field exception creating a standard error message.
+     * Constructs a new invalid field exception.
      *
      * @param message  the message describing the problem, should not be null
-     * @param fieldRule  the rule of the field that is not supported, may be null
+     * @param fieldRule  the rule of the field that is invalid, may be null
      */
     public InvalidCalendarFieldException(String message, DateTimeFieldRule fieldRule) {
         super(message, fieldRule);
