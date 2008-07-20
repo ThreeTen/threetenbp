@@ -418,19 +418,21 @@ public final class Calendrical
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Calendrical with the specified setof fields.
+     * Returns a copy of this Calendrical with the specified set of fields.
      * <p>
      * The fields replace any date, time or fields from when the calendrical
-     * was first constructed.
+     * was first constructed. The existing set of fields are not merged with
+     * the specified set.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param fields  the fields to store, not null
+     * @param fields  the fields to store, may be null
      * @return a new, updated Calendrical, never null
      */
     public Calendrical withFields(DateTimeFields fields) {
-        if (fields == null) {
-            throw new NullPointerException("The fields must not be null");
+        fields = (fields == null ? DateTimeFields.fields() : fields);
+        if (fields.equals(this.fields)) {
+            return this;
         }
         return new Calendrical(fields, null, null, offset, zone);
     }
@@ -462,6 +464,9 @@ public final class Calendrical
      * @return a new, updated Calendrical, never null
      */
     public Calendrical withOffset(ZoneOffset offset) {
+        if (offset == this.offset || (offset != null && offset.equals(this.offset))) {
+            return this;
+        }
         return new Calendrical(fields, date, time, offset, zone);
     }
 
@@ -472,6 +477,9 @@ public final class Calendrical
      * @return a new, updated Calendrical, never null
      */
     public Calendrical withZone(TimeZone zone) {
+        if (zone == this.zone || (zone != null && zone.equals(this.zone))) {
+            return this;
+        }
         return new Calendrical(fields, date, time, offset, zone);
     }
 
@@ -479,9 +487,10 @@ public final class Calendrical
     /**
      * Converts this calendrical to a DateTimeFields.
      * <p>
-     * If the calendrical was constructed using a LocalDate and/or LocalTime
-     * then the year, month, day of month, hour, minute, second and nano fields
-     * will be set in the result.
+     * The result will either be the fields specified in the factory method,
+     * or a set of fields converted from the LocalDate and/or LocalTime.
+     * The converted date fields are year, month and day of month.
+     * The converted time fields are hour, minute, second and nano.
      *
      * @return the DateTimeFields, never null
      */
@@ -630,6 +639,10 @@ public final class Calendrical
     //-----------------------------------------------------------------------
     /**
      * Is this Calendrical equal to the specified Calendrical.
+     * <p>
+     * The comparison is based on the fields, offset and zone. Any date or
+     * time that was specified in a factory method will be converted to a
+     * set of fields as described in {@link #toDateTimeFields()}.
      *
      * @param obj  the other Calendrical to compare to, null returns false
      * @return true if this instance is equal to the specified Calendrical
@@ -649,7 +662,7 @@ public final class Calendrical
         if (this.zone != other.zone && (this.zone == null || !this.zone.equals(other.zone))) {
             return false;
         }
-        if (this.fields != other.fields && (this.fields == null || !this.fields.equals(other.fields))) {
+        if (this.fields != other.fields && !this.fields.equals(other.fields)) {
             return false;
         }
         return true;
@@ -665,7 +678,7 @@ public final class Calendrical
         int hash = 7;
         hash = 59 * hash + (this.offset != null ? this.offset.hashCode() : 0);
         hash = 59 * hash + (this.zone != null ? this.zone.hashCode() : 0);
-        hash = 59 * hash + (this.fields != null ? this.fields.hashCode() : 0);
+        hash = 59 * hash + this.fields.hashCode();
         return hash;
     }
 

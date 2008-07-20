@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import javax.time.calendar.TestCalendrical;
 import javax.time.calendar.TestDateAdjustors;
 import javax.time.calendar.TestDateMatchers;
 import javax.time.calendar.TestDateResolvers;
@@ -84,6 +85,7 @@ public class AllTest {
             TestInstant.class,
             TestMathUtils.class,
             // calendar classes
+            TestCalendrical.class,
             TestDateAdjustors.class,
             TestDateMatchers.class,
             TestDateResolvers.class,
