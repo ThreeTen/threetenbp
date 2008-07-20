@@ -426,9 +426,9 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
-            int year = fieldValues.getFieldValue(this);
-            Integer month = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.monthOfYear());
-            Integer dom = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.dayOfMonth());
+            int year = fieldValues.getValueQuiet(this);
+            Integer month = fieldValues.getValueQuiet(ISOChronology.INSTANCE.monthOfYear());
+            Integer dom = fieldValues.getValueQuiet(ISOChronology.INSTANCE.dayOfMonth());
             if (month != null && dom != null) {
                 if (ISOChronology.INSTANCE.monthOfYear().isValidValue(month)) {
                     if (dom >= 1 && dom <= 28) {  // range is valid for all months
@@ -522,8 +522,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
-            int doy = fieldValues.getFieldValue(this);
-            Integer year = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.year());
+            int doy = fieldValues.getValueQuiet(this);
+            Integer year = fieldValues.getValueQuiet(ISOChronology.INSTANCE.year());
             if (year != null) {
                 if (doy >= 1 && doy <= 365) {  // range is valid for all years
                     return DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year));
@@ -608,9 +608,9 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
-            int dow = fieldValues.getFieldValue(this);
-            Integer wyear = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.weekyear());
-            Integer woy = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.weekOfWeekyear());
+            int dow = fieldValues.getValueQuiet(this);
+            Integer wyear = fieldValues.getValueQuiet(ISOChronology.INSTANCE.weekyear());
+            Integer woy = fieldValues.getValueQuiet(ISOChronology.INSTANCE.weekOfWeekyear());
             if (wyear != null && woy != null) {
                 // TODO
                 return LocalDate.date(wyear, 1, dow);
@@ -763,10 +763,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected LocalTime.Overflow mergeToTime(DateTimeFields fieldValues) {
-            int hour = fieldValues.getFieldValue(this);
-            Integer minuteObj = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.minuteOfHour());
-            Integer secondObj = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.secondOfMinute());
-            Integer nanoObj = fieldValues.getFieldValueQuiet(ISOChronology.INSTANCE.nanoOfSecond());
+            int hour = fieldValues.getValueQuiet(this);
+            Integer minuteObj = fieldValues.getValueQuiet(ISOChronology.INSTANCE.minuteOfHour());
+            Integer secondObj = fieldValues.getValueQuiet(ISOChronology.INSTANCE.secondOfMinute());
+            Integer nanoObj = fieldValues.getValueQuiet(ISOChronology.INSTANCE.nanoOfSecond());
             int minute = minuteObj == null ? 0 : minuteObj;
             int second = secondObj == null ? 0 : secondObj;
             int nano = nanoObj == null ? 0 : nanoObj;
@@ -870,7 +870,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         protected Overflow mergeToTime(DateTimeFields fieldValues) {
-            long mod = fieldValues.getFieldValue(this);
+            long mod = fieldValues.getValueQuiet(this);
             return LocalTime.MIDNIGHT.plusNanosWithOverflow(mod * 1000000L);
         }
     }

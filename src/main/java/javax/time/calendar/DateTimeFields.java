@@ -167,61 +167,72 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * The map of fields to values.
+     * Gets the value for the specified field throwing an exception if the
+     * field is not in the field-value map.
      * <p>
-     * The map will never be null, however it may be empty.
-     * The values contained in the map might be out of range for the rule.
+     * The value will be checked for basic validity.
+     * The value returned will be within the valid range for the field.
      * <p>
-     * For example, the day of month might be set to 75, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
+     * Instances of DateTimeFields can hold invalid field values, such as
+     * a day of month of -3 or an hour of 1000. This method ensures that
+     * the result is within the valid range for the field.
+     * No cross-validation between fields is performed.
      *
-     * @return a modifiable copy of the field-value map, never null
+     * @param fieldRule  the rule to query from the map, not null
+     * @return the value mapped to the specified field
+     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
-        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+    public int getValue(DateTimeFieldRule fieldRule) {
+        return getValue(fieldRule, true);
     }
 
     /**
      * Gets the value for the specified field throwing an exception if the
      * field is not in the field-value map.
      * <p>
-     * The value returned might be out of range for the rule.
+     * The value is optionally checked for basic validity.
      * <p>
-     * For example, the day of month might be set to 50, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
+     * Instances of DateTimeFields can hold invalid field values, such as
+     * a day of month of -3 or an hour of 1000. This method optionally ensures
+     * that the result is within the valid range for the field.
+     * No cross-validation between fields is performed.
      *
-     * @param rule  the rule to query from the map, not null
+     * @param fieldRule  the rule to query from the map, not null
+     * @param validate  true to validate the value, false to return the raw value
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
+     * @throws IllegalCalendarFieldValueException if validation is performed and the value is invalid
      */
-    public int getFieldValue(DateTimeFieldRule rule) {
-        if (rule == null) {
+    public int getValue(DateTimeFieldRule fieldRule, boolean validate) {
+        if (fieldRule == null) {
             throw new NullPointerException("The rule must not be null");
         }
-        Integer value = fieldValueMap.get(rule);
+        Integer value = fieldValueMap.get(fieldRule);
         if (value != null) {
+            if (validate) {
+                fieldRule.checkValue(value);
+            }
             return value;
         }
-        throw new UnsupportedCalendarFieldException(rule, "DateTimeFields");
+        throw new UnsupportedCalendarFieldException(fieldRule, "DateTimeFields");
     }
 
     /**
      * Gets the value for the specified field returning null if the field is
      * not in the field-value map.
      * <p>
-     * The value returned might be out of range for the rule.
+     * The value is not validated and might be out of range for the rule.
      * <p>
-     * For example, the day of month might be set to 50, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
+     * Instances of DateTimeFields can hold invalid field values, such as
+     * a day of month of -3 or an hour of 1000. This method performs no
+     * validation on the returned value.
      *
-     * @param rule  the rule to query from the map, null returns null
+     * @param fieldRule  the rule to query from the map, null returns null
      * @return the value mapped to the specified field, null if not present
      */
-    Integer getFieldValueQuiet(DateTimeFieldRule rule) {
-        return fieldValueMap.get(rule);
+    public Integer getValueQuiet(DateTimeFieldRule fieldRule) {
+        return fieldValueMap.get(fieldRule);
     }
 
     /**
@@ -238,7 +249,7 @@ public final class DateTimeFields
      * <p>
      * This method fulfuls the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop. The values can be obtained
-     * using {@link #getFieldValue(DateTimeFieldRule)}.
+     * using {@link #getValue(DateTimeFieldRule)}.
      *
      * @return an iterator over the fields in this object, never null
      */
@@ -249,11 +260,11 @@ public final class DateTimeFields
     /**
      * Checks whether the field-value map contains the specified field.
      *
-     * @param rule  the rule to query from the map, null returns false
+     * @param fieldRule  the rule to query from the map, null returns false
      * @return the value mapped to the specified field, null if not present
      */
-    public boolean containsField(DateTimeFieldRule rule) {
-        return fieldValueMap.containsKey(rule);
+    public boolean containsField(DateTimeFieldRule fieldRule) {
+        return fieldValueMap.containsKey(fieldRule);
     }
 
     //-----------------------------------------------------------------------
@@ -288,7 +299,7 @@ public final class DateTimeFields
         if (fieldRule == null) {
             throw new NullPointerException("The field rule must not be null");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = getFieldValueMap();
+        Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
         clonedMap.put(fieldRule, value);
         return new DateTimeFields(clonedMap);
     }
@@ -308,7 +319,7 @@ public final class DateTimeFields
         if (fieldRule == null) {
             throw new NullPointerException("The field rule must not be null");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = getFieldValueMap();
+        Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
         if (clonedMap.remove(fieldRule) == null) {
             return this;
         }
@@ -330,7 +341,7 @@ public final class DateTimeFields
      */
     public DateTimeFields mergeFields() {
         if (fieldValueMap.size() > 1) {
-            Map<DateTimeFieldRule, Integer> clonedMap = getFieldValueMap();
+            Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
             for (DateTimeFieldRule fieldRule : fieldValueMap.keySet()) {
                 fieldRule.mergeFields(clonedMap);
             }
@@ -342,11 +353,11 @@ public final class DateTimeFields
     }
 
     /**
-     * Validates the value of each field.
+     * Validates that the value of each field is within its valid range.
      * <p>
      * The validation simply checks that each value is within the normal range
      * for the field as defined by {@link DateTimeFieldRule#checkValue(int)}.
-     * No cross-validation between fields is performed, thus the result could
+     * No cross-validation between fields is performed, thus the field set could
      * contain an invalid date such as February 31st.
      *
      * @return this, for chaining, never null
@@ -357,6 +368,26 @@ public final class DateTimeFields
             entry.getKey().checkValue(entry.getValue());
         }
         return this;
+    }
+
+    /**
+     * Checks if the value of each field is within its valid range.
+     * <p>
+     * The validation simply checks that each value is within the normal range
+     * for the field as defined by {@link DateTimeFieldRule#isValidValue(int)}.
+     * No cross-validation between fields is performed, thus the field set could
+     * contain an invalid date such as February 31st.
+     *
+     * @return true if all the fields are with in their valid range
+     * @throws IllegalCalendarFieldValueException if any field is invalid
+     */
+    public boolean isValidFieldValues() {
+        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+            if (entry.getKey().isValidValue(entry.getValue()) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     //-----------------------------------------------------------------------
@@ -509,6 +540,22 @@ public final class DateTimeFields
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Converts this field set to a map of fields to values.
+     * <p>
+     * The map will never be null, however it may be empty.
+     * The values contained in the map might be out of range for the rule.
+     * <p>
+     * For example, the day of month might be set to 75, or the hour to 1000.
+     * The purpose of this class is simply to store the values, not to provide
+     * any guarantees as to their validity.
+     *
+     * @return a modifiable copy of the field-value map, never null
+     */
+    public Map<DateTimeFieldRule, Integer> toFieldValueMap() {
+        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+    }
+
     /**
      * Converts this object to a LocalDate.
      * <p>

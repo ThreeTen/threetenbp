@@ -102,7 +102,7 @@ public class TestDateTimeFields {
         
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 baos.toByteArray()));
-        if (fields.getFieldValueMap().isEmpty()) {
+        if (fields.toFieldValueMap().isEmpty()) {
             assertSame(ois.readObject(), fields);
         } else {
             assertEquals(ois.readObject(), fields);
@@ -129,7 +129,7 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     public void factory_fields_empty() {
         DateTimeFields test = DateTimeFields.fields();
-        assertEquals(test.getFieldValueMap().size(), 0);
+        assertEquals(test.toFieldValueMap().size(), 0);
     }
 
     public void factory_fields_empty_singleton() {
@@ -139,14 +139,12 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     public void factory_fields_onePair() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008);
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
+        assertFields(test, YEAR_RULE, 2008);
     }
 
     public void factory_fields_onePair_invalidValueOK() {
         DateTimeFields test = DateTimeFields.fields(MOY_RULE, -1);
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValue(MOY_RULE), -1);
+        assertFields(test, MOY_RULE, -1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -157,29 +155,22 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     public void factory_fields_twoPairs() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getFieldValueMap().get(MOY_RULE), Integer.valueOf(6));
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void factory_fields_twoPairs_orderNotSignificant() {
         DateTimeFields test = DateTimeFields.fields(MOY_RULE, 6, YEAR_RULE, 2008);
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getFieldValueMap().get(MOY_RULE), Integer.valueOf(6));
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void factory_fields_twoPairs_sameFieldOverwrites() {
         DateTimeFields test = DateTimeFields.fields(MOY_RULE, 6, MOY_RULE, 7);
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValueMap().get(MOY_RULE), Integer.valueOf(7));
+        assertFields(test, MOY_RULE, 7);
     }
 
     public void factory_fields_twoPairs_invalidValueOK() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, -1);
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getFieldValueMap().get(MOY_RULE), Integer.valueOf(-1));
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, -1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -203,21 +194,16 @@ public class TestDateTimeFields {
         map.put(YEAR_RULE, 2008);
         map.put(MOY_RULE, 6);
         DateTimeFields test = DateTimeFields.fields(map);
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getFieldValueMap().get(MOY_RULE), Integer.valueOf(6));
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void factory_fields_map_cloned() {
         Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
         map.put(YEAR_RULE, 2008);
         DateTimeFields test = DateTimeFields.fields(map);
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
+        assertFields(test, YEAR_RULE, 2008);
         map.put(MOY_RULE, 6);
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValueMap().get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getFieldValueMap().get(MOY_RULE), null);
+        assertFields(test, YEAR_RULE, 2008);
     }
 
     public void factory_fields_map_empty_singleton() {
@@ -247,25 +233,36 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
-    // getFieldValue()
+    // getValue()
     //-----------------------------------------------------------------------
-    public void test_getFieldValue() {
+    public void test_getValue() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(test.getFieldValue(MOY_RULE), 6);
+        assertEquals(test.getValue(YEAR_RULE), 2008);
+        assertEquals(test.getValue(MOY_RULE), 6);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_getValue_illegalValue() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 0);
+        try {
+            test.getValue(MOY_RULE);
+        } catch (UnsupportedCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), MOY_RULE);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_getFieldValue_null() {
+    public void test_getValue_null() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        test.getFieldValue(NULL_RULE);
+        test.getValue(NULL_RULE);
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_getFieldValue_fieldNotPresent() {
+    public void test_getValue_fieldNotPresent() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         try {
-            test.getFieldValue(DOM_RULE);
+            test.getValue(DOM_RULE);
         } catch (UnsupportedCalendarFieldException ex) {
             assertEquals(ex.getFieldRule(), DOM_RULE);
             throw ex;
@@ -273,22 +270,88 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
-    // getFieldValueQuiet()
+    // getValue(boolean)
     //-----------------------------------------------------------------------
-    public void test_getFieldValueQuiet() {
+    public void test_getValue_validate() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getFieldValueQuiet(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getFieldValueQuiet(MOY_RULE), Integer.valueOf(6));
+        assertEquals(test.getValue(YEAR_RULE, true), 2008);
+        assertEquals(test.getValue(MOY_RULE, true), 6);
     }
 
-    public void test_getFieldValueQuiet_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getFieldValueQuiet(NULL_RULE), null);
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_getValue_validate_illegalValue() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 0);
+        try {
+            test.getValue(MOY_RULE, true);
+        } catch (UnsupportedCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), MOY_RULE);
+            throw ex;
+        }
     }
 
-    public void test_getFieldValueQuiet_fieldNotPresent() {
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getValue_validate_null() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getFieldValueQuiet(DOM_RULE), null);
+        test.getValue(NULL_RULE, true);
+    }
+
+    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    public void test_getValue_validate_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        try {
+            test.getValue(DOM_RULE, true);
+        } catch (UnsupportedCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), DOM_RULE);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getValue_noValidate() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getValue(YEAR_RULE, false), 2008);
+        assertEquals(test.getValue(MOY_RULE, false), 6);
+    }
+
+    public void test_getValue_noValidate_illegalValue() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 0);
+        assertEquals(test.getValue(MOY_RULE, false), 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getValue_noValidate_null() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        test.getValue(NULL_RULE, false);
+    }
+
+    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    public void test_getValue_noValidate_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        try {
+            test.getValue(DOM_RULE, false);
+        } catch (UnsupportedCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), DOM_RULE);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // getValueQuiet()
+    //-----------------------------------------------------------------------
+    public void test_getValueQuiet() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getValueQuiet(YEAR_RULE), Integer.valueOf(2008));
+        assertEquals(test.getValueQuiet(MOY_RULE), Integer.valueOf(6));
+    }
+
+    public void test_getValueQuiet_null() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getValueQuiet(NULL_RULE), null);
+    }
+
+    public void test_getValueQuiet_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getValueQuiet(DOM_RULE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -347,31 +410,21 @@ public class TestDateTimeFields {
     public void test_withFieldValue() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.withFieldValue(DOM_RULE, 30);
-        assertEquals(test.getFieldValueMap().size(), 3);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(test.getFieldValue(MOY_RULE), 6);
-        assertEquals(test.getFieldValue(DOM_RULE), 30);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 2);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void test_withFieldValue_invalidValueOK() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.withFieldValue(DOM_RULE, -1);
-        assertEquals(test.getFieldValueMap().size(), 3);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(test.getFieldValue(MOY_RULE), 6);
-        assertEquals(test.getFieldValue(DOM_RULE), -1);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, -1);
     }
 
     public void test_withFieldValue_sameFieldOverwrites() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.withFieldValue(MOY_RULE, 1);
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(test.getFieldValue(MOY_RULE), 1);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -386,12 +439,9 @@ public class TestDateTimeFields {
     public void test_withFieldRemoved() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         DateTimeFields test = base.withFieldRemoved(MOY_RULE);
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
+        assertFields(test, YEAR_RULE, 2008);
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 2);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
     public void test_withFieldRemoved_fieldNotPresent() {
@@ -418,12 +468,9 @@ public class TestDateTimeFields {
     public void test_mergeFields() {
         DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9);  // 9am
         DateTimeFields test = base.mergeFields();
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValue(HOUR_RULE), 9);  // merged to 09:00
+        assertFields(test, HOUR_RULE, 9);  // merged to 09:00
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 2);
-        assertEquals(base.getFieldValue(AMPM_RULE), 0);
-        assertEquals(base.getFieldValue(HOUR_AM_PM_RULE), 9);
+        assertFields(base, AMPM_RULE, 0, HOUR_AM_PM_RULE, 9);
     }
 
     public void test_mergeFields_empty() {
@@ -437,33 +484,25 @@ public class TestDateTimeFields {
             .withFieldValue(AMPM_RULE, 0).withFieldValue(HOUR_AM_PM_RULE, 9)  // 9am -> 09:00
             .withFieldValue(QOY_RULE, 2).withFieldValue(MOQ_RULE, 3);  // Q2M3 -> June
         DateTimeFields test = base.mergeFields();
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValue(HOUR_RULE), 9);  // merged to 09:00
-        assertEquals(test.getFieldValue(MOY_RULE), 6);  // merged to June
+        assertFields(test, HOUR_RULE, 9, MOY_RULE, 6);  // merged to 09:00 and June
     }
 
     public void test_mergeFields_nothingToMerge() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6).withFieldValue(DOM_RULE, 30);
         DateTimeFields test = base.mergeFields();
-        assertEquals(test.getFieldValueMap().size(), 3);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(test.getFieldValue(MOY_RULE), 6);
-        assertEquals(test.getFieldValue(DOM_RULE), 30);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }
 
     public void test_mergeFields_otherFieldsUntouched() {
         DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9).withFieldValue(YEAR_RULE, 2008);
         DateTimeFields test = base.mergeFields();
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValue(HOUR_RULE), 9);  // merged to 09:00
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
+        assertFields(test, HOUR_RULE, 9, YEAR_RULE, 2008);  // merged to 09:00
     }
 
     public void test_mergeFields_resultFieldMeansNoMerge() {
         DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9).withFieldValue(HOUR_RULE, 10);
         DateTimeFields test = base.mergeFields();
-        assertEquals(test.getFieldValueMap().size(), 1);
-        assertEquals(test.getFieldValue(HOUR_RULE), 10);  // 9am ignored, but field-value pairs removed
+        assertFields(test, HOUR_RULE, 10);  // 9am ignored, but field-value pairs removed
     }
 
     //-----------------------------------------------------------------------
@@ -508,6 +547,38 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
+    // isValidFieldValues()
+    //-----------------------------------------------------------------------
+    public void test_isValidFieldValues_valid() {
+        DateTimeFields test = DateTimeFields.fields()
+            .withFieldValue(YEAR_RULE, 2008)
+            .withFieldValue(MOY_RULE, 11)
+            .withFieldValue(DOM_RULE, 2);
+        assertEquals(test.isValidFieldValues(), true);
+    }
+
+    public void test_isValidFieldValues_empty() {
+        DateTimeFields test = DateTimeFields.fields();
+        assertEquals(test.isValidFieldValues(), true);
+    }
+
+    public void test_isValidFieldValues_valid_noCrossValidation() {
+        DateTimeFields test = DateTimeFields.fields()
+            .withFieldValue(YEAR_RULE, 2008)
+            .withFieldValue(MOY_RULE, 2)
+            .withFieldValue(DOM_RULE, 31);  // 31st February
+        assertEquals(test.isValidFieldValues(), true);
+    }
+
+    public void test_isValidFieldValues_invalid() {
+        DateTimeFields test = DateTimeFields.fields()
+            .withFieldValue(YEAR_RULE, 2008)
+            .withFieldValue(MOY_RULE, 13)  // invalid
+            .withFieldValue(DOM_RULE, 2);
+        assertEquals(test.isValidFieldValues(), false);
+    }
+
+    //-----------------------------------------------------------------------
     // mergeToDate()
     //-----------------------------------------------------------------------
     public void test_mergeToDate() {
@@ -518,10 +589,7 @@ public class TestDateTimeFields {
         LocalDate test = base.mergeToDate();
         assertEquals(test, LocalDate.date(2008, 6, 30));
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 3);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
-        assertEquals(base.getFieldValue(DOM_RULE), 30);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }
 
     public void test_mergeToDate_lenientInsideBounds() {
@@ -596,9 +664,7 @@ public class TestDateTimeFields {
         LocalTime test = base.mergeToTime();
         assertEquals(test, LocalTime.time(11, 30));
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 2);
-        assertEquals(base.getFieldValue(HOUR_RULE), 11);
-        assertEquals(base.getFieldValue(MIN_RULE), 30);
+        assertFields(base, HOUR_RULE, 11, MIN_RULE, 30);
     }
 
     public void test_mergeToTime_lenientOutsideBounds() {
@@ -663,12 +729,7 @@ public class TestDateTimeFields {
         LocalDateTime test = base.mergeToDateTime();
         assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 5);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
-        assertEquals(base.getFieldValue(DOM_RULE), 30);
-        assertEquals(base.getFieldValue(HOUR_RULE), 11);
-        assertEquals(base.getFieldValue(MIN_RULE), 30);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30, HOUR_RULE, 11, MIN_RULE, 30);
     }
 
     public void test_mergeToDateTime_lenientOutsideBounds() {
@@ -767,10 +828,7 @@ public class TestDateTimeFields {
         LocalDate date = LocalDate.date(2008, 6, 30);
         assertEquals(test.matchesDate(date), true);
         // check original immutable
-        assertEquals(test.getFieldValueMap().size(), 3);
-        assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(test.getFieldValue(MOY_RULE), 6);
-        assertEquals(test.getFieldValue(DOM_RULE), 30);
+        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }
 
     public void test_matchesDate_dowMatches() {
@@ -826,16 +884,7 @@ public class TestDateTimeFields {
             .withFieldValue(YEAR_RULE, 2008)
             .withFieldValue(MOY_RULE, 6)
             .withFieldValue(DOM_RULE, 30);
-        try {
-            test.matchesDate((LocalDate) null);
-        } catch (NullPointerException ex) {
-            // check original immutable
-            assertEquals(test.getFieldValueMap().size(), 3);
-            assertEquals(test.getFieldValue(YEAR_RULE), 2008);
-            assertEquals(test.getFieldValue(MOY_RULE), 6);
-            assertEquals(test.getFieldValue(DOM_RULE), 30);
-            throw ex;
-        }
+        test.matchesDate((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
@@ -848,9 +897,7 @@ public class TestDateTimeFields {
         LocalTime time = LocalTime.time(11, 30);
         assertEquals(test.matchesTime(time), true);
         // check original immutable
-        assertEquals(test.getFieldValueMap().size(), 2);
-        assertEquals(test.getFieldValue(HOUR_RULE), 11);
-        assertEquals(test.getFieldValue(MIN_RULE), 30);
+        assertFields(test, HOUR_RULE, 11, MIN_RULE, 30);
     }
 
     public void test_matchesTime_amPmMatches() {
@@ -900,15 +947,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.fields()
             .withFieldValue(HOUR_RULE, 11)
             .withFieldValue(MIN_RULE, 30);
-        try {
-            test.matchesTime((LocalTime) null);
-        } catch (NullPointerException ex) {
-            // check original immutable
-            assertEquals(test.getFieldValueMap().size(), 2);
-            assertEquals(test.getFieldValue(HOUR_RULE), 11);
-            assertEquals(test.getFieldValue(MIN_RULE), 30);
-            throw ex;
-        }
+        test.matchesTime((LocalTime) null);
     }
 
     //-----------------------------------------------------------------------
@@ -922,10 +961,7 @@ public class TestDateTimeFields {
         LocalDate test = base.toLocalDate();
         assertEquals(test, LocalDate.date(2008, 6, 30));
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 3);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
-        assertEquals(base.getFieldValue(DOM_RULE), 30);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
@@ -1015,9 +1051,7 @@ public class TestDateTimeFields {
         LocalTime test = base.toLocalTime();
         assertEquals(test, LocalTime.time(11, 30));
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 2);
-        assertEquals(base.getFieldValue(HOUR_RULE), 11);
-        assertEquals(base.getFieldValue(MIN_RULE), 30);
+        assertFields(base, HOUR_RULE, 11, MIN_RULE, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -1092,12 +1126,7 @@ public class TestDateTimeFields {
         LocalDateTime test = base.toLocalDateTime();
         assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 5);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
-        assertEquals(base.getFieldValue(DOM_RULE), 30);
-        assertEquals(base.getFieldValue(HOUR_RULE), 11);
-        assertEquals(base.getFieldValue(MIN_RULE), 30);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30, HOUR_RULE, 11, MIN_RULE, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -1218,10 +1247,7 @@ public class TestDateTimeFields {
         assertEquals(test.getFieldValueMapValue(MOY_RULE), 6);
         assertEquals(test.getFieldValueMapValue(DOM_RULE), 30);
         // check original immutable
-        assertEquals(base.getFieldValueMap().size(), 3);
-        assertEquals(base.getFieldValue(YEAR_RULE), 2008);
-        assertEquals(base.getFieldValue(MOY_RULE), 6);
-        assertEquals(base.getFieldValue(DOM_RULE), 30);
+        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }
 
     //-----------------------------------------------------------------------
@@ -1330,4 +1356,60 @@ public class TestDateTimeFields {
         assertEquals(test, "{Year=2008, MonthOfYear=6}");
     }
 
+    //-----------------------------------------------------------------------
+    private void assertFields(
+            DateTimeFields fields,
+            DateTimeFieldRule rule1, Integer value1) {
+        Map<DateTimeFieldRule, Integer> map = fields.toFieldValueMap();
+        assertEquals(map.size(), 1);
+        assertEquals(map.get(rule1), value1);
+    }
+    private void assertFields(
+            DateTimeFields fields,
+            DateTimeFieldRule rule1, Integer value1,
+            DateTimeFieldRule rule2, Integer value2) {
+        Map<DateTimeFieldRule, Integer> map = fields.toFieldValueMap();
+        assertEquals(map.size(), 2);
+        assertEquals(map.get(rule1), value1);
+        assertEquals(map.get(rule2), value2);
+    }
+    private void assertFields(
+            DateTimeFields fields,
+            DateTimeFieldRule rule1, Integer value1,
+            DateTimeFieldRule rule2, Integer value2,
+            DateTimeFieldRule rule3, Integer value3) {
+        Map<DateTimeFieldRule, Integer> map = fields.toFieldValueMap();
+        assertEquals(map.size(), 3);
+        assertEquals(map.get(rule1), value1);
+        assertEquals(map.get(rule2), value2);
+        assertEquals(map.get(rule3), value3);
+    }
+//    private void assertFields(
+//            DateTimeFields fields,
+//            DateTimeFieldRule rule1, Integer value1,
+//            DateTimeFieldRule rule2, Integer value2,
+//            DateTimeFieldRule rule3, Integer value3,
+//            DateTimeFieldRule rule4, Integer value4) {
+//        Map<DateTimeFieldRule, Integer> map = fields.toFieldValueMap();
+//        assertEquals(map.size(), 4);
+//        assertEquals(map.get(rule1), value1);
+//        assertEquals(map.get(rule2), value2);
+//        assertEquals(map.get(rule3), value3);
+//        assertEquals(map.get(rule4), value4);
+//    }
+    private void assertFields(
+            DateTimeFields fields,
+            DateTimeFieldRule rule1, Integer value1,
+            DateTimeFieldRule rule2, Integer value2,
+            DateTimeFieldRule rule3, Integer value3,
+            DateTimeFieldRule rule4, Integer value4,
+            DateTimeFieldRule rule5, Integer value5) {
+        Map<DateTimeFieldRule, Integer> map = fields.toFieldValueMap();
+        assertEquals(map.size(), 5);
+        assertEquals(map.get(rule1), value1);
+        assertEquals(map.get(rule2), value2);
+        assertEquals(map.get(rule3), value3);
+        assertEquals(map.get(rule4), value4);
+        assertEquals(map.get(rule5), value5);
+    }
 }
