@@ -152,6 +152,10 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      */
     public static DayOfWeek dayOfWeek(DateProvider dateProvider) {
         long mjd = LocalDate.date(dateProvider).toModifiedJulianDays();
+        if (mjd < 0) {
+            long weeks = mjd / 7;
+            mjd += (-weeks + 1) * 7;
+        }
         int dow0 = (int) ((mjd + 2) % 7);
         return dayOfWeek(dow0 + 1);
     }
