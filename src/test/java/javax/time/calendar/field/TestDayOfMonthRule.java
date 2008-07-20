@@ -95,7 +95,7 @@ public class TestDayOfMonthRule {
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_getValue_Calendrical_noDate() {
-        Calendrical calendrical = new Calendrical(null, null, null, null);
+        Calendrical calendrical = Calendrical.calendrical(null, null, null, null);
         DayOfMonth.rule().getValue(calendrical);
     }
 
@@ -113,7 +113,7 @@ public class TestDayOfMonthRule {
     }
 
     public void test_getValue_Calendrical_day() {
-        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 20);
+        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), 20);
         
         assertEquals(DayOfMonth.rule().getValue(calendrical), 20);
     }
@@ -129,7 +129,7 @@ public class TestDayOfMonthRule {
 //    }
 //
 //    public void test_extractValue_Calendrical_noDate() {
-//        Calendrical dt = new Calendrical(null, null, null, null);
+//        Calendrical dt = Calendrical.calendrical(null, null, null, null);
 //        
 //        assertEquals(DayOfMonth.rule().extractValue(dt), null);
 //    }
@@ -148,7 +148,7 @@ public class TestDayOfMonthRule {
 //    }
 //
 //    public void test_extractValue_Calendrical_day() {
-//        Calendrical dt = new Calendrical(DayOfMonth.rule(), 20);
+//        Calendrical dt = Calendrical.calendrical(DayOfMonth.rule(), 20);
 //        
 //        assertEquals(DayOfMonth.rule().extractValue(dt), 20);
 //    }

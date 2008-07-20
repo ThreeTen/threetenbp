@@ -451,7 +451,7 @@ public final class YearMonth
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(Year.rule(), year.getValue(), MonthOfYear.rule(), month.getValue());
+        return Calendrical.calendrical(Year.rule(), year.getValue(), MonthOfYear.rule(), month.getValue());
     }
 
     //-----------------------------------------------------------------------

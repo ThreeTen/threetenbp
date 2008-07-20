@@ -158,7 +158,7 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
+        return Calendrical.calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

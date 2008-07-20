@@ -31,15 +31,16 @@
  */
 package javax.time.calendar.field;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.LocalTime;
 
 /**
  * A representation of a era in the ISO-8601 calendar system.
@@ -142,7 +143,7 @@ public enum Era
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(RULE, getValue());
+        return Calendrical.calendrical(RULE, getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -204,8 +205,8 @@ public enum Era
 
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getYear().getEra().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getYear().getEra().getValue();
         }
     }
 

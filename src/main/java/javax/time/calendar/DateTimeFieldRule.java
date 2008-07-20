@@ -223,17 +223,14 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     /**
-     * Extracts the value of this field from the date or time on the specified
-     * Calendrical.
-     * <p>
-     * The implementation of this method is only responsible for querying the
-     * date and time fields. The field-value map will be queried separately.
+     * Extracts the value of this field from the date or time specified.
      *
-     * @param calendrical  the calendrical, not null
-     * @return the value of the field, null if unable to extract field
+     * @param date  the date, may be null
+     * @param time  the time, may be null
+     * @return the value of the field, null if unable to obtain field
      */
-    protected Integer extractValue(Calendrical calendrical) {
-        return null;
+    public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        return null;  // override if field can obtain a value
     }
 
     /**

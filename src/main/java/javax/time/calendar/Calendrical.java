@@ -31,40 +31,41 @@
  */
 package javax.time.calendar;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
+
+import javax.time.CalendricalException;
 
 /**
  * A set of calendrical information which may or may not be valid.
  * <p>
- * This class holds a set of field-value pairs, an offset and a time zone.
- * All of these are optional.
+ * This class holds a representation of a date-time, an offset and a time zone.
+ * All of these are optional and the date-time may consist of partially
+ * complete information.
  * <p>
  * This class is useful when you don't know the kind of date-time object that
  * you will receive, just that it will be some form of date-time. The various
  * fields of a calendrical can be setup to be invalid, thus instances
  * must be treated with care.
- * <p>
- * For example, it is perfectly possible to setup the calendrical with the
- * value for the month of 75.
+ * For example a month is not limited to the normal range of 1 to 12.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class Calendrical implements CalendricalProvider {
-// TODO: Use TreeMap
+public final class Calendrical
+        implements CalendricalProvider, DateProvider, TimeProvider, DateTimeProvider, Serializable {
+
     /**
-     * The date time map, never null, may be empty.
+     * The date time map, may be null.
      */
-    private final Map<DateTimeFieldRule, Integer> fieldValueMap;
+    private final DateTimeFields fields;
     /**
      * The date, may be null.
      */
-    private final LocalDate date;
+    private transient volatile LocalDate date;
     /**
      * The time, may be null.
      */
-    private final LocalTime time;
+    private transient volatile LocalTime time;
     /**
      * The offset, may be null.
      */
@@ -77,9 +78,11 @@ public final class Calendrical implements CalendricalProvider {
     /**
      * Constructor creating an empty instance which places no restrictions
      * on the date-time.
+     *
+     * @return the created Calendrical instance, never null
      */
-    public Calendrical() {
-        this(null, null, null, null, null);
+    public static Calendrical calendrical() {
+        return new Calendrical(null, null, null, null, null);
     }
 
     /**
@@ -91,18 +94,11 @@ public final class Calendrical implements CalendricalProvider {
      *
      * @param fieldRule  the rule, not null
      * @param value  the field value, may be invalid
+     * @return the created Calendrical instance, never null
      * @throws NullPointerException if the field is null
      */
-    public Calendrical(DateTimeFieldRule fieldRule, int value) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        this.fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
-        fieldValueMap.put(fieldRule, value);
-        this.date = null;
-        this.time = null;
-        this.offset = null;
-        this.zone = null;
+    public static Calendrical calendrical(DateTimeFieldRule fieldRule, int value) {
+        return new Calendrical(DateTimeFields.fields(fieldRule, value), null, null, null, null);
     }
 
     /**
@@ -116,19 +112,11 @@ public final class Calendrical implements CalendricalProvider {
      * @param value1  the first field value
      * @param fieldRule2  the second rule, not null
      * @param value2  the second field value
+     * @return the created Calendrical instance, never null
      * @throws NullPointerException if either field is null
      */
-    public Calendrical(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
-        if (fieldRule1 == null || fieldRule2 == null) {
-            throw new NullPointerException("The field rules must not be null");
-        }
-        this.fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
-        fieldValueMap.put(fieldRule1, value1);
-        fieldValueMap.put(fieldRule2, value2);
-        this.date = null;
-        this.time = null;
-        this.offset = null;
-        this.zone = null;
+    public static Calendrical calendrical(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
+        return new Calendrical(DateTimeFields.fields(fieldRule1, value1, fieldRule2, value2), null, null, null, null);
     }
 
     /**
@@ -142,29 +130,13 @@ public final class Calendrical implements CalendricalProvider {
      * For example, the zone could be set to America/New_York and the offset could be
      * set to +01:00, even though that is never a valid offset for the New York zone.
      *
-     * @param fieldValueMap  the map of field rules and their values, may be null
+     * @param fields  the date-time fields, may be null
      * @param offset  the optional time zone offset, such as '+02:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
-     * @throws NullPointerException if the map contains null keys or values
+     * @return the created Calendrical instance, never null
      */
-    public Calendrical(
-            Map<DateTimeFieldRule, Integer> fieldValueMap,
-            ZoneOffset offset,
-            TimeZone zone) {
-        this.fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
-        if (fieldValueMap != null) {
-            if (fieldValueMap.containsKey(null)) {
-                throw new NullPointerException("Null keys are not permitted in field-value map");
-            }
-            if (fieldValueMap.containsValue(null)) {
-                throw new NullPointerException("Null values are not permitted in field-value map");
-            }
-            this.fieldValueMap.putAll(fieldValueMap);
-        }
-        this.date = null;
-        this.time = null;
-        this.offset = offset;
-        this.zone = zone;
+    public static Calendrical calendrical(DateTimeFields fields, ZoneOffset offset, TimeZone zone) {
+        return new Calendrical(fields, null, null, offset, zone);
     }
 
     /**
@@ -179,30 +151,51 @@ public final class Calendrical implements CalendricalProvider {
      * @param time  the optional local time, such as '10:15:30', may be null
      * @param offset  the optional time zone offset, such as '+02:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
+     * @return the created Calendrical instance, never null
      */
-    public Calendrical(LocalDate date, LocalTime time, ZoneOffset offset, TimeZone zone) {
-        this(null, date, time, offset, zone);
+    public static Calendrical calendrical(LocalDate date, LocalTime time, ZoneOffset offset, TimeZone zone) {
+        return new Calendrical(null, date, time, offset, zone);
     }
 
     /**
      * Copy constructor for immutability.
-     * <p>
-     * The field map is assigned, so the caller must be treating it as immutable.
      *
-     * @param fieldValueMap  the map of field rules and their values, assigned, may be null
+     * @param fields  the date-time fields, may be null
      * @param date  the optional local date, such as '2007-12-03', may be null
      * @param time  the optional local time, such as '10:15:30', may be null
      * @param offset  the optional time zone offset, such as '+02:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
-     * @throws NullPointerException if the map contains null keys or values
      */
     private Calendrical(
-            Map<DateTimeFieldRule, Integer> fieldValueMap,
+            DateTimeFields fields,
             LocalDate date,
             LocalTime time,
             ZoneOffset offset,
             TimeZone zone) {
-        this.fieldValueMap = (fieldValueMap == null ? new HashMap<DateTimeFieldRule, Integer>() : fieldValueMap);
+//      // invariants
+//      if (fields != null) {
+//          if (date != null) {
+//              fields.validateMatchesDate(date);
+//          }
+//          if (time != null) {
+//              fields.validateMatchesTime(time);
+//          }
+//      }
+        if (fields == null) {
+            if (date == null && time == null) {
+                fields = DateTimeFields.fields();
+            } else {
+                if (date != null) {
+                    fields = date.toDateTimeFields();
+                    if (time != null) {
+                        fields = fields.withFields(time.toDateTimeFields());
+                    }
+                } else {
+                    fields = time.toDateTimeFields();
+                }
+            }
+        }
+        this.fields = fields;
         this.date = date;
         this.time = time;
         this.offset = offset;
@@ -211,13 +204,62 @@ public final class Calendrical implements CalendricalProvider {
 
     //-----------------------------------------------------------------------
     /**
+     * Merges the field-value map fully creating date and/or time objects.
+     * <p>
+     * This method calls both {@link #merge()} and {@link #validate()}.
+     * In addition, it checks that
+     *
+     * @throws IllegalCalendarFieldValueException if invalid
+     */
+    private void normalize() {
+        LocalDate localDate = date;
+        LocalTime localTime = time;
+        if (localDate == null && localTime == null) {
+            try {
+                LocalDateTime dt = fields.toLocalDateTime();
+                date = dt.toLocalDate();
+                time = dt.toLocalTime();
+            } catch (CalendricalException ex) {
+                try {
+                    localDate = fields.toLocalDate();
+                } catch (CalendricalException ex2) {
+                    localDate = null;
+                }
+                date = localDate;
+                try {
+                    localTime = fields.toLocalTime();
+                } catch (CalendricalException ex2) {
+                    localTime = null;
+                }
+                time = localTime;
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if a value can be obtained for the specified field.
+     * <p>
+     * This method does not check if the value returned would be valid.
+     *
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
+     */
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        return getValueQuiet(fieldRule) != null;
+    }
+
+    /**
      * Gets the value for the specified field throwing an exception if the
      * field cannot be obtained.
      * <p>
      * The value will be checked for basic validity.
      * The value returned will be within the valid range for the field.
-     * Also, if the value is present in both the date/time and the field-value
-     * map then the two values must be the same.
+     * <p>
+     * Instances of Calendrical can hold invalid field values, such as
+     * a day of month of -3 or an hour of 1000. This method ensures that
+     * the result is within the valid range for the field.
+     * No cross-validation between fields is performed.
      *
      * @param fieldRule  the field rule to query from the map, not null
      * @return the value mapped to the specified field
@@ -225,126 +267,133 @@ public final class Calendrical implements CalendricalProvider {
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int getValue(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        Integer value = fieldRule.extractValue(this);
-        Integer mapValue = fieldValueMap.get(fieldRule);
-        if (mapValue == null && value == null) {
-            throw new UnsupportedCalendarFieldException(fieldRule);
-        }
-        if (value != null) {
-            if (mapValue != null && mapValue.equals(value) == false) {
-                throw new InvalidCalendarFieldException("Field " + fieldRule.getName() + " has two different values " +
-                        value + " and " + mapValue, fieldRule);
-            }
-            return value;
-        }
-        fieldRule.checkValue(mapValue);
-        return mapValue;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the raw value for the specified field throwing an exception if the
-     * field cannot be obtained.
-     * <p>
-     * This methods obtains the raw value by first examining the field-value
-     * map, and then by examining the date and/or time.
-     * <p>
-     * If the rule is found in the field-value map then the value is returned
-     * immediately. The value might differ from the value stored in the
-     * date and/or time. The value might also be invalid, such as a day of
-     * month of 75.
-     * <p>
-     * If the rule is not found in the field-value map then the date and/or
-     * time is queried. If the value cannot be obtained then an exception
-     * is thrown.
-     *
-     * @param fieldRule  the field rule to query from the map, not null
-     * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     * @throws InvalidCalendarFieldException if the value for the field is invalid
-     */
-    public int getRawValue(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The rule must not be null");
-        }
-        Integer mapValue = fieldValueMap.get(fieldRule);
-        if (mapValue != null) {
-            return mapValue;
-        }
-        Integer value = fieldRule.extractValue(this);
-        if (value != null) {
-            return value;
-        }
-        throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * The optional set of specific fields and values.
-     * <p>
-     * The map will never be null, however it may be empty.
-     * The values contained in the map might contradict the date or time, or
-     * be out of range for the rule.
-     * <p>
-     * For example, the day of month might be set to 75, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
-     *
-     * @return a modifiable copy of the field-value map, never null
-     */
-    public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
-        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+        return getValue(fieldRule, true);
     }
 
     /**
      * Gets the value for the specified field throwing an exception if the
-     * field is not in the field-value map.
+     * field cannot be obtained.
      * <p>
-     * The value returned might contradict the date or time, or be out of
-     * range for the rule.
+     * The value is optionally checked for basic validity.
      * <p>
-     * For example, the day of month might be set to 50, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
+     * Instances of Calendrical can hold invalid field values, such as
+     * a day of month of -3 or an hour of 1000. This method optionally ensures
+     * that the result is within the valid range for the field.
+     * No cross-validation between fields is performed.
      *
-     * @param rule  the rule to query from the map, not null
+     * @param fieldRule  the field rule to query from the map, not null
+     * @param validate  true to validate the value, false to return the raw value
      * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
-    public int getFieldValueMapValue(DateTimeFieldRule rule) {
-        if (rule == null) {
-            throw new NullPointerException("The rule must not be null");
+    public int getValue(DateTimeFieldRule fieldRule, boolean validate) {
+        if (fieldRule == null) {
+            throw new NullPointerException("The field rule must not be null");
         }
-        Integer value = fieldValueMap.get(rule);
+        Integer value = getValueQuiet(fieldRule);
         if (value != null) {
+            if (validate) {
+                fieldRule.checkValue(value);
+            }
             return value;
         }
-        throw new UnsupportedCalendarFieldException(rule, "Calendrical");
+        throw new UnsupportedCalendarFieldException(fieldRule);
+    }
+
+    /**
+     * Gets the value for the specified field returning null if the value
+     * cannot be obtained.
+     * <p>
+     * The returned value is not validated and might be out of range for the rule.
+     * <p>
+     * Instances of DateTimeFields can hold invalid field values, such as
+     * a day of month of -3 or an hour of 1000. This method performs no
+     * validation on the returned value.
+     *
+     * @param fieldRule  the rule to query from the map, null returns null
+     * @return the value mapped to the specified field, null if not present
+     */
+    public Integer getValueQuiet(DateTimeFieldRule fieldRule) {
+        Integer value = null;
+        if (fieldRule != null) {
+            if (fields != null) {
+                value = fields.getValueQuiet(fieldRule);
+            }
+            if (value == null) {
+                normalize();
+                value = fieldRule.getValueQuiet(date, time);
+            }
+        }
+        return value;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the optional local date, such as '2007-12-03'.
-     * This method will return null if the date is null.
-     *
-     * @return the date, may be null
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * Gets the optional local time, such as '10:15:30'.
-     * This method will return null if the time is null.
-     *
-     * @return the time, may be null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
+//    /**
+//     * The optional set of specific fields and values.
+//     * <p>
+//     * This low-level method provides access to the stored set of fields.
+//     * Field values should normally be accessed using {@link #getValue(DateTimeFieldRule)}.
+//     * <p>
+//     * A calendrical can contain three different representations of
+//     * date-time information - DateTimeFields, LocalDate and LocalTime.
+//     * All three are optional - this method returns the fields.
+//     * <p>
+//     * If both the date and fields are present then
+//     * {@link DateTimeFields#matchesDate(LocalDate)} must return true.
+//     * If both the time and fields are present then
+//     * {@link DateTimeFields#matchesTime(LocalTime)} must return true.
+//     * <p>
+//     * The returned set of fields may contain invalid values, such as
+//     * a day of month of -3 or an hour of 1000.
+//     *
+//     * @return the field set, may be null
+//     */
+//    public DateTimeFields getFields() {
+//        return fields;
+//    }
+//
+//    /**
+//     * Gets the optional local date, such as '2007-12-03'.
+//     * <p>
+//     * This low-level method provides access to the stored date.
+//     * Field values should normally be accessed using {@link #getValue(DateTimeFieldRule)}.
+//     * <p>
+//     * A calendrical can contain three different representations of
+//     * date-time information - DateTimeFields, LocalDate and LocalTime.
+//     * All three are optional - this method returns the date.
+//     * <p>
+//     * If both the date and fields are present then
+//     * {@link DateTimeFields#matchesDate(LocalDate)} must return true.
+//     * If both the time and fields are present then
+//     * {@link DateTimeFields#matchesTime(LocalTime)} must return true.
+//     *
+//     * @return the date, may be null
+//     */
+//    public LocalDate getDate() {
+//        return date;
+//    }
+//
+//    /**
+//     * Gets the optional local time, such as '10:15:30'.
+//     * <p>
+//     * This low-level method provides access to the stored time.
+//     * Field values should normally be accessed using {@link #getValue(DateTimeFieldRule)}.
+//     * <p>
+//     * A calendrical can contain three different representations of
+//     * date-time information - DateTimeFields, LocalDate and LocalTime.
+//     * All three are optional - this method returns the time.
+//     * <p>
+//     * If both the date and fields are present then
+//     * {@link DateTimeFields#matchesDate(LocalDate)} must return true.
+//     * If both the time and fields are present then
+//     * {@link DateTimeFields#matchesTime(LocalTime)} must return true.
+//     *
+//     * @return the time, may be null
+//     */
+//    public LocalTime getTime() {
+//        return time;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -369,52 +418,42 @@ public final class Calendrical implements CalendricalProvider {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this Calendrical with the map of fields altered.
+     * Returns a copy of this Calendrical with the specified setof fields.
+     * <p>
+     * The fields replace any date, time or fields from when the calendrical
+     * was first constructed.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param fieldValueMap  the new map of fields, not null
-     * @return a new, updated Calendrical, never null
-     * @throws IllegalArgumentException if the map contains null keys or values
-     */
-    public Calendrical withFieldValueMap(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
-        return new Calendrical(clonedMap, date, time, offset, zone);
-    }
-
-    /**
-     * Returns a copy of this Calendrical with the map of fields altered.
-     *
-     * @param fieldRule  the field to set in the field-value map, not null
-     * @param value  the value to set in the field-value map
+     * @param fields  the fields to store, not null
      * @return a new, updated Calendrical, never null
      */
-    public Calendrical withFieldValue(DateTimeFieldRule fieldRule, int value) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
+    public Calendrical withFields(DateTimeFields fields) {
+        if (fields == null) {
+            throw new NullPointerException("The fields must not be null");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = getFieldValueMap();
-        clonedMap.put(fieldRule, value);
-        return new Calendrical(clonedMap, date, time, offset, zone);
+        return new Calendrical(fields, null, null, offset, zone);
     }
 
-    /**
-     * Returns a copy of this Calendrical with the date altered.
-     *
-     * @param date  the date to store, may be null
-     * @return a new, updated Calendrical, never null
-     */
-    public Calendrical withDate(LocalDate date) {
-        return new Calendrical(fieldValueMap, date, time, offset, zone);
-    }
-
-    /**
-     * Returns a copy of this Calendrical with the time altered.
-     *
-     * @param time  the time to store, may be null
-     * @return a new, updated Calendrical, never null
-     */
-    public Calendrical withTime(LocalTime time) {
-        return new Calendrical(fieldValueMap, date, time, offset, zone);
-    }
+//    /**
+//     * Returns a copy of this Calendrical with the date altered.
+//     *
+//     * @param date  the date to store, may be null
+//     * @return a new, updated Calendrical, never null
+//     */
+//    public Calendrical withDate(LocalDate date) {
+//        return new Calendrical(fields, date, time, offset, zone);
+//    }
+//
+//    /**
+//     * Returns a copy of this Calendrical with the time altered.
+//     *
+//     * @param time  the time to store, may be null
+//     * @return a new, updated Calendrical, never null
+//     */
+//    public Calendrical withTime(LocalTime time) {
+//        return new Calendrical(fields, date, time, offset, zone);
+//    }
 
     /**
      * Returns a copy of this Calendrical with the zone offset altered.
@@ -423,7 +462,7 @@ public final class Calendrical implements CalendricalProvider {
      * @return a new, updated Calendrical, never null
      */
     public Calendrical withOffset(ZoneOffset offset) {
-        return new Calendrical(fieldValueMap, date, time, offset, zone);
+        return new Calendrical(fields, date, time, offset, zone);
     }
 
     /**
@@ -433,347 +472,139 @@ public final class Calendrical implements CalendricalProvider {
      * @return a new, updated Calendrical, never null
      */
     public Calendrical withZone(TimeZone zone) {
-        return new Calendrical(fieldValueMap, date, time, offset, zone);
+        return new Calendrical(fields, date, time, offset, zone);
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Merges the field-value map fully creating date and/or time objects.
-//     * <p>
-//     * This method calls both {@link #merge()} and {@link #validate()}.
-//     * In addition, it checks that
-//     *
-//     * @throws IllegalCalendarFieldValueException if invalid
-//     */
-//    public void mergeFully() {
-//        Calendrical merged = merge();
-//        if (merged.fieldValueMap.size() > 0) {
-//            throw new RuntimeException("Merging process resulted in leftover fields");  // TODO
-//        }
-//        merged.validate();
-//    }
-//
-//    /**
-//     * Merges the field-value map creating date and/or time objects.
-//     * <p>
-//     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
-//     * until the map of fields is reduced to its minimum size or both the
-//     * date and time are non-null. This method is normally only called when
-//     * the date, time or both is null.
-//     * <p>
-//     * Once the field-value map is merged into date/time objects, it is
-//     * recommended to call {@link #validate()} to check that any fields that
-//     * were not merged are valid.
-//     * <p>
-//     * For example, the field-value map might contain a year, day of year and
-//     * day of week. This merge method would combine the year and day of year
-//     * into a LocalDate, but the day of week would be unaffected. Calling
-//     * <code>validate()</code> would check that the day of week is correct for
-//     * the LocalDate that was created.
-//     * <p>
-//     * This method will throw an exception if a set of fields is found that should
-//     * be capable of creating a date/time, but the specifc values are invalid.
-//     * <p>
-//     * If there are no suitable combinations of fields to merge into a date/time,
-//     * then the returned object will still have a null date/time. No exception
-//     * is thrown in this case.
-//     *
-//     * @return the new instance, with merged date/time, never null
-//     * @throws IllegalCalendarFieldValueException if a set of date/time creation fields is invalid
-//     */
-//    public Calendrical mergeFields() {
-//        return mergeDateFields().mergeTimeFields();
-////        if (date == null || time == null) {
-////            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-////                Calendrical fdt = entry.getKey().mergeFields(this);
-////                if (fdt != this) {
-////                    return fdt.merge();
-////                }
-////            }
-////        }
-////        return this;
-//    }
-//
-//    /**
-//     * Merges the field-value map creating a LocalDate.
-//     * <p>
-//     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
-//     * until the map of fields is reduced to its minimum size or the date has
-//     * been created. This method is normally only called when date is null as
-//     * there will simply return immediately if the date is non-null on entry.
-//     * <p>
-//     * Once the field-value map is merged into date objects, it is recommended
-//     * to call {@link #validateDate()} to check that any fields that were not
-//     * merged are valid.
-//     * <p>
-//     * For example, the field-value map might contain a year, day of year and
-//     * day of week. This merge method would combine the year and day of year
-//     * into a LocalDate, but the day of week would be unaffected. Calling
-//     * <code>validateDate()</code> would check that the day of week is correct
-//     * for the LocalDate that was created.
-//     * <p>
-//     * This method will throw an exception if a set of fields is found that should
-//     * be capable of creating a date, but the specifc values are invalid.
-//     * <p>
-//     * If there are no suitable combinations of fields to merge into a date,
-//     * then the returned object will still have a null date. No exception is
-//     * thrown in this case.
-//     *
-//     * @return the new instance, with merged date, never null
-//     * @throws IllegalCalendarFieldValueException if a set of date creation fields is invalid
-//     */
-//    public Calendrical mergeDateFields() {
-//        if (date == null) {
-//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                DateTimeFieldRule rule = entry.getKey();
-//                if (rule.isDateField()) {
-//                    Calendrical fdt = rule.mergeFields(this);
-//                    if (fdt != this) {
-//                        return fdt.mergeDateFields();
-//                    }
-//                }
-//            }
-//        }
-//        return this;
-//    }
-//
-//    /**
-//     * Merges the field-value map creating a LocalTime.
-//     * <p>
-//     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
-//     * until the map of fields is reduced to its minimum size or the time has
-//     * been created. This method is normally only called when time is null as
-//     * there will simply return immediately if the time is non-null on entry.
-//     * <p>
-//     * Once the field-value map is merged into time objects, it is recommended
-//     * to call {@link #validateTime()} to check that any fields that were not
-//     * merged are valid.
-//     * <p>
-//     * For example, the field-value map might contain an hour, minute and second,
-//     * plus a second of day. This merge method would combine the hour, minute and
-//     * second into a LocalTime, but the second of day would be unaffected. Calling
-//     * <code>validateTime()</code> would check that the second of day is correct
-//     * for the LocalTime that was created.
-//     * <p>
-//     * This method will throw an exception if a set of fields is found that should
-//     * be capable of creating a time, but the specifc values are invalid.
-//     * <p>
-//     * If there are no suitable combinations of fields to merge into a time,
-//     * then the returned object will still have a null time. No exception is
-//     * thrown in this case.
-//     *
-//     * @return the new instance, with merged time, never null
-//     * @throws IllegalCalendarFieldValueException if a set of time creation fields is invalid
-//     */
-//    public Calendrical mergeTimeFields() {
-//        if (time == null) {
-//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                DateTimeFieldRule rule = entry.getKey();
-//                if (rule.isTimeField()) {
-//                    Calendrical fdt = rule.mergeFields(this);
-//                    if (fdt != this) {
-//                        return fdt.mergeTimeFields();
-//                    }
-//                }
-//            }
-//        }
-//        return this;
-//    }
-//
-//    /**
-//     * Validates the contents of this Calendrical.
-//     * <p>
-//     * Validation occurs in three steps.
-//     * Firstly, each field in the field-value map is checked to determine if
-//     * it is in range for the rules of the field.
-//     * Secondly, each date field is checked against the stored date.
-//     * Thirdly, each time field is checked against the stored time.
-//     * <p>
-//     * If the date and time are null, then only the field-value map will be
-//     * validated. Since the individual fields are not cross-validated in this
-//     * scenario, the method could succeed with an invalid date, such as February
-//     * 31st. To prevent this, it is recommended to call merge before calling
-//     * validate.
-//     *
-//     * @return this, for chaining, never null
-//     * @throws InvalidCalendarFieldException if any field is invalid
-//     */
-//    public Calendrical validate() {
-//        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//            entry.getKey().checkValue(entry.getValue());
-//        }
-//        if (date != null) {
-//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                DateTimeFieldRule rule = entry.getKey();
-//                if (date.isSupported(rule) && date.get(rule) != entry.getValue()) {
-//                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
-//                            " for " + rule.getName() + " does not match value for date " + date, rule);
-//                }
-//            }
-//        }
-//        if (time != null) {
-//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                DateTimeFieldRule rule = entry.getKey();
-//                if (time.isSupported(rule) && time.get(rule) != entry.getValue()) {
-//                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
-//                            " for " + rule.getName() + " does not match value for time " + time, rule);
-//                }
-//            }
-//        }
-//        return this;
-//    }
-//
-//    /**
-//     * Validates that any date represented by this Calendrical is valid.
-//     * <p>
-//     * If this Calendrical has a LocalDate, then each date field in the
-//     * field-value map is compared against it.
-//     * <p>
-//     * If this Calendrical does not have a LocalDate, then each date field
-//     * in the field-value map is validated independently against its own rules.
-//     * In this case, no cross-validation occurs, thus a field-value map
-//     * containing February 31st would be valid, as each field is valid when
-//     * considered separately. Normally, this method is called after
-//     * {@link #mergeDateFields()} to ensure that cross-validation against the
-//     * LocalDate occurs.
-//     *
-//     * @return this, for chaining, never null
-//     * @throws InvalidCalendarFieldException if any field is invalid
-//     */
-//    public Calendrical validateDate() {
-//        if (date == null) {
-//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                DateTimeFieldRule rule = entry.getKey();
-//                if (rule.isDateField()) {
-//                    rule.checkValue(entry.getValue());
-//                }
-//            }
-//        } else {
-//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                DateTimeFieldRule rule = entry.getKey();
-//                if (rule.isDateField() && date.isSupported(rule) && date.get(rule) != entry.getValue()) {
-//                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
-//                            " for " + rule.getName() + " does not match value for date " + date, rule);
-//                }
-//            }
-//        }
-//        return this;
-//    }
-
-    //-----------------------------------------------------------------------
     /**
-     * Converts this object to a LocalDate.
+     * Converts this calendrical to a DateTimeFields.
      * <p>
-     * This method will merge and validate any date fields in the field-value
-     * map. The resulting validated LocalDate will then be returned, or an
-     * exception thrown if the date could not be created.
+     * If the calendrical was constructed using a LocalDate and/or LocalTime
+     * then the year, month, day of month, hour, minute, second and nano fields
+     * will be set in the result.
+     *
+     * @return the DateTimeFields, never null
+     */
+    public DateTimeFields toDateTimeFields() {
+        return fields;
+    }
+
+    /**
+     * Converts this calendrical to a LocalDate.
      * <p>
-     * If the field-value map is empty and the date field is non-null on
-     * calling this method, then that date field will be returned.
+     * This method will convert the date-time information stored to a LocalDate.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the date, see {@link DateTimeFields}.
      *
      * @return the LocalDate, never null
      * @throws CalendarConversionException if the date cannot be converted
      */
     public LocalDate toLocalDate() {
+        normalize();
+        if (date == null) {
+            throw new CalendarConversionException(
+                "Cannot convert Calendrical to LocalDate, insufficient infomation to create a date");
+        }
         return date;
-//        Calendrical merged = mergeDateFields();
-//        if (merged.date == null) {
-//            throw new CalendarConversionException(
-//                    "Cannot convert Calendrical to LocalDate, insufficient infomation to create a date");
-//        }
-//        return merged.validateDate().date;
     }
 
     /**
-     * Converts this object to a LocalTime.
+     * Converts this calendrical to a LocalTime.
      * <p>
-     * This method will merge and validate any time fields in the field-value
-     * map. The resulting validated LocalTime will then be returned, or an
-     * exception thrown if the time could not be created.
-     * <p>
-     * If the field-value map is empty and the time field is non-null on
-     * calling this method, then that time field will be returned.
+     * This method will convert the date-time information stored to a LocalTime.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the time, see {@link DateTimeFields}.
      *
      * @return the LocalTime, never null
      * @throws CalendarConversionException if the time cannot be converted
      */
     public LocalTime toLocalTime() {
+        normalize();
+        if (time == null) {
+            throw new CalendarConversionException(
+                "Cannot convert Calendrical to LocalTime, insufficient infomation to create a time");
+        }
         return time;
-//        Calendrical merged = mergeDateFields();
-//        if (merged.time == null) {
-//            throw new CalendarConversionException(
-//                "Cannot convert Calendrical to LocalTime, insufficient infomation to create a time");
-//        }
-//        return merged.validate().time;
     }
 
     /**
-     * Converts this object to a LocalDateTime.
+     * Converts this calendrical to a LocalDateTime.
      * <p>
-     * This method will merge and validate any fields in the field-value map.
-     * The resulting validated LocalTime will then be returned, or an
-     * exception thrown if either the date or time could not be created.
-     * <p>
-     * If the field-value map is empty and the date and time fields are non-null
-     * on calling this method, then those date and time field will be used.
+     * This method will convert the date-time information stored to a LocalDateTime.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the date-time, see {@link DateTimeFields}.
      *
      * @return the LocalDateTime, never null
      * @throws CalendarConversionException if the date or time cannot be converted
      */
     public LocalDateTime toLocalDateTime() {
-        return LocalDateTime.dateTime(toLocalDate(), toLocalTime());
+        normalize();
+        if (date == null || time == null) {
+            throw new CalendarConversionException(
+                "Cannot convert Calendrical to LocalTime, insufficient infomation available");
+        }
+        return LocalDateTime.dateTime(date, time);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Converts this object to an OffsetDate.
-     * This method will fail if the date or offset is null.
+     * <p>
+     * This method will convert the date-time information stored to an OffsetDate.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the date, see {@link DateTimeFields}.
      *
      * @return the OffsetDate, never null
      * @throws CalendarConversionException if the date cannot be converted, or the offset is null
      */
     public OffsetDate toOffsetDate() {
-        LocalDate date = toLocalDate();
         if (offset == null) {
             throw new CalendarConversionException("Cannot convert Calendrical to OffsetDate because the offset is null");
         }
-        return OffsetDate.date(date, offset);
+        return OffsetDate.date(toLocalDate(), offset);
     }
 
     /**
      * Converts this object to an OffsetTime.
-     * This method will fail if the time or offset is null.
+     * <p>
+     * This method will convert the date-time information stored to an OffsetTime.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the time, see {@link DateTimeFields}.
      *
      * @return the OffsetTime, never null
      * @throws CalendarConversionException if the time cannot be converted, or the offset is null
      */
     public OffsetTime toOffsetTime() {
-        LocalTime time = toLocalTime();
         if (offset == null) {
             throw new CalendarConversionException("Cannot convert Calendrical to OffsetTime because the offset is null");
         }
-        return OffsetTime.time(time, offset);
+        return OffsetTime.time(toLocalTime(), offset);
     }
 
     /**
      * Converts this object to an OffsetDateTime.
-     * This method will fail if the time or offset is null.
+     * <p>
+     * This method will convert the date-time information stored to an OffsetDateTime.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the date-time, see {@link DateTimeFields}.
      *
      * @return the OffsetDateTime, never null
      * @throws CalendarConversionException if the date or time cannot be converted, or the offset is null
      */
     public OffsetDateTime toOffsetDateTime() {
-        LocalDateTime dateTime = toLocalDateTime();
         if (offset == null) {
             throw new CalendarConversionException("Cannot convert Calendrical to OffsetDateTime because the offset is null");
         }
-        return OffsetDateTime.dateTime(dateTime, offset);
+        return OffsetDateTime.dateTime(toLocalDateTime(), offset);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Converts this object to a ZonedDateTime.
-     * This method will fail if the date or offset is null.
+     * <p>
+     * This method will convert the date-time information stored to an ZonedDateTime.
+     * If this calendrical was created using a DateTimeFields, then the fields
+     * will be merged to obtain the date-time, see {@link DateTimeFields}.
      *
      * @return the ZonedDateTime, never null
      * @throws CalendarConversionException if the date or time cannot be converted, or the offset or zone is null
@@ -812,37 +643,29 @@ public final class Calendrical implements CalendricalProvider {
             return false;
         }
         final Calendrical other = (Calendrical) obj;
-        if (this.date != other.date && (this.date == null || !this.date.equals(other.date))) {
-            return false;
-        }
-        if (this.time != other.time && (this.time == null || !this.time.equals(other.time))) {
-            return false;
-        }
         if (this.offset != other.offset && (this.offset == null || !this.offset.equals(other.offset))) {
             return false;
         }
         if (this.zone != other.zone && (this.zone == null || !this.zone.equals(other.zone))) {
             return false;
         }
-        if (this.fieldValueMap.equals(other.fieldValueMap) == false) {
+        if (this.fields != other.fields && (this.fields == null || !this.fields.equals(other.fields))) {
             return false;
         }
         return true;
     }
 
     /**
-     * A hashcode for this Calendrical.
+     * A hash code for this calendrical.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + (this.fieldValueMap != null ? this.fieldValueMap.hashCode() : 0);
-        hash = 59 * hash + (this.date != null ? this.date.hashCode() : 0);
-        hash = 59 * hash + (this.time != null ? this.time.hashCode() : 0);
         hash = 59 * hash + (this.offset != null ? this.offset.hashCode() : 0);
         hash = 59 * hash + (this.zone != null ? this.zone.hashCode() : 0);
+        hash = 59 * hash + (this.fields != null ? this.fields.hashCode() : 0);
         return hash;
     }
 
@@ -852,41 +675,22 @@ public final class Calendrical implements CalendricalProvider {
      * <p>
      * The output will use the following format:
      * <ul>
-     * <li>Field-Value map, followed by space if non-empty</li>
-     * <li>Date</li>
-     * <li>Time, prefixed by 'T' if non-null</li>
-     * <li>Offset</li>
+     * <li>Fields, as formatted by DateTimeFields</li>
+     * <li>Offset, prefixed by a space if non-null</li>
      * <li>Zone, prefixed by a space if non-null</li>
      * </ul>
-     * If an instance of LocalDate, LocalTime, LocalDateTime, OffsetDate, OffsetTime,
-     * OffsetDateTime or ZonedDateTime is converted to a Calendrical then the
-     * toString output will remain the same.
      *
      * @return the formatted date-time string, never null
      */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        if (getFieldValueMap().size() > 0) {
-            buf.append(getFieldValueMap());
-            if (date != null || time != null || offset != null) {
-                buf.append(' ');
-            }
-        }
-        if (date != null) {
-            buf.append(date);
-        }
-        if (time != null) {
-            buf.append('T').append(time);
-        }
+        buf.append(fields);
         if (offset != null) {
-            buf.append(offset);
+            buf.append(' ').append(offset);
         }
         if (zone != null) {
-            if (date != null || time != null || offset != null) {
-                buf.append(' ');
-            }
-            buf.append(zone);
+            buf.append(' ').append(zone);
         }
         return buf.toString();
     }

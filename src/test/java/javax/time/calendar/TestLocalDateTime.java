@@ -751,32 +751,31 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
-    //TODO: implement this test
     public void test_isSupported() {
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(Era.RULE));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(MilleniumOfEra.RULE));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(CenturyOfEra.RULE));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DecadeOfCentury.RULE));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(Year.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(YearOfEra.RULE));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(QuarterOfYear.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(MonthOfYear.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(MonthOfQuarter.RULE));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DayOfMonth.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DayOfWeek.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(DayOfYear.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(WeekOfMonth.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(WeekOfWeekyear.rule()));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(Weekyear.rule()));
-//
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(HourOfDay.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(MinuteOfHour.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(MinuteOfDay.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(SecondOfMinute.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(SecondOfDay.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(NanoOfSecond.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(HourOfMeridiem.RULE));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(MeridiemOfDay.RULE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.era()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.milleniumOfEra()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.centuryOfEra()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.decadeOfCentury()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.year()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.yearOfEra()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.quarterOfYear()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.monthOfYear()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.monthOfQuarter()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfMonth()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfWeek()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfYear()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.weekOfMonth()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.weekOfWeekyear()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.weekyear()));
+
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.hourOfDay()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.minuteOfHour()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.minuteOfDay()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.secondOfMinute()));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.secondOfDay()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
     }
 
     // TODO: enable all assertions
@@ -3065,14 +3064,14 @@ public class TestLocalDateTime {
     public void test_toCalendrical(int year, int month, int day) {
         LocalDate d = LocalDate.date(year, month, day);
         LocalDateTime dt = LocalDateTime.dateMidnight(d);
-        assertEquals(dt.toCalendrical(), new Calendrical(d, LocalTime.MIDNIGHT, null, null));
+        assertEquals(dt.toCalendrical(), Calendrical.calendrical(d, LocalTime.MIDNIGHT, null, null));
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_toCalendrical(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
         LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
-        assertEquals(dt.toCalendrical(), new Calendrical(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), t, null, null));
+        assertEquals(dt.toCalendrical(), Calendrical.calendrical(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), t, null, null));
     }
 
     //-----------------------------------------------------------------------

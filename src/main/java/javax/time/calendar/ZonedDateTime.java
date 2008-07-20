@@ -292,11 +292,11 @@ public final class ZonedDateTime
      * This method queries whether this <code>ZonedDateTime</code> can
      * be queried using the specified calendar field.
      *
-     * @param field  the field to query, not null
-     * @return true if the field is supported
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
      */
-    public boolean isSupported(DateTimeFieldRule field) {
-        return dateTime.isSupported(field);
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        return dateTime.isSupported(fieldRule);
     }
 
     /**
@@ -305,13 +305,13 @@ public final class ZonedDateTime
      * This method queries the value of the specified calendar field.
      * If the calendar field is not supported then an exception is thrown.
      *
-     * @param field  the field to query, not null
+     * @param fieldRule  the field to query, not null
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
-    public int get(DateTimeFieldRule field) {
-        return toCalendrical().getValue(field);
+    public int get(DateTimeFieldRule fieldRule) {
+        return toCalendrical().getValue(fieldRule);
     }
 
     //-----------------------------------------------------------------------
@@ -1145,7 +1145,7 @@ public final class ZonedDateTime
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(toLocalDate(), toLocalTime(), getOffset(), zone);
+        return Calendrical.calendrical(toLocalDate(), toLocalTime(), getOffset(), zone);
     }
 
     //-----------------------------------------------------------------------

@@ -32,6 +32,8 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.time.MathUtils;
 import javax.time.calendar.field.HourOfDay;
@@ -350,18 +352,11 @@ public final class LocalTime
      * This method queries whether this <code>LocalTime</code> can
      * be queried using the specified calendar field.
      *
-     * @param field  the field to query, not null
-     * @return true if the field is supported
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
      */
-    public boolean isSupported(DateTimeFieldRule field) {
-        // TODO
-        try {
-            get(field);
-            return true;
-        } catch (UnsupportedCalendarFieldException ex) {
-            return false;
-        }
-//        return field.isSupported(Periods.NANOS, Periods.DAYS);
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        return fieldRule.getValueQuiet(null, this) != null;
     }
 
     /**
@@ -370,13 +365,13 @@ public final class LocalTime
      * This method queries the value of the specified calendar field.
      * If the calendar field is not supported then an exception is thrown.
      *
-     * @param field  the field to query, not null
+     * @param fieldRule  the field to query, not null
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
-    public int get(DateTimeFieldRule field) {
-        return toCalendrical().getValue(field);
+    public int get(DateTimeFieldRule fieldRule) {
+        return toCalendrical().getValue(fieldRule);
     }
 
     //-----------------------------------------------------------------------
@@ -831,6 +826,21 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this time to a <code>DateTimeFields</code> containing the
+     * hour, minute, second and nano fields.
+     *
+     * @return the field set, never null
+     */
+    public DateTimeFields toDateTimeFields() {
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(ISOChronology.INSTANCE.hourOfDay(), hour.getValue());
+        map.put(ISOChronology.INSTANCE.minuteOfHour(), minute.getValue());
+        map.put(ISOChronology.INSTANCE.secondOfMinute(), second.getValue());
+        map.put(ISOChronology.INSTANCE.nanoOfSecond(), nano.getValue());
+        return DateTimeFields.fields(map);
+    }
+
+    /**
      * Converts this time to a <code>LocalTime</code>, trivially
      * returning <code>this</code>.
      *
@@ -846,7 +856,7 @@ public final class LocalTime
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(null, this, null, null);
+        return Calendrical.calendrical(null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

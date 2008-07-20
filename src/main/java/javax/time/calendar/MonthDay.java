@@ -434,7 +434,7 @@ public final class MonthDay
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(MonthOfYear.rule(), month.getValue(), DayOfMonth.rule(), day.getValue());
+        return Calendrical.calendrical(MonthOfYear.rule(), month.getValue(), DayOfMonth.rule(), day.getValue());
     }
 
     //-----------------------------------------------------------------------

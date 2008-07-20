@@ -167,6 +167,18 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if a value can be obtained for the specified field.
+     * <p>
+     * This method does not check if the value returned would be valid.
+     *
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
+     */
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        return fieldValueMap.containsKey(fieldRule);
+    }
+
+    /**
      * Gets the value for the specified field throwing an exception if the
      * field is not in the field-value map.
      * <p>
@@ -257,32 +269,7 @@ public final class DateTimeFields
         return fieldValueMap.keySet().iterator();
     }
 
-    /**
-     * Checks whether the field-value map contains the specified field.
-     *
-     * @param fieldRule  the rule to query from the map, null returns false
-     * @return the value mapped to the specified field, null if not present
-     */
-    public boolean containsField(DateTimeFieldRule fieldRule) {
-        return fieldValueMap.containsKey(fieldRule);
-    }
-
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this Calendrical with the map of fields altered.
-//     *
-//     * @param fieldValueMap  the new map of fields, not null
-//     * @return a new, updated Calendrical, never null
-//     * @throws IllegalArgumentException if the map contains null keys or values
-//     */
-//    public DateTimeFields withFieldValueMap(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-//        if (fieldValueMap.isEmpty()) {
-//            return EMPTY;
-//        }
-//        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
-//        return new DateTimeFields(clonedMap);
-//    }
-
     /**
      * Returns a copy of this DateTimeFields with the specified field value.
      * <p>
@@ -301,6 +288,59 @@ public final class DateTimeFields
         }
         Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
         clonedMap.put(fieldRule, value);
+        return new DateTimeFields(clonedMap);
+    }
+
+    /**
+     * Returns a copy of this DateTimeFields with the fields from the specified set added.
+     * <p>
+     * If this instance already has a value for the field then the value is
+     * replaced. Otherwise the value is added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param fieldValueMap  the new map of fields, not null
+     * @return a new, updated DateTimeFields, never null
+     * @throws IllegalArgumentException if the map contains null keys or values
+     */
+    public DateTimeFields withFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
+        if (fieldValueMap == null) {
+            throw new NullPointerException("The field-value map must not be null");
+        }
+        if (fieldValueMap.isEmpty()) {
+            return this;
+        }
+        if (fieldValueMap.containsKey(null)) {
+            throw new NullPointerException("Null keys are not permitted in field-value map");
+        }
+        if (fieldValueMap.containsValue(null)) {
+            throw new NullPointerException("Null values are not permitted in field-value map");
+        }
+        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+        clonedMap.putAll(fieldValueMap);
+        return new DateTimeFields(clonedMap);
+    }
+
+    /**
+     * Returns a copy of this DateTimeFields with the fields from the specified set added.
+     * <p>
+     * If this instance already has a value for the field then the value is
+     * replaced. Otherwise the value is added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param fields  the field set to add to the returned instance, not null
+     * @return a new, updated DateTimeFields, never null
+     */
+    public DateTimeFields withFields(DateTimeFields fields) {
+        if (fields == null) {
+            throw new NullPointerException("The fields must not be null");
+        }
+        if (fields.size() == 0) {
+            return this;
+        }
+        Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
+        clonedMap.putAll(fields.fieldValueMap);
         return new DateTimeFields(clonedMap);
     }
 
@@ -504,6 +544,27 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
+     * Validates that the date fields in this set of fields match the specified date.
+     * <p>
+     * This implementation checks that all date fields in this field set.
+     * Time fields are ignored based on {@link LocalDate#isSupported(DateTimeFieldRule)}.
+     *
+     * @param date  the date to match, not null
+     * @return this, for chaining, never null
+     * @throws InvalidCalendarFieldException if any date field does not match the specified date
+     */
+    public DateTimeFields validateMatchesDate(LocalDate date) {
+        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
+            if (date.isSupported(field) && date.get(field) != fieldValueMap.get(field)) {
+                throw new InvalidCalendarFieldException(
+                    "LocalDate " + date + " does not match the field " +
+                    field.getName() + "=" + fieldValueMap.get(field), field);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Checks if the date fields in this set of fields match the specified date.
      * <p>
      * This implementation checks that all date fields in this field set.
@@ -519,6 +580,27 @@ public final class DateTimeFields
             }
         }
         return true;
+    }
+
+    /**
+     * Validates that the time fields in this set of fields match the specified time.
+     * <p>
+     * This implementation checks that all time fields in this field set.
+     * Date fields are ignored based on {@link LocalTime#isSupported(DateTimeFieldRule)}.
+     *
+     * @param time  the time to match, not null
+     * @return this, for chaining, never null
+     * @throws InvalidCalendarFieldException if any time field does not match the specified time
+     */
+    public DateTimeFields validateMatchesTime(LocalTime time) {
+        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
+            if (time.isSupported(field) && time.get(field) != fieldValueMap.get(field)) {
+                throw new InvalidCalendarFieldException(
+                    "LocalTime " + time + " does not match the field " +
+                    field.getName() + "=" + fieldValueMap.get(field), field);
+            }
+        }
+        return this;
     }
 
     /**
@@ -575,13 +657,7 @@ public final class DateTimeFields
             throw new CalendarConversionException(
                 "Cannot convert DateTimeFields to LocalDate, insufficient infomation to create a date");
         }
-        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
-            if (date.isSupported(field) && date.get(field) != fieldValueMap.get(field)) {
-                throw new InvalidCalendarFieldException(
-                    "Converted LocalDate " + date + " does not match the field " +
-                    field.getName() + "=" + fieldValueMap.get(field), field);
-            }
-        }
+        validateMatchesDate(date);
         return date;
     }
 
@@ -604,13 +680,7 @@ public final class DateTimeFields
             throw new CalendarConversionException(
                 "Cannot convert DateTimeFields to LocalTime, insufficient infomation to create a date");
         }
-        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
-            if (time.isSupported(field) && time.get(field) != fieldValueMap.get(field)) {
-                throw new InvalidCalendarFieldException(
-                    "Converted LocalTime " + time + " does not match the field " +
-                    field.getName() + "=" + fieldValueMap.get(field), field);
-            }
-        }
+        validateMatchesTime(time);
         return time;
     }
 
@@ -648,7 +718,7 @@ public final class DateTimeFields
      * @return the calendrical with the same set of fields, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(fieldValueMap, null, null);
+        return Calendrical.calendrical(this, null, null);
     }
 
     //-----------------------------------------------------------------------

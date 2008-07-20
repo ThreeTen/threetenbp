@@ -182,7 +182,7 @@ public final class Year
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
+        return Calendrical.calendrical(rule(), getValue());
     }
 
     /**

@@ -32,6 +32,8 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
@@ -251,18 +253,11 @@ public final class LocalDate
      * This method queries whether this <code>LocalDate</code> can
      * be queried using the specified calendar field.
      *
-     * @param field  the field to query, not null
-     * @return true if the field is supported
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
      */
-    public boolean isSupported(DateTimeFieldRule field) {
-        // TODO
-        try {
-            get(field);
-            return true;
-        } catch (UnsupportedCalendarFieldException ex) {
-            return false;
-        }
-//        return field.isSupported(Periods.DAYS, Periods.FOREVER);
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        return fieldRule.getValueQuiet(this, null) != null;
     }
 
     /**
@@ -271,13 +266,13 @@ public final class LocalDate
      * This method queries the value of the specified calendar field.
      * If the calendar field is not supported then an exception is thrown.
      *
-     * @param field  the field to query, not null
+     * @param fieldRule  the field to query, not null
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
-    public int get(DateTimeFieldRule field) {
-        return toCalendrical().getValue(field);
+    public int get(DateTimeFieldRule fieldRule) {
+        return toCalendrical().getValue(fieldRule);
     }
 
     //-----------------------------------------------------------------------
@@ -929,6 +924,20 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Converts this date to a <code>DateTimeFields</code> containing the
+     * year, month of year and day of month fields.
+     *
+     * @return the field set, never null
+     */
+    public DateTimeFields toDateTimeFields() {
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        map.put(ISOChronology.INSTANCE.year(), year.getValue());
+        map.put(ISOChronology.INSTANCE.monthOfYear(), month.getValue());
+        map.put(ISOChronology.INSTANCE.dayOfMonth(), day.getValue());
+        return DateTimeFields.fields(map);
+    }
+
+    /**
      * Converts this date to a <code>LocalDate</code>, trivially
      * returning <code>this</code>.
      *
@@ -944,7 +953,7 @@ public final class LocalDate
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(this, null, null, null);
+        return Calendrical.calendrical(this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

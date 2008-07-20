@@ -96,7 +96,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = calendrical.getRawValue(fieldRule);
+        int value = calendrical.getValue(fieldRule, false);
         String str = (value == Integer.MIN_VALUE ? "2147483648" : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
             throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);

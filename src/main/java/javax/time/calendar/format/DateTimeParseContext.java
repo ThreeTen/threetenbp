@@ -38,6 +38,7 @@ import java.util.TreeMap;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeZone;
@@ -262,7 +263,8 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return a new Calendrical with the parsed fields, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(fieldValueMap, offset, zone);
+        DateTimeFields fields = DateTimeFields.fields(fieldValueMap);
+        return Calendrical.calendrical(fields, offset, zone);
     }
 
     //-----------------------------------------------------------------------

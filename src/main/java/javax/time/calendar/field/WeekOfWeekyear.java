@@ -163,7 +163,7 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
+        return Calendrical.calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

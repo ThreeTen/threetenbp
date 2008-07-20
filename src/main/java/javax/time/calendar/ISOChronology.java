@@ -421,8 +421,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getYear().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getYear().getValue();
         }
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
@@ -461,8 +461,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getMonthOfYear().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getMonthOfYear().getValue();
         }
     }
 
@@ -489,8 +489,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getDayOfMonth().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getDayOfMonth().getValue();
         }
     }
 
@@ -517,8 +517,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getDayOfYear().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getDayOfYear().getValue();
         }
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
@@ -552,8 +552,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? Weekyear.weekyear(calendrical.getDate()).getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : Weekyear.weekyear(date).getValue();
         }
     }
 
@@ -580,8 +580,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? WeekOfWeekyear.weekOfWeekyear(calendrical.getDate()).getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : WeekOfWeekyear.weekOfWeekyear(date).getValue();
         }
     }
 
@@ -603,8 +603,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getDayOfWeek().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getDayOfWeek().getValue();
         }
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
@@ -642,8 +642,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            LocalDate date = calendrical.getDate();
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
             if (date != null) {
                 return ((date.getDayOfYear().getValue() - 1) % 7) + 1;
             }
@@ -669,8 +668,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getMonthOfYear().getQuarterOfYear().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getMonthOfYear().getQuarterOfYear().getValue();
         }
         /** {@inheritDoc} */
         @Override
@@ -707,8 +706,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? calendrical.getDate().getMonthOfYear().getMonthOfQuarter() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : date.getMonthOfYear().getMonthOfQuarter();
         }
     }
 
@@ -735,8 +734,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getDate() != null ? WeekOfMonth.weekOfMonth(calendrical.getDate()).getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return date == null ? null : WeekOfMonth.weekOfMonth(date).getValue();
         }
     }
 
@@ -758,8 +757,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getTime() != null ? calendrical.getTime().getHourOfDay().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getHourOfDay().getValue();
         }
         @Override
         protected LocalTime.Overflow mergeToTime(DateTimeFields fieldValues) {
@@ -792,8 +791,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getTime() != null ? calendrical.getTime().getMinuteOfHour().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getMinuteOfHour().getValue();
         }
     }
 
@@ -815,8 +814,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getTime() != null ? calendrical.getTime().getSecondOfMinute().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getSecondOfMinute().getValue();
         }
     }
 
@@ -838,8 +837,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getTime() != null ? calendrical.getTime().getNanoOfSecond().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getNanoOfSecond().getValue();
         }
     }
 
@@ -861,11 +860,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            if (calendrical.getTime() == null) {
-                return null;
-            }
-            return (int) (calendrical.getTime().toNanoOfDay() / 1000000);
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : (int) (time.toNanoOfDay() / 1000000);
         }
         /** {@inheritDoc} */
         @Override
@@ -893,11 +889,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            if (calendrical.getTime() == null) {
-                return null;
-            }
-            return calendrical.getTime().getNanoOfSecond().getValue() / 1000000;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getNanoOfSecond().getValue() / 1000000;
         }
         /** {@inheritDoc} */
         @Override
@@ -928,8 +921,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getTime() != null ? calendrical.getTime().getHourOfDay().getAmPm().getValue() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getHourOfDay().getAmPm().getValue();
         }
         /** {@inheritDoc} */
         @Override
@@ -963,8 +956,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        protected Integer extractValue(Calendrical calendrical) {
-            return calendrical.getTime() != null ? calendrical.getTime().getHourOfDay().getHourOfAmPm() : null;
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return time == null ? null : time.getHourOfDay().getHourOfAmPm();
         }
     }
 

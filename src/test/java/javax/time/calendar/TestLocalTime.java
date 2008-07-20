@@ -431,30 +431,30 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     //TODO: implement this test
     public void test_isSupported() {
-//        assertTrue(TEST_12_30_40_987654321.isSupported(HourOfDay.RULE));
-//        assertTrue(TEST_12_30_40_987654321.isSupported(MinuteOfHour.RULE));
-////        assertTrue(TEST_12_30_40_987654321.isSupported(MinuteOfDay.RULE));
-//        assertTrue(TEST_12_30_40_987654321.isSupported(SecondOfMinute.RULE));
-////        assertTrue(TEST_12_30_40_987654321.isSupported(SecondOfDay.RULE));
-//        assertTrue(TEST_12_30_40_987654321.isSupported(NanoOfSecond.RULE));
-//        assertTrue(TEST_12_30_40_987654321.isSupported(HourOfMeridiem.RULE));
-//        assertTrue(TEST_12_30_40_987654321.isSupported(MeridiemOfDay.RULE));
-//        
 //        assertFalse(TEST_12_30_40_987654321.isSupported(Era.RULE));
-////        assertFalse(TEST_12_30_40_987654321.isSupported(MilleniumOfEra.RULE));
-////        assertFalse(TEST_12_30_40_987654321.isSupported(CenturyOfEra.RULE));
-////        assertFalse(TEST_12_30_40_987654321.isSupported(DecadeOfCentury.RULE));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(Year.rule()));
-////        assertFalse(TEST_12_30_40_987654321.isSupported(YearOfEra.RULE));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(QuarterOfYear.rule()));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(MonthOfYear.rule()));
-////        assertFalse(TEST_12_30_40_987654321.isSupported(MonthOfQuarter.RULE));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(DayOfMonth.rule()));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(DayOfWeek.rule()));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(DayOfYear.rule()));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(WeekOfMonth.rule()));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(WeekOfWeekyear.rule()));
-//        assertFalse(TEST_12_30_40_987654321.isSupported(Weekyear.rule()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(MilleniumOfEra.RULE));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(CenturyOfEra.RULE));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(DecadeOfCentury.RULE));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.year()));
+//        assertFalse(TEST_12_30_40_987654321.isSupported(YearOfEra.RULE));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.quarterOfYear()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.monthOfYear()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.monthOfQuarter()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfMonth()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfWeek()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.dayOfYear()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.weekOfMonth()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.weekOfWeekyear()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.weekyear()));
+          
+        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.hourOfDay()));
+        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.minuteOfHour()));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.minuteOfDay()));
+        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.secondOfMinute()));
+//        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.secondOfDay()));
+        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
+        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
+        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
     }
 
     public void test_get() {
@@ -1335,7 +1335,7 @@ public class TestLocalTime {
     @Test(dataProvider="sampleTimes")
     public void test_toCalendrical(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
-        assertEquals(t.toCalendrical(), new Calendrical(null, t, null, null));
+        assertEquals(t.toCalendrical(), Calendrical.calendrical(null, t, null, null));
     }
 
     //-----------------------------------------------------------------------
