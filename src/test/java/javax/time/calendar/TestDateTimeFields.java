@@ -525,8 +525,8 @@ public class TestDateTimeFields {
     }
 
     public void test_withFields_fields_emptyAdd() {
-        DateTimeFields base = DateTimeFields.fields();
-        DateTimeFields test = base.withFields(base);
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = base.withFields(DateTimeFields.fields());
         assertSame(test, base);
     }
 

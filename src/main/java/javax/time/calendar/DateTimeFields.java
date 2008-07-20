@@ -733,14 +733,11 @@ public final class DateTimeFields
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof DateTimeFields)) {
-            return false;
+        if (obj instanceof DateTimeFields) {
+            DateTimeFields other = (DateTimeFields) obj;
+            return fieldValueMap.equals(other.fieldValueMap);
         }
-        final DateTimeFields other = (DateTimeFields) obj;
-        if (this.fieldValueMap.equals(other.fieldValueMap) == false) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
