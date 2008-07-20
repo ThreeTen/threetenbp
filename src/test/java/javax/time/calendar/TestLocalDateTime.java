@@ -776,6 +776,8 @@ public class TestLocalDateTime {
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
+        
+        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(null));
     }
 
     // TODO: enable all assertions

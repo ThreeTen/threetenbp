@@ -455,6 +455,8 @@ public class TestLocalTime {
         assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
         assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
         assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
+        
+        assertFalse(TEST_12_30_40_987654321.isSupported(null));
     }
 
     public void test_get() {

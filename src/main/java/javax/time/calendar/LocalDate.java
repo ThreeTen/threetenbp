@@ -257,7 +257,7 @@ public final class LocalDate
      * @return true if the field is supported, false otherwise
      */
     public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule.getValueQuiet(this, null) != null;
+        return fieldRule != null && fieldRule.getValueQuiet(this, null) != null;
     }
 
     /**

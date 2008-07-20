@@ -288,6 +288,8 @@ public class TestLocalDate {
         assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
         assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
         assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
+        
+        assertFalse(TEST_2007_07_15.isSupported(null));
     }
 
     // TODO: enable all assertions
