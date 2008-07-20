@@ -65,7 +65,7 @@ public class TestFractionPrinterParser {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = new Calendrical(null, null, null, null, null);
+        emptyCalendrical = new Calendrical();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -74,7 +74,7 @@ public class TestFractionPrinterParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(NANO_RULE, 3);
+        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -87,7 +87,7 @@ public class TestFractionPrinterParser {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(NANO_RULE, 3);
+        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, buf, (DateTimeFormatSymbols) null);
     }
@@ -100,7 +100,7 @@ public class TestFractionPrinterParser {
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(NANO_RULE, 3);
+        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -109,7 +109,7 @@ public class TestFractionPrinterParser {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(NANO_RULE, 3);
+        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -193,7 +193,7 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Nanos")
     public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(NANO_RULE, value);
+        Calendrical calendrical = new Calendrical(NANO_RULE, value);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, minWidth, maxWidth);
         pp.print(calendrical, buf, symbols);
         if (result == null) {
@@ -228,7 +228,7 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = new Calendrical(null, null, null, null, null).withFieldValue(SECOND_RULE, value);
+        Calendrical calendrical = new Calendrical(SECOND_RULE, value);
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_RULE, minWidth, maxWidth);
         pp.print(calendrical, buf, symbols);
         if (result == null) {
