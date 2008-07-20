@@ -195,13 +195,26 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>LocalDate</code> which represents the
-     * date of this object but without the zone offset.
+     * Gets the local date.
      *
-     * @return the date object, never null
+     * @return the local date, never null
      */
-    public LocalDate localDate() {
+    public LocalDate getDate() {
         return date;
+    }
+
+    /**
+     * Returns a copy of this OffsetTime with a different local date.
+     * <p>
+     * This method changes the date stored to a different date.
+     * No calculation is performed. The result simply represents the same
+     * offset and the new date.
+     *
+     * @param date  the local date to change to, not null
+     * @return a new updated OffsetDate, never null
+     */
+    public OffsetDate withDate(LocalDate date) {
+        return date != null && date.equals(this.date) ? this : new OffsetDate(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -217,15 +230,15 @@ public final class OffsetDate
     /**
      * Returns a copy of this OffsetTime with a different zone offset.
      * <p>
-     * This method changes the offset stored in this zoned date to a different
-     * offset. No calculation is performed. The result simply represents the same
-     * date and the new offset.
+     * This method changes the offset stored to a different offset.
+     * No calculation is performed. The result simply represents the same
+     * local date and the new offset.
      *
-     * @param zone  the zone offset to change to, not null
+     * @param offset  the zone offset to change to, not null
      * @return a new updated OffsetDate, never null
      */
-    public OffsetDate withOffset(ZoneOffset zone) {
-        return zone == this.offset ? this : new OffsetDate(date, zone);
+    public OffsetDate withOffset(ZoneOffset offset) {
+        return offset != null && offset.equals(this.offset) ? this : new OffsetDate(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -517,21 +530,24 @@ public final class OffsetDate
      * Compares this date to another date.
      * <p>
      * This compares based on the date, then the offset.
-     * This is equivalent to comparing on the start instant.
+     * This ordering is consistent with {@link #equals}.
+     * <p>
+     * The ordering can result in an order which does not match the sequence
+     * of instants on a single time line when large offsets are considered.
+     * For example, 2008-12-03-12:00 and 2008-12-04+12:00 represent the
+     * same portion of the time-line, however the sort order will place the
+     * earlier date first irrespective of offset.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(OffsetDate other) {
-        if (offset.equals(other.offset)) {
-            return date.compareTo(other.date);
+        int compare = date.compareTo(other.date);
+        if (compare == 0) {
+            compare = offset.compareTo(other.offset);
         }
-        LocalDateTime thisDT = LocalDateTime.dateMidnight(getYear(), getMonthOfYear(), getDayOfMonth());
-        LocalDateTime otherDT = LocalDateTime.dateMidnight(other.getYear(), other.getMonthOfYear(), other.getDayOfMonth());
-        LocalDateTime thisUTC = thisDT.plusSeconds(-offset.getAmountSeconds());
-        LocalDateTime otherUTC = otherDT.plusSeconds(other.offset.getAmountSeconds());
-        return thisUTC.compareTo(otherUTC);
+        return compare;
     }
 
     /**
