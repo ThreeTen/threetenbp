@@ -44,7 +44,6 @@ import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 import javax.time.period.PeriodView;
-import javax.time.period.Periods;
 
 /**
  * A date-time without a time zone in the ISO-8601 calendar system,
@@ -419,7 +418,14 @@ public final class LocalDateTime
      * @return true if the field is supported
      */
     public boolean isSupported(DateTimeFieldRule field) {
-        return field.isSupported(Periods.NANOS, Periods.FOREVER);
+        // TODO
+        try {
+            get(field);
+            return true;
+        } catch (UnsupportedCalendarFieldException ex) {
+            return false;
+        }
+//        return field.isSupported(Periods.NANOS, Periods.FOREVER);
     }
 
     /**
@@ -1035,7 +1041,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusHours(int hours) {
-        LocalTime.Overflow overflow = time.plusHoursWithOverflow(hours);
+        LocalTime.Overflow overflow = time.plusWithOverflow(hours, 0, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
@@ -1050,7 +1056,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusMinutes(int minutes) {
-        LocalTime.Overflow overflow = time.plusMinutesWithOverflow(minutes);
+        LocalTime.Overflow overflow = time.plusWithOverflow(0, minutes, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
@@ -1065,7 +1071,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime plusSeconds(int seconds) {
-        LocalTime.Overflow overflow = time.plusSecondsWithOverflow(seconds);
+        LocalTime.Overflow overflow = time.plusWithOverflow(0, 0, seconds, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }

@@ -39,7 +39,6 @@ import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.period.PeriodView;
-import javax.time.period.Periods;
 
 /**
  * A time without time zone in the ISO-8601 calendar system,
@@ -89,9 +88,9 @@ public final class LocalTime
     /** Seconds per day. */
     private static final int SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
     /** Nanos per second. */
-    private static final int NANOS_PER_SECOND = 1000000000;
+    private static final long NANOS_PER_SECOND = 1000000000L;
     /** Nanos per minute. */
-    private static final long NANOS_PER_MINUTE = ((long) NANOS_PER_SECOND) * SECONDS_PER_MINUTE;
+    private static final long NANOS_PER_MINUTE = NANOS_PER_SECOND * SECONDS_PER_MINUTE;
     /** Nanos per hour. */
     private static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
     /** Nanos per day. */
@@ -355,7 +354,14 @@ public final class LocalTime
      * @return true if the field is supported
      */
     public boolean isSupported(DateTimeFieldRule field) {
-        return field.isSupported(Periods.NANOS, Periods.DAYS);
+        // TODO
+        try {
+            get(field);
+            return true;
+        } catch (UnsupportedCalendarFieldException ex) {
+            return false;
+        }
+//        return field.isSupported(Periods.NANOS, Periods.DAYS);
     }
 
     /**
@@ -856,7 +862,7 @@ public final class LocalTime
         }
         long total = hour.getValue() * NANOS_PER_HOUR;
         total += minute.getValue() * NANOS_PER_MINUTE;
-        total += second.getValue() * ((long) NANOS_PER_SECOND);
+        total += second.getValue() * NANOS_PER_SECOND;
         total += nano.getValue();
         return total;
     }
@@ -925,9 +931,9 @@ public final class LocalTime
     }
 
     /**
-     * A hashcode for this time.
+     * A hash code for this time.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
@@ -996,8 +1002,8 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in hours added, 
-     * returning any overflow in days.
+     * Returns a copy of this LocalTime with the specified period added,
+     * returning the new time with any overflow in days.
      * <p>
      * This method returns an {@link Overflow} instance with the result of the
      * addition and any overflow in days.
@@ -1005,84 +1011,20 @@ public final class LocalTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
-     * @return a new updated Overflow, never null
-     */
-    Overflow plusHoursWithOverflow(int hours) {
-        if (hours == 0) {
-            return new Overflow(this, 0);
-        }
-
-        long newHour = (long)hours + hour.getValue();
-        int days = (int)(newHour / HOURS_PER_DAY);
-        newHour %= HOURS_PER_DAY;
-        
-        if (newHour < 0) {
-            newHour += HOURS_PER_DAY;
-            days--;
-        }
-
-        return new Overflow(withHourOfDay((int)newHour), days);
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified period in minutes added, 
-     * returning any overflow in days.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * addition and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
      * @param minutes the minutes to add, may be negative
-     * @return a new updated Overflow, never null
-     */
-    Overflow plusMinutesWithOverflow(int minutes) {
-        if (minutes == 0) {
-            return new Overflow(this, 0);
-        }
-
-        long minutesSum = (long)minutes + hour.getValue() * MINUTES_PER_HOUR + minute.getValue();
-        int days = (int)(minutesSum / MINUTES_PER_DAY);
-        int newMinutes = (int)(minutesSum % MINUTES_PER_DAY);
-        
-        if (newMinutes < 0) {
-            days--;
-        }
-
-        return new Overflow(plusMinutes(minutes), days);
-    }
-
-    /**
-     * Returns a copy of this LocalTime with the specified period in seconds added, 
-     * returning any overflow in days.
-     * <p>
-     * This method returns an {@link Overflow} instance with the result of the
-     * addition and any overflow in days.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
      * @param seconds the seconds to add, may be negative
-     * @return a new updated Overflow, never null
+     * @param nanos the nanos to add, may be negative
+     * @return an Overflow instance with the resulting time and overflow, never null
      */
-    Overflow plusSecondsWithOverflow(int seconds) {
-        if (seconds == 0) {
-            return new Overflow(this, 0);
-        }
-
-        long secondsSum = (long)seconds + hour.getValue() * SECONDS_PER_HOUR + minute.getValue() * SECONDS_PER_MINUTE + 
-                second.getValue();
-        int days = (int)(secondsSum / SECONDS_PER_DAY);
-        int newSeconds = (int)(secondsSum % SECONDS_PER_DAY);
-        
-        if (newSeconds < 0) {
-            days--;
-        }
-
-        return new Overflow(plusSeconds(seconds), days);
+    public Overflow plusWithOverflow(int hours, int minutes, int seconds, int nanos) {
+        // TODO: Check if overflows?
+        long totalNanos = hours * NANOS_PER_HOUR + minutes * NANOS_PER_MINUTE +
+                seconds * NANOS_PER_SECOND + nanos;
+        return plusNanosWithOverflow(totalNanos);
     }
 
     /**
-     * Returns a copy of this LocalTime with the specified period in nanos added, 
+     * Returns a copy of this LocalTime with the specified period in nanos added,
      * returning any overflow in days.
      * <p>
      * This method returns an {@link Overflow} instance with the result of the
@@ -1093,24 +1035,22 @@ public final class LocalTime
      * @param nanos the nanos to add, may be negative
      * @return a new updated Overflow, never null
      */
-    Overflow plusNanosWithOverflow(long nanos) {
+    public Overflow plusNanosWithOverflow(long nanos) {
         if (nanos == 0) {
             return new Overflow(this, 0);
         }
-
-        long nanosSum = hour.getValue() * NANOS_PER_HOUR + minute.getValue() * NANOS_PER_MINUTE + 
-                (long)second.getValue() * NANOS_PER_SECOND + nano.getValue();
-        nanosSum = MathUtils.safeAdd(nanos, nanosSum);
-        int days = (int)(nanosSum / NANOS_PER_DAY);
+        long thisNanos = toNanoOfDay();
+        long nanosSum = MathUtils.safeAdd(thisNanos, nanos);
+        int days = (int) (nanosSum / NANOS_PER_DAY);
         long newNanos = nanosSum % NANOS_PER_DAY;
-
         if (newNanos < 0) {
             days--;
+            newNanos += NANOS_PER_DAY;
         }
-
-        return new Overflow(plusNanos(nanos), days);
+        LocalTime newTime = newNanos == thisNanos ? this : fromNanoOfDay(newNanos);
+        return new Overflow(newTime, days);
     }
-    
+
     //-----------------------------------------------------------------------
     /**
      * Subtracts the specified period to create a new LocalTime returning any
@@ -1247,14 +1187,15 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Class to return the result of addition when the addition overflows
-     * the capacity of a LocalTime.
+     * The result of addition to a LocalTime allowing the expression of
+     * any overflow in days.
      */
-    static class Overflow {
+    public static class Overflow {
         /** The LocalTime after the addition. */
         private final LocalTime time;
         /** The overflow in days. */
         private final int days;
+
         /**
          * Constructor.
          *
@@ -1265,6 +1206,7 @@ public final class LocalTime
             this.time = time;
             this.days = days;
         }
+
         /**
          * Gets the time that was the result of the calculation.
          *
@@ -1273,6 +1215,7 @@ public final class LocalTime
         public LocalTime getResultTime() {
             return time;
         }
+
         /**
          * Gets the days overflowing from the calculation.
          *
@@ -1282,15 +1225,58 @@ public final class LocalTime
             return days;
         }
 
-// TODO: consider removal if class remains not-public
 //        /**
-//         * Returns a string describing the state of this instance.
+//         * Fulfils the TimeProvider interface by returning the result time.
 //         *
-//         * @return the string, never null
+//         * @return the result time, never null
 //         */
-//        @Override
-//        public String toString() {
-//            return getResultTime().toString() + " P" + days + "D";
+//        public LocalTime toLocalTime() {
+//            return time;
 //        }
+
+        /**
+         * Creates a LocalDateTime from the specified date and this instance.
+         *
+         * @param date  the date to use, not null
+         * @return the combination of the date, time and overflow in days, never null
+         */
+        public LocalDateTime toLocalDateTime(LocalDate date) {
+            return LocalDateTime.dateTime(date.plusDays(getOverflowDays()), time);
+        }
+
+        /**
+         * Compares this object to another.
+         *
+         * @param obj  the object to compare to
+         * @return true if equal
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Overflow) {
+                Overflow other = (Overflow) obj;
+                return time.equals(other.time) && days == other.days;
+            }
+            return super.equals(obj);
+        }
+
+        /**
+         * Returns a suitable hash code.
+         *
+         * @return the hash code
+         */
+        @Override
+        public int hashCode() {
+            return time.hashCode() + days;
+        }
+
+        /**
+         * Returns a string description of this instance.
+         *
+         * @return the string, never null
+         */
+        @Override
+        public String toString() {
+            return getResultTime().toString() + " + P" + days + "D";
+        }
     }
 }

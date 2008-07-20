@@ -41,7 +41,6 @@ import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.PeriodView;
-import javax.time.period.Periods;
 
 /**
  * A date without a time zone in the ISO-8601 calendar system,
@@ -256,7 +255,14 @@ public final class LocalDate
      * @return true if the field is supported
      */
     public boolean isSupported(DateTimeFieldRule field) {
-        return field.isSupported(Periods.DAYS, Periods.FOREVER);
+        // TODO
+        try {
+            get(field);
+            return true;
+        } catch (UnsupportedCalendarFieldException ex) {
+            return false;
+        }
+//        return field.isSupported(Periods.DAYS, Periods.FOREVER);
     }
 
     /**

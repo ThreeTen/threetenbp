@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * A set of calendrical information which may or may not be valid.
@@ -453,213 +452,213 @@ public final class Calendrical implements CalendricalProvider {
 //        }
 //        merged.validate();
 //    }
-
-    /**
-     * Merges the field-value map creating date and/or time objects.
-     * <p>
-     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
-     * until the map of fields is reduced to its minimum size or both the
-     * date and time are non-null. This method is normally only called when
-     * the date, time or both is null.
-     * <p>
-     * Once the field-value map is merged into date/time objects, it is
-     * recommended to call {@link #validate()} to check that any fields that
-     * were not merged are valid.
-     * <p>
-     * For example, the field-value map might contain a year, day of year and
-     * day of week. This merge method would combine the year and day of year
-     * into a LocalDate, but the day of week would be unaffected. Calling
-     * <code>validate()</code> would check that the day of week is correct for
-     * the LocalDate that was created.
-     * <p>
-     * This method will throw an exception if a set of fields is found that should
-     * be capable of creating a date/time, but the specifc values are invalid.
-     * <p>
-     * If there are no suitable combinations of fields to merge into a date/time,
-     * then the returned object will still have a null date/time. No exception
-     * is thrown in this case.
-     *
-     * @return the new instance, with merged date/time, never null
-     * @throws IllegalCalendarFieldValueException if a set of date/time creation fields is invalid
-     */
-    public Calendrical mergeFields() {
-        return mergeDateFields().mergeTimeFields();
-//        if (date == null || time == null) {
+//
+//    /**
+//     * Merges the field-value map creating date and/or time objects.
+//     * <p>
+//     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
+//     * until the map of fields is reduced to its minimum size or both the
+//     * date and time are non-null. This method is normally only called when
+//     * the date, time or both is null.
+//     * <p>
+//     * Once the field-value map is merged into date/time objects, it is
+//     * recommended to call {@link #validate()} to check that any fields that
+//     * were not merged are valid.
+//     * <p>
+//     * For example, the field-value map might contain a year, day of year and
+//     * day of week. This merge method would combine the year and day of year
+//     * into a LocalDate, but the day of week would be unaffected. Calling
+//     * <code>validate()</code> would check that the day of week is correct for
+//     * the LocalDate that was created.
+//     * <p>
+//     * This method will throw an exception if a set of fields is found that should
+//     * be capable of creating a date/time, but the specifc values are invalid.
+//     * <p>
+//     * If there are no suitable combinations of fields to merge into a date/time,
+//     * then the returned object will still have a null date/time. No exception
+//     * is thrown in this case.
+//     *
+//     * @return the new instance, with merged date/time, never null
+//     * @throws IllegalCalendarFieldValueException if a set of date/time creation fields is invalid
+//     */
+//    public Calendrical mergeFields() {
+//        return mergeDateFields().mergeTimeFields();
+////        if (date == null || time == null) {
+////            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+////                Calendrical fdt = entry.getKey().mergeFields(this);
+////                if (fdt != this) {
+////                    return fdt.merge();
+////                }
+////            }
+////        }
+////        return this;
+//    }
+//
+//    /**
+//     * Merges the field-value map creating a LocalDate.
+//     * <p>
+//     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
+//     * until the map of fields is reduced to its minimum size or the date has
+//     * been created. This method is normally only called when date is null as
+//     * there will simply return immediately if the date is non-null on entry.
+//     * <p>
+//     * Once the field-value map is merged into date objects, it is recommended
+//     * to call {@link #validateDate()} to check that any fields that were not
+//     * merged are valid.
+//     * <p>
+//     * For example, the field-value map might contain a year, day of year and
+//     * day of week. This merge method would combine the year and day of year
+//     * into a LocalDate, but the day of week would be unaffected. Calling
+//     * <code>validateDate()</code> would check that the day of week is correct
+//     * for the LocalDate that was created.
+//     * <p>
+//     * This method will throw an exception if a set of fields is found that should
+//     * be capable of creating a date, but the specifc values are invalid.
+//     * <p>
+//     * If there are no suitable combinations of fields to merge into a date,
+//     * then the returned object will still have a null date. No exception is
+//     * thrown in this case.
+//     *
+//     * @return the new instance, with merged date, never null
+//     * @throws IllegalCalendarFieldValueException if a set of date creation fields is invalid
+//     */
+//    public Calendrical mergeDateFields() {
+//        if (date == null) {
 //            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-//                Calendrical fdt = entry.getKey().mergeFields(this);
-//                if (fdt != this) {
-//                    return fdt.merge();
+//                DateTimeFieldRule rule = entry.getKey();
+//                if (rule.isDateField()) {
+//                    Calendrical fdt = rule.mergeFields(this);
+//                    if (fdt != this) {
+//                        return fdt.mergeDateFields();
+//                    }
 //                }
 //            }
 //        }
 //        return this;
-    }
-
-    /**
-     * Merges the field-value map creating a LocalDate.
-     * <p>
-     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
-     * until the map of fields is reduced to its minimum size or the date has
-     * been created. This method is normally only called when date is null as
-     * there will simply return immediately if the date is non-null on entry.
-     * <p>
-     * Once the field-value map is merged into date objects, it is recommended
-     * to call {@link #validateDate()} to check that any fields that were not
-     * merged are valid.
-     * <p>
-     * For example, the field-value map might contain a year, day of year and
-     * day of week. This merge method would combine the year and day of year
-     * into a LocalDate, but the day of week would be unaffected. Calling
-     * <code>validateDate()</code> would check that the day of week is correct
-     * for the LocalDate that was created.
-     * <p>
-     * This method will throw an exception if a set of fields is found that should
-     * be capable of creating a date, but the specifc values are invalid.
-     * <p>
-     * If there are no suitable combinations of fields to merge into a date,
-     * then the returned object will still have a null date. No exception is
-     * thrown in this case.
-     *
-     * @return the new instance, with merged date, never null
-     * @throws IllegalCalendarFieldValueException if a set of date creation fields is invalid
-     */
-    public Calendrical mergeDateFields() {
-        if (date == null) {
-            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-                DateTimeFieldRule rule = entry.getKey();
-                if (rule.isDateField()) {
-                    Calendrical fdt = rule.mergeFields(this);
-                    if (fdt != this) {
-                        return fdt.mergeDateFields();
-                    }
-                }
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Merges the field-value map creating a LocalTime.
-     * <p>
-     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
-     * until the map of fields is reduced to its minimum size or the time has
-     * been created. This method is normally only called when time is null as
-     * there will simply return immediately if the time is non-null on entry.
-     * <p>
-     * Once the field-value map is merged into time objects, it is recommended
-     * to call {@link #validateTime()} to check that any fields that were not
-     * merged are valid.
-     * <p>
-     * For example, the field-value map might contain an hour, minute and second,
-     * plus a second of day. This merge method would combine the hour, minute and
-     * second into a LocalTime, but the second of day would be unaffected. Calling
-     * <code>validateTime()</code> would check that the second of day is correct
-     * for the LocalTime that was created.
-     * <p>
-     * This method will throw an exception if a set of fields is found that should
-     * be capable of creating a time, but the specifc values are invalid.
-     * <p>
-     * If there are no suitable combinations of fields to merge into a time,
-     * then the returned object will still have a null time. No exception is
-     * thrown in this case.
-     *
-     * @return the new instance, with merged time, never null
-     * @throws IllegalCalendarFieldValueException if a set of time creation fields is invalid
-     */
-    public Calendrical mergeTimeFields() {
-        if (time == null) {
-            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-                DateTimeFieldRule rule = entry.getKey();
-                if (rule.isTimeField()) {
-                    Calendrical fdt = rule.mergeFields(this);
-                    if (fdt != this) {
-                        return fdt.mergeTimeFields();
-                    }
-                }
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Validates the contents of this Calendrical.
-     * <p>
-     * Validation occurs in three steps.
-     * Firstly, each field in the field-value map is checked to determine if
-     * it is in range for the rules of the field.
-     * Secondly, each date field is checked against the stored date.
-     * Thirdly, each time field is checked against the stored time.
-     * <p>
-     * If the date and time are null, then only the field-value map will be
-     * validated. Since the individual fields are not cross-validated in this
-     * scenario, the method could succeed with an invalid date, such as February
-     * 31st. To prevent this, it is recommended to call merge before calling
-     * validate.
-     *
-     * @return this, for chaining, never null
-     * @throws InvalidCalendarFieldException if any field is invalid
-     */
-    public Calendrical validate() {
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            entry.getKey().checkValue(entry.getValue());
-        }
-        if (date != null) {
-            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-                DateTimeFieldRule rule = entry.getKey();
-                if (date.isSupported(rule) && date.get(rule) != entry.getValue()) {
-                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
-                            " for " + rule.getName() + " does not match value for date " + date, rule);
-                }
-            }
-        }
-        if (time != null) {
-            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-                DateTimeFieldRule rule = entry.getKey();
-                if (time.isSupported(rule) && time.get(rule) != entry.getValue()) {
-                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
-                            " for " + rule.getName() + " does not match value for time " + time, rule);
-                }
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Validates that any date represented by this Calendrical is valid.
-     * <p>
-     * If this Calendrical has a LocalDate, then each date field in the
-     * field-value map is compared against it.
-     * <p>
-     * If this Calendrical does not have a LocalDate, then each date field
-     * in the field-value map is validated independently against its own rules.
-     * In this case, no cross-validation occurs, thus a field-value map
-     * containing February 31st would be valid, as each field is valid when
-     * considered separately. Normally, this method is called after
-     * {@link #mergeDateFields()} to ensure that cross-validation against the
-     * LocalDate occurs.
-     *
-     * @return this, for chaining, never null
-     * @throws InvalidCalendarFieldException if any field is invalid
-     */
-    public Calendrical validateDate() {
-        if (date == null) {
-            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-                DateTimeFieldRule rule = entry.getKey();
-                if (rule.isDateField()) {
-                    rule.checkValue(entry.getValue());
-                }
-            }
-        } else {
-            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-                DateTimeFieldRule rule = entry.getKey();
-                if (rule.isDateField() && date.isSupported(rule) && date.get(rule) != entry.getValue()) {
-                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
-                            " for " + rule.getName() + " does not match value for date " + date, rule);
-                }
-            }
-        }
-        return this;
-    }
+//    }
+//
+//    /**
+//     * Merges the field-value map creating a LocalTime.
+//     * <p>
+//     * Merging occurs by repeatedly calling {@link DateTimeFieldRule#mergeFields}
+//     * until the map of fields is reduced to its minimum size or the time has
+//     * been created. This method is normally only called when time is null as
+//     * there will simply return immediately if the time is non-null on entry.
+//     * <p>
+//     * Once the field-value map is merged into time objects, it is recommended
+//     * to call {@link #validateTime()} to check that any fields that were not
+//     * merged are valid.
+//     * <p>
+//     * For example, the field-value map might contain an hour, minute and second,
+//     * plus a second of day. This merge method would combine the hour, minute and
+//     * second into a LocalTime, but the second of day would be unaffected. Calling
+//     * <code>validateTime()</code> would check that the second of day is correct
+//     * for the LocalTime that was created.
+//     * <p>
+//     * This method will throw an exception if a set of fields is found that should
+//     * be capable of creating a time, but the specifc values are invalid.
+//     * <p>
+//     * If there are no suitable combinations of fields to merge into a time,
+//     * then the returned object will still have a null time. No exception is
+//     * thrown in this case.
+//     *
+//     * @return the new instance, with merged time, never null
+//     * @throws IllegalCalendarFieldValueException if a set of time creation fields is invalid
+//     */
+//    public Calendrical mergeTimeFields() {
+//        if (time == null) {
+//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//                DateTimeFieldRule rule = entry.getKey();
+//                if (rule.isTimeField()) {
+//                    Calendrical fdt = rule.mergeFields(this);
+//                    if (fdt != this) {
+//                        return fdt.mergeTimeFields();
+//                    }
+//                }
+//            }
+//        }
+//        return this;
+//    }
+//
+//    /**
+//     * Validates the contents of this Calendrical.
+//     * <p>
+//     * Validation occurs in three steps.
+//     * Firstly, each field in the field-value map is checked to determine if
+//     * it is in range for the rules of the field.
+//     * Secondly, each date field is checked against the stored date.
+//     * Thirdly, each time field is checked against the stored time.
+//     * <p>
+//     * If the date and time are null, then only the field-value map will be
+//     * validated. Since the individual fields are not cross-validated in this
+//     * scenario, the method could succeed with an invalid date, such as February
+//     * 31st. To prevent this, it is recommended to call merge before calling
+//     * validate.
+//     *
+//     * @return this, for chaining, never null
+//     * @throws InvalidCalendarFieldException if any field is invalid
+//     */
+//    public Calendrical validate() {
+//        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//            entry.getKey().checkValue(entry.getValue());
+//        }
+//        if (date != null) {
+//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//                DateTimeFieldRule rule = entry.getKey();
+//                if (date.isSupported(rule) && date.get(rule) != entry.getValue()) {
+//                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
+//                            " for " + rule.getName() + " does not match value for date " + date, rule);
+//                }
+//            }
+//        }
+//        if (time != null) {
+//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//                DateTimeFieldRule rule = entry.getKey();
+//                if (time.isSupported(rule) && time.get(rule) != entry.getValue()) {
+//                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
+//                            " for " + rule.getName() + " does not match value for time " + time, rule);
+//                }
+//            }
+//        }
+//        return this;
+//    }
+//
+//    /**
+//     * Validates that any date represented by this Calendrical is valid.
+//     * <p>
+//     * If this Calendrical has a LocalDate, then each date field in the
+//     * field-value map is compared against it.
+//     * <p>
+//     * If this Calendrical does not have a LocalDate, then each date field
+//     * in the field-value map is validated independently against its own rules.
+//     * In this case, no cross-validation occurs, thus a field-value map
+//     * containing February 31st would be valid, as each field is valid when
+//     * considered separately. Normally, this method is called after
+//     * {@link #mergeDateFields()} to ensure that cross-validation against the
+//     * LocalDate occurs.
+//     *
+//     * @return this, for chaining, never null
+//     * @throws InvalidCalendarFieldException if any field is invalid
+//     */
+//    public Calendrical validateDate() {
+//        if (date == null) {
+//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//                DateTimeFieldRule rule = entry.getKey();
+//                if (rule.isDateField()) {
+//                    rule.checkValue(entry.getValue());
+//                }
+//            }
+//        } else {
+//            for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//                DateTimeFieldRule rule = entry.getKey();
+//                if (rule.isDateField() && date.isSupported(rule) && date.get(rule) != entry.getValue()) {
+//                    throw new InvalidCalendarFieldException("Value " + entry.getValue() +
+//                            " for " + rule.getName() + " does not match value for date " + date, rule);
+//                }
+//            }
+//        }
+//        return this;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -676,12 +675,13 @@ public final class Calendrical implements CalendricalProvider {
      * @throws CalendarConversionException if the date cannot be converted
      */
     public LocalDate toLocalDate() {
-        Calendrical merged = mergeDateFields();
-        if (merged.date == null) {
-            throw new CalendarConversionException(
-                    "Cannot convert Calendrical to LocalDate, insufficient infomation to create a date");
-        }
-        return merged.validateDate().date;
+        return date;
+//        Calendrical merged = mergeDateFields();
+//        if (merged.date == null) {
+//            throw new CalendarConversionException(
+//                    "Cannot convert Calendrical to LocalDate, insufficient infomation to create a date");
+//        }
+//        return merged.validateDate().date;
     }
 
     /**
@@ -698,12 +698,13 @@ public final class Calendrical implements CalendricalProvider {
      * @throws CalendarConversionException if the time cannot be converted
      */
     public LocalTime toLocalTime() {
-        Calendrical merged = mergeDateFields();
-        if (merged.time == null) {
-            throw new CalendarConversionException(
-                "Cannot convert Calendrical to LocalTime, insufficient infomation to create a time");
-        }
-        return merged.validate().time;
+        return time;
+//        Calendrical merged = mergeDateFields();
+//        if (merged.time == null) {
+//            throw new CalendarConversionException(
+//                "Cannot convert Calendrical to LocalTime, insufficient infomation to create a time");
+//        }
+//        return merged.validate().time;
     }
 
     /**

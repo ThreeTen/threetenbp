@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.time.calendar.format.DateTimeFormatSymbols;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -236,44 +237,114 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     /**
-     * Merges this field with other fields in the given calendrical to create
-     * more complete and meaningful calendrical objects.
+     * Merges this field with other fields in the given field-value map using
+     * lenient merging principles.
      * <p>
-     * This method is used to combine individual calendrical fields into more
-     * significant concepts such as date and time. The full merge process
-     * requires this method to be called repeatedly on each of the fields until
-     * no more changes occur. This method will only be called if the field is
-     * present in the field-value map of the input Calendrical.
+     * Implementations of this method must merge less significant fields into
+     * more significant fields. For example, the AM/PM field and the hour of AM/PM
+     * field could be merged to form the hour of day field. The exact hierarchy as
+     * to which fields are more significant than others is chronology dependent.
      * <p>
-     * Since the merge process is cooperative, it is not necessary to include
-     * the full merge code in each field. Thus, the code to merge a year, month
-     * and day of month into a date only needs to be in one of the three rules.
-     * In this example it will be the day of month rule. The merged fields are
-     * removed from the field map.
+     * If the map already contains the field that would be the result of the merge
+     * then the fields that would have been merged should be removed.
+     * No additional attempt to merge or cross-check should take place.
+     * For example, if the map contains the AM/PM, hour of AM/PM and hour of day
+     * fields, then the AM/PM and hour of AM/PM fields should be removed and the
+     * hour of day field left as is.
      * <p>
-     * The merge process will also merge minor fields into major ones. For example,
-     * the month of quarter and quarter of year fields would be merged to form the
-     * month of year. In this case, the original two fields are removed from the
-     * field map and the month of year added. If the field map already contained
-     * the month of year then the value must match.
+     * The merge must be lenient wherever possible.
+     * For example, merging AM/PM and hour of AM/PM will result in
+     * the AM/PM value * 12 + the hour of AM/PM value. (This algorithm assumes that
+     * AM has the value 0 and PM has the value 1.)
      * <p>
-     * If this method is called with the date or time already created then the
-     * implementation must validate the value for this rule against the date/time.
+     * The merge process is cooperative and controlled by {@link DateTimeFields}.
+     * This method will be invoked on each field in the field-value map until
+     * no more changes are reported. This means that if two fields can be merged,
+     * the merge code only needs to be written in one of the field rules. For
+     * example, the merge code for the AM/PM field and the hour of AM/PM field
+     * should be written in one of the field rules, not both.
      * <p>
-     * Implementors must ensure that the input parameter is returned if there is
-     * no change to the calendrical.
+     * If a merge occurs, then the fields that were merged must be removed from
+     * the map and the resulting field must be added.
+     * <p>
+     * This method will only be called if the field is present in the specified
+     * field-value map.
      *
-     * @param calendrical  the calendrical to merge, not null
-     * @return the merged calendrical with the processed fields removed, never null,
-     *  the input calendrical must be retuned if no change is made
+     * @param fieldValueMap  the field-value map to merge and update, contains this field, not null
      * @throws CalendarFieldException if the values cannot be merged
      */
-    protected Calendrical mergeFields(Calendrical calendrical) {
-        calendrical.getValue(this);  // validates the value of this field
-        return calendrical;
+    protected void mergeFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
+        // do nothing - override if field can merge fields
+    }
+
+    /**
+     * Merges this field with other fields in the given field-value map to form a date.
+     * <p>
+     * Implementations of this method must attempt to merge the fields into a date.
+     * For example, the year, month and day of month fields could be merged to form a date.
+     * The exact set of fields which merge to form a date is chronology dependent.
+     * <p>
+     * The merge process is cooperative and controlled by {@link DateTimeFields}.
+     * This method will be invoked on each field in the field-value map until
+     * a date is returned. This means that for any set of fields can be merged,
+     * the merge code only needs to be written in one of the field rules.
+     * For example, the merge code for the year, month and day of month fields
+     * should be written in one of the field rules, not all of them.
+     * <p>
+     * If a merge occurs, then the fields that were merged must be removed from the map.
+     * <p>
+     * This method will only be called if the field is present in the specified
+     * field-value map.
+     *
+     * @param fieldValues  the field set to merge from, contains this field, not null
+     * @return the date initialised from the field-value map, null if no merge occured
+     * @throws CalendarFieldException if the values cannot be merged
+     */
+    protected LocalDate mergeToDate(DateTimeFields fieldValues) {
+        return null;  // override if field can merge to date
+    }
+
+    /**
+     * Merges this field with other fields in the given field-value map to form a time.
+     * <p>
+     * Implementations of this method must attempt to merge the fields into a time.
+     * For example, the hour, minute and second fields could be merged to form a time.
+     * The exact set of fields which merge to form a time is chronology dependent.
+     * <p>
+     * The merge process is cooperative and controlled by {@link DateTimeFields}.
+     * This method will be invoked on each field in the field-value map until
+     * a time is returned. This means that for any set of fields can be merged,
+     * the merge code only needs to be written in one of the field rules.
+     * For example, the merge code for the hour, minute and second fields
+     * should be written in one of the field rules, not all of them.
+     * <p>
+     * If a merge occurs, then the fields that were merged must be removed from the map.
+     * <p>
+     * This method will only be called if the field is present in the specified
+     * field-value map.
+     *
+     * @param fieldValues  the field set to merge from, contains this field, not null
+     * @return the time initialised from the field-value map, null if no merge occured
+     * @throws CalendarFieldException if the values cannot be merged
+     */
+    protected LocalTime.Overflow mergeToTime(DateTimeFields fieldValues) {
+        return null;  // override if field can merge to time
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the value is valid or invalid for this field.
+     * <p>
+     * This method has no knowledge of other calendrical fields, thus only the
+     * outer minimum and maximum range for the field is validated.
+     *
+     * @param value  the value to check
+     * @return true if the value is valid, false if invalid
+     */
+    public boolean isValidValue(int value) {
+        return (value >= getMinimumValue() && value <= getMaximumValue());
+    }
+
     /**
      * Checks if the value is invalid and throws an exception if it is.
      * <p>

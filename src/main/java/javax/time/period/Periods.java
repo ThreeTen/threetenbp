@@ -86,6 +86,10 @@ public final class Periods {
      */
     public static final PeriodUnit SECONDS = PeriodUnit.createUnit("Seconds");
     /**
+     * Period unit for milliseconds.
+     */
+    public static final PeriodUnit MILLIS = PeriodUnit.createUnit("Millis");
+    /**
      * Period unit for nanoseconds.
      */
     public static final PeriodUnit NANOS = PeriodUnit.createUnit("Nanos");

@@ -34,6 +34,7 @@ package javax.time;
 import javax.time.calendar.TestDateAdjustors;
 import javax.time.calendar.TestDateMatchers;
 import javax.time.calendar.TestDateResolvers;
+import javax.time.calendar.TestDateTimeFields;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
@@ -54,6 +55,7 @@ import javax.time.calendar.format.TestNumberPrinter;
 import javax.time.calendar.format.TestPadPrinterDecorator;
 import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
+import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.period.field.TestDays;
 import javax.time.period.field.TestHours;
 import javax.time.period.field.TestMinutes;
@@ -85,6 +87,7 @@ public class AllTest {
             TestDateAdjustors.class,
             TestDateMatchers.class,
             TestDateResolvers.class,
+            TestDateTimeFields.class,
             TestISOChronology.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
@@ -109,6 +112,8 @@ public class AllTest {
             TestPadPrinterDecorator.class,
             TestStringLiteralPrinter.class,
             TestStringLiteralParser.class,
+            // i18n
+            TestCopticDate.class,
             // period fields
             TestDays.class,
             TestHours.class,
