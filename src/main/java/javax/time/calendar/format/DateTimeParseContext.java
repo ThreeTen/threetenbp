@@ -262,7 +262,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return a new Calendrical with the parsed fields, never null
      */
     public Calendrical toCalendrical() {
-        return new Calendrical(fieldValueMap, null, null, offset, zone);
+        return new Calendrical(fieldValueMap, offset, zone);
     }
 
     //-----------------------------------------------------------------------
