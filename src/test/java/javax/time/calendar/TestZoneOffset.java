@@ -122,6 +122,7 @@ public class TestZoneOffset {
             "-0:00:00","-00:0:00","-00:00:0","-0:0:0","-0:0:00","-00:0:0","-0:00:0",
             "-19","-19:00","-18:01","-18:00:01","-1801","-180001",
             "-01_00","-01;00","-01@00","-01:AA",
+            "@01:00",
         };
         for (int i = 0; i < values.length; i++) {
             try {
@@ -131,6 +132,11 @@ public class TestZoneOffset {
                 // expected
             }
         }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_string_null() {
+        ZoneOffset.zoneOffset((String) null);
     }
 
     //-----------------------------------------------------------------------
@@ -230,6 +236,7 @@ public class TestZoneOffset {
         }
     }
 
+    //-----------------------------------------------------------------------
     public void test_factory_int_hours_minutes() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -245,6 +252,7 @@ public class TestZoneOffset {
         doTestOffset(test2, 18, 0, 0);
     }
 
+    //-----------------------------------------------------------------------
     public void test_factory_int_hours_minutes_seconds() {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
@@ -263,6 +271,186 @@ public class TestZoneOffset {
         doTestOffset(test2, 18, 0, 0);
     }
 
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_plusHoursMinusMinutes() {
+        ZoneOffset.zoneOffset(1, -1, 0);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_plusHoursMinusSeconds() {
+        ZoneOffset.zoneOffset(1, 0, -1);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_minusHoursPlusMinutes() {
+        ZoneOffset.zoneOffset(-1, 1, 0);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_minusHoursPlusSeconds() {
+        ZoneOffset.zoneOffset(-1, 0, 1);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_zeroHoursMinusMinutesPlusSeconds() {
+        ZoneOffset.zoneOffset(0, -1, 1);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_zeroHoursPlusMinutesMinusSeconds() {
+        ZoneOffset.zoneOffset(0, 1, -1);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_minutesTooLarge() {
+        ZoneOffset.zoneOffset(0, 60, 0);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_minutesTooSmall() {
+        ZoneOffset.zoneOffset(0, -60, 0);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_secondsTooLarge() {
+        ZoneOffset.zoneOffset(0, 0, 60);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
+        ZoneOffset.zoneOffset(0, 0, 60);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_forTotalSeconds() {
+        assertSame(ZoneOffset.forTotalSeconds(0), ZoneOffset.UTC);
+        assertEquals(ZoneOffset.forTotalSeconds(60 * 60 + 1), ZoneOffset.zoneOffset(1, 0, 1));
+        assertEquals(ZoneOffset.forTotalSeconds(18 * 60 * 60), ZoneOffset.zoneOffset(18));
+        assertEquals(ZoneOffset.forTotalSeconds(-18 * 60 * 60), ZoneOffset.zoneOffset(-18));
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_forTotalSeconds_tooLarge() {
+        ZoneOffset.forTotalSeconds(18 * 60 * 60 + 1);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_forTotalSeconds_tooSmall() {
+        ZoneOffset.forTotalSeconds(-18 * 60 * 60 - 1);
+    }
+
+    //-----------------------------------------------------------------------
+    // getAmountSeconds()
+    //-----------------------------------------------------------------------
+    public void test_getAmountSeconds() {
+        ZoneOffset offset = ZoneOffset.forTotalSeconds(60 * 60 + 1);
+        assertEquals(offset.getAmountSeconds(), 60 * 60 + 1);
+    }
+
+    //-----------------------------------------------------------------------
+    // getID()
+    //-----------------------------------------------------------------------
+    public void test_getID() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(1, 0, 0);
+        assertEquals(offset.getID(), "+01:00");
+        offset = ZoneOffset.zoneOffset(1, 2, 3);
+        assertEquals(offset.getID(), "+01:02:03");
+        offset = ZoneOffset.UTC;
+        assertEquals(offset.getID(), "Z");
+    }
+
+    //-----------------------------------------------------------------------
+    // getHoursField()
+    //-----------------------------------------------------------------------
+    public void test_getHoursField() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        assertEquals(offset.getHoursField(), 1);
+    }
+
+    public void test_getHoursField_negative() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
+        assertEquals(offset.getHoursField(), -1);
+    }
+
+    //-----------------------------------------------------------------------
+    // getMinutesField()
+    //-----------------------------------------------------------------------
+    public void test_getMinutesField() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        assertEquals(offset.getMinutesField(), 2);
+    }
+
+    public void test_getMinutesField_negative() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
+        assertEquals(offset.getMinutesField(), -2);
+    }
+
+    //-----------------------------------------------------------------------
+    // getSecondsField()
+    //-----------------------------------------------------------------------
+    public void test_getSecondsField() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        assertEquals(offset.getSecondsField(), 3);
+    }
+
+    public void test_getSecondsField_negative() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
+        assertEquals(offset.getSecondsField(), -3);
+    }
+
+    //-----------------------------------------------------------------------
+    // toTimeZone()
+    //-----------------------------------------------------------------------
+    public void test_toTimeZone() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        assertEquals(offset.toTimeZone(), TimeZone.timeZone(offset));
+    }
+
+    //-----------------------------------------------------------------------
+    // compareTo()
+    //-----------------------------------------------------------------------
+    public void test_compareTo() {
+        ZoneOffset offset1 = ZoneOffset.zoneOffset(1, 2, 3);
+        ZoneOffset offset2 = ZoneOffset.zoneOffset(2, 3, 4);
+        assertTrue(offset1.compareTo(offset2) > 0);
+        assertTrue(offset2.compareTo(offset1) < 0);
+        assertTrue(offset1.compareTo(offset1) == 0);
+        assertTrue(offset2.compareTo(offset2) == 0);
+    }
+
+    //-----------------------------------------------------------------------
+    // equals() / hashCode()
+    //-----------------------------------------------------------------------
+    public void test_equals() {
+        ZoneOffset offset1 = ZoneOffset.zoneOffset(1, 2, 3);
+        ZoneOffset offset2 = ZoneOffset.zoneOffset(2, 3, 4);
+        ZoneOffset offset2b = ZoneOffset.zoneOffset(2, 3, 4);
+        assertEquals(offset1.equals(offset2), false);
+        assertEquals(offset2.equals(offset1), false);
+        
+        assertEquals(offset1.equals(offset1), true);
+        assertEquals(offset2.equals(offset2), true);
+        assertEquals(offset2.equals(offset2b), true);
+        
+        assertEquals(offset1.hashCode() == offset1.hashCode(), true);
+        assertEquals(offset2.hashCode() == offset2.hashCode(), true);
+        assertEquals(offset2.hashCode() == offset2b.hashCode(), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // toString()
+    //-----------------------------------------------------------------------
+    public void test_toString() {
+        ZoneOffset offset = ZoneOffset.zoneOffset(1, 0, 0);
+        assertEquals(offset.toString(), "+01:00");
+        offset = ZoneOffset.zoneOffset(1, 2, 3);
+        assertEquals(offset.toString(), "+01:02:03");
+        offset = ZoneOffset.UTC;
+        assertEquals(offset.toString(), "Z");
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     private void doTestOffset(ZoneOffset offset, int hours, int minutes, int seconds) {
         assertEquals(offset.getAmountSeconds(), hours * 60 * 60 + minutes * 60 + seconds);
@@ -294,87 +482,9 @@ public class TestZoneOffset {
                 assertEquals(offset, ZoneOffset.zoneOffset(hours));
             }
         }
-        assertEquals(offset, ZoneOffset.zoneOffset(id));
+        assertEquals(ZoneOffset.zoneOffset(id), offset);
+        assertEquals(offset.toTimeZone(), TimeZone.timeZone(offset));
+        assertEquals(offset.toString(), id);
     }
-
-//    //-----------------------------------------------------------------------
-//    // equals()
-//    //-----------------------------------------------------------------------
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_true(int y, int m, int d) {
-//        ZoneOffset a = ZoneOffset.date(y, m, d, OFFSET_PONE);
-//        ZoneOffset b = ZoneOffset.date(y, m, d, OFFSET_PONE);
-//        assertEquals(a.equals(b), true);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_year_differs(int y, int m, int d) {
-//        ZoneOffset a = ZoneOffset.date(y, m, d, OFFSET_PONE);
-//        ZoneOffset b = ZoneOffset.date(y + 1, m, d, OFFSET_PONE);
-//        assertEquals(a.equals(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_month_differs(int y, int m, int d) {
-//        ZoneOffset a = ZoneOffset.date(y, m, d, OFFSET_PONE);
-//        ZoneOffset b = ZoneOffset.date(y, m + 1, d, OFFSET_PONE);
-//        assertEquals(a.equals(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_day_differs(int y, int m, int d) {
-//        ZoneOffset a = ZoneOffset.date(y, m, d, OFFSET_PONE);
-//        ZoneOffset b = ZoneOffset.date(y, m, d + 1, OFFSET_PONE);
-//        assertEquals(a.equals(b), false);
-//    }
-//    @Test(dataProvider="sampleDates")
-//    public void test_equals_false_offset_differs(int y, int m, int d) {
-//        ZoneOffset a = ZoneOffset.date(y, m, d, OFFSET_PONE);
-//        ZoneOffset b = ZoneOffset.date(y, m, d, OFFSET_PTWO);
-//        assertEquals(a.equals(b), false);
-//    }
-//
-//    public void test_equals_itself_true() {
-//        assertEquals(TEST_2007_07_15.equals(TEST_2007_07_15), true);
-//    }
-//
-//    public void test_equals_string_false() {
-//        assertEquals(TEST_2007_07_15.equals("2007-07-15"), false);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // toString()
-//    //-----------------------------------------------------------------------
-//    @DataProvider(name="sampleToString")
-//    Object[][] provider_sampleToString() {
-//        return new Object[][] {
-//            {2008, 7, 5, "Z", "2008-07-05Z"},
-//            {2008, 7, 5, "+00", "2008-07-05Z"},
-//            {2008, 7, 5, "+0000", "2008-07-05Z"},
-//            {2008, 7, 5, "+00:00", "2008-07-05Z"},
-//            {2008, 7, 5, "+000000", "2008-07-05Z"},
-//            {2008, 7, 5, "+00:00:00", "2008-07-05Z"},
-//            {2008, 7, 5, "-00", "2008-07-05Z"},
-//            {2008, 7, 5, "-0000", "2008-07-05Z"},
-//            {2008, 7, 5, "-00:00", "2008-07-05Z"},
-//            {2008, 7, 5, "-000000", "2008-07-05Z"},
-//            {2008, 7, 5, "-00:00:00", "2008-07-05Z"},
-//            {2008, 7, 5, "+01", "2008-07-05+01:00"},
-//            {2008, 7, 5, "+0100", "2008-07-05+01:00"},
-//            {2008, 7, 5, "+01:00", "2008-07-05+01:00"},
-//            {2008, 7, 5, "+010000", "2008-07-05+01:00"},
-//            {2008, 7, 5, "+01:00:00", "2008-07-05+01:00"},
-//            {2008, 7, 5, "+0130", "2008-07-05+01:30"},
-//            {2008, 7, 5, "+01:30", "2008-07-05+01:30"},
-//            {2008, 7, 5, "+013000", "2008-07-05+01:30"},
-//            {2008, 7, 5, "+01:30:00", "2008-07-05+01:30"},
-//            {2008, 7, 5, "+013040", "2008-07-05+01:30:40"},
-//            {2008, 7, 5, "+01:30:40", "2008-07-05+01:30:40"},
-//        };
-//    }
-//
-//    @Test(dataProvider="sampleToString")
-//    public void test_toString(int y, int m, int d, String offsetId, String expected) {
-//        ZoneOffset t = ZoneOffset.date(y, m, d, ZoneOffset.zoneOffset(offsetId));
-//        String str = t.toString();
-//        assertEquals(str, expected);
-//    }
 
 }
