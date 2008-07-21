@@ -244,13 +244,28 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>LocalTime</code> which represents the
-     * time of this object but without the zone offset.
+     * Gets the local time.
+     * <p>
+     * This returns the time without the zone offset.
      *
-     * @return the time object, never null
+     * @return the local time, never null
      */
-    public LocalTime localTime() {
+    public LocalTime getTime() {
         return time;
+    }
+
+    /**
+     * Returns a copy of this OffsetTime with a different local time.
+     * <p>
+     * This method changes the time stored to a different time.
+     * No calculation is performed. The result simply represents the same
+     * offset and the new time.
+     *
+     * @param time  the local time to change to, not null
+     * @return a new updated OffsetTime, never null
+     */
+    public OffsetTime withTime(LocalTime time) {
+        return time != null && time.equals(this.time) ? this : new OffsetTime(time, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -277,14 +292,14 @@ public final class OffsetTime
      * @return a new updated OffsetTime, never null
      */
     public OffsetTime withOffset(ZoneOffset offset) {
-        return offset == this.offset ? this : new OffsetTime(time, offset);
+        return offset != null && offset.equals(this.offset) ? this : new OffsetTime(time, offset);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Adjusts the local time using the specified offset.
      * <p>
-     * This method changes the zoned time from one offset to another.
+     * This method changes the offset time from one offset to another.
      * If this time represents 10:30+02:00 and the offset specified is
      * +03:00, then this method will return 11:30+03:00.
      * <p>
@@ -560,7 +575,7 @@ public final class OffsetTime
             return time.compareTo(other.time);
         }
         LocalTime thisUTC = time.plusSeconds(-offset.getAmountSeconds());
-        LocalTime otherUTC = other.time.plusSeconds(other.offset.getAmountSeconds());
+        LocalTime otherUTC = other.time.plusSeconds(-other.offset.getAmountSeconds());
         return thisUTC.compareTo(otherUTC);
     }
 
