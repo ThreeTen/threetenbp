@@ -561,10 +561,23 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this time to another time taking into account the zone offset.
+     * Compares this time to another time based on the UTC equivalent times
+     * then local time.
      * <p>
-     * This comparison normalizes both times to UTC using the zone offset.
-     * It then compares the local time.
+     * This ordering is consistent with <code>equals()</code>.
+     * For example, the following is the comparator order:
+     * <ol>
+     * <li>10:30+01:00</li>
+     * <li>11:00+01:00</li>
+     * <li>12:00+02:00</li>
+     * <li>11:30+01:00</li>
+     * <li>12:00+01:00</li>
+     * <li>12:30+01:00</li>
+     * </ol>
+     * Values #2 and #3 represent the same instant on the time-line.
+     * When two values represent the same instant, the local time is compared
+     * to distinguish them. This step is needed to make the ordering
+     * consistent with <code>equals()</code>.
      *
      * @param other  the other time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
@@ -576,7 +589,11 @@ public final class OffsetTime
         }
         LocalTime thisUTC = time.plusSeconds(-offset.getAmountSeconds());
         LocalTime otherUTC = other.time.plusSeconds(-other.offset.getAmountSeconds());
-        return thisUTC.compareTo(otherUTC);
+        int compare = thisUTC.compareTo(otherUTC);
+        if (compare == 0) {
+            compare = time.compareTo(other.time);
+        }
+        return compare;
     }
 
     /**

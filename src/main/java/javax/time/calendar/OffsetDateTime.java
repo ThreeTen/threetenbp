@@ -1244,20 +1244,20 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time based on the UTC
-     * equivalent date-times then offset.
+     * equivalent date-times then local date-time.
      * <p>
      * This ordering is consistent with <code>equals()</code>.
      * For example, the following is the comparator order:
      * <ol>
      * <li>2008-12-03T10:30+01:00</li>
-     * <li>2008-12-03T12:00+02:00</li>
      * <li>2008-12-03T11:00+01:00</li>
+     * <li>2008-12-03T12:00+02:00</li>
      * <li>2008-12-03T11:30+01:00</li>
      * <li>2008-12-03T12:00+01:00</li>
      * <li>2008-12-03T12:30+01:00</li>
      * </ol>
      * Values #2 and #3 represent the same instant on the time-line.
-     * When two values represent the same instant, the offset is compared
+     * When two values represent the same instant, the local date-time is compared
      * to distinguish them. This step is needed to make the ordering
      * consistent with <code>equals()</code>.
      *
@@ -1273,7 +1273,7 @@ public final class OffsetDateTime
         LocalDateTime otherUTC = other.dateTime.plusSeconds(-other.offset.getAmountSeconds());
         int compare = thisUTC.compareTo(otherUTC);
         if (compare == 0) {
-            compare = offset.compareTo(other.offset);
+            compare = dateTime.compareTo(other.dateTime);
         }
         return compare;
     }

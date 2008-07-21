@@ -847,8 +847,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_hourDifference() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 0, OFFSET_PTWO);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 10, 0, OFFSET_PONE);  // a is before b despite being same time-line time
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 10, 0, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is before b despite being same time-line time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);

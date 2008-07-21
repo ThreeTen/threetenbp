@@ -485,8 +485,8 @@ public class TestOffsetTime {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_time() {
-        OffsetTime a = OffsetTime.time(11, 30, 58, OFFSET_PONE);
-        OffsetTime b = OffsetTime.time(11, 30, 59, OFFSET_PONE);  // a is before b due to time
+        OffsetTime a = OffsetTime.time(11, 29, OFFSET_PONE);
+        OffsetTime b = OffsetTime.time(11, 30, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -494,8 +494,8 @@ public class TestOffsetTime {
     }
 
     public void test_compareTo_offset() {
-        OffsetTime a = OffsetTime.time(11, 30, 59, OFFSET_PTWO);
-        OffsetTime b = OffsetTime.time(11, 30, 59, OFFSET_PONE);  // a is before b due to offset
+        OffsetTime a = OffsetTime.time(11, 30, OFFSET_PTWO);
+        OffsetTime b = OffsetTime.time(11, 30, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -503,8 +503,8 @@ public class TestOffsetTime {
     }
 
     public void test_compareTo_both() {
-        OffsetTime a = OffsetTime.time(11, 30, 58, OFFSET_PTWO);
-        OffsetTime b = OffsetTime.time(11, 30, 59, OFFSET_PONE);  // a is before b on instant scale
+        OffsetTime a = OffsetTime.time(11, 50, OFFSET_PTWO);
+        OffsetTime b = OffsetTime.time(11, 20, OFFSET_PONE);  // a is before b on instant scale
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -512,8 +512,8 @@ public class TestOffsetTime {
     }
 
     public void test_compareTo_hourDifference() {
-        OffsetTime a = OffsetTime.time(10, 30, 59, ZoneOffset.zoneOffset(1));
-        OffsetTime b = OffsetTime.time(11, 30, 59, ZoneOffset.zoneOffset(2));  // a is before b despite being same time-line time
+        OffsetTime a = OffsetTime.time(10, 0, OFFSET_PONE);
+        OffsetTime b = OffsetTime.time(11, 0, OFFSET_PTWO);  // a is before b despite being same time-line time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);

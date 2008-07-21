@@ -529,25 +529,37 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date to another date.
+     * Compares this date to another date based on the UTC equivalent dates
+     * then local date.
      * <p>
-     * This compares based on the date, then the offset.
-     * This ordering is consistent with {@link #equals}.
-     * <p>
-     * The ordering can result in an order which does not match the sequence
-     * of instants on a single time line when large offsets are considered.
-     * For example, 2008-12-03-12:00 and 2008-12-04+12:00 represent the
-     * same portion of the time-line, however the sort order will place the
-     * earlier date first irrespective of offset.
+     * This ordering is consistent with <code>equals()</code>.
+     * For example, the following is the comparator order:
+     * <ol>
+     * <li>2008-06-29-11:00</li>
+     * <li>2008-06-29-12:00</li>
+     * <li>2008-06-30+12:00</li>
+     * <li>2008-06-29-13:00</li>
+     * </ol>
+     * Values #2 and #3 represent the same instant on the time-line.
+     * When two values represent the same instant, the local date is compared
+     * to distinguish them. This step is needed to make the ordering
+     * consistent with <code>equals()</code>.
      *
      * @param other  the other date to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(OffsetDate other) {
-        int compare = date.compareTo(other.date);
+        if (offset.equals(other.offset)) {
+            return date.compareTo(other.date);
+        }
+        LocalDateTime thisDT = LocalDateTime.dateMidnight(getYear(), getMonthOfYear(), getDayOfMonth());
+        LocalDateTime otherDT = LocalDateTime.dateMidnight(other.getYear(), other.getMonthOfYear(), other.getDayOfMonth());
+        LocalDateTime thisUTC = thisDT.plusSeconds(-offset.getAmountSeconds());
+        LocalDateTime otherUTC = otherDT.plusSeconds(-other.offset.getAmountSeconds());
+        int compare = thisUTC.compareTo(otherUTC);
         if (compare == 0) {
-            compare = offset.compareTo(other.offset);
+            compare = date.compareTo(other.date);
         }
         return compare;
     }
