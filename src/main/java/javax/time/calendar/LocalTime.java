@@ -861,6 +861,22 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Extracts the time as seconds of day,
+     * from <code>0</code> to <code>24 * 60 * 60 - 1</code>.
+     *
+     * @return the second of day equivalent to this time
+     */
+    int toSecondOfDay() {
+        if (this == MIDNIGHT) {
+            return 0;
+        }
+        int total = hour.getValue() * SECONDS_PER_HOUR;
+        total += minute.getValue() * SECONDS_PER_MINUTE;
+        total += second.getValue();
+        return total;
+    }
+
+    /**
      * Extracts the time as nanos of day,
      * from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>.
      *
@@ -1262,11 +1278,14 @@ public final class LocalTime
          */
         @Override
         public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
             if (obj instanceof Overflow) {
                 Overflow other = (Overflow) obj;
                 return time.equals(other.time) && days == other.days;
             }
-            return super.equals(obj);
+            return false;
         }
 
         /**

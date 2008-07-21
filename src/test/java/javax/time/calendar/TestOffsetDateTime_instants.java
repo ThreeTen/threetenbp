@@ -33,10 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.*;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import javax.time.Instant;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.HourOfDay;
@@ -54,138 +50,24 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestOffsetDateTime_creation {
+public class TestOffsetDateTime_instants {
 
-    private static final Year YEAR_2007 = Year.isoYear(2007);
-    private static final DayOfMonth DAY_15 = DayOfMonth.dayOfMonth(15);
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.zoneOffset(1);
     private static final ZoneOffset OFFSET_MAX = ZoneOffset.zoneOffset(18);
     private static final ZoneOffset OFFSET_MIN = ZoneOffset.zoneOffset(-18);
 
     //-----------------------------------------------------------------------
-    public void test_interfaces() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(2007, 7, 15, OFFSET_PONE);
-        assertTrue(test instanceof CalendricalProvider);
-        assertTrue(test instanceof Serializable);
-        assertTrue(test instanceof Comparable);
-    }
-
-    public void test_immutable() {
-        Class<OffsetDateTime> cls = OffsetDateTime.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            assertTrue(Modifier.isPrivate(field.getModifiers()));
-            assertTrue(Modifier.isFinal(field.getModifiers()));
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_factory_dateMidnight_Year_MonthOfYear_DayOfMonth() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(YEAR_2007, MonthOfYear.JULY, DAY_15, OFFSET_PONE);
-        assertEquals(test.getYear(), YEAR_2007);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(test.getDayOfMonth(), DAY_15);
-        assertEquals(test.getOffset(), OFFSET_PONE);
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_InstantProvider_nullInstant() {
+        OffsetDateTime.dateTime((Instant) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_Year_MonthOfYear_DayOfMonth_dayTooLow() {
-        OffsetDateTime.dateMidnight(YEAR_2007, MonthOfYear.JANUARY, (DayOfMonth) null, OFFSET_PONE);
+    public void test_factory_InstantProvider_nullOffset() {
+        Instant instant = Instant.instant(0L);
+        OffsetDateTime.dateTime(instant, (ZoneOffset) null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_Year_MonthOfYear_DayOfMonth_nullMonth() {
-        OffsetDateTime.dateMidnight(YEAR_2007, (MonthOfYear) null, DAY_15, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_Year_MonthOfYear_DayOfMonth_yearTooLow() {
-        OffsetDateTime.dateMidnight((Year) null, MonthOfYear.JANUARY, DAY_15, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_Year_MonthOfYear_DayOfMonth_nullOffset() {
-        OffsetDateTime.dateMidnight(YEAR_2007, MonthOfYear.JANUARY, DAY_15, (ZoneOffset) null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_factory_dateMidnight_int_MonthOfYear_int() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(2007, MonthOfYear.JULY, 15, OFFSET_PONE);
-        assertEquals(test.getYear(), YEAR_2007);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(test.getDayOfMonth(), DAY_15);
-        assertEquals(test.getOffset(), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_MonthOfYear_int_dayTooLow() {
-        OffsetDateTime.dateMidnight(2007, MonthOfYear.JANUARY, 0, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_MonthOfYear_int_dayTooHigh() {
-        OffsetDateTime.dateMidnight(2007, MonthOfYear.JANUARY, 32, OFFSET_PONE);
-    }
-
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_int_MonthOfYear_int_nullMonth() {
-        OffsetDateTime.dateMidnight(2007, (MonthOfYear) null, 1, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_MonthOfYear_int_yearTooLow() {
-        OffsetDateTime.dateMidnight(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_int_MonthOfYear_int_nullOffset() {
-        OffsetDateTime.dateMidnight(2007, MonthOfYear.JANUARY, 1, (ZoneOffset) null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_factory_dateMidnight_int_int_int() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(2007, 7, 15, OFFSET_PONE);
-        assertEquals(test.getYear(), YEAR_2007);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(test.getDayOfMonth(), DAY_15);
-        assertEquals(test.getOffset(), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_int_int_dayTooLow() {
-        OffsetDateTime.dateMidnight(2007, 1, 0, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_int_int_dayTooHigh() {
-        OffsetDateTime.dateMidnight(2007, 1, 32, OFFSET_PONE);
-    }
-
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_int_int_monthTooLow() {
-        OffsetDateTime.dateMidnight(2007, 0, 1, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_int_int_monthTooHigh() {
-        OffsetDateTime.dateMidnight(2007, 13, 1, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_dateMidnight_int_int_int_yearTooLow() {
-        OffsetDateTime.dateMidnight(Integer.MIN_VALUE, 1, 1, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_dateMidnight_int_int_int_nullOffset() {
-        OffsetDateTime.dateMidnight(2007, 1, 1, (ZoneOffset) null);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_dateTime_InstantProvider_allSecsInDay() {
         for (int i = 0; i < (24 * 60 * 60); i++) {
             Instant instant = Instant.instant(i);
@@ -221,7 +103,7 @@ public class TestOffsetDateTime_creation {
         doTest_factory_dateTime_InstantProvider_all(Year.MIN_YEAR, Year.MIN_YEAR + 420);
     }
 
-    @Test(expectedExceptions= {IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions= {CalendarConversionException.class})
     public void test_factory_dateTime_InstantProvider_tooLow() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR - 1;
@@ -234,7 +116,7 @@ public class TestOffsetDateTime_creation {
         doTest_factory_dateTime_InstantProvider_all(Year.MAX_YEAR - 420, Year.MAX_YEAR);
     }
 
-    @Test(expectedExceptions= {IllegalCalendarFieldValueException.class})
+    @Test(expectedExceptions= {CalendarConversionException.class})
     public void test_factory_dateTime_InstantProvider_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MAX_YEAR + 1;
@@ -359,5 +241,41 @@ public class TestOffsetDateTime_creation {
 //            }
 //        }
 //    }
+
+    //-----------------------------------------------------------------------
+    public void test_toInstant_19700101() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSeconds(), 0);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void test_toInstant_19700101_oneNano() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1970, 1, 1, 0, 0, 0, 1, ZoneOffset.UTC);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSeconds(), 0);
+        assertEquals(test.getNanoOfSecond(), 1);
+    }
+
+    public void test_toInstant_19700101_minusOneNano() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1969, 12, 31, 23, 59, 59, 999999999, ZoneOffset.UTC);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSeconds(), -1);
+        assertEquals(test.getNanoOfSecond(), 999999999);
+    }
+
+    public void test_toInstant_19700102() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1970, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSeconds(), 24L * 60L * 60L);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void test_toInstant_19691231() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1969, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC);
+        Instant test = dt.toInstant();
+        assertEquals(test.getEpochSeconds(), -24L * 60L * 60L);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
 
 }

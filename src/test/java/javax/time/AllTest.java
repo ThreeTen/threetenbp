@@ -41,7 +41,8 @@ import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
 import javax.time.calendar.TestOffsetDate;
-import javax.time.calendar.TestOffsetDateTime_creation;
+import javax.time.calendar.TestOffsetDateTime;
+import javax.time.calendar.TestOffsetDateTime_instants;
 import javax.time.calendar.TestOffsetTime;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.field.TestDayOfMonth;
@@ -95,9 +96,10 @@ public class AllTest {
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
-            TestOffsetTime.class,
             TestOffsetDate.class,
-            TestOffsetDateTime_creation.class,
+            TestOffsetDateTime.class,
+            TestOffsetDateTime_instants.class,
+            TestOffsetTime.class,
             TestZoneOffset.class,
             // calendar fields
             TestDayOfMonth.class,

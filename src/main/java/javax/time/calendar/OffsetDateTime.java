@@ -552,53 +552,28 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>LocalDateTime</code> initialised to the
-     * same date-time.
+     * Gets the local date-time.
+     * <p>
+     * This returns the date-time without the zone offset.
      *
-     * @return the date-time object, never null
+     * @return the local date-time, never null
      */
-    public LocalDateTime localDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
     /**
-     * Gets an instance of <code>LocalDate</code> initialised to the
-     * date of this date-time.
+     * Returns a copy of this OffsetDateTime with a different local date-time.
+     * <p>
+     * This method changes the date-time stored to a different one.
+     * No calculation is performed. The result simply represents the same
+     * offset and the new date-time.
      *
-     * @return the date object, never null
+     * @param dateTime  the local date-time to change to, not null
+     * @return a new updated OffsetDateTime, never null
      */
-    public LocalDate localDate() {
-        return dateTime.getDate();
-    }
-
-    /**
-     * Gets an instance of <code>OffsetDate</code> initialised to the
-     * date of this date-time.
-     *
-     * @return the date object, never null
-     */
-    public OffsetDate offsetDate() {
-        return OffsetDate.date(localDate(), offset);
-    }
-
-    /**
-     * Gets an instance of <code>LocalTime</code> initialised to the
-     * time of this date-time.
-     *
-     * @return the time object, never null
-     */
-    public LocalTime localTime() {
-        return dateTime.getTime();
-    }
-
-    /**
-     * Gets an instance of <code>OffsetTime</code> initialised to the
-     * time of this date-time.
-     *
-     * @return the time object, never null
-     */
-    public OffsetTime offsetTime() {
-        return OffsetTime.time(localTime(), offset);
+    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
+        return dateTime != null && dateTime.equals(this.dateTime) ? this : new OffsetDateTime(dateTime, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1204,7 +1179,12 @@ public final class OffsetDateTime
      * @return an Instant representing the same instant, never null
      */
     public Instant toInstant() {
-        return null;  // TODO
+        long mjd = dateTime.getDate().toModifiedJulianDays();
+        long epochDays = mjd - 40587;
+        long secs = epochDays * 60L * 60L * 24L + dateTime.getTime().toSecondOfDay();
+        secs -= offset.getAmountSeconds();
+        int nanos = dateTime.getTime().getNanoOfSecond().getValue();
+        return Instant.instant(secs, nanos);
     }
 
     /**
@@ -1235,6 +1215,24 @@ public final class OffsetDateTime
     }
 
     /**
+     * Converts this date-time to an <code>OffsetDate</code>.
+     *
+     * @return an OffsetDate representing the date and offset, never null
+     */
+    public OffsetDate toOffsetDate() {
+        return OffsetDate.date(dateTime, offset);
+    }
+
+    /**
+     * Converts this date-time to an <code>OffsetTime</code>.
+     *
+     * @return an OffsetTime representing the time and offset, never null
+     */
+    public OffsetTime toOffsetTime() {
+        return OffsetTime.time(dateTime, offset);
+    }
+
+    /**
      * Converts this date to a <code>Calendrical</code>.
      *
      * @return the calendrical representation for this instance, never null
@@ -1246,11 +1244,22 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time based on the UTC
-     * equivalent date-times.
+     * equivalent date-times then offset.
      * <p>
-     * This ordering is inconsistent with <code>equals()</code> as two
-     * date-times with the same instant will compare as equal regardless of
-     * the actual offsets.
+     * This ordering is consistent with <code>equals()</code>.
+     * For example, the following is the comparator order:
+     * <ol>
+     * <li>2008-12-03T10:30+01:00</li>
+     * <li>2008-12-03T12:00+02:00</li>
+     * <li>2008-12-03T11:00+01:00</li>
+     * <li>2008-12-03T11:30+01:00</li>
+     * <li>2008-12-03T12:00+01:00</li>
+     * <li>2008-12-03T12:30+01:00</li>
+     * </ol>
+     * Values #2 and #3 represent the same instant on the time-line.
+     * When two values represent the same instant, the offset is compared
+     * to distinguish them. This step is needed to make the ordering
+     * consistent with <code>equals()</code>.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
@@ -1261,8 +1270,12 @@ public final class OffsetDateTime
             return dateTime.compareTo(other.dateTime);
         }
         LocalDateTime thisUTC = dateTime.plusSeconds(-offset.getAmountSeconds());
-        LocalDateTime otherUTC = other.dateTime.plusSeconds(other.offset.getAmountSeconds());
-        return thisUTC.compareTo(otherUTC);
+        LocalDateTime otherUTC = other.dateTime.plusSeconds(-other.offset.getAmountSeconds());
+        int compare = thisUTC.compareTo(otherUTC);
+        if (compare == 0) {
+            compare = offset.compareTo(other.offset);
+        }
+        return compare;
     }
 
     /**

@@ -86,7 +86,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
-    public void factory_date_objectsHM() {
+    public void factory_objectsHM() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
         assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
@@ -95,7 +95,7 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_objectsHMS() {
+    public void factory_objectsHMS() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
         assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
@@ -104,7 +104,7 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_objectsHMSN() {
+    public void factory_objectsHMSN() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30),
                 SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
         assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
@@ -114,7 +114,7 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_intsHM() {
+    public void factory_intsHM() {
         OffsetTime test = OffsetTime.time(11, 30, OFFSET_PONE);
         assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
@@ -123,7 +123,7 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_intsHMS() {
+    public void factory_intsHMS() {
         OffsetTime test = OffsetTime.time(11, 30, 10, OFFSET_PONE);
         assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
@@ -132,8 +132,18 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_intsHMSN() {
+    public void factory_intsHMSN() {
         OffsetTime test = OffsetTime.time(11, 30, 10, 500, OFFSET_PONE);
+        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
+        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
+        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
+        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_TimeProvider() {
+        TimeProvider localTime = LocalTime.time(11, 30, 10, 500);
+        OffsetTime test = OffsetTime.time(localTime, OFFSET_PONE);
         assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
         assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
@@ -232,9 +242,9 @@ public class TestOffsetTime {
     public void test_get_DateTimeFieldRule_unsupported() {
         OffsetTime test = OffsetTime.time(11, 30, 59, OFFSET_PONE);
         try {
-            test.get(ISOChronology.INSTANCE.year());
+            test.get(MockRuleNoValue.INSTANCE);
         } catch (UnsupportedCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.year());
+            assertEquals(ex.getFieldRule(), MockRuleNoValue.INSTANCE);
             throw ex;
         }
     }
@@ -292,7 +302,7 @@ public class TestOffsetTime {
         OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
         OffsetTime test = base.adjustLocalTime(OFFSET_PTWO);
         OffsetTime expected = OffsetTime.time(12, 30, 59, OFFSET_PTWO);
-        assertSame(test, expected);
+        assertEquals(test, expected);
     }
 
     public void test_adjustLocalTime_noChange() {

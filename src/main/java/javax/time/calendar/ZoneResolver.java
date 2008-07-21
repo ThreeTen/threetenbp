@@ -115,8 +115,8 @@ public abstract class ZoneResolver {
             throw new CalendricalException(
                     "ZoneResolver implementation must not return null: " + getClass().getName());
         }
-        if (result.localDateTime().equals(newDateTime)) {
-            offsetInfo = zone.getOffsetInfo(result.localDateTime());
+        if (result.toLocalDateTime().equals(newDateTime)) {
+            offsetInfo = zone.getOffsetInfo(result.toLocalDateTime());
             if (offsetInfo instanceof ZoneOffset) {
                 if (result.getOffset().equals(offsetInfo) == false) {
                     throw new CalendricalException(

@@ -142,6 +142,15 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_DateProvider() {
+        DateProvider localDate = LocalDate.date(2008, 6, 30);
+        OffsetDate test = OffsetDate.date(localDate, OFFSET_PONE);
+        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
+        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+    }
+
+    //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullDate() throws Throwable  {
         Constructor<OffsetDate> con = OffsetDate.class.getDeclaredConstructor(LocalDate.class, ZoneOffset.class);
@@ -235,9 +244,9 @@ public class TestOffsetDate {
     public void test_get_DateTimeFieldRule_unsupported() {
         OffsetDate test = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
         try {
-            test.get(ISOChronology.INSTANCE.hourOfDay());
+            test.get(MockRuleNoValue.INSTANCE);
         } catch (UnsupportedCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.hourOfDay());
+            assertEquals(ex.getFieldRule(), MockRuleNoValue.INSTANCE);
             throw ex;
         }
     }

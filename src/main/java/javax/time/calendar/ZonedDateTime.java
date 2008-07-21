@@ -322,7 +322,7 @@ public final class ZonedDateTime
      * @return the date-time object, never null
      */
     public LocalDateTime localDateTime() {
-        return dateTime.localDateTime();
+        return dateTime.toLocalDateTime();
     }
 
     /**
@@ -342,7 +342,7 @@ public final class ZonedDateTime
      * @return the date object, never null
      */
     public LocalDate localDate() {
-        return dateTime.localDate();
+        return dateTime.toLocalDate();
     }
 
     /**
@@ -352,7 +352,7 @@ public final class ZonedDateTime
      * @return the date object, never null
      */
     public OffsetDate offsetDate() {
-        return dateTime.offsetDate();
+        return dateTime.toOffsetDate();
     }
 
     /**
@@ -362,7 +362,7 @@ public final class ZonedDateTime
      * @return the time object, never null
      */
     public LocalTime localTime() {
-        return dateTime.localTime();
+        return dateTime.toLocalTime();
     }
 
     /**
@@ -372,7 +372,7 @@ public final class ZonedDateTime
      * @return the time object, never null
      */
     public OffsetTime offsetTime() {
-        return dateTime.offsetTime();
+        return dateTime.toOffsetTime();
     }
 
     //-----------------------------------------------------------------------
@@ -471,7 +471,7 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withZoneSameLocal(TimeZone zone) {
         return zone == this.zone ? this :
-            dateTime(dateTime.localDateTime(), dateTime, zone, ZoneResolvers.retainOffset());
+            dateTime(dateTime.toLocalDateTime(), dateTime, zone, ZoneResolvers.retainOffset());
     }
 
     /**
@@ -699,8 +699,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
-        LocalDateTime newDT = dateTime.localDateTime().withYear(year);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withYear(year);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -714,8 +714,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
-        LocalDateTime newDT = dateTime.localDateTime().withMonthOfYear(monthOfYear);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withMonthOfYear(monthOfYear);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -730,8 +730,8 @@ public final class ZonedDateTime
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public ZonedDateTime withDayOfMonth(int dayOfMonth) {
-        LocalDateTime newDT = dateTime.localDateTime().withDayOfMonth(dayOfMonth);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfMonth(dayOfMonth);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -751,8 +751,8 @@ public final class ZonedDateTime
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public ZonedDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        LocalDateTime newDT = dateTime.localDateTime().withDate(year, monthOfYear, dayOfMonth);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withDate(year, monthOfYear, dayOfMonth);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -767,8 +767,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
     public ZonedDateTime withHourOfDay(int hourOfDay) {
-        LocalDateTime newDT = dateTime.localDateTime().withHourOfDay(hourOfDay);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withHourOfDay(hourOfDay);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -782,8 +782,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
     public ZonedDateTime withMinuteOfHour(int minuteOfHour) {
-        LocalDateTime newDT = dateTime.localDateTime().withMinuteOfHour(minuteOfHour);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withMinuteOfHour(minuteOfHour);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -797,8 +797,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
     public ZonedDateTime withSecondOfMinute(int secondOfMinute) {
-        LocalDateTime newDT = dateTime.localDateTime().withSecondOfMinute(secondOfMinute);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withSecondOfMinute(secondOfMinute);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -812,8 +812,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
     public ZonedDateTime withNanoOfSecond(int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.localDateTime().withNanoOfSecond(nanoOfSecond);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withNanoOfSecond(nanoOfSecond);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -833,8 +833,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour) {
-        LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -850,8 +850,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -868,8 +868,8 @@ public final class ZonedDateTime
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      */
     public ZonedDateTime withTime(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDateTime newDT = dateTime.localDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().withTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -884,8 +884,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plus(PeriodView period) {
-        LocalDateTime newDT = dateTime.localDateTime().plus(period);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plus(period);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -899,8 +899,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plus(PeriodView... periods) {
-        LocalDateTime newDT = dateTime.localDateTime().plus(periods);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plus(periods);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -926,8 +926,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusYears(int years) {
-        LocalDateTime newDT = dateTime.localDateTime().plusYears(years);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusYears(years);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -952,8 +952,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMonths(int months) {
-        LocalDateTime newDT = dateTime.localDateTime().plusMonths(months);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusMonths(months);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -973,8 +973,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusWeeks(int weeks) {
-        LocalDateTime newDT = dateTime.localDateTime().plusWeeks(weeks);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusWeeks(weeks);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -994,8 +994,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusDays(int days) {
-        LocalDateTime newDT = dateTime.localDateTime().plusDays(days);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusDays(days);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -1019,8 +1019,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusHours(int hours) {
-        LocalDateTime newDT = dateTime.localDateTime().plusHours(hours);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusHours(hours);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -1034,8 +1034,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusMinutes(int minutes) {
-        LocalDateTime newDT = dateTime.localDateTime().plusMinutes(minutes);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusMinutes(minutes);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -1049,8 +1049,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusSeconds(int seconds) {
-        LocalDateTime newDT = dateTime.localDateTime().plusSeconds(seconds);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusSeconds(seconds);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
@@ -1064,8 +1064,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public ZonedDateTime plusNanos(int nanos) {
-        LocalDateTime newDT = dateTime.localDateTime().plusNanos(nanos);
-        return (newDT == dateTime.localDateTime() ? this :
+        LocalDateTime newDT = dateTime.toLocalDateTime().plusNanos(nanos);
+        return (newDT == dateTime.toLocalDateTime() ? this :
             dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
 
