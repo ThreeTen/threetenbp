@@ -83,98 +83,123 @@ public final class ZonedDateTime
     private final TimeZone zone;
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Obtains an instance of <code>ZonedDateTime</code>.
+//     * <p>
+//     * The second and nanosecond fields will be set to zero by this factory method.
+//     *
+//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+//     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+//     * @param dayOfMonth  the day of month to represent, from 1 to 31
+//     * @param hourOfDay  the hour of day to represent, from 0 to 23
+//     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+//     * @param zone  the time zone, not null
+//     * @return a ZonedDateTime object, never null
+//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+//     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+//     */
+//    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+//            int hourOfDay, int minuteOfHour, TimeZone zone) {
+//        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, zone);
+//    }
+//
+//    /**
+//     * Obtains an instance of <code>ZonedDateTime</code>.
+//     * <p>
+//     * The nanosecond field will be set to zero by this factory method.
+//     *
+//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+//     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+//     * @param dayOfMonth  the day of month to represent, from 1 to 31
+//     * @param hourOfDay  the hour of day to represent, from 0 to 23
+//     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+//     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+//     * @param zone  the time zone, not null
+//     * @return a ZonedDateTime object, never null
+//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+//     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+//     */
+//    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+//            int hourOfDay, int minuteOfHour, int secondOfMinute, TimeZone zone) {
+//        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, zone);
+//    }
+//
+//    /**
+//     * Obtains an instance of <code>ZonedDateTime</code>.
+//     *
+//     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+//     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+//     * @param dayOfMonth  the day of month to represent, from 1 to 31
+//     * @param hourOfDay  the hour of day to represent, from 0 to 23
+//     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+//     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+//     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+//     * @param zone  the time zone, not null
+//     * @return a ZonedDateTime object, never null
+//     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+//     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+//     * @throws CalendricalException if the date-time cannot be resolved due to daylight savings
+//     */
+//    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
+//            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
+//        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth,
+//                                    hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+//        return dateTime(dt, zone, ZoneResolvers.retainOffset());
+//    }
+
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>.
-     * <p>
-     * The second and nanosecond fields will be set to zero by this factory method.
+     * Obtains an instance of <code>ZonedDateTime</code> from a date and time.
+     * This uses strict resolution, so the date-time must exist for the
+     * specified time zone.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param dateProvider  the date provider to use, not null
+     * @param timeProvider  the time provider to use, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, TimeZone zone) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, zone);
+    public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
+        LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
+        return dateTime(dt, zone, ZoneResolvers.strict());
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>.
-     * <p>
-     * The nanosecond field will be set to zero by this factory method.
+     * Obtains an instance of <code>ZonedDateTime</code> from a date and time,
+     * providing a resolver to handle an invalid date-time.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param dateProvider  the date provider to use, not null
+     * @param timeProvider  the time provider to use, not null
      * @param zone  the time zone, not null
+     * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, TimeZone zone) {
-        return dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, zone);
+    public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
+        LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
+        return dateTime(dt, zone, resolver);
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>.
+     * Obtains an instance of <code>OffsetDateTime</code>.
+     * This uses strict resolution, so the date-time must exist for the
+     * specified time zone.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param dateTimeProvider  the date-time provider to use, not null
      * @param zone  the time zone, not null
-     * @return a ZonedDateTime object, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
-     * @throws CalendricalException if the date-time cannot be resolved due to daylight savings
+     * @return an ZonedDateTime object, never null
      */
-    public static ZonedDateTime dateTime(int year, int monthOfYear, int dayOfMonth,
-            int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, TimeZone zone) {
-        LocalDateTime dt = LocalDateTime.dateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-        return dateTime(dt, zone, ZoneResolvers.retainOffset());
+    public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone) {
+        LocalDateTime dt = dateTimeProvider.toLocalDateTime();
+        return dateTime(dt, zone, ZoneResolvers.strict());
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from an <code>Instant</code>.
-     *
-     * @param instant  the instant to convert, not null
-     * @param zone  the time zone, not null
-     * @return a ZonedDateTime object, never null
-     * @throws CalendarConversionException if the result exceeds the supported date range
-     */
-    public static ZonedDateTime dateTime(Instant instant, TimeZone zone) {
-        if (instant == null) {
-            throw new NullPointerException("The instant must not be null");
-        }
-        if (zone == null) {
-            throw new NullPointerException("The zone offset must not be null");
-        }
-        ZoneOffset offset = zone.getOffset(instant);
-        OffsetDateTime offsetDateTime = OffsetDateTime.dateTime(instant, offset);
-        return new ZonedDateTime(offsetDateTime, zone);
-    }
-
-    /**
-     * Obtains an instance of <code>ZonedDateTime</code>, providing a resolver
-     * to handle an invalid date-time.
+     * Obtains an instance of <code>OffsetDateTime</code>,
+     * providing a resolver to handle an invalid date-time.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
-     * @return a ZonedDateTime object, never null
-     * @throws CalendricalException if the date-time cannot be resolved
+     * @return an ZonedDateTime object, never null
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = dateTimeProvider.toLocalDateTime();
@@ -215,6 +240,27 @@ public final class ZonedDateTime
             }
         }
         return new ZonedDateTime(dateTime, zone);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code> from an <code>Instant</code>.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     * @throws CalendarConversionException if the result exceeds the supported date range
+     */
+    public static ZonedDateTime dateTime(InstantProvider instantProvider, TimeZone zone) {
+        if (instantProvider == null) {
+            throw new NullPointerException("The instant provider must not be null");
+        }
+        if (zone == null) {
+            throw new NullPointerException("The time zone must not be null");
+        }
+        Instant instant = instantProvider.toInstant();
+        ZoneOffset offset = zone.getOffset(instant);
+        OffsetDateTime offsetDateTime = OffsetDateTime.dateTime(instant, offset);
+        return new ZonedDateTime(offsetDateTime, zone);
     }
 
     /**
@@ -308,7 +354,6 @@ public final class ZonedDateTime
      * @param fieldRule  the field to query, not null
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
-     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule fieldRule) {
         return toCalendrical().getValue(fieldRule);
@@ -316,63 +361,29 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>LocalDateTime</code> initialised to the
-     * same date-time.
+     * Gets the local date-time.
+     * <p>
+     * This returns the date-time without any zone or offset information.
      *
-     * @return the date-time object, never null
+     * @return the local date-time, never null
      */
-    public LocalDateTime localDateTime() {
-        return dateTime.toLocalDateTime();
+    public LocalDateTime getDateTime() {
+        return dateTime.getDateTime();
     }
 
     /**
-     * Gets an instance of <code>OffsetDateTime</code> initialised to the
-     * same date-time.
+     * Returns a copy of this ZonedDateTime with a different local date-time.
+     * <p>
+     * This method changes the offset date-time stored to a different one.
+     * The local date-time is checked against the zone rules, and the retain
+     * offset resolver used if necessary.
      *
-     * @return the date-time object, never null
+     * @param dateTime  the local date-time to change to, not null
+     * @return a new updated ZonedDateTime, never null
      */
-    public OffsetDateTime offsetDateTime() {
-        return dateTime;
-    }
-
-    /**
-     * Gets an instance of <code>LocalDate</code> initialised to the
-     * date of this date-time.
-     *
-     * @return the date object, never null
-     */
-    public LocalDate localDate() {
-        return dateTime.toLocalDate();
-    }
-
-    /**
-     * Gets an instance of <code>ZonedDate</code> initialised to the
-     * date of this date-time.
-     *
-     * @return the date object, never null
-     */
-    public OffsetDate offsetDate() {
-        return dateTime.toOffsetDate();
-    }
-
-    /**
-     * Gets an instance of <code>LocalTime</code> initialised to the
-     * time of this date-time.
-     *
-     * @return the time object, never null
-     */
-    public LocalTime localTime() {
-        return dateTime.toLocalTime();
-    }
-
-    /**
-     * Gets an instance of <code>ZonedTime</code> initialised to the
-     * time of this date-time.
-     *
-     * @return the time object, never null
-     */
-    public OffsetTime offsetTime() {
-        return dateTime.toOffsetTime();
+    public ZonedDateTime withDateTime(DateTimeProvider dateTime) {
+        return dateTime != null && dateTime.equals(this.dateTime.toLocalDateTime()) ?
+                this : ZonedDateTime.dateTime(dateTime, zone, ZoneResolvers.retainOffset());
     }
 
     //-----------------------------------------------------------------------
@@ -402,7 +413,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        OffsetInfo info = zone.getOffsetInfo(localDateTime());
+        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
         if (info instanceof Discontinuity) {
             Discontinuity dis = (Discontinuity) info;
             ZoneOffset offset = dis.getOffsetBefore();
@@ -431,7 +442,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        OffsetInfo info = zone.getOffsetInfo(localDateTime());
+        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
         if (info instanceof Discontinuity) {
             Discontinuity dis = (Discontinuity) info;
             ZoneOffset offset = dis.getOffsetAfter();
@@ -743,7 +754,7 @@ public final class ZonedDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated ZonedDateTime
@@ -1140,6 +1151,33 @@ public final class ZonedDateTime
     }
 
     /**
+     * Converts this date-time to a <code>OffsetDate</code>.
+     *
+     * @return a OffsetDate representing the date fields of this date-time, never null
+     */
+    public OffsetDate toOffsetDate() {
+        return dateTime.toOffsetDate();
+    }
+
+    /**
+     * Converts this date-time to a <code>OffsetTime</code>.
+     *
+     * @return a OffsetTime representing the time fields of this date-time, never null
+     */
+    public OffsetTime toOffsetTime() {
+        return dateTime.toOffsetTime();
+    }
+
+    /**
+     * Converts this date-time to a <code>OffsetDateTime</code>.
+     *
+     * @return a OffsetDateTime representing the fields of this date-time, never null
+     */
+    public OffsetDateTime toOffsetDateTime() {
+        return dateTime;
+    }
+
+    /**
      * Converts this date to a <code>Calendrical</code>.
      *
      * @return the calendrical representation for this instance, never null
@@ -1151,18 +1189,21 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time based on the UTC
-     * equivalent date-times.
+     * equivalent date-times then time zone id.
      * <p>
-     * This ordering is inconsistent with <code>equals()</code> as two
-     * date-times with the same instant will compare as equal regardless of
-     * the actual zones.
+     * The ordering is consistent with equals as it takes into account
+     * the date-time, offset and zone.
      *
      * @param other  the other date-time to compare to, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(ZonedDateTime other) {
-        return dateTime.compareTo(other.dateTime);
+        int compare = dateTime.compareTo(other.dateTime);
+        if (compare == 0) {
+            compare = zone.getID().compareTo(other.zone.getID());
+        }
+        return compare;
     }
 
     /**

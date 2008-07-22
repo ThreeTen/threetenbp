@@ -137,7 +137,7 @@ public abstract class Clock {
      */
     public LocalDate today() {
         //TODO: optimize
-        return currentZonedDateTime().localDate();
+        return currentZonedDateTime().toLocalDate();
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class Clock {
      */
     public LocalTime currentTime() {
         //TODO: optimize
-        return currentZonedDateTime().localTime();
+        return currentZonedDateTime().toLocalTime();
     }
 
     //-----------------------------------------------------------------------
@@ -177,7 +177,7 @@ public abstract class Clock {
      */
     public LocalDateTime currentDateTime() {
         //TODO: optimize
-        return currentZonedDateTime().localDateTime();
+        return currentZonedDateTime().toLocalDateTime();
     }
 
     //-----------------------------------------------------------------------
