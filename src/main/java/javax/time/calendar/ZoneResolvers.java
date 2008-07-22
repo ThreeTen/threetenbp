@@ -152,8 +152,11 @@ public class ZoneResolvers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the retain offset resolver, which adjusts the date to be
-     * valid by moving to the first of the next month.
+     * Returns the retain offset resolver.
+     * <p>
+     * For both a gap and an offset, this resoler examines the offset of the
+     * original object on which the calculation occured. If that offset is one
+     * of those that is valid, then it is used.
      *
      * @return the retain offset resolver, never null
      */
@@ -192,10 +195,15 @@ public class ZoneResolvers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the push forward resolver, which adjusts the date to be
-     * valid by moving to the first of the next month.
+     * Returns the push forward resolver.
+     * <p>
+     * If the discontinuity is a gap, then the resolver will add the length of
+     * the gap in seconds to the local-time.
+     * <p>
+     * If the discontinuity is an overlap, then the resolver will choose the
+     * later of the two offsets.
      *
-     * @return the retain offset resolver, never null
+     * @return the push forward resolver, never null
      */
     public static ZoneResolver pushForward() {
         return PushForward.INSTANCE;
