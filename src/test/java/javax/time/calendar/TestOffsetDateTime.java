@@ -407,7 +407,7 @@ public class TestOffsetDateTime {
     public void test_withOffset() {
         OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withOffset(OFFSET_PTWO);
-        assertSame(test.toLocalTime(), base.toLocalTime());
+        assertSame(test.toLocalDateTime(), base.toLocalDateTime());
         assertSame(test.getOffset(), OFFSET_PTWO);
     }
 
