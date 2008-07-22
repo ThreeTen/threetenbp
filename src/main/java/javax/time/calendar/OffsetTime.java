@@ -236,7 +236,6 @@ public final class OffsetTime
      * @param fieldRule  the field to query, not null
      * @return the value for the field
      * @throws UnsupportedCalendarFieldException if no value for the field is found
-     * @throws InvalidCalendarFieldException if the value for the field is invalid
      */
     public int get(DateTimeFieldRule fieldRule) {
         return toCalendrical().getValue(fieldRule);
