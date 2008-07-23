@@ -401,6 +401,12 @@ public class TestOffsetDateTime {
         base.withDateTime(null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_withDateTime_badProvider() {
+        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        base.withDateTime(new MockDateTimeProviderReturnsNull());
+    }
+
     //-----------------------------------------------------------------------
     // withOffset()
     //-----------------------------------------------------------------------

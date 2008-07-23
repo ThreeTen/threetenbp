@@ -568,11 +568,12 @@ public final class OffsetDateTime
      * No calculation is performed. The result simply represents the same
      * offset and the new date-time.
      *
-     * @param dateTime  the local date-time to change to, not null
+     * @param dateTimeProvider  the local date-time to change to, not null
      * @return a new updated OffsetDateTime, never null
      */
-    public OffsetDateTime withDateTime(LocalDateTime dateTime) {
-        return dateTime != null && dateTime.equals(this.dateTime) ? this : new OffsetDateTime(dateTime, offset);
+    public OffsetDateTime withDateTime(DateTimeProvider dateTimeProvider) {
+        LocalDateTime localDateTime = dateTimeProvider.toLocalDateTime();
+        return localDateTime.equals(this.dateTime) ? this : new OffsetDateTime(localDateTime, offset);
     }
 
     //-----------------------------------------------------------------------

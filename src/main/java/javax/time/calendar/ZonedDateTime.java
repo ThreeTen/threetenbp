@@ -213,7 +213,7 @@ public final class ZonedDateTime
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws CalendricalException if the offset is invalid for the time zone at the date-time
+     * @throws CalendarConversionException if the offset is invalid for the time zone at the date-time
      */
     public static ZonedDateTime dateTime(OffsetDateTime dateTime, TimeZone zone) {
         if (dateTime == null) {
@@ -226,16 +226,16 @@ public final class ZonedDateTime
         OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
         if (info instanceof ZoneOffset) {
             if (info.equals(inputOffset) == false) {
-                throw new CalendricalException("The offset " + inputOffset +
+                throw new CalendarConversionException("The offset " + inputOffset +
                         " specified in the OffsetDateTime is invalid for the time zone " + zone);
             }
         } else {
             Discontinuity disc = (Discontinuity) info;
             if (disc.isGap()) {
-                throw new CalendricalException("The local time " + dateTime +
+                throw new CalendarConversionException("The local time " + dateTime +
                         " does not exist in time zone " + zone + " due to a daylight savings gap");
             } else if (disc.containsOffset(inputOffset) == false) {
-                throw new CalendricalException("The offset in the date-time " + dateTime +
+                throw new CalendarConversionException("The offset in the date-time " + dateTime +
                         " is invalid for the time zone " + zone);
             }
         }
@@ -378,12 +378,13 @@ public final class ZonedDateTime
      * The local date-time is checked against the zone rules, and the retain
      * offset resolver used if necessary.
      *
-     * @param dateTime  the local date-time to change to, not null
+     * @param dateTimeProvider  the local date-time to change to, not null
      * @return a new updated ZonedDateTime, never null
      */
-    public ZonedDateTime withDateTime(DateTimeProvider dateTime) {
-        return dateTime != null && dateTime.equals(this.dateTime.toLocalDateTime()) ?
-                this : ZonedDateTime.dateTime(dateTime, zone, ZoneResolvers.retainOffset());
+    public ZonedDateTime withDateTime(DateTimeProvider dateTimeProvider) {
+        LocalDateTime localDateTime = dateTimeProvider.toLocalDateTime();
+        return localDateTime.equals(this.dateTime.toLocalDateTime()) ?
+                this : ZonedDateTime.dateTime(localDateTime, zone, ZoneResolvers.retainOffset());
     }
 
     //-----------------------------------------------------------------------

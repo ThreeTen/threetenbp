@@ -277,6 +277,58 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_dateTime_DateProviderTimeProviderResolver() {
+        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
+        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
+        ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_0100, ZoneResolvers.strict());
+        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
+        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
+        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
+        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
+        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProviderResolver_nullDate() {
+        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
+        ZonedDateTime.dateTime((DateProvider) null, timeProvider, ZONE_0100, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProviderResolver_nullTime() {
+        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
+        ZonedDateTime.dateTime(dateProvider, (TimeProvider) null, ZONE_0100, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProviderResolver_nullZone() {
+        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
+        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
+        ZonedDateTime.dateTime(dateProvider, timeProvider, null, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProviderResolver_nullResolver() {
+        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
+        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
+        ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_0100, (ZoneResolver) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProviderResolver_badDateProvider() {
+        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
+        ZonedDateTime.dateTime(new MockDateProviderReturnsNull(), timeProvider, ZONE_0100, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProviderResolver_badTimeProvider() {
+        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
+        ZonedDateTime.dateTime(dateProvider, new MockTimeProviderReturnsNull(), ZONE_0100, ZoneResolvers.strict());
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_dateTime_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_0100);
@@ -298,6 +350,76 @@ public class TestZonedDateTime {
     public void factory_dateTime_DateTimeProvider_nullZone() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime.dateTime(provider, null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProvider_badProvider() {
+        ZonedDateTime.dateTime(new MockDateTimeProviderReturnsNull(), ZONE_0100);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_dateTime_DateTimeProviderResolver() {
+        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
+        ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_0100, ZoneResolvers.strict());
+        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
+        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
+        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
+        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
+        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProviderResolver_nullDateTime() {
+        ZonedDateTime.dateTime((DateTimeProvider) null, ZONE_0100, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProviderResolver_nullZone() {
+        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
+        ZonedDateTime.dateTime(provider, null, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProviderResolver_nullResolver() {
+        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
+        ZonedDateTime.dateTime(provider, null, (ZoneResolver) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProviderResolver_badProvider() {
+        ZonedDateTime.dateTime(new MockDateTimeProviderReturnsNull(), ZONE_0100, ZoneResolvers.strict());
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_dateTime_OffsetDateTimeProvider() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
+        ZonedDateTime test = ZonedDateTime.dateTime(odt, ZONE_0100);
+        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
+        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
+        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
+        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
+        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+    }
+
+    @Test(expectedExceptions=CalendarConversionException.class)
+    public void factory_dateTime_OffsetDateTimeProvider_invalidOffset() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
+        ZonedDateTime.dateTime(odt, ZONE_0100);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_OffsetDateTimeProvider_nullDateTime() {
+        ZonedDateTime.dateTime((OffsetDateTime) null, ZONE_0100);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_OffsetDateTimeProvider_nullZone() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
+        ZonedDateTime.dateTime(odt, null);
     }
 
     //-----------------------------------------------------------------------
@@ -470,6 +592,13 @@ public class TestZonedDateTime {
         base.withDateTime(null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_withDateTime_badProvider() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        base.withDateTime(new MockDateTimeProviderReturnsNull());
+    }
+
     //-----------------------------------------------------------------------
     // withZoneSameLocal()
     //-----------------------------------------------------------------------
@@ -587,7 +716,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     // withYear()
     //-----------------------------------------------------------------------
-    public void test_withYearr_normal() {
+    public void test_withYear_normal() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         ZonedDateTime test = base.withYear(2007);
