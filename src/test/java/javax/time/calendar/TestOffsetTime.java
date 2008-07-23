@@ -273,6 +273,12 @@ public class TestOffsetTime {
         base.withTime(null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_withTime_badProvider() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        base.withTime(new MockTimeProviderReturnsNull());
+    }
+
     //-----------------------------------------------------------------------
     // withOffset()
     //-----------------------------------------------------------------------

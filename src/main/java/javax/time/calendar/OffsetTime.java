@@ -260,11 +260,12 @@ public final class OffsetTime
      * No calculation is performed. The result simply represents the same
      * offset and the new time.
      *
-     * @param time  the local time to change to, not null
+     * @param timeProvider  the local time to change to, not null
      * @return a new updated OffsetTime, never null
      */
-    public OffsetTime withTime(LocalTime time) {
-        return time != null && time.equals(this.time) ? this : new OffsetTime(time, offset);
+    public OffsetTime withTime(TimeProvider timeProvider) {
+        LocalTime localTime = timeProvider.toLocalTime();
+        return localTime.equals(this.time) ? this : new OffsetTime(localTime, offset);
     }
 
     //-----------------------------------------------------------------------

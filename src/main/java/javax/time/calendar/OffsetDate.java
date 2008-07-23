@@ -211,11 +211,12 @@ public final class OffsetDate
      * No calculation is performed. The result simply represents the same
      * offset and the new date.
      *
-     * @param date  the local date to change to, not null
+     * @param dateProvider  the local date to change to, not null
      * @return a new updated OffsetDate, never null
      */
-    public OffsetDate withDate(LocalDate date) {
-        return date != null && date.equals(this.date) ? this : new OffsetDate(date, offset);
+    public OffsetDate withDate(DateProvider dateProvider) {
+        LocalDate localDate = dateProvider.toLocalDate();
+        return localDate.equals(this.date) ? this : new OffsetDate(localDate, offset);
     }
 
     //-----------------------------------------------------------------------

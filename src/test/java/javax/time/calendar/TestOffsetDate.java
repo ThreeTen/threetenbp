@@ -275,6 +275,12 @@ public class TestOffsetDate {
         base.withDate(null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_withDate_badProvider() {
+        OffsetDate base = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
+        base.withDate(new MockDateProviderReturnsNull());
+    }
+
     //-----------------------------------------------------------------------
     // withOffset()
     //-----------------------------------------------------------------------
