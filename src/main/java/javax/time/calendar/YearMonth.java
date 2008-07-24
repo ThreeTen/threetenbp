@@ -36,8 +36,6 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
-import javax.time.period.Periods;
 
 /**
  * A year-month without a time zone in the ISO-8601 calendar system,
@@ -77,7 +75,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, not null
      * @param monthOfYear  the month of year to represent, not null
-     * @return a YearMonth object, never null
+     * @return the YearMonth instance, never null
      */
     public static YearMonth yearMonth(Year year, MonthOfYear monthOfYear) {
         if (year == null) {
@@ -94,7 +92,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
-     * @return a YearMonth object, never null
+     * @return the YearMonth instance, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
@@ -106,29 +104,11 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a YearMonth object, never null
+     * @return the YearMonth instance, never null
      * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
         return yearMonth(Year.isoYear(year), MonthOfYear.monthOfYear(monthOfYear));
-    }
-
-    /**
-     * Obtains an instance of <code>YearMonth</code> from a Calendrical.
-     * <p>
-     * This method will create a YearMonth from the Calendrical using either
-     * the fields or the date. If both are present, the values in the field-value
-     * map must match those in the date.
-     *
-     * @param calendrical  the calendrical to use, not null
-     * @return a YearMonth object, never null
-     * @throws UnsupportedCalendarFieldException if either field cannot be found
-     * @throws InvalidCalendarFieldException if the either field is invalid
-     */
-    public static YearMonth yearMonth(Calendrical calendrical) {
-        int year = calendrical.getValue(Year.rule());
-        int month = calendrical.getValue(MonthOfYear.rule());
-        return yearMonth(year, month);
     }
 
     /**
@@ -143,6 +123,23 @@ public final class YearMonth
     public static YearMonth yearMonth(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
         return new YearMonth(date.getYear(), date.getMonthOfYear());
+    }
+
+    /**
+     * Obtains an instance of <code>YearMonth</code> from a Calendrical.
+     * <p>
+     * This method will create a YearMonth from the Calendrical.
+     *
+     * @param calendricalProvider  the calendrical to use, not null
+     * @return the YearMonth instance, never null
+     * @throws UnsupportedCalendarFieldException if either field cannot be found
+     * @throws InvalidCalendarFieldException if the value for either field is invalid
+     */
+    public static YearMonth yearMonth(CalendricalProvider calendricalProvider) {
+        Calendrical calendrical = calendricalProvider.toCalendrical();
+        int year = calendrical.getValue(Year.rule());
+        int month = calendrical.getValue(MonthOfYear.rule());
+        return yearMonth(year, month);
     }
 
     //-----------------------------------------------------------------------
@@ -194,7 +191,7 @@ public final class YearMonth
      * @return true if the field is supported
      */
     public boolean isSupported(DateTimeFieldRule field) {
-        return field.isSupported(Periods.MONTHS, Periods.FOREVER);
+        return field != null && toCalendrical().getValueQuiet(field) != null;
     }
 
     /**
@@ -279,10 +276,7 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
-        if (this.year.getValue() == year) {
-            return this;
-        }
-        return withYearMonth(Year.isoYear(year), month);
+        return with(Year.isoYear(year));
     }
 
     /**
@@ -295,40 +289,37 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
-        if (this.month.getValue() == monthOfYear) {
-            return this;
-        }
-        return withYearMonth(year, MonthOfYear.monthOfYear(monthOfYear));
+        return with(MonthOfYear.monthOfYear(monthOfYear));
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this YearMonth with the specified period added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated YearMonth, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public YearMonth plus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this YearMonth with the specified periods added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periods  the periods to add, no nulls
-     * @return a new updated YearMonth, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public YearMonth plus(PeriodView... periods) {
-        // TODO
-        return null;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this YearMonth with the specified period added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param period  the period to add, not null
+//     * @return a new updated YearMonth, never null
+//     * @throws CalendricalException if the result exceeds the supported date range
+//     */
+//    public YearMonth plus(PeriodView period) {
+//        // TODO
+//        return null;
+//    }
+//
+//    /**
+//     * Returns a copy of this YearMonth with the specified periods added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param periods  the periods to add, no nulls
+//     * @return a new updated YearMonth, never null
+//     * @throws CalendricalException if the result exceeds the supported date range
+//     */
+//    public YearMonth plus(PeriodView... periods) {
+//        // TODO
+//        return null;
+//    }
 
     //-----------------------------------------------------------------------
     /**
