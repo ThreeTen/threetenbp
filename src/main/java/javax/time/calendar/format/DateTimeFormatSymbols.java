@@ -242,6 +242,7 @@ public final class DateTimeFormatSymbols {
         map.put(AmPmOfDay.AM.getValue(), array[Calendar.AM]);
         map.put(AmPmOfDay.PM.getValue(), array[Calendar.PM]);
         textMap.get(id).put(TextStyle.FULL, new TextStore(map));
+        textMap.get(id).put(TextStyle.SHORT, new TextStore(map));  // no data for short so reuse full
     }
 
     //-----------------------------------------------------------------------

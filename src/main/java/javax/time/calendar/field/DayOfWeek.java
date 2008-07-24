@@ -41,6 +41,8 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.format.DateTimeFormatSymbols;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * A representation of a day of week in the ISO-8601 calendar system.
@@ -184,34 +186,34 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      * Gets the day of week value as short text.
      * <p>
      * In English, this will return text of the form 'Mon' or 'Fri'.
+     * <p>
+     * If there is no textual mapping for the locale, then the value is
+     * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
      * @return the long text value of the day of week, never null
      */
     public String getShortText(Locale locale) {
-        return "";  // TODO
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(rule(), TextStyle.SHORT, dayOfWeek);
+        return text == null ? Integer.toString(dayOfWeek) : text;
     }
 
     /**
      * Gets the day of week value as text.
      * <p>
      * In English, this will return text of the form 'Monday' or 'Friday'.
+     * <p>
+     * If there is no textual mapping for the locale, then the value is
+     * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
      * @return the long text value of the day of week, never null
      */
     public String getText(Locale locale) {
-        return "";  // TODO
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(rule(), TextStyle.FULL, dayOfWeek);
+        return text == null ? Integer.toString(dayOfWeek) : text;
     }
 
     //-----------------------------------------------------------------------
@@ -237,17 +239,6 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the value of this day of week matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getDayOfWeek() == this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Returns the DayOfWeek which is the specified number of days after
      * this DayOfWeek.
      * <p>
@@ -263,7 +254,6 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
         return values()[(ordinal() + (days % 7)) % 7];
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns the DayOfWeek which is the specified number of days before
      * this DayOfWeek.
@@ -277,7 +267,28 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      * @return the resulting DayOfWeek, never null
      */
     public DayOfWeek minusDays(int days) {
-        return values()[(ordinal() + (days % 7)) % 7];
+        return values()[(ordinal() + 7 - (days % 7)) % 7];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the value of this day of week matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.getDayOfWeek() == this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this field to a <code>Calendrical</code>.
+     *
+     * @return the calendrical representation for this instance, never null
+     */
+    public Calendrical toCalendrical() {
+        return Calendrical.calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

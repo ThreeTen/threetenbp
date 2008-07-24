@@ -42,6 +42,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeMatcher;
+import javax.time.calendar.TimeProvider;
 
 /**
  * A representation of a second of minute in the ISO-8601 calendar system.
@@ -108,6 +109,20 @@ public final class SecondOfMinute
             throw new IllegalCalendarFieldValueException(
                 rule(), secondOfMinute, rule().getMinimumValue(), rule().getMaximumValue());
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>SecondOfMinute</code> from a time provider.
+     * <p>
+     * This can be used extract the second of minute directly from any implementation
+     * of TimeProvider, including those in other calendar systems.
+     *
+     * @param timeProvider  the time provider to use, not null
+     * @return the SecondOfMinute instance, never null
+     */
+    public static SecondOfMinute secondOfMinute(TimeProvider timeProvider) {
+        return timeProvider.toLocalTime().getSecondOfMinute();
     }
 
     //-----------------------------------------------------------------------

@@ -34,13 +34,17 @@ package javax.time.calendar.field;
 import static org.testng.Assert.*;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.Locale;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.MockDateProviderReturnsNull;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -54,6 +58,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfWeek {
 
+    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.dayOfWeek();
+
     @BeforeMethod
     public void setUp() {
     }
@@ -63,23 +69,12 @@ public class TestDayOfWeek {
         assertTrue(CalendricalProvider.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
-//        assertTrue(DateAdjustor.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(DateMatcher.class.isAssignableFrom(DayOfWeek.class));
     }
 
-    public void test_immutable() {
-        Class<DayOfWeek> cls = DayOfWeek.class;
-        assertTrue(Modifier.isPublic(cls.getModifiers()));
-        assertTrue(Modifier.isFinal(cls.getModifiers()));
-        Field[] fields = cls.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-            } else {
-                assertTrue(Modifier.isPrivate(field.getModifiers()), "Field:" + field.getName());
-                assertTrue(Modifier.isFinal(field.getModifiers()), "Field:" + field.getName());
-            }
-        }
+    //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(DayOfWeek.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------
@@ -111,74 +106,69 @@ public class TestDayOfWeek {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        LocalDate date = null;
-        DayOfWeek.dayOfWeek(date);
+    public void test_factory_DateProvider_oldDate() {
+        LocalDate date = LocalDate.date(2007, 1, 1).minusDays(70000);  // Monday
+        for (int i = 0; i <= 1500; i++) {
+            DayOfWeek test = DayOfWeek.dayOfWeek(date);
+            assertEquals(test.getValue(), (i % 7) + 1);
+            date = date.plusDays(1);
+        }
     }
 
-//    //-----------------------------------------------------------------------
-//    // adjustDate()
-//    //-----------------------------------------------------------------------
-//    public void test_adjustDate_fromStartOfYear_notLeapYear() {
-//        LocalDate base = LocalDate.date(2007, 1, 1);
-//        LocalDate expected = base;
-//        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-//            DayOfWeek test = DayOfWeek.dayOfWeek(i);
-//            assertEquals(test.adjustDate(base), expected);
-//            expected = expected.plusDays(1);
-//        }
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_nullDateProvider() {
+        DayOfWeek.dayOfWeek((DateProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_badDateProvider() {
+        DayOfWeek.dayOfWeek(new MockDateProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // getShortText()
+    //-----------------------------------------------------------------------
+    public void test_getShortText() {
+        assertEquals(DayOfWeek.MONDAY.getShortText(Locale.US), "Mon");
+        assertEquals(DayOfWeek.TUESDAY.getShortText(Locale.US), "Tue");
+        assertEquals(DayOfWeek.WEDNESDAY.getShortText(Locale.US), "Wed");
+        assertEquals(DayOfWeek.THURSDAY.getShortText(Locale.US), "Thu");
+        assertEquals(DayOfWeek.FRIDAY.getShortText(Locale.US), "Fri");
+        assertEquals(DayOfWeek.SATURDAY.getShortText(Locale.US), "Sat");
+        assertEquals(DayOfWeek.SUNDAY.getShortText(Locale.US), "Sun");
+    }
+
+//    public void test_getShortText_noText() {
+//        assertEquals(DayOfWeek.MONDAY.getShortText(new Locale("", "")), "1");
+//        assertEquals(DayOfWeek.TUESDAY.getShortText(new Locale("", "")), "2");
+//        assertEquals(DayOfWeek.WEDNESDAY.getShortText(new Locale("", "")), "3");
+//        assertEquals(DayOfWeek.THURSDAY.getShortText(new Locale("", "")), "4");
+//        assertEquals(DayOfWeek.FRIDAY.getShortText(new Locale("", "")), "5");
+//        assertEquals(DayOfWeek.SATURDAY.getShortText(new Locale("", "")), "6");
+//        assertEquals(DayOfWeek.SUNDAY.getShortText(new Locale("", "")), "7");
 //    }
-//
-//    public void test_adjustDate_fromEndOfYear_notLeapYear() {
-//        LocalDate base = LocalDate.date(2007, 12, 31);
-//        LocalDate expected = LocalDate.date(2007, 1, 1);
-//        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-//            DayOfWeek test = DayOfWeek.dayOfWeek(i);
-//            assertEquals(test.adjustDate(base), expected);
-//            expected = expected.plusDays(1);
-//        }
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_adjustDate_fromStartOfYear_notLeapYear_day366() {
-//        LocalDate base = LocalDate.date(2007, 1, 1);
-//        DayOfWeek test = DayOfWeek.dayOfWeek(LEAP_YEAR_LENGTH);
-//        test.adjustDate(base);
-//    }
-//
-//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-//    public void test_adjustDate_fromEndOfYear_notLeapYear_day366() {
-//        LocalDate base = LocalDate.date(2007, 12, 31);
-//        DayOfWeek test = DayOfWeek.dayOfWeek(LEAP_YEAR_LENGTH);
-//        test.adjustDate(base);
-//    }
-//
-//    public void test_adjustDate_fromStartOfYear_leapYear() {
-//        LocalDate base = LocalDate.date(2008, 1, 1);
-//        LocalDate expected = base;
-//        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-//            DayOfWeek test = DayOfWeek.dayOfWeek(i);
-//            assertEquals(test.adjustDate(base), expected);
-//            expected = expected.plusDays(1);
-//        }
-//    }
-//
-//    public void test_adjustDate_fromEndOfYear_leapYear() {
-//        LocalDate base = LocalDate.date(2008, 12, 31);
-//        LocalDate expected = LocalDate.date(2008, 1, 1);
-//        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-//            DayOfWeek test = DayOfWeek.dayOfWeek(i);
-//            assertEquals(test.adjustDate(base), expected);
-//            expected = expected.plusDays(1);
-//        }
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_adjustDate_nullLocalDate() {
-//        LocalDate date = null;
-//        DayOfWeek test = DayOfWeek.dayOfWeek(1);
-//        test.adjustDate(date);
+
+    //-----------------------------------------------------------------------
+    // getText()
+    //-----------------------------------------------------------------------
+    public void test_getText() {
+        assertEquals(DayOfWeek.MONDAY.getText(Locale.US), "Monday");
+        assertEquals(DayOfWeek.TUESDAY.getText(Locale.US), "Tuesday");
+        assertEquals(DayOfWeek.WEDNESDAY.getText(Locale.US), "Wednesday");
+        assertEquals(DayOfWeek.THURSDAY.getText(Locale.US), "Thursday");
+        assertEquals(DayOfWeek.FRIDAY.getText(Locale.US), "Friday");
+        assertEquals(DayOfWeek.SATURDAY.getText(Locale.US), "Saturday");
+        assertEquals(DayOfWeek.SUNDAY.getText(Locale.US), "Sunday");
+    }
+
+//    public void test_getText_noText() {
+//        assertEquals(DayOfWeek.MONDAY.getText(new Locale("", "")), "1");
+//        assertEquals(DayOfWeek.TUESDAY.getText(new Locale("", "")), "2");
+//        assertEquals(DayOfWeek.WEDNESDAY.getText(new Locale("", "")), "3");
+//        assertEquals(DayOfWeek.THURSDAY.getText(new Locale("", "")), "4");
+//        assertEquals(DayOfWeek.FRIDAY.getText(new Locale("", "")), "5");
+//        assertEquals(DayOfWeek.SATURDAY.getText(new Locale("", "")), "6");
+//        assertEquals(DayOfWeek.SUNDAY.getText(new Locale("", "")), "7");
 //    }
 
     //-----------------------------------------------------------------------
@@ -195,7 +185,7 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    // next()
+    // previous()
     //-----------------------------------------------------------------------
     public void test_previous() {
         assertEquals(DayOfWeek.MONDAY.previous(), DayOfWeek.SUNDAY);
@@ -208,9 +198,59 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
+    // plusDays()
+    //-----------------------------------------------------------------------
+    public void test_plusDays_monday() {
+        assertEquals(DayOfWeek.MONDAY.plusDays(0), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(1), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(2), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(3), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(4), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(5), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(6), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.MONDAY.plusDays(7), DayOfWeek.MONDAY);
+    }
+
+    public void test_plusDays_thursday() {
+        assertEquals(DayOfWeek.THURSDAY.plusDays(0), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(1), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(2), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(3), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(4), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(5), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(6), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.THURSDAY.plusDays(7), DayOfWeek.THURSDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusDays()
+    //-----------------------------------------------------------------------
+    public void test_minusDays_monday() {
+        assertEquals(DayOfWeek.MONDAY.minusDays(0), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(1), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(2), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(3), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(4), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(5), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(6), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.MONDAY.minusDays(7), DayOfWeek.MONDAY);
+    }
+
+    public void test_minusDays_thursday() {
+        assertEquals(DayOfWeek.THURSDAY.minusDays(0), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(1), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(2), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(3), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(4), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(5), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(6), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.THURSDAY.minusDays(7), DayOfWeek.THURSDAY);
+    }
+
+    //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------
-    public void test_matchesDate_monday() {
+    public void test_matchesDate() {
         assertEquals(DayOfWeek.MONDAY.matchesDate(LocalDate.date(2008, 5, 5)), true);
         assertEquals(DayOfWeek.TUESDAY.matchesDate(LocalDate.date(2008, 5, 6)), true);
         assertEquals(DayOfWeek.WEDNESDAY.matchesDate(LocalDate.date(2008, 5, 7)), true);
@@ -218,74 +258,28 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.FRIDAY.matchesDate(LocalDate.date(2008, 5, 9)), true);
         assertEquals(DayOfWeek.SATURDAY.matchesDate(LocalDate.date(2008, 5, 10)), true);
         assertEquals(DayOfWeek.SUNDAY.matchesDate(LocalDate.date(2008, 5, 11)), true);
+        
+        assertEquals(DayOfWeek.TUESDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.WEDNESDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.THURSDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.FRIDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.SATURDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.SUNDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesDate_nullLocalDate() {
-        LocalDate date = null;
-        DayOfWeek test = DayOfWeek.dayOfWeek(1);
-        test.matchesDate(date);
+        DayOfWeek.MONDAY.matchesDate((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------
-    // compareTo()
+    // toCalendrical()
     //-----------------------------------------------------------------------
-    public void test_compareTo() {
+    public void test_toCalendrical() {
         for (int i = 1; i <= 7; i++) {
-            DayOfWeek a = DayOfWeek.dayOfWeek(i);
-            for (int j = 1; j <= 7; j++) {
-                DayOfWeek b = DayOfWeek.dayOfWeek(j);
-                if (i < j) {
-                    assertEquals(a.compareTo(b) < 0, true);
-                    assertEquals(b.compareTo(a) > 0, true);
-                } else if (i > j) {
-                    assertEquals(a.compareTo(b) > 0, true);
-                    assertEquals(b.compareTo(a) < 0, true);
-                } else {
-                    assertEquals(a.compareTo(b), 0);
-                    assertEquals(b.compareTo(a), 0);
-                }
-            }
+            DayOfWeek test = DayOfWeek.dayOfWeek(i);
+            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
         }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_compareTo_nullDayOfWeek() {
-        DayOfWeek doy = null;
-        DayOfWeek test = DayOfWeek.MONDAY;
-        test.compareTo(doy);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expectedExceptions=ClassCastException.class)
-    public void test_compareTo_incorrectType() {
-        Comparable test = MonthOfYear.JANUARY;
-        test.compareTo("Incorrect type");
-    }
-
-    //-----------------------------------------------------------------------
-    // equals() / hashCode()
-    //-----------------------------------------------------------------------
-    public void test_equals() {
-        for (int i = 1; i <= 7; i++) {
-            DayOfWeek a = DayOfWeek.dayOfWeek(i);
-            for (int j = 1; j <= 7; j++) {
-                DayOfWeek b = DayOfWeek.dayOfWeek(j);
-                assertEquals(a.equals(b), i == j);
-                assertEquals(a.hashCode() == b.hashCode(), i == j);
-            }
-        }
-    }
-
-    public void test_equals_nullDayOfWeek() {
-        DayOfWeek doy = null;
-        DayOfWeek test = DayOfWeek.dayOfWeek(1);
-        assertEquals(test.equals(doy), false);
-    }
-
-    public void test_equals_incorrectType() {
-        MonthOfYear test = MonthOfYear.JANUARY;
-        assertEquals(test.equals("Incorrect type"), false);
     }
 
     //-----------------------------------------------------------------------

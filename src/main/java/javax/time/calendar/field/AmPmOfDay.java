@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.field;
 
+import java.util.Locale;
+
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
@@ -39,6 +41,9 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeMatcher;
+import javax.time.calendar.TimeProvider;
+import javax.time.calendar.format.DateTimeFormatSymbols;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * A representation of the half-day AM/PM value in the ISO-8601 calendar system.
@@ -90,7 +95,7 @@ public enum AmPmOfDay
      * Obtains an instance of <code>AmPmOfDay</code>.
      *
      * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
-     * @return the singleton AmPmOfDay instance
+     * @return the AmPmOfDay enum instance, never null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public static AmPmOfDay amPmOfDay(int amPmOfDay) {
@@ -102,6 +107,20 @@ public enum AmPmOfDay
             default:
                 throw new IllegalCalendarFieldValueException(rule(), amPmOfDay, 0, 1);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>AmPmOfDay</code> from a time provider.
+     * <p>
+     * This can be used extract the AM/PM value directly from any implementation
+     * of TimeProvider, including those in other calendar systems.
+     *
+     * @param timeProvider  the time provider to use, not null
+     * @return the AmPmOfDay enum instance, never null
+     */
+    public static AmPmOfDay amPmOfDay(TimeProvider timeProvider) {
+        return timeProvider.toLocalTime().getHourOfDay().getAmPm();
     }
 
     //-----------------------------------------------------------------------
@@ -124,14 +143,38 @@ public enum AmPmOfDay
         return amPmOfDay;
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>Calendrical</code>.
+     * Gets the AM/PM value as short text.
+     * <p>
+     * In English, this will return text of the form 'AM' or 'PM'.
+     * <p>
+     * If there is no textual mapping for the locale, then the value is
+     * returned as per {@link Integer#toString()}.
      *
-     * @return the calendrical representation for this instance, never null
+     * @param locale  the locale to use, not null
+     * @return the long text value of the day of week, never null
      */
-    public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
+    public String getShortText(Locale locale) {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(rule(), TextStyle.SHORT, amPmOfDay);
+        return text == null ? Integer.toString(amPmOfDay) : text;
+    }
+
+    /**
+     * Gets the AM/PM value as text.
+     * <p>
+     * In English, this will return text of the form 'AM' or 'PM'.
+     * <p>
+     * If there is no textual mapping for the locale, then the value is
+     * returned as per {@link Integer#toString()}.
+     *
+     * @param locale  the locale to use, not null
+     * @return the long text value of the day of week, never null
+     */
+    public String getText(Locale locale) {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(rule(), TextStyle.FULL, amPmOfDay);
+        return text == null ? Integer.toString(amPmOfDay) : text;
     }
 
     //-----------------------------------------------------------------------
@@ -187,6 +230,27 @@ public enum AmPmOfDay
      */
     public boolean matchesTime(LocalTime time) {
         return this == time.getHourOfDay().getAmPm();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this field to a <code>Calendrical</code>.
+     *
+     * @return the calendrical representation for this instance, never null
+     */
+    public Calendrical toCalendrical() {
+        return Calendrical.calendrical(rule(), getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * A string describing the AM/PM value.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "AmPmOfDay=" + name();
     }
 
 }

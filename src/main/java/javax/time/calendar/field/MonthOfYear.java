@@ -205,16 +205,6 @@ public enum MonthOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the next month of year wrapping so that the next month of year
      * is always returned.
      *
@@ -232,6 +222,39 @@ public enum MonthOfYear
      */
     public MonthOfYear previous() {
         return values()[(ordinal() + 12 - 1) % 12];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the MonthOfYear which is the specified number of months after
+     * this MonthOfYear.
+     * <p>
+     * The calculation wraps around the end of the year from December to January.
+     * The days to add may be negative.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to add, positive or negative
+     * @return the resulting MonthOfYear, never null
+     */
+    public MonthOfYear plusMonths(int months) {
+        return values()[(ordinal() + (months % 12)) % 12];
+    }
+
+    /**
+     * Returns the MonthOfYear which is the specified number of days before
+     * this MonthOfYear.
+     * <p>
+     * The calculation wraps around the start of the week from January to December.
+     * The days to subtract may be negative.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, positive or negative
+     * @return the resulting MonthOfYear, never null
+     */
+    public MonthOfYear minusMonths(int months) {
+        return values()[(ordinal() + 12 - (months % 12)) % 12];
     }
 
     //-----------------------------------------------------------------------
@@ -365,6 +388,7 @@ public enum MonthOfYear
         return DayOfMonth.dayOfMonth(lengthInDays(year));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the quarter that this month falls in.
      *
@@ -391,6 +415,17 @@ public enum MonthOfYear
         return (ordinal() % 3) + 1;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this field to a <code>Calendrical</code>.
+     *
+     * @return the calendrical representation for this instance, never null
+     */
+    public Calendrical toCalendrical() {
+        return Calendrical.calendrical(rule(), getValue());
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * A string describing the month of year object.
      *

@@ -33,17 +33,29 @@ package javax.time.calendar.field;
 
 import static org.testng.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjustor;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.MockDateProviderReturnsNull;
+import javax.time.calendar.MockDateResolverReturnsNull;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -57,6 +69,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfMonth {
 
+    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.dayOfMonth();
+    private static final Year YEAR_STANDARD = Year.isoYear(2007);
+    private static final Year YEAR_LEAP = Year.isoYear(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final int MAX_LENGTH = 31;
@@ -72,6 +87,18 @@ public class TestDayOfMonth {
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(DateAdjustor.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(DateMatcher.class.isAssignableFrom(DayOfMonth.class));
+    }
+
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        DayOfMonth test = DayOfMonth.dayOfMonth(1);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(test);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertEquals(ois.readObject(), test);
     }
 
     public void test_immutable() {
@@ -90,11 +117,16 @@ public class TestDayOfMonth {
     }
 
     //-----------------------------------------------------------------------
+    public void test_rule() {
+        assertEquals(DayOfMonth.rule(), RULE);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.dayOfMonth(i);
             assertEquals(test.getValue(), i);
-            assertSame(DayOfMonth.dayOfMonth(i), test);
+            assertEquals(DayOfMonth.dayOfMonth(i), test);
         }
     }
 
@@ -179,8 +211,12 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullDateProvider() {
-        LocalDate date = null;
-        DayOfMonth.dayOfMonth(date);
+        DayOfMonth.dayOfMonth((DateProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_badDateProvider() {
+        DayOfMonth.dayOfMonth(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -196,18 +232,28 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_april31() {
         LocalDate base = LocalDate.date(2007, 4, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.adjustDate(base);
+        try {
+            test.adjustDate(base);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), RULE);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_february29_notLeapYear() {
         LocalDate base = LocalDate.date(2007, 2, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(29);
-        test.adjustDate(base);
+        try {
+            test.adjustDate(base);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), RULE);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -230,25 +276,34 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_strictResolver_april31() {
         LocalDate base = LocalDate.date(2007, 4, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.adjustDate(base, DateResolvers.strict());
+        try {
+            test.adjustDate(base, DateResolvers.strict());
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), RULE);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_strictResolver_february29_notLeapYear() {
         LocalDate base = LocalDate.date(2007, 2, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(29);
-        test.adjustDate(base, DateResolvers.strict());
+        try {
+            test.adjustDate(base, DateResolvers.strict());
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), RULE);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_resolver_nullLocalDate() {
-        LocalDate date = null;
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.adjustDate(date, DateResolvers.strict());
+        test.adjustDate((LocalDate) null, DateResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -256,6 +311,13 @@ public class TestDayOfMonth {
         LocalDate date = LocalDate.date(2007, 1, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
         test.adjustDate(date, (DateResolver) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustDate_resolver_badResolver() {
+        LocalDate date = LocalDate.date(2007, 2, 1);
+        DayOfMonth test = DayOfMonth.dayOfMonth(31);
+        test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -294,71 +356,73 @@ public class TestDayOfMonth {
     // isValid()
     //-----------------------------------------------------------------------
     public void test_isValid_jan() {
-        Year year = Year.isoYear(2007);
         MonthOfYear moy = MonthOfYear.JANUARY;
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(year, moy), true);
+            assertEquals(test.isValid(YEAR_STANDARD, moy), true);
         }
     }
 
     public void test_isValid_apr() {
-        Year year = Year.isoYear(2007);
         MonthOfYear moy = MonthOfYear.APRIL;
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(year, moy), i <= 30);
+            assertEquals(test.isValid(YEAR_STANDARD, moy), i <= 30);
         }
     }
 
     public void test_isValid_febNotLeapYear() {
-        Year year = Year.isoYear(2007);
         MonthOfYear moy = MonthOfYear.FEBRUARY;
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(year, moy), i <= 28);
+            assertEquals(test.isValid(YEAR_STANDARD, moy), i <= 28);
         }
     }
 
     public void test_isValid_febLeapYear() {
-        Year year = Year.isoYear(2008);
         MonthOfYear moy = MonthOfYear.FEBRUARY;
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(year, moy), i <= 29);
+            assertEquals(test.isValid(YEAR_LEAP, moy), i <= 29);
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_nullYear_day1() {
-        Year year = null;
         MonthOfYear moy = MonthOfYear.FEBRUARY;
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.isValid(year, moy);
+        test.isValid((Year) null, moy);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_nullYear_day31() {
-        Year year = null;
         MonthOfYear moy = MonthOfYear.FEBRUARY;
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.isValid(year, moy);
+        test.isValid((Year) null, moy);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_nullMonthOfYear_day1() {
-        Year year = Year.isoYear(2007);
         MonthOfYear moy = null;
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.isValid(year, moy);
+        test.isValid(YEAR_STANDARD, moy);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_nullMonthOfYear_day31() {
-        Year year = Year.isoYear(2007);
         MonthOfYear moy = null;
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.isValid(year, moy);
+        test.isValid(YEAR_STANDARD, moy);
+    }
+
+    //-----------------------------------------------------------------------
+    // toCalendrical()
+    //-----------------------------------------------------------------------
+    public void test_toCalendrical() {
+        for (int i = 1; i <= MAX_LENGTH; i++) {
+            DayOfMonth test = DayOfMonth.dayOfMonth(i);
+            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -388,13 +452,6 @@ public class TestDayOfMonth {
         DayOfMonth doy = null;
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
         test.compareTo(doy);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expectedExceptions=ClassCastException.class)
-    public void test_compareTo_incorrectType() {
-        Comparable test = DayOfMonth.dayOfMonth(1);
-        test.compareTo("Incorrect type");
     }
 
     //-----------------------------------------------------------------------

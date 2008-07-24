@@ -46,11 +46,16 @@ import javax.time.calendar.TestOffsetDateTime_instants;
 import javax.time.calendar.TestOffsetTime;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.TestZonedDateTime;
+import javax.time.calendar.field.TestAmPmOfDay;
 import javax.time.calendar.field.TestDayOfMonth;
 import javax.time.calendar.field.TestDayOfMonthRule;
 import javax.time.calendar.field.TestDayOfWeek;
 import javax.time.calendar.field.TestDayOfYear;
+import javax.time.calendar.field.TestHourOfDay;
+import javax.time.calendar.field.TestMinuteOfHour;
 import javax.time.calendar.field.TestMonthOfYear;
+import javax.time.calendar.field.TestSecondOfMinute;
+import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatters;
@@ -104,10 +109,15 @@ public class AllTest {
             TestZonedDateTime.class,
             TestZoneOffset.class,
             // calendar fields
+            TestAmPmOfDay.class,
             TestDayOfMonth.class,
             TestDayOfWeek.class,
             TestDayOfYear.class,
+            TestHourOfDay.class,
+            TestMinuteOfHour.class,
             TestMonthOfYear.class,
+            TestSecondOfMinute.class,
+            TestYear.class,
             // calendar rules
             TestDayOfMonthRule.class,
             // format

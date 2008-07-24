@@ -42,6 +42,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeMatcher;
+import javax.time.calendar.TimeProvider;
 
 /**
  * A representation of a hour of day in the ISO-8601 calendar system.
@@ -92,7 +93,7 @@ public final class HourOfDay
      * Obtains an instance of <code>HourOfDay</code>.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @return the created HourOfDay, never null
+     * @return the HourOfDay instance, never null
      * @throws IllegalCalendarFieldValueException if the hourOfDay is invalid
      */
     public static HourOfDay hourOfDay(int hourOfDay) {
@@ -115,13 +116,27 @@ public final class HourOfDay
      *
      * @param amPm  whether the hour is AM or PM, not null
      * @param hourOfAmPm  the hour within AM/PM, from 0 to 11
-     * @return the created HourOfDay, never null
+     * @return the HourOfDay instance, never null
      * @throws IllegalCalendarFieldValueException if the input is invalid
      */
     public static HourOfDay hourOfDay(AmPmOfDay amPm, int hourOfAmPm) {
         ISOChronology.INSTANCE.hourOfAmPm().checkValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return hourOfDay(hourOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>HourOfDay</code> from a time provider.
+     * <p>
+     * This can be used extract the hour of day directly from any implementation
+     * of TimeProvider, including those in other calendar systems.
+     *
+     * @param timeProvider  the time provider to use, not null
+     * @return the HourOfDay instance, never null
+     */
+    public static HourOfDay hourOfDay(TimeProvider timeProvider) {
+        return timeProvider.toLocalTime().getHourOfDay();
     }
 
     //-----------------------------------------------------------------------
@@ -151,68 +166,6 @@ public final class HourOfDay
      */
     public int getValue() {
         return hourOfDay;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this hour of day instance to another.
-     *
-     * @param otherHourOfDay  the other hour of day instance, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherHourOfDay is null
-     */
-    public int compareTo(HourOfDay otherHourOfDay) {
-        int thisValue = this.hourOfDay;
-        int otherValue = otherHourOfDay.hourOfDay;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this instance equal to that specified, evaluating the hour of day.
-     *
-     * @param otherHourOfDay  the other hour of day instance, null returns false
-     * @return true if the hour of day is the same
-     */
-    @Override
-    public boolean equals(Object otherHourOfDay) {
-        if (this == otherHourOfDay) {
-            return true;
-        }
-        if (otherHourOfDay instanceof HourOfDay) {
-            return hourOfDay == ((HourOfDay) otherHourOfDay).hourOfDay;
-        }
-        return false;
-    }
-
-    /**
-     * A hashcode for the hour of day object.
-     *
-     * @return a suitable hashcode
-     */
-    @Override
-    public int hashCode() {
-        return hourOfDay;
-    }
-
-    /**
-     * A string describing the hour of day object.
-     *
-     * @return a string describing this object
-     */
-    @Override
-    public String toString() {
-        return "HourOfDay=" + getValue();
     }
 
     //-----------------------------------------------------------------------
@@ -309,6 +262,68 @@ public final class HourOfDay
      */
     public int getClockHourOfDay() {
         return (hourOfDay == 0 ? 24 : hourOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this field to a <code>Calendrical</code>.
+     *
+     * @return the calendrical representation for this instance, never null
+     */
+    public Calendrical toCalendrical() {
+        return Calendrical.calendrical(rule(), getValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this hour of day instance to another.
+     *
+     * @param otherHourOfDay  the other hour of day instance, not null
+     * @return the comparator value, negative if less, postive if greater
+     * @throws NullPointerException if otherHourOfDay is null
+     */
+    public int compareTo(HourOfDay otherHourOfDay) {
+        int thisValue = this.hourOfDay;
+        int otherValue = otherHourOfDay.hourOfDay;
+        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Is this instance equal to that specified, evaluating the hour of day.
+     *
+     * @param otherHourOfDay  the other hour of day instance, null returns false
+     * @return true if the hour of day is the same
+     */
+    @Override
+    public boolean equals(Object otherHourOfDay) {
+        if (this == otherHourOfDay) {
+            return true;
+        }
+        if (otherHourOfDay instanceof HourOfDay) {
+            return hourOfDay == ((HourOfDay) otherHourOfDay).hourOfDay;
+        }
+        return false;
+    }
+
+    /**
+     * A hashcode for the hour of day object.
+     *
+     * @return a suitable hashcode
+     */
+    @Override
+    public int hashCode() {
+        return hourOfDay;
+    }
+
+    /**
+     * A string describing the hour of day object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "HourOfDay=" + getValue();
     }
 
 }

@@ -42,6 +42,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjustor;
 import javax.time.calendar.TimeMatcher;
+import javax.time.calendar.TimeProvider;
 
 /**
  * A representation of a minute of hour in the ISO-8601 calendar system.
@@ -112,6 +113,20 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of <code>MinuteOfHour</code> from a time provider.
+     * <p>
+     * This can be used extract the minute of hour directly from any implementation
+     * of TimeProvider, including those in other calendar systems.
+     *
+     * @param timeProvider  the time provider to use, not null
+     * @return the MinuteOfHour instance, never null
+     */
+    public static MinuteOfHour minuteOfHour(TimeProvider timeProvider) {
+        return timeProvider.toLocalTime().getMinuteOfHour();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Constructs an instance with the specified minute of hour.
      *
      * @param minuteOfHour  the minute of hour to represent
@@ -137,6 +152,37 @@ public final class MinuteOfHour
      */
     public int getValue() {
         return minuteOfHour;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the the minute of hour represented by this object,
+     * returning a new time.
+     * <p>
+     * Only the minute of hour field is adjusted in the result. The other time
+     * fields are unaffected.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        if (this == time.getMinuteOfHour()) {
+            return time;
+        }
+        return LocalTime.time(time.getHourOfDay(), this, time.getSecondOfMinute(), time.getNanoOfSecond());
+    }
+
+    /**
+     * Checks if the input time has the same minute of hour that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this == time.getMinuteOfHour();
     }
 
     //-----------------------------------------------------------------------
@@ -199,37 +245,6 @@ public final class MinuteOfHour
     @Override
     public String toString() {
         return "MinuteOfHour=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adjusts a time to have the the minute of hour represented by this object,
-     * returning a new time.
-     * <p>
-     * Only the minute of hour field is adjusted in the result. The other time
-     * fields are unaffected.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getMinuteOfHour()) {
-            return time;
-        }
-        return LocalTime.time(time.getHourOfDay(), this, time.getSecondOfMinute(), time.getNanoOfSecond());
-    }
-
-    /**
-     * Checks if the input time has the same minute of hour that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return this == time.getMinuteOfHour();
     }
 
 }

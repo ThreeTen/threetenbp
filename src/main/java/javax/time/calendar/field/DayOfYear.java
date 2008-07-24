@@ -102,8 +102,7 @@ public final class DayOfYear
      * Obtains an instance of <code>DayOfYear</code> from a value.
      * <p>
      * A day of year object represents one of the 366 days of the year, from
-     * 1 to 366. These are cached internally and returned as singletons, so
-     * they can be compared using ==.
+     * 1 to 366.
      *
      * @param dayOfYear  the day of year to represent, from 1 to 366
      * @return the DayOfYear singleton, never null
@@ -242,17 +241,6 @@ public final class DayOfYear
         return LocalDate.date(year, moy, dom);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Adjusts a date to have the value of this day of year, returning a new date.
      * <p>
@@ -279,7 +267,6 @@ public final class DayOfYear
         return date.getDayOfYear() == this;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Checks if this day of year is valid for the specified year.
      *
@@ -291,6 +278,16 @@ public final class DayOfYear
             throw new NullPointerException("The year must not be null");
         }
         return (dayOfYear < 366 || year.isLeap());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this field to a <code>Calendrical</code>.
+     *
+     * @return the calendrical representation for this instance, never null
+     */
+    public Calendrical toCalendrical() {
+        return Calendrical.calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

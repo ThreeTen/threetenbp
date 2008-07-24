@@ -95,8 +95,7 @@ public final class DayOfMonth
      * Obtains an instance of <code>DayOfMonth</code> from a value.
      * <p>
      * A day of month object represents one of the 31 days of the month, from
-     * 1 to 31. These are cached internally and returned as singletons, so
-     * you can use == for comparison.
+     * 1 to 31.
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the DayOfMonth singleton, never null
@@ -160,16 +159,6 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Adjusts a date to have the value of this day of month, returning a new date.
      * <p>
      * If the day of month is invalid for the year and month then an exception
@@ -222,7 +211,6 @@ public final class DayOfMonth
         return date.getDayOfMonth() == this;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Checks if this day of month is valid for the specified month and year.
      *
@@ -238,6 +226,16 @@ public final class DayOfMonth
             throw new NullPointerException("The month of year must not be null");
         }
         return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this field to a <code>Calendrical</code>.
+     *
+     * @return the calendrical representation for this instance, never null
+     */
+    public Calendrical toCalendrical() {
+        return Calendrical.calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------
