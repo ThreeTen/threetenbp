@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,6 +41,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
@@ -59,10 +61,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthDay {
 
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.INSTANCE.dayOfMonth();
+    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.INSTANCE.year();
     private static final DateTimeFieldRule RULE_MONTH = ISOChronology.INSTANCE.monthOfYear();
-    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
-    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.INSTANCE.dayOfMonth();
     private MonthDay TEST_07_15;
 
     @BeforeMethod
@@ -280,9 +281,9 @@ public class TestMonthDay {
     }
 
     public void test_get() {
-        assertEquals(TEST_07_15.get(MonthOfYear.rule()), TEST_07_15.getMonthOfYear().getValue());
-        assertEquals(TEST_07_15.get(DayOfMonth.rule()), TEST_07_15.getDayOfMonth().getValue());
-
+        assertEquals(TEST_07_15.get(RULE_MONTH), TEST_07_15.getMonthOfYear().getValue());
+        assertEquals(TEST_07_15.get(RULE_DOM), TEST_07_15.getDayOfMonth().getValue());
+        
         // TODO
 //        assertEquals(TEST_07_15.get(QuarterOfYear.rule()), TEST_07_15.getMonthOfYear().getQuarterOfYear().getValue());
 //        assertEquals(TEST_07_15.get(ISOChronology.INSTANCE.monthOfQuarter()), TEST_07_15.getMonthOfYear().getMonthOfQuarter());
@@ -290,7 +291,7 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupported() {
-        TEST_07_15.get(Year.rule());
+        TEST_07_15.get(RULE_YEAR);
     }
 
     //-----------------------------------------------------------------------
@@ -396,8 +397,8 @@ public class TestMonthDay {
     public void test_withMonthOfYear_tooLow() {
         try {
             MonthDay.monthDay(6, 30).withMonthOfYear(0);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE_DOM);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), RULE_MONTH);
             throw ex;
         }
     }
@@ -406,8 +407,8 @@ public class TestMonthDay {
     public void test_withMonthOfYear_tooHigh() {
         try {
             MonthDay.monthDay(6, 30).withMonthOfYear(13);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE_DOM);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), RULE_MONTH);
             throw ex;
         }
     }
@@ -442,7 +443,7 @@ public class TestMonthDay {
     public void test_withDayOfMonth_tooLow() {
         try {
             MonthDay.monthDay(6, 30).withDayOfMonth(0);
-        } catch (InvalidCalendarFieldException ex) {
+        } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getFieldRule(), RULE_DOM);
             throw ex;
         }
@@ -452,7 +453,7 @@ public class TestMonthDay {
     public void test_withDayOfMonth_tooHigh() {
         try {
             MonthDay.monthDay(6, 30).withDayOfMonth(32);
-        } catch (InvalidCalendarFieldException ex) {
+        } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getFieldRule(), RULE_DOM);
             throw ex;
         }
@@ -723,6 +724,18 @@ public class TestMonthDay {
         assertEquals(a.hashCode(), a.hashCode());
         MonthDay b = MonthDay.monthDay(m, d);
         assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_hashCode_unique() {
+        Year leapYear = Year.isoYear(2008);
+        Set<Integer> uniques = new HashSet<Integer>(366);
+        for (int i = 1; i <= 12; i++) {
+            for (int j = 1; j <= 31; j++) {
+                if (DayOfMonth.dayOfMonth(j).isValid(leapYear, MonthOfYear.monthOfYear(i))) {
+                    assertTrue(uniques.add(MonthDay.monthDay(i, j).hashCode()));
+                }
+            }
+        }
     }
 
     //-----------------------------------------------------------------------

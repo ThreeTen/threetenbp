@@ -163,9 +163,7 @@ public final class MonthDay
     /**
      * Obtains an instance of <code>MonthDay</code> from a Calendrical.
      * <p>
-     * This method will create a MonthDay from the Calendrical using either
-     * the fields or the date. If both are present, the values in the field-value
-     * map must match those in the date.
+     * This method will create a MonthDay from the Calendrical.
      *
      * @param calendricalProvider  the calendrical provider to use, not null
      * @return the MonthDay instance, never null
