@@ -223,4 +223,12 @@ public class TestAmPmOfDay {
         assertEquals(AmPmOfDay.PM.toString(), "AmPmOfDay=PM");
     }
 
+    //-----------------------------------------------------------------------
+    // generated methods
+    //-----------------------------------------------------------------------
+    public void test_enum() {
+        assertEquals(AmPmOfDay.valueOf("AM"), AmPmOfDay.AM);
+        assertEquals(AmPmOfDay.values()[0], AmPmOfDay.AM);
+    }
+
 }

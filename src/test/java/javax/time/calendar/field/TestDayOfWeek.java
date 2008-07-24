@@ -295,4 +295,12 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.SUNDAY.toString(), "DayOfWeek=SUNDAY");
     }
 
+    //-----------------------------------------------------------------------
+    // generated methods
+    //-----------------------------------------------------------------------
+    public void test_enum() {
+        assertEquals(DayOfWeek.valueOf("MONDAY"), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.values()[0], DayOfWeek.MONDAY);
+    }
+
 }

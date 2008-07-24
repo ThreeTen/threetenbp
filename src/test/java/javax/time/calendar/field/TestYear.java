@@ -50,6 +50,7 @@ import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
+import javax.time.calendar.UnsupportedCalendarFieldException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -123,6 +124,31 @@ public class TestYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_badDateProvider() {
         Year.year(new MockDateProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // isSupported()
+    //-----------------------------------------------------------------------
+    public void test_isSupported() {
+        assertEquals(Year.isoYear(1999).isSupported(RULE), true);
+        assertEquals(Year.isoYear(1999).isSupported(ISOChronology.INSTANCE.weekyear()), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // get()
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(Year.isoYear(1999).get(RULE), 1999);
+    }
+
+    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    public void test_get_unsupportedField() {
+        Year.isoYear(1999).get(ISOChronology.INSTANCE.weekyear());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_null() {
+        Year.isoYear(1999).get((DateTimeFieldRule) null);
     }
 
     //-----------------------------------------------------------------------
@@ -470,12 +496,24 @@ public class TestYear {
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
+                    assertEquals(a.isAfter(b), false);
+                    assertEquals(a.isBefore(b), true);
+                    assertEquals(b.isAfter(a), true);
+                    assertEquals(b.isBefore(a), false);
                 } else if (i > j) {
                     assertEquals(a.compareTo(b), 1);
                     assertEquals(b.compareTo(a), -1);
+                    assertEquals(a.isAfter(b), true);
+                    assertEquals(a.isBefore(b), false);
+                    assertEquals(b.isAfter(a), false);
+                    assertEquals(b.isBefore(a), true);
                 } else {
                     assertEquals(a.compareTo(b), 0);
                     assertEquals(b.compareTo(a), 0);
+                    assertEquals(a.isAfter(b), false);
+                    assertEquals(a.isBefore(b), false);
+                    assertEquals(b.isAfter(a), false);
+                    assertEquals(b.isBefore(a), false);
                 }
             }
         }

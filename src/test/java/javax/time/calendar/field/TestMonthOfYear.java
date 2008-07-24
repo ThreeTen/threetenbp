@@ -594,4 +594,12 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.DECEMBER.toString(), "MonthOfYear=DECEMBER");
     }
 
+    //-----------------------------------------------------------------------
+    // generated methods
+    //-----------------------------------------------------------------------
+    public void test_enum() {
+        assertEquals(MonthOfYear.valueOf("JANUARY"), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.values()[0], MonthOfYear.JANUARY);
+    }
+
 }
