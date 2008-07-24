@@ -48,7 +48,6 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
@@ -782,7 +781,6 @@ public class TestLocalDateTime {
 
     // TODO: enable all assertions
     public void test_get() {
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(Era.RULE), Era.AD.getValue());
 //        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MilleniumOfEra.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getMilleniumOfEra());
 //        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(CenturyOfEra.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getCenturyOfEra());
 //        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(DecadeOfCentury.RULE), TEST_2007_07_15_12_30_40_987654321.getYear().getDecadeOfCentury());
@@ -3010,8 +3008,6 @@ public class TestLocalDateTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches_DateMatcher() {
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(Era.AD));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(Era.BC));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(Year.isoYear(2007)));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(Year.isoYear(2006)));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(QuarterOfYear.Q3));

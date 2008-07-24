@@ -117,31 +117,6 @@ public final class Year
     }
 
     /**
-     * Obtains an instance of <code>Year</code> using an era.
-     * <p>
-     * This method accepts a year and era to create a year object.
-     *
-     * @param era  the era to represent, either BC or AD, not null
-     * @param yearOfEra  the year within the era to represent, from 1 to MAX_YEAR
-     * @return the year object, never null
-     * @throws IllegalCalendarFieldValueException if either field is invalid
-     */
-    public static Year year(Era era, int yearOfEra) {
-        if (era == null) {
-            throw new NullPointerException("era must not be null");
-        }
-        if (yearOfEra < 1) {
-            // TODO: Field should be yearOfEra
-            throw new IllegalCalendarFieldValueException(ISOChronology.INSTANCE.year(), yearOfEra, 1, MAX_YEAR);
-        }
-        if (era == Era.AD) {
-            return Year.isoYear(yearOfEra);
-        } else {
-            return Year.isoYear((-yearOfEra) + 1);
-        }
-    }
-
-    /**
      * Obtains an instance of <code>Year</code> from a date provider.
      * <p>
      * This can be used extract a year object directly from any implementation
@@ -435,25 +410,6 @@ public final class Year
 //        rule().checkValue(isoYear);
 //        return null;
 //    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the best estimate for the era, either AD or BC.
-     * <p>
-     * This uses a best historic fit approach, as the ISO Chronology is
-     * inaccurate for historical dates.
-     * <p>
-     * The year 2 is estimated as AD/CE.<br />
-     * The year 1 is estimated as AD/CE.<br />
-     * The year 0 is estimated as BC/BCE.<br />
-     * The year -1 is estimated as BC/BCE.<br />
-     *
-     * @return the era, never null
-     */
-    public Era getEra() {
-        // TODO: ISO Year doesn't have an era
-        return (year > 0 ? Era.AD : Era.BC);
-    }
 
     /**
      * Gets the year of era, from 1 to MAX_YEAR, which is used in combination

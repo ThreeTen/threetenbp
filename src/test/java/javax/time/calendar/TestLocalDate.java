@@ -46,7 +46,6 @@ import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
@@ -269,7 +268,6 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-//        assertTrue(TEST_2007_07_15.isSupported(Era.RULE));
 //        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
 //        assertTrue(TEST_2007_07_15.isSupported(CenturyOfEra.RULE));
 //        assertTrue(TEST_2007_07_15.isSupported(DecadeOfCentury.RULE));
@@ -299,7 +297,6 @@ public class TestLocalDate {
 
     // TODO: enable all assertions
     public void test_get() {
-        assertEquals(TEST_2007_07_15.get(Era.RULE), Era.AD.getValue());
 //        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
 //        assertEquals(TEST_2007_07_15.get(CenturyOfEra.RULE), TEST_2007_07_15.getYear().getCenturyOfEra());
 //        assertEquals(TEST_2007_07_15.get(DecadeOfCentury.RULE), TEST_2007_07_15.getYear().getDecadeOfCentury());
@@ -1371,8 +1368,6 @@ public class TestLocalDate {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        assertTrue(TEST_2007_07_15.matches(Era.AD));
-        assertFalse(TEST_2007_07_15.matches(Era.BC));
         assertTrue(TEST_2007_07_15.matches(Year.isoYear(2007)));
         assertFalse(TEST_2007_07_15.matches(Year.isoYear(2006)));
         assertTrue(TEST_2007_07_15.matches(QuarterOfYear.Q3));

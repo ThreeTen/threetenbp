@@ -42,7 +42,6 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.Era;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.Period;
@@ -69,7 +68,7 @@ public class TestFluentAPI {
         date = clock().today().plus(Days.days(3));
         
         date = date(2007, 3, 20);
-        date = date(year(Era.AD, 2007), march(), dayOfMonth(20));
+        date = date(year(2007), march(), dayOfMonth(20));
         date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
         date = calendar().year(1972).december().dayOfMonth(3).build();
         date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
