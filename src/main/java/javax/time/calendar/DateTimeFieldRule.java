@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -55,7 +56,7 @@ import javax.time.period.PeriodUnit;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule> {
+public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>, Serializable {
 
     /** A Math context for calculating fractions from values. */
     private static final MathContext FRACTION_CONTEXT = new MathContext(9, RoundingMode.FLOOR);

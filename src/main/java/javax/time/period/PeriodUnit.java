@@ -31,6 +31,7 @@
  */
 package javax.time.period;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -47,13 +48,17 @@ import java.util.concurrent.ConcurrentMap;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public class PeriodUnit implements Comparable<PeriodUnit> {
+public class PeriodUnit implements Comparable<PeriodUnit>, Serializable {
 
     /**
      * Map of all instances of <code>PeriodUnit</code>.
      */
     private static final ConcurrentMap<String, PeriodUnit> INSTANCES =
         new ConcurrentHashMap<String, PeriodUnit>();
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 82373741L;
 
     /** The name of the rule, not null. */
     private final String name;

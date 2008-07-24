@@ -561,15 +561,9 @@ public class TestLocalDate {
         }
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooSmall() {
-        try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            String actual = Long.toString(((long) Year.MIN_YEAR) - 1);
-            assertEquals(ex.getMessage(), "Illegal value for Year field, value " + actual +
-                " is not in the range " + MIN_YEAR_STR + " to " + MAX_YEAR_STR);
-        }
+        LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
     }
 
     public void test_plusYears_int_DateResolver_normal() {
@@ -608,14 +602,9 @@ public class TestLocalDate {
         }
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooSmall() {
-        try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
-            fail();
-        } catch (CalendricalException ex) {
-            long year = ((long) Year.MIN_YEAR) - 1;
-            assertTrue(ex.getMessage().startsWith("Illegal value for Year field, value " + year));
-        }
+        LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------

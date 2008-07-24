@@ -73,6 +73,6 @@ public class TestISOChronology {
     }
 
     public void test_toString() {
-        assertEquals(ISOChronology.class.getSimpleName(), ISOChronology.INSTANCE.toString());
+        assertEquals(ISOChronology.INSTANCE.toString(), "ISO");
     }
 }
