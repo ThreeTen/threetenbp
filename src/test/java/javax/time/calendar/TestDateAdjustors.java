@@ -43,6 +43,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -62,10 +63,12 @@ public class TestDateAdjustors {
     private static final Year YEAR_2007 = year(2007);
     private static final Year YEAR_2008 = year(2008);
 
-    public void test_constructor() {
+    @SuppressWarnings("unchecked")
+    public void test_constructor() throws Exception {
         for (Constructor constructor : DateAdjustors.class.getDeclaredConstructors()) {
-            assertFalse(Modifier.isPublic(constructor.getModifiers()));
-            assertFalse(Modifier.isProtected(constructor.getModifiers()));
+            assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
         }
     }
 

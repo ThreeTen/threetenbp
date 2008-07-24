@@ -35,6 +35,7 @@ import static org.testng.Assert.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -46,10 +47,13 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestMathUtils {
-    public void test_constructor() {
+
+    @SuppressWarnings("unchecked")
+    public void test_constructor() throws Exception {
         for (Constructor constructor : MathUtils.class.getDeclaredConstructors()) {
-            assertFalse(Modifier.isPublic(constructor.getModifiers()));
-            assertFalse(Modifier.isProtected(constructor.getModifiers()));
+            assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
         }
     }
 
