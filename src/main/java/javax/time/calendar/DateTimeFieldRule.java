@@ -434,8 +434,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the text for this field throwing an exception if the field cannot
-     * be obtained.
+     * Gets the text for this field.
      * <p>
      * The value is queried using {@link #getValue(CalendricalProvider)}. The text
      * is then obtained for that value. If there is no textual mapping, then
