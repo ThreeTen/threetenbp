@@ -96,7 +96,8 @@ public final class DateTimeFormatSymbols {
 //                .getPool(DateFormatSymbolsProvider.class);
 //        return pool.getAvailableLocales();
 //        return new Locale[] {Locale.US};
-        return DateFormatSymbols.getAvailableLocales();
+        //TODO: check
+        return Locale.getAvailableLocales();
     }
 
     /**
@@ -138,7 +139,7 @@ public final class DateTimeFormatSymbols {
 //        }
 //
         FormatUtil.checkNotNull(locale, "locale");
-        DateFormatSymbols symbols = DateFormatSymbols.getInstance(locale);
+        DateFormatSymbols symbols = new DateFormatSymbols(locale);
         return new DateTimeFormatSymbols(locale, symbols);
     }
 
