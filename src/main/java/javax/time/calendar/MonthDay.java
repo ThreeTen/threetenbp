@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.period.Periods;
 
 /**
  * A month-day without a time zone in the ISO-8601 calendar system,
@@ -90,7 +89,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
-     * @return a MonthDay object, never null
+     * @return the MonthDay instance, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
@@ -119,7 +118,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a MonthDay object, never null
+     * @return the MonthDay instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
@@ -139,30 +138,12 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a MonthDay object, never null
+     * @return the MonthDay instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
         return monthDay(MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
-    }
-
-    /**
-     * Obtains an instance of <code>MonthDay</code> from a Calendrical.
-     * <p>
-     * This method will create a MonthDay from the Calendrical using either
-     * the fields or the date. If both are present, the values in the field-value
-     * map must match those in the date.
-     *
-     * @param calendrical  the calendrical to convert, not null
-     * @return a MonthDay object, never null
-     * @throws UnsupportedCalendarFieldException if either field cannot be found
-     * @throws InvalidCalendarFieldException if the either field is invalid
-     */
-    public static MonthDay monthDay(Calendrical calendrical) {
-        int month = calendrical.getValue(MonthOfYear.rule());
-        int dom = calendrical.getValue(DayOfMonth.rule());
-        return monthDay(month, dom);
     }
 
     /**
@@ -172,11 +153,30 @@ public final class MonthDay
      * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return a MonthDay object, never null
+     * @return the MonthDay instance, never null
      */
     public static MonthDay monthDay(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
         return new MonthDay(date.getMonthOfYear(), date.getDayOfMonth());
+    }
+
+    /**
+     * Obtains an instance of <code>MonthDay</code> from a Calendrical.
+     * <p>
+     * This method will create a MonthDay from the Calendrical using either
+     * the fields or the date. If both are present, the values in the field-value
+     * map must match those in the date.
+     *
+     * @param calendricalProvider  the calendrical provider to use, not null
+     * @return the MonthDay instance, never null
+     * @throws UnsupportedCalendarFieldException if either field cannot be found
+     * @throws InvalidCalendarFieldException if the value for either field is invalid
+     */
+    public static MonthDay monthDay(CalendricalProvider calendricalProvider) {
+        Calendrical calendrical = calendricalProvider.toCalendrical();
+        int month = calendrical.getValue(MonthOfYear.rule());
+        int dom = calendrical.getValue(DayOfMonth.rule());
+        return monthDay(month, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -208,6 +208,17 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the chronology that describes the calendar system rules for
+     * this month-day.
+     *
+     * @return the ISO chronology, never null
+     */
+    public ISOChronology getChronology() {
+        return ISOChronology.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if the specified calendar field is supported.
      * <p>
      * This method queries whether this <code>MonthDay</code> can
@@ -217,7 +228,7 @@ public final class MonthDay
      * @return true if the field is supported
      */
     public boolean isSupported(DateTimeFieldRule field) {
-        return field.isSupported(Periods.DAYS, Periods.YEARS);
+        return field != null && toCalendrical().getValueQuiet(field) != null;
     }
 
     /**
@@ -371,13 +382,13 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay rollDayOfMonth(int days) {
-        int monthLength = month.lengthInDays(SAMPLE_YEAR);
         if (days == 0) {
             return this;
         }
+        int monthLength = month.lengthInDays(SAMPLE_YEAR);
         int newDOM0 = (days % monthLength) + (day.getValue() - 1);
         newDOM0 = (newDOM0 + monthLength) % monthLength;
-        return withMonthOfYear(++newDOM0);
+        return withDayOfMonth(++newDOM0);
     }
 
     //-----------------------------------------------------------------------
@@ -390,6 +401,7 @@ public final class MonthDay
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date) {
         return adjustDate(date, DateResolvers.strict());
@@ -404,7 +416,7 @@ public final class MonthDay
      * @param date  the date to be adjusted, not null
      * @param resolver  the date resolver to use if the day of month is invalid, not null
      * @return the adjusted date, never null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
@@ -517,7 +529,7 @@ public final class MonthDay
         int monthValue = month.getValue();
         int dayValue = day.getValue();
         return new StringBuilder(10).append("--")
-            .append(monthValue < 10 ? "-0" : "-").append(monthValue)
+            .append(monthValue < 10 ? "0" : "").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .toString();
     }

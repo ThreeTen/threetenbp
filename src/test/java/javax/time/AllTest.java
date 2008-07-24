@@ -40,6 +40,7 @@ import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
+import javax.time.calendar.TestMonthDay;
 import javax.time.calendar.TestOffsetDate;
 import javax.time.calendar.TestOffsetDateTime;
 import javax.time.calendar.TestOffsetDateTime_instants;
@@ -102,6 +103,7 @@ public class AllTest {
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,
+            TestMonthDay.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,
