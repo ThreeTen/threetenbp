@@ -930,6 +930,15 @@ public class TestCalendrical {
         assertEquals(b.equals(b), true);
     }
 
+    public void test_equals_fields_offset_equal() {
+        Calendrical a = Calendrical.calendrical(null, OFFSET_0100, null);
+        Calendrical b = Calendrical.calendrical(null, ZoneOffset.zoneOffset("+01:00"), null);
+        assertEquals(a.equals(b), true);
+        assertEquals(a.hashCode() == b.hashCode(), true);
+        assertEquals(a.equals(a), true);
+        assertEquals(b.equals(b), true);
+    }
+
     public void test_equals_fields_offset_notEqual() {
         Calendrical a = Calendrical.calendrical(null, OFFSET_0100, null);
         Calendrical b = Calendrical.calendrical(null, OFFSET_0200, null);
@@ -944,6 +953,15 @@ public class TestCalendrical {
         Calendrical b = Calendrical.calendrical(null, null, null);
         assertEquals(a.equals(b), false);
         //assertEquals(a.hashCode() == b.hashCode(), false);  // doesn't have to be so
+        assertEquals(a.equals(a), true);
+        assertEquals(b.equals(b), true);
+    }
+
+    public void test_equals_fields_zone_equal() {
+        Calendrical a = Calendrical.calendrical(null, null, TimeZone.timeZone(OFFSET_0100));
+        Calendrical b = Calendrical.calendrical(null, null, ZONE_0100);
+        assertEquals(a.equals(b), true);
+        assertEquals(a.hashCode() == b.hashCode(), true);
         assertEquals(a.equals(a), true);
         assertEquals(b.equals(b), true);
     }
