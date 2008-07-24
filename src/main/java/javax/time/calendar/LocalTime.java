@@ -1215,7 +1215,7 @@ public final class LocalTime
      * The result of addition to a LocalTime allowing the expression of
      * any overflow in days.
      */
-    public static class Overflow {
+    public static final class Overflow {
         /** The LocalTime after the addition. */
         private final LocalTime time;
         /** The overflow in days. */
