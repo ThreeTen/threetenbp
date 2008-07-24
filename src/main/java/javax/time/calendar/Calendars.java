@@ -35,7 +35,6 @@ import java.util.TimeZone;
 
 import javax.time.Clock;
 import javax.time.calendar.field.DayOfMonth;
-import javax.time.calendar.field.Era;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
@@ -81,20 +80,6 @@ public final class Calendars {
      */
     public static Year year(int year) {
         return Year.isoYear(year);
-    }
-
-    /**
-     * Gets an instance of Year using an era.
-     * <p>
-     * This method accepts a year and era to create a year object.
-     *
-     * @param era  the era to represent, either BC or AD, not null
-     * @param yearOfEra  the year within the era to represent, from 1 to MAX_VALUE
-     * @return the year object, never null
-     * @throws IllegalCalendarFieldValueException if any value is invalid
-     */
-    public static Year year(Era era, int yearOfEra) {
-        return Year.year(era, yearOfEra);
     }
 
     /**
