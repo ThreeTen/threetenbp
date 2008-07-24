@@ -774,7 +774,7 @@ public final class OffsetDate
      * @return true if the date part matches the other date, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return date.matchesDate(date);
+        return this.date.matchesDate(date);
     }
 
     /**

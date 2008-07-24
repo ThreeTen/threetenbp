@@ -1473,15 +1473,42 @@ public class TestOffsetDate {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        OffsetDate test = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.matches(Year.isoYear(2008)), true);
-        assertEquals(test.matches(Year.isoYear(2007)), false);
+        assertTrue(TEST_2007_07_15_PONE.matches(Era.AD));
+        assertFalse(TEST_2007_07_15_PONE.matches(Era.BC));
+        assertTrue(TEST_2007_07_15_PONE.matches(Year.isoYear(2007)));
+        assertFalse(TEST_2007_07_15_PONE.matches(Year.isoYear(2006)));
+        assertTrue(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q3));
+        assertFalse(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q2));
+        assertTrue(TEST_2007_07_15_PONE.matches(MonthOfYear.JULY));
+        assertFalse(TEST_2007_07_15_PONE.matches(MonthOfYear.JUNE));
+        assertTrue(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(15)));
+        assertFalse(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(14)));
+        assertTrue(TEST_2007_07_15_PONE.matches(DayOfWeek.SUNDAY));
+        assertFalse(TEST_2007_07_15_PONE.matches(DayOfWeek.MONDAY));
     }
 
-    @Test(expectedExceptions=NullPointerException.class )
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_matches_null() {
         OffsetDate base = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
         base.matches(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // toLocalDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
+        LocalDate t = LocalDate.date(year, month, day);
+        assertEquals(OffsetDate.date(year, month, day, offset).toLocalDate(), t);
+    }
+
+    //-----------------------------------------------------------------------
+    // toCalendrical()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toCalendrical(int year, int month, int day, ZoneOffset offset) {
+        OffsetDate t = OffsetDate.date(year, month, day, offset);
+        assertEquals(t.toCalendrical(), Calendrical.calendrical(t.getDate(), null, t.getOffset(), null));
     }
 
     //-----------------------------------------------------------------------
@@ -1527,6 +1554,13 @@ public class TestOffsetDate {
     public void test_compareTo_null() {
         OffsetDate a = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
         a.compareTo(null);
+    }
+
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonOffsetDate() {
+       Comparable c = TEST_2007_07_15_PONE;
+       c.compareTo(new Object());
     }
 
     //-----------------------------------------------------------------------
@@ -1639,4 +1673,60 @@ public class TestOffsetDate {
         assertEquals(str, expected);
     }
 
+    //-----------------------------------------------------------------------
+    // matchesDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_true(int y, int m, int d, ZoneOffset offset) {
+        OffsetDate a = OffsetDate.date(y, m, d, offset);
+        LocalDate b = LocalDate.date(y, m, d);
+        assertEquals(a.matchesDate(b), true);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_year_differs(int y, int m, int d, ZoneOffset offset) {
+        OffsetDate a = OffsetDate.date(y, m, d, offset);
+        LocalDate b = LocalDate.date(y + 1, m, d);
+        assertEquals(a.matchesDate(b), false);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_month_differs(int y, int m, int d, ZoneOffset offset) {
+        OffsetDate a = OffsetDate.date(y, m, d, offset);
+        LocalDate b = LocalDate.date(y, m + 1, d);
+        assertEquals(a.matchesDate(b), false);
+    }
+    @Test(dataProvider="sampleDates")
+    public void test_matchesDate_false_day_differs(int y, int m, int d, ZoneOffset offset) {
+        OffsetDate a = OffsetDate.date(y, m, d, offset);
+        LocalDate b = LocalDate.date(y, m, d + 1);
+        assertEquals(a.matchesDate(b), false);
+    }
+
+    public void test_matchesDate_itself_true() {
+        assertEquals(TEST_2007_07_15_PONE.matchesDate(TEST_2007_07_15_PONE.getDate()), true);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesDate_null() {
+        TEST_2007_07_15_PONE.matchesDate(null);
+    }
+    
+    //-----------------------------------------------------------------------
+    // adjustDate()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_adjustDate(int y, int m, int d, ZoneOffset offset) {
+        OffsetDate a = OffsetDate.date(y, m, d, offset);
+        assertSame(a.adjustDate(TEST_2007_07_15_PONE.getDate()), a.getDate());
+        assertSame(TEST_2007_07_15_PONE.adjustDate(a.getDate()), TEST_2007_07_15_PONE.getDate());
+    }
+
+    public void test_adjustDate_same() {
+        assertSame(OffsetDate.date(2007, 7, 15, OFFSET_PONE).adjustDate(TEST_2007_07_15_PONE.getDate()), 
+              TEST_2007_07_15_PONE.getDate());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustDate_null() {
+        TEST_2007_07_15_PONE.adjustDate(null);
+    }
 }
