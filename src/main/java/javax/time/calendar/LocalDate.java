@@ -169,7 +169,7 @@ public final class LocalDate
     }
 
     /**
-     * Obtains an instance of <code>LocalDate</code> from a modified julian days.
+     * Obtains an instance of <code>LocalDate</code> from a number of modified julian days.
      *
      * @param mjDays  the modified julian day equivalent to the LocalDate
      * @return a LocalDate object, never null
@@ -358,7 +358,7 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Resolves the date, handling incorrcetly implemented resolvers.
+     * Resolves the date, handling incorrectly implemented resolvers.
      *
      * @param dateResolver  the resolver, not null
      * @param year  the year, not null
@@ -578,7 +578,7 @@ public final class LocalDate
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as <code>plusMonts(months, DateResolvers.previousValid())</code>.
+     * This method does the same as <code>plusMonths(months, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -768,7 +768,7 @@ public final class LocalDate
      * </ol>
      * <p>
      * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-01-31. Instead of returning an invalid result, the last valid day
+     * 2007-02-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-02-28, is selected instead.
      * <p>
      * This method does the same as <code>minusMonts(months, DateResolvers.previousValid())</code>.

@@ -160,6 +160,11 @@ public class TestLocalDate {
         LocalDate.date(2007, MonthOfYear.JANUARY, 32);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_factory_date_intsMonth_nullMonth() {
+        LocalDate.date(2007, null, 30);
+    }
+
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_date_intsMonth_yearTooLow() {
         LocalDate.date(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);

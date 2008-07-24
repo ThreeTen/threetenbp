@@ -947,7 +947,7 @@ public final class LocalDateTime
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
-     * This method does the same as <code>plusMonts(months, DateResolvers.previousValid())</code>.
+     * This method does the same as <code>plusMonths(months, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

@@ -59,7 +59,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements DateProvider, CalendricalProvider, Comparable<OffsetDate>, Serializable {
+        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjustor, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -312,7 +312,7 @@ public final class OffsetDate
      * be an adjustor that set the date avoiding weekends, or one that sets the
      * date to the last day of the month.
      * <p>
-     * The offset has no effect on the adjustment.
+     * The offset has no effect on and is not affected by the adjustment.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -329,11 +329,14 @@ public final class OffsetDate
     /**
      * Returns a copy of this OffsetDate with the year value altered.
      * <p>
+     * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated OffsetDate, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @see #withYear(int,DateResolver)
      */
     public OffsetDate withYear(int year) {
         LocalDate newDate = date.withYear(year);
@@ -341,16 +344,51 @@ public final class OffsetDate
     }
 
     /**
+     * Returns a copy of this OffsetDate with the year value altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDate, never null
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     */
+    public OffsetDate withYear(int year, DateResolver dateResolver) {
+        LocalDate newDate = date.withYear(year, dateResolver);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
      * Returns a copy of this OffsetDate with the month of year value altered.
+     * <p>
+     * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated OffsetDate, never null
      * @throws IllegalCalendarFieldValueException if the month value is invalid
+     * @see #withMonthOfYear(int,DateResolver)
      */
     public OffsetDate withMonthOfYear(int monthOfYear) {
         LocalDate newDate = date.withMonthOfYear(monthOfYear);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the month of year value altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDate, never null
+     * @throws IllegalCalendarFieldValueException if the month of year value is invalid
+     */
+    public OffsetDate withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
+        LocalDate newDate = date.withMonthOfYear(monthOfYear, dateResolver);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -413,14 +451,39 @@ public final class OffsetDate
      * invalid date 2009-02-29 (standard year). Instead of returning an invalid
      * result, the last valid day of the month, 2009-02-28, is selected instead.
      * <p>
+     * This method does the same as <code>plusYears(years, DateResolvers.previousValid())</code>.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, may be negative
      * @return a new updated OffsetDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
+     * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
     public OffsetDate plusYears(int years) {
         LocalDate newDate = date.plusYears(years);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified period in years added.
+     * <p>
+     * This method add the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Add the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to add, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate plusYears(int years, DateResolver dateResolver) {
+        LocalDate newDate = date.plusYears(years, dateResolver);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -438,14 +501,39 @@ public final class OffsetDate
      * 2007-04-31. Instead of returning an invalid result, the last valid day
      * of the month, 2007-04-30, is selected instead.
      * <p>
+     * This method does the same as <code>plusMonths(months, DateResolvers.previousValid())</code>.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to add, may be negative
      * @return a new updated OffsetDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
+     * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
     public OffsetDate plusMonths(int months) {
         LocalDate newDate = date.plusMonths(months);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified period in months added.
+     * <p>
+     * This method add the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Add the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to add, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate plusMonths(int months, DateResolver dateResolver) {
+        LocalDate newDate = date.plusMonths(months, dateResolver);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -465,7 +553,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusWeeks(int weeks) {
-        LocalDate newDate = date.plusDays(weeks * 7);
+        LocalDate newDate = date.plusWeeks(weeks);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -484,8 +572,178 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate plusDays(int days) {
+    public OffsetDate plusDays(long days) {
         LocalDate newDate = date.plusDays(days);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this OffsetDate with the specified period subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param period  the period to subtract, not null
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate minus(PeriodView period) {
+        LocalDate newDate = date.minus(period);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified periods subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periods  the periods to subtract, no nulls
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate minus(PeriodView... periods) {
+        LocalDate newDate = date.minus(periods);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this OffsetDate with the specified period in years subtracted.
+     * <p>
+     * This method subtract the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Subtract the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2008-02-29 (leap year) minus one year would result in the
+     * invalid date 2007-02-29 (standard year). Instead of returning an invalid
+     * result, the last valid day of the month, 2007-02-28, is selected instead.
+     * <p>
+     * This method does the same as <code>minusYears(years, DateResolvers.previousValid())</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     * @see #minusYears(int, javax.time.calendar.DateResolver)
+     */
+    public OffsetDate minusYears(int years) {
+        LocalDate newDate = date.minusYears(years);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified period in years subtracted.
+     * <p>
+     * This method subtract the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Subtract the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate minusYears(int years, DateResolver dateResolver) {
+        LocalDate newDate = date.minusYears(years, dateResolver);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified period in months subtracted.
+     * <p>
+     * This method subtract the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Subtract the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2007-03-31 minus one month would result in the invalid date
+     * 2007-02-31. Instead of returning an invalid result, the last valid day
+     * of the month, 2007-02-28, is selected instead.
+     * <p>
+     * This method does the same as <code>minusMonths(months, DateResolvers.previousValid())</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     * @see #minusMonths(int, javax.time.calendar.DateResolver)
+     */
+    public OffsetDate minusMonths(int months) {
+        LocalDate newDate = date.minusMonths(months);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified period in months subtracted.
+     * <p>
+     * This method subtract the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Subtract the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate minusMonths(int months, DateResolver dateResolver) {
+        LocalDate newDate = date.minusMonths(months, dateResolver);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified period in weeks subtracted.
+     * <p>
+     * This method subtract the specified amount in weeks to the days field incrementing
+     * the month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2009-01-07 minus one week would result in the 2008-12-31.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to subtract, may be negative
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate minusWeeks(int weeks) {
+        LocalDate newDate = date.minusWeeks(weeks);
+        return newDate == date ? this : new OffsetDate(newDate, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the specified number of days subtracted.
+     * <p>
+     * This method subtract the specified amount to the days field decrementing the
+     * month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2009-01-01 minus one day would result in the 2008-12-31.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a new updated OffsetDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDate minusDays(long days) {
+        LocalDate newDate = date.minusDays(days);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -506,6 +764,27 @@ public final class OffsetDate
      */
     public boolean matches(DateMatcher matcher) {
         return date.matches(matcher);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the date part of this object is equal to the input date
+     *
+     * @param date  the date to match, not null
+     * @return true if the date part matches the other date, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return date.matchesDate(date);
+    }
+
+    /**
+     * Adjusts a date to have the value of the date part of this object.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return matchesDate(date) ? date : this.date;
     }
 
     //-----------------------------------------------------------------------
