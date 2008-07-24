@@ -31,8 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.Calendars.*;
+import static javax.time.calendar.LocalDate.*;
+import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.DayOfWeek.*;
+import static javax.time.calendar.field.Year.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -60,8 +62,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateMatchers {
 
-    private static final Year YEAR_2007 = year(2007);
-    private static final Year YEAR_2008 = year(2008);
+    private static final Year YEAR_2007 = isoYear(2007);
+    private static final Year YEAR_2008 = isoYear(2008);
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {

@@ -31,8 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.Calendars.*;
+import static javax.time.calendar.LocalDate.*;
+import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.DayOfWeek.*;
+import static javax.time.calendar.field.Year.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -60,8 +62,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateAdjustors {
 
-    private static final Year YEAR_2007 = year(2007);
-    private static final Year YEAR_2008 = year(2008);
+    private static final Year YEAR_2007 = isoYear(2007);
+    private static final Year YEAR_2008 = isoYear(2008);
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {
@@ -388,7 +390,7 @@ public class TestDateAdjustors {
                     }
                 } else {
                     assertEquals(test.getYear(), YEAR_2008);
-                    assertEquals(test.getMonthOfYear(), january());
+                    assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
                     assertEquals(test.getDayOfMonth().getValue(), 1);
                 }
             }
@@ -396,13 +398,13 @@ public class TestDateAdjustors {
     }
 
     public void test_nextNonWeekendDay_yearChange() {
-        LocalDate friday = LocalDate.date(year(2010), MonthOfYear.DECEMBER, dayOfMonth(31));
+        LocalDate friday = LocalDate.date(isoYear(2010), MonthOfYear.DECEMBER, dayOfMonth(31));
         LocalDate monday = DateAdjustors.nextNonWeekendDay().adjustDate(friday);
-        assertEquals(LocalDate.date(year(2011), january(), dayOfMonth(3)), monday);
+        assertEquals(LocalDate.date(isoYear(2011), MonthOfYear.JANUARY, dayOfMonth(3)), monday);
 
-        LocalDate saturday = LocalDate.date(year(2011), MonthOfYear.DECEMBER, dayOfMonth(31));
+        LocalDate saturday = LocalDate.date(isoYear(2011), MonthOfYear.DECEMBER, dayOfMonth(31));
         monday = DateAdjustors.nextNonWeekendDay().adjustDate(saturday);
-        assertEquals(LocalDate.date(year(2012), january(), dayOfMonth(2)), monday);
+        assertEquals(LocalDate.date(isoYear(2012), MonthOfYear.JANUARY, dayOfMonth(2)), monday);
     }
 
     //-----------------------------------------------------------------------
@@ -455,7 +457,7 @@ public class TestDateAdjustors {
                     assertSame(month, MonthOfYear.DECEMBER);
                     assertEquals(date.getDayOfMonth().getValue(), 31);
                     assertEquals(test.getYear(), YEAR_2008);
-                    assertSame(test.getMonthOfYear(), january());
+                    assertSame(test.getMonthOfYear(), MonthOfYear.JANUARY);
                     assertEquals(test.getDayOfMonth().getValue(), 7);
                 }
             }
@@ -521,7 +523,7 @@ public class TestDateAdjustors {
                         assertSame(month, MonthOfYear.DECEMBER);
                         assertTrue(date.getDayOfMonth().getValue() > 24);
                         assertEquals(test.getYear(), YEAR_2008);
-                        assertSame(test.getMonthOfYear(), january());
+                        assertSame(test.getMonthOfYear(), MonthOfYear.JANUARY);
                         assertTrue(test.getDayOfMonth().getValue() < 8);
                     }
                 }
@@ -591,7 +593,7 @@ public class TestDateAdjustors {
                         assertSame(month, MonthOfYear.DECEMBER);
                         assertTrue(date.getDayOfMonth().getValue() > 24);
                         assertEquals(test.getYear(), YEAR_2008);
-                        assertSame(test.getMonthOfYear(), january());
+                        assertSame(test.getMonthOfYear(), MonthOfYear.JANUARY);
                         assertTrue(test.getDayOfMonth().getValue() < 8);
                     }
                 }

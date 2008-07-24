@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import static javax.time.calendar.Calendars.*;
-
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,7 +67,7 @@ public class Performance {
      * @param args  the arguments
      */
     public static void main(String[] args) {
-        LocalTime time = time(12, 30, 20);
+        LocalTime time = LocalTime.time(12, 30, 20);
         System.out.println(time);
         
         List<LocalDateTime> jsrs = setupDateTime();

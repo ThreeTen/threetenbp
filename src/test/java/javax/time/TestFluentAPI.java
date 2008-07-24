@@ -31,18 +31,23 @@
  */
 package javax.time;
 
-import static javax.time.calendar.Calendars.*;
 import static javax.time.calendar.DateAdjustors.*;
+import static javax.time.calendar.LocalDate.*;
+import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.DayOfWeek.*;
+import static javax.time.calendar.field.HourOfDay.*;
+import static javax.time.calendar.field.MinuteOfHour.*;
+import static javax.time.calendar.field.MonthOfYear.*;
+import static javax.time.calendar.field.Year.*;
 import static javax.time.period.Periods.*;
 
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.Period;
 import javax.time.period.field.Days;
@@ -55,7 +60,7 @@ import javax.time.period.field.Days;
 public class TestFluentAPI {
 
     public static void main(String[] args) {
-        LocalTime tod = clock().currentTime();
+        LocalTime tod = Clock.system().currentTime();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6), minutes(2));
         if (tod.matches(AmPmOfDay.AM)) {
@@ -63,19 +68,19 @@ public class TestFluentAPI {
         }
         
         LocalDate date = null;
-        date = clock().today().plusDays(3);
-        date = clock().today().plus(days(3));
-        date = clock().today().plus(Days.days(3));
+        date = Clock.system().today().plusDays(3);
+        date = Clock.system().today().plus(days(3));
+        date = Clock.system().today().plus(Days.days(3));
         
         date = date(2007, 3, 20);
-        date = date(year(2007), march(), dayOfMonth(20));
-        date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
-        date = calendar().year(1972).december().dayOfMonth(3).build();
-        date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
-        date = calendar().zoneID("Europe/London").year(2007).august().dayOfMonth(2).build();
-        
-        date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
-        date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
+        date = date(isoYear(2007), MARCH, dayOfMonth(20));
+//        date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
+//        date = calendar().year(1972).december().dayOfMonth(3).build();
+//        date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
+//        date = calendar().zoneID("Europe/London").year(2007).august().dayOfMonth(2).build();
+//        
+//        date = calendar().zoneID("America/New_York").year(2007).march().dayOfMonth(20).buildLenient();
+//        date = calendar().defaultZone().year(2007).march().dayOfMonth(20).buildLenient();
         
         // date = LocalDate.date(clock().currentMonth(), dayOfMonth(6));
         
@@ -86,7 +91,7 @@ public class TestFluentAPI {
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
-        date = date.with(year(2009));
+        date = date.with(isoYear(2009));
         date = date.with(monthOfYear(6));
         date = date.with(MonthOfYear.AUGUST);
         MonthOfYear.DECEMBER.adjustDate(date, DateResolvers.strict());
@@ -127,14 +132,14 @@ public class TestFluentAPI {
 //        CalendarDT<LocalTime> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
 //        int min = dtime.time().getMinuteOfHour();
         
-        MonthDay md = MonthDay.monthDay(february(), dayOfMonth(4));
-        md = md.with(march());
+        MonthDay md = MonthDay.monthDay(FEBRUARY, dayOfMonth(4));
+        md = md.with(MARCH);
         md = md.rollDayOfMonth(3);
         
         DayOfMonth.rule().getMaximumValue();
         date.getMonthOfYear().maxLengthInDays();
 //        DayOfMonth.RULE.getMaximumValue(date);
-        february().maxLengthInDays();
+        FEBRUARY.maxLengthInDays();
 //        DayOfMonth.RULE.getMaximumValue(february());
         
         DayOfWeek dow = MONDAY;
