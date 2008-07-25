@@ -34,14 +34,6 @@ package javax.time.calendar.format;
 import java.util.Locale;
 
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.field.DayOfMonth;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -80,11 +72,11 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_DATE;
     static {
         ISO_DATE = new DateTimeFormatterBuilder()
-            .appendValue(Year.rule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendValue(MonthOfYear.rule(), 2)
+            .appendValue(ISOChronology.monthOfYearRule(), 2)
             .appendLiteral('-')
-            .appendValue(DayOfMonth.rule(), 2)
+            .appendValue(ISOChronology.dayOfMonthRule(), 2)
             .toFormatter();
     }
 
@@ -104,12 +96,12 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_TIME;
     static {
         ISO_TIME = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.INSTANCE.hourOfDay(), 2)
+            .appendValue(ISOChronology.hourOfDayRule(), 2)
             .appendLiteral(':')
-            .appendValue(ISOChronology.INSTANCE.minuteOfHour(), 2)
+            .appendValue(ISOChronology.minuteOfHourRule(), 2)
             .appendLiteral(':')
-            .appendValue(ISOChronology.INSTANCE.secondOfMinute(), 2)
-            .appendFraction(ISOChronology.INSTANCE.nanoOfSecond(), 0, 9)
+            .appendValue(ISOChronology.secondOfMinuteRule(), 2)
+            .appendFraction(ISOChronology.nanoOfSecondRule(), 0, 9)
             .toFormatter();
     }
 
@@ -132,9 +124,9 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_ORDINAL_DATE;
     static {
         ISO_ORDINAL_DATE = new DateTimeFormatterBuilder()
-            .appendValue(Year.rule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
-            .appendValue(DayOfYear.rule(), 3)
+            .appendValue(ISOChronology.dayOfYearRule(), 3)
             .toFormatter();
     }
 
@@ -157,9 +149,9 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter BASIC_ISO_DATE;
     static {
         BASIC_ISO_DATE = new DateTimeFormatterBuilder()
-            .appendValue(Year.rule(), 4, 10, SignStyle.EXCEEDS_PAD)
-            .appendValue(MonthOfYear.rule(), 2)
-            .appendValue(DayOfMonth.rule(), 2)
+            .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(ISOChronology.monthOfYearRule(), 2)
+            .appendValue(ISOChronology.dayOfMonthRule(), 2)
             .toFormatter();
     }
 
@@ -182,19 +174,19 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter RFC_1123_DATE_TIME;
     static {
         RFC_1123_DATE_TIME = new DateTimeFormatterBuilder()
-            .appendText(DayOfWeek.rule(), TextStyle.SHORT)
+            .appendText(ISOChronology.dayOfWeekRule(), TextStyle.SHORT)
             .appendLiteral(", ")
-            .appendValue(DayOfMonth.rule(), 2)
+            .appendValue(ISOChronology.dayOfMonthRule(), 2)
             .appendLiteral(' ')
-            .appendText(MonthOfYear.rule(), TextStyle.SHORT)
+            .appendText(ISOChronology.monthOfYearRule(), TextStyle.SHORT)
             .appendLiteral(' ')
-            .appendValue(Year.rule(), 4, 4, SignStyle.NEGATIVE_ERROR)
+            .appendValue(ISOChronology.yearRule(), 4, 4, SignStyle.NEGATIVE_ERROR)
             .appendLiteral(' ')
-            .appendValue(HourOfDay.rule(), 2)
+            .appendValue(ISOChronology.hourOfDayRule(), 2)
             .appendLiteral(':')
-            .appendValue(MinuteOfHour.rule(), 2)
+            .appendValue(ISOChronology.minuteOfHourRule(), 2)
             .appendLiteral(':')
-            .appendValue(SecondOfMinute.rule(), 2)
+            .appendValue(ISOChronology.secondOfMinuteRule(), 2)
             .appendLiteral(' ')
             .appendOffset("Z", false, true)
             .toFormatter()

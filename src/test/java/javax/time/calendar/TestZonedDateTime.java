@@ -520,17 +520,17 @@ public class TestZonedDateTime {
     // isSupported(DateTimeFieldRule)
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.year()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.monthOfYear()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.dayOfMonth()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.dayOfWeek()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.dayOfYear()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.yearRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.monthOfYearRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.dayOfMonthRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.dayOfWeekRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.dayOfYearRule()), true);
         
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.hourOfDay()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.minuteOfHour()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.secondOfMinute()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.nanoOfSecond()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.INSTANCE.hourOfAmPm()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.hourOfDayRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.minuteOfHourRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.secondOfMinuteRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.nanoOfSecondRule()), true);
+        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.hourOfAmPmRule()), true);
     }
 
     //-----------------------------------------------------------------------
@@ -539,11 +539,11 @@ public class TestZonedDateTime {
     public void test_get_DateTimeFieldRule() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        assertEquals(test.get(ISOChronology.INSTANCE.hourOfDay()), 23);
-        assertEquals(test.get(ISOChronology.INSTANCE.minuteOfHour()), 30);
-        assertEquals(test.get(ISOChronology.INSTANCE.secondOfMinute()), 59);
-        assertEquals(test.get(ISOChronology.INSTANCE.hourOfAmPm()), 11);
-        assertEquals(test.get(ISOChronology.INSTANCE.amPmOfDay()), 1);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), 23);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), 59);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), 11);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class )

@@ -172,8 +172,8 @@ public final class MonthDay
      */
     public static MonthDay monthDay(CalendricalProvider calendricalProvider) {
         Calendrical calendrical = calendricalProvider.toCalendrical();
-        int month = calendrical.getValue(MonthOfYear.rule());
-        int dom = calendrical.getValue(DayOfMonth.rule());
+        int month = calendrical.getValue(ISOChronology.monthOfYearRule());
+        int dom = calendrical.getValue(ISOChronology.dayOfMonthRule());
         return monthDay(month, dom);
     }
 
@@ -444,7 +444,9 @@ public final class MonthDay
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(MonthOfYear.rule(), month.getValue(), DayOfMonth.rule(), day.getValue());
+        return Calendrical.calendrical(
+                ISOChronology.monthOfYearRule(), month.getValue(),
+                ISOChronology.dayOfMonthRule(), day.getValue());
     }
 
     //-----------------------------------------------------------------------

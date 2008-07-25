@@ -40,6 +40,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
@@ -51,28 +52,42 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestISOChronology {
+
+    @SuppressWarnings("unchecked")
     public void test_constructor() {
         for (Constructor constructor : ISOChronology.class.getDeclaredConstructors()) {
-            assertFalse(Modifier.isPublic(constructor.getModifiers()));
-            assertFalse(Modifier.isProtected(constructor.getModifiers()));
+            assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         }
     }
-    
+
     public void test_serialization() throws IOException, ClassNotFoundException {
         ISOChronology chronology = ISOChronology.INSTANCE;
         assertTrue(chronology instanceof Serializable);
-
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(chronology);
         oos.close();
-
+        
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
                 baos.toByteArray()));
         assertSame(ois.readObject(), chronology);
     }
 
+    public void test_immutable() {
+        Class<ISOChronology> cls = ISOChronology.class;
+        assertTrue(Modifier.isPublic(cls.getModifiers()));
+        assertTrue(Modifier.isFinal(cls.getModifiers()));
+        Field[] fields = cls.getDeclaredFields();
+        for (Field field : fields) {
+            assertTrue(Modifier.isPrivate(field.getModifiers()));
+            assertTrue(Modifier.isFinal(field.getModifiers()));
+        }
+    }
+
+    //-----------------------------------------------------------------------
     public void test_toString() {
         assertEquals(ISOChronology.INSTANCE.toString(), "ISO");
     }
+
 }

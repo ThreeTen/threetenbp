@@ -46,10 +46,8 @@ import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.WeekOfMonth;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
@@ -268,54 +266,42 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-//        assertTrue(TEST_2007_07_15.isSupported(MilleniumOfEra.RULE));
-//        assertTrue(TEST_2007_07_15.isSupported(CenturyOfEra.RULE));
-//        assertTrue(TEST_2007_07_15.isSupported(DecadeOfCentury.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.year()));
-//        assertTrue(TEST_2007_07_15.isSupported(YearOfEra.RULE));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.quarterOfYear()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.monthOfYear()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.monthOfQuarter()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfMonth()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfWeek()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.dayOfYear()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.weekOfMonth()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.weekOfWeekyear()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.weekyear()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.yearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.quarterOfYearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.monthOfYearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.monthOfQuarterRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfMonthRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfWeekRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfYearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfMonthRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfWeekyearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekyearRule()));
         
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.hourOfDay()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.minuteOfHour()));
-//        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.minuteOfDay()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.secondOfMinute()));
-//        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.secondOfDay()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
+        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.hourOfDayRule()));
+        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.minuteOfHourRule()));
+        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.secondOfMinuteRule()));
+        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.nanoOfSecondRule()));
+        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.hourOfAmPmRule()));
+        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.amPmOfDayRule()));
         
         assertFalse(TEST_2007_07_15.isSupported(null));
     }
 
-    // TODO: enable all assertions
     public void test_get() {
-//        assertEquals(TEST_2007_07_15.get(MilleniumOfEra.RULE), TEST_2007_07_15.getYear().getMilleniumOfEra());
-//        assertEquals(TEST_2007_07_15.get(CenturyOfEra.RULE), TEST_2007_07_15.getYear().getCenturyOfEra());
-//        assertEquals(TEST_2007_07_15.get(DecadeOfCentury.RULE), TEST_2007_07_15.getYear().getDecadeOfCentury());
-        assertEquals(TEST_2007_07_15.get(Year.rule()), TEST_2007_07_15.getYear().getValue());
-//        assertEquals(TEST_2007_07_15.get(YearOfEra.RULE), TEST_2007_07_15.getYear().getYearOfEra());
-        assertEquals(TEST_2007_07_15.get(QuarterOfYear.rule()), TEST_2007_07_15.getMonthOfYear().getQuarterOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(MonthOfYear.rule()), TEST_2007_07_15.getMonthOfYear().getValue());
-//        assertEquals(TEST_2007_07_15.get(MonthOfQuarter.RULE), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
-        assertEquals(TEST_2007_07_15.get(DayOfMonth.rule()), TEST_2007_07_15.getDayOfMonth().getValue());
-        assertEquals(TEST_2007_07_15.get(DayOfWeek.rule()), TEST_2007_07_15.getDayOfWeek().getValue());
-        assertEquals(TEST_2007_07_15.get(DayOfYear.rule()), TEST_2007_07_15.getDayOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(WeekOfMonth.rule()), WeekOfMonth.weekOfMonth(TEST_2007_07_15).getValue());
-        assertEquals(TEST_2007_07_15.get(WeekOfWeekyear.rule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15).getValue());
-        assertEquals(TEST_2007_07_15.get(Weekyear.rule()), Weekyear.weekyear(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.yearRule()), TEST_2007_07_15.getYear().getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.quarterOfYearRule()), TEST_2007_07_15.getMonthOfYear().getQuarterOfYear().getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.monthOfYearRule()), TEST_2007_07_15.getMonthOfYear().getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.monthOfQuarterRule()), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfMonthRule()), TEST_2007_07_15.getDayOfMonth().getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfWeekRule()), TEST_2007_07_15.getDayOfWeek().getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15.getDayOfYear().getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.weekOfWeekyearRule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.weekyearRule()), Weekyear.weekyear(TEST_2007_07_15).getValue());
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupported() {
-        TEST_2007_07_15.get(HourOfDay.rule());
+        TEST_2007_07_15.get(ISOChronology.hourOfDayRule());
     }
 
     //-----------------------------------------------------------------------

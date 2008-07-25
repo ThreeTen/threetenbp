@@ -85,7 +85,7 @@ public final class MinuteOfHour
      * @return the minute of hour rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.minuteOfHour();
+        return ISOChronology.minuteOfHourRule();
     }
 
     //-----------------------------------------------------------------------

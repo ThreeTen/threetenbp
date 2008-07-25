@@ -87,7 +87,7 @@ public enum AmPmOfDay
      * @return the AM/PM rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.amPmOfDay();
+        return ISOChronology.amPmOfDayRule();
     }
 
     //-----------------------------------------------------------------------

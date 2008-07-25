@@ -90,7 +90,7 @@ public enum QuarterOfYear implements CalendricalProvider, DateMatcher {
      * @return the quarter of year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.quarterOfYear();
+        return ISOChronology.quarterOfYearRule();
     }
 
     //-----------------------------------------------------------------------

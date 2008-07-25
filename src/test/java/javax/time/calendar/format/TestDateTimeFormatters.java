@@ -74,7 +74,7 @@ public class TestDateTimeFormatters {
             DateTimeFormatters.isoDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             assertEquals(ex.getValue(), null);
         }
     }

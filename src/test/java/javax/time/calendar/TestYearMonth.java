@@ -61,9 +61,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestYearMonth {
 
-    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.INSTANCE.year();
-    private static final DateTimeFieldRule RULE_MONTH = ISOChronology.INSTANCE.monthOfYear();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.INSTANCE.dayOfMonth();
+    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule RULE_MONTH = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
     private YearMonth TEST_2008_06;
 
     @BeforeMethod
@@ -252,24 +252,22 @@ public class TestYearMonth {
         assertTrue(TEST_2008_06.isSupported(RULE_MONTH));
         
         // TODO
-//        assertTrue(TEST_07_15.isSupported(ISOChronology.INSTANCE.quarterOfYear()));
-//        assertTrue(TEST_07_15.isSupported(ISOChronology.INSTANCE.monthOfQuarter()));
+//        assertTrue(TEST_07_15.isSupported(ISOChronology.quarterOfYearRule()));
+//        assertTrue(TEST_07_15.isSupported(ISOChronology.monthOfQuarterRule()));
         
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.dayOfMonth()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.dayOfWeek()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.dayOfYear()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.weekOfMonth()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.weekOfWeekyear()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.weekyear()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.dayOfMonthRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.dayOfWeekRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.dayOfYearRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.weekOfMonthRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.weekOfWeekyearRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.weekyearRule()));
         
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.hourOfDay()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.minuteOfHour()));
-//        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.minuteOfDay()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.secondOfMinute()));
-//        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.INSTANCE.secondOfDay()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.nanoOfSecond()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.hourOfAmPm()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.INSTANCE.amPmOfDay()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.hourOfDayRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.minuteOfHourRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.secondOfMinuteRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.nanoOfSecondRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.hourOfAmPmRule()));
+        assertFalse(TEST_2008_06.isSupported(ISOChronology.amPmOfDayRule()));
         
         assertFalse(TEST_2008_06.isSupported(null));
     }
@@ -280,7 +278,7 @@ public class TestYearMonth {
         
         // TODO
 //        assertEquals(TEST_07_15.get(QuarterOfYear.rule()), TEST_07_15.getMonthOfYear().getQuarterOfYear().getValue());
-//        assertEquals(TEST_07_15.get(ISOChronology.INSTANCE.monthOfQuarter()), TEST_07_15.getMonthOfYear().getMonthOfQuarter());
+//        assertEquals(TEST_07_15.get(ISOChronology.monthOfQuarterRule()), TEST_07_15.getMonthOfYear().getMonthOfQuarter());
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)

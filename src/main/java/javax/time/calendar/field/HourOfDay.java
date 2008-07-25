@@ -85,7 +85,7 @@ public final class HourOfDay
      * @return the hour of day rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.hourOfDay();
+        return ISOChronology.hourOfDayRule();
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class HourOfDay
      * @throws IllegalCalendarFieldValueException if the input is invalid
      */
     public static HourOfDay hourOfDay(AmPmOfDay amPm, int hourOfAmPm) {
-        ISOChronology.INSTANCE.hourOfAmPm().checkValue(hourOfAmPm);
+        ISOChronology.hourOfAmPmRule().checkValue(hourOfAmPm);
         int hourOfDay = amPm.getValue() * 12 + hourOfAmPm;
         return hourOfDay(hourOfDay);
     }

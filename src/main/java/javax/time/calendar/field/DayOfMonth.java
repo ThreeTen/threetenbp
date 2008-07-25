@@ -87,7 +87,7 @@ public final class DayOfMonth
      * @return the day of month rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.dayOfMonth();
+        return ISOChronology.dayOfMonthRule();
     }
 
     //-----------------------------------------------------------------------

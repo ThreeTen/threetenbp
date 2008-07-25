@@ -40,7 +40,6 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.WeekOfMonth;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
@@ -197,37 +196,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the week-based-year field in the ISO chronology.
-     * <p>
-     * This field is the year that results from calculating weeks with the
-     * ISO-8601 algorithm. See {@link #weekOfWeekyear()} for details.
-     * <p>
-     * The week year will either be 52 or 53 weeks long, depending on the
-     * result of the algorithm for a particular date.
-     *
-     * @return the rule for the week-based-year field, never null
-     */
-    public DateTimeFieldRule weekyear() {
-        return WeekyearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the week of week-based-year field in the ISO chronology.
-     * <p>
-     * This field counts weeks using the ISO-8601 algorithm. The first week of
-     * the year is the week which has at least 4 days in the year using a Monday
-     * to Sunday week definition. Thus it is possible for the first week to start
-     * on any day from the 29th December in the previous year to the 4th January
-     * in the new year. The year which is aligned with this field is known as
-     * the {@link #weekyear() weeekyear}.
-     *
-     * @return the rule for the week of week-based-year field, never null
-     */
-    public DateTimeFieldRule weekOfWeekyear() {
-        return WeekOfWeekyearRule.INSTANCE;
-    }
-
-    /**
      * Gets the rule for the day of week field.
      * <p>
      * This field uses the ISO-8601 values for the day of week.
@@ -242,58 +210,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     @Override
     public DateTimeFieldRule dayOfWeek() {
         return DayOfWeekRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the week of year field in the ISO chronology.
-     * <p>
-     * This field counts weeks in groups of seven days starting from the first
-     * of January. The 1st to the 7th of January is always week 1 while the
-     * 8th to the 14th is always week 2.
-     *
-     * @return the rule for the week of year field, never null
-     */
-    public DateTimeFieldRule weekOfYear() {
-        return WeekOfYearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the quarter of year field in the ISO chronology.
-     * <p>
-     * This field counts quarters sequentially from the start of the year.
-     * The first quarter of the year is 1 and the last is 4. Each quarter
-     * lasts exactly three months.
-     *
-     * @return the rule for the quarter of year field, never null
-     */
-    public DateTimeFieldRule quarterOfYear() {
-        return QuarterOfYearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the month of quarter field in the ISO chronology.
-     * <p>
-     * This field counts months sequentially from the start of the quarter.
-     * The first month of the quarter is 1 and the last is 3. Each quarter
-     * lasts exactly three months.
-     *
-     * @return the rule for the month of quarter field, never null
-     */
-    public DateTimeFieldRule monthOfQuarter() {
-        return MonthOfQuarterRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the week of month field in the ISO chronology.
-     * <p>
-     * This field counts weeks in groups of seven days starting from the first
-     * day of the month. The 1st to the 7th of a month is always week 1 while the
-     * 8th to the 14th is always week 2 and so on.
-     *
-     * @return the rule for the week of month field, never null
-     */
-    public DateTimeFieldRule weekOfMonth() {
-        return WeekOfMonthRule.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
@@ -349,6 +265,223 @@ public final class ISOChronology extends Chronology implements Serializable {
         return NanoOfSecondRule.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for the year field in the ISO chronology.
+     * <p>
+     * This field counts years sequentially from the epoch year of 1970.
+     * The defintion follows the ISO-8601 rules which mean that there is no
+     * historical cutover from the Julian to Gregorian calendar, typically
+     * defined as occurring in October 1582.
+     * <p>
+     * The implication of this is that historical dates will not be accurate.
+     * All work requiring accurate historical dates must use the appropriate
+     * chronology that defines the Gregorian cutover.
+     * <p>
+     * A further implication of the ISO-8601 rules is that the year zero
+     * exists. This roughly equates to 1 BC/BCE, however the alignment is
+     * not exact due to the lack of a Julian/Gregorian cutover.
+     *
+     * @return the rule for the year field, never null
+     */
+    public static DateTimeFieldRule yearRule() {
+        return YearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the month of year field in the ISO chronology.
+     * <p>
+     * This field counts months sequentially from the start of the year.
+     * The values follow the ISO-8601 standard and normal human interactions.
+     * These define January as value 1 to December as value 12.
+     * <p>
+     * The enum {@link MonthOfYear} should be used wherever possible in
+     * applications when referring to the day of the week to avoid
+     * hard-coding the values.
+     *
+     * @return the rule for the month of year field, never null
+     */
+    public static DateTimeFieldRule monthOfYearRule() {
+        return MonthOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the day of month field in the ISO chronology.
+     * <p>
+     * This field counts days sequentially from the start of the month.
+     * The first day of the month is 1 and the last is 28, 29, 30 or 31
+     * depending on the month and whether it is a leap year.
+     *
+     * @return the rule for the day of month field, never null
+     */
+    public static DateTimeFieldRule dayOfMonthRule() {
+        return DayOfMonthRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the day of year field in the ISO chronology.
+     * <p>
+     * This field counts days sequentially from the start of the year.
+     * The first day of the year is 1 and the last is 365, or 366 in a leap year.
+     *
+     * @return the rule for the day of year field, never null
+     */
+    public static DateTimeFieldRule dayOfYearRule() {
+        return DayOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week-based-year field in the ISO chronology.
+     * <p>
+     * This field is the year that results from calculating weeks with the
+     * ISO-8601 algorithm. See {@link #weekOfWeekyear()} for details.
+     * <p>
+     * The week year will either be 52 or 53 weeks long, depending on the
+     * result of the algorithm for a particular date.
+     *
+     * @return the rule for the week-based-year field, never null
+     */
+    public static DateTimeFieldRule weekyearRule() {
+        return WeekyearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week of week-based-year field in the ISO chronology.
+     * <p>
+     * This field counts weeks using the ISO-8601 algorithm. The first week of
+     * the year is the week which has at least 4 days in the year using a Monday
+     * to Sunday week definition. Thus it is possible for the first week to start
+     * on any day from the 29th December in the previous year to the 4th January
+     * in the new year. The year which is aligned with this field is known as
+     * the {@link #weekyear() weeekyear}.
+     *
+     * @return the rule for the week of week-based-year field, never null
+     */
+    public static DateTimeFieldRule weekOfWeekyearRule() {
+        return WeekOfWeekyearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the day of week field.
+     * <p>
+     * This field uses the ISO-8601 values for the day of week.
+     * These define Monday as value 1 to Sunday as value 7.
+     * <p>
+     * The enum {@link DayOfWeek} should be used wherever possible in
+     * applications when referring to the day of the week to avoid
+     * hard-coding the values.
+     *
+     * @return the rule for the day of week field, never null
+     */
+    public static DateTimeFieldRule dayOfWeekRule() {
+        return DayOfWeekRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week of year field in the ISO chronology.
+     * <p>
+     * This field counts weeks in groups of seven days starting from the first
+     * of January. The 1st to the 7th of January is always week 1 while the
+     * 8th to the 14th is always week 2.
+     *
+     * @return the rule for the week of year field, never null
+     */
+    public static DateTimeFieldRule weekOfYearRule() {
+        return WeekOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the quarter of year field in the ISO chronology.
+     * <p>
+     * This field counts quarters sequentially from the start of the year.
+     * The first quarter of the year is 1 and the last is 4. Each quarter
+     * lasts exactly three months.
+     *
+     * @return the rule for the quarter of year field, never null
+     */
+    public static DateTimeFieldRule quarterOfYearRule() {
+        return QuarterOfYearRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the month of quarter field in the ISO chronology.
+     * <p>
+     * This field counts months sequentially from the start of the quarter.
+     * The first month of the quarter is 1 and the last is 3. Each quarter
+     * lasts exactly three months.
+     *
+     * @return the rule for the month of quarter field, never null
+     */
+    public static DateTimeFieldRule monthOfQuarterRule() {
+        return MonthOfQuarterRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the week of month field in the ISO chronology.
+     * <p>
+     * This field counts weeks in groups of seven days starting from the first
+     * day of the month. The 1st to the 7th of a month is always week 1 while the
+     * 8th to the 14th is always week 2 and so on.
+     * <p>
+     * This field can be used to create concepts such as 'the second saturday'
+     * of a month. To achieve this, setup a {@link DateTimeFields} instance
+     * using this rule and the {@link #dayOfWeekRule() day of week} rule.
+     *
+     * @return the rule for the week of month field, never null
+     */
+    public static DateTimeFieldRule weekOfMonthRule() {
+        return WeekOfMonthRule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for the hour of day field.
+     * <p>
+     * This field counts hours sequentially from the start of the day.
+     * The values run from 0 to 23.
+     *
+     * @return the rule for the hour of day field, never null
+     */
+    public static DateTimeFieldRule hourOfDayRule() {
+        return HourOfDayRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the minute of hour field.
+     * <p>
+     * This field counts minutes sequentially from the start of the hour.
+     * The values run from 0 to 59.
+     *
+     * @return the rule for the minute of hour field, never null
+     */
+    public static DateTimeFieldRule minuteOfHourRule() {
+        return MinuteOfHourRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the second of minute field.
+     * <p>
+     * This field counts seconds sequentially from the start of the minute.
+     * The values run from 0 to 59.
+     *
+     * @return the rule for the second of minute field, never null
+     */
+    public static DateTimeFieldRule secondOfMinuteRule() {
+        return SecondOfMinuteRule.INSTANCE;
+    }
+
+    /**
+     * Gets the rule for the nano of second field.
+     * <p>
+     * This field counts nanoseconds sequentially from the start of the second.
+     * The values run from 0 to 999,999,999.
+     *
+     * @return the rule for the nano of second field, never null
+     */
+    public static DateTimeFieldRule nanoOfSecondRule() {
+        return NanoOfSecondRule.INSTANCE;
+    }
+
     /**
      * Gets the rule for the milli of day field.
      * <p>
@@ -357,7 +490,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the nano of second field, never null
      */
-    public DateTimeFieldRule milliOfDay() {
+    public static DateTimeFieldRule milliOfDayRule() {
         return MilliOfDayRule.INSTANCE;
     }
 
@@ -369,7 +502,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the nano of second field, never null
      */
-    public DateTimeFieldRule milliOfSecond() {
+    public static DateTimeFieldRule milliOfSecondRule() {
         return MilliOfSecondRule.INSTANCE;
     }
 
@@ -387,7 +520,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the am/pm of day field, never null
      */
-    public DateTimeFieldRule amPmOfDay() {
+    public static DateTimeFieldRule amPmOfDayRule() {
         return AmPmOfDayRule.INSTANCE;
     }
 
@@ -399,7 +532,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the hour of am/pm field, never null
      */
-    public DateTimeFieldRule hourOfAmPm() {
+    public static DateTimeFieldRule hourOfAmPmRule() {
         return HourOfAmPmRule.INSTANCE;
     }
 
@@ -427,10 +560,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
             int year = fieldValues.getValueQuiet(this);
-            Integer month = fieldValues.getValueQuiet(ISOChronology.INSTANCE.monthOfYear());
-            Integer dom = fieldValues.getValueQuiet(ISOChronology.INSTANCE.dayOfMonth());
+            Integer month = fieldValues.getValueQuiet(ISOChronology.monthOfYearRule());
+            Integer dom = fieldValues.getValueQuiet(ISOChronology.dayOfMonthRule());
             if (month != null && dom != null) {
-                if (ISOChronology.INSTANCE.monthOfYear().isValidValue(month)) {
+                if (ISOChronology.monthOfYearRule().isValidValue(month)) {
                     if (dom >= 1 && dom <= 28) {  // range is valid for all months
                         return LocalDate.date(year, month, dom);
                     }
@@ -523,7 +656,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
             int doy = fieldValues.getValueQuiet(this);
-            Integer year = fieldValues.getValueQuiet(ISOChronology.INSTANCE.year());
+            Integer year = fieldValues.getValueQuiet(ISOChronology.yearRule());
             if (year != null) {
                 if (doy >= 1 && doy <= 365) {  // range is valid for all years
                     return DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year));
@@ -609,8 +742,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected LocalDate mergeToDate(DateTimeFields fieldValues) {
             int dow = fieldValues.getValueQuiet(this);
-            Integer wyear = fieldValues.getValueQuiet(ISOChronology.INSTANCE.weekyear());
-            Integer woy = fieldValues.getValueQuiet(ISOChronology.INSTANCE.weekOfWeekyear());
+            Integer wyear = fieldValues.getValueQuiet(ISOChronology.weekyearRule());
+            Integer woy = fieldValues.getValueQuiet(ISOChronology.weekOfWeekyearRule());
             if (wyear != null && woy != null) {
                 // TODO
                 return LocalDate.date(wyear, 1, dow);
@@ -674,15 +807,15 @@ public final class ISOChronology extends Chronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         protected void mergeFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-            if (fieldValueMap.containsKey(ISOChronology.INSTANCE.monthOfQuarter())) {
+            if (fieldValueMap.containsKey(ISOChronology.monthOfQuarterRule())) {
                 int qoy = fieldValueMap.remove(this);
-                int moq = fieldValueMap.remove(ISOChronology.INSTANCE.monthOfQuarter());
-                if (fieldValueMap.containsKey(ISOChronology.INSTANCE.monthOfYear()) == false) {
+                int moq = fieldValueMap.remove(ISOChronology.monthOfQuarterRule());
+                if (fieldValueMap.containsKey(ISOChronology.monthOfYearRule()) == false) {
                     qoy = MathUtils.safeDecrement(qoy);
                     moq = MathUtils.safeDecrement(moq);
                     int moy = MathUtils.safeAdd(MathUtils.safeMultiply(qoy, 3), moq);
                     moy = MathUtils.safeIncrement(moy);
-                    fieldValueMap.put(ISOChronology.INSTANCE.monthOfYear(), moy);
+                    fieldValueMap.put(ISOChronology.monthOfYearRule(), moy);
                 }
             }
         }
@@ -735,7 +868,11 @@ public final class ISOChronology extends Chronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return date == null ? null : WeekOfMonth.weekOfMonth(date).getValue();
+            if (date == null) {
+                return null;
+            }
+            int dom0  = date.getDayOfMonth().getValue() - 1;
+            return Integer.valueOf((dom0 % 7) + 1);
         }
     }
 
@@ -763,9 +900,9 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected LocalTime.Overflow mergeToTime(DateTimeFields fieldValues) {
             int hour = fieldValues.getValueQuiet(this);
-            Integer minuteObj = fieldValues.getValueQuiet(ISOChronology.INSTANCE.minuteOfHour());
-            Integer secondObj = fieldValues.getValueQuiet(ISOChronology.INSTANCE.secondOfMinute());
-            Integer nanoObj = fieldValues.getValueQuiet(ISOChronology.INSTANCE.nanoOfSecond());
+            Integer minuteObj = fieldValues.getValueQuiet(ISOChronology.minuteOfHourRule());
+            Integer secondObj = fieldValues.getValueQuiet(ISOChronology.secondOfMinuteRule());
+            Integer nanoObj = fieldValues.getValueQuiet(ISOChronology.nanoOfSecondRule());
             int minute = minuteObj == null ? 0 : minuteObj;
             int second = secondObj == null ? 0 : secondObj;
             int nano = nanoObj == null ? 0 : nanoObj;
@@ -896,9 +1033,9 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected void mergeFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
             int mod = fieldValueMap.remove(this);
-            if (fieldValueMap.containsKey(ISOChronology.INSTANCE.nanoOfSecond()) == false) {
+            if (fieldValueMap.containsKey(ISOChronology.nanoOfSecondRule()) == false) {
                 int nod = MathUtils.safeMultiply(mod, 1000000);
-                fieldValueMap.put(ISOChronology.INSTANCE.nanoOfSecond(), nod);
+                fieldValueMap.put(ISOChronology.nanoOfSecondRule(), nod);
             }
         }
     }
@@ -927,12 +1064,12 @@ public final class ISOChronology extends Chronology implements Serializable {
         /** {@inheritDoc} */
         @Override
         protected void mergeFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-            if (fieldValueMap.containsKey(ISOChronology.INSTANCE.hourOfAmPm())) {
+            if (fieldValueMap.containsKey(ISOChronology.hourOfAmPmRule())) {
                 int amPm = fieldValueMap.remove(this);
-                int hourOfAmPm = fieldValueMap.remove(ISOChronology.INSTANCE.hourOfAmPm());
-                if (fieldValueMap.containsKey(ISOChronology.INSTANCE.hourOfDay()) == false) {
+                int hourOfAmPm = fieldValueMap.remove(ISOChronology.hourOfAmPmRule());
+                if (fieldValueMap.containsKey(ISOChronology.hourOfDayRule()) == false) {
                     int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hourOfAmPm);
-                    fieldValueMap.put(ISOChronology.INSTANCE.hourOfDay(), hourOfDay);
+                    fieldValueMap.put(ISOChronology.hourOfDayRule(), hourOfDay);
                 }
             }
         }

@@ -94,7 +94,7 @@ public final class DayOfYear
      * @return the day of year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.dayOfYear();
+        return ISOChronology.dayOfYearRule();
     }
 
     //-----------------------------------------------------------------------

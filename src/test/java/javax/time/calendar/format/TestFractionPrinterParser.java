@@ -53,8 +53,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestFractionPrinterParser {
 
-    private static DateTimeFieldRule NANO_RULE = ISOChronology.INSTANCE.nanoOfSecond();
-    private static DateTimeFieldRule SECOND_RULE = ISOChronology.INSTANCE.secondOfMinute();
+    private static DateTimeFieldRule NANO_RULE = ISOChronology.nanoOfSecondRule();
+    private static DateTimeFieldRule SECOND_RULE = ISOChronology.secondOfMinuteRule();
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;

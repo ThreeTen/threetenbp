@@ -105,7 +105,7 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      * @return the day of week rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.dayOfWeek();
+        return ISOChronology.dayOfWeekRule();
     }
 
     //-----------------------------------------------------------------------

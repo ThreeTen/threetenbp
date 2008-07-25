@@ -64,7 +64,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.year();
+    private static final DateTimeFieldRule RULE = ISOChronology.yearRule();
 
     @BeforeMethod
     public void setUp() {
@@ -131,7 +131,7 @@ public class TestYear {
     //-----------------------------------------------------------------------
     public void test_isSupported() {
         assertEquals(Year.isoYear(1999).isSupported(RULE), true);
-        assertEquals(Year.isoYear(1999).isSupported(ISOChronology.INSTANCE.weekyear()), false);
+        assertEquals(Year.isoYear(1999).isSupported(ISOChronology.weekyearRule()), false);
     }
 
     //-----------------------------------------------------------------------
@@ -143,7 +143,7 @@ public class TestYear {
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupportedField() {
-        Year.isoYear(1999).get(ISOChronology.INSTANCE.weekyear());
+        Year.isoYear(1999).get(ISOChronology.weekyearRule());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -378,7 +378,7 @@ public class TestYear {
         try {
             test.adjustDate(base, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }

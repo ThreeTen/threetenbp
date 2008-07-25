@@ -52,7 +52,7 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDayOfMonthRule {
-    // TODO: Refactor to test ISOChronology.monthOfYear()
+    // TODO: Refactor to test ISOChronology.monthOfYearRule()
 
     @BeforeMethod
     public void setUp() {

@@ -93,7 +93,7 @@ public final class Year
      * @return the year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.year();
+        return ISOChronology.yearRule();
     }
 
     //-----------------------------------------------------------------------

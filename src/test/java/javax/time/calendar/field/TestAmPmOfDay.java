@@ -59,7 +59,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestAmPmOfDay {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.amPmOfDay();
+    private static final DateTimeFieldRule RULE = ISOChronology.amPmOfDayRule();
 
     @BeforeMethod
     public void setUp() {

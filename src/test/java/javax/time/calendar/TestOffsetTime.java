@@ -207,17 +207,17 @@ public class TestOffsetTime {
     // isSupported(TimeTimeFieldRule)
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.year()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.monthOfYear()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.dayOfMonth()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.dayOfWeek()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.dayOfYear()), false);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.yearRule()), false);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.monthOfYearRule()), false);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.dayOfMonthRule()), false);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.dayOfWeekRule()), false);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.dayOfYearRule()), false);
         
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.hourOfDay()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.minuteOfHour()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.secondOfMinute()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.nanoOfSecond()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.INSTANCE.hourOfAmPm()), true);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.hourOfDayRule()), true);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.minuteOfHourRule()), true);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.secondOfMinuteRule()), true);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.nanoOfSecondRule()), true);
+        assertEquals(TEST_TIME.isSupported(ISOChronology.hourOfAmPmRule()), true);
     }
 
     //-----------------------------------------------------------------------
@@ -225,11 +225,11 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void test_get_DateTimeFieldRule() {
         OffsetTime test = OffsetTime.time(23, 30, 59, OFFSET_PONE);
-        assertEquals(test.get(ISOChronology.INSTANCE.hourOfDay()), 23);
-        assertEquals(test.get(ISOChronology.INSTANCE.minuteOfHour()), 30);
-        assertEquals(test.get(ISOChronology.INSTANCE.secondOfMinute()), 59);
-        assertEquals(test.get(ISOChronology.INSTANCE.hourOfAmPm()), 11);
-        assertEquals(test.get(ISOChronology.INSTANCE.amPmOfDay()), 1);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), 23);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), 59);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), 11);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class )

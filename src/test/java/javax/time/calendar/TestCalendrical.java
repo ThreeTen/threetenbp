@@ -59,20 +59,20 @@ public class TestCalendrical {
     @SuppressWarnings("unchecked")
     private static final Map<DateTimeFieldRule, Integer> NULL_MAP = (Map) null;
     private static final DateTimeFieldRule NULL_RULE = null;
-    private static final DateTimeFieldRule YEAR_RULE = ISOChronology.INSTANCE.year();
-    private static final DateTimeFieldRule MOY_RULE = ISOChronology.INSTANCE.monthOfYear();
-    private static final DateTimeFieldRule DOM_RULE = ISOChronology.INSTANCE.dayOfMonth();
-    private static final DateTimeFieldRule DOY_RULE = ISOChronology.INSTANCE.dayOfYear();
-    private static final DateTimeFieldRule DOW_RULE = ISOChronology.INSTANCE.dayOfWeek();
-    private static final DateTimeFieldRule QOY_RULE = ISOChronology.INSTANCE.quarterOfYear();
-    private static final DateTimeFieldRule MOQ_RULE = ISOChronology.INSTANCE.monthOfQuarter();
-    private static final DateTimeFieldRule HOUR_RULE = ISOChronology.INSTANCE.hourOfDay();
-    private static final DateTimeFieldRule AMPM_RULE = ISOChronology.INSTANCE.amPmOfDay();
-    private static final DateTimeFieldRule HOUR_AM_PM_RULE = ISOChronology.INSTANCE.hourOfAmPm();
-    private static final DateTimeFieldRule MIN_RULE = ISOChronology.INSTANCE.minuteOfHour();
-    private static final DateTimeFieldRule SEC_RULE = ISOChronology.INSTANCE.secondOfMinute();
-    private static final DateTimeFieldRule NANO_RULE = ISOChronology.INSTANCE.nanoOfSecond();
-    private static final DateTimeFieldRule MILLI_RULE = ISOChronology.INSTANCE.milliOfDay();
+    private static final DateTimeFieldRule YEAR_RULE = ISOChronology.yearRule();
+    private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule DOY_RULE = ISOChronology.dayOfYearRule();
+    private static final DateTimeFieldRule DOW_RULE = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule QOY_RULE = ISOChronology.quarterOfYearRule();
+    private static final DateTimeFieldRule MOQ_RULE = ISOChronology.monthOfQuarterRule();
+    private static final DateTimeFieldRule HOUR_RULE = ISOChronology.hourOfDayRule();
+    private static final DateTimeFieldRule AMPM_RULE = ISOChronology.amPmOfDayRule();
+    private static final DateTimeFieldRule HOUR_AM_PM_RULE = ISOChronology.hourOfAmPmRule();
+    private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
+    private static final DateTimeFieldRule SEC_RULE = ISOChronology.secondOfMinuteRule();
+    private static final DateTimeFieldRule NANO_RULE = ISOChronology.nanoOfSecondRule();
+    private static final DateTimeFieldRule MILLI_RULE = ISOChronology.milliOfDayRule();
 
     //-----------------------------------------------------------------------
     // basics

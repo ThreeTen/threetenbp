@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestMinuteOfHour {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.minuteOfHour();
+    private static final DateTimeFieldRule RULE = ISOChronology.minuteOfHourRule();
     private static final int MAX_LENGTH = 59;
 
     @BeforeMethod

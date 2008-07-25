@@ -62,7 +62,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthOfYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.monthOfYear();
+    private static final DateTimeFieldRule RULE = ISOChronology.monthOfYearRule();
     private static final Year YEAR_STANDARD = Year.isoYear(2007);
     private static final Year YEAR_LEAP = Year.isoYear(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
@@ -346,7 +346,7 @@ public class TestMonthOfYear {
         try {
             test.adjustDate(base, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }
@@ -358,7 +358,7 @@ public class TestMonthOfYear {
         try {
             test.adjustDate(base, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }

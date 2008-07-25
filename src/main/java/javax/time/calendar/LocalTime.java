@@ -832,10 +832,10 @@ public final class LocalTime
      */
     public DateTimeFields toDateTimeFields() {
         Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
-        map.put(ISOChronology.INSTANCE.hourOfDay(), hour.getValue());
-        map.put(ISOChronology.INSTANCE.minuteOfHour(), minute.getValue());
-        map.put(ISOChronology.INSTANCE.secondOfMinute(), second.getValue());
-        map.put(ISOChronology.INSTANCE.nanoOfSecond(), nano.getValue());
+        map.put(ISOChronology.hourOfDayRule(), hour.getValue());
+        map.put(ISOChronology.minuteOfHourRule(), minute.getValue());
+        map.put(ISOChronology.secondOfMinuteRule(), second.getValue());
+        map.put(ISOChronology.nanoOfSecondRule(), nano.getValue());
         return DateTimeFields.fields(map);
     }
 

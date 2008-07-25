@@ -58,7 +58,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfWeek {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.INSTANCE.dayOfWeek();
+    private static final DateTimeFieldRule RULE = ISOChronology.dayOfWeekRule();
 
     @BeforeMethod
     public void setUp() {

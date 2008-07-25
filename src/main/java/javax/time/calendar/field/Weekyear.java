@@ -102,7 +102,7 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
      * @return the week-based-year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.weekyear();
+        return ISOChronology.weekyearRule();
     }
 
     //-----------------------------------------------------------------------

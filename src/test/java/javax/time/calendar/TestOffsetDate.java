@@ -31,13 +31,13 @@
  */
 package javax.time.calendar;
 
+import static org.testng.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import static org.testng.Assert.*;
-
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -48,12 +48,8 @@ import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.WeekOfMonth;
-import javax.time.calendar.field.WeekOfWeekyear;
-import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -290,30 +286,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // TODO: enable all assertions
-    public void test_get() {
-//        assertEquals(TEST_2007_07_15_PONE.get(MilleniumOfEra.RULE), TEST_2007_07_15_PONE.getYear().getMilleniumOfEra());
-//        assertEquals(TEST_2007_07_15_PONE.get(CenturyOfEra.RULE), TEST_2007_07_15_PONE.getYear().getCenturyOfEra());
-//        assertEquals(TEST_2007_07_15_PONE.get(DecadeOfCentury.RULE), TEST_2007_07_15_PONE.getYear().getDecadeOfCentury());
-        assertEquals(TEST_2007_07_15_PONE.get(Year.rule()), TEST_2007_07_15_PONE.getYear().getValue());
-//        assertEquals(TEST_2007_07_15_PONE.get(YearOfEra.RULE), TEST_2007_07_15_PONE.getYear().getYearOfEra());
-        assertEquals(TEST_2007_07_15_PONE.get(QuarterOfYear.rule()), TEST_2007_07_15_PONE.getMonthOfYear().getQuarterOfYear().getValue());
-        assertEquals(TEST_2007_07_15_PONE.get(MonthOfYear.rule()), TEST_2007_07_15_PONE.getMonthOfYear().getValue());
-//        assertEquals(TEST_2007_07_15_PONE.get(MonthOfQuarter.RULE), TEST_2007_07_15_PONE.getMonthOfYear().getMonthOfQuarter());
-        assertEquals(TEST_2007_07_15_PONE.get(DayOfMonth.rule()), TEST_2007_07_15_PONE.getDayOfMonth().getValue());
-        assertEquals(TEST_2007_07_15_PONE.get(DayOfWeek.rule()), TEST_2007_07_15_PONE.getDayOfWeek().getValue());
-        assertEquals(TEST_2007_07_15_PONE.get(DayOfYear.rule()), TEST_2007_07_15_PONE.getDayOfYear().getValue());
-        assertEquals(TEST_2007_07_15_PONE.get(WeekOfMonth.rule()), WeekOfMonth.weekOfMonth(TEST_2007_07_15_PONE).getValue());
-        assertEquals(TEST_2007_07_15_PONE.get(WeekOfWeekyear.rule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15_PONE).getValue());
-        assertEquals(TEST_2007_07_15_PONE.get(Weekyear.rule()), Weekyear.weekyear(TEST_2007_07_15_PONE).getValue());
-    }
-
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_get_unsupported() {
-        TEST_2007_07_15_PONE.get(HourOfDay.rule());
-    }
-
-    //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleDates")
@@ -364,15 +336,15 @@ public class TestOffsetDate {
     // isSupported(DateTimeFieldRule)
     //-----------------------------------------------------------------------
     public void test_isSupported() {
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.year()), true);
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.monthOfYear()), true);
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.dayOfMonth()), true);
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.dayOfWeek()), true);
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.dayOfYear()), true);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.yearRule()), true);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.monthOfYearRule()), true);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.dayOfMonthRule()), true);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.dayOfWeekRule()), true);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.dayOfYearRule()), true);
         
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.hourOfDay()), false);
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.minuteOfHour()), false);
-        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.INSTANCE.secondOfMinute()), false);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.hourOfDayRule()), false);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.minuteOfHourRule()), false);
+        assertEquals(TEST_2007_07_15_PONE.isSupported(ISOChronology.secondOfMinuteRule()), false);
     }
 
     //-----------------------------------------------------------------------
@@ -380,11 +352,11 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     public void test_get_DateTimeFieldRule() {
         OffsetDate test = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.get(ISOChronology.INSTANCE.year()), 2008);
-        assertEquals(test.get(ISOChronology.INSTANCE.monthOfYear()), 6);
-        assertEquals(test.get(ISOChronology.INSTANCE.dayOfMonth()), 30);
-        assertEquals(test.get(ISOChronology.INSTANCE.dayOfWeek()), 1);
-        assertEquals(test.get(ISOChronology.INSTANCE.dayOfYear()), 182);
+        assertEquals(test.get(ISOChronology.yearRule()), 2008);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), 6);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()), 30);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()), 1);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()), 182);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -631,7 +603,7 @@ public class TestOffsetDate {
         try {
             OffsetDate.date(2007, 11, 30, OFFSET_PONE).withDayOfMonth(31);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }
@@ -641,7 +613,7 @@ public class TestOffsetDate {
         try {
             OffsetDate.date(2007, 11, 30, OFFSET_PONE).withDayOfMonth(32);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }

@@ -82,7 +82,7 @@ public final class NanoOfSecond
      * @return the nano of second rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.nanoOfSecond();
+        return ISOChronology.nanoOfSecondRule();
     }
 
     //-----------------------------------------------------------------------

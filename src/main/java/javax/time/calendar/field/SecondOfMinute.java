@@ -85,7 +85,7 @@ public final class SecondOfMinute
      * @return the second of minute rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.secondOfMinute();
+        return ISOChronology.secondOfMinuteRule();
     }
 
     //-----------------------------------------------------------------------

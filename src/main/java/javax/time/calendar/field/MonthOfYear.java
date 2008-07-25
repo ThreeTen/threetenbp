@@ -125,7 +125,7 @@ public enum MonthOfYear
      * @return the month of year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.INSTANCE.monthOfYear();
+        return ISOChronology.monthOfYearRule();
     }
 
     //-----------------------------------------------------------------------

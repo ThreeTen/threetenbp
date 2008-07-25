@@ -170,7 +170,7 @@ public final class DateTimeFormatSymbols {
         String id = null;
         
 //        // eras
-//        id = ISOChronology.INSTANCE.era().getID();
+//        id = ISOChronology.eraRule().getID();
 //        textMap.put(id, new HashMap<TextStyle, TextStore>());
 //        map.clear();
 //        array = oldSymbols.getEras();
@@ -178,7 +178,7 @@ public final class DateTimeFormatSymbols {
 //        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
         
         // months
-        id = ISOChronology.INSTANCE.monthOfYear().getID();
+        id = ISOChronology.monthOfYearRule().getID();
         textMap.put(id, new HashMap<TextStyle, TextStore>());
         map.clear();
         array = oldSymbols.getMonths();
@@ -212,7 +212,7 @@ public final class DateTimeFormatSymbols {
         textMap.get(id).put(TextStyle.SHORT, new TextStore(map));
         
         // day of week
-        id = ISOChronology.INSTANCE.dayOfWeek().getID();
+        id = ISOChronology.dayOfWeekRule().getID();
         textMap.put(id, new HashMap<TextStyle, TextStore>());
         map.clear();
         array = oldSymbols.getWeekdays();
@@ -236,7 +236,7 @@ public final class DateTimeFormatSymbols {
         textMap.get(id).put(TextStyle.SHORT, new TextStore(map));
         
         // am pm
-        id = ISOChronology.INSTANCE.amPmOfDay().getID();
+        id = ISOChronology.amPmOfDayRule().getID();
         textMap.put(id, new HashMap<TextStyle, TextStore>());
         map.clear();
         array = oldSymbols.getAmPmStrings();

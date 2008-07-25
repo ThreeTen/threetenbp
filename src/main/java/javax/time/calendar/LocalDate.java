@@ -930,9 +930,9 @@ public final class LocalDate
      */
     public DateTimeFields toDateTimeFields() {
         Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
-        map.put(ISOChronology.INSTANCE.year(), year.getValue());
-        map.put(ISOChronology.INSTANCE.monthOfYear(), month.getValue());
-        map.put(ISOChronology.INSTANCE.dayOfMonth(), day.getValue());
+        map.put(ISOChronology.yearRule(), year.getValue());
+        map.put(ISOChronology.monthOfYearRule(), month.getValue());
+        map.put(ISOChronology.dayOfMonthRule(), day.getValue());
         return DateTimeFields.fields(map);
     }
 
