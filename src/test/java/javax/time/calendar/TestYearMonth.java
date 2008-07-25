@@ -76,7 +76,7 @@ public class TestYearMonth {
         assertTrue(TEST_2008_06 instanceof CalendricalProvider);
         assertTrue(TEST_2008_06 instanceof Serializable);
         assertTrue(TEST_2008_06 instanceof Comparable);
-        assertTrue(TEST_2008_06 instanceof DateAdjustor);
+        assertTrue(TEST_2008_06 instanceof DateAdjuster);
         assertTrue(TEST_2008_06 instanceof DateMatcher);
     }
 

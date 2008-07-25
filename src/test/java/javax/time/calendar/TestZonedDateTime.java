@@ -650,64 +650,64 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // with(DateAdjustor)
+    // with(DateAdjuster)
     //-----------------------------------------------------------------------
-    public void test_with_DateAdjustor() {
+    public void test_with_DateAdjuster() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         ZonedDateTime test = base.with(Year.isoYear(2007));
         assertEquals(test, ZonedDateTime.dateTime(ldt.withYear(2007), ZONE_0100));
     }
 
-    public void test_with_DateAdjustor_noChange() {
+    public void test_with_DateAdjuster_noChange() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        DateAdjustor adjustor = LocalDate.date(2008, 6, 30);
-        ZonedDateTime test = base.with(adjustor);
+        DateAdjuster adjuster = LocalDate.date(2008, 6, 30);
+        ZonedDateTime test = base.with(adjuster);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_with_DateAdjustor_null() {
+    public void test_with_DateAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        base.with((DateAdjustor) null);
+        base.with((DateAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_with_DateAdjustor_badAdjustor() {
+    public void test_with_DateAdjuster_badAdjuster() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         base.with(new MockDateAdjusterReturnsNull());
     }
 
     //-----------------------------------------------------------------------
-    // with(TimeAdjustor)
+    // with(TimeAdjuster)
     //-----------------------------------------------------------------------
-    public void test_with_TimeAdjustor() {
+    public void test_with_TimeAdjuster() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         ZonedDateTime test = base.with(HourOfDay.hourOfDay(1));
         assertEquals(test, ZonedDateTime.dateTime(ldt.withHourOfDay(1), ZONE_0100));
     }
 
-    public void test_with_TimeAdjustor_noChange() {
+    public void test_with_TimeAdjuster_noChange() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        TimeAdjustor adjustor = LocalTime.time(23, 30, 59, 0);
-        ZonedDateTime test = base.with(adjustor);
+        TimeAdjuster adjuster = LocalTime.time(23, 30, 59, 0);
+        ZonedDateTime test = base.with(adjuster);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_with_TimeAdjustor_null() {
+    public void test_with_TimeAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        base.with((TimeAdjustor) null);
+        base.with((TimeAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_with_TimeAdjustor_badAdjustor() {
+    public void test_with_TimeAdjuster_badAdjuster() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         base.with(new MockTimeAdjusterReturnsNull());

@@ -63,8 +63,8 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements DateTimeProvider, CalendricalProvider, Comparable<LocalDateTime>, Serializable, DateMatcher, TimeMatcher, DateAdjustor, 
-        TimeAdjustor {
+        implements DateTimeProvider, CalendricalProvider, Comparable<LocalDateTime>, Serializable, DateMatcher, TimeMatcher, DateAdjuster, 
+        TimeAdjuster {
 
     /**
      * A serialization identifier for this class.
@@ -588,39 +588,39 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalDateTime with the date altered using the adjustor.
+     * Returns a copy of this LocalDateTime with the date altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the date in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the year field.
-     * A more complex adjustor might set the date to the last day of the month.
+     * Adjusters can be used to alter the date in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
      * <p>
      * The adjustment has no effect on the time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated LocalDateTime, never null
      */
-    public LocalDateTime with(DateAdjustor adjustor) {
-        return withDateTime(date.with(adjustor), time);
+    public LocalDateTime with(DateAdjuster adjuster) {
+        return withDateTime(date.with(adjuster), time);
     }
 
     /**
-     * Returns a copy of this LocalDateTime with the time altered using the adjustor.
+     * Returns a copy of this LocalDateTime with the time altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the time in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the hour field.
-     * A more complex adjustor might set the time to end of the working day.
+     * Adjusters can be used to alter the time in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to end of the working day.
      * <p>
      * The adjustment has no effect on the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated LocalDateTime, never null
      */
-    public LocalDateTime with(TimeAdjustor adjustor) {
-        return withDateTime(date, time.with(adjustor));
+    public LocalDateTime with(TimeAdjuster adjuster) {
+        return withDateTime(date, time.with(adjuster));
     }
 
     //-----------------------------------------------------------------------

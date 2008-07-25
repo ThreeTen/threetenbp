@@ -44,7 +44,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
@@ -81,7 +81,7 @@ public class TestDayOfYear {
         assertTrue(CalendricalProvider.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfYear.class));
-        assertTrue(DateAdjustor.class.isAssignableFrom(DayOfYear.class));
+        assertTrue(DateAdjuster.class.isAssignableFrom(DayOfYear.class));
         assertTrue(DateMatcher.class.isAssignableFrom(DayOfYear.class));
     }
 

@@ -37,7 +37,7 @@ import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
@@ -62,7 +62,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class Year
-        implements CalendricalProvider, Comparable<Year>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<Year>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system.

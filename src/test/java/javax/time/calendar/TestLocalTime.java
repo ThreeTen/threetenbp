@@ -503,8 +503,8 @@ public class TestLocalTime {
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {
-        TimeAdjustor timeAdjustor = AmPmOfDay.AM;
-        assertEquals(TEST_12_30_40_987654321.with(timeAdjustor).getHourOfDay().getValue(), 0);
+        TimeAdjuster timeAdjuster = AmPmOfDay.AM;
+        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster).getHourOfDay().getValue(), 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

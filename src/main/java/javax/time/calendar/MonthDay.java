@@ -55,7 +55,7 @@ import javax.time.calendar.field.Year;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements CalendricalProvider, Comparable<MonthDay>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<MonthDay>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * A serialization identifier for this class.

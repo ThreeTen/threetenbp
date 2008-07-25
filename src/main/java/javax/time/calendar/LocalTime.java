@@ -59,7 +59,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements TimeProvider, CalendricalProvider, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjustor {
+        implements TimeProvider, CalendricalProvider, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjuster {
 
     /**
      * Constant for the local time of midnight, 00:00.
@@ -444,21 +444,21 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the time altered using the adjustor.
+     * Returns a copy of this LocalTime with the time altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the time in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the hour field.
-     * A more complex adjustor might set the time to end of the working day.
+     * Adjusters can be used to alter the time in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to end of the working day.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated LocalTime, never null
      */
-    public LocalTime with(TimeAdjustor adjustor) {
-        LocalTime time = adjustor.adjustTime(this);
+    public LocalTime with(TimeAdjuster adjuster) {
+        LocalTime time = adjuster.adjustTime(this);
         if (time == null) {
-            throw new NullPointerException("The implementation of TimeAdjustor must not return null");
+            throw new NullPointerException("The implementation of TimeAdjuster must not return null");
         }
         return time;
     }

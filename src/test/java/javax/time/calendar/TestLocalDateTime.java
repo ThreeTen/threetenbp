@@ -908,10 +908,10 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     // with()
     //-----------------------------------------------------------------------
-    public void test_with_DateAdjustor() {
-        DateAdjustor dateAdjustor = DateAdjustors.lastDayOfMonth();
-        LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(dateAdjustor);
-        assertEquals(adjusted.toLocalDate(), dateAdjustor.adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()));
+    public void test_with_DateAdjuster() {
+        DateAdjuster dateAdjuster = DateAdjusters.lastDayOfMonth();
+        LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(dateAdjuster);
+        assertEquals(adjusted.toLocalDate(), dateAdjuster.adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()));
         assertSame(adjusted.toLocalTime(), TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
 
@@ -920,9 +920,9 @@ public class TestLocalDateTime {
         TEST_2007_07_15_12_30_40_987654321.with(new MockDateAdjusterReturnsNull());
     }
 
-    public void test_with_TimeAdjustor() {
-        TimeAdjustor timeAdjustor = AmPmOfDay.AM;
-        LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(timeAdjustor);
+    public void test_with_TimeAdjuster() {
+        TimeAdjuster timeAdjuster = AmPmOfDay.AM;
+        LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(timeAdjuster);
         assertSame(adjusted.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
         assertSame(adjusted.toLocalTime().getHourOfDay().getValue(), 0);
     }

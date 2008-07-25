@@ -39,24 +39,25 @@ import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 
 /**
- * Provides common implementations of <code>DateAdjustor</code>.
+ * Provides common implementations of <code>DateAdjuster</code>.
  * <p>
- * DateAdjustors is a utility class.
- * All adjustors returned are immutable and thread-safe.
+ * DateAdjusters is a utility class.
+ * All adjusters returned are immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class DateAdjustors {
+public final class DateAdjusters {
+
     /**
      * Private constructor since this is a utility class
      */
-    private DateAdjustors() {
+    private DateAdjusters() {
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the last day of month adjustor, which retuns a new date with
+     * Returns the last day of month adjuster, which retuns a new date with
      * the day of month changed to be the last valid day of the month.
      * <p>
      * The input 2007-01-15 will return 2007-01-31.<br />
@@ -65,23 +66,23 @@ public final class DateAdjustors {
      * The input 2007-04-15 will return 2007-04-30.<br />
      * The input 2008-02-15 will return 2008-02-29.
      *
-     * @return the last day of month adjustor, never null
+     * @return the last day of month adjuster, never null
      */
-    public static DateAdjustor lastDayOfMonth() {
+    public static DateAdjuster lastDayOfMonth() {
         return LastDayOfMonth.INSTANCE;
     }
 
     /**
-     * Class implementing last day of month adjustor.
+     * Class implementing last day of month adjuster.
      */
-    private static final class LastDayOfMonth implements DateAdjustor, Serializable {
+    private static final class LastDayOfMonth implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */
-        private static final DateAdjustor INSTANCE = new LastDayOfMonth();
+        private static final DateAdjuster INSTANCE = new LastDayOfMonth();
 
         private Object readResolve() {
             return INSTANCE;
@@ -96,29 +97,29 @@ public final class DateAdjustors {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the last day of year adjustor, which retuns a new date with
+     * Returns the last day of year adjuster, which retuns a new date with
      * the day of year changed to be the last valid day of the year.
      * <p>
      * The input 2007-01-15 will return 2007-12-31.<br />
      * The input 2008-02-15 will return 2008-12-31.<br />
      *
-     * @return the last day of year adjustor, never null
+     * @return the last day of year adjuster, never null
      */
-    public static DateAdjustor lastDayOfYear() {
+    public static DateAdjuster lastDayOfYear() {
         return LastDayOfYear.INSTANCE;
     }
 
     /**
-     * Class implementing last day of year adjustor.
+     * Class implementing last day of year adjuster.
      */
-    private static final class LastDayOfYear implements DateAdjustor, Serializable {
+    private static final class LastDayOfYear implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */
-        private static final DateAdjustor INSTANCE = new LastDayOfYear();
+        private static final DateAdjuster INSTANCE = new LastDayOfYear();
 
         private Object readResolve() {
             return INSTANCE;
@@ -132,7 +133,7 @@ public final class DateAdjustors {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the first in month adjustor, which retuns a new date
+     * Returns the first in month adjuster, which retuns a new date
      * in the same month with the first matching day of week. This is used for
      * expressions like 'first tuesday in March'.
      * <p>
@@ -140,9 +141,9 @@ public final class DateAdjustors {
      * The input 2007-12-15 for (TUESDAY) will return 2007-12-04.<br />
      *
      * @param dayOfWeek  the day of week, not null
-     * @return the first in month adjustor, never null
+     * @return the first in month adjuster, never null
      */
-    public static DateAdjustor firstInMonth(DayOfWeek dayOfWeek) {
+    public static DateAdjuster firstInMonth(DayOfWeek dayOfWeek) {
         if (dayOfWeek == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -150,7 +151,7 @@ public final class DateAdjustors {
     }
 
     /**
-     * Returns the day of week in month adjustor, which retuns a new date
+     * Returns the day of week in month adjuster, which retuns a new date
      * in the same month with the ordinal day of week. This is used for
      * expressions like 'second tuesday in March'.
      * <p>
@@ -165,10 +166,10 @@ public final class DateAdjustors {
      *
      * @param ordinal  ordinal, from 1 to 5
      * @param dayOfWeek  the day of week, not null
-     * @return the day of week in month adjustor, never null
+     * @return the day of week in month adjuster, never null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
-    public static DateAdjustor dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
+    public static DateAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         if (ordinal < 1 || ordinal > 5) {
             throw new IllegalArgumentException("Illegal value for ordinal, value " + ordinal +
                     " is not in the range 1 to 5");
@@ -180,9 +181,9 @@ public final class DateAdjustors {
     }
 
     /**
-     * Class implementing day of week in month adjustor.
+     * Class implementing day of week in month adjuster.
      */
-    private static final class DayOfWeekInMonth implements DateAdjustor, Serializable {
+    private static final class DayOfWeekInMonth implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */
@@ -252,26 +253,26 @@ public final class DateAdjustors {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the next non weekend day adjustor, which adjusts the date one day
+     * Returns the next non weekend day adjuster, which adjusts the date one day
      * forward avoiding Saturday and Sunday.
      *
-     * @return the next working day adjustor, never null
+     * @return the next working day adjuster, never null
      */
-    public static DateAdjustor nextNonWeekendDay() {
+    public static DateAdjuster nextNonWeekendDay() {
         return NextNonWeekendDay.INSTANCE;
     }
 
     /**
-     * Class implementing next non weekend day adjustor.
+     * Class implementing next non weekend day adjuster.
      */
-    private static class NextNonWeekendDay implements DateAdjustor, Serializable {
+    private static class NextNonWeekendDay implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
 
         /** The singleton instance. */
-        private static final DateAdjustor INSTANCE = new NextNonWeekendDay();
+        private static final DateAdjuster INSTANCE = new NextNonWeekendDay();
 
         private Object readResolve() {
             return INSTANCE;
@@ -293,23 +294,23 @@ public final class DateAdjustors {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the next Monday adjustor, which adjusts the date to be the
+     * Returns the next Monday adjuster, which adjusts the date to be the
      * next Monday after the specified date.
      *
-     * @return the next Monday adjustor, never null
+     * @return the next Monday adjuster, never null
      */
-    public static DateAdjustor nextMonday() {
+    public static DateAdjuster nextMonday() {
         return new NextOrCurrentDayOfWeek(false, DayOfWeek.MONDAY);
     }
 
     /**
-     * Returns the next day of week adjustor, which adjusts the date to be
+     * Returns the next day of week adjuster, which adjusts the date to be
      * the next of the specified day of week after the specified date.
      *
      * @param dow  the dow to move the date to, not null
-     * @return the next day of week adjustor, never null
+     * @return the next day of week adjuster, never null
      */
-    public static DateAdjustor next(DayOfWeek dow) {
+    public static DateAdjuster next(DayOfWeek dow) {
         if (dow == null) {
             throw new NullPointerException("dow must not be null");
         }
@@ -317,21 +318,21 @@ public final class DateAdjustors {
     }
 
     /**
-     * Returns the next or current day of week adjustor, which adjusts the
+     * Returns the next or current day of week adjuster, which adjusts the
      * date to be be the next of the specified day of week, returning the
      * input date if the day of week matched.
      *
      * @param dow  the dow to move the date to, not null
-     * @return the next day of week adjustor, never null
+     * @return the next day of week adjuster, never null
      */
-    public static DateAdjustor nextOrCurrent(DayOfWeek dow) {
+    public static DateAdjuster nextOrCurrent(DayOfWeek dow) {
         if (dow == null) {
             throw new NullPointerException("dow must not be null");
         }
         return new NextOrCurrentDayOfWeek(true, dow);
     }
 
-    private static final class NextOrCurrentDayOfWeek implements DateAdjustor, Serializable {
+    private static final class NextOrCurrentDayOfWeek implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */

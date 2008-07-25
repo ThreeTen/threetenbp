@@ -371,13 +371,13 @@ public class TestLocalDate {
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {
-        DateAdjustor dateAdjustor = DateAdjustors.lastDayOfMonth();
-        assertEquals(TEST_2007_07_15.with(dateAdjustor), dateAdjustor.adjustDate(TEST_2007_07_15));
+        DateAdjuster dateAdjuster = DateAdjusters.lastDayOfMonth();
+        assertEquals(TEST_2007_07_15.with(dateAdjuster), dateAdjuster.adjustDate(TEST_2007_07_15));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_null() {
-        TEST_2007_07_15.with((DateAdjustor) null);
+        TEST_2007_07_15.with((DateAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

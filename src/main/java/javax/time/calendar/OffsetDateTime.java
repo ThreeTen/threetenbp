@@ -740,42 +740,42 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDateTime with the date altered using the adjustor.
+     * Returns a copy of this OffsetDateTime with the date altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the date in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the year field.
-     * A more complex adjustor might set the date to the last day of the month.
+     * Adjusters can be used to alter the date in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
      * <p>
      * The adjustment has no effect on the time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
-    public OffsetDateTime with(DateAdjustor adjustor) {
-        LocalDateTime newDT = dateTime.with(adjustor);
+    public OffsetDateTime with(DateAdjuster adjuster) {
+        LocalDateTime newDT = dateTime.with(adjuster);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the time altered using the adjustor.
+     * Returns a copy of this OffsetDateTime with the time altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the time in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the hour field.
-     * A more complex adjustor might set the time to end of the working day.
+     * Adjusters can be used to alter the time in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to end of the working day.
      * <p>
      * The adjustment has no effect on the date.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
-    public OffsetDateTime with(TimeAdjustor adjustor) {
-        LocalDateTime newDT = dateTime.with(adjustor);
+    public OffsetDateTime with(TimeAdjuster adjuster) {
+        LocalDateTime newDT = dateTime.with(adjuster);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 

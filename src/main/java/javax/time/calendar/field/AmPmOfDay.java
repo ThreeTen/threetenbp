@@ -39,7 +39,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeAdjustor;
+import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 import javax.time.calendar.format.DateTimeFormatSymbols;
@@ -60,7 +60,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Stephen Colebourne
  */
 public enum AmPmOfDay
-        implements CalendricalProvider, TimeAdjustor, TimeMatcher {
+        implements CalendricalProvider, TimeAdjuster, TimeMatcher {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.

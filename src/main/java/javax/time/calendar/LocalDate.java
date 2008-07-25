@@ -71,7 +71,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjustor, Comparable<LocalDate>, Serializable {
+        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -376,21 +376,21 @@ public final class LocalDate
     }
 
     /**
-     * Returns a copy of this LocalDate with the date altered using the adjustor.
+     * Returns a copy of this LocalDate with the date altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the date in unusual ways. Examples might
-     * be an adjustor that set the date avoiding weekends, or one that sets the
+     * Adjusters can be used to alter the date in unusual ways. Examples might
+     * be an adjuster that set the date avoiding weekends, or one that sets the
      * date to the last day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated LocalDate, never null
      */
-    public LocalDate with(DateAdjustor adjustor) {
-        LocalDate date = adjustor.adjustDate(this);
+    public LocalDate with(DateAdjuster adjuster) {
+        LocalDate date = adjuster.adjustDate(this);
         if (date == null) {
-            throw new NullPointerException("The implementation of DateAdjustor must not return null");
+            throw new NullPointerException("The implementation of DateAdjuster must not return null");
         }
         return date;
     }

@@ -32,7 +32,7 @@
 package javax.time.calendar.field;
 
 import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
@@ -58,7 +58,7 @@ import javax.time.calendar.DateTimeFieldRule;
  * @author Stephen Colebourne
  */
 public enum MonthOfYear
-        implements CalendricalProvider, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, DateAdjuster, DateMatcher {
 
     /**
      * The singleton instance for the month of January.

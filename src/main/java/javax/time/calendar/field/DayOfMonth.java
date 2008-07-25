@@ -35,7 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
@@ -61,7 +61,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
-        implements CalendricalProvider, Comparable<DayOfMonth>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<DayOfMonth>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * A serialization identifier for this instance.

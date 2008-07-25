@@ -53,7 +53,7 @@ import javax.time.calendar.field.Year;
  * @author Stephen Colebourne
  */
 public final class YearMonth
-        implements CalendricalProvider, Comparable<YearMonth>, Serializable, DateAdjustor, DateMatcher {
+        implements CalendricalProvider, Comparable<YearMonth>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * A serialization identifier for this class.

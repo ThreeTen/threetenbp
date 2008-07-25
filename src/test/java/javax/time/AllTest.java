@@ -32,7 +32,7 @@
 package javax.time;
 
 import javax.time.calendar.TestCalendrical;
-import javax.time.calendar.TestDateAdjustors;
+import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateMatchers;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestDateTimeFields;
@@ -96,7 +96,7 @@ public class AllTest {
             TestMathUtils.class,
             // calendar classes
             TestCalendrical.class,
-            TestDateAdjustors.class,
+            TestDateAdjusters.class,
             TestDateMatchers.class,
             TestDateResolvers.class,
             TestDateTimeFields.class,

@@ -36,7 +36,7 @@ package javax.time.calendar;
  *
  * @author Michael Nascimento Santos
  */
-public class MockTimeAdjusterReturnsNull implements TimeAdjustor {
+public class MockTimeAdjusterReturnsNull implements TimeAdjuster {
      /** {@inheritDoc} */
     public LocalTime adjustTime(LocalTime time) {
         return null;

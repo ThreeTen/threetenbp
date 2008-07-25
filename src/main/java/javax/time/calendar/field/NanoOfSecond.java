@@ -38,7 +38,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeAdjustor;
+import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 
 /**
@@ -56,7 +56,7 @@ import javax.time.calendar.TimeMatcher;
  * @author Stephen Colebourne
  */
 public final class NanoOfSecond
-        implements CalendricalProvider, Comparable<NanoOfSecond>, Serializable, TimeAdjustor, TimeMatcher {
+        implements CalendricalProvider, Comparable<NanoOfSecond>, Serializable, TimeAdjuster, TimeMatcher {
 
     /**
      * A singleton instance for zero nanoseconds.

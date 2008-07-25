@@ -54,20 +54,20 @@ import javax.time.calendar.field.Year;
 import org.testng.annotations.Test;
 
 /**
- * Test DateAdjustors.
+ * Test DateAdjusters.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
-public class TestDateAdjustors {
+public class TestDateAdjusters {
 
     private static final Year YEAR_2007 = isoYear(2007);
     private static final Year YEAR_2008 = isoYear(2008);
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {
-        for (Constructor constructor : DateAdjustors.class.getDeclaredConstructors()) {
+        for (Constructor constructor : DateAdjusters.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
@@ -78,7 +78,7 @@ public class TestDateAdjustors {
     // lastDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_lastDayOfMonth_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor lastDayOfMonth = DateAdjustors.lastDayOfMonth();
+        DateAdjuster lastDayOfMonth = DateAdjusters.lastDayOfMonth();
         assertTrue(lastDayOfMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -92,15 +92,15 @@ public class TestDateAdjustors {
     }
 
     public void factory_lastDayOfMonth() {
-        assertNotNull(DateAdjustors.lastDayOfMonth());
-        assertSame(DateAdjustors.lastDayOfMonth(), DateAdjustors.lastDayOfMonth());
+        assertNotNull(DateAdjusters.lastDayOfMonth());
+        assertSame(DateAdjusters.lastDayOfMonth(), DateAdjusters.lastDayOfMonth());
     }
 
     public void test_lastDayOfMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
-                LocalDate test = DateAdjustors.lastDayOfMonth().adjustDate(date);
+                LocalDate test = DateAdjusters.lastDayOfMonth().adjustDate(date);
                 assertEquals(test.getYear(), YEAR_2007);
                 assertEquals(test.getMonthOfYear(), month);
                 assertEquals(test.getDayOfMonth(), month.getLastDayOfMonth(YEAR_2007));
@@ -112,7 +112,7 @@ public class TestDateAdjustors {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2008); i++) {
                 LocalDate date = date(YEAR_2008, month, dayOfMonth(i));
-                LocalDate test = DateAdjustors.lastDayOfMonth().adjustDate(date);
+                LocalDate test = DateAdjusters.lastDayOfMonth().adjustDate(date);
                 assertEquals(test.getYear(), YEAR_2008);
                 assertEquals(test.getMonthOfYear(), month);
                 assertEquals(test.getDayOfMonth(), month.getLastDayOfMonth(YEAR_2008));
@@ -124,7 +124,7 @@ public class TestDateAdjustors {
     // lastDayOfYear()
     //-----------------------------------------------------------------------
     public void test_lastDayOfYear_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor lastDayOfYear = DateAdjustors.lastDayOfYear();
+        DateAdjuster lastDayOfYear = DateAdjusters.lastDayOfYear();
         assertTrue(lastDayOfYear instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -138,15 +138,15 @@ public class TestDateAdjustors {
     }
 
     public void factory_lastDayOfYear() {
-        assertNotNull(DateAdjustors.lastDayOfYear());
-        assertSame(DateAdjustors.lastDayOfYear(), DateAdjustors.lastDayOfYear());
+        assertNotNull(DateAdjusters.lastDayOfYear());
+        assertSame(DateAdjusters.lastDayOfYear(), DateAdjusters.lastDayOfYear());
     }
 
     public void test_lastDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
-                LocalDate test = DateAdjustors.lastDayOfYear().adjustDate(date);
+                LocalDate test = DateAdjusters.lastDayOfYear().adjustDate(date);
                 assertEquals(test.getYear(), YEAR_2007);
                 assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
                 assertEquals(test.getDayOfMonth(), dayOfMonth(31));
@@ -158,7 +158,7 @@ public class TestDateAdjustors {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2008); i++) {
                 LocalDate date = date(YEAR_2008, month, dayOfMonth(i));
-                LocalDate test = DateAdjustors.lastDayOfYear().adjustDate(date);
+                LocalDate test = DateAdjusters.lastDayOfYear().adjustDate(date);
                 assertEquals(test.getYear(), YEAR_2008);
                 assertEquals(test.getMonthOfYear(), MonthOfYear.DECEMBER);
                 assertEquals(test.getDayOfMonth(), dayOfMonth(31));
@@ -170,7 +170,7 @@ public class TestDateAdjustors {
     // dayOfWeekInMonth()
     //-----------------------------------------------------------------------
     public void test_dayOfWeekInMonth_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor dayOfWeekInMonth = DateAdjustors.dayOfWeekInMonth(1, SUNDAY);
+        DateAdjuster dayOfWeekInMonth = DateAdjusters.dayOfWeekInMonth(1, SUNDAY);
         assertTrue(dayOfWeekInMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -184,41 +184,41 @@ public class TestDateAdjustors {
     }
 
     public void factory_dayOfWeekInMonth() {
-        assertNotNull(DateAdjustors.dayOfWeekInMonth(1, MONDAY));
-        assertEquals(DateAdjustors.dayOfWeekInMonth(1, MONDAY), DateAdjustors.dayOfWeekInMonth(1, MONDAY));
-        assertEquals(DateAdjustors.dayOfWeekInMonth(2, MONDAY), DateAdjustors.dayOfWeekInMonth(2, MONDAY));
+        assertNotNull(DateAdjusters.dayOfWeekInMonth(1, MONDAY));
+        assertEquals(DateAdjusters.dayOfWeekInMonth(1, MONDAY), DateAdjusters.dayOfWeekInMonth(1, MONDAY));
+        assertEquals(DateAdjusters.dayOfWeekInMonth(2, MONDAY), DateAdjusters.dayOfWeekInMonth(2, MONDAY));
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_dayOfWeekInMonth_ordinalTooSmall() {
-        DateAdjustors.dayOfWeekInMonth(0, MONDAY);
+        DateAdjusters.dayOfWeekInMonth(0, MONDAY);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_dayOfWeekInMonth_ordinalTooBig() {
-        DateAdjustors.dayOfWeekInMonth(6, MONDAY);
+        DateAdjusters.dayOfWeekInMonth(6, MONDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dayOfWeekInMonth_nullDayOfWeek() {
-        DateAdjustors.dayOfWeekInMonth(1, null);
+        DateAdjusters.dayOfWeekInMonth(1, null);
     }
 
     public void test_dayOfWeekInMonth_equals() {
-        final DateAdjustor mondayInFirstWeek = DateAdjustors.dayOfWeekInMonth(1, MONDAY);
+        final DateAdjuster mondayInFirstWeek = DateAdjusters.dayOfWeekInMonth(1, MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.lastDayOfMonth()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.dayOfWeekInMonth(2, MONDAY)));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.dayOfWeekInMonth(1, TUESDAY)));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.dayOfWeekInMonth(2, MONDAY)));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.dayOfWeekInMonth(1, TUESDAY)));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateAdjustors.dayOfWeekInMonth(1, MONDAY)));
+        assertTrue(mondayInFirstWeek.equals(DateAdjusters.dayOfWeekInMonth(1, MONDAY)));
     }
 
     public void test_dayOfWeekInMonth_hashCode() {
-        assertEquals(DateAdjustors.dayOfWeekInMonth(1, MONDAY).hashCode(), DateAdjustors.dayOfWeekInMonth(1, MONDAY).hashCode());
-        assertEquals(DateAdjustors.dayOfWeekInMonth(1, TUESDAY).hashCode(), DateAdjustors.dayOfWeekInMonth(1, TUESDAY).hashCode());
-        assertEquals(DateAdjustors.dayOfWeekInMonth(2, MONDAY).hashCode(), DateAdjustors.dayOfWeekInMonth(2, MONDAY).hashCode());
+        assertEquals(DateAdjusters.dayOfWeekInMonth(1, MONDAY).hashCode(), DateAdjusters.dayOfWeekInMonth(1, MONDAY).hashCode());
+        assertEquals(DateAdjusters.dayOfWeekInMonth(1, TUESDAY).hashCode(), DateAdjusters.dayOfWeekInMonth(1, TUESDAY).hashCode());
+        assertEquals(DateAdjusters.dayOfWeekInMonth(2, MONDAY).hashCode(), DateAdjusters.dayOfWeekInMonth(2, MONDAY).hashCode());
     }
 
     public void test_dayOfWeekInMonth_firstToForth() {
@@ -228,7 +228,7 @@ public class TestDateAdjustors {
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
                     for (int ordinal = 1; ordinal <= 4; ordinal++) {
-                        LocalDate test = DateAdjustors.dayOfWeekInMonth(ordinal, dow).adjustDate(date);
+                        LocalDate test = DateAdjusters.dayOfWeekInMonth(ordinal, dow).adjustDate(date);
                         assertEquals(test.getYear(), YEAR_2007);
                         assertEquals(test.getMonthOfYear(), month);
                         assertTrue(test.getDayOfMonth().getValue() > (ordinal - 1) * 7);
@@ -246,7 +246,7 @@ public class TestDateAdjustors {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = DateAdjustors.dayOfWeekInMonth(5, dow).adjustDate(date);
+                    LocalDate test = DateAdjusters.dayOfWeekInMonth(5, dow).adjustDate(date);
 
                     assertEquals(test.getDayOfWeek(), dow);
 
@@ -281,7 +281,7 @@ public class TestDateAdjustors {
     // firstInMonth()
     //-----------------------------------------------------------------------
     public void test_firstInMonth_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor firstInMonth = DateAdjustors.firstInMonth(SUNDAY);
+        DateAdjuster firstInMonth = DateAdjusters.firstInMonth(SUNDAY);
         assertTrue(firstInMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -295,28 +295,28 @@ public class TestDateAdjustors {
     }
 
     public void factory_firstInMonth() {
-        assertNotNull(DateAdjustors.firstInMonth(MONDAY));
-        assertEquals(DateAdjustors.firstInMonth(MONDAY), DateAdjustors.firstInMonth(MONDAY));
+        assertNotNull(DateAdjusters.firstInMonth(MONDAY));
+        assertEquals(DateAdjusters.firstInMonth(MONDAY), DateAdjusters.firstInMonth(MONDAY));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_firstInMonth_nullDayOfWeek() {
-        DateAdjustors.firstInMonth(null);
+        DateAdjusters.firstInMonth(null);
     }
 
     public void test_firstInMonth_equals() {
-        final DateAdjustor mondayInFirstWeek = DateAdjustors.firstInMonth(MONDAY);
+        final DateAdjuster mondayInFirstWeek = DateAdjusters.firstInMonth(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.lastDayOfMonth()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.firstInMonth(TUESDAY)));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.firstInMonth(TUESDAY)));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateAdjustors.firstInMonth(MONDAY)));
+        assertTrue(mondayInFirstWeek.equals(DateAdjusters.firstInMonth(MONDAY)));
     }
 
     public void test_firstInMonth_hashCode() {
-        assertEquals(DateAdjustors.firstInMonth(MONDAY).hashCode(), DateAdjustors.firstInMonth(MONDAY).hashCode());
-        assertEquals(DateAdjustors.firstInMonth(TUESDAY).hashCode(), DateAdjustors.firstInMonth(TUESDAY).hashCode());
+        assertEquals(DateAdjusters.firstInMonth(MONDAY).hashCode(), DateAdjusters.firstInMonth(MONDAY).hashCode());
+        assertEquals(DateAdjusters.firstInMonth(TUESDAY).hashCode(), DateAdjusters.firstInMonth(TUESDAY).hashCode());
     }
 
     public void test_firstInMonth() {
@@ -325,7 +325,7 @@ public class TestDateAdjustors {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = DateAdjustors.firstInMonth(dow).adjustDate(date);
+                    LocalDate test = DateAdjusters.firstInMonth(dow).adjustDate(date);
                     assertEquals(test.getYear(), YEAR_2007);
                     assertEquals(test.getMonthOfYear(), month);
                     assertTrue(test.getDayOfMonth().getValue() < 8);
@@ -339,7 +339,7 @@ public class TestDateAdjustors {
     // nextNonWeekendDay()
     //-----------------------------------------------------------------------
     public void test_nextNonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor nextNonWeekendDay = DateAdjustors.nextNonWeekendDay();
+        DateAdjuster nextNonWeekendDay = DateAdjusters.nextNonWeekendDay();
         assertTrue(nextNonWeekendDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -353,15 +353,15 @@ public class TestDateAdjustors {
     }
 
     public void factory_nextNonWeekendDay() {
-        assertNotNull(DateAdjustors.nextNonWeekendDay());
-        assertSame(DateAdjustors.nextNonWeekendDay(), DateAdjustors.nextNonWeekendDay());
+        assertNotNull(DateAdjusters.nextNonWeekendDay());
+        assertSame(DateAdjusters.nextNonWeekendDay(), DateAdjusters.nextNonWeekendDay());
     }
 
     public void test_nextNonWeekendDay() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
-                LocalDate test = DateAdjustors.nextNonWeekendDay().adjustDate(date);
+                LocalDate test = DateAdjusters.nextNonWeekendDay().adjustDate(date);
                 assertTrue(test.isAfter(date));
                 assertFalse(test.getDayOfWeek().equals(SATURDAY));
                 assertFalse(test.getDayOfWeek().equals(SUNDAY));
@@ -399,11 +399,11 @@ public class TestDateAdjustors {
 
     public void test_nextNonWeekendDay_yearChange() {
         LocalDate friday = LocalDate.date(isoYear(2010), MonthOfYear.DECEMBER, dayOfMonth(31));
-        LocalDate monday = DateAdjustors.nextNonWeekendDay().adjustDate(friday);
+        LocalDate monday = DateAdjusters.nextNonWeekendDay().adjustDate(friday);
         assertEquals(LocalDate.date(isoYear(2011), MonthOfYear.JANUARY, dayOfMonth(3)), monday);
 
         LocalDate saturday = LocalDate.date(isoYear(2011), MonthOfYear.DECEMBER, dayOfMonth(31));
-        monday = DateAdjustors.nextNonWeekendDay().adjustDate(saturday);
+        monday = DateAdjusters.nextNonWeekendDay().adjustDate(saturday);
         assertEquals(LocalDate.date(isoYear(2012), MonthOfYear.JANUARY, dayOfMonth(2)), monday);
     }
 
@@ -411,7 +411,7 @@ public class TestDateAdjustors {
     // nextMonday()
     //-----------------------------------------------------------------------
     public void test_nextMonday_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor nextMonday = DateAdjustors.nextMonday();
+        DateAdjuster nextMonday = DateAdjusters.nextMonday();
         assertTrue(nextMonday instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -425,28 +425,28 @@ public class TestDateAdjustors {
     }
 
     public void factory_nextMonday() {
-        assertNotNull(DateAdjustors.nextMonday());
-        assertEquals(DateAdjustors.nextMonday(), DateAdjustors.nextMonday());
+        assertNotNull(DateAdjusters.nextMonday());
+        assertEquals(DateAdjusters.nextMonday(), DateAdjusters.nextMonday());
     }
 
     public void test_nextMonday_equals() {
-        final DateAdjustor mondayInFirstWeek = DateAdjustors.nextMonday();
+        final DateAdjuster mondayInFirstWeek = DateAdjusters.nextMonday();
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.lastDayOfMonth()));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateAdjustors.nextMonday()));
+        assertTrue(mondayInFirstWeek.equals(DateAdjusters.nextMonday()));
     }
 
     public void test_nextMonday_hashCode() {
-        assertEquals(DateAdjustors.nextMonday().hashCode(), DateAdjustors.nextMonday().hashCode());
+        assertEquals(DateAdjusters.nextMonday().hashCode(), DateAdjusters.nextMonday().hashCode());
     }
 
     public void test_nextMonday() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
-                LocalDate test = DateAdjustors.nextMonday().adjustDate(date);
+                LocalDate test = DateAdjusters.nextMonday().adjustDate(date);
 
                 assertSame(test.getDayOfWeek(), MONDAY);
 
@@ -468,7 +468,7 @@ public class TestDateAdjustors {
     // next()
     //-----------------------------------------------------------------------
     public void test_next_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor next = DateAdjustors.next(SUNDAY);
+        DateAdjuster next = DateAdjusters.next(SUNDAY);
         assertTrue(next instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -482,28 +482,28 @@ public class TestDateAdjustors {
     }
 
     public void factory_next() {
-        assertNotNull(DateAdjustors.next(MONDAY));
-        assertEquals(DateAdjustors.next(MONDAY), DateAdjustors.next(MONDAY));
+        assertNotNull(DateAdjusters.next(MONDAY));
+        assertEquals(DateAdjusters.next(MONDAY), DateAdjusters.next(MONDAY));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void factory_next_nullDayOfWeek() {
-        DateAdjustors.next(null);
+        DateAdjusters.next(null);
     }
 
     public void test_next_equals() {
-        final DateAdjustor mondayInFirstWeek = DateAdjustors.next(MONDAY);
+        final DateAdjuster mondayInFirstWeek = DateAdjusters.next(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.lastDayOfMonth()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.next(TUESDAY)));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.next(TUESDAY)));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateAdjustors.next(MONDAY)));
+        assertTrue(mondayInFirstWeek.equals(DateAdjusters.next(MONDAY)));
     }
 
     public void test_next_hashCode() {
-        assertEquals(DateAdjustors.next(MONDAY).hashCode(), DateAdjustors.next(MONDAY).hashCode());
-        assertEquals(DateAdjustors.next(TUESDAY).hashCode(), DateAdjustors.next(TUESDAY).hashCode());
+        assertEquals(DateAdjusters.next(MONDAY).hashCode(), DateAdjusters.next(MONDAY).hashCode());
+        assertEquals(DateAdjusters.next(TUESDAY).hashCode(), DateAdjusters.next(TUESDAY).hashCode());
     }
 
     public void test_next() {
@@ -512,7 +512,7 @@ public class TestDateAdjustors {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = DateAdjustors.next(dow).adjustDate(date);
+                    LocalDate test = DateAdjusters.next(dow).adjustDate(date);
 
                     assertSame(test.getDayOfWeek(), dow, date + " " + test);
 
@@ -535,7 +535,7 @@ public class TestDateAdjustors {
     // nextOrCurrent()
     //-----------------------------------------------------------------------
     public void test_nextOrCurrent_serialization() throws IOException, ClassNotFoundException {
-        DateAdjustor nextOrCurrent = DateAdjustors.nextOrCurrent(SUNDAY);
+        DateAdjuster nextOrCurrent = DateAdjusters.nextOrCurrent(SUNDAY);
         assertTrue(nextOrCurrent instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -549,29 +549,29 @@ public class TestDateAdjustors {
     }
 
     public void factory_nextOrCurrent() {
-        assertNotNull(DateAdjustors.nextOrCurrent(MONDAY));
-        assertEquals(DateAdjustors.nextOrCurrent(MONDAY), DateAdjustors.nextOrCurrent(MONDAY));
+        assertNotNull(DateAdjusters.nextOrCurrent(MONDAY));
+        assertEquals(DateAdjusters.nextOrCurrent(MONDAY), DateAdjusters.nextOrCurrent(MONDAY));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void factory_nextOrCurrent_nullDayOfWeek() {
-        DateAdjustors.nextOrCurrent(null);
+        DateAdjusters.nextOrCurrent(null);
     }
 
     public void test_nextOrCurrent_equals() {
-        final DateAdjustor mondayInFirstWeek = DateAdjustors.nextOrCurrent(MONDAY);
+        final DateAdjuster mondayInFirstWeek = DateAdjusters.nextOrCurrent(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.lastDayOfMonth()));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.nextOrCurrent(TUESDAY)));
-        assertFalse(mondayInFirstWeek.equals(DateAdjustors.next(MONDAY)));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.nextOrCurrent(TUESDAY)));
+        assertFalse(mondayInFirstWeek.equals(DateAdjusters.next(MONDAY)));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateAdjustors.nextOrCurrent(MONDAY)));
+        assertTrue(mondayInFirstWeek.equals(DateAdjusters.nextOrCurrent(MONDAY)));
     }
 
     public void test_nextOrCurrent_hashCode() {
-        assertEquals(DateAdjustors.nextOrCurrent(MONDAY).hashCode(), DateAdjustors.nextOrCurrent(MONDAY).hashCode());
-        assertEquals(DateAdjustors.nextOrCurrent(TUESDAY).hashCode(), DateAdjustors.nextOrCurrent(TUESDAY).hashCode());
+        assertEquals(DateAdjusters.nextOrCurrent(MONDAY).hashCode(), DateAdjusters.nextOrCurrent(MONDAY).hashCode());
+        assertEquals(DateAdjusters.nextOrCurrent(TUESDAY).hashCode(), DateAdjusters.nextOrCurrent(TUESDAY).hashCode());
     }
 
     public void test_nextOrCurrent() {
@@ -580,7 +580,7 @@ public class TestDateAdjustors {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    LocalDate test = DateAdjustors.nextOrCurrent(dow).adjustDate(date);
+                    LocalDate test = DateAdjusters.nextOrCurrent(dow).adjustDate(date);
 
                     assertSame(test.getDayOfWeek(), dow);
 

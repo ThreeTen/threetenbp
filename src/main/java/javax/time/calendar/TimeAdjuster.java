@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,29 +32,29 @@
 package javax.time.calendar;
 
 /**
- * Strategy for adjusting a date.
+ * Strategy for adjusting a time.
  * <p>
- * This interface provides a common way to access many different date
- * adjustments. Examples might be an adjustor that sets the date avoiding
- * weekends, or one that sets the date to the last day of the month.
+ * This interface provides a common way to access many different time
+ * adjustments. These could be simple, such as simply setting the hour field,
+ * or complex, such as adjusting the time to the end of the working day.
  * <p>
- * DateAdjustor is an interface and must be implemented with care
+ * TimeAdjuster is an interface and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public interface DateAdjustor {
+public interface TimeAdjuster {
 
     /**
-     * Adjusts the input date returning the adjusted date.
+     * Adjusts the input time returning the adjusted time.
      * <p>
      * This is a strategy pattern that allows a range of adjustents to be made
-     * to a date.
+     * to a time.
      *
-     * @param date  the date to adjust, not null
-     * @return the adjusted date, never null
+     * @param time  the time to adjust, not null
+     * @return the adjusted time, never null
      */
-    LocalDate adjustDate(LocalDate date);
+    LocalTime adjustTime(LocalTime time);
 
 }

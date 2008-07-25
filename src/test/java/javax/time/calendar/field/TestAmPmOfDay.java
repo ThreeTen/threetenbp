@@ -43,7 +43,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockTimeProviderReturnsNull;
-import javax.time.calendar.TimeAdjustor;
+import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
@@ -70,7 +70,7 @@ public class TestAmPmOfDay {
         assertTrue(CalendricalProvider.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
-        assertTrue(TimeAdjustor.class.isAssignableFrom(AmPmOfDay.class));
+        assertTrue(TimeAdjuster.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(TimeMatcher.class.isAssignableFrom(AmPmOfDay.class));
     }
 

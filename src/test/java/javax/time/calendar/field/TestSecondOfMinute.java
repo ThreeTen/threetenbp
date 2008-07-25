@@ -49,7 +49,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockTimeProviderReturnsNull;
-import javax.time.calendar.TimeAdjustor;
+import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
@@ -77,7 +77,7 @@ public class TestSecondOfMinute {
         assertTrue(CalendricalProvider.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(Serializable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(Comparable.class.isAssignableFrom(SecondOfMinute.class));
-        assertTrue(TimeAdjustor.class.isAssignableFrom(SecondOfMinute.class));
+        assertTrue(TimeAdjuster.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(TimeMatcher.class.isAssignableFrom(SecondOfMinute.class));
     }
 

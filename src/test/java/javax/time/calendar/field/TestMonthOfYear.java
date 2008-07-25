@@ -37,7 +37,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateAdjustor;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
@@ -78,7 +78,7 @@ public class TestMonthOfYear {
         assertTrue(CalendricalProvider.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
-        assertTrue(DateAdjustor.class.isAssignableFrom(MonthOfYear.class));
+        assertTrue(DateAdjuster.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(DateMatcher.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Enum.class.isAssignableFrom(MonthOfYear.class));
     }

@@ -266,13 +266,13 @@ public class TestCopticDate {
 //    // with()
 //    //-----------------------------------------------------------------------
 //    public void test_with() {
-//        DateAdjustor dateAdjustor = DateAdjustors.lastDayOfMonth();
-//        assertEquals(TEST_2007_07_15.with(dateAdjustor), dateAdjustor.adjustDate(TEST_2007_07_15));
+//        DateAdjuster dateAdjuster = DateAdjusters.lastDayOfMonth();
+//        assertEquals(TEST_2007_07_15.with(dateAdjuster), dateAdjuster.adjustDate(TEST_2007_07_15));
 //    }
 //
 //    @Test(expectedExceptions=IllegalArgumentException.class)
 //    public void test_with_null_adjustDate() {
-//        TEST_2007_07_15.with(new DateAdjustor() {
+//        TEST_2007_07_15.with(new DateAdjuster() {
 //            public CopticDate adjustDate(CopticDate date) {
 //                return null;
 //            }

@@ -369,20 +369,20 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the time altered using the adjustor.
+     * Returns a copy of this OffsetTime with the time altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the time in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the hour field.
-     * A more complex adjustor might set the time to end of the working day.
+     * Adjusters can be used to alter the time in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to end of the working day.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated OffsetTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
-    public OffsetTime with(TimeAdjustor adjustor) {
-        LocalTime newTime = time.with(adjustor);
+    public OffsetTime with(TimeAdjuster adjuster) {
+        LocalTime newTime = time.with(adjuster);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
 

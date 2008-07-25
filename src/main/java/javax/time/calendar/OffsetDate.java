@@ -59,7 +59,7 @@ import javax.time.period.PeriodView;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjustor, Comparable<OffsetDate>, Serializable {
+        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -306,22 +306,22 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the date altered using the adjustor.
+     * Returns a copy of this OffsetDate with the date altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the date in unusual ways. Examples might
-     * be an adjustor that set the date avoiding weekends, or one that sets the
+     * Adjusters can be used to alter the date in unusual ways. Examples might
+     * be an adjuster that set the date avoiding weekends, or one that sets the
      * date to the last day of the month.
      * <p>
      * The offset has no effect on and is not affected by the adjustment.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated OffsetDate, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
-    public OffsetDate with(DateAdjustor adjustor) {
-        LocalDate newDate = date.with(adjustor);
+    public OffsetDate with(DateAdjuster adjuster) {
+        LocalDate newDate = date.with(adjuster);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 

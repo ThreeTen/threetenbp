@@ -31,7 +31,7 @@
  */
 package javax.time;
 
-import static javax.time.calendar.DateAdjustors.*;
+import static javax.time.calendar.DateAdjusters.*;
 import static javax.time.calendar.LocalDate.*;
 import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.DayOfWeek.*;

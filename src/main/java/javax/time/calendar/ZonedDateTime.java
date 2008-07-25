@@ -619,84 +619,84 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this ZonedDateTime with the date altered using the adjustor.
+     * Returns a copy of this ZonedDateTime with the date altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the date in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the year field.
-     * A more complex adjustor might set the date to the last day of the month.
+     * Adjusters can be used to alter the date in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
      * <p>
      * If the adjusted date results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
-    public ZonedDateTime with(DateAdjustor adjustor) {
-        return with(adjustor, ZoneResolvers.retainOffset());
+    public ZonedDateTime with(DateAdjuster adjuster) {
+        return with(adjuster, ZoneResolvers.retainOffset());
     }
 
     /**
      * Returns a copy of this ZonedDateTime with the date altered using the
-     * adjustor, providing a resolver to handle an invalid date-time.
+     * adjuster, providing a resolver to handle an invalid date-time.
      * <p>
-     * Adjustors can be used to alter the date in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the year field.
-     * A more complex adjustor might set the date to the last day of the month.
+     * Adjusters can be used to alter the date in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @param resolver  the resolver to use, not null
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
      */
-    public ZonedDateTime with(DateAdjustor adjustor, ZoneResolver resolver) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjustor);
+    public ZonedDateTime with(DateAdjuster adjuster, ZoneResolver resolver) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
         return (newDT == dateTime.toLocalDateTime() ? this : dateTime(newDT, dateTime, zone, resolver));
     }
 
     /**
-     * Returns a copy of this ZonedDateTime with the time altered using the adjustor.
+     * Returns a copy of this ZonedDateTime with the time altered using the adjuster.
      * <p>
-     * Adjustors can be used to alter the time in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the hour field.
-     * A more complex adjustor might set the time to end of the working day.
+     * Adjusters can be used to alter the time in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to end of the working day.
      * <p>
      * If the adjusted date results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
-    public ZonedDateTime with(TimeAdjustor adjustor) {
-        return with(adjustor, ZoneResolvers.retainOffset());
+    public ZonedDateTime with(TimeAdjuster adjuster) {
+        return with(adjuster, ZoneResolvers.retainOffset());
     }
 
     /**
      * Returns a copy of this ZonedDateTime with the time altered using the
-     * adjustor, providing a resolver to handle an invalid date-time.
+     * adjuster, providing a resolver to handle an invalid date-time.
      * <p>
-     * Adjustors can be used to alter the time in various ways.
-     * A simple adjustor might simply set the one of the fields, such as the hour field.
-     * A more complex adjustor might set the time to end of the working day.
+     * Adjusters can be used to alter the time in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the hour field.
+     * A more complex adjuster might set the time to end of the working day.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param adjustor  the adjustor to use, not null
+     * @param adjuster  the adjuster to use, not null
      * @param resolver  the resolver to use, not null
      * @return a new updated ZonedDateTime, never null
-     * @throws IllegalArgumentException if the adjustor returned null
+     * @throws IllegalArgumentException if the adjuster returned null
      * @throws IllegalCalendarFieldValueException if the resolver cannot resolve the date-time
      */
-    public ZonedDateTime with(TimeAdjustor adjustor, ZoneResolver resolver) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjustor);
+    public ZonedDateTime with(TimeAdjuster adjuster, ZoneResolver resolver) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().with(adjuster);
         return (newDT == dateTime.toLocalDateTime() ? this : dateTime(newDT, dateTime, zone, resolver));
     }
 

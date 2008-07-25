@@ -40,7 +40,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeAdjustor;
+import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour
-        implements CalendricalProvider, Comparable<MinuteOfHour>, Serializable, TimeAdjustor, TimeMatcher {
+        implements CalendricalProvider, Comparable<MinuteOfHour>, Serializable, TimeAdjuster, TimeMatcher {
 
     /**
      * A serialization identifier for this instance.

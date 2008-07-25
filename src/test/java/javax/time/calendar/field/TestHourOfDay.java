@@ -49,7 +49,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockTimeProviderReturnsNull;
-import javax.time.calendar.TimeAdjustor;
+import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
@@ -77,7 +77,7 @@ public class TestHourOfDay {
         assertTrue(CalendricalProvider.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
-        assertTrue(TimeAdjustor.class.isAssignableFrom(HourOfDay.class));
+        assertTrue(TimeAdjuster.class.isAssignableFrom(HourOfDay.class));
         assertTrue(TimeMatcher.class.isAssignableFrom(HourOfDay.class));
     }
 
