@@ -35,6 +35,7 @@ import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.MonthOfYear.*;
 
 import java.io.Serializable;
+
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 
@@ -69,33 +70,9 @@ public final class DateAdjusters {
      * @return the last day of month adjuster, never null
      */
     public static DateAdjuster lastDayOfMonth() {
-        return LastDayOfMonth.INSTANCE;
+        return Impl.LAST_DAY_OF_MONTH;
     }
 
-    /**
-     * Class implementing last day of month adjuster.
-     */
-    private static final class LastDayOfMonth implements DateAdjuster, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateAdjuster INSTANCE = new LastDayOfMonth();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate adjustDate(LocalDate date) {
-            DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.getYear());
-            return date.with(dom);
-        }
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns the last day of year adjuster, which retuns a new date with
      * the day of year changed to be the last valid day of the year.
@@ -106,29 +83,54 @@ public final class DateAdjusters {
      * @return the last day of year adjuster, never null
      */
     public static DateAdjuster lastDayOfYear() {
-        return LastDayOfYear.INSTANCE;
+        return Impl.LAST_DAY_OF_YEAR;
     }
 
     /**
-     * Class implementing last day of year adjuster.
+     * Returns the next non weekend day adjuster, which adjusts the date one day
+     * forward skipping Saturday and Sunday.
+     *
+     * @return the next working day adjuster, never null
      */
-    private static final class LastDayOfYear implements DateAdjuster, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 1L;
+    public static DateAdjuster nextNonWeekendDay() {
+        return Impl.NEXT_NON_WEEKEND;
+    }
 
-        /** The singleton instance. */
-        private static final DateAdjuster INSTANCE = new LastDayOfYear();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate adjustDate(LocalDate date) {
-            return LocalDate.date(date.getYear(), DECEMBER, dayOfMonth(31));
-        }
+    //-----------------------------------------------------------------------
+    /**
+     * Enum implementing the adjusters.
+     */
+    private static enum Impl implements DateAdjuster {
+        /** Last day of month adjuster. */
+        LAST_DAY_OF_MONTH {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.getYear());
+                return date.with(dom);
+            }
+        },
+        /** Last day of year adjuster. */
+        LAST_DAY_OF_YEAR {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                return LocalDate.date(date.getYear(), DECEMBER, dayOfMonth(31));
+            }
+        },
+        /** Next non weekend day adjuster. */
+        NEXT_NON_WEEKEND {
+            /** {@inheritDoc} */
+            public LocalDate adjustDate(LocalDate date) {
+                DayOfWeek dow = date.getDayOfWeek();
+                switch (dow) {
+                    case SATURDAY:
+                        return date.plusDays(2);
+                    case FRIDAY:
+                        return date.plusDays(3);
+                    default:
+                        return date.plusDays(1);
+                }
+            }
+        },
     }
 
     //-----------------------------------------------------------------------
@@ -207,31 +209,12 @@ public final class DateAdjusters {
 
         /** {@inheritDoc} */
         public LocalDate adjustDate(LocalDate date) {
-            // TODO: Better algorithm
             LocalDate temp = date.withDayOfMonth(1);
             int curDow = temp.getDayOfWeek().ordinal();
             int newDow = dayOfWeek.ordinal();
             int dowDiff = (newDow - curDow + 7) % 7;
             dowDiff += (ordinal - 1) * 7;
             return temp.plusDays(dowDiff);
-
-//            int curDow = date.getDayOfWeek().ordinal();
-//            int newDow = dayOfWeek.ordinal();
-////            int dowDiff = newDow - curDow;  // from -6 to 6
-//            int curDom = date.getDayOfMonth().getValue() - 1;
-////            int curDomMonday = curDom - curDow;
-//            int curWeek = curDom / 7;
-//            int weekDiff = ordinal - 1 - curWeek;  // from -4 to 4
-//            
-//            int curAlignedDow = curDom % 7;
-//            int dowDiff = (newDow - curAlignedDow + 7) % 7;
-//            
-//            int days = weekDiff * 7 + dowDiff;
-//            
-//            System.out.println(curDow + " " + newDow + " " + curDom + " " + curWeek + " " +
-//                    weekDiff + " " + curAlignedDow + " " + dowDiff);
-//            
-//            return date.plusDays(days);
         }
 
         /** {@inheritDoc} */
@@ -252,47 +235,8 @@ public final class DateAdjusters {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Returns the next non weekend day adjuster, which adjusts the date one day
-     * forward avoiding Saturday and Sunday.
-     *
-     * @return the next working day adjuster, never null
-     */
-    public static DateAdjuster nextNonWeekendDay() {
-        return NextNonWeekendDay.INSTANCE;
-    }
-
-    /**
-     * Class implementing next non weekend day adjuster.
-     */
-    private static class NextNonWeekendDay implements DateAdjuster, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateAdjuster INSTANCE = new NextNonWeekendDay();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public LocalDate adjustDate(LocalDate date) {
-            DayOfWeek dow = date.getDayOfWeek();
-            switch (dow) {
-                case SATURDAY:
-                    return date.plusDays(2);
-                case FRIDAY:
-                    return date.plusDays(3);
-                default:
-                    return date.plusDays(1);
-            }
-        }
-    }
-
-    //-----------------------------------------------------------------------
+    // TODO: This set of adjusters is incomplete, for example what about
+    // June this year vs next June vs nextOrCurrent June vs previous...
     /**
      * Returns the next Monday adjuster, which adjusts the date to be the
      * next Monday after the specified date.

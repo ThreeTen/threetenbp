@@ -291,6 +291,40 @@ public class TestDateMatchers {
     }
 
     //-----------------------------------------------------------------------
+    // weekendDay()
+    //-----------------------------------------------------------------------
+    public void test_weekendDay_serialization() throws IOException, ClassNotFoundException {
+        DateMatcher weekendDay = DateMatchers.weekendDay();
+        assertTrue(weekendDay instanceof Serializable);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(weekendDay);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertSame(ois.readObject(), weekendDay);
+    }
+
+    public void factory_weekendDay() {
+        assertNotNull(DateMatchers.weekendDay());
+        assertSame(DateMatchers.weekendDay(), DateMatchers.weekendDay());
+    }
+
+    public void test_weekendDay() {
+        for (MonthOfYear month : MonthOfYear.values()) {
+            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
+                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+                DayOfWeek dayOfWeek = date.getDayOfWeek();
+                assertEquals(DateMatchers.weekendDay().matchesDate(date),
+                        dayOfWeek == DayOfWeek.SATURDAY || 
+                        dayOfWeek == DayOfWeek.SUNDAY);
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // nonWeekendDay()
     //-----------------------------------------------------------------------
     public void test_nonWeekendDay_serialization() throws IOException, ClassNotFoundException {
@@ -317,9 +351,11 @@ public class TestDateMatchers {
             for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
                 LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
-                assertEquals(DateMatchers.nonWeekendDay().matchesDate(date), dayOfWeek != DayOfWeek.SATURDAY && 
+                assertEquals(DateMatchers.nonWeekendDay().matchesDate(date),
+                        dayOfWeek != DayOfWeek.SATURDAY && 
                         dayOfWeek != DayOfWeek.SUNDAY);
             }
         }
     }
+
 }

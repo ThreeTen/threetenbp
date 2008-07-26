@@ -46,6 +46,7 @@ import javax.time.calendar.field.MonthOfYear;
  * @author Stephen Colebourne
  */
 public final class DateMatchers {
+
     /**
      * Private constructor since this is a utility class
      */
@@ -54,38 +55,15 @@ public final class DateMatchers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the last day of month matcher, which retuns true if the date 
+     * Returns the last day of month matcher, which retuns true if the date
      * is the last valid day of the month.
      *
      * @return the last day of month matcher, never null
      */
     public static DateMatcher lastDayOfMonth() {
-        return LastDayOfMonth.INSTANCE;
+        return Impl.LAST_DAY_OF_MONTH;
     }
 
-    /**
-     * Class implementing last day of month matcher.
-     */
-    private static final class LastDayOfMonth implements DateMatcher, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateMatcher INSTANCE = new LastDayOfMonth();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public boolean matchesDate(LocalDate date) {
-            return date.getDayOfMonth().getValue() == date.getMonthOfYear().lengthInDays(date.getYear());
-        }
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns the last day of year matcher, which retuns true if the date is
      * the last valid day of the year.
@@ -93,29 +71,70 @@ public final class DateMatchers {
      * @return the last day of year matcher, never null
      */
     public static DateMatcher lastDayOfYear() {
-        return LastDayOfYear.INSTANCE;
+        return Impl.LAST_DAY_OF_YEAR;
     }
 
     /**
-     * Class implementing last day of year matcher.
+     * Returns the weekend day matcher, which returns true if the date
+     * is Saturday or Sunday.
+     * <p>
+     * Some territories have weekends that do not consist of Saturday and Sunday.
+     * No implementation is supplied to support this, however a DateMatcher
+     * can be easily written to do so.
+     *
+     * @return the non weekend day matcher, never null
      */
-    private static final class LastDayOfYear implements DateMatcher, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 1L;
+    public static DateMatcher weekendDay() {
+        return Impl.WEEKEND_DAY;
+    }
 
-        /** The singleton instance. */
-        private static final DateMatcher INSTANCE = new LastDayOfYear();
+    /**
+     * Returns the non weekend day matcher, which returns true if the date
+     * is between Monday and Friday inclusive.
+     * <p>
+     * Some territories have weekends that do not consist of Saturday and Sunday.
+     * No implementation is supplied to support this, however a DateMatcher
+     * can be easily written to do so.
+     *
+     * @return the non weekend day matcher, never null
+     */
+    public static DateMatcher nonWeekendDay() {
+        return Impl.NON_WEEKEND_DAY;
+    }
 
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public boolean matchesDate(LocalDate date) {
-            return date.getMonthOfYear() == MonthOfYear.DECEMBER && date.getDayOfMonth().getValue() == 31;
-        }
+    //-----------------------------------------------------------------------
+    /**
+     * Enum implementing the adjusters.
+     */
+    private static enum Impl implements DateMatcher {
+        /** Last day of month matcher. */
+        LAST_DAY_OF_MONTH {
+            /** {@inheritDoc} */
+            public boolean matchesDate(LocalDate date) {
+                return date.getDayOfMonth().getValue() == date.getMonthOfYear().lengthInDays(date.getYear());
+            }
+        },
+        /** Last day of year matcher. */
+        LAST_DAY_OF_YEAR {
+            /** {@inheritDoc} */
+            public boolean matchesDate(LocalDate date) {
+                return date.getMonthOfYear() == MonthOfYear.DECEMBER && date.getDayOfMonth().getValue() == 31;
+            }
+        },
+        /** Non weekend matcher. */
+        WEEKEND_DAY {
+            /** {@inheritDoc} */
+            public boolean matchesDate(LocalDate date) {
+                return date.getDayOfWeek().getValue() >= 6;  // hard code value for performance
+            }
+        },
+        /** Non weekend matcher. */
+        NON_WEEKEND_DAY {
+            /** {@inheritDoc} */
+            public boolean matchesDate(LocalDate date) {
+                return date.getDayOfWeek().getValue() < 6;  // hard code value for performance
+            }
+        },
     }
 
     //-----------------------------------------------------------------------
@@ -134,7 +153,7 @@ public final class DateMatchers {
     }
 
     /**
-     * Returns the day of week in month matcher, which retuns true if the 
+     * Returns the day of week in month matcher, which retuns true if the
      * date is the ordinal occurence of the day of week in the month.
      *
      * @param ordinal  ordinal, from 1 to 5
@@ -203,37 +222,4 @@ public final class DateMatchers {
         }
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the non weekend day matcher, which returns true if the date
-     * is neither Saturday nor Sunday.
-     *
-     * @return the non weekend day matcher, never null
-     */
-    public static DateMatcher nonWeekendDay() {
-        return NonWeekendDay.INSTANCE;
-    }
-
-    /**
-     * Class implementing non weekend day matcher.
-     */
-    private static class NonWeekendDay implements DateMatcher, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /** The singleton instance. */
-        private static final DateMatcher INSTANCE = new NonWeekendDay();
-
-        private Object readResolve() {
-            return INSTANCE;
-        }
-
-        /** {@inheritDoc} */
-        public boolean matchesDate(LocalDate date) {
-            DayOfWeek dow = date.getDayOfWeek();
-            return dow.getValue() < 6;
-        }
-    }
 }
