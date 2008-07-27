@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1017,6 +1017,58 @@ public class TestPeriod {
 //            }
 //        }
 //    }
+    public void test_hashCode_unique_workaroundSlowTest() {
+        // spec requires unique hash codes
+        // years 0-31, months 0-11, days 0-31, hours 0-23, minutes 0-59, seconds 0-59
+        int yearsBits = 0;
+        for (int i = 0; i <= 31; i++) {
+            Period test = Period.years(i);
+            yearsBits |= test.hashCode();
+        }
+        assertEquals(Integer.bitCount(yearsBits), 5);
+        int monthsBits = 0;
+        for (int i = 0; i <= 11; i++) {
+            Period test = Period.months(i);
+            monthsBits |= test.hashCode();
+        }
+        assertEquals(Integer.bitCount(monthsBits), 4);
+        assertEquals(yearsBits & monthsBits, 0);
+        int daysBits = 0;
+        for (int i = 0; i <= 31; i++) {
+            Period test = Period.days(i);
+            daysBits |= test.hashCode();
+        }
+        assertEquals(Integer.bitCount(daysBits), 5);
+        assertEquals(yearsBits & monthsBits & daysBits, 0);
+        int hoursBits = 0;
+        for (int i = 0; i <= 23; i++) {
+            Period test = Period.hours(i);
+            hoursBits |= test.hashCode();
+        }
+        assertEquals(Integer.bitCount(hoursBits), 5);
+        assertEquals(yearsBits & monthsBits & daysBits & hoursBits, 0);
+        int minutesBits = 0;
+        for (int i = 0; i <= 59; i++) {
+            Period test = Period.minutes(i);
+            minutesBits |= test.hashCode();
+        }
+        assertEquals(Integer.bitCount(minutesBits), 6);
+        assertEquals(yearsBits & minutesBits & daysBits & hoursBits & minutesBits, 0);
+        int secondsBits = 0;
+        for (int i = 0; i <= 59; i++) {
+            Period test = Period.seconds(i);
+            secondsBits |= test.hashCode();
+        }
+        assertEquals(Integer.bitCount(secondsBits), 6);
+        assertEquals(yearsBits & secondsBits & daysBits & hoursBits & minutesBits & secondsBits, 0);
+        
+        // make common overflows not same hash code
+        assertTrue(Period.months(16).hashCode() != Period.years(1).hashCode());
+        assertTrue(Period.days(32).hashCode() != Period.months(1).hashCode());
+        assertTrue(Period.hours(32).hashCode() != Period.days(1).hashCode());
+        assertTrue(Period.minutes(64).hashCode() != Period.hours(1).hashCode());
+        assertTrue(Period.seconds(64).hashCode() != Period.minutes(1).hashCode());
+    }
 
     //-----------------------------------------------------------------------
     // toString()
