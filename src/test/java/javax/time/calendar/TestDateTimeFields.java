@@ -265,7 +265,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 0);
         try {
             test.getValue(MOY_RULE);
-        } catch (UnsupportedCalendarFieldException ex) {
+        } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getFieldRule(), MOY_RULE);
             throw ex;
         }
@@ -302,7 +302,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 0);
         try {
             test.getValue(MOY_RULE, true);
-        } catch (UnsupportedCalendarFieldException ex) {
+        } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getFieldRule(), MOY_RULE);
             throw ex;
         }
@@ -1343,7 +1343,7 @@ public class TestDateTimeFields {
             .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM
         try {
             base.toLocalTime();
-        } catch (IllegalCalendarFieldValueException ex) {
+        } catch (InvalidCalendarFieldException ex) {
             assertEquals(ex.getFieldRule(), AMPM_RULE);
             throw ex;
         }
