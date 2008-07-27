@@ -44,7 +44,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
 import javax.time.calendar.DateTimeFields;
-import javax.time.period.field.Days;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -122,7 +121,7 @@ public class TestPeriod {
         assertSame(Period.yearsMonthsDays(0, 0, 0), Period.ZERO);
         assertSame(Period.hoursMinutesSeconds(0, 0, 0), Period.ZERO);
         assertSame(Period.period(0, 0, 0, 0, 0, 0), Period.ZERO);
-        assertSame(Period.period(PeriodFields.period(new HashMap<PeriodUnit, Integer>())), Period.ZERO);
+        assertSame(Period.period(PeriodFields.periodFields(new HashMap<PeriodUnit, Integer>())), Period.ZERO);
     }
 
     //-----------------------------------------------------------------------
@@ -763,11 +762,22 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     public void test_multipliedBy() {
         Period test = Period.period(1, 2, 3, 4, 5, 6);
-        assertSame(Period.ZERO.multipliedBy(2), Period.ZERO);
-        assertSame(test.multipliedBy(0), Period.ZERO);
-        assertSame(test.multipliedBy(1), test);
         assertPeriod(test.multipliedBy(2), 2, 4, 6, 8, 10, 12);
         assertPeriod(test.multipliedBy(-3), -3, -6, -9, -12, -15, -18);
+    }
+
+    public void test_multipliedBy_zeroBase() {
+        assertSame(Period.ZERO.multipliedBy(2), Period.ZERO);
+    }
+
+    public void test_multipliedBy_zero() {
+        Period test = Period.period(1, 2, 3, 4, 5, 6);
+        assertSame(test.multipliedBy(0), Period.ZERO);
+    }
+
+    public void test_multipliedBy_one() {
+        Period test = Period.period(1, 2, 3, 4, 5, 6);
+        assertSame(test.multipliedBy(1), test);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
@@ -786,17 +796,31 @@ public class TestPeriod {
     // dividedBy()
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        Period test = Period.period(12, 12, 12, 12, 12, 12);
+        Period test = Period.period(12, 12, 12, 12, 12, 11);
         assertSame(Period.ZERO.dividedBy(2), Period.ZERO);
         assertSame(test.dividedBy(1), test);
-        assertPeriod(test.dividedBy(2), 6, 6, 6, 6, 6, 6);
-        assertPeriod(test.dividedBy(-3), -4, -4, -4, -4, -4, -4);
+        assertPeriod(test.dividedBy(2), 6, 6, 6, 6, 6, 5);
+        assertPeriod(test.dividedBy(-3), -4, -4, -4, -4, -4, -3);
+    }
+
+    public void test_dividedBy_zeroBase() {
+        assertSame(Period.ZERO.dividedBy(2), Period.ZERO);
+    }
+
+    public void test_dividedBy_one() {
+        Period test = Period.period(12, 12, 12, 12, 12, 11);
+        assertSame(test.dividedBy(1), test);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_dividedBy_divideByZero() {
         Period test = Period.period(12, 12, 12, 12, 12, 12);
         test.dividedBy(0);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_dividedBy_zeroBase_divideByZero() {
+        Period.ZERO.dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
@@ -817,7 +841,7 @@ public class TestPeriod {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_negated_overflow() {
-        Days.days(Integer.MIN_VALUE).negated();
+        Period.years(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------

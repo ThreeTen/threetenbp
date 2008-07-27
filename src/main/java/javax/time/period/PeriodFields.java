@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.CalendarConversionException;
 
@@ -78,10 +79,10 @@ public final class PeriodFields
      *
      * @param amount  the amount of the specified unit
      * @param unit  the period unit, not null
-     * @return the created Period, never null
+     * @return the created period instance, never null
      * @throws NullPointerException if the period unit is null
      */
-    public static PeriodFields period(int amount, PeriodUnit unit) {
+    public static PeriodFields periodFields(int amount, PeriodUnit unit) {
         if (unit == null) {
             throw new NullPointerException("Period unit must not be null");
         }
@@ -95,10 +96,10 @@ public final class PeriodFields
      *
      * @param unitAmountMap  a map of periods that will be used to create this
      *  period, not updated by this method, not null, contains no nulls
-     * @return the created Period, never null
+     * @return the created period instance, never null
      * @throws NullPointerException if the map is null or contains nulls
      */
-    public static PeriodFields period(Map<PeriodUnit, Integer> unitAmountMap) {
+    public static PeriodFields periodFields(Map<PeriodUnit, Integer> unitAmountMap) {
         if (unitAmountMap == null) {
             throw new NullPointerException("Period map must not be null");
         }
@@ -113,21 +114,41 @@ public final class PeriodFields
         return create(internalMap);
     }
 
-//    /**
-//     * Obtains an instance of <code>Period</code> from a set of periods.
-//     * <p>
-//     * This method is typically used to pass in one instance of each of the
-//     * period fields in the period. However, it is possible to pass in
-//     * any PeriodView instance and the resulting period will be a simple
-//     * field addition of each.
-//     *
-//     * @param periods  a set of periods that will be added together to form the period
-//     * @return the created Period
-//     */
-//    public static Period periodOf(PeriodView... periods) {
-//        return null;
-//    }
-
+    /**
+     * Obtains an instance of <code>PeriodFields</code> from a <code>PeriodProvider</code>.
+     * <p>
+     * The created instance will only contain the non-zero fields of specified provider.
+     *
+     * @param periodProvider  the provider to create from, not null
+     * @return the created period instance, never null
+     * @throws NullPointerException if the period provider is null
+     */
+    public static PeriodFields periodFields(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        if (period.isZero()) {
+            return ZERO;
+        }
+        TreeMap<PeriodUnit, Integer> map = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
+        if (period.getYears() != 0) {
+            map.put(Periods.YEARS, period.getYears());
+        }
+        if (period.getMonths() != 0) {
+            map.put(Periods.MONTHS, period.getMonths());
+        }
+        if (period.getDays() != 0) {
+            map.put(Periods.DAYS, period.getDays());
+        }
+        if (period.getHours() != 0) {
+            map.put(Periods.HOURS, period.getHours());
+        }
+        if (period.getMinutes() != 0) {
+            map.put(Periods.MINUTES, period.getMinutes());
+        }
+        if (period.getSeconds() != 0) {
+            map.put(Periods.SECONDS, period.getSeconds());
+        }
+        return PeriodFields.create(map);
+    }
     //-----------------------------------------------------------------------
     /**
      * Internal factory to create an instance using a pre-built map.
@@ -154,6 +175,18 @@ public final class PeriodFields
         this.unitAmountMap = periodMap;
     }
 
+    /**
+     * Resolves singletons.
+     *
+     * @return the resolved instance
+     */
+    private Object readResolve() {
+        if (unitAmountMap.size() == 0) {
+            return ZERO;
+        }
+        return this;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if the period is zero-length.
@@ -178,8 +211,9 @@ public final class PeriodFields
      * null if this period does have an amount for the unit.
      *
      * @param unit  the unit to query, not null
-     * @return the period amount, null if the unit is not present
+     * @return the period amount
      * @throws NullPointerException if the period unit is null
+     * @throws CalendricalException if there is no amount for the unit
      */
     public int getAmount(PeriodUnit unit) {
         if (unit == null) {
@@ -187,7 +221,7 @@ public final class PeriodFields
         }
         Integer amount = unitAmountMap.get(unit);
         if (amount == null) {
-            throw new NullPointerException("No amount for unit " + unit);
+            throw new CalendricalException("No amount for unit: " + unit);
         }
         return amount;
     }
@@ -197,30 +231,27 @@ public final class PeriodFields
      * null if this period does have an amount for the unit.
      *
      * @param unit  the unit to query, not null
-     * @return the period amount, null if the unit is not present
+     * @param defaultValue  the default value to return if the unit is not present
+     * @return the period amount
      * @throws NullPointerException if the period unit is null
      */
-    public int getAmountOrZero(PeriodUnit unit) {
+    public int getAmount(PeriodUnit unit, int defaultValue) {
         if (unit == null) {
             throw new NullPointerException("Period unit must not be null");
         }
         Integer amount = unitAmountMap.get(unit);
-        return amount == null ? 0 : amount;
+        return amount == null ? defaultValue : amount;
     }
 
     /**
      * Gets the amount of the period for the specified unit, returning
      * zero if this period does have an amount for the unit.
      *
-     * @param unit  the unit to query, not null
-     * @return the period amount, zero if the unit is not present
-     * @throws NullPointerException if the period unit is null
+     * @param unit  the unit to query, null returns null
+     * @return the period amount, null if unit not present
      */
     public Integer getAmountQuiet(PeriodUnit unit) {
-        if (unit == null) {
-            throw new NullPointerException("Period unit must not be null");
-        }
-        return unitAmountMap.get(unit);
+        return unit == null ? null : unitAmountMap.get(unit);
     }
 
     //-----------------------------------------------------------------------
@@ -269,12 +300,7 @@ public final class PeriodFields
             return ZERO;
         }
         TreeMap<PeriodUnit, Integer> copy = cloneMap();
-        for (Iterator<Integer> it = copy.values().iterator(); it.hasNext(); ) {
-            Integer amount = (Integer) it.next();
-            if (amount == 0) {
-                it.remove();
-            }
-        }
+        copy.values().removeAll(Collections.singleton(Integer.valueOf(0)));
         return create(copy);
     }
 
@@ -293,7 +319,10 @@ public final class PeriodFields
      * @throws NullPointerException if the period is null
      */
     public PeriodFields with(PeriodFields period) {
-        if (period.isZero()) {
+        if (this == ZERO) {
+            return period;
+        }
+        if (period == ZERO) {
             return this;
         }
         TreeMap<PeriodUnit, Integer> copy = cloneMap();
@@ -367,13 +396,16 @@ public final class PeriodFields
         if (period == null) {
             throw new NullPointerException("Period must not be null");
         }
+        if (this == ZERO) {
+            return period;
+        }
         if (period.isZero()) {
             return this;
         }
         TreeMap<PeriodUnit, Integer> copy = cloneMap();
         for (PeriodUnit unit : period) {
             int amountToAdd = period.unitAmountMap.get(unit);
-            int current = this.getAmountOrZero(unit);
+            int current = this.getAmount(unit, 0);
             copy.put(unit, MathUtils.safeAdd(current, amountToAdd));
         }
         return create(copy);
@@ -398,13 +430,16 @@ public final class PeriodFields
         if (period == null) {
             throw new NullPointerException("Period must not be null");
         }
+        if (this == ZERO) {
+            return period;
+        }
         if (period.isZero()) {
             return this;
         }
         TreeMap<PeriodUnit, Integer> copy = cloneMap();
         for (PeriodUnit unit : period) {
             int amountToSubtract = period.unitAmountMap.get(unit);
-            int current = this.getAmountOrZero(unit);
+            int current = this.getAmount(unit, 0);
             copy.put(unit, MathUtils.safeSubtract(current, amountToSubtract));
         }
         return create(copy);
@@ -420,7 +455,7 @@ public final class PeriodFields
      * @throws ArithmeticException if the calculation result overflows
      */
     public PeriodFields multipliedBy(int scalar) {
-        if (scalar == 1 || unitAmountMap.isEmpty()) {
+        if (scalar == 1 || isZero()) {
             return this;
         }
         TreeMap<PeriodUnit, Integer> copy = cloneMap();
@@ -435,7 +470,7 @@ public final class PeriodFields
      * Returns a new instance with each amount in this period divided
      * by the specified value.
      *
-     * @param divisor  the value to divide by, not null
+     * @param divisor  the value to divide by, not null, not zero
      * @return a new updated period instance, never null
      * @throws ArithmeticException if dividing by zero
      */
@@ -443,7 +478,7 @@ public final class PeriodFields
         if (divisor == 0) {
             throw new ArithmeticException("Cannot divide by zero");
         }
-        if (divisor == 1 || unitAmountMap.isEmpty()) {
+        if (divisor == 1 || isZero()) {
             return this;
         }
         TreeMap<PeriodUnit, Integer> copy = cloneMap();
@@ -495,6 +530,9 @@ public final class PeriodFields
      * @throws CalendarConversionException if this period cannot be converted
      */
     public Period toPeriod() {
+        if (isZero()) {
+            return Period.ZERO;
+        }
         Map<PeriodUnit, Integer> copy = cloneMap();
         Integer years = copy.remove(Periods.YEARS);
         Integer months = copy.remove(Periods.MONTHS);

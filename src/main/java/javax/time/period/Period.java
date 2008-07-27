@@ -32,8 +32,6 @@
 package javax.time.period;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.TreeMap;
 
 import javax.time.MathUtils;
 
@@ -120,7 +118,7 @@ public final class Period
      * @return the created period instance, never null
      */
     public static Period period(int years, int months, int days, int hours, int minutes, int seconds) {
-        if (years == 0 && months == 0 && days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+        if ((years | months | days | hours | minutes | seconds) == 0) {
             return ZERO;
         }
         return new Period(years, months, days, hours, minutes, seconds);
@@ -134,7 +132,7 @@ public final class Period
      * @return the created period instance, never null
      */
     public static Period yearsMonths(int years, int months) {
-        if (years == 0 && months == 0) {
+        if ((years | months) == 0) {
             return ZERO;
         }
         return new Period(years, months, 0, 0, 0, 0);
@@ -149,7 +147,7 @@ public final class Period
      * @return the created period instance, never null
      */
     public static Period yearsMonthsDays(int years, int months, int days) {
-        if (years == 0 && months == 0 && days == 0) {
+        if ((years | months | days) == 0) {
             return ZERO;
         }
         return new Period(years, months, days, 0, 0, 0);
@@ -164,7 +162,7 @@ public final class Period
      * @return the created period instance, never null
      */
     public static Period hoursMinutesSeconds(int hours, int minutes, int seconds) {
-        if (hours == 0 && minutes == 0 && seconds == 0) {
+        if ((hours | minutes | seconds) == 0) {
             return ZERO;
         }
         return new Period(0, 0, 0, hours, minutes, seconds);
@@ -272,10 +270,10 @@ public final class Period
     /**
      * Resolves singletons.
      *
-     * @return the singleton instance
+     * @return the resolved instance
      */
     private Object readResolve() {
-        if (years == 0 && months == 0 && days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+        if ((years | months | days | hours | minutes | seconds) == 0) {
             return ZERO;
         }
         return this;
@@ -768,34 +766,16 @@ public final class Period
     }
 
     /**
-     * Converts this object to a <code>PeriodMap</code>.
+     * Converts this object to a <code>PeriodFields</code> instance.
      * <p>
      * The resulting period is always normalized such that it does not contain
      * zero amounts.
      *
-     * @return <code>this</code>, never null
+     * @return an equivalent period fields instance, never null
      */
     public PeriodFields toPeriodFields() {
-        TreeMap<PeriodUnit, Integer> map = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
-        if (years != 0) {
-            map.put(Periods.YEARS, years);
-        }
-        if (months != 0) {
-            map.put(Periods.MONTHS, months);
-        }
-        if (days != 0) {
-            map.put(Periods.DAYS, days);
-        }
-        if (hours != 0) {
-            map.put(Periods.HOURS, hours);
-        }
-        if (minutes != 0) {
-            map.put(Periods.MINUTES, minutes);
-        }
-        if (seconds != 0) {
-            map.put(Periods.SECONDS, seconds);
-        }
-        return PeriodFields.create(map);
+        // TODO: Maybe remove?
+        return PeriodFields.periodFields(this);
     }
 
     //-----------------------------------------------------------------------
@@ -827,11 +807,13 @@ public final class Period
     public int hashCode() {
         // SPEC: Require unique hash code for all periods where fields within these inclusive bounds:
         // years 0-31, months 0-11, days 0-31, hours 0-23, minutes 0-59, seconds 0-59
-        return ((years << 26) | (years >>> 6)) ^
-                ((months << 22) | (months >>> 10)) ^
-                ((days << 17) | (days >>> 15)) ^
-                ((hours << 12) | (hours >>> 20)) ^
-                ((minutes << 6) | (minutes >>> 26)) ^ seconds;
+        // IMPL: Ordered such that overflow from one field doesn't immediately affect the next field
+        // years 5 bits, months 4 bits, days 6 bits, hours 5 bits, minutes 6 bits, seconds 6 bits
+        return ((years << 27) | (years >>> 5)) ^
+                ((hours << 22) | (hours >>> 10)) ^
+                ((months << 18) | (months >>> 14)) ^
+                ((minutes << 12) | (minutes >>> 20)) ^
+                ((days << 6) | (days >>> 26)) ^ seconds;
     }
 
     //-----------------------------------------------------------------------
@@ -858,7 +840,7 @@ public final class Period
                 if (days != 0) {
                     buf.append(days).append('D');
                 }
-                if (hours != 0 || minutes != 0 || seconds != 0) {
+                if ((hours | minutes | seconds) != 0) {
                     buf.append('T');
                     if (hours != 0) {
                         buf.append(hours).append('H');
