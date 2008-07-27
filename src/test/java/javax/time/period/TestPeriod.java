@@ -868,7 +868,7 @@ public class TestPeriod {
         assertPeriod(Period.period(1, 2, 3, 4, 59, 60).normalized(), 1, 2, 3, 5, 0, 0);
         
         assertPeriod(Period.period(1, 2, 3, 23, 59, 59).normalized(), 1, 2, 3, 23, 59, 59);
-        assertPeriod(Period.period(1, 2, 3, 23, 59, 60).normalized(), 1, 2, 4, 0, 0, 0);
+        assertPeriod(Period.period(1, 2, 3, 23, 59, 60).normalized(), 1, 2, 3, 24, 0, 0);
     }
 
     public void test_normalized_minutes() {
@@ -878,18 +878,64 @@ public class TestPeriod {
         assertPeriod(Period.period(1, 2, 3, 4, 120, 6).normalized(), 1, 2, 3, 6, 0, 6);
         
         assertPeriod(Period.period(1, 2, 3, 23, 59, 6).normalized(), 1, 2, 3, 23, 59, 6);
-        assertPeriod(Period.period(1, 2, 3, 23, 60, 6).normalized(), 1, 2, 4, 0, 0, 6);
+        assertPeriod(Period.period(1, 2, 3, 23, 60, 6).normalized(), 1, 2, 3, 24, 0, 6);
     }
 
     public void test_normalized_hours() {
         assertPeriod(Period.period(1, 2, 3, 23, 5, 6).normalized(), 1, 2, 3, 23, 5, 6);
-        assertPeriod(Period.period(1, 2, 3, 24, 5, 6).normalized(), 1, 2, 4, 0, 5, 6);
-        assertPeriod(Period.period(1, 2, 3, 47, 5, 6).normalized(), 1, 2, 4, 23, 5, 6);
-        assertPeriod(Period.period(1, 2, 3, 48, 5, 6).normalized(), 1, 2, 5, 0, 5, 6);
+        assertPeriod(Period.period(1, 2, 3, 24, 5, 6).normalized(), 1, 2, 3, 24, 5, 6);
     }
 
     public void test_normalized_zero() {
         assertSame(Period.ZERO.normalized(), Period.ZERO);
+    }
+
+    //-----------------------------------------------------------------------
+    // normalizedWith24HourDays()
+    //-----------------------------------------------------------------------
+    public void test_normalizedWith24HourDays() {
+        assertPeriod(Period.period(1, 2, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 6);
+    }
+
+    public void test_normalizedWith24HourDays_months() {
+        assertPeriod(Period.period(1, 11, 3, 4, 5, 6).normalizedWith24HourDays(), 1, 11, 3, 4, 5, 6);
+        assertPeriod(Period.period(1, 12, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 0, 3, 4, 5, 6);
+        assertPeriod(Period.period(1, 23, 3, 4, 5, 6).normalizedWith24HourDays(), 2, 11, 3, 4, 5, 6);
+        assertPeriod(Period.period(1, 24, 3, 4, 5, 6).normalizedWith24HourDays(), 3, 0, 3, 4, 5, 6);
+    }
+
+    public void test_normalizedWith24HourDays_seconds() {
+        assertPeriod(Period.period(1, 2, 3, 4, 5, 59).normalizedWith24HourDays(), 1, 2, 3, 4, 5, 59);
+        assertPeriod(Period.period(1, 2, 3, 4, 5, 60).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 0);
+        assertPeriod(Period.period(1, 2, 3, 4, 5, 119).normalizedWith24HourDays(), 1, 2, 3, 4, 6, 59);
+        assertPeriod(Period.period(1, 2, 3, 4, 5, 120).normalizedWith24HourDays(), 1, 2, 3, 4, 7, 0);
+        
+        assertPeriod(Period.period(1, 2, 3, 4, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 59);
+        assertPeriod(Period.period(1, 2, 3, 4, 59, 60).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 0);
+        
+        assertPeriod(Period.period(1, 2, 3, 23, 59, 59).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 59);
+        assertPeriod(Period.period(1, 2, 3, 23, 59, 60).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 0);
+    }
+
+    public void test_normalizedWith24HourDays_minutes() {
+        assertPeriod(Period.period(1, 2, 3, 4, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 4, 59, 6);
+        assertPeriod(Period.period(1, 2, 3, 4, 60, 6).normalizedWith24HourDays(), 1, 2, 3, 5, 0, 6);
+        assertPeriod(Period.period(1, 2, 3, 4, 119, 6).normalizedWith24HourDays(), 1, 2, 3, 5, 59, 6);
+        assertPeriod(Period.period(1, 2, 3, 4, 120, 6).normalizedWith24HourDays(), 1, 2, 3, 6, 0, 6);
+        
+        assertPeriod(Period.period(1, 2, 3, 23, 59, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 59, 6);
+        assertPeriod(Period.period(1, 2, 3, 23, 60, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 0, 6);
+    }
+
+    public void test_normalizedWith24HourDays_hours() {
+        assertPeriod(Period.period(1, 2, 3, 23, 5, 6).normalizedWith24HourDays(), 1, 2, 3, 23, 5, 6);
+        assertPeriod(Period.period(1, 2, 3, 24, 5, 6).normalizedWith24HourDays(), 1, 2, 4, 0, 5, 6);
+        assertPeriod(Period.period(1, 2, 3, 47, 5, 6).normalizedWith24HourDays(), 1, 2, 4, 23, 5, 6);
+        assertPeriod(Period.period(1, 2, 3, 48, 5, 6).normalizedWith24HourDays(), 1, 2, 5, 0, 5, 6);
+    }
+
+    public void test_normalizedWith24HourDays_zero() {
+        assertSame(Period.ZERO.normalizedWith24HourDays(), Period.ZERO);
     }
 
     //-----------------------------------------------------------------------

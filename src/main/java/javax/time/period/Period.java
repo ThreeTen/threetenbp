@@ -711,20 +711,17 @@ public final class Period
      * Returns a copy of this period with all amounts normalized to the
      * standard ranges for date-time fields.
      * <p>
-     * Two normalizations occur, one for years and months, and one for days,
-     * hours, minutes and seconds.
-     * For example, a period of P1Y15M will be normalized to 2Y3M.
+     * Two normalizations occur, one for years and months, and one for hours, minutes and seconds.
+     * Days are not normalized, as a day may vary in length at daylight savings cutover.
+     * For example, a period of P1Y15M1DT28H will be normalized to 2Y3M1DT28H.
      * <p>
      * Note that this method normalizes using assumptions:
      * <ul>
      * <li>12 months in a year</li>
-     * <li>24 hours in a day (time zones are thus ignored)</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * </ul>
-     * Since some days are not 24 hours long (at daylight savings cutover) and some
-     * minutes are not 60 seconds long (due to leap seconds) it is essential that you
-     * consider whether these assumptions meet your requirements before using this method.
+     * This method is only appropriate to call if these assumptions are met.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -741,34 +738,60 @@ public final class Period
             years = MathUtils.safeAdd(years, months / 12);
             months = months % 12;
         }
-        int days = this.days;
-        int hours = this.hours;
-        int minutes = this.minutes;
-        int seconds = this.seconds;
-        if (hours >= 24) {
-            days = MathUtils.safeAdd(days, hours / 24);
-            hours = hours % 24;
+        // will not overflow
+        long total = (hours * 60L * 60L) + (minutes * 60L) + seconds;
+        int seconds = (int) (total % 60);
+        total /= 60;
+        int minutes = (int) (total % 60);
+        total /= 60;
+        int hours = MathUtils.safeToInt(total);
+        return period(years, months, days, hours, minutes, seconds);
+    }
+
+    /**
+     * Returns a copy of this period with all amounts normalized to the
+     * standard ranges for date-time fields including the assumption that
+     * days are 24 hours long.
+     * <p>
+     * Two normalizations occur, one for years and months, and one for hours, minutes and seconds.
+     * The number of hours may optionally be normalized into days based on an input parameter.
+     * For example, a period of P1Y15M1DT28H will be normalized to 2Y3M2DT4H.
+     * <p>
+     * Note that this method normalizes using assumptions:
+     * <ul>
+     * <li>12 months in a year</li>
+     * <li>24 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return a new updated period instance, never null
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public Period normalizedWith24HourDays() {
+        if (this == ZERO) {
+            return ZERO;
         }
-        if (minutes >= 60) {
-            hours = MathUtils.safeAdd(hours, minutes / 60);
-            minutes = minutes % 60;
-            if (hours >= 24) {
-                days = MathUtils.safeAdd(days, hours / 24);
-                hours = hours % 24;
-            }
+        int years = this.years;
+        int months = this.months;
+        if (months >= 12) {
+            years = MathUtils.safeAdd(years, months / 12);
+            months = months % 12;
         }
-        if (seconds >= 60) {
-            minutes = MathUtils.safeAdd(minutes, seconds / 60);
-            seconds = seconds % 60;
-            if (minutes >= 60) {
-                hours = MathUtils.safeAdd(hours, minutes / 60);
-                minutes = minutes % 60;
-                if (hours >= 24) {
-                    days = MathUtils.safeAdd(days, hours / 24);
-                    hours = hours % 24;
-                }
-            }
-        }
+        // will not overflow
+        long total = (days * 24L * 60L * 60L) +
+                        (hours * 60L * 60L) +
+                        (minutes * 60L) + seconds;
+        int seconds = (int) (total % 60);
+        total /= 60;
+        int minutes = (int) (total % 60);
+        total /= 60;
+        int hours = (int) (total % 24);
+        total /= 24;
+        int days = MathUtils.safeToInt(total);
         return period(years, months, days, hours, minutes, seconds);
     }
 
