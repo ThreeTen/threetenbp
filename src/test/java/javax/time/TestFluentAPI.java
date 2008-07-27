@@ -39,7 +39,7 @@ import static javax.time.calendar.field.HourOfDay.*;
 import static javax.time.calendar.field.MinuteOfHour.*;
 import static javax.time.calendar.field.MonthOfYear.*;
 import static javax.time.calendar.field.Year.*;
-import static javax.time.period.Periods.*;
+import static javax.time.period.Period.*;
 
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
@@ -50,7 +50,6 @@ import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.period.Period;
-import javax.time.period.field.Days;
 
 /**
  * Test class.
@@ -62,7 +61,7 @@ public class TestFluentAPI {
     public static void main(String[] args) {
         LocalTime tod = Clock.system().currentTime();
         tod.plusHours(6).plusMinutes(2);
-        tod.plus(hours(6), minutes(2));
+        tod.plus(hours(6)).plus(minutes(2));
         if (tod.matches(AmPmOfDay.AM)) {
             tod = tod.with(hourOfDay(9));
         }
@@ -70,7 +69,7 @@ public class TestFluentAPI {
         LocalDate date = null;
         date = Clock.system().today().plusDays(3);
         date = Clock.system().today().plus(days(3));
-        date = Clock.system().today().plus(Days.days(3));
+//        date = Clock.system().today().plus(Days.days(3));
         
         date = date(2007, 3, 20);
         date = date(isoYear(2007), MARCH, dayOfMonth(20));
@@ -106,10 +105,12 @@ public class TestFluentAPI {
         // different ways to build/use periods
         date = date.plus(yearsMonthsDays(2, 3, 1));
 //        date = date.plus(3, YEARS).plus(2, MONTHS).plus(1, DAYS);
-        date = date.plus(years(3), months(2), days(1));
-        Period d1 = periodBuilder().hours(2).seconds(3).build();
+        date = date.plus(years(3)).plus(months(2)).plus(days(1));
+//        PeriodFields d1 = periodBuilder().hours(2).seconds(3).build();
         Period d2 = hours(2).withSeconds(3);
-        Period d3 = Period.periodOf(hours(2), seconds(3));
+        Period d3 = hours(2).plus(seconds(3));
+        System.out.println(d2);
+        System.out.println(d3);
         
         tod.with(hourOfDay(12)).with(minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
@@ -172,9 +173,9 @@ public class TestFluentAPI {
 //            int secs = days.intValue(SECOND);
 //            secs.toString();
 //        }
-        d1 = d2;
-        d2 = d1;
-        d1 = d3;
+//        d1 = d2;
+//        d2 = d1;
+//        d1 = d3;
 //        secondOfMinute(sec);
 //        minuteOfHour(min);
         

@@ -47,7 +47,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
+import javax.time.period.PeriodProvider;
 
 /**
  * A date-time with a time zone in the ISO-8601 calendar system,
@@ -889,31 +889,38 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated ZonedDateTime, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public ZonedDateTime plus(PeriodView period) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plus(period);
-        return (newDT == dateTime.toLocalDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
-    }
-
-    /**
-     * Returns a copy of this ZonedDateTime with the specified periods added.
+     * This adds the specified period to this date-time.
+     * <p>
+     * If the adjusted date results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated ZonedDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public ZonedDateTime plus(PeriodView... periods) {
-        LocalDateTime newDT = dateTime.toLocalDateTime().plus(periods);
+    public ZonedDateTime plus(PeriodProvider periodProvider) {
+        return plus(periodProvider, ZoneResolvers.retainOffset());
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period added.
+     * <p>
+     * This adds the specified period to this date-time.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to add, not null
+     * @param resolver  the resolver to use, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the date-time cannot be resolved
+     */
+    public ZonedDateTime plus(PeriodProvider periodProvider, ZoneResolver resolver) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().plus(periodProvider);
         return (newDT == dateTime.toLocalDateTime() ? this :
-            dateTime(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+            dateTime(newDT, dateTime, zone, resolver));
     }
 
     //-----------------------------------------------------------------------

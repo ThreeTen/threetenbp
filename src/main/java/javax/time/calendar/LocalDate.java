@@ -42,7 +42,8 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 /**
  * A date without a time zone in the ISO-8601 calendar system,
@@ -486,29 +487,18 @@ public final class LocalDate
     /**
      * Returns a copy of this LocalDate with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated LocalDate, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDate plus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDate with the specified periods added.
+     * This adds the amount in years, months and days from the specified period to this date.
+     * Any time amounts, such as hours, minutes or seconds are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated LocalDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate plus(PeriodView... periods) {
-        // TODO
-        return null;
+    public LocalDate plus(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        return plusYears(period.getYears()).plusMonths(period.getMonths()).plusDays(period.getDays());
     }
 
     //-----------------------------------------------------------------------
@@ -679,29 +669,18 @@ public final class LocalDate
     /**
      * Returns a copy of this LocalDate with the specified period subtracted.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to subtract, not null
-     * @return a new updated LocalDate, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDate minus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDate with the specified periods subtracted.
+     * This subtracts the amount in years, months and days from the specified period from this date.
+     * Any time amounts, such as hours, minutes or seconds are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to subtract, no nulls
+     * @param periodProvider  the period to subtract, not null
      * @return a new updated LocalDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDate minus(PeriodView... periods) {
-        // TODO
-        return null;
+    public LocalDate minus(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        return minusYears(period.getYears()).minusMonths(period.getMonths()).minusDays(period.getDays());
     }
 
     //-----------------------------------------------------------------------

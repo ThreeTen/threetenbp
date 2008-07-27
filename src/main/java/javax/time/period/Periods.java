@@ -110,12 +110,12 @@ public final class Periods {
      * @param days  the days to represent
      * @return the created Period, never null
      */
-    public static Period yearsMonthsDays(int years, int months, int days) {
+    public static PeriodFields yearsMonthsDays(int years, int months, int days) {
         Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
         map.put(YEARS, years);
         map.put(MONTHS, months);
         map.put(DAYS, days);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -126,12 +126,12 @@ public final class Periods {
      * @param seconds  the seconds to represent
      * @return the created Period, never null
      */
-    public static Period hoursMinutesSeconds(int hours, int minutes, int seconds) {
+    public static PeriodFields hoursMinutesSeconds(int hours, int minutes, int seconds) {
         Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
         map.put(HOURS, hours);
         map.put(MINUTES, minutes);
         map.put(SECONDS, seconds);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     //-----------------------------------------------------------------------
@@ -141,9 +141,9 @@ public final class Periods {
      * @param years  the years to represent
      * @return the created Period, never null
      */
-    public static Period years(int years) {
+    public static PeriodFields years(int years) {
         Map<PeriodUnit, Integer> map = singletonMap(YEARS, years);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -152,9 +152,9 @@ public final class Periods {
      * @param quarters  the quarters to represent
      * @return the created Period, never null
      */
-    public static Period quarters(int quarters) {
+    public static PeriodFields quarters(int quarters) {
         Map<PeriodUnit, Integer> map = singletonMap(QUARTERS, quarters);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -163,9 +163,9 @@ public final class Periods {
      * @param months  the months to represent
      * @return the created Period, never null
      */
-    public static Period months(int months) {
+    public static PeriodFields months(int months) {
         Map<PeriodUnit, Integer> map = singletonMap(MONTHS, months);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -174,9 +174,9 @@ public final class Periods {
      * @param weeks  the weeks to represent
      * @return the created Period, never null
      */
-    public static Period weeks(int weeks) {
+    public static PeriodFields weeks(int weeks) {
         Map<PeriodUnit, Integer> map = singletonMap(WEEKS, weeks);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -185,9 +185,9 @@ public final class Periods {
      * @param days  the days to represent
      * @return the created Period, never null
      */
-    public static Period days(int days) {
+    public static PeriodFields days(int days) {
         Map<PeriodUnit, Integer> map = singletonMap(DAYS, days);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -196,9 +196,9 @@ public final class Periods {
      * @param hours  the hours to represent
      * @return the created Period, never null
      */
-    public static Period hours(int hours) {
+    public static PeriodFields hours(int hours) {
         Map<PeriodUnit, Integer> map = singletonMap(HOURS, hours);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -207,9 +207,9 @@ public final class Periods {
      * @param minutes  the minutes to represent
      * @return the created Period, never null
      */
-    public static Period minutes(int minutes) {
+    public static PeriodFields minutes(int minutes) {
         Map<PeriodUnit, Integer> map = singletonMap(MINUTES, minutes);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -218,9 +218,9 @@ public final class Periods {
      * @param seconds  the seconds to represent
      * @return the created Period, never null
      */
-    public static Period seconds(int seconds) {
+    public static PeriodFields seconds(int seconds) {
         Map<PeriodUnit, Integer> map = singletonMap(SECONDS, seconds);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     /**
@@ -229,9 +229,9 @@ public final class Periods {
      * @param nanos  the nanoseconds to represent
      * @return the created Period, never null
      */
-    public static Period nanos(int nanos) {
+    public static PeriodFields nanos(int nanos) {
         Map<PeriodUnit, Integer> map = singletonMap(NANOS, nanos);
-        return Period.periodOf(map);
+        return PeriodFields.period(map);
     }
 
     //-----------------------------------------------------------------------
@@ -282,8 +282,8 @@ public final class Periods {
          *
          * @return the created <code>Period</code>, never null
          */
-        public Period build() {
-            return Period.periodOf(map);
+        public PeriodFields build() {
+            return PeriodFields.period(map);
         }
     }
 

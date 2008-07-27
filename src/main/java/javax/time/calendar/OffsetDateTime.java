@@ -45,7 +45,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
+import javax.time.period.PeriodProvider;
 
 /**
  * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -957,28 +957,16 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this OffsetDateTime with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated OffsetDateTime, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDateTime plus(PeriodView period) {
-        LocalDateTime newDT = dateTime.plus(period);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
-    }
-
-    /**
-     * Returns a copy of this OffsetDateTime with the specified periods added.
+     * This adds the specified period to this date-time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated OffsetDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime plus(PeriodView... periods) {
-        LocalDateTime newDT = dateTime.plus(periods);
+    public OffsetDateTime plus(PeriodProvider periodProvider) {
+        LocalDateTime newDT = dateTime.plus(periodProvider);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 

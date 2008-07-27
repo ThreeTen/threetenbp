@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.time.period.Period;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -319,7 +320,7 @@ public final class Weeks extends PeriodField implements Comparable<Weeks>, Seria
 
         /** Constructor. */
         protected Unit() {
-            super("Weeks", Days.days(7));
+            super("Weeks", Period.days(7).toPeriod());
         }
     }
 

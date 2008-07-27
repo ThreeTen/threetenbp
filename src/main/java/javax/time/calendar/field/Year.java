@@ -47,7 +47,8 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.period.PeriodView;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 /**
  * A representation of a year without a time zone in the ISO-8601 calendar system.
@@ -261,30 +262,20 @@ public final class Year
     /**
      * Returns a copy of this Year with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated Year, never null
-     */
-    public Year plus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this Year with the specified periods added.
+     * This adds the amount in years from the specified period to this year.
+     * Any other amounts, such as months or hours are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated Year, never null
+     * @throws CalendricalException if the result exceeds the supported year range
      */
-    public Year plus(PeriodView... periods) {
-        // TODO
-        return null;
+    public Year plus(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        return plusYears(period.getYears());
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this Year with the specified number of years added.
      * <p>
@@ -307,6 +298,23 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this Year with the specified period subtracted.
+     * <p>
+     * This subtracts the amount in years extracted the specified period from this year.
+     * Any other amounts, such as months or hours are ignored.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subtract, not null
+     * @return a new updated Year, never null
+     * @throws CalendricalException if the result exceeds the supported year range
+     */
+    public Year minus(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        return minusYears(period.getYears());
+    }
+
     /**
      * Returns a copy of this Year with the specified number of years subtracted.
      * <p>

@@ -33,13 +33,12 @@ package javax.time.i18n;
 
 import java.io.Serializable;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.period.PeriodView;
 
 /**
  * A date in the Coptic calendar system.
@@ -223,33 +222,6 @@ public final class CopticDate
     public CopticDate withDayOfYear(int dayOfYear) {
         dayOfYear--;
         return copticDate(getYear(), dayOfYear / 30 + 1, dayOfYear % 30 + 1);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this CopticDate with the specified period added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated CopticDate
-     */
-    public CopticDate plus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this CopticDate with the specified periods added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param periods  the periods to add, not null
-     * @return a new updated CopticDate
-     */
-    public CopticDate plus(PeriodView... periods) {
-        // TODO
-        return null;
     }
 
     //-----------------------------------------------------------------------

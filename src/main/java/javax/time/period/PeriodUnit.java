@@ -63,7 +63,7 @@ public class PeriodUnit implements Comparable<PeriodUnit>, Serializable {
     /** The name of the rule, not null. */
     private final String name;
     /** The alternate period, expressing this field in terms of another. */
-    private final PeriodView alternatePeriod;
+    private final Period alternatePeriod;
 
     //-----------------------------------------------------------------------
     /**
@@ -109,7 +109,7 @@ public class PeriodUnit implements Comparable<PeriodUnit>, Serializable {
      * @param name  the name of the rule, not null
      * @param alternatePeriod  alternate period that this field can be expressed in, null if none
      */
-    protected PeriodUnit(String name, PeriodView alternatePeriod) {
+    protected PeriodUnit(String name, Period alternatePeriod) {
         super();
         // TODO: Check not null
         this.name = name;
@@ -132,7 +132,7 @@ public class PeriodUnit implements Comparable<PeriodUnit>, Serializable {
      *
      * @return the alternate period, null if none
      */
-    public PeriodView getAlternatePeriod() {
+    public Period getAlternatePeriod() {
         return alternatePeriod;
     }
 
@@ -146,7 +146,8 @@ public class PeriodUnit implements Comparable<PeriodUnit>, Serializable {
      * @throws NullPointerException if other is null
      */
     public int compareTo(PeriodUnit other) {
-        return 0;
+        // TODO
+        return name.hashCode() - other.name.hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -159,5 +160,24 @@ public class PeriodUnit implements Comparable<PeriodUnit>, Serializable {
     public String toString() {
         return getName();
     }
+
+//    /**
+//     * Checks whether this unit is a standard unit.
+//     *
+//     * @return true if it is a standard unit
+//     */
+//    boolean isStandard() {
+//        return false;
+//    }
+
+//    static enum Standard {
+//        NANOS(NANOS, 1),
+//        SECONDS(NANOS, 1000000000),
+//        MINUTES(SECONDS, 60),
+//        HOURS(MINUTES, 60),
+//        DAYS(HOURS, 24),
+//        MONTHS(MONTHS, 1),
+//        YEARS(MONTHS, 12),
+//    }
 
 }

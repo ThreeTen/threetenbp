@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.time.period.Period;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -319,7 +320,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
 
         /** Constructor. */
         protected Unit() {
-            super("Years", Months.months(12));
+            super("Years", Period.years(12).toPeriod());
         }
     }
 

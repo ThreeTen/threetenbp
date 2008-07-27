@@ -67,6 +67,7 @@ import javax.time.calendar.format.TestPadPrinterDecorator;
 import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
 import javax.time.calendar.i18n.TestCopticDate;
+import javax.time.period.TestPeriod;
 import javax.time.period.field.TestDays;
 import javax.time.period.field.TestHours;
 import javax.time.period.field.TestMinutes;
@@ -136,6 +137,8 @@ public class AllTest {
             TestStringLiteralParser.class,
             // i18n
             TestCopticDate.class,
+            // periods
+            TestPeriod.class,
             // period fields
             TestDays.class,
             TestHours.class,

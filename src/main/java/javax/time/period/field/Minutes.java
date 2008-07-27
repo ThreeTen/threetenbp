@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.time.period.Period;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -319,7 +320,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
 
         /** Constructor. */
         protected Unit() {
-            super("Minutes", Seconds.seconds(60));
+            super("Minutes", Period.seconds(60).toPeriod());
         }
     }
 

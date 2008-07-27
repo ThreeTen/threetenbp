@@ -37,7 +37,7 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
-import javax.time.period.PeriodView;
+import javax.time.period.PeriodProvider;
 
 /**
  * A time with a zone offset from UTC in the ISO-8601 calendar system,
@@ -447,26 +447,16 @@ public final class OffsetTime
     /**
      * Returns a copy of this OffsetTime with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated OffsetTime, never null
-     */
-    public OffsetTime plus(PeriodView period) {
-        LocalTime newTime = time.plus(period);
-        return newTime == this.time ? this : new OffsetTime(newTime, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetTime with the specified periods added.
+     * This adds the amount in hours, minutes and seconds from the specified period to this time.
+     * Any date amounts, such as years, months or days are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated OffsetTime, never null
      */
-    public OffsetTime plus(PeriodView... periods) {
-        LocalTime newTime = time.plus(periods);
+    public OffsetTime plus(PeriodProvider periodProvider) {
+        LocalTime newTime = time.plus(periodProvider);
         return newTime == this.time ? this : new OffsetTime(newTime, offset);
     }
 

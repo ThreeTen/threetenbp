@@ -43,7 +43,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
+import javax.time.period.PeriodProvider;
 
 /**
  * A date-time without a time zone in the ISO-8601 calendar system,
@@ -857,29 +857,18 @@ public final class LocalDateTime
     /**
      * Returns a copy of this LocalDateTime with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated LocalDateTime, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime plus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDateTime with the specified periods added.
+     * This adds the specified period to this date-time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated LocalDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime plus(PeriodView... periods) {
-        // TODO
-        return null;
+    public LocalDateTime plus(PeriodProvider periodProvider) {
+        LocalDate date = this.date.plus(periodProvider);
+        LocalTime.Overflow overflow = this.time.plusWithOverflow(periodProvider);
+        return overflow.toLocalDateTime(date);
     }
 
     //-----------------------------------------------------------------------
@@ -1087,29 +1076,18 @@ public final class LocalDateTime
     /**
      * Returns a copy of this LocalDateTime with the specified period subtracted.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to subtract, not null
-     * @return a new updated LocalDateTime, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public LocalDateTime minus(PeriodView period) {
-        // TODO
-        return null;
-    }
-
-    /**
-     * Returns a copy of this LocalDateTime with the specified periods subtracted.
+     * This subtracts the specified period from this date-time.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to subtract, no nulls
+     * @param periodProvider  the period to subtract, not null
      * @return a new updated LocalDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public LocalDateTime minus(PeriodView... periods) {
-        // TODO
-        return null;
+    public LocalDateTime minus(PeriodProvider periodProvider) {
+        LocalDate date = this.date.minus(periodProvider);
+        LocalTime.Overflow overflow = this.time.minusWithOverflow(periodProvider);
+        return overflow.toLocalDateTime(date);
     }
 
     //-----------------------------------------------------------------------
@@ -1263,7 +1241,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusHours(int hours) {
-        LocalTime.Overflow overflow = time.minusHoursWithOverflow(hours);
+        LocalTime.Overflow overflow = time.minusWithOverflow(hours, 0, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
@@ -1278,7 +1256,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusMinutes(int minutes) {
-        LocalTime.Overflow overflow = time.minusMinutesWithOverflow(minutes);
+        LocalTime.Overflow overflow = time.minusWithOverflow(0, minutes, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }
@@ -1293,7 +1271,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public LocalDateTime minusSeconds(int seconds) {
-        LocalTime.Overflow overflow = time.minusSecondsWithOverflow(seconds);
+        LocalTime.Overflow overflow = time.minusWithOverflow(0, 0, seconds, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
         return withDateTime(newDate, overflow.getResultTime());
     }

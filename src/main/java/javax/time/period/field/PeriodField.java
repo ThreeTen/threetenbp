@@ -33,7 +33,6 @@ package javax.time.period.field;
 
 import javax.time.MathUtils;
 import javax.time.period.PeriodUnit;
-import javax.time.period.PeriodView;
 
 /**
  * A period measured in terms of a single field, such as days or seconds.
@@ -52,7 +51,7 @@ import javax.time.period.PeriodView;
  *
  * @author Stephen Colebourne
  */
-public abstract class PeriodField implements PeriodView {
+public abstract class PeriodField {
 
     //-----------------------------------------------------------------------
     /**
@@ -194,31 +193,31 @@ public abstract class PeriodField implements PeriodView {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, as defined by <code>Periodal</code>.
+     * Is this instance equal to that specified.
      *
-     * @param other  the other amount of time, null returns false
+     * @param obj  the other amount of time, null returns false
      * @return true if this amount of time is the same as that specified
      */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
            return true;
         }
-        if (other instanceof PeriodView) {
-            PeriodView otherPeriod = (PeriodView) other;
-            return getPeriodViewMap().equals(otherPeriod.getPeriodViewMap());
+        if (obj instanceof PeriodField && getClass() == obj.getClass()) {
+            PeriodField other = (PeriodField) obj;
+            return getAmount() == other.getAmount();
         }
         return false;
     }
 
     /**
-     * Returns the hash code for this period.
+     * Returns the hash code for this period field.
      *
-     * @return the hash code defined by <code>Periodal</code>
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return getPeriodViewMap().hashCode();
+        return getClass().hashCode() ^ getAmount();
     }
 
     //-----------------------------------------------------------------------

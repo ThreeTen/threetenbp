@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.time.period.Period;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -319,7 +320,7 @@ public final class Days extends PeriodField implements Comparable<Days>, Seriali
 
         /** Constructor. */
         protected Unit() {
-            super("Days", Hours.hours(24));
+            super("Days", Period.hours(24).toPeriod());
         }
     }
 

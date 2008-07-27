@@ -39,7 +39,7 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.period.PeriodView;
+import javax.time.period.PeriodProvider;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -411,28 +411,17 @@ public final class OffsetDate
     /**
      * Returns a copy of this OffsetDate with the specified period added.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to add, not null
-     * @return a new updated OffsetDate, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDate plus(PeriodView period) {
-        LocalDate newDate = date.plus(period);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetDate with the specified periods added.
+     * This adds the amount in years, months and days from the specified period to this date.
+     * Any time amounts, such as hours, minutes or seconds are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to add, no nulls
+     * @param periodProvider  the period to add, not null
      * @return a new updated OffsetDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate plus(PeriodView... periods) {
-        LocalDate newDate = date.plus(periods);
+    public OffsetDate plus(PeriodProvider periodProvider) {
+        LocalDate newDate = date.plus(periodProvider);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
@@ -581,28 +570,17 @@ public final class OffsetDate
     /**
      * Returns a copy of this OffsetDate with the specified period subtracted.
      * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param period  the period to subtract, not null
-     * @return a new updated OffsetDate, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public OffsetDate minus(PeriodView period) {
-        LocalDate newDate = date.minus(period);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
-    }
-
-    /**
-     * Returns a copy of this OffsetDate with the specified periods subtracted.
+     * This subtracts the amount in years, months and days from the specified period from this date.
+     * Any time amounts, such as hours, minutes or seconds are ignored.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periods  the periods to subtract, no nulls
+     * @param periodProvider  the period to subtract, not null
      * @return a new updated OffsetDate, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDate minus(PeriodView... periods) {
-        LocalDate newDate = date.minus(periods);
+    public OffsetDate minus(PeriodProvider periodProvider) {
+        LocalDate newDate = date.minus(periodProvider);
         return newDate == date ? this : new OffsetDate(newDate, offset);
     }
 
