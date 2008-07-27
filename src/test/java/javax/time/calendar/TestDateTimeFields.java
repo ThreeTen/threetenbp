@@ -446,6 +446,13 @@ public class TestDateTimeFields {
         assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6);
     }
 
+    public void test_withFields_map_empty() {
+        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        DateTimeFields test = base.withFields(map);
+        assertSame(test, base);
+    }
+
     public void test_withFields_map_invalidValueOK() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();

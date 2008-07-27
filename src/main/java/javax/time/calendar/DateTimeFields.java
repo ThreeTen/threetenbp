@@ -125,7 +125,8 @@ public final class DateTimeFields
      * This constructor does not check to see if the value is valid for the field.
      * For example, you could setup a calendrical with a day of month of 75.
      *
-     * @param fieldValueMap  the map of field rules and their values, not null
+     * @param fieldValueMap  a map of fields that will be used to create a field set,
+     *  not updated by this factory, not null, contains no nulls
      * @return a DateTimeFields object, never null
      * @throws NullPointerException if the map contains null keys or values
      */
@@ -133,14 +134,14 @@ public final class DateTimeFields
         if (fieldValueMap == null) {
             throw new NullPointerException("The field-value map must not be null");
         }
+        if (fieldValueMap.isEmpty()) {
+            return EMPTY;
+        }
         if (fieldValueMap.containsKey(null)) {
             throw new NullPointerException("Null keys are not permitted in field-value map");
         }
         if (fieldValueMap.containsValue(null)) {
             throw new NullPointerException("Null values are not permitted in field-value map");
-        }
-        if (fieldValueMap.isEmpty()) {
-            return EMPTY;
         }
         Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
         return new DateTimeFields(map);
@@ -725,8 +726,8 @@ public final class DateTimeFields
     /**
      * Is this set of fields equal to the specified set.
      *
-     * @param obj  the other Calendrical to compare to, null returns false
-     * @return true if this instance is equal to the specified Calendrical
+     * @param obj  the other field set to compare to, null returns false
+     * @return true if this instance is equal to the specified field set
      */
     @Override
     public boolean equals(Object obj) {
