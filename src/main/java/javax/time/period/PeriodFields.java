@@ -51,7 +51,9 @@ import javax.time.calendar.CalendarConversionException;
  * period of zero hours is not equal to a period of zero minutes.
  * The {@link #withZeroesRemoved()} method removes zero values.
  * <p>
- * Period is thread-safe and immutable.
+ * PeriodFields can store units of any kind which makes it usable with any calendar system.
+ * <p>
+ * PeriodFields is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */

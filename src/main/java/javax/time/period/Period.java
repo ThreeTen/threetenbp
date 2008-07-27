@@ -38,7 +38,24 @@ import javax.time.MathUtils;
 /**
  * An immutable period consisting of the year, month, day, hour, minute and second fields.
  * <p>
- * As an example, the period "3 months, 4 days and 7 hours" can be stored.
+ * This is used to represent the human-scale description of an amount of time, known as a period.
+ * As an example, "3 months, 4 days and 7 hours" can be stored.
+ * <p>
+ * Period stores just six units - years, months, days, hours, minutes and seconds.
+ * There is an implied relationship between some of these units:
+ * <ul>
+ * <li>12 months in a year</li>
+ * <li>24 hours in a day (ignoring time zones)</li>
+ * <li>60 minutes in an hour</li>
+ * <li>60 seconds in a minute</li>
+ * </ul>
+ * This is exposed in the {@link #normalized()} method.
+ * Period can be used by any calendar system that makes the same assumptions as shown above.
+ * <p>
+ * Note that beyond the limits specified above, the stored amounts are only descriptive.
+ * For example, a year in two calendar systems may differ in length.
+ * Only when the period is combined with a date/time in a specific calendar system can the
+ * duration of the period be calculated.
  * <p>
  * Period is thread-safe and immutable.
  *
@@ -701,7 +718,7 @@ public final class Period
      * Note that this method normalizes using assumptions:
      * <ul>
      * <li>12 months in a year</li>
-     * <li>24 hours in a day</li>
+     * <li>24 hours in a day (time zones are thus ignored)</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
      * </ul>
