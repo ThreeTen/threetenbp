@@ -31,17 +31,19 @@
  */
 package javax.time.period.field;
 
+import static javax.time.period.PeriodUnits.*;
+import static org.testng.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodUnit;
-import javax.time.period.Periods;
 
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  * Test class.
@@ -160,20 +162,10 @@ public class TestMonths {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        Months test5 = Months.months(5);
-        PeriodUnit unit = test5.getUnit();
-        assertFalse(test5.isSupported(null));
-        assertFalse(test5.isSupported(Periods.FOREVER));
-        assertTrue(test5.isSupported(unit));
-        assertTrue(test5.isSupported(Months.UNIT));
-    }
-
-    //-----------------------------------------------------------------------
     public void test_getUnit() {
         PeriodUnit unit = Months.months(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, Months.UNIT);
+        assertEquals(unit, MONTHS);
     }
 
     //-----------------------------------------------------------------------
@@ -328,6 +320,12 @@ public class TestMonths {
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
         Months.months(Integer.MIN_VALUE).negated();
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toPeriodFields() {
+        Months test5 = Months.months(5);
+        assertEquals(test5.toPeriodFields(), PeriodFields.periodFields(5, MONTHS));
     }
 
     //-----------------------------------------------------------------------

@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.MathUtils;
 
 /**
- * An immutable period consisting of the year, month, day, hour, minute and second fields.
+ * An immutable period consisting of the standard year, month, day, hour, minute, second and nanosecond units.
  * <p>
  * This is used to represent the human-scale description of an amount of time, known as a period.
  * As an example, "3 months, 4 days and 7 hours" can be stored.
@@ -48,6 +48,7 @@ import javax.time.MathUtils;
  * <li>24 hours in a day (ignoring time zones)</li>
  * <li>60 minutes in an hour</li>
  * <li>60 seconds in a minute</li>
+ * <li>1,000,000,000 nanoseconds in a second</li>
  * </ul>
  * This is exposed in the {@link #normalized()} method.
  * Period can be used by any calendar system that makes the same assumptions as shown above.
@@ -67,7 +68,7 @@ public final class Period
     /**
      * A constant for a period of zero.
      */
-    public static final Period ZERO = new Period(0, 0, 0, 0, 0, 0);
+    public static final Period ZERO = new Period(0, 0, 0, 0, 0, 0, 0);
     /**
      * A serialization identifier for this class.
      */
@@ -97,6 +98,10 @@ public final class Period
      * The number of seconds.
      */
     private final int seconds;
+    /**
+     * The number of nanoseconds.
+     */
+    private final long nanos;
     /**
      * The cached toString value.
      */
@@ -138,7 +143,26 @@ public final class Period
         if ((years | months | days | hours | minutes | seconds) == 0) {
             return ZERO;
         }
-        return new Period(years, months, days, hours, minutes, seconds);
+        return new Period(years, months, days, hours, minutes, seconds, 0);
+    }
+
+    /**
+     * Obtains an instance of <code>Period</code> from amounts from years to nanoseconds.
+     *
+     * @param years  the amount of years
+     * @param months  the amount of months
+     * @param days  the amount of days
+     * @param hours  the amount of hours
+     * @param minutes  the amount of minutes
+     * @param seconds  the amount of seconds
+     * @param nanos  the amount of nanos
+     * @return the created period instance, never null
+     */
+    public static Period period(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+        if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
+            return ZERO;
+        }
+        return new Period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -152,7 +176,7 @@ public final class Period
         if ((years | months) == 0) {
             return ZERO;
         }
-        return new Period(years, months, 0, 0, 0, 0);
+        return new Period(years, months, 0, 0, 0, 0, 0);
     }
 
     /**
@@ -167,7 +191,7 @@ public final class Period
         if ((years | months | days) == 0) {
             return ZERO;
         }
-        return new Period(years, months, days, 0, 0, 0);
+        return new Period(years, months, days, 0, 0, 0, 0);
     }
 
     /**
@@ -182,7 +206,7 @@ public final class Period
         if ((hours | minutes | seconds) == 0) {
             return ZERO;
         }
-        return new Period(0, 0, 0, hours, minutes, seconds);
+        return new Period(0, 0, 0, hours, minutes, seconds, 0);
     }
 
     //-----------------------------------------------------------------------
@@ -196,7 +220,7 @@ public final class Period
         if (years == 0) {
             return ZERO;
         }
-        return new Period(years, 0, 0, 0, 0, 0);
+        return new Period(years, 0, 0, 0, 0, 0, 0);
     }
 
     /**
@@ -209,7 +233,7 @@ public final class Period
         if (months == 0) {
             return ZERO;
         }
-        return new Period(0, months, 0, 0, 0, 0);
+        return new Period(0, months, 0, 0, 0, 0, 0);
     }
 
     /**
@@ -222,7 +246,7 @@ public final class Period
         if (days == 0) {
             return ZERO;
         }
-        return new Period(0, 0, days, 0, 0, 0);
+        return new Period(0, 0, days, 0, 0, 0, 0);
     }
 
     /**
@@ -235,7 +259,7 @@ public final class Period
         if (hours == 0) {
             return ZERO;
         }
-        return new Period(0, 0, 0, hours, 0, 0);
+        return new Period(0, 0, 0, hours, 0, 0, 0);
     }
 
     /**
@@ -248,7 +272,7 @@ public final class Period
         if (minutes == 0) {
             return ZERO;
         }
-        return new Period(0, 0, 0, 0, minutes, 0);
+        return new Period(0, 0, 0, 0, minutes, 0, 0);
     }
 
     /**
@@ -261,7 +285,20 @@ public final class Period
         if (seconds == 0) {
             return ZERO;
         }
-        return new Period(0, 0, 0, 0, 0, seconds);
+        return new Period(0, 0, 0, 0, 0, seconds, 0);
+    }
+
+    /**
+     * Creates a period of nanoseconds.
+     *
+     * @param nanos  the amount of nanos
+     * @return the created period instance, never null
+     */
+    public static Period nanos(long nanos) {
+        if (nanos == 0) {
+            return ZERO;
+        }
+        return new Period(0, 0, 0, 0, 0, 0, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -274,14 +311,16 @@ public final class Period
      * @param hours  the amount
      * @param minutes  the amount
      * @param seconds  the amount
+     * @param nanos  the amount
      */
-    private Period(int years, int months, int days, int hours, int minutes, int seconds) {
+    private Period(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         this.years = years;
         this.months = months;
         this.days = days;
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
+        this.nanos = nanos;
     }
 
     /**
@@ -290,7 +329,7 @@ public final class Period
      * @return the resolved instance
      */
     private Object readResolve() {
-        if ((years | months | days | hours | minutes | seconds) == 0) {
+        if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
             return ZERO;
         }
         return this;
@@ -361,6 +400,15 @@ public final class Period
         return seconds;
     }
 
+    /**
+     * Gets the amount of nanoseconds of the overall period, if any.
+     *
+     * @return the amount of nanoseconds of the overall period
+     */
+    public long getNanos() {
+        return nanos;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified amount of years.
@@ -374,7 +422,7 @@ public final class Period
         if (years == this.years) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -389,7 +437,7 @@ public final class Period
         if (months == this.months) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -404,7 +452,7 @@ public final class Period
         if (days == this.days) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -419,7 +467,7 @@ public final class Period
         if (hours == this.hours) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -434,7 +482,7 @@ public final class Period
         if (minutes == this.minutes) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -449,7 +497,22 @@ public final class Period
         if (seconds == this.seconds) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
+    }
+
+    /**
+     * Returns a copy of this period with the specified amount of nanoseconds.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to represent
+     * @return a new updated period instance, never null
+     */
+    public Period withNanos(long nanos) {
+        if (nanos == this.nanos) {
+            return this;
+        }
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -471,7 +534,8 @@ public final class Period
                 MathUtils.safeAdd(days, other.days),
                 MathUtils.safeAdd(hours, other.hours),
                 MathUtils.safeAdd(minutes, other.minutes),
-                MathUtils.safeAdd(seconds, other.seconds));
+                MathUtils.safeAdd(seconds, other.seconds),
+                MathUtils.safeAdd(nanos, other.nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -553,6 +617,19 @@ public final class Period
         return withSeconds(MathUtils.safeAdd(this.seconds, seconds));
     }
 
+    /**
+     * Returns a copy of this period with the specified number of nanoseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to add, positive or negative
+     * @return a new updated period instance, never null
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public Period plusNanos(long nanos) {
+        return withNanos(MathUtils.safeAdd(this.nanos, nanos));
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this period with the specified period subtracted.
@@ -572,7 +649,8 @@ public final class Period
                 MathUtils.safeSubtract(days, other.days),
                 MathUtils.safeSubtract(hours, other.hours),
                 MathUtils.safeSubtract(minutes, other.minutes),
-                MathUtils.safeSubtract(seconds, other.seconds));
+                MathUtils.safeSubtract(seconds, other.seconds),
+                MathUtils.safeSubtract(nanos, other.nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -581,7 +659,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param years  the years to subtract
+     * @param years  the years to subtract, positive or negative
      * @return a new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
@@ -594,7 +672,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to subtract
+     * @param months  the months to subtract, positive or negative
      * @return a new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
@@ -607,7 +685,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to subtract
+     * @param days  the days to subtract, positive or negative
      * @return a new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
@@ -620,7 +698,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hours  the hours to subtract
+     * @param hours  the hours to subtract, positive or negative
      * @return a new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
@@ -633,7 +711,7 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minutes  the minutes to subtract
+     * @param minutes  the minutes to subtract, positive or negative
      * @return a new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
@@ -646,12 +724,25 @@ public final class Period
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param seconds  the seconds to subtract
+     * @param seconds  the seconds to subtract, positive or negative
      * @return a new updated period instance, never null
      * @throws ArithmeticException if the calculation result overflows
      */
     public Period minusSeconds(int seconds) {
         return withSeconds(MathUtils.safeSubtract(this.seconds, seconds));
+    }
+
+    /**
+     * Returns a copy of this period with the specified number of nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to subtract, positive or negative
+     * @return a new updated period instance, never null
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public Period minusNanos(long nanos) {
+        return withNanos(MathUtils.safeSubtract(this.nanos, nanos));
     }
 
     //-----------------------------------------------------------------------
@@ -673,12 +764,16 @@ public final class Period
                 MathUtils.safeMultiply(days, scalar),
                 MathUtils.safeMultiply(hours, scalar),
                 MathUtils.safeMultiply(minutes, scalar),
-                MathUtils.safeMultiply(seconds, scalar));
+                MathUtils.safeMultiply(seconds, scalar),
+                MathUtils.safeMultiply(nanos, scalar));
     }
 
     /**
      * Returns a new instance with each element in this period divided
      * by the specified value.
+     * <p>
+     * The implementation simply divides each separate field by the divisor
+     * using integer division.
      *
      * @param divisor  the value to divide by, not null
      * @return the new updated period instance, never null
@@ -693,7 +788,7 @@ public final class Period
         }
         return period(
                 years / divisor, months / divisor, days / divisor,
-                hours / divisor, minutes / divisor, seconds / divisor);
+                hours / divisor, minutes / divisor, seconds / divisor, nanos / divisor);
     }
 
     /**
@@ -720,6 +815,7 @@ public final class Period
      * <li>12 months in a year</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
      * This method is only appropriate to call if these assumptions are met.
      * <p>
@@ -738,14 +834,17 @@ public final class Period
             years = MathUtils.safeAdd(years, months / 12);
             months = months % 12;
         }
-        // will not overflow
-        long total = (hours * 60L * 60L) + (minutes * 60L) + seconds;
+        long total = (hours * 60L * 60L) + (minutes * 60L) + seconds;  // will not overflow
+        total = MathUtils.safeMultiply(total, 1000000000);
+        total = MathUtils.safeAdd(total, nanos);
+        long nanos = total % 1000000000L;
+        total /= 1000000000L;
         int seconds = (int) (total % 60);
         total /= 60;
         int minutes = (int) (total % 60);
         total /= 60;
         int hours = MathUtils.safeToInt(total);
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -763,6 +862,7 @@ public final class Period
      * <li>24 hours in a day</li>
      * <li>60 minutes in an hour</li>
      * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
      * </ul>
      * This method is only appropriate to call if these assumptions are met.
      * <p>
@@ -781,10 +881,13 @@ public final class Period
             years = MathUtils.safeAdd(years, months / 12);
             months = months % 12;
         }
-        // will not overflow
         long total = (days * 24L * 60L * 60L) +
                         (hours * 60L * 60L) +
-                        (minutes * 60L) + seconds;
+                        (minutes * 60L) + seconds;  // will not overflow
+        total = MathUtils.safeMultiply(total, 1000000000);
+        total = MathUtils.safeAdd(total, nanos);
+        long nanos = total % 1000000000L;
+        total /= 1000000000L;
         int seconds = (int) (total % 60);
         total /= 60;
         int minutes = (int) (total % 60);
@@ -792,7 +895,7 @@ public final class Period
         int hours = (int) (total % 24);
         total /= 24;
         int days = MathUtils.safeToInt(total);
-        return period(years, months, days, hours, minutes, seconds);
+        return period(years, months, days, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -833,7 +936,8 @@ public final class Period
         if (obj instanceof Period) {
             Period other = (Period) obj;
             return years == other.years && months == other.months && days == other.days &
-                    hours == other.hours && minutes == other.minutes && seconds == other.seconds;
+                    hours == other.hours && minutes == other.minutes &&
+                    seconds == other.seconds && nanos == other.nanos;
         }
         return false;
     }
@@ -853,7 +957,7 @@ public final class Period
                 ((hours << 22) | (hours >>> 10)) ^
                 ((months << 18) | (months >>> 14)) ^
                 ((minutes << 12) | (minutes >>> 20)) ^
-                ((days << 6) | (days >>> 26)) ^ seconds;
+                ((days << 6) | (days >>> 26)) ^ seconds ^ (((int) nanos) + 37);
     }
 
     //-----------------------------------------------------------------------

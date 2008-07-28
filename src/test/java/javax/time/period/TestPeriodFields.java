@@ -31,7 +31,7 @@
  */
 package javax.time.period;
 
-import static javax.time.period.Periods.*;
+import static javax.time.period.PeriodUnits.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.DateTimeFields;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
@@ -111,7 +110,7 @@ public class TestPeriodFields {
     }
 
     public void test_immutable() {
-        Class<DateTimeFields> cls = DateTimeFields.class;
+        Class<PeriodFields> cls = PeriodFields.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
@@ -195,19 +194,20 @@ public class TestPeriodFields {
 
     //-----------------------------------------------------------------------
     public void factory_period_provider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6);
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
         PeriodFields test = PeriodFields.periodFields(provider);
-        assertEquals(test.size(), 6);
+        assertEquals(test.size(), 7);
         assertEquals(test.getAmount(YEARS), 1);
         assertEquals(test.getAmount(MONTHS), 2);
         assertEquals(test.getAmount(DAYS), 3);
         assertEquals(test.getAmount(HOURS), 4);
         assertEquals(test.getAmount(MINUTES), 5);
         assertEquals(test.getAmount(SECONDS), 6);
+        assertEquals(test.getAmount(SECONDS), 7);
     }
 
     public void factory_period_provider_zeroesRemoved() {
-        PeriodProvider provider = Period.period(1, 0, 2, 0, 0, 0);
+        PeriodProvider provider = Period.period(1, 0, 2, 0, 0, 0, 0);
         assertPeriodFields(PeriodFields.periodFields(provider), 1, YEARS, 2, DAYS);
     }
 
@@ -647,6 +647,7 @@ public class TestPeriodFields {
         assertEquals(period.getHours(), 0);
         assertEquals(period.getMinutes(), 0);
         assertEquals(period.getSeconds(), 0);
+        assertEquals(period.getNanos(), 0);
     }
 
     public void test_toPeriod2() {  // different set of fields to complete coverage
@@ -658,11 +659,12 @@ public class TestPeriodFields {
         assertEquals(period.getHours(), 2);
         assertEquals(period.getMinutes(), 0);
         assertEquals(period.getSeconds(), 0);
+        assertEquals(period.getNanos(), 0);
     }
 
     public void test_toPeriod_allNonZero() {
         PeriodFields test = PeriodFields.periodFields(1, YEARS).with(2, MONTHS).with(3, DAYS)
-            .with(4, HOURS).with(5, MINUTES).with(6, SECONDS);
+            .with(4, HOURS).with(5, MINUTES).with(6, SECONDS).with(7, NANOS);
         Period period = test.toPeriod();
         assertEquals(period.getYears(), 1);
         assertEquals(period.getMonths(), 2);
@@ -670,6 +672,7 @@ public class TestPeriodFields {
         assertEquals(period.getHours(), 4);
         assertEquals(period.getMinutes(), 5);
         assertEquals(period.getSeconds(), 6);
+        assertEquals(period.getNanos(), 7);
     }
 
     public void test_toPeriod_zeroYearsBase() {

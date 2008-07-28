@@ -868,7 +868,7 @@ public final class LocalDateTime
     public LocalDateTime plus(PeriodProvider periodProvider) {
         LocalDate date = this.date.plus(periodProvider);
         LocalTime.Overflow overflow = this.time.plusWithOverflow(periodProvider);
-        return overflow.toLocalDateTime(date);
+        return withDateTime(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------
@@ -1087,7 +1087,7 @@ public final class LocalDateTime
     public LocalDateTime minus(PeriodProvider periodProvider) {
         LocalDate date = this.date.minus(periodProvider);
         LocalTime.Overflow overflow = this.time.minusWithOverflow(periodProvider);
-        return overflow.toLocalDateTime(date);
+        return withDateTime(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------

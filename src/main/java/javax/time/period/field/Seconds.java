@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,9 @@
  */
 package javax.time.period.field;
 
+import static javax.time.period.PeriodUnits.*;
+
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
 
 import javax.time.period.PeriodUnit;
 
@@ -54,10 +54,6 @@ import javax.time.period.PeriodUnit;
  */
 public final class Seconds extends PeriodField implements Comparable<Seconds>, Serializable {
 
-    /**
-     * The unit that defines how the seconds field operates.
-     */
-    public static final PeriodUnit UNIT = new Unit();
     /**
      * A constant for zero seconds.
      */
@@ -108,28 +104,6 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether a given unit is supported -
-     * <code>Seconds</code> only supports the Seconds unit.
-     *
-     * @param unit  the unit to check for, null returns false
-     * @return true only if the Seconds unit, otherwise false
-     */
-    public boolean isSupported(PeriodUnit unit)  {
-        return (unit == UNIT);
-    }
-
-    /**
-     * Gets the map of period unit to amount which defines the period.
-     * This instance returns a map of size one where the key is the Seconds unit.
-     *
-     * @return the map of period amounts, never null, never contains null
-     */
-    public Map<PeriodUnit, Integer> getPeriodViewMap() {
-        return Collections.singletonMap(UNIT, seconds);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the number of seconds held in this period.
      *
      * @return the number of seconds
@@ -158,7 +132,7 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
      */
     @Override
     public PeriodUnit getUnit() {
-        return UNIT;
+        return SECONDS;
     }
 
     //-----------------------------------------------------------------------
@@ -309,18 +283,6 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
     @Override
     public String toString() {
         return "PT" + seconds + "S";
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the unit for seconds.
-     */
-    private static class Unit extends PeriodUnit {
-
-        /** Constructor. */
-        protected Unit() {
-            super("Seconds", null);
-        }
     }
 
 }

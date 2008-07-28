@@ -51,6 +51,8 @@ import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -619,6 +621,20 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.yearsMonthsDays(1, 2, 3);
+        OffsetDate t = TEST_2007_07_15_PONE.plus(provider);
+        assertEquals(t, OffsetDate.date(2008, 9, 18, OFFSET_PONE));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        OffsetDate t = TEST_2007_07_15_PONE.plus(Period.ZERO);
+        assertSame(t, TEST_2007_07_15_PONE);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears_int_normal() {
@@ -1029,6 +1045,20 @@ public class TestOffsetDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_overflowTooSmall() {
         OffsetDate.date(Year.MIN_YEAR, 1, 1, OFFSET_PONE).plusDays(Long.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.yearsMonthsDays(1, 2, 3);
+        OffsetDate t = TEST_2007_07_15_PONE.minus(provider);
+        assertEquals(t, OffsetDate.date(2006, 5, 12, OFFSET_PONE));
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        OffsetDate t = TEST_2007_07_15_PONE.minus(Period.ZERO);
+        assertSame(t, TEST_2007_07_15_PONE);
     }
 
     //-----------------------------------------------------------------------

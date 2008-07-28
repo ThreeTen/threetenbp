@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,10 @@
  */
 package javax.time.period.field;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
+import static javax.time.period.PeriodUnits.*;
 
-import javax.time.period.Period;
+import java.io.Serializable;
+
 import javax.time.period.PeriodUnit;
 
 /**
@@ -55,10 +54,6 @@ import javax.time.period.PeriodUnit;
  */
 public final class Hours extends PeriodField implements Comparable<Hours>, Serializable {
 
-    /**
-     * The unit that defines how the hours field operates.
-     */
-    public static final PeriodUnit UNIT = new Unit();
     /**
      * A constant for zero hours.
      */
@@ -109,28 +104,6 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether a given unit is supported -
-     * <code>Hours</code> only supports the Hours unit.
-     *
-     * @param unit  the unit to check for, null returns false
-     * @return true only if the Hours unit, otherwise false
-     */
-    public boolean isSupported(PeriodUnit unit)  {
-        return (unit == UNIT);
-    }
-
-    /**
-     * Gets the map of period unit to amount which defines the period.
-     * This instance returns a map of size one where the key is the Hours unit.
-     *
-     * @return the map of period amounts, never null, never contains null
-     */
-    public Map<PeriodUnit, Integer> getPeriodViewMap() {
-        return Collections.singletonMap(UNIT, hours);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the number of hours held in this period.
      *
      * @return the number of hours
@@ -159,7 +132,7 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
      */
     @Override
     public PeriodUnit getUnit() {
-        return UNIT;
+        return HOURS;
     }
 
     //-----------------------------------------------------------------------
@@ -310,18 +283,6 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
     @Override
     public String toString() {
         return "PT" + hours + "H";
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the unit for hours.
-     */
-    private static class Unit extends PeriodUnit {
-
-        /** Constructor. */
-        protected Unit() {
-            super("Hours", Period.minutes(60).toPeriod());
-        }
     }
 
 }

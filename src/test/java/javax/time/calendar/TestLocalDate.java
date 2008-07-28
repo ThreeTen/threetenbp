@@ -51,6 +51,9 @@ import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
+import javax.time.period.MockPeriodProviderReturnsNull;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -514,6 +517,66 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        LocalDate t = TEST_2007_07_15.plus(provider);
+        assertEquals(t, LocalDate.date(2008, 9, 18));
+    }
+
+    public void test_plus_PeriodProvider_timeIgnored() {
+        PeriodProvider provider = Period.period(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
+        LocalDate t = TEST_2007_07_15.plus(provider);
+        assertEquals(t, LocalDate.date(2008, 9, 18));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        LocalDate t = TEST_2007_07_15.plus(Period.ZERO);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    public void test_plus_PeriodProvider_previousValidResolver_oneMonth() {
+        PeriodProvider provider = Period.months(1);
+        LocalDate t = LocalDate.date(2008, 1, 31).plus(provider);
+        assertEquals(t, LocalDate.date(2008, 2, 29));
+    }
+
+    public void test_plus_PeriodProvider_previousValidResolver_oneMonthOneDay() {
+        PeriodProvider provider = Period.yearsMonthsDays(0, 1, 1);
+        LocalDate t = LocalDate.date(2008, 1, 31).plus(provider);
+        assertEquals(t, LocalDate.date(2008, 3, 1));
+    }
+
+//    public void test_plus_PeriodProvider_previousValidResolver_oneMonthMinusOneDay() {
+//        PeriodProvider provider = Period.yearsMonthsDays(0, 1, -1);
+//        LocalDate t = LocalDate.date(2008, 1, 31).plus(provider);
+//        assertEquals(t, LocalDate.date(2008, 2, 29));  // TODO: what is the correct result
+//    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_null() {
+        TEST_2007_07_15.plus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_badProvider() {
+        TEST_2007_07_15.plus(new MockPeriodProviderReturnsNull());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidTooLarge() {
+        PeriodProvider provider = Period.years(1);
+        LocalDate.date(Year.MAX_YEAR, 1, 1).plus(provider);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidTooSmall() {
+        PeriodProvider provider = Period.years(-1);
+        LocalDate.date(Year.MIN_YEAR, 1, 1).plus(provider);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears_int_normal() {
@@ -929,6 +992,60 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_overflowTooSmall() {
         LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        LocalDate t = TEST_2007_07_15.minus(provider);
+        assertEquals(t, LocalDate.date(2006, 5, 12));
+    }
+
+    public void test_minus_PeriodProvider_timeIgnored() {
+        PeriodProvider provider = Period.period(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
+        LocalDate t = TEST_2007_07_15.minus(provider);
+        assertEquals(t, LocalDate.date(2006, 5, 12));
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        LocalDate t = TEST_2007_07_15.minus(Period.ZERO);
+        assertSame(t, TEST_2007_07_15);
+    }
+
+    public void test_minus_PeriodProvider_previousValidResolver_oneMonth() {
+        PeriodProvider provider = Period.months(1);
+        LocalDate t = LocalDate.date(2008, 3, 31).minus(provider);
+        assertEquals(t, LocalDate.date(2008, 2, 29));
+    }
+
+//    public void test_minus_PeriodProvider_previousValidResolver_oneMonthOneDay() {
+//        PeriodProvider provider = Period.yearsMonthsDays(0, 1, 1);
+//        LocalDate t = LocalDate.date(2008, 3, 31).minus(provider);
+//        assertEquals(t, LocalDate.date(2008, 2, 29));  // TODO: what is the correct result here
+//    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_null() {
+        TEST_2007_07_15.minus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_badProvider() {
+        TEST_2007_07_15.minus(new MockPeriodProviderReturnsNull());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_invalidTooLarge() {
+        PeriodProvider provider = Period.years(-1);
+        LocalDate.date(Year.MAX_YEAR, 1, 1).minus(provider);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_invalidTooSmall() {
+        PeriodProvider provider = Period.years(1);
+        LocalDate.date(Year.MIN_YEAR, 1, 1).minus(provider);
     }
 
     //-----------------------------------------------------------------------

@@ -31,6 +31,8 @@
  */
 package javax.time.i18n;
 
+import static javax.time.period.PeriodUnits.*;
+
 import java.io.Serializable;
 
 import javax.time.calendar.Chronology;
@@ -38,7 +40,6 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.field.Year;
-import javax.time.period.Periods;
 
 /**
  * The Coptic calendar system.
@@ -199,7 +200,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule() {
-            super(CopticChronology.INSTANCE, "Year", Periods.YEARS, Periods.FOREVER, 1, Year.MAX_YEAR);
+            super(CopticChronology.INSTANCE, "Year", YEARS, null, 1, Year.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -226,7 +227,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(CopticChronology.INSTANCE, "MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 13);
+            super(CopticChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 13);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -252,7 +253,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(CopticChronology.INSTANCE, "DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 30);
+            super(CopticChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 30);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -283,7 +284,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(CopticChronology.INSTANCE, "DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
+            super(CopticChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -314,7 +315,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(CopticChronology.INSTANCE, "DayOfWeek", Periods.DAYS, Periods.WEEKS, 1, 7);
+            super(CopticChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;

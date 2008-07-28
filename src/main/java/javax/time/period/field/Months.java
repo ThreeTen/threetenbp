@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,9 @@
  */
 package javax.time.period.field;
 
+import static javax.time.period.PeriodUnits.*;
+
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
 
 import javax.time.period.PeriodUnit;
 
@@ -54,10 +54,6 @@ import javax.time.period.PeriodUnit;
  */
 public final class Months extends PeriodField implements Comparable<Months>, Serializable {
 
-    /**
-     * The unit that defines how the months field operates.
-     */
-    public static final PeriodUnit UNIT = new Unit();
     /**
      * A constant for zero months.
      */
@@ -108,28 +104,6 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether a given unit is supported -
-     * <code>Months</code> only supports the Months unit.
-     *
-     * @param unit  the unit to check for, null returns false
-     * @return true only if the Months unit, otherwise false
-     */
-    public boolean isSupported(PeriodUnit unit)  {
-        return (unit == UNIT);
-    }
-
-    /**
-     * Gets the map of period unit to amount which defines the period.
-     * This instance returns a map of size one where the key is the Months unit.
-     *
-     * @return the map of period amounts, never null, never contains null
-     */
-    public Map<PeriodUnit, Integer> getPeriodViewMap() {
-        return Collections.singletonMap(UNIT, months);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the number of months held in this period.
      *
      * @return the number of months
@@ -158,7 +132,7 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
      */
     @Override
     public PeriodUnit getUnit() {
-        return UNIT;
+        return MONTHS;
     }
 
     //-----------------------------------------------------------------------
@@ -309,18 +283,6 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
     @Override
     public String toString() {
         return "P" + months + "M";
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the unit for months.
-     */
-    private static class Unit extends PeriodUnit {
-
-        /** Constructor. */
-        protected Unit() {
-            super("Months", null);
-        }
     }
 
 }

@@ -552,7 +552,7 @@ public final class LocalTime
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
                 period.getSeconds() * NANOS_PER_SECOND;
-        return plusNanos(totalNanos);
+        return plusNanos(totalNanos).plusNanos(period.getNanos());
     }
 
     //-----------------------------------------------------------------------
@@ -672,7 +672,7 @@ public final class LocalTime
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
                 period.getSeconds() * NANOS_PER_SECOND;
-        return minusNanos(totalNanos);
+        return minusNanos(totalNanos).minusNanos(period.getNanos());
     }
 
     //-----------------------------------------------------------------------
@@ -1019,7 +1019,7 @@ public final class LocalTime
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
                 period.getSeconds() * NANOS_PER_SECOND;
-        return plusNanosWithOverflow(totalNanos);
+        return plusNanosWithOverflow(totalNanos);  // TODO period.getNanos()
     }
 
     /**
@@ -1094,7 +1094,7 @@ public final class LocalTime
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
                 period.getSeconds() * NANOS_PER_SECOND;
-        return minusNanosWithOverflow(totalNanos);
+        return minusNanosWithOverflow(totalNanos);  // TODO period.getNanos()
     }
 
     /**

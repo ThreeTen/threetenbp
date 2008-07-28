@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import javax.time.period.Periods;
+import static javax.time.period.PeriodUnits.*;
 
 /**
  * Mock DateTimeFieldRule that returns null.
@@ -44,7 +44,7 @@ public class MockRuleNoValue extends DateTimeFieldRule {
     public static final MockRuleNoValue INSTANCE = new MockRuleNoValue();
 
     private MockRuleNoValue() {
-        super(ISOChronology.INSTANCE, "Mock", Periods.DAYS, Periods.MONTHS, 1, 30);
+        super(ISOChronology.INSTANCE, "Mock", DAYS, MONTHS, 1, 30);
     }
 
     /** {@inheritDoc} */

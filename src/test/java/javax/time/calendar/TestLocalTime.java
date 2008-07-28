@@ -48,6 +48,9 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.period.MockPeriodProviderReturnsNull;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -61,6 +64,7 @@ import org.testng.annotations.Test;
  */
 @Test(timeOut=5000)
 public class TestLocalTime {
+    // TODO: Test plus(PeriodProvider) / minus...
     private LocalTime TEST_12_30_40_987654321;
 
     @BeforeMethod
@@ -661,6 +665,42 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        LocalTime t = TEST_12_30_40_987654321.plus(provider);
+        assertEquals(t, LocalTime.time(16, 35, 46, 987654328));
+    }
+
+    public void test_plus_PeriodProvider_dateIgnored() {
+        PeriodProvider provider = Period.period(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
+        LocalTime t = TEST_12_30_40_987654321.plus(provider);
+        assertEquals(t, LocalTime.time(16, 35, 46, 987654328));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        LocalTime t = TEST_12_30_40_987654321.plus(Period.ZERO);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_plus_PeriodProvider_overflowIgnored() {
+        PeriodProvider provider = Period.hours(1);
+        LocalTime t = LocalTime.time(23, 30).plus(provider);
+        assertEquals(t, LocalTime.time(0, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_null() {
+        TEST_12_30_40_987654321.plus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_badProvider() {
+        TEST_12_30_40_987654321.plus(new MockPeriodProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
     // plusHours()
     //-----------------------------------------------------------------------
     public void test_plusHours_one() {
@@ -968,6 +1008,42 @@ public class TestLocalTime {
     public void test_plusNanos_toMidday() {
         LocalTime t = LocalTime.time(11, 59, 59, 999999999).plusNanos(1);
         assertSame(t, LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        LocalTime t = TEST_12_30_40_987654321.minus(provider);
+        assertEquals(t, LocalTime.time(8, 25, 34, 987654314));
+    }
+
+    public void test_minus_PeriodProvider_dateIgnored() {
+        PeriodProvider provider = Period.period(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
+        LocalTime t = TEST_12_30_40_987654321.minus(provider);
+        assertEquals(t, LocalTime.time(8, 25, 34, 987654314));
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        LocalTime t = TEST_12_30_40_987654321.minus(Period.ZERO);
+        assertSame(t, TEST_12_30_40_987654321);
+    }
+
+    public void test_minus_PeriodProvider_overflowIgnored() {
+        PeriodProvider provider = Period.hours(1);
+        LocalTime t = LocalTime.time(0, 30).minus(provider);
+        assertEquals(t, LocalTime.time(23, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_null() {
+        TEST_12_30_40_987654321.minus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_badProvider() {
+        TEST_12_30_40_987654321.minus(new MockPeriodProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------

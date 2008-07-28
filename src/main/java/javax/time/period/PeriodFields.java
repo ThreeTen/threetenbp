@@ -31,6 +31,8 @@
  */
 package javax.time.period;
 
+import static javax.time.period.PeriodUnits.*;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
@@ -132,22 +134,22 @@ public final class PeriodFields
         }
         TreeMap<PeriodUnit, Integer> map = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
         if (period.getYears() != 0) {
-            map.put(Periods.YEARS, period.getYears());
+            map.put(YEARS, period.getYears());
         }
         if (period.getMonths() != 0) {
-            map.put(Periods.MONTHS, period.getMonths());
+            map.put(MONTHS, period.getMonths());
         }
         if (period.getDays() != 0) {
-            map.put(Periods.DAYS, period.getDays());
+            map.put(DAYS, period.getDays());
         }
         if (period.getHours() != 0) {
-            map.put(Periods.HOURS, period.getHours());
+            map.put(HOURS, period.getHours());
         }
         if (period.getMinutes() != 0) {
-            map.put(Periods.MINUTES, period.getMinutes());
+            map.put(MINUTES, period.getMinutes());
         }
         if (period.getSeconds() != 0) {
-            map.put(Periods.SECONDS, period.getSeconds());
+            map.put(SECONDS, period.getSeconds());
         }
         return PeriodFields.create(map);
     }
@@ -536,12 +538,13 @@ public final class PeriodFields
             return Period.ZERO;
         }
         Map<PeriodUnit, Integer> copy = cloneMap();
-        Integer years = copy.remove(Periods.YEARS);
-        Integer months = copy.remove(Periods.MONTHS);
-        Integer days = copy.remove(Periods.DAYS);
-        Integer hours = copy.remove(Periods.HOURS);
-        Integer minutes = copy.remove(Periods.MINUTES);
-        Integer seconds = copy.remove(Periods.SECONDS);
+        Integer years = copy.remove(YEARS);
+        Integer months = copy.remove(MONTHS);
+        Integer days = copy.remove(DAYS);
+        Integer hours = copy.remove(HOURS);
+        Integer minutes = copy.remove(MINUTES);
+        Integer seconds = copy.remove(SECONDS);
+        Integer nanos = copy.remove(NANOS);
         if (copy.size() > 0) {
             throw new CalendarConversionException("Unable to convert to a Period as the following fields are incompatible: " + copy);
         }
@@ -551,7 +554,8 @@ public final class PeriodFields
                     days == null ? 0 : days,
                     hours == null ? 0 : hours,
                     minutes == null ? 0 : minutes,
-                    seconds == null ? 0 : seconds);
+                    seconds == null ? 0 : seconds,
+                    nanos == null ? 0 : nanos);
     }
 
     //-----------------------------------------------------------------------

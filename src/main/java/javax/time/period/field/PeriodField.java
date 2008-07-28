@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,6 +32,7 @@
 package javax.time.period.field;
 
 import javax.time.MathUtils;
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -190,6 +191,16 @@ public abstract class PeriodField {
 //        }
 //        return null; //getUnit().convert(this);
 //    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this instance to a <code>PeriodFields</code>.
+     *
+     * @return a period fields containing the amount and unit, never null
+     */
+    public PeriodFields toPeriodFields() {
+        return PeriodFields.periodFields(getAmount(), getUnit());
+    }
 
     //-----------------------------------------------------------------------
     /**

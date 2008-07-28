@@ -31,17 +31,19 @@
  */
 package javax.time.period.field;
 
+import static javax.time.period.PeriodUnits.*;
+import static org.testng.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.period.PeriodFields;
 import javax.time.period.PeriodUnit;
-import javax.time.period.Periods;
 
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  * Test class.
@@ -160,20 +162,10 @@ public class TestMinutes {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        Minutes test5 = Minutes.minutes(5);
-        PeriodUnit unit = test5.getUnit();
-        assertFalse(test5.isSupported(null));
-        assertFalse(test5.isSupported(Periods.FOREVER));
-        assertTrue(test5.isSupported(unit));
-        assertTrue(test5.isSupported(Minutes.UNIT));
-    }
-
-    //-----------------------------------------------------------------------
     public void test_getUnit() {
         PeriodUnit unit = Minutes.minutes(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, Minutes.UNIT);
+        assertEquals(unit, MINUTES);
     }
 
     //-----------------------------------------------------------------------
@@ -328,6 +320,12 @@ public class TestMinutes {
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
         Minutes.minutes(Integer.MIN_VALUE).negated();
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toPeriodFields() {
+        Minutes test5 = Minutes.minutes(5);
+        assertEquals(test5.toPeriodFields(), PeriodFields.periodFields(5, MINUTES));
     }
 
     //-----------------------------------------------------------------------

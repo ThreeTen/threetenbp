@@ -57,6 +57,8 @@ import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -1456,6 +1458,26 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(provider);
+        assertEquals(t, LocalDateTime.dateTime(2008, 9, 18, 16, 35, 46, 987654328));
+    }
+
+    public void test_plus_PeriodProvider_daysOverflow() {
+        PeriodProvider provider = Period.hours(1);
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 23, 30).plus(provider);
+        assertEquals(t, LocalDateTime.dateTime(2008, 7, 1, 0, 30));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(Period.ZERO);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears_int_normal() {
@@ -2213,6 +2235,26 @@ public class TestLocalDateTime {
     public void test_plusNanos_toMidday() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 59, 59, 999999999).plusNanos(1);
         assertSame(t.getTime(), LocalTime.MIDDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(provider);
+        assertEquals(t, LocalDateTime.dateTime(2006, 5, 12, 8, 25, 34, 987654314));
+    }
+
+    public void test_minus_PeriodProvider_daysOverflow() {
+        PeriodProvider provider = Period.hours(1);
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 1, 0, 30).minus(provider);
+        assertEquals(t, LocalDateTime.dateTime(2008, 5, 31, 23, 30));
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(Period.ZERO);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
     //-----------------------------------------------------------------------

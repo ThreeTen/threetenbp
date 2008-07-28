@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import static javax.time.period.PeriodUnits.*;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -43,7 +45,6 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekOfWeekyear;
 import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
-import javax.time.period.Periods;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -547,7 +548,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule() {
-            super(ISOChronology.INSTANCE, "Year", Periods.YEARS, Periods.FOREVER, Year.MIN_YEAR, Year.MAX_YEAR);
+            super(ISOChronology.INSTANCE, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -587,7 +588,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(ISOChronology.INSTANCE, "MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 12);
+            super(ISOChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -610,7 +611,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(ISOChronology.INSTANCE, "DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
+            super(ISOChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 31);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -638,7 +639,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(ISOChronology.INSTANCE, "DayOfYear", Periods.DAYS, Periods.YEARS, 1, 366);
+            super(ISOChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -678,7 +679,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekyearRule() {
-            super(ISOChronology.INSTANCE, "Weekyear", Periods.YEARS, Periods.FOREVER, Weekyear.MIN_YEAR, Weekyear.MAX_YEAR);
+            super(ISOChronology.INSTANCE, "Weekyear", WEEKYEARS, null, Weekyear.MIN_YEAR, Weekyear.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -701,7 +702,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfWeekyearRule() {
-            super(ISOChronology.INSTANCE, "WeekOfWeekyear", Periods.WEEKS, Periods.YEARS, 1, 53);
+            super(ISOChronology.INSTANCE, "WeekOfWeekyear", WEEKS, WEEKYEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -729,7 +730,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(ISOChronology.INSTANCE, "DayOfWeek", Periods.DAYS, Periods.WEEKS, 1, 7);
+            super(ISOChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -763,7 +764,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfYearRule() {
-            super(ISOChronology.INSTANCE, "WeekOfYear", Periods.WEEKS, Periods.YEARS, 1, 53);
+            super(ISOChronology.INSTANCE, "WeekOfYear", WEEKS, YEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -794,7 +795,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private QuarterOfYearRule() {
-            super(ISOChronology.INSTANCE, "QuarterOfYear", Periods.WEEKS, Periods.YEARS, 1, 4);
+            super(ISOChronology.INSTANCE, "QuarterOfYear", WEEKS, YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -832,7 +833,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfQuarterRule() {
-            super(ISOChronology.INSTANCE, "MonthOfQuarter", Periods.WEEKS, Periods.YEARS, 1, 4);
+            super(ISOChronology.INSTANCE, "MonthOfQuarter", WEEKS, YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -855,7 +856,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfMonthRule() {
-            super(ISOChronology.INSTANCE, "WeekOfMonth", Periods.WEEKS, Periods.YEARS, 1, 5);
+            super(ISOChronology.INSTANCE, "WeekOfMonth", WEEKS, YEARS, 1, 5);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -887,7 +888,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private HourOfDayRule() {
-            super(ISOChronology.INSTANCE, "HourOfDay", Periods.HOURS, Periods.DAYS, 0, 23);
+            super(ISOChronology.INSTANCE, "HourOfDay", HOURS, DAYS, 0, 23);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -921,7 +922,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MinuteOfHourRule() {
-            super(ISOChronology.INSTANCE, "MinuteOfHour", Periods.MINUTES, Periods.HOURS, 0, 59);
+            super(ISOChronology.INSTANCE, "MinuteOfHour", MINUTES, HOURS, 0, 59);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -944,7 +945,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private SecondOfMinuteRule() {
-            super(ISOChronology.INSTANCE, "SecondOfMinute", Periods.SECONDS, Periods.MINUTES, 0, 59);
+            super(ISOChronology.INSTANCE, "SecondOfMinute", SECONDS, MINUTES, 0, 59);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -967,7 +968,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private NanoOfSecondRule() {
-            super(ISOChronology.INSTANCE, "NanoOfSecond", Periods.NANOS, Periods.SECONDS, 0, 999999999);
+            super(ISOChronology.INSTANCE, "NanoOfSecond", NANOS, SECONDS, 0, 999999999);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -990,7 +991,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MilliOfDayRule() {
-            super(ISOChronology.INSTANCE, "MilliOfDay", Periods.MILLIS, Periods.DAYS, 0, 86399999);
+            super(ISOChronology.INSTANCE, "MilliOfDay", MILLIS, DAYS, 0, 86399999);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1019,7 +1020,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MilliOfSecondRule() {
-            super(ISOChronology.INSTANCE, "MilliOfSecond", Periods.MILLIS, Periods.SECONDS, 0, 999);
+            super(ISOChronology.INSTANCE, "MilliOfSecond", MILLIS, SECONDS, 0, 999);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1051,7 +1052,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private AmPmOfDayRule() {
-            super(ISOChronology.INSTANCE, "AmPmOfDay", Periods.HALF_DAYS, Periods.DAYS, 0, 1);
+            super(ISOChronology.INSTANCE, "AmPmOfDay", TWELVE_HOURS, DAYS, 0, 1);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1086,7 +1087,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private HourOfAmPmRule() {
-            super(ISOChronology.INSTANCE, "HourOfAmPm", Periods.HOURS, Periods.HALF_DAYS, 0, 11);
+            super(ISOChronology.INSTANCE, "HourOfAmPm", HOURS, TWELVE_HOURS, 0, 11);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1104,11 +1105,11 @@ public final class ISOChronology extends Chronology implements Serializable {
 //     */
 //    private static enum Rule implements Serializable {
 //        /** Year instance. */
-//        YEAR("Year", Periods.YEARS, Periods.FOREVER, Year.MIN_YEAR, Year.MAX_YEAR),
+//        YEAR("Year", YEARS, FOREVER, Year.MIN_YEAR, Year.MAX_YEAR),
 //        /** Year instance. */
-//        MONTH_OF_YEAR("MonthOfYear", Periods.MONTHS, Periods.YEARS, 1, 12),
+//        MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, 1, 12),
 //        /** Year instance. */
-//        DAY_OF_MONTH("DayOfMonth", Periods.DAYS, Periods.MONTHS, 1, 31);
+//        DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, 1, 31);
 //
 //        /** The name of the rule, not null. */
 //        private final String name;

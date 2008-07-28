@@ -48,6 +48,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -898,6 +900,21 @@ public class TestZonedDateTime {
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         ZonedDateTime test = base.withTime(23, 30, 59, 500);
         assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.dateTime(LocalDateTime.dateTime(2009, 8, 4, 15, 36, 5, 507), ZONE_0100);
+        assertEquals(t.plus(provider), expected);
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        ZonedDateTime t = TEST_DATE_TIME.plus(Period.ZERO);
+        assertSame(t, TEST_DATE_TIME);
     }
 
     //-----------------------------------------------------------------------

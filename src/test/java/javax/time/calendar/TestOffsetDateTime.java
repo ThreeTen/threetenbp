@@ -46,6 +46,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -670,6 +672,20 @@ public class TestOffsetDateTime {
         OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
         OffsetDateTime test = base.withTime(11, 30, 59, 500);
         assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        OffsetDateTime t = TEST_DATE_TIME.plus(provider);
+        assertEquals(t, OffsetDateTime.dateTime(2009, 9, 2, 15, 36, 5, 507, OFFSET_PONE));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        OffsetDateTime t = TEST_DATE_TIME.plus(Period.ZERO);
+        assertSame(t, TEST_DATE_TIME);
     }
 
     //-----------------------------------------------------------------------

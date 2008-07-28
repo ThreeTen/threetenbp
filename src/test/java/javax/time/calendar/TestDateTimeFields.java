@@ -1241,7 +1241,7 @@ public class TestDateTimeFields {
         try {
             base.toLocalDate();
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), MOY_RULE);
+            assertEquals(ex.getFieldRule(), DOM_RULE);
             throw ex;
         }
     }

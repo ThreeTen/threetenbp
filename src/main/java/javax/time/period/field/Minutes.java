@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,10 @@
  */
 package javax.time.period.field;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map;
+import static javax.time.period.PeriodUnits.*;
 
-import javax.time.period.Period;
+import java.io.Serializable;
+
 import javax.time.period.PeriodUnit;
 
 /**
@@ -55,10 +54,6 @@ import javax.time.period.PeriodUnit;
  */
 public final class Minutes extends PeriodField implements Comparable<Minutes>, Serializable {
 
-    /**
-     * The unit that defines how the minutes field operates.
-     */
-    public static final PeriodUnit UNIT = new Unit();
     /**
      * A constant for zero minutes.
      */
@@ -109,28 +104,6 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether a given unit is supported -
-     * <code>Minutes</code> only supports the Minutes unit.
-     *
-     * @param unit  the unit to check for, null returns false
-     * @return true only if the Minutes unit, otherwise false
-     */
-    public boolean isSupported(PeriodUnit unit)  {
-        return (unit == UNIT);
-    }
-
-    /**
-     * Gets the map of period unit to amount which defines the period.
-     * This instance returns a map of size one where the key is the Minutes unit.
-     *
-     * @return the map of period amounts, never null, never contains null
-     */
-    public Map<PeriodUnit, Integer> getPeriodViewMap() {
-        return Collections.singletonMap(UNIT, minutes);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the number of minutes held in this period.
      *
      * @return the number of minutes
@@ -159,7 +132,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
      */
     @Override
     public PeriodUnit getUnit() {
-        return UNIT;
+        return MINUTES;
     }
 
     //-----------------------------------------------------------------------
@@ -310,18 +283,6 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
     @Override
     public String toString() {
         return "PT" + minutes + "M";
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of the unit for minutes.
-     */
-    private static class Unit extends PeriodUnit {
-
-        /** Constructor. */
-        protected Unit() {
-            super("Minutes", Period.seconds(60).toPeriod());
-        }
     }
 
 }

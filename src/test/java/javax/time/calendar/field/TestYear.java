@@ -51,6 +51,9 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
 import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.period.MockPeriodProviderReturnsNull;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -272,6 +275,46 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        assertEquals(Year.isoYear(2007).plus(provider), Year.isoYear(2008));
+    }
+
+    public void test_plus_PeriodProvider_otherFieldsIgnored() {
+        PeriodProvider provider = Period.period(1, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, 6, 7);
+        assertEquals(Year.isoYear(2007).plus(provider), Year.isoYear(2008));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        Year base = Year.isoYear(2007);
+        assertSame(base.plus(Period.ZERO), base);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_null() {
+        Year.isoYear(2007).plus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_badProvider() {
+        Year.isoYear(2007).plus(new MockPeriodProviderReturnsNull());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidTooLarge() {
+        PeriodProvider provider = Period.years(1);
+        Year.isoYear(Year.MAX_YEAR).plus(provider);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_plus_PeriodProvider_invalidTooSmall() {
+        PeriodProvider provider = Period.years(-1);
+        Year.isoYear(Year.MIN_YEAR).plus(provider);
+    }
+
+    //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears() {
@@ -285,6 +328,11 @@ public class TestYear {
         
         assertEquals(Year.isoYear(Year.MIN_YEAR + 1).plusYears(-1), Year.isoYear(Year.MIN_YEAR));
         assertEquals(Year.isoYear(Year.MIN_YEAR).plusYears(0), Year.isoYear(Year.MIN_YEAR));
+    }
+
+    public void test_plusYear_zero() {
+        Year base = Year.isoYear(2007);
+        assertSame(base.plusYears(0), base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
@@ -308,6 +356,46 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        assertEquals(Year.isoYear(2007).minus(provider), Year.isoYear(2006));
+    }
+
+    public void test_minus_PeriodProvider_otherFieldsIgnored() {
+        PeriodProvider provider = Period.period(1, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, 6, 7);
+        assertEquals(Year.isoYear(2007).minus(provider), Year.isoYear(2006));
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        Year base = Year.isoYear(2007);
+        assertSame(base.minus(Period.ZERO), base);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_null() {
+        Year.isoYear(2007).minus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_badProvider() {
+        Year.isoYear(2007).minus(new MockPeriodProviderReturnsNull());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_invalidTooLarge() {
+        PeriodProvider provider = Period.years(-1);
+        Year.isoYear(Year.MAX_YEAR).minus(provider);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_minus_PeriodProvider_invalidTooSmall() {
+        PeriodProvider provider = Period.years(1);
+        Year.isoYear(Year.MIN_YEAR).minus(provider);
+    }
+
+    //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
     public void test_minusYears() {
@@ -321,6 +409,11 @@ public class TestYear {
         
         assertEquals(Year.isoYear(Year.MIN_YEAR + 1).minusYears(1), Year.isoYear(Year.MIN_YEAR));
         assertEquals(Year.isoYear(Year.MIN_YEAR).minusYears(0), Year.isoYear(Year.MIN_YEAR));
+    }
+
+    public void test_minusYear_zero() {
+        Year base = Year.isoYear(2007);
+        assertSame(base.minusYears(0), base);
     }
 
     @Test(expectedExceptions=CalendricalException.class)

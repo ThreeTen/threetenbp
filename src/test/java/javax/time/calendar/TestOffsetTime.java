@@ -43,6 +43,8 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -410,6 +412,20 @@ public class TestOffsetTime {
         OffsetTime base = OffsetTime.time(11, 30, 59, 1, OFFSET_PONE);
         OffsetTime test = base.withNanoOfSecond(1);
         assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        PeriodProvider provider = Period.hoursMinutesSeconds(1, 2, 3);
+        OffsetTime t = TEST_TIME.plus(provider);
+        assertEquals(t, OffsetTime.time(12, 33, 2, 500, OFFSET_PONE));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        OffsetTime t = TEST_TIME.plus(Period.ZERO);
+        assertSame(t, TEST_TIME);
     }
 
     //-----------------------------------------------------------------------
