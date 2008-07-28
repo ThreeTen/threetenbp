@@ -286,6 +286,9 @@ public final class Year
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year plusYears(int years) {
+        if (years == 0) {
+            return this;
+        }
         int newYear = 0;
         try {
             newYear = MathUtils.safeAdd(year, years);
@@ -325,6 +328,9 @@ public final class Year
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year minusYears(int years) {
+        if (years == 0) {
+            return this;
+        }
         int newYear = 0;
         try {
             newYear = MathUtils.safeSubtract(year, years);
@@ -419,21 +425,21 @@ public final class Year
 //        return null;
 //    }
 
-    /**
-     * Gets the year of era, from 1 to MAX_YEAR, which is used in combination
-     * with {@link #getEstimatedEra()}.
-     * <p>
-     * The year 2, estimated as 2AD/CE is represented by 2.<br />
-     * The year 1, estimated as 1AD/CE is represented by 1.<br />
-     * The year 0, estimated as 1BC/BCE is represented by 1.<br />
-     * The year -1, estimated as 2BC/BCE is represented by 2.<br />
-     *
-     * @return the year of era, from 1 to MAX_YEAR
-     */
-    public int getYearOfEra() {
-        // TODO: ISO Year doesn't have an era
-        return (year > 0 ? year : -(year - 1));
-    }
+//    /**
+//     * Gets the year of era, from 1 to MAX_YEAR, which is used in combination
+//     * with {@link #getEstimatedEra()}.
+//     * <p>
+//     * The year 2, estimated as 2AD/CE is represented by 2.<br />
+//     * The year 1, estimated as 1AD/CE is represented by 1.<br />
+//     * The year 0, estimated as 1BC/BCE is represented by 1.<br />
+//     * The year -1, estimated as 2BC/BCE is represented by 2.<br />
+//     *
+//     * @return the year of era, from 1 to MAX_YEAR
+//     */
+//    public int getYearOfEra() {
+//        // TODO: ISO Year doesn't have an era
+//        return (year > 0 ? year : -(year - 1));
+//    }
 
 //    //-----------------------------------------------------------------------
 //    /**
@@ -547,8 +553,7 @@ public final class Year
      */
     @Override
     public String toString() {
-        // TODO: prefix to 4 digits
-        return Integer.toString(year);
+        return "Year=" + Integer.toString(year);
     }
 
 }
