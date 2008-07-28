@@ -56,6 +56,7 @@ import javax.time.calendar.field.TestDayOfYear;
 import javax.time.calendar.field.TestHourOfDay;
 import javax.time.calendar.field.TestMinuteOfHour;
 import javax.time.calendar.field.TestMonthOfYear;
+import javax.time.calendar.field.TestQuarterOfYear;
 import javax.time.calendar.field.TestSecondOfMinute;
 import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCharLiteralParser;
@@ -123,6 +124,7 @@ public class AllTest {
             TestHourOfDay.class,
             TestMinuteOfHour.class,
             TestMonthOfYear.class,
+            TestQuarterOfYear.class,
             TestSecondOfMinute.class,
             TestYear.class,
             // calendar rules

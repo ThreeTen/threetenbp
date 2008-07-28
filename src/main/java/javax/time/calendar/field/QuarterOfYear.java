@@ -31,14 +31,14 @@
  */
 package javax.time.calendar.field;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.DateProvider;
 
 /**
  * A representation of a quarter of year in the ISO-8601 calendar system.
@@ -195,6 +195,17 @@ public enum QuarterOfYear implements CalendricalProvider, DateMatcher {
      */
     public boolean matchesDate(LocalDate date) {
         return date.getMonthOfYear().getQuarterOfYear() == this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * A string describing the quarter of year object.
+     *
+     * @return a string describing this object
+     */
+    @Override
+    public String toString() {
+        return "QuarterOfYear=" + name();
     }
 
 }
