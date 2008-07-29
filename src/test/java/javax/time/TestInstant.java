@@ -39,6 +39,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.calendar.CalendarConversionException;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -1285,6 +1287,25 @@ public class TestInstant {
     public void minusNanos_long_overflowTooSmall() {
         Instant i = Instant.instant(Long.MIN_VALUE, 0);
         i.minusNanos(1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toEpochMillis() {
+        assertEquals(Instant.instant(1L, 1000000).toEpochMillis(), 1001L);
+        assertEquals(Instant.instant(1L, 2000000).toEpochMillis(), 1002L);
+        assertEquals(Instant.instant(1L, 567).toEpochMillis(), 1000L);
+        assertEquals(Instant.instant(Long.MAX_VALUE / 1000).toEpochMillis(), (Long.MAX_VALUE / 1000) * 1000);
+        assertEquals(Instant.instant(Long.MIN_VALUE / 1000).toEpochMillis(), (Long.MIN_VALUE / 1000) * 1000);
+    }
+
+    @Test(expectedExceptions=CalendarConversionException.class)
+    public void test_toEpochMillis_tooBig() {
+        Instant.instant(Long.MAX_VALUE / 1000 + 1).toEpochMillis();
+    }
+
+    @Test(expectedExceptions=CalendarConversionException.class)
+    public void test_toEpochMillis_tooSmall() {
+        Instant.instant(Long.MIN_VALUE / 1000 - 1).toEpochMillis();
     }
 
     //-----------------------------------------------------------------------
