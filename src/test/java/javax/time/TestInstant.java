@@ -68,6 +68,26 @@ public class TestInstant {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_instant_provider() {
+        InstantProvider provider = Instant.instant(1, 2);
+        Instant test = Instant.instant(provider);
+        assertEquals(test.getEpochSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 2);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_instant_provider_null() {
+        InstantProvider provider = null;
+        Instant.instant(provider);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_instant_badProvider() {
+        InstantProvider provider = new MockInstantProviderReturnsNull();
+        Instant.instant(provider);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_instant_long() {
         for (long i = -2; i <= 2; i++) {
             Instant t = Instant.instant(i);

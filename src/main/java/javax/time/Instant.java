@@ -33,6 +33,7 @@ package javax.time;
 
 import java.io.Serializable;
 
+import javax.time.calendar.CalendarConversionException;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
 
@@ -88,6 +89,26 @@ public final class Instant
     private final int nanoOfSecond;
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>Instant</code> from a provider of instants.
+     * <p>
+     * In addition to calling {@link InstantProvider#toInstant()} this method
+     * also checks the validity of the result of the provider.
+     *
+     * @param instantProvider  a provider of instant information, not null
+     * @return the created instant instance, never null
+     */
+    public static Instant instant(InstantProvider instantProvider) {
+        if (instantProvider == null) {
+            throw new NullPointerException("Instant provider must not be null");
+        }
+        Instant provided = instantProvider.toInstant();
+        if (provided == null) {
+            throw new NullPointerException("The implementation of InstantProvider must not return null");
+        }
+        return provided;
+    }
+
     /**
      * Factory method to create an instance of Instant using seconds from the
      * epoch of 1970-01-01T00:00:00Z with a zero nanosecond fraction.
@@ -460,6 +481,31 @@ public final class Instant
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Converts this instant to the number of milliseconds from the epoch
+     * of 1970-01-01T00:00:00Z.
+     * <p>
+     * <code>Instant</code> uses a precision of nanoseconds.
+     * The conversion will drop any excess precision information as though the
+     * amount in nanoseconds was subject to integer division by one million.
+     * <p>
+     * <code>Instant</code> can store points on the time-line further in the
+     * future and further in the past than can be represented by a millisecond
+     * value. In this scenario, this constructor will throw an exception.
+     *
+     * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
+     * @throws CalendarConversionException if the instant is too large or too
+     *  small to represent as epoch milliseconds
+     */
+    public long toEpochMillis() {
+        try {
+            long millis = MathUtils.safeMultiply(epochSeconds, 1000);
+            return millis + nanoOfSecond / 1000000;
+        } catch (ArithmeticException ex) {
+            throw new CalendarConversionException("The Instant cannot be represented as epoch milliseconds");
+        }
+    }
+
     /**
      * Converts this instant to an <code>Instant</code>, trivially
      * returning <code>this</code>.
