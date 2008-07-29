@@ -65,7 +65,6 @@ import org.testng.annotations.Test;
  */
 @Test(timeOut=5000)
 public class TestLocalTime {
-    // TODO: Test plus(PeriodProvider) / minus...
     private LocalTime TEST_12_30_40_987654321;
 
     @BeforeMethod
@@ -86,6 +85,7 @@ public class TestLocalTime {
         assertTrue(TEST_12_30_40_987654321 instanceof CalendricalProvider);
         assertTrue(TEST_12_30_40_987654321 instanceof Serializable);
         assertTrue(TEST_12_30_40_987654321 instanceof Comparable);
+        assertTrue(TEST_12_30_40_987654321 instanceof TimeAdjuster);
         assertTrue(TEST_12_30_40_987654321 instanceof TimeMatcher);
         assertTrue(TEST_12_30_40_987654321 instanceof TimeProvider);
     }

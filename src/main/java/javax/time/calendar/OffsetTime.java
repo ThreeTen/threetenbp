@@ -56,7 +56,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements TimeProvider, CalendricalProvider, Comparable<OffsetTime>, Serializable {
+        implements TimeProvider, CalendricalProvider, Comparable<OffsetTime>, Serializable, TimeMatcher, TimeAdjuster {
 
     /**
      * A serialization identifier for this class.
@@ -528,6 +528,28 @@ public final class OffsetTime
      */
     public boolean matches(TimeMatcher matcher) {
         return time.matches(matcher);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this time part of this object is equal to the input time
+     *
+     * @param time the time to match, not null
+     * @return true if the two times are equal, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this.time.matchesTime(time);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the value of the time part of this object.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        return matches(time) ? time : this.time;
     }
 
     //-----------------------------------------------------------------------

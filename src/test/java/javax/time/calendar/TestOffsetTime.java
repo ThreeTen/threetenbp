@@ -31,6 +31,11 @@
  */
 package javax.time.calendar;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import static org.testng.Assert.*;
 
 import java.io.Serializable;
@@ -53,6 +58,7 @@ import org.testng.annotations.Test;
 /**
  * Test OffsetTime.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -72,6 +78,20 @@ public class TestOffsetTime {
         assertTrue(TEST_TIME instanceof CalendricalProvider);
         assertTrue(TEST_TIME instanceof Serializable);
         assertTrue(TEST_TIME instanceof Comparable);
+        assertTrue(TEST_TIME instanceof TimeMatcher);
+        assertTrue(TEST_TIME instanceof TimeAdjuster);
+        assertTrue(TEST_TIME instanceof TimeProvider);
+    }
+
+    public void test_serialization() throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(TEST_TIME);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertEquals(ois.readObject(), TEST_TIME);
     }
 
     public void test_immutable() {
