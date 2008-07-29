@@ -31,6 +31,7 @@
  */
 package javax.time.calendar;
 
+import javax.time.calendar.LocalTime.Overflow;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -1704,5 +1705,102 @@ public class TestLocalTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustTime_null() {
         TEST_12_30_40_987654321.adjustTime(null);
+    }
+    
+    //-----------------------------------------------------------------------
+    // Overflow.equals()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_equals_true(int h, int m, int s, int n) {
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(999999999);
+        Overflow b = LocalTime.time(h, m, s, n).plusNanosWithOverflow(999999999);
+        assertEquals(a.equals(b), true);
+        assertEquals(a.getResultTime().plusNanosWithOverflow(0).equals(a), true);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_equals_false_days_differs(int h, int m, int s, int n) {
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.time(h, m, s, n).plusNanosWithOverflow(1);
+        assertEquals(a.equals(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_equals_false_hour_differs(int h, int m, int s, int n) {
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.time(h + 1, m, s, n).plusNanosWithOverflow(0);
+        assertEquals(a.equals(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_equals_false_minute_differs(int h, int m, int s, int n) {
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.time(h, m + 1, s, n).plusNanosWithOverflow(0);
+        assertEquals(a.equals(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_equals_false_second_differs(int h, int m, int s, int n) {
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.time(h, m, s + 1, n).plusNanosWithOverflow(0);
+        assertEquals(a.equals(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_equals_false_nano_differs(int h, int m, int s, int n) {
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.time(h, m, s, n + 1).plusNanosWithOverflow(0);
+        assertEquals(a.equals(b), false);
+    }
+
+    public void test_Overflow_equals_itself_true() {
+        Overflow a = TEST_12_30_40_987654321.plusNanosWithOverflow(0);
+        assertEquals(a.equals(a), true);
+    }
+
+    public void test_Overflow_equals_string_false() {
+        assertEquals(TEST_12_30_40_987654321.plusNanosWithOverflow(0).equals("2007-07-15"), false);
+    }
+
+    public void test_Overflow_equals_null_false() {
+        assertEquals(TEST_12_30_40_987654321.plusNanosWithOverflow(0).equals(null), false);
+    }
+    
+    //-----------------------------------------------------------------------
+    // hashCode()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_hashCode_same(int h, int m, int s, int n) {
+        long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_hashCode_hour_differs(int h, int m, int s, int n) {
+        long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.time(h + 1, m, s, n).plusNanosWithOverflow(days);
+        assertEquals(a.hashCode() == b.hashCode(), false);
+    }
+
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_hashCode_minute_differs(int h, int m, int s, int n) {
+        long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.time(h, m + 1, s, n).plusNanosWithOverflow(days);
+        assertEquals(a.hashCode() == b.hashCode(), false);
+    }
+
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_hashCode_second_differs(int h, int m, int s, int n) {
+        long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.time(h, m, s + 1, n).plusNanosWithOverflow(days);
+        assertEquals(a.hashCode() == b.hashCode(), false);
+    }
+
+    @Test(dataProvider="sampleTimes")
+    public void test_Overflow_hashCode_nano_differs(int h, int m, int s, int n) {
+        long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
+        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.time(h, m, s, n + 1).plusNanosWithOverflow(days);
+        assertEquals(a.hashCode() == b.hashCode(), false);
     }
 }
