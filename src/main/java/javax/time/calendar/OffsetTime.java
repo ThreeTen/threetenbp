@@ -515,6 +515,76 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this OffsetTime with the specified period subtracted.
+     * <p>
+     * This subtracts the amount in hours, minutes and seconds from the specified period to this time.
+     * Any date amounts, such as years, months or days are ignored.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subtract, not null
+     * @return a new updated OffsetTime, never null
+     */
+    public OffsetTime minus(PeriodProvider periodProvider) {
+        LocalTime newTime = time.minus(periodProvider);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this OffsetTime with the specified period in hours subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, may be negative
+     * @return a new updated OffsetTime, never null
+     */
+    public OffsetTime minusHours(int hours) {
+        LocalTime newTime = time.minusHours(hours);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetTime with the specified period in minutes subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param minutes  the minutes to subtract, may be negative
+     * @return a new updated OffsetTime, never null
+     */
+    public OffsetTime minusMinutes(int minutes) {
+        LocalTime newTime = time.minusMinutes(minutes);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetTime with the specified period in seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract, may be negative
+     * @return a new updated OffsetTime, never null
+     */
+    public OffsetTime minusSeconds(int seconds) {
+        LocalTime newTime = time.minusSeconds(seconds);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetTime with the specified period in nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanos to subtract, may be negative
+     * @return a new updated OffsetTime, never null
+     */
+    public OffsetTime minusNanos(int nanos) {
+        LocalTime newTime = time.minusNanos(nanos);
+        return newTime == this.time ? this : new OffsetTime(newTime, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks whether the time matches the specified matcher.
      * <p>
      * Matchers can be used to query the time.

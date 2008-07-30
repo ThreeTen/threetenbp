@@ -48,6 +48,7 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -116,6 +117,21 @@ public class TestOffsetTime {
         assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHM_nullHour() {
+        OffsetTime.time(null, MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHM_nullMinute() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), null, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHM_nullOffset() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), null);
+    }
+
     //-----------------------------------------------------------------------
     public void factory_objectsHMS() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
@@ -123,6 +139,26 @@ public class TestOffsetTime {
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
         assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
         assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMS_nullHour() {
+        OffsetTime.time(null, MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMS_nullMinute() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), null, SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMS_nullSecond() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), null, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMS_nullOffset() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), null);
     }
 
     //-----------------------------------------------------------------------
@@ -133,6 +169,35 @@ public class TestOffsetTime {
         assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
         assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
         assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMSN_nullHour() {
+        OffsetTime.time(null, MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), 
+                OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMSN_nullMinute() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), null, SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), 
+                OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMSN_nullSecond() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), null, NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMSN_nullNano() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), null, 
+                OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_objectsHMSN_nullOffset() {
+        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), 
+                NanoOfSecond.nanoOfSecond(500), null);
     }
 
     //-----------------------------------------------------------------------
@@ -377,7 +442,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     // withHourOfDay()
     //-----------------------------------------------------------------------
-    public void test_withHourOfDayr_normal() {
+    public void test_withHourOfDay_normal() {
         OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
         OffsetTime test = base.withHourOfDay(15);
         assertEquals(test, OffsetTime.time(15, 30, 59, OFFSET_PONE));
@@ -448,6 +513,16 @@ public class TestOffsetTime {
         assertSame(t, TEST_TIME);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_null() {
+        TEST_TIME.plus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_plus_PeriodProvider_badProvider() {
+        TEST_TIME.plus(new MockPeriodProviderReturnsNull());
+    }
+
     //-----------------------------------------------------------------------
     // plusHours()
     //-----------------------------------------------------------------------
@@ -509,12 +584,102 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.hoursMinutesSeconds(1, 2, 3);
+        OffsetTime t = TEST_TIME.minus(provider);
+        assertEquals(t, OffsetTime.time(10, 28, 56, 500, OFFSET_PONE));
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        OffsetTime t = TEST_TIME.minus(Period.ZERO);
+        assertSame(t, TEST_TIME);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_null() {
+        TEST_TIME.minus((PeriodProvider) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_minus_PeriodProvider_badProvider() {
+        TEST_TIME.minus(new MockPeriodProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // minusHours()
+    //-----------------------------------------------------------------------
+    public void test_minusHours() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusHours(-13);
+        assertEquals(test, OffsetTime.time(0, 30, 59, OFFSET_PONE));
+    }
+
+    public void test_minusHours_zero() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusHours(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusMinutes()
+    //-----------------------------------------------------------------------
+    public void test_minusMinutes() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusMinutes(50);
+        assertEquals(test, OffsetTime.time(10, 40, 59, OFFSET_PONE));
+    }
+
+    public void test_minusMinutes_zero() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusMinutes(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusSeconds()
+    //-----------------------------------------------------------------------
+    public void test_minusSeconds() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusSeconds(60);
+        assertEquals(test, OffsetTime.time(11, 29, 59, OFFSET_PONE));
+    }
+
+    public void test_minusSeconds_zero() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusSeconds(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusNanos()
+    //-----------------------------------------------------------------------
+    public void test_minusNanos() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, 0, OFFSET_PONE);
+        OffsetTime test = base.minusNanos(1);
+        assertEquals(test, OffsetTime.time(11, 30, 58, 999999999, OFFSET_PONE));
+    }
+
+    public void test_minusNanos_zero() {
+        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
+        OffsetTime test = base.minusNanos(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
         OffsetTime test = OffsetTime.time(11, 30, 59, OFFSET_PONE);
-        assertEquals(test.matches(HourOfDay.hourOfDay(11)), true);
-        assertEquals(test.matches(HourOfDay.hourOfDay(10)), false);
+        assertTrue(test.matches(HourOfDay.hourOfDay(11)));
+        assertFalse(test.matches(HourOfDay.hourOfDay(10)));
+        assertTrue(test.matches(MinuteOfHour.minuteOfHour(30)));
+        assertFalse(test.matches(MinuteOfHour.minuteOfHour(0)));
+        assertTrue(test.matches(SecondOfMinute.secondOfMinute(59)));
+        assertFalse(test.matches(SecondOfMinute.secondOfMinute(50)));
+        assertTrue(test.matches(NanoOfSecond.nanoOfSecond(0)));
+        assertFalse(test.matches(NanoOfSecond.nanoOfSecond(1)));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -566,6 +731,13 @@ public class TestOffsetTime {
     public void test_compareTo_null() {
         OffsetTime a = OffsetTime.time(11, 30, 59, OFFSET_PONE);
         a.compareTo(null);
+    }
+
+    @Test(expectedExceptions=ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void compareToNonOffsetTime() {
+       Comparable c = TEST_TIME;
+       c.compareTo(new Object());
     }
 
     //-----------------------------------------------------------------------
@@ -647,6 +819,10 @@ public class TestOffsetTime {
         assertEquals(TEST_TIME.equals("2007-07-15"), false);
     }
 
+    public void test_equals_null_false() {
+        assertEquals(TEST_TIME.equals(null), false);
+    }
+
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
@@ -671,4 +847,65 @@ public class TestOffsetTime {
         assertEquals(str, expected);
     }
 
+    //-----------------------------------------------------------------------
+    // matchesTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_true(int h, int m, int s, int n, ZoneOffset offset) {
+        OffsetTime a = OffsetTime.time(h, m, s, n, offset);
+        LocalTime b = LocalTime.time(h, m, s, n);
+        assertEquals(a.matchesTime(b), true);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_hour_differs(int h, int m, int s, int n, ZoneOffset offset) {
+        OffsetTime a = OffsetTime.time(h, m, s, n, offset);
+        LocalTime b = LocalTime.time(h, m, s, n).plusHours(1);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_minute_differs(int h, int m, int s, int n, ZoneOffset offset) {
+        OffsetTime a = OffsetTime.time(h, m, s, n, offset);
+        LocalTime b = LocalTime.time(h, m, s, n).plusMinutes(1);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_second_differs(int h, int m, int s, int n, ZoneOffset offset) {
+        OffsetTime a = OffsetTime.time(h, m, s, n, offset);
+        LocalTime b = LocalTime.time(h, m, s, n).plusSeconds(1);
+        assertEquals(a.matchesTime(b), false);
+    }
+    @Test(dataProvider="sampleTimes")
+    public void test_matchesTime_false_nano_differs(int h, int m, int s, int n, ZoneOffset offset) {
+        OffsetTime a = OffsetTime.time(h, m, s, n, offset);
+        LocalTime b = LocalTime.time(h, m, s, n).plusNanos(1);
+        assertEquals(a.matchesTime(b), false);
+    }
+
+    public void test_matchesTime_itself_true() {
+        assertEquals(TEST_TIME.matchesTime(TEST_TIME.getTime()), true);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesTime_null() {
+        TEST_TIME.matchesTime(null);
+    }
+    
+    //-----------------------------------------------------------------------
+    // adjustTime()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleTimes")
+    public void test_adjustTime(int h, int m, int s, int n, ZoneOffset ignored) {
+        LocalTime a = LocalTime.time(h, m, s, n);
+        assertSame(a.adjustTime(TEST_TIME.getTime()), a);
+        assertSame(TEST_TIME.adjustTime(a), TEST_TIME.getTime());
+    }
+
+    public void test_adjustTime_same() {
+        assertSame(OffsetTime.time(11, 30, 59, 500, OFFSET_PTWO).adjustTime(TEST_TIME.getTime()), TEST_TIME.getTime());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_adjustTime_null() {
+        TEST_TIME.adjustTime(null);
+    }
 }
