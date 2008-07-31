@@ -75,7 +75,7 @@ public abstract class TimeZone implements Serializable {
     public static TimeZone timeZone(String timeZoneID) {
         TimeZone zone = CACHE.get(timeZoneID);
         if (zone == null) {
-            if (timeZoneID.startsWith("UTC")) {
+            if (timeZoneID.startsWith("UTC") || timeZoneID.startsWith("GMT")) {  // not sure about GMT
                 if (timeZoneID.length() == 3) {
                     return UTC;
                 } else {
@@ -83,6 +83,7 @@ public abstract class TimeZone implements Serializable {
                 }
             } else {
                 // TODO
+                zone = UTC;
             }
         }
         return zone;
