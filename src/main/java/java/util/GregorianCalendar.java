@@ -75,6 +75,20 @@ package java.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import javax.time.Instant;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeProvider;
+import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.OffsetDate;
+import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.OffsetTime;
+import javax.time.calendar.TimeProvider;
+import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.ZonedDateTime;
+
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 import sun.util.calendar.CalendarSystem;
@@ -88,6 +102,28 @@ import sun.util.calendar.ZoneInfo;
  * <code>GregorianCalendar</code> is a concrete subclass of
  * <code>Calendar</code> and provides the standard calendar system
  * used by most of the world.
+ *
+ * <p>This class is now effectively deprecated by the Java Time Framework.
+ * A group of classes replace the use cases that this single class is used for.
+ * The most direct replacement is {@link ZonedDateTime} which provides for
+ * both a date, time and time zone.  Additional classes support just the offset -
+ * {@link OffsetDateTime}, {@link OffsetDate} and {@link OffsetTime} - and
+ * just the date/time with no offset/zone information - {@link LocalDateTime},
+ * {@link LocalDate} and {@link LocalTime}.
+ *
+ * <p>All the classes listed above implement the ISO calendar system, which is the
+ * same as the Gregorian calendar system for all modern dates.  The ISO calendar
+ * system does not model the historic change from the Julian calendar system.
+ * Thus, when converting to use the new classes, care must be taken with
+ * historic dates.
+ *
+ * <p>The Java Time Framework is the third date-time API in Java.
+ * The <code>Date</code> class was the first and the <code>Calendar</code> API
+ * was the second.  It is advised to use the newest date-time API wherever
+ * possible.  First preference is the Java Time Framework, followed by the
+ * <code>Calendar</code> API, followed by the <code>Date</code> API.
+ *
+ * <h4> GregorianCalendar </h4>
  *
  * <p> <code>GregorianCalendar</code> is a hybrid calendar that
  * supports both the Julian and Gregorian calendar systems with the
@@ -331,7 +367,9 @@ import sun.util.calendar.ZoneInfo;
  * @author David Goldsmith, Mark Davis, Chen-Lieh Huang, Alan Liu
  * @since JDK1.1
  */
-public class GregorianCalendar extends Calendar {
+public class GregorianCalendar
+        extends Calendar
+        implements DateTimeProvider, DateProvider, TimeProvider {
     /*
      * Implementation Notes
      *
@@ -2948,4 +2986,163 @@ public class GregorianCalendar extends Calendar {
         }
         setGregorianChange(gregorianCutover);
     }
+
+    /**
+     * Converts this object to a <code>LocalDateTime</code>.
+     *
+     * <p>The conversion creates a <code>LocalDateTime</code> that represents the
+     * same point on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>LocalDateTime</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date-time representing the same point on the time-line, never null.
+     * @see #setDateTime(DateTimeProvider)
+     * @since ?
+     */
+    public LocalDateTime toLocalDateTime() {
+        return toOffsetDateTime().toLocalDateTime();
+    }
+
+    /**
+     * Converts this object to a <code>LocalDate</code>.
+     *
+     * <p>The conversion creates a <code>LocalDate</code> that represents the
+     * same date on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>LocalDate</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public LocalDate toLocalDate() {
+        if (get(YEAR) > gregorianCutoverYear) {
+            return LocalDate.date(get(YEAR), get(MONTH) + 1, get(DATE));
+        }
+        return toOffsetDateTime().toLocalDate();
+    }
+
+    /**
+     * Converts this object to a <code>LocalTime</code>.
+     *
+     * <p>The conversion creates a <code>LocalTime</code> that represents the
+     * same time of day as this <code>GregorianCalendar</code>.
+     *
+     * <p>The result does not store offset or time zone information. The time that
+     * will be represented will be the same as querying the time fields hour, minute,
+     * second and millisecond on this cobject.
+     *
+     * @return the time representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public LocalTime toLocalTime() {
+        return LocalTime.time(get(HOUR_OF_DAY), get(MINUTE), get(SECOND), get(MILLISECOND));
+    }
+
+    /**
+     * Converts this object to a <code>OffsetDateTime</code>.
+     *
+     * <p>The conversion creates a <code>OffsetDateTime</code> that represents the
+     * same point on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>OffsetDateTime</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date-time representing the same point on the time-line, never null.
+     * @see #setDateTime(DateTimeProvider)
+     * @since ?
+     */
+    public OffsetDateTime toOffsetDateTime() {
+        Instant instant = Instant.millisInstant(getTimeInMillis());
+        ZoneOffset offset = ZoneOffset.forTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
+        return OffsetDateTime.dateTime(instant, offset);
+    }
+
+    /**
+     * Converts this object to a <code>OffsetDate</code>.
+     *
+     * <p>The conversion creates a <code>OffsetDate</code> that represents the
+     * same date on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>OffsetDate</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public OffsetDate toOffsetDate() {
+        return toOffsetDateTime().toOffsetDate();
+    }
+
+    /**
+     * Converts this object to a <code>OffsetTime</code>.
+     *
+     * <p>The conversion creates a <code>OffsetTime</code> that represents the
+     * same time of day as this <code>GregorianCalendar</code>.
+     *
+     * <p>The result does not store offset or time zone information. The time that
+     * will be represented will be the same as querying the time fields hour, minute,
+     * second and millisecond on this cobject.
+     *
+     * @return the time representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public OffsetTime toOffsetTime() {
+        return toOffsetDateTime().toOffsetTime();
+    }
+
+    /**
+     * Converts this object to a <code>ZonedDateTime</code>.
+     *
+     * <p>The conversion creates a <code>ZonedDateTime</code> that represents the
+     * same point on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>ZonedDateTime</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct date in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date-time representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public ZonedDateTime toZonedDateTime() {
+        // TODO: should probably use the offset here as well
+        Instant instant = Instant.millisInstant(getTimeInMillis());
+        javax.time.calendar.TimeZone zone = javax.time.calendar.TimeZone.timeZone(getZone().getID());
+        return ZonedDateTime.dateTime(instant, zone);
+    }
+
+    /**
+     * Converts this object to a <code>Calendrical</code>.
+     *
+     * <p>The conversion creates a <code>Calendrical</code> that represents the
+     * same point on the time-line as this <code>GregorianCalendar</code>.
+     *
+     * <p>Since this object supports a Julian-Gregorian cutover date and
+     * <code>Calendrical</code> does not, it is possible that the resulting year,
+     * month and day will have different values.  The result will represent the
+     * correct day in the ISO calendar system, which will also be the same value
+     * for Modified Julian Days.
+     *
+     * @return the date-time representing the same point on the time-line, never null.
+     * @since ?
+     */
+    public Calendrical toCalendrical() {
+        return toZonedDateTime().toCalendrical();
+    }
+
 }
