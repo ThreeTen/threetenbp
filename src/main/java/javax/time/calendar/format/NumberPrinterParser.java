@@ -120,7 +120,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 case ALWAYS:
                     appendable.append(symbols.getNegativeSignChar());
                     break;
-                case NEGATIVE_ERROR:
+                case NOT_NEGATIVE:
                     throw new CalendricalFormatFieldException(fieldRule, value);
             }
         }

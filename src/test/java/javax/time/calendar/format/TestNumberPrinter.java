@@ -202,9 +202,9 @@ public class TestNumberPrinter {
     }
 
     @Test(dataProvider="Pad") 
-    public void test_pad_NEGATIVE_ERROR(int minPad, int maxPad, int value, String result) throws Exception {
+    public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, int value, String result) throws Exception {
         Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), value);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NEGATIVE_ERROR);
+        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null || value < 0) {

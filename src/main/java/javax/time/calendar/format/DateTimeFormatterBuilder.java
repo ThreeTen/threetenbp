@@ -99,7 +99,7 @@ public class DateTimeFormatterBuilder {
      * <p>
      * The value will be zero-padded on the left. If the size of the value
      * means that it cannot be printed within the width then an exception is thrown.
-     * If the value of the field is negative then an exception is thrown.
+     * If the value of the field is negative then an exception is thrown during printing.
      *
      * @param fieldRule  the rule of the field to append, not null
      * @param width  the width of the printed field, from 1 to 10
@@ -112,7 +112,7 @@ public class DateTimeFormatterBuilder {
         if (width < 1 || width > 10) {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
         }
-        NumberPrinterParser pp = new NumberPrinterParser(fieldRule, width, width, SignStyle.NEGATIVE_ERROR);
+        NumberPrinterParser pp = new NumberPrinterParser(fieldRule, width, width, SignStyle.NOT_NEGATIVE);
         appendInternal(pp, pp);
         return this;
     }
@@ -487,27 +487,31 @@ public class DateTimeFormatterBuilder {
      */
     public enum SignStyle {
         /**
-         * Style to throw an exception if trying to output a negative value.
-         */
-        NEGATIVE_ERROR,
-        /**
-         * Style to never output a sign, only outputting the absolute value.
-         */
-        NEVER,
-        /**
-         * Style to output the a sign only if the value is negative.
+         * Style to output the sign only if the value is negative.
+         * In strict parsing, the positive sign will be rejected.
          */
         NORMAL,
         /**
+         * Style to always output the sign, where zero will output '+'.
+         * In strict parsing, the absence of a sign will be rejected.
+         */
+        ALWAYS,
+        /**
+         * Style to never output sign, only outputting the absolute value.
+         * In strict parsing, any sign will be rejected.
+         */
+        NEVER,
+        /**
+         * Style to block negative values, throwing an exception on printing.
+         * In strict parsing, any sign will be rejected.
+         */
+        NOT_NEGATIVE,
+        /**
          * Style to always output the sign if the value exceeds the pad width.
          * A negative value will always output the '-' sign.
+         * In strict parsing, the sign will be rejected unless the pad width is exceeded.
          */
-        EXCEEDS_PAD,
-        /**
-         * Style to always output the sign.
-         * Zero will output '+'.
-         */
-        ALWAYS;
+        EXCEEDS_PAD;
     }
 
     //-----------------------------------------------------------------------

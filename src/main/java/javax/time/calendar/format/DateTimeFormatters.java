@@ -180,7 +180,7 @@ public class DateTimeFormatters {
             .appendLiteral(' ')
             .appendText(ISOChronology.monthOfYearRule(), TextStyle.SHORT)
             .appendLiteral(' ')
-            .appendValue(ISOChronology.yearRule(), 4, 4, SignStyle.NEGATIVE_ERROR)
+            .appendValue(ISOChronology.yearRule(), 4, 4, SignStyle.NOT_NEGATIVE)
             .appendLiteral(' ')
             .appendValue(ISOChronology.hourOfDayRule(), 2)
             .appendLiteral(':')
