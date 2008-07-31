@@ -33,8 +33,9 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -69,7 +70,10 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = calendrical.getValue(fieldRule, false);
         String text = symbols.getFieldValueText(fieldRule, textStyle, value);
-        appendable.append(text == null ? Integer.toString(value) : text);
+        if (text == null) {
+            text = FormatUtil.convertToI18N(Integer.toString(value), symbols);
+        }
+        appendable.append(text);
     }
 
     /** {@inheritDoc} */
@@ -80,8 +84,7 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         int[] match = context.getSymbols().matchFieldText(fieldRule, textStyle, false, parseText.substring(position));
         if (match == null) {
-            // TODO parse numbers
-            return ~position;
+            return new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL).parse(context, parseText, position);
         } else if (match[0] == 0) {
             return ~position;
         } else {
