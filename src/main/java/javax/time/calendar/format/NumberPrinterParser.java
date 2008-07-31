@@ -33,9 +33,8 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
-import javax.time.MathUtils;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
@@ -159,6 +158,8 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 default:
                     return ~position;
             }
+        } else if (signStyle == SignStyle.ALWAYS) {
+            return ~position;
         }
         int minEndPos = position + minWidth;
         if (minEndPos > length) {
@@ -171,16 +172,32 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             char ch = parseText.charAt(pos++);
             int digit = context.getSymbols().convertToDigit(ch);
             if (digit < 0) {
+                pos--;
                 if (pos < minEndPos) {
                     return ~position;  // need at least min width digits
                 }
-                pos--;
                 break;
             }
             total = total * 10 + digit;
         }
-        total = (negative ? -total : total);
-        context.setFieldValue(fieldRule, MathUtils.safeToInt(total));
+        if (negative) {
+            total = -total;
+        } else if (signStyle == SignStyle.EXCEEDS_PAD) {
+            int parseLen = pos - position;
+            if (sign == '+') {
+                if (parseLen <= minWidth) {
+                    return ~position;  // '+' only parsed if minWidth exceeded
+                }
+            } else {
+                if (parseLen > minWidth) {
+                    return ~position;  // '+' must be parsed if minWidth exceeded
+                }
+            }
+        }
+        if (total > Integer.MAX_VALUE || total < Integer.MIN_VALUE) {
+            return ~position;  // overflow
+        }
+        context.setFieldValue(fieldRule, (int) total);
         return pos;
     }
 
