@@ -183,7 +183,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * <p>
      * In the phrase 'hour of day', the range is the day.
      *
-     * @return the rule for the range period, never null
+     * @return the rule for the range period, null if unbounded
      */
     public PeriodUnit getPeriodRange() {
         return periodRange;

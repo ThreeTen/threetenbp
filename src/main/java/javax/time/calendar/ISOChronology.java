@@ -795,7 +795,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private QuarterOfYearRule() {
-            super(ISOChronology.INSTANCE, "QuarterOfYear", WEEKS, YEARS, 1, 4);
+            super(ISOChronology.INSTANCE, "QuarterOfYear", QUARTERS, YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -833,7 +833,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfQuarterRule() {
-            super(ISOChronology.INSTANCE, "MonthOfQuarter", WEEKS, YEARS, 1, 4);
+            super(ISOChronology.INSTANCE, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -856,7 +856,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfMonthRule() {
-            super(ISOChronology.INSTANCE, "WeekOfMonth", WEEKS, YEARS, 1, 5);
+            super(ISOChronology.INSTANCE, "WeekOfMonth", WEEKS, MONTHS, 1, 5);
         }
         private Object readResolve() {
             return INSTANCE;
