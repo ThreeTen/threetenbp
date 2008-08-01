@@ -63,7 +63,8 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements InstantProvider, DateTimeProvider, CalendricalProvider, Comparable<OffsetDateTime>, Serializable {
+        implements InstantProvider, DateTimeProvider, CalendricalProvider, Comparable<OffsetDateTime>, Serializable, DateMatcher, 
+        TimeMatcher, DateAdjuster, TimeAdjuster {
 
     /**
      * A serialization identifier for this class.
@@ -782,12 +783,16 @@ public final class OffsetDateTime
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this OffsetDateTime with the year value altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @return a new updated OffsetDateTime, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @see #withYear(int,DateResolver)
      */
     public OffsetDateTime withYear(int year) {
         LocalDateTime newDT = dateTime.withYear(year);
@@ -795,16 +800,53 @@ public final class OffsetDateTime
     }
 
     /**
+     * Returns a copy of this OffsetDateTime with the year value altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     * @throws InvalidCalendarFieldException if the year is invalid for the day-month combination
+     */
+    public OffsetDateTime withYear(int year, DateResolver dateResolver) {
+        LocalDateTime newDT = dateTime.withYear(year, dateResolver);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
      * Returns a copy of this OffsetDateTime with the month of year value altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @return a new updated OffsetDateTime, never null
-     * @throws IllegalCalendarFieldValueException if the month value is invalid
+     * @throws IllegalCalendarFieldValueException if the month of year value is invalid
+     * @see #withMonthOfYear(int,DateResolver)
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear) {
         LocalDateTime newDT = dateTime.withMonthOfYear(monthOfYear);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the month of year value altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDateTime, never null
+     * @throws IllegalCalendarFieldValueException if the month of year value is invalid
+     */
+    public OffsetDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
+        LocalDateTime newDT = dateTime.withMonthOfYear(monthOfYear, dateResolver);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
@@ -997,6 +1039,28 @@ public final class OffsetDateTime
     }
 
     /**
+     * Returns a copy of this OffsetDateTime with the specified period in years added.
+     * <p>
+     * This method add the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Add the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to add, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime plusYears(int years, DateResolver dateResolver) {
+        LocalDateTime newDT = dateTime.plusYears(years, dateResolver);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
      * Returns a copy of this OffsetDateTime with the specified period in months added.
      * <p>
      * This method add the specified amount to the months field in three steps:
@@ -1017,6 +1081,28 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime plusMonths(int months) {
+        LocalDateTime newDT = dateTime.plusMonths(months);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in months added.
+     * <p>
+     * This method add the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Add the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to add, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime plusMonths(int months, DateResolver dateResolver) {
         LocalDateTime newDT = dateTime.plusMonths(months);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
@@ -1129,6 +1215,224 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this OffsetDateTime with the specified period subtracted.
+     * <p>
+     * This subtracts the specified period to this date-time.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subract, not null
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minus(PeriodProvider periodProvider) {
+        LocalDateTime newDT = dateTime.plus(periodProvider);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in years subtracted.
+     * <p>
+     * This method subtract the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Subtract the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2008-02-29 (leap year) minus one year would result in the
+     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
+     * result, the last valid day of the month, 2009-02-28, is selected instead.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusYears(int years) {
+        LocalDateTime newDT = dateTime.minusYears(years);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in years subtracted.
+     * <p>
+     * This method subtract the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Subtract the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusYears(int years, DateResolver dateResolver) {
+        LocalDateTime newDT = dateTime.minusYears(years, dateResolver);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in months subtracted.
+     * <p>
+     * This method subtract the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Subtract the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2007-03-31 minus one month would result in the invalid date
+     * 2007-04-31. Instead of returning an invalid result, the last valid day
+     * of the month, 2007-04-30, is selected instead.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusMonths(int months) {
+        LocalDateTime newDT = dateTime.minusMonths(months);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in months subtracted.
+     * <p>
+     * This method subtract the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Subtract the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the date using <code>dateResolver</code> if necessary</li>
+     * </ol>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusMonths(int months, DateResolver dateResolver) {
+        LocalDateTime newDT = dateTime.minusMonths(months);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in weeks subtracted.
+     * <p>
+     * This method subtract the specified amount in weeks to the days field incrementing
+     * the month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusWeeks(int weeks) {
+        LocalDateTime newDT = dateTime.minusWeeks(weeks);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in days subtracted.
+     * <p>
+     * This method subtract the specified amount to the days field incrementing the
+     * month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusDays(int days) {
+        LocalDateTime newDT = dateTime.minusDays(days);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in hours subtracted.
+     * <p>
+     * This method uses field based subtractition.
+     * This method changes the field by the specified number of hours.
+     * This may, at daylight savings cutover, result in a duration being subtracted
+     * that is more or less than the specified number of hours.
+     * <p>
+     * For example, consider a zone offset where the spring DST cutover means that
+     * the local times 01:00 to 01:59 do not exist. Using this method, subtracting
+     * a duration of 2 hours to 00:30 will result in 02:30, but it is important
+     * to note that only a duration of 1 hour was actually subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusHours(int hours) {
+        LocalDateTime newDT = dateTime.minusHours(hours);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in minutes subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param minutes  the minutes to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusMinutes(int minutes) {
+        LocalDateTime newDT = dateTime.minusMinutes(minutes);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusSeconds(int seconds) {
+        LocalDateTime newDT = dateTime.minusSeconds(seconds);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the specified period in nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanos to subtract, may be negative
+     * @return a new updated OffsetDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public OffsetDateTime minusNanos(int nanos) {
+        LocalDateTime newDT = dateTime.minusNanos(nanos);
+        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks whether the date matches the specified matcher.
      * <p>
      * Matchers can be used to query the date.
@@ -1158,6 +1462,48 @@ public final class OffsetDateTime
      */
     public boolean matches(TimeMatcher matcher) {
         return dateTime.matches(matcher);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a date to have the value of the date part of this object.
+     *
+     * @param date  the date to be adjusted, not null
+     * @return the adjusted date, never null
+     */
+    public LocalDate adjustDate(LocalDate date) {
+        return dateTime.adjustDate(date);
+    }
+
+    /**
+     * Adjusts a time to have the value of the time part of this object.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        return dateTime.adjustTime(time);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the date part of this object is equal to the input date
+     *
+     * @param otherDate  the date to match, not null
+     * @return true if the date part matches the other date, false otherwise
+     */
+    public boolean matchesDate(LocalDate otherDate) {
+        return dateTime.matchesDate(otherDate);
+    }
+
+    /**
+     * Checks if the time part of this object is equal to the input time
+     *
+     * @param otherTime the time to match, not null
+     * @return true if the time part matches the other time, false otherwise
+     */
+    public boolean matchesTime(LocalTime otherTime) {
+        return dateTime.matchesTime(otherTime);
     }
 
     //-----------------------------------------------------------------------

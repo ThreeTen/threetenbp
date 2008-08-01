@@ -72,8 +72,6 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestLocalDateTime {
-    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
-    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
     private LocalDateTime TEST_2007_07_15_12_30_40_987654321;
 
     @BeforeMethod
@@ -3200,7 +3198,7 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=ClassCastException.class)
     @SuppressWarnings("unchecked")
-    public void compareToNonLocalDate() {
+    public void compareToNonLocalDateTime() {
        Comparable c = TEST_2007_07_15_12_30_40_987654321;
        c.compareTo(new Object());
     }
