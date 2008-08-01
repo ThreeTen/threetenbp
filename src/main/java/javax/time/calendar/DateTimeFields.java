@@ -137,13 +137,14 @@ public final class DateTimeFields
         if (fieldValueMap.isEmpty()) {
             return EMPTY;
         }
-        if (fieldValueMap.containsKey(null)) {
+        // use a hash map to check for nulls, as tree map and others can throw NPE
+        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+        if (map.containsKey(null)) {
             throw new NullPointerException("Null keys are not permitted in field-value map");
         }
-        if (fieldValueMap.containsValue(null)) {
+        if (map.containsValue(null)) {
             throw new NullPointerException("Null values are not permitted in field-value map");
         }
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
         return new DateTimeFields(map);
     }
 
