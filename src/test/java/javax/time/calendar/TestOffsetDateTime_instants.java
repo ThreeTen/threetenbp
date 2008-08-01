@@ -119,7 +119,7 @@ public class TestOffsetDateTime_instants {
     @Test(expectedExceptions= {CalendarConversionException.class})
     public void test_factory_dateTime_InstantProvider_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
-        int year = Year.MAX_YEAR + 1;
+        long year = Year.MAX_YEAR + 1L;
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.instant(days * 24L * 60L * 60L);
         OffsetDateTime.dateTime(instant, ZoneOffset.UTC);
