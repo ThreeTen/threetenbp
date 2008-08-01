@@ -34,12 +34,13 @@ package javax.time.calendar.format;
 import java.io.IOException;
 import java.text.FieldPosition;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.List;
 import java.util.Locale;
 
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 
 /**
@@ -54,10 +55,6 @@ public class DateTimeFormatter {
      */
     private final DateTimeFormatSymbols symbols;
     /**
-     * Whether to use standard ASCII numerics (true) or use the locale (false).
-     */
-    private final boolean asciiNumerics;
-    /**
      * The list of printers that will be used, treated as immutable.
      */
     private final DateTimePrinter[] printers;
@@ -66,52 +63,17 @@ public class DateTimeFormatter {
      */
     private final DateTimeParser[] parsers;
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Creates a formatter using the default locale for text formatting.
-//     *
-//     * @return the created formatter, never null
-//     */
-//    public static DateTimeFormatter forDefaultLocale() {
-//        return forLocale(Locale.getDefault(), true);
-//    }
-//
-//    /**
-//     * Creates a formatter using the specified locale.
-//     *
-//     * @param locale  the locale to use for text formatting, not null
-//     * @return the created formatter, never null
-//     */
-//    public static DateTimeFormatter forLocale(Locale locale) {
-//        return forLocale(locale, true);
-//    }
-//
-//    /**
-//     * Creates a formatter using the specified locale controlling whether
-//     * numeric values should be formatted using ASCII or the locale driven
-//     * number system.
-//     *
-//     * @param locale  the locale to use for text formatting, not null
-//     * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
-//     * @return the created formatter, never null
-//     */
-//    public static DateTimeFormatter forLocale(Locale locale, boolean asciiNumerics) {
-//        return new DateTimeFormatter(locale, asciiNumerics, null);
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
      * @param locale  the locale to use for text formatting, not null
-     * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
      * @param printers  the printers to use, cloned by this method, not null
      * @param parsers  the parsers to use, cloned by this method, not null
      */
-    DateTimeFormatter(Locale locale, boolean asciiNumerics, List<DateTimePrinter> printers, List<DateTimeParser> parsers) {
+    DateTimeFormatter(Locale locale, List<DateTimePrinter> printers, List<DateTimeParser> parsers) {
         // validated by caller
         this.symbols = DateTimeFormatSymbols.getInstance(locale);
-        this.asciiNumerics = asciiNumerics;
         this.printers = printers.contains(null) ? null : printers.toArray(new DateTimePrinter[printers.size()]);
         this.parsers = parsers.contains(null) ? null : parsers.toArray(new DateTimeParser[parsers.size()]);
     }
@@ -126,11 +88,9 @@ public class DateTimeFormatter {
      */
     private DateTimeFormatter(
             DateTimeFormatSymbols symbols,
-            boolean asciiNumerics,
             DateTimePrinter[] printers,
             DateTimeParser[] parsers) {
         this.symbols = symbols;
-        this.asciiNumerics = asciiNumerics;
         this.printers = printers;
         this.parsers = parsers;
     }
@@ -159,7 +119,7 @@ public class DateTimeFormatter {
             return this;
         }
         DateTimeFormatSymbols newSymbols = DateTimeFormatSymbols.getInstance(locale);
-        return new DateTimeFormatter(newSymbols, asciiNumerics, printers, parsers);
+        return new DateTimeFormatter(newSymbols, printers, parsers);
     }
 
     //-----------------------------------------------------------------------
@@ -185,6 +145,7 @@ public class DateTimeFormatter {
      * @param calendrical  the calendrical to print, not null
      * @return the printed string, never null
      * @throws UnsupportedOperationException if this formatter cannot print
+     * @throws NullPointerException if the calendrical is null
      * @throws CalendricalFormatException if an error occurs during printing
      */
     public String print(CalendricalProvider calendrical) {
@@ -210,9 +171,12 @@ public class DateTimeFormatter {
      * @param calendricalProvider  the provider of the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
+     * @throws NullPointerException if the calendrical or appendable is null
      * @throws CalendricalFormatException if an error occurs during printing
      */
     public void print(CalendricalProvider calendricalProvider, Appendable appendable) {
+        FormatUtil.checkNotNull(calendricalProvider, "calendrical provider");
+        FormatUtil.checkNotNull(appendable, "appendable");
         if (printers == null) {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
@@ -224,7 +188,7 @@ public class DateTimeFormatter {
         } catch (UnsupportedCalendarFieldException ex) {
             throw new CalendricalFormatFieldException(ex);
         } catch (IOException ex) {
-            throw new CalendricalFormatException(ex);
+            throw new CalendricalFormatException(ex.getMessage(), ex);
         }
     }
 
@@ -255,10 +219,19 @@ public class DateTimeFormatter {
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws NullPointerException if the text is null
      * @throws IndexOutOfBoundsException if the position is invalid
+     * @throws CalendricalParseException if the parse fails
      */
     public Calendrical parse(String text) {
-        ParsePosition pp = new ParsePosition(0);
-        return parse(text, pp);
+        ParsePosition pos = new ParsePosition(0);
+        Calendrical result = parse(text, pos);
+        if (pos.getErrorIndex() >= 0) {
+            String str = text;
+            if (str.length() > 32) {
+                str = str.substring(0, 32) + "...";
+            }
+            throw new CalendricalParseException("The calendrical could not be parsed: " + str, text, pos.getErrorIndex());
+        }
+        return result;
     }
 
     /**
@@ -273,20 +246,16 @@ public class DateTimeFormatter {
      *  and the index of any error, not null
      * @return the parsed text, null only if the parse results in an error
      * @throws UnsupportedOperationException if this formatter cannot parse
-     * @throws NullPointerException if the text is null
+     * @throws NullPointerException if the text or position is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
     public Calendrical parse(String text, ParsePosition position) {
-        if (text == null) {
-            throw new UnsupportedOperationException("Text to parse must not be null");
-        }
-        if (position == null) {
-            throw new UnsupportedOperationException("Position to parse from must not be null");
-        }
+        FormatUtil.checkNotNull(text, "text to parse");
+        FormatUtil.checkNotNull(position, "position to parse from");
         if (parsers == null) {
             throw new UnsupportedOperationException("Formatter does not support printing");
         }
-        DateTimeParseContext context = new DateTimeParseContext();
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
         int pos = position.getIndex();
         for (DateTimeParser parser : parsers) {
             pos = parser.parse(context, text, pos);
@@ -295,6 +264,7 @@ public class DateTimeFormatter {
                 return null;
             }
         }
+        position.setIndex(pos);
         return context.toCalendrical();
     }
 
@@ -304,7 +274,8 @@ public class DateTimeFormatter {
      * The format instance will print any {@link CalendricalProvider} and parses to
      * a {@link Calendrical}.
      * <p>
-     * The format will throw exceptions in line with those thrown by the
+     * The format will throw <code>UnsupportedOperationException</code> and
+     * <code>IndexOutOfBoundsException</code> in line with those thrown by the
      * {@link #print(CalendricalProvider, Appendable) print} and
      * {@link #parse(String, ParsePosition) parse} methods.
      * <p>
@@ -312,7 +283,7 @@ public class DateTimeFormatter {
      *
      * @return this formatter as a classic format instance, never null
      */
-    public Format asFormat() {
+    public Format toFormat() {
         return new ClassicFormat();
     }
 
@@ -328,9 +299,15 @@ public class DateTimeFormatter {
         /** {@inheritDoc} */
         @Override
         public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+            FormatUtil.checkNotNull(obj, "object to be printed");
+            FormatUtil.checkNotNull(toAppendTo, "string buffer");
+            FormatUtil.checkNotNull(pos, "field position");
             Calendrical fdt = null;
             if (obj instanceof CalendricalProvider) {
                 fdt = ((CalendricalProvider) obj).toCalendrical();
+                if (fdt == null) {
+                    throw new NullPointerException("The CalendricalProvider implementation must not return null");
+                }
             } else {
                 throw new IllegalArgumentException("DateTimeFormatter can format Calendrical instances");
             }
@@ -338,6 +315,16 @@ public class DateTimeFormatter {
             pos.setEndIndex(0);
             print(fdt, toAppendTo);
             return toAppendTo;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Object parseObject(String source) throws ParseException {
+            try {
+                return parse(source);
+            } catch (CalendricalParseException ex) {
+                throw new ParseException(ex.getMessage(), ex.getErrorIndex());
+            }
         }
 
         /** {@inheritDoc} */

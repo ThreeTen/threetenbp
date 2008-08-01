@@ -59,8 +59,10 @@ import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.field.TestQuarterOfYear;
 import javax.time.calendar.field.TestSecondOfMinute;
 import javax.time.calendar.field.TestYear;
+import javax.time.calendar.format.TestCalendricalFormatException;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
+import javax.time.calendar.format.TestDateTimeFormatter;
 import javax.time.calendar.format.TestDateTimeFormatters;
 import javax.time.calendar.format.TestFractionPrinterParser;
 import javax.time.calendar.format.TestNumberParser;
@@ -133,6 +135,8 @@ public class AllTest {
             // calendar rules
             TestDayOfMonthRule.class,
             // format
+            TestCalendricalFormatException.class,
+            TestDateTimeFormatter.class,
             TestDateTimeFormatters.class,
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,

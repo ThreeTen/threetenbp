@@ -31,58 +31,52 @@
  */
 package javax.time.calendar.format;
 
-import java.io.IOException;
-
 /**
- * An exception thrown when an error occurs during formatting of calendricals.
+ * An exception thrown when an error occurs during parsing of calendricals.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalFormatException extends RuntimeException {
+public class CalendricalParseException extends RuntimeException {
+
+    /**
+     * The text that was being parsed.
+     */
+    private final String parsedString;
+    /**
+     * The error index in the text.
+     */
+    private final int errorIndex;
 
     /**
      * Constructs a new exception with the specified message.
      *
      * @param message  the message to use for this exception, may be null
+     * @param parsedString  the parsed text, should not be null
+     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
      */
-    public CalendricalFormatException(String message) {
+    public CalendricalParseException(String message, String parsedString, int errorIndex) {
         super(message);
-    }
-
-    /**
-     * Constructs a new exception with the specified message and cause.
-     *
-     * @param message  the message to use for this exception, may be null
-     * @param throwable  the throwable to store as the cause, may be null
-     */
-    public CalendricalFormatException(String message, Throwable throwable) {
-        super(message, throwable);
+        this.parsedString = parsedString;
+        this.errorIndex = errorIndex;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the cause of this exception was an IOException, and if so
-     * rethrows it
-     * <p>
-     * This method is useful if you call a printer with an open stream or
-     * writer and want to ensure that IOExceptions are not lost.
-     * <pre>
-     * try {
-     *   printer.print(writer, dateTime);
-     * } catch (CalendricalFormatException ex) {
-     *   ex.rethrowIOException();
-     *   // if code reaches here exception was caused by datetime issues
-     * }
-     * </pre>
-     * Note that calling this method will rethrow the original IOException,
-     * causing this CalendricalFormatException to be lost.
+     * Returns the string that was being parsed.
      *
-     * @throws IOException if the cause of this exception is an IOException
+     * @return the string that was being parsed, should not be null
      */
-    public void rethrowIOException() throws IOException {
-        if (getCause() instanceof IOException) {
-            throw (IOException) getCause();
-        }
+    public String getParsedString() {
+        return parsedString;
+    }
+
+    /**
+     * Returns the index where the error was found.
+     *
+     * @return the index in the parsed string that was invalid, should be a valid index
+     */
+    public int getErrorIndex() {
+        return errorIndex;
     }
 
 }

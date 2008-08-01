@@ -476,7 +476,7 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatter toFormatter(Locale locale) {
         FormatUtil.checkNotNull(locale, "locale");
-        return new DateTimeFormatter(locale, false, printers, parsers);
+        return new DateTimeFormatter(locale, printers, parsers);
     }
 
     //-----------------------------------------------------------------------

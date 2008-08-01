@@ -31,58 +31,40 @@
  */
 package javax.time.calendar.format;
 
+import static org.testng.Assert.*;
+
 import java.io.IOException;
 
+import org.testng.annotations.Test;
+
 /**
- * An exception thrown when an error occurs during formatting of calendricals.
+ * Test CalendricalFormatException.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalFormatException extends RuntimeException {
+@Test
+public class TestCalendricalFormatException {
 
-    /**
-     * Constructs a new exception with the specified message.
-     *
-     * @param message  the message to use for this exception, may be null
-     */
-    public CalendricalFormatException(String message) {
-        super(message);
+    public void test_constructor_String() throws Exception {
+        CalendricalFormatException ex = new CalendricalFormatException("TEST");
+        assertEquals(ex.getMessage(), "TEST");
     }
 
-    /**
-     * Constructs a new exception with the specified message and cause.
-     *
-     * @param message  the message to use for this exception, may be null
-     * @param throwable  the throwable to store as the cause, may be null
-     */
-    public CalendricalFormatException(String message, Throwable throwable) {
-        super(message, throwable);
+    public void test_constructor_StringThrowable_notIOException() throws Exception {
+        IllegalArgumentException iaex = new IllegalArgumentException("INNER");
+        CalendricalFormatException ex = new CalendricalFormatException("TEST", iaex);
+        assertEquals(ex.getMessage(), "TEST");
+        assertSame(ex.getCause(), iaex);
+        ex.rethrowIOException();  // no effect
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the cause of this exception was an IOException, and if so
-     * rethrows it
-     * <p>
-     * This method is useful if you call a printer with an open stream or
-     * writer and want to ensure that IOExceptions are not lost.
-     * <pre>
-     * try {
-     *   printer.print(writer, dateTime);
-     * } catch (CalendricalFormatException ex) {
-     *   ex.rethrowIOException();
-     *   // if code reaches here exception was caused by datetime issues
-     * }
-     * </pre>
-     * Note that calling this method will rethrow the original IOException,
-     * causing this CalendricalFormatException to be lost.
-     *
-     * @throws IOException if the cause of this exception is an IOException
-     */
-    public void rethrowIOException() throws IOException {
-        if (getCause() instanceof IOException) {
-            throw (IOException) getCause();
-        }
+    @Test(expectedExceptions=IOException.class)
+    public void test_constructor_StringThrowable_IOException() throws Exception {
+        IOException ioex = new IOException("INNER");
+        CalendricalFormatException ex = new CalendricalFormatException("TEST", ioex);
+        assertEquals(ex.getMessage(), "TEST");
+        assertSame(ex.getCause(), ioex);
+        ex.rethrowIOException();  // rethrows
     }
 
 }

@@ -48,7 +48,7 @@ public class TestCharLiteralParser {
 
     @BeforeMethod
     public void setUp() {
-        context = new DateTimeParseContext();
+        context = new DateTimeParseContext(DateTimeFormatSymbols.getInstance());
     }
 
     //-----------------------------------------------------------------------

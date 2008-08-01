@@ -31,13 +31,13 @@
  */
 package javax.time.calendar.format;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
@@ -65,7 +65,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
     /**
      * The date time map, never null, may be empty.
      */
-    private final TreeMap<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>();
+    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
     /**
      * The date, may be null.
      */
@@ -82,13 +82,6 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * The zone, may be null.
      */
     private TimeZone zone;
-
-    /**
-     * Constructor.
-     */
-    public DateTimeParseContext() {
-        super();
-    }
 
     /**
      * Constructor.
@@ -136,7 +129,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     @SuppressWarnings("unchecked")
     public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
-        return (Map<DateTimeFieldRule, Integer>) fieldValueMap.clone();
+        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
     }
 
     /**
@@ -166,26 +159,6 @@ public final class DateTimeParseContext implements CalendricalProvider {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the optional local date, such as '2007-12-03'.
-     * This method will return null if the date is null.
-     *
-     * @return the date, may be null
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * Gets the optional local time, such as '10:15:30'.
-     * This method will return null if the time is null.
-     *
-     * @return the time, may be null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
-
     /**
      * Gets the optional time zone offset, such as '+02:00'.
      * This method will return null if the offset is null.
@@ -218,24 +191,6 @@ public final class DateTimeParseContext implements CalendricalProvider {
             throw new NullPointerException("The field rule must not be null");
         }
         fieldValueMap.put(fieldRule, value);
-    }
-
-    /**
-     * Sets the parsed date.
-     *
-     * @param date  the date to store, may be null
-     */
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    /**
-     * Sets the parsed time.
-     *
-     * @param time  the time to store, may be null
-     */
-    public void setTime(LocalTime time) {
-        this.time = time;
     }
 
     /**
