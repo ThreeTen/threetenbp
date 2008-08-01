@@ -34,9 +34,9 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
@@ -156,6 +156,37 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
+     * Adjusts a time to have the the second of minute represented by this object,
+     * returning a new time.
+     * <p>
+     * Only the second of minute field is adjusted in the result. The other time
+     * fields are unaffected.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        if (this == time.getSecondOfMinute()) {
+            return time;
+        }
+        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), this, time.getNanoOfSecond());
+    }
+
+    /**
+     * Checks if the input time has the same second of minute that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this == time.getSecondOfMinute();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this field to a <code>Calendrical</code>.
      *
      * @return the calendrical representation for this instance, never null
@@ -214,37 +245,6 @@ public final class SecondOfMinute
     @Override
     public String toString() {
         return "SecondOfMinute=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adjusts a time to have the the second of minute represented by this object,
-     * returning a new time.
-     * <p>
-     * Only the second of minute field is adjusted in the result. The other time
-     * fields are unaffected.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getSecondOfMinute()) {
-            return time;
-        }
-        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), this, time.getNanoOfSecond());
-    }
-
-    /**
-     * Checks if the input time has the same second of minute that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return this == time.getSecondOfMinute();
     }
 
 }
