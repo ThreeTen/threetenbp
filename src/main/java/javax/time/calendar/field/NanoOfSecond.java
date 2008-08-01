@@ -32,14 +32,16 @@
 package javax.time.calendar.field;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
+import javax.time.calendar.TimeProvider;
 
 /**
  * A representation of a nano of second in the ISO-8601 calendar system.
@@ -61,7 +63,7 @@ public final class NanoOfSecond
     /**
      * A singleton instance for zero nanoseconds.
      */
-    public static final NanoOfSecond NANO_0 = new NanoOfSecond(0);
+    public static final NanoOfSecond ZERO = new NanoOfSecond(0);
     /**
      * A serialization identifier for this instance.
      */
@@ -95,9 +97,23 @@ public final class NanoOfSecond
     public static NanoOfSecond nanoOfSecond(int nanoOfSecond) {
         rule().checkValue(nanoOfSecond);
         if (nanoOfSecond == 0) {
-            return NANO_0;
+            return ZERO;
         }
         return new NanoOfSecond(nanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>NanoOfSecond</code> from a time provider.
+     * <p>
+     * This can be used extract the second of minute directly from any implementation
+     * of TimeProvider, including those in other calendar systems.
+     *
+     * @param timeProvider  the time provider to use, not null
+     * @return the NanoOfSecond instance, never null
+     */
+    public static NanoOfSecond nanoOfSecond(TimeProvider timeProvider) {
+        return timeProvider.toLocalTime().getNanoOfSecond();
     }
 
     //-----------------------------------------------------------------------
@@ -118,6 +134,49 @@ public final class NanoOfSecond
      */
     public int getValue() {
         return nanoOfSecond;
+    }
+
+    /**
+     * Gets the value as a fraction of a second between 0 and 1.
+     * <p>
+     * The fractional value is between 0 (inclusive) and 1 (exclusive).
+     * The fraction will have the minimum scale necessary to represent the fraction.
+     *
+     * @return the nano of second, from 0 to 0.999,999,999, never null
+     */
+    public BigDecimal getFractionalValue() {
+        return rule().convertValueToFraction(nanoOfSecond);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adjusts a time to have the the nano of second represented by this object,
+     * returning a new time.
+     * <p>
+     * Only the nano of second field is adjusted in the result. The other time
+     * fields are unaffected.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to be adjusted, not null
+     * @return the adjusted time, never null
+     */
+    public LocalTime adjustTime(LocalTime time) {
+        if (this == time.getNanoOfSecond()) {
+            return time;
+        }
+        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), this);
+    }
+
+    /**
+     * Checks if the input time has the same nano of second that is represented
+     * by this object.
+     *
+     * @param time  the time to match, not null
+     * @return true if the time matches, false otherwise
+     */
+    public boolean matchesTime(LocalTime time) {
+        return this.getValue() == time.getNanoOfSecond().getValue();
     }
 
     //-----------------------------------------------------------------------
@@ -180,47 +239,6 @@ public final class NanoOfSecond
     @Override
     public String toString() {
         return "NanoOfSecond=" + getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Adjusts a time to have the the nano of second represented by this object,
-     * returning a new time.
-     * <p>
-     * Only the nano of second field is adjusted in the result. The other time
-     * fields are unaffected.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getNanoOfSecond()) {
-            return time;
-        }
-        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), this);
-    }
-
-    /**
-     * Checks if the input time has the same nano of second that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return this.getValue() == time.getNanoOfSecond().getValue();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value as a fraction of a second expressed as a double.
-     *
-     * @return the nano of second, from 0 to 0.999,999,999
-     */
-    public double getFractionalValue() {
-        return ((double) nanoOfSecond) / 1000000000d;
     }
 
 }

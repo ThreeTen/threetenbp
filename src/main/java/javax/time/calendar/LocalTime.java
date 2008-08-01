@@ -67,13 +67,13 @@ public final class LocalTime
      */
     public static final LocalTime MIDNIGHT = new LocalTime(
             HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0),
-            SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
+            SecondOfMinute.secondOfMinute(0), NanoOfSecond.ZERO);
     /**
      * Constant for the local time of midday, 12:00.
      */
     public static final LocalTime MIDDAY = new LocalTime(
             HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0),
-            SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
+            SecondOfMinute.secondOfMinute(0), NanoOfSecond.ZERO);
     /**
      * A serialization identifier for this class.
      */
@@ -126,7 +126,7 @@ public final class LocalTime
      * @return a LocalTime object, never null
      */
     public static LocalTime time(HourOfDay hourOfDay, MinuteOfHour minuteOfHour) {
-        return time(hourOfDay, minuteOfHour, SecondOfMinute.secondOfMinute(0), NanoOfSecond.NANO_0);
+        return time(hourOfDay, minuteOfHour, SecondOfMinute.secondOfMinute(0), NanoOfSecond.ZERO);
     }
 
     /**
@@ -140,7 +140,7 @@ public final class LocalTime
      */
     public static LocalTime time(
             HourOfDay hourOfDay, MinuteOfHour minuteOfHour, SecondOfMinute secondOfMinute) {
-        return time(hourOfDay, minuteOfHour, secondOfMinute, NanoOfSecond.NANO_0);
+        return time(hourOfDay, minuteOfHour, secondOfMinute, NanoOfSecond.ZERO);
     }
 
     /**
@@ -169,11 +169,11 @@ public final class LocalTime
             throw new NullPointerException("NanoOfSecond must not be null");
         }
         if (hourOfDay.getValue() == 0 && minuteOfHour.getValue() == 0 &&
-                secondOfMinute.getValue() == 0 && nanoOfSecond == NanoOfSecond.NANO_0) {
+                secondOfMinute.getValue() == 0 && nanoOfSecond == NanoOfSecond.ZERO) {
             return MIDNIGHT;
         }
         if (hourOfDay.getValue() == 12 && minuteOfHour.getValue() == 0 &&
-                secondOfMinute.getValue() == 0 && nanoOfSecond == NanoOfSecond.NANO_0) {
+                secondOfMinute.getValue() == 0 && nanoOfSecond == NanoOfSecond.ZERO) {
             return MIDDAY;
         }
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
@@ -200,7 +200,7 @@ public final class LocalTime
                 HourOfDay.hourOfDay(hourOfDay),
                 MinuteOfHour.minuteOfHour(minuteOfHour),
                 SecondOfMinute.secondOfMinute(0),
-                NanoOfSecond.NANO_0);
+                NanoOfSecond.ZERO);
     }
 
     /**
@@ -225,7 +225,7 @@ public final class LocalTime
                 HourOfDay.hourOfDay(hourOfDay),
                 MinuteOfHour.minuteOfHour(minuteOfHour),
                 SecondOfMinute.secondOfMinute(secondOfMinute),
-                NanoOfSecond.NANO_0);
+                NanoOfSecond.ZERO);
 
     }
 
