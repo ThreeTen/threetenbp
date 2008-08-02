@@ -1505,12 +1505,15 @@ public class TestLocalDate {
             assertEquals(test.toModifiedJulianDays(), i);
             test = previous(test);
         }
-
+        
+        assertEquals(LocalDate.date(1858, 11, 17).toModifiedJulianDays(), 0);
+        assertEquals(LocalDate.date(1, 1, 1).toModifiedJulianDays(), -678575);
+        assertEquals(LocalDate.date(1995, 9, 27).toModifiedJulianDays(), 49987);
         assertEquals(LocalDate.date(1970, 1, 1).toModifiedJulianDays(), 40587);
         assertEquals(LocalDate.date(-1, 12, 31).toModifiedJulianDays(), -678942);
     }
 
-    public void test_toMJDays_fromMJDays_simmetry() {
+    public void test_toMJDays_fromMJDays_symmetry() {
         LocalDate test = LocalDate.date(0, 1, 1);
         for (int i = -678941; i < 700000; i++) {
             assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
