@@ -39,7 +39,6 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.field.Year;
 
 /**
  * The Coptic calendar system.
@@ -48,7 +47,10 @@ import javax.time.calendar.field.Year;
  * The Coptic calendar has twelve months of 30 days followed by an additional
  * period of 5 or 6 days, modelled as the thirteenth month in this implementation.
  * <p>
- * CopticDate is thread-safe and immutable.
+ * Years are measured in the 'Era of the Martyrs'.
+ * 0001-01-01 (Coptic) equals 0284-08-29 (ISO).
+ * <p>
+ * CopticChronology is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
@@ -61,19 +63,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 1L;
-    /**
-     * The number of days in a four year cycle.
-     */
-    private static final int DAYS_IN_CYCLE = 365 * 4 + 1;
-    /**
-     * The minimum valid year.
-     */
-    public static final int MIN_YEAR = 1;
-    /**
-     * The maximum valid year.
-     */
-    public static final int MAX_YEAR = Integer.MAX_VALUE - 1;  // TODO
+    private static final long serialVersionUID = 24275872L;
 
     //-----------------------------------------------------------------------
     /**
@@ -95,10 +85,10 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Checks if the specified year is a leap year.
      *
-     * @param year  the year to check, from 1 to MAX_VALUE
+     * @param year  the year to check, not validated for range
      * @return true if the year is a leap year
      */
-    public boolean isLeapYear(int year) {
+    public static boolean isLeapYear(int year) {
         return ((year % 4) == 3);
     }
 
@@ -115,7 +105,7 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for the year field in the ISO chronology.
+     * Gets the rule for the year field in the Coptic chronology.
      *
      * @return the rule for the year field, never null
      */
@@ -125,7 +115,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the month of year field in the ISO chronology.
+     * Gets the rule for the month of year field in the Coptic chronology.
      *
      * @return the rule for the month of year field, never null
      */
@@ -135,7 +125,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the day of month field in the ISO chronology.
+     * Gets the rule for the day of month field in the Coptic chronology.
      *
      * @return the rule for the day of month field, never null
      */
@@ -145,7 +135,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the day of year field in the ISO chronology.
+     * Gets the rule for the day of year field in the Coptic chronology.
      *
      * @return the rule for the day of year field, never null
      */
@@ -155,7 +145,7 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the day of week field.
+     * Gets the rule for the day of week field in the Coptic chronology.
      *
      * @return the rule for the day of week field, never null
      */
@@ -165,28 +155,48 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /** {@inheritDoc} */
+    /**
+     * The hour of day field is not supported by the Coptic chronology.
+     *
+     * @return never
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public DateTimeFieldRule hourOfDay() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("CopticChronology does not support the hour of day field");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * The minute of hour field is not supported by the Coptic chronology.
+     *
+     * @return never
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public DateTimeFieldRule minuteOfHour() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("CopticChronology does not support the minute of hour field");
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public DateTimeFieldRule nanoOfSecond() {
-        throw new UnsupportedOperationException();
-    }
-
-    /** {@inheritDoc} */
+    /**
+     * The second of minute field is not supported by the Coptic chronology.
+     *
+     * @return never
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public DateTimeFieldRule secondOfMinute() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("CopticChronology does not support the second of minute field");
+    }
+
+    /**
+     * The nano of second field is not supported by the Coptic chronology.
+     *
+     * @return never
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public DateTimeFieldRule nanoOfSecond() {
+        throw new UnsupportedOperationException("CopticChronology does not support the nano of second field");
     }
 
     //-----------------------------------------------------------------------
@@ -200,7 +210,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule() {
-            super(CopticChronology.INSTANCE, "Year", YEARS, null, 1, Year.MAX_YEAR);
+            super(CopticChronology.INSTANCE, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -209,8 +219,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             if (date != null) {
-                long mjd = date.toModifiedJulianDays();  // adjust to epoch
-                return (int) (mjd * 4 / DAYS_IN_CYCLE);  // TODO: overflow
+                return CopticDate.copticDate(date).getYear();
             }
             return null;
         }
@@ -236,7 +245,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             if (date != null) {
-                return date.getMonthOfYear().getValue();  // TODO
+                return CopticDate.copticDate(date).getMonthOfYear();
             }
             return null;
         }
@@ -267,7 +276,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             if (date != null) {
-                return date.getDayOfMonth().getValue();  // TODO
+                return CopticDate.copticDate(date).getDayOfMonth();
             }
             return null;
         }
@@ -298,7 +307,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             if (date != null) {
-                return date.getDayOfYear().getValue();  // TODO
+                return CopticDate.copticDate(date).getDayOfYear();
             }
             return null;
         }
@@ -324,7 +333,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             if (date != null) {
-                return date.getDayOfWeek().getValue();
+                return CopticDate.copticDate(date).getDayOfWeek();
             }
             return null;
         }
