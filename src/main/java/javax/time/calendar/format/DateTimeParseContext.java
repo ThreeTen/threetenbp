@@ -31,16 +31,16 @@
  */
 package javax.time.calendar.format;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.ZoneOffset;
@@ -65,15 +65,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
     /**
      * The date time map, never null, may be empty.
      */
-    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new HashMap<DateTimeFieldRule, Integer>();
-    /**
-     * The date, may be null.
-     */
-    private LocalDate date;
-    /**
-     * The time, may be null.
-     */
-    private LocalTime time;
+    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
     /**
      * The offset, may be null.
      */
@@ -122,12 +114,9 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * be out of range for the rule.
      * <p>
      * For example, the day of month might be set to 50, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
      *
      * @return a modifiable copy of the field-value map, never null
      */
-    @SuppressWarnings("unchecked")
     public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
         return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
     }
@@ -140,8 +129,6 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * range for the rule.
      * <p>
      * For example, the day of month might be set to 50, or the hour to 1000.
-     * The purpose of this class is simply to store the values, not to provide
-     * any guarantees as to their validity.
      *
      * @param rule  the rule to query from the map, not null
      * @return the value mapped to the specified field
@@ -158,28 +145,6 @@ public final class DateTimeParseContext implements CalendricalProvider {
         throw new UnsupportedCalendarFieldException(rule, "Calendrical");
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the optional time zone offset, such as '+02:00'.
-     * This method will return null if the offset is null.
-     *
-     * @return the offset, may be null
-     */
-    public ZoneOffset getOffset() {
-        return offset;
-    }
-
-    /**
-     * Gets the optional time zone rules, such as 'Europe/Paris'.
-     * This method will return null if the zone is null.
-     *
-     * @return the zone, may be null
-     */
-    public TimeZone getZone() {
-        return zone;
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Sets the value associated with the specified field rule.
      *
@@ -193,8 +158,19 @@ public final class DateTimeParseContext implements CalendricalProvider {
         fieldValueMap.put(fieldRule, value);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Sets the parsed offset.
+     * Gets the optional time zone offset, such as '+02:00'.
+     * This method will return null if the offset is null.
+     *
+     * @return the offset, may be null
+     */
+    public ZoneOffset getOffset() {
+        return offset;
+    }
+
+    /**
+     * Sets the parsed offset, such as '+02:00'.
      *
      * @param offset  the zone offset to store, may be null
      */
@@ -202,8 +178,19 @@ public final class DateTimeParseContext implements CalendricalProvider {
         this.offset = offset;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Sets the parsed zone.
+     * Gets the optional time zone rules, such as 'Europe/Paris'.
+     * This method will return null if the zone is null.
+     *
+     * @return the zone, may be null
+     */
+    public TimeZone getZone() {
+        return zone;
+    }
+
+    /**
+     * Sets the parsed zone, such as 'Europe/Paris'.
      *
      * @param zone  the zone to store, may be null
      */
@@ -224,45 +211,19 @@ public final class DateTimeParseContext implements CalendricalProvider {
 
     //-----------------------------------------------------------------------
     /**
-     * Outputs the calendrical as a <code>String</code>.
-     * <p>
-     * The output will use the following format:
-     * <ul>
-     * <li>Field-Value map, followed by space if non-empty</li>
-     * <li>Date</li>
-     * <li>Time, prefixed by 'T' if non-null</li>
-     * <li>Offset</li>
-     * <li>Zone, prefixed by a space if non-null</li>
-     * </ul>
-     * If an instance of LocalDate, LocalTime, LocalDateTime, OffsetDate, OffsetTime,
-     * OffsetDateTime or ZonedDateTime is converted to a Calendrical then the
-     * toString output will remain the same.
+     * Returns a string version of the context for debugging.
      *
-     * @return the formatted date-time string, never null
+     * @return a string representation of the context date, never null
      */
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        if (getFieldValueMap().size() > 0) {
-            buf.append(getFieldValueMap());
-            if (date != null || time != null || offset != null) {
-                buf.append(' ');
-            }
-        }
-        if (date != null) {
-            buf.append(date);
-        }
-        if (time != null) {
-            buf.append('T').append(time);
-        }
+        buf.append(fieldValueMap);
         if (offset != null) {
-            buf.append(offset);
+            buf.append(' ').append(offset);
         }
         if (zone != null) {
-            if (date != null || time != null || offset != null) {
-                buf.append(' ');
-            }
-            buf.append(zone);
+            buf.append(' ').append(zone);
         }
         return buf.toString();
     }
