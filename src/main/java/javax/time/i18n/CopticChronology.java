@@ -49,17 +49,24 @@ import javax.time.calendar.LocalTime;
  * <p>
  * Years are measured in the 'Era of the Martyrs'.
  * 0001-01-01 (Coptic) equals 0284-08-29 (ISO).
+ * The supported range is from Coptic year 1 to year 9999 (inclusive).
  * <p>
  * CopticChronology is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
 public final class CopticChronology extends Chronology implements Serializable {
+    // TODO: PeriodUnit for years/months
 
     /**
      * The singleton instance of <code>CopticChronology</code>.
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
+//    /**
+//     * The period unit for coptic years.
+//     * One coptic year is 13 coptic months.
+//     */
+//    public static final PeriodUnit COPTIC_YEARS = new PeriodUnit();
     /**
      * A serialization identifier for this class.
      */
@@ -84,6 +91,10 @@ public final class CopticChronology extends Chronology implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Checks if the specified year is a leap year.
+     * <p>
+     * A year is leap if the remainder after division by four equals three.
+     * This method does not validate the year passed in, and only has a
+     * well-defined result for years in the supported range.
      *
      * @param year  the year to check, not validated for range
      * @return true if the year is a leap year
