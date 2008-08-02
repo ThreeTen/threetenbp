@@ -546,6 +546,15 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         if (cmp != 0) {
             return cmp;
         }
+        if (this.getPeriodRange() == other.getPeriodRange()) {
+            return 0;
+        }
+        if (this.getPeriodRange() == null) {
+            return 1;
+        }
+        if (other.getPeriodRange() == null) {
+            return -1;
+        }
         return this.getPeriodRange().compareTo(other.getPeriodRange());
     }
 
