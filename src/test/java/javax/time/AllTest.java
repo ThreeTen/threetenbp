@@ -68,6 +68,7 @@ import javax.time.calendar.format.TestDateTimeFormatters;
 import javax.time.calendar.format.TestFractionPrinterParser;
 import javax.time.calendar.format.TestNumberParser;
 import javax.time.calendar.format.TestNumberPrinter;
+import javax.time.calendar.format.TestPadParserDecorator;
 import javax.time.calendar.format.TestPadPrinterDecorator;
 import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
@@ -147,6 +148,7 @@ public class AllTest {
             TestFractionPrinterParser.class,
             TestNumberParser.class,
             TestNumberPrinter.class,
+            TestPadParserDecorator.class,
             TestPadPrinterDecorator.class,
             TestStringLiteralPrinter.class,
             TestStringLiteralParser.class,

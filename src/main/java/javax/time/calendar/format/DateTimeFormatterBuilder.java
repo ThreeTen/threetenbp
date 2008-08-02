@@ -401,8 +401,8 @@ public class DateTimeFormatterBuilder {
      */
     private DateTimeFormatterBuilder appendInternal(DateTimePrinter printer, DateTimeParser parser) {
         if (padNextWidth > 0) {
-            if (printer != null) {
-                printer = new PadPrinterDecorator(printer, padNextWidth, padNextChar);
+            if (printer != null || parser != null) {
+                printer = new PadPrinterParserDecorator(printer, parser, padNextWidth, padNextChar);
             }
             padNextWidth = 0;
             padNextChar = 0;

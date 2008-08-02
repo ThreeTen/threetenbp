@@ -68,7 +68,7 @@ public class TestPadPrinterDecorator {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
         Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), 3);
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, (Appendable) null, symbols);
     }
 
@@ -89,59 +89,59 @@ public class TestPadPrinterDecorator {
 
     //-----------------------------------------------------------------------
     public void test_print_emptyCalendrical() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_fullDateTime() throws Exception {
         Calendrical calendrical = LocalDate.date(2008, 12, 3).toCalendrical();
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "--Z");
     }
 
     public void test_print_append() throws Exception {
         buf.append("EXISTING");
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTING--Z");
     }
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(emptyCalendrical, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_noPadRequiredSingle() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 1, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 1, '-');
         pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "Z");
     }
 
     public void test_print_padRequiredSingle() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new CharLiteralPrinterParser('Z'), 5, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
         pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "----Z");
     }
 
     public void test_print_noPadRequiredMultiple() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 4, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 4, '-');
         pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "WXYZ");
     }
 
     public void test_print_padRequiredMultiple() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 5, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 5, '-');
         pp.print(emptyCalendrical, buf, symbols);
         assertEquals(buf.toString(), "-WXYZ");
     }
 
     @Test(expectedExceptions=CalendricalFormatException.class)
     public void test_print_overPad() throws Exception {
-        PadPrinterDecorator pp = new PadPrinterDecorator(new StringLiteralPrinterParser("WXYZ"), 3, '-');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 3, '-');
         pp.print(emptyCalendrical, buf, symbols);
     }
 

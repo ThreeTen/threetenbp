@@ -40,12 +40,16 @@ import javax.time.calendar.Calendrical;
  *
  * @author Stephen Colebourne
  */
-class PadPrinterDecorator implements DateTimePrinter {
+class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
 
     /**
      * The printer to decorate.
      */
     private DateTimePrinter printer;
+    /**
+     * The parser to decorate.
+     */
+    private DateTimeParser parser;
     /**
      * The width to pad the next field to.
      */
@@ -58,13 +62,15 @@ class PadPrinterDecorator implements DateTimePrinter {
     /**
      * Constructor.
      *
-     * @param printer  the printer, not null
+     * @param printer  the printer, may be null in which case print() must not be called
+     * @param parser  the parser, may be null in which case parse() must not be called
      * @param padWidth  the width to pad to, 1 or greater
      * @param padChar  the pad character
      */
-    PadPrinterDecorator(DateTimePrinter printer, int padWidth, char padChar) {
+    PadPrinterParserDecorator(DateTimePrinter printer, DateTimeParser parser, int padWidth, char padChar) {
         // input checked by DateTimeFormatterBuilder
         this.printer = printer;
+        this.parser = parser;
         this.padWidth = padWidth;
         this.padChar = padChar;
     }
@@ -83,8 +89,39 @@ class PadPrinterDecorator implements DateTimePrinter {
         appendable.append(buf);
     }
 
-//    /** {@inheritDoc} */
-//    public int parse(DateTimeParseContext context, String parseText, int position) {
-//    }
+    /** {@inheritDoc} */
+    public int parse(DateTimeParseContext context, String parseText, int position) {
+        if (position > parseText.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        int endPos = position + padWidth;
+        if (endPos > parseText.length()) {
+            return ~position;  // not enough characters in the string to meet the parse width
+        }
+        int pos = position;
+        while (pos < endPos && parseText.charAt(pos) == padChar) {
+            pos++;
+        }
+        parseText = parseText.substring(0, endPos);
+        int firstError = 0;
+        while (pos >= position) {
+            int resultPos = parser.parse(context, parseText, pos);
+            if (resultPos < 0) {
+                // parse of decorated field had an error
+                if (firstError == 0) {
+                    firstError = resultPos;
+                }
+                // loop around in case the decorated parser can handle the padChar at the start
+                pos--;
+                continue;
+            }
+            if (resultPos != endPos) {
+                return ~position;  // parse of decorated field didn't parse to the end
+            }
+            return resultPos;
+        }
+        // loop runs at least once, so firstError must be set by the time we get here
+        return firstError;  // return error from first parse of decorated field
+    }
 
 }
