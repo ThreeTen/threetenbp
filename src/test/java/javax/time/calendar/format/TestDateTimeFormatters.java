@@ -33,6 +33,10 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.*;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDateTime;
@@ -54,6 +58,15 @@ public class TestDateTimeFormatters {
 
     @BeforeMethod
     public void setUp() {
+    }
+
+    @SuppressWarnings("unchecked")
+    public void test_constructor() throws Exception {
+        for (Constructor constructor : DateTimeFormatters.class.getDeclaredConstructors()) {
+            assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
+        }
     }
 
     //-----------------------------------------------------------------------
