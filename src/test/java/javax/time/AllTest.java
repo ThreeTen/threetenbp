@@ -31,6 +31,8 @@
  */
 package javax.time;
 
+import java.util.Arrays;
+
 import javax.time.calendar.TestCalendrical;
 import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateMatchers;
@@ -89,8 +91,10 @@ import javax.time.period.field.TestSeconds;
 import javax.time.period.field.TestWeeks;
 import javax.time.period.field.TestYears;
 
+import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
+import org.testng.internal.Utils;
 
 /**
  * Test class.
@@ -100,7 +104,6 @@ import org.testng.TestNG;
 public class AllTest {
 
     public static void main(String[] args) {
-        TestListenerAdapter tla = new TestListenerAdapter();
         TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
@@ -174,7 +177,46 @@ public class AllTest {
             TestWeeks.class,
             TestYears.class,
         });
-        testng.addListener(tla);
+//        testng.addListener(new DotTestListener());
+//        testng.addListener(new TextReporter("All", 2));
+        testng.addListener(new TestListenerAdapter() {
+            private int count = 0;
+            private void log() {
+                // log dot every 25 tests
+                if ((getPassedTests().size() + getFailedTests().size()) % 25 == 0) {
+                    System.out.print('.');
+                    if (++count == 40) {
+                        count = 0;
+                        System.out.println();
+                    }
+                }
+            }
+            @Override
+            public void onTestSuccess(ITestResult tr) {
+                super.onTestSuccess(tr);
+                log();
+            }
+            @Override
+            public void onTestFailure(ITestResult tr) {
+                super.onTestFailure(tr);
+                log();
+                Throwable throwable = tr.getThrowable();
+                String params = "";
+                if (tr.getParameters() != null && tr.getParameters().length > 0) {
+                    params = " " + Arrays.toString(tr.getParameters());
+                    if (tr.getMethod().getMethod().getParameterTypes().length != tr.getParameters().length) {
+                        params = " Method has wrong number of arguments for data provider";
+                        throwable = null;
+                    }
+                }
+                String desc = tr.getMethod().getDescription() == null ? "" : " " + tr.getMethod().getDescription();
+                System.out.println("FAILED: " + tr.getName() + desc + params);
+                if (throwable != null) {
+                    System.out.println(Utils.stackTrace(throwable, false)[0]);;
+                }
+            }
+        });
+        
         testng.run();
     }
 
