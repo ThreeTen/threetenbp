@@ -261,7 +261,7 @@ public final class DateTimeFields
     /**
      * Iterates through all the fields.
      * <p>
-     * This method fulfuls the {@link Iterable} interface and allows looping
+     * This method fulfills the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop. The values can be obtained
      * using {@link #getValue(DateTimeFieldRule)}.
      *

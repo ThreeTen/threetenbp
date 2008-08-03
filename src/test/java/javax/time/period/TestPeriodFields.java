@@ -203,7 +203,7 @@ public class TestPeriodFields {
         assertEquals(test.getAmount(HOURS), 4);
         assertEquals(test.getAmount(MINUTES), 5);
         assertEquals(test.getAmount(SECONDS), 6);
-        assertEquals(test.getAmount(SECONDS), 7);
+        assertEquals(test.getAmount(NANOS), 7);
     }
 
     public void factory_period_provider_zeroesRemoved() {

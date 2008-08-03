@@ -128,7 +128,8 @@ public final class PeriodFields
      * @throws NullPointerException if the period provider is null
      */
     public static PeriodFields periodFields(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        //TODO: this probably is not the right thing to do
+        Period period = Period.period(periodProvider).normalized();
         if (period.isZero()) {
             return ZERO;
         }
@@ -150,6 +151,11 @@ public final class PeriodFields
         }
         if (period.getSeconds() != 0) {
             map.put(SECONDS, period.getSeconds());
+        }
+        
+        //TODO: this probably is not the right thing to do
+        if (period.getNanos() != 0) {
+            map.put(NANOS, MathUtils.safeToInt(period.getNanos()));
         }
         return PeriodFields.create(map);
     }
