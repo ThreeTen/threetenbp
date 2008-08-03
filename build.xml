@@ -58,6 +58,11 @@
         <tstamp />
     </target>
 
+    <target name="clean" description="clean up">
+        <delete dir="${build}" />
+        <delete dir="${dist}" />
+    </target>
+
     <target name="compile" depends="init" description="compile the source">
         <mkdir dir="${build.main}" />
         <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
@@ -68,7 +73,7 @@
       <javadoc sourcepath="${src.main}" destdir="${build.javadoc}" 
                 classpathref="main.path"
                windowtitle="JSR-310 - Date and Time API" 
-               failonerror="true" packagenames="javax.time**" />
+               failonerror="true" packagenames="javax.time**/*" />
    </target>
 
     <target name="compile-tests" depends="compile" description="compile the tests">
@@ -117,16 +122,12 @@
         <copy file="checkstyle.xml" todir="${dist}" />
         <copy file="LICENSE.txt" todir="${dist}" />
         <copy file="LICENSE_OpenJDK.txt" todir="${dist}" />
+        <copy file="README.txt" todir="${dist}" />
         <copy file="TODO.txt" todir="${dist}" />
         <zip destfile="${ant.project.name}-${DSTAMP}.zip" basedir="${dist}" />
     </target>
 
-    <target name="clean" description="clean up">
-        <delete dir="${build}" />
-        <delete dir="${dist}" />
-    </target>
-
-    <target name="examples" depends="compile-tests">
+    <target name="examples" depends="compile-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
     </target>
 
