@@ -44,7 +44,7 @@ public class MockRuleNoValue extends DateTimeFieldRule {
     public static final MockRuleNoValue INSTANCE = new MockRuleNoValue();
 
     private MockRuleNoValue() {
-        super(ISOChronology.INSTANCE, "Mock", DAYS, MONTHS, 1, 30);
+        super(ISOChronology.INSTANCE, "Mock", HOURS, YEARS, 1, 30);
     }
 
     /** {@inheritDoc} */
