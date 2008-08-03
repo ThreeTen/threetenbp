@@ -288,4 +288,76 @@ public class TestZoneResolvers {
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later
     }
 
+    //-----------------------------------------------------------------------
+    // combination()
+    //-----------------------------------------------------------------------
+    public void combination_factory() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
+        assertNotNull(combo);
+    }
+
+    public void combination_factory_sameNoCreate() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.preTransition());
+        assertSame(combo, ZoneResolvers.preTransition());
+    }
+
+    public void combination_factory_sameNullsNoCreate() {
+        ZoneResolver combo = ZoneResolvers.combination(null, null);
+        assertSame(combo, ZoneResolvers.strict());
+    }
+
+    public void combination_winter() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
+        OffsetDateTime resolved = combo.resolve(ZONE_PARIS, DT_WINTER, null);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
+        assertEquals(resolved.getOffset(), OFFSET_0100);
+    }
+
+    public void combination_summer() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
+        OffsetDateTime resolved = combo.resolve(ZONE_PARIS, DT_SUMMER, null);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
+        assertEquals(resolved.getOffset(), OFFSET_0200);
+    }
+
+    public void combination_gap() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
+        OffsetDateTime resolved = combo.resolve(ZONE_PARIS, DT_PARIS_GAP, null);
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 1, 59, 59, 999999999));
+        assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses earlier, from preTransition
+    }
+
+    public void combination_overlap() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), ZoneResolvers.postTransition());
+        OffsetDateTime resolved = combo.resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later, from postTransition
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void combination_factory_nullGap_gap() {
+        ZoneResolver combo = ZoneResolvers.combination(null, ZoneResolvers.preTransition());
+        combo.resolve(ZONE_PARIS, DT_PARIS_GAP, null);
+    }
+
+    public void combination_factory_nullGap_overlap() {
+        ZoneResolver combo = ZoneResolvers.combination(null, ZoneResolvers.preTransition());
+        OffsetDateTime resolved = combo.resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses earlier, from preTransition
+    }
+
+    public void combination_nullOverlap_gap() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), null);
+        OffsetDateTime resolved = combo.resolve(ZONE_PARIS, DT_PARIS_GAP, null);
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 1, 59, 59, 999999999));
+        assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses earlier, from preTransition
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void combination_nullOverlap_overlap() {
+        ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), null);
+        combo.resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null);
+    }
+
 }

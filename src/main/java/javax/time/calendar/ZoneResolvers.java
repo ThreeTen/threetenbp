@@ -246,4 +246,57 @@ public final class ZoneResolvers {
         }
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a combined resolver, using two different strategies for gap and overlap.
+     * <p>
+     * If either argument is <code>null</code> then the {@link #strict()} resolver is used.
+     *
+     * @param gapResolver  the resolver to use for a gap, null means strict
+     * @param overlapResolver  the resolver to use for an overlap, null means strict
+     * @return the combination resolver, never null
+     */
+    public static ZoneResolver combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
+        gapResolver = (gapResolver == null ? strict() : gapResolver);
+        overlapResolver = (overlapResolver == null ? strict() : overlapResolver);
+        if (gapResolver == overlapResolver) {
+            return gapResolver;
+        }
+        return new Combination(gapResolver, overlapResolver);
+    }
+
+    /**
+     * Class implementing combination resolver.
+     */
+    private static class Combination extends ZoneResolver {
+        /** The gap resolver. */
+        private final ZoneResolver gapResolver;
+        /** The overlap resolver. */
+        private final ZoneResolver overlapResolver;
+        
+        /**
+         * Constructor.
+         * @param gapResolver  the resolver to use for a gap, not null
+         * @param overlapResolver  the resolver to use for an overlap, not null
+         */
+        public Combination(ZoneResolver gapResolver, ZoneResolver overlapResolver) {
+            this.gapResolver = gapResolver;
+            this.overlapResolver = overlapResolver;
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected OffsetDateTime handleGap(
+                TimeZone zone, Discontinuity discontinuity,
+                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
+            return gapResolver.handleGap(zone, discontinuity, newDateTime, oldDateTime);
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected OffsetDateTime handleOverlap(
+                TimeZone zone, Discontinuity discontinuity,
+                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
+            return overlapResolver.handleOverlap(zone, discontinuity, newDateTime, oldDateTime);
+        }
+    }
+
 }
