@@ -50,6 +50,7 @@ import org.testng.annotations.Test;
 /**
  * Test TimeZone.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -126,6 +127,8 @@ public class TestTimeZone {
     public void test_constant_UTC() {
         TimeZone test = TimeZone.UTC;
         assertEquals(test.getID(), "UTC");
+        assertEquals(test.getName(), "UTC");
+        assertEquals(test.getShortName(), "UTC");
         assertEquals(test.isFixed(), true);
         assertEquals(test.getOffset(Instant.instant(0L)), ZoneOffset.UTC);
         assertEquals(test.getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30)), ZoneOffset.UTC);
@@ -186,6 +189,8 @@ public class TestTimeZone {
     public void test_factory_string_London() {
         TimeZone test = TimeZone.timeZone("Europe/London");
         assertEquals(test.getID(), "Europe/London");
+        assertEquals(test.getName(), "Europe/London");
+        assertEquals(test.getShortName(), "Europe/London");
         assertSame(TimeZone.timeZone("Europe/London"), test);
     }
 
@@ -195,6 +200,8 @@ public class TestTimeZone {
     public void test_London() {
         TimeZone test = TimeZone.timeZone("Europe/London");
         assertEquals(test.getID(), "Europe/London");
+        assertEquals(test.getName(), "Europe/London");
+        assertEquals(test.getShortName(), "Europe/London");
         assertEquals(test.isFixed(), false);
     }
 
@@ -330,6 +337,8 @@ public class TestTimeZone {
     public void test_Paris() {
         TimeZone test = TimeZone.timeZone("Europe/Paris");
         assertEquals(test.getID(), "Europe/Paris");
+        assertEquals(test.getName(), "Europe/Paris");
+        assertEquals(test.getShortName(), "Europe/Paris");
         assertEquals(test.isFixed(), false);
     }
 
@@ -465,6 +474,8 @@ public class TestTimeZone {
     public void test_NewYork() {
         TimeZone test = TimeZone.timeZone("America/New_York");
         assertEquals(test.getID(), "America/New_York");
+        assertEquals(test.getName(), "America/New_York");
+        assertEquals(test.getShortName(), "America/New_York");
         assertEquals(test.isFixed(), false);
     }
 
