@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,23 +32,16 @@
 
 Items still todo before EDR:
 
-- Keep or ditch period field classes
-- Chronology usage
-- Format/parse
-- How to use the resolvers
-- Split Now
-- ArithmeticException or not
-- Intervals
-- minus()
+Items todo post EDR:
+
+- lenient parsing
+- proper TimeZone providers (Olson/IATA)
+- more calendar systems
+
+Possible items:
+
 - roll()
 - round()
-- TimeZone providers Olson/IATA
-- TimeScale (see ICU)
-- Favour single method interfaces, for closures
-
-Implementation items todo:
-
-- LocalDate plusDays
-- OffsetDateTime toInstant
-- TimeZone
-- construct from calendricals
+- iteration
+- intervals?
+- time scale? (see ICU)
