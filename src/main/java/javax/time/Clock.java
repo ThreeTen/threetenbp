@@ -36,23 +36,27 @@ import java.io.Serializable;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.TimeZone;
-import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.field.Year;
 
 /**
  * A facade for accessing the current time in the Java Time Framework.
+ * <p>
+ * Clock is an abstract class and must be implemented with care
+ * to ensure other classes in the framework operate correctly.
+ * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public abstract class Clock {
-    //-----------------------------------------------------------------------
+
     /**
-     * Gets an instance of <code>Clock</code> that obtains the current datetime
+     * Gets an instance of <code>Clock</code> that obtains the current instant
      * using the system millisecond clock - {@link System#currentTimeMillis()}
-     * and the default time zone - {@link #timeZone()}.
+     * and the default time zone.
      * <p>
      * All objects produced by this implementation have at best millisecond
      * precision, since this is the maximum precision supported by
@@ -61,14 +65,14 @@ public abstract class Clock {
      * @return an instance of <code>Clock</code> that uses the system clock in the default time zone
      */
     public static Clock system() {
-        //TODO: use the default timezone
-        return system(TimeZone.UTC);
+        String id = java.util.TimeZone.getDefault().getID();
+        return system(TimeZone.timeZone(id));
     }
-    
+
     /**
      * Gets an instance of <code>Clock</code> that obtains the current datetime
      * using the system millisecond clock - {@link System#currentTimeMillis()}
-     * and the specified <code>timeZone</code> - {@link #timeZone()}.
+     * and the specified <code>timeZone</code>.
      * <p>
      * All objects produced by this implementation have at best millisecond
      * precision, since this is the maximum precision supported by
@@ -76,16 +80,14 @@ public abstract class Clock {
      *
      * @param timeZone a <code>TimeZone</code> instance used to create <code>ZonedDateTime</code> instances, never null
      * @return an instance of <code>Clock</code> that uses the system clock and the specified <code>TimeZone</code>
-     * @throws IllegalArgumentException if <code>timeZone</code> is null
+     * @throws NullPointerException if <code>timeZone</code> is null
      */
     public static Clock system(TimeZone timeZone) {
         if (timeZone == null) {
-            throw new IllegalArgumentException("timeZone must not be null");
+            throw new NullPointerException("timeZone must not be null");
         }
-
         return new SystemMillis(timeZone);
     }
-
 
     //-----------------------------------------------------------------------
     /**
@@ -98,61 +100,58 @@ public abstract class Clock {
      */
     public abstract Instant instant();
 
-    //-----------------------------------------------------------------------
     /**
      * Gets the <code>TimeZone</code> instance used to produce <code>ZonedDateTime</code> instances.
      *
      * @return the <code>TimeZone</code>
-     * @see #currentZonedDateTime()
      */
     public abstract TimeZone timeZone();
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Year</code> representing the current year.
+     * Gets the current year as an instance of <code>Year</code>.
+     * <p>
+     * This returns the year using the time zone returned by {@link #timeZone()}.
      *
      * @return a year object representing the current year, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public Year currentYear() {
-        //TODO: optimize
         return today().getYear();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>YearMonth</code> representing the current month.
+     * Gets today's date as an instance of <code>LocalDate</code>.
+     * <p>
+     * This returns today's date using the time zone returned by {@link #timeZone()}.
      *
-     * @return a month object representing the current month, never null
-     */
-    public YearMonth currentMonth() {
-        //TODO: optimize
-        return today().getYearMonth();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets an instance of <code>LocalDate</code> representing today.
-     *
-     * @return a day object representing today, never null
+     * @return a date object representing today, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public LocalDate today() {
-        //TODO: optimize
-        return currentZonedDateTime().toLocalDate();
+        return currentOffsetDateTime().toLocalDate();
     }
 
     /**
-     * Gets an instance of <code>LocalDate</code> representing yesterday.
+     * Gets yesterday's date as an instance of <code>LocalDate</code>.
+     * <p>
+     * This returns yesterday's date using the time zone returned by {@link #timeZone()}.
      *
-     * @return a day object representing yesterday, never null
+     * @return a date object representing yesterday, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public LocalDate yesterday() {
-        return today().plusDays(-1);
+        return today().minusDays(1);
     }
 
     /**
-     * Gets an instance of <code>LocalDate</code> representing tomorrow.
+     * Gets tomorrow's date as an instance of <code>LocalDate</code>.
+     * <p>
+     * This returns tomorrow's date using the time zone returned by {@link #timeZone()}.
      *
-     * @return a day object representing tommorrow, never null
+     * @return a date object representing tommorrow, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public LocalDate tomorrow() {
         return today().plusDays(1);
@@ -160,34 +159,53 @@ public abstract class Clock {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>LocalTime</code> representing the current time of day.
+     * Gets the current time as an instance of <code>LocalTime</code>.
+     * <p>
+     * This returns the current time in the time zone returned by {@link #timeZone()}.
      *
      * @return a time object representing the current time of day, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public LocalTime currentTime() {
-        //TODO: optimize
-        return currentZonedDateTime().toLocalTime();
+        return currentOffsetDateTime().toLocalTime();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>LocalDateTime</code> representing the current date and time.
+     * Gets the current date-time as an instance of <code>LocalDateTime</code>.
+     * <p>
+     * This returns the current date-time in the time zone returned by {@link #timeZone()}.
      *
      * @return a date-time object representing the current date and time, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public LocalDateTime currentDateTime() {
-        //TODO: optimize
-        return currentZonedDateTime().toLocalDateTime();
+        return currentOffsetDateTime().toLocalDateTime();
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>ZonedDateTime</code> representing date and time in the default <code>TimeZone</code>.
+     * Gets the current date-time with an offset as an instance of <code>OffsetDateTime</code>.
      * <p>
-     * It is a shortcut for <code>ZonedDateTime.dateTime(clock.instant(), clock.timeZone())</code> for this <code>Clock</code> instance.
+     * This method uses the {@link #instant()} and {@link #timeZone()} methods
+     * to create an {@link OffsetDateTime}. The offset will be the correct
+     * offset for the time zone and instant.
      *
-     * @return a zoned date-time object representing date and time in the default <code>TimeZone</code>, never null
-     * @see #timeZone()
+     * @return the current zoned date-time, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
+     */
+    public OffsetDateTime currentOffsetDateTime() {
+        Instant instant = instant();
+        return OffsetDateTime.dateTime(instant, timeZone().getOffset(instant));
+    }
+
+    /**
+     * Gets the current date-time with a time zone as an instance of <code>ZonedDateTime</code>.
+     * <p>
+     * This method uses the {@link #instant()} and {@link #timeZone()} methods
+     * to create a {@link ZonedDateTime}.
+     *
+     * @return the current zoned date-time, never null
+     * @throws CalendricalException if the instant is outside the supported range of years
      */
     public ZonedDateTime currentZonedDateTime() {
         return ZonedDateTime.dateTime(instant(), timeZone());
@@ -203,7 +221,6 @@ public abstract class Clock {
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
-
         /**
          * The <code>TimeZone</code> instance used by this clock.
          */
@@ -217,23 +234,19 @@ public abstract class Clock {
             this.timeZone = timeZone;
         }
 
-        /**
-         * Gets the current instant.
-         * @return the current instant
-         */
+        /** {@inheritDoc} */
         @Override
         public Instant instant() {
             return Instant.millisInstant(System.currentTimeMillis());
         }
 
-        /**
-         * {@inheritDoc}
-         */
+        /** {@inheritDoc} */
         @Override
         public TimeZone timeZone() {
             return timeZone;
         }
 
+        /** {@inheritDoc} */
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {
@@ -252,6 +265,7 @@ public abstract class Clock {
             return true;
         }
 
+        /** {@inheritDoc} */
         @Override
         public int hashCode() {
             int hash = 7;

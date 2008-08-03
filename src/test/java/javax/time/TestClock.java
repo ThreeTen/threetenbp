@@ -42,6 +42,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
+
 import org.testng.annotations.Test;
 
 /**
@@ -51,6 +52,7 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestClock {
+
     //-----------------------------------------------------------------------
     public void test_system_isSerializable() throws IOException, ClassNotFoundException {
         Clock system = Clock.system();
@@ -66,6 +68,7 @@ public class TestClock {
         assertEquals(ois.readObject(), system);
     }
 
+    //-----------------------------------------------------------------------
     public void test_system_equals() {
         Clock system = Clock.system();
         assertFalse(system.equals(null));
@@ -92,6 +95,7 @@ public class TestClock {
         assertEquals(system.hashCode(), Clock.system().hashCode());
     }
 
+    //-----------------------------------------------------------------------
     /**
      * This test assumes an Instant instance can eventually be produced in less than one millisecond
      */
@@ -117,7 +121,7 @@ public class TestClock {
         } while (!exit);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=NullPointerException.class)
     public void test_system_null() {
         Clock.system(null);
     }
@@ -132,10 +136,6 @@ public class TestClock {
     //TODO: complete tests
     public void test_system_currentYear() {
         assertNotNull(Clock.system().currentYear());
-    }
-
-    public void test_system_currentMonth() {
-        assertNotNull(Clock.system().currentMonth());
     }
 
     public void test_system_today() {
