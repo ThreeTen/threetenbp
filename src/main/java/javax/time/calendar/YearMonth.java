@@ -535,7 +535,7 @@ public final class YearMonth
                 buf.append(yearValue + 10000).deleteCharAt(0);
             }
         } else {
-            buf.append(year);
+            buf.append(yearValue);
         }
         return buf.append(monthValue < 10 ? "-0" : "-")
             .append(monthValue)

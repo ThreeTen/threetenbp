@@ -65,7 +65,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test LocalDate.
+ * Test LocalDateTime.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

@@ -58,6 +58,7 @@ import org.testng.annotations.Test;
 /**
  * Test ZonedDateTime.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -908,7 +909,7 @@ public class TestZonedDateTime {
     public void test_plus_PeriodProvider() {
         PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
         ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
-        ZonedDateTime expected = ZonedDateTime.dateTime(LocalDateTime.dateTime(2009, 8, 4, 15, 36, 5, 507), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.dateTime(LocalDateTime.dateTime(2009, 8, 4, 16, 36, 5, 507), ZONE_0100);
         assertEquals(t.plus(provider), expected);
     }
 

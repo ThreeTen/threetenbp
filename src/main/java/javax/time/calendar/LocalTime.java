@@ -1029,11 +1029,13 @@ public final class LocalTime
      */
     Overflow plusWithOverflow(PeriodProvider periodProvider) {
         Period period = Period.period(periodProvider);
-        // safe from overflow
-        long totalNanos = period.getHours() * NANOS_PER_HOUR +
+
+        long baseNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
                 period.getSeconds() * NANOS_PER_SECOND;
-        return plusNanosWithOverflow(totalNanos);  // TODO period.getNanos()
+        long totalNanos = MathUtils.safeAdd(baseNanos, period.getNanos());
+
+        return plusNanosWithOverflow(totalNanos);
     }
 
     /**
@@ -1104,11 +1106,13 @@ public final class LocalTime
      */
     Overflow minusWithOverflow(PeriodProvider periodProvider) {
         Period period = Period.period(periodProvider);
-        // safe from overflow
-        long totalNanos = period.getHours() * NANOS_PER_HOUR +
+
+        long baseNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
                 period.getSeconds() * NANOS_PER_SECOND;
-        return minusNanosWithOverflow(totalNanos);  // TODO period.getNanos()
+        long totalNanos = MathUtils.safeAdd(baseNanos, period.getNanos());
+
+        return minusNanosWithOverflow(totalNanos);
     }
 
     /**

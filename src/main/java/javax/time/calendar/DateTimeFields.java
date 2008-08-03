@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * A set of date-time fields which may or may not be valid.
@@ -47,12 +49,12 @@ import java.util.Map.Entry;
  * for example a month is not limited to the normal range of 1 to 12.
  * Instances must therefore be treated with care.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class DateTimeFields
         implements CalendricalProvider, DateProvider, TimeProvider,
             DateMatcher, TimeMatcher, DateTimeProvider, Iterable<DateTimeFieldRule>, Serializable {
-// TODO: Use TreeMap
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -268,7 +270,7 @@ public final class DateTimeFields
      * @return an iterator over the fields in this object, never null
      */
     public Iterator<DateTimeFieldRule> iterator() {
-        return fieldValueMap.keySet().iterator();
+        return toOrdered().keySet().iterator();
     }
 
     //-----------------------------------------------------------------------
@@ -556,7 +558,7 @@ public final class DateTimeFields
      * @throws InvalidCalendarFieldException if any date field does not match the specified date
      */
     public DateTimeFields validateMatchesDate(LocalDate date) {
-        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
+        for (DateTimeFieldRule field : new TreeSet<DateTimeFieldRule>(fieldValueMap.keySet())) {
             if (date.isSupported(field) && date.get(field) != fieldValueMap.get(field)) {
                 throw new InvalidCalendarFieldException(
                     "LocalDate " + date + " does not match the field " +
@@ -762,7 +764,18 @@ public final class DateTimeFields
      */
     @Override
     public String toString() {
-        return fieldValueMap.toString();
+        return toOrdered().toString();
+    }
+
+    /**
+     * @return ordered representation of internal map
+     */
+    private TreeMap<DateTimeFieldRule, Integer> toOrdered() {
+        //TODO: consider caching
+        TreeMap<DateTimeFieldRule, Integer> ordered =
+                new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
+        ordered.putAll(fieldValueMap);
+        return ordered;
     }
 
 }

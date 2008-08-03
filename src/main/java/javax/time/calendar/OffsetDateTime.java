@@ -1226,7 +1226,7 @@ public final class OffsetDateTime
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDateTime minus(PeriodProvider periodProvider) {
-        LocalDateTime newDT = dateTime.plus(periodProvider);
+        LocalDateTime newDT = dateTime.minus(periodProvider);
         return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
     }
 
