@@ -276,13 +276,17 @@ public final class DateAdjusters {
         return new NextOrCurrentDayOfWeek(true, dow);
     }
 
+    /**
+     * Implementation of next or current day of week.
+     */
     private static final class NextOrCurrentDayOfWeek implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
-
+        /** Whether the current date is a valid answer. */
         private final boolean currentValid;
+        /** The day of week to find. */
         private final DayOfWeek dow;
 
         private NextOrCurrentDayOfWeek(boolean currentValid, DayOfWeek dow) {
@@ -314,7 +318,7 @@ public final class DateAdjusters {
             if (!(obj instanceof NextOrCurrentDayOfWeek)) {
                 return false;
             }
-            final NextOrCurrentDayOfWeek other = (NextOrCurrentDayOfWeek)obj;
+            final NextOrCurrentDayOfWeek other = (NextOrCurrentDayOfWeek) obj;
             if (this.currentValid != other.currentValid) {
                 return false;
             }
