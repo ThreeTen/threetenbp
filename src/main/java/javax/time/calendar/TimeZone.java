@@ -449,7 +449,14 @@ public abstract class TimeZone implements Serializable {
          */
         @Override
         public String toString() {
-            return "Discontinuity from " + offsetBefore + " to " + offsetAfter;
+            StringBuilder buf = new StringBuilder();
+            buf.append("Discontinuity ")
+                .append(isGap() ? "gap" : "overlap")
+                .append(" from ")
+                .append(offsetBefore)
+                .append(" to ")
+                .append(offsetAfter);
+            return buf.toString();
         }
     }
 
@@ -714,7 +721,7 @@ public abstract class TimeZone implements Serializable {
                 case FEBRUARY:
                 case NOVEMBER:
                 case DECEMBER:
-                    return ZoneOffset.UTC;
+                    return ZoneOffset.zoneOffset(standardOffset);
                 case MARCH:
                     offsetAfter += 1;
                     break;
@@ -724,7 +731,7 @@ public abstract class TimeZone implements Serializable {
                 case JULY:
                 case AUGUST:
                 case SEPTEMBER:
-                    return ZoneOffset.zoneOffset("+01:00");
+                    return ZoneOffset.zoneOffset(standardOffset + 1);
                 case OCTOBER:
                     offsetBefore += 1;
                     break;
@@ -750,7 +757,7 @@ public abstract class TimeZone implements Serializable {
                 case FEBRUARY:
                 case NOVEMBER:
                 case DECEMBER:
-                    return ZoneOffset.UTC;
+                    return ZoneOffset.zoneOffset(standardOffset);
                 case MARCH:
                     offsetAfter += 1;
                     break;
@@ -760,7 +767,7 @@ public abstract class TimeZone implements Serializable {
                 case JULY:
                 case AUGUST:
                 case SEPTEMBER:
-                    return ZoneOffset.zoneOffset("+01:00");
+                    return ZoneOffset.zoneOffset(standardOffset + 1);
                 case OCTOBER:
                     offsetBefore += 1;
                     break;
