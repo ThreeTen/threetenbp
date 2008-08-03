@@ -864,19 +864,19 @@ public final class LocalTime
         return total;
     }
 
-    /**
-     * Extracts the time as millis of day,
-     * from <code>0</code> to <code>24 * 60 * 60 * 1000 - 1</code>.
-     *
-     * @return the milli of day equivalent to this time
-     */
-    int toMilliOfDay() {
-        if (this == MIDNIGHT) {
-            return 0;
-        }
-        long total = toNanoOfDay();
-        return (int) (total / 1000000);
-    }
+//    /**
+//     * Extracts the time as millis of day,
+//     * from <code>0</code> to <code>24 * 60 * 60 * 1000 - 1</code>.
+//     *
+//     * @return the milli of day equivalent to this time
+//     */
+//    int toMilliOfDay() {
+//        if (this == MIDNIGHT) {
+//            return 0;
+//        }
+//        long total = toNanoOfDay();
+//        return (int) (total / 1000000);
+//    }
 
     /**
      * Extracts the time as nanos of day,
