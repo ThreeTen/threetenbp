@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,7 +43,13 @@ import javax.time.calendar.TimeZone.Discontinuity;
  *
  * @author Stephen Colebourne
  */
-public class ZoneResolvers {
+public final class ZoneResolvers {
+
+    /**
+     * Private constructor.
+     */
+    private ZoneResolvers() {
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -68,7 +74,8 @@ public class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            throw new CalendricalException("Local time " + newDateTime + " does not exist in time zone " + zone);
+            throw new CalendricalException("Local time " + newDateTime + " does not exist in time zone " +
+                    zone + " due to a gap in the local time-line");
         }
         /** {@inheritDoc} */
         @Override
@@ -153,11 +160,16 @@ public class ZoneResolvers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the retain offset resolver.
+     * Returns the retain offset resolver, which returns the instant after the
+     * transition for gaps, and the same offset for overlaps.
      * <p>
-     * For both a gap and an offset, this resolver examines the offset of the
-     * original object on which the calculation occured. If that offset is one
-     * of those that is valid, then it is used.
+     * This resolver is the same as the {{@link #postTransition()} resolver with
+     * one additional rule. When processing an overlap, this resolver attempts
+     * to use the same offset as the offset specified in the old date-time.
+     * If that offset is invalid then the later offset is chosen
+     * <p>
+     * This resolver is most commonly useful when adding or subtracting time
+     * from a <code>ZonedDateTime</code>.
      *
      * @return the retain offset resolver, never null
      */
@@ -177,9 +189,6 @@ public class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            if (oldDateTime != null && discontinuity.containsOffset(oldDateTime.getOffset())) {
-                return OffsetDateTime.dateTime(discontinuity.getTransition(), oldDateTime.getOffset());
-            }
             return OffsetDateTime.dateTime(discontinuity.getTransition(), discontinuity.getOffsetAfter());
         }
         /** {@inheritDoc} */
@@ -196,10 +205,13 @@ public class ZoneResolvers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the push forward resolver.
+     * Returns the push forward resolver, which changes the time of the result
+     * in a gap by adding the lenth of the gap.
      * <p>
      * If the discontinuity is a gap, then the resolver will add the length of
-     * the gap in seconds to the local-time.
+     * the gap in seconds to the local time.
+     * For example, given a gap from 01:00 to 02:00 and a time of 01:20, this
+     * will add one hour to result in 02:20.
      * <p>
      * If the discontinuity is an overlap, then the resolver will choose the
      * later of the two offsets.

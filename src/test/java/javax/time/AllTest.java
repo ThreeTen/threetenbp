@@ -50,6 +50,7 @@ import javax.time.calendar.TestOffsetTime;
 import javax.time.calendar.TestTimeZone;
 import javax.time.calendar.TestYearMonth;
 import javax.time.calendar.TestZoneOffset;
+import javax.time.calendar.TestZoneResolvers;
 import javax.time.calendar.TestZonedDateTime;
 import javax.time.calendar.field.TestAmPmOfDay;
 import javax.time.calendar.field.TestDayOfMonth;
@@ -130,6 +131,7 @@ public class AllTest {
             TestYearMonth.class,
             TestZonedDateTime.class,
             TestZoneOffset.class,
+            TestZoneResolvers.class,
             // calendar fields
             TestAmPmOfDay.class,
             TestDayOfMonth.class,

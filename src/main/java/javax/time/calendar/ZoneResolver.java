@@ -66,9 +66,9 @@ public abstract class ZoneResolver {
     /**
      * Resolves the new local date-time to an offset date-time using the zone.
      * <p>
-     * This method forwards to an internal package scoped method that calls
-     * {@link #handleGap} or {@link #handleOverlap}. The package scoped method
-     * will validate the result to ensure that the result is valid for the zone.
+     * This method forwards to an internal method that calls {@link #handleGap}
+     * or {@link #handleOverlap}. The internal method will validate the result
+     * to ensure it is valid for the zone.
      *
      * @param zone  the time zone, not null
      * @param newDateTime  the new date-time, not null
@@ -115,7 +115,7 @@ public abstract class ZoneResolver {
             throw new CalendricalException(
                     "ZoneResolver implementation must not return null: " + getClass().getName());
         }
-        if (result.toLocalDateTime().equals(newDateTime)) {
+        if (result.toLocalDateTime().equals(newDateTime) == false) {
             offsetInfo = zone.getOffsetInfo(result.toLocalDateTime());
             if (offsetInfo instanceof ZoneOffset) {
                 if (result.getOffset().equals(offsetInfo) == false) {
@@ -125,6 +125,10 @@ public abstract class ZoneResolver {
                 return result;
             }
             discontinuity = (Discontinuity) offsetInfo;
+        }
+        if (discontinuity.isGap()) {
+            throw new CalendricalException(
+                    "ZoneResolver implementation must return a valid date-time and offset for the zone: " + getClass().getName());
         }
         if (discontinuity.containsOffset(result.getOffset()) == false) {
             throw new CalendricalException(
