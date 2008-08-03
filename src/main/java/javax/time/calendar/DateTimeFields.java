@@ -37,9 +37,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 /**
  * A set of date-time fields which may or may not be valid.
@@ -59,7 +59,7 @@ public final class DateTimeFields
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
     /** A singleton empty field set, placing no restrictions on the date-time. */
-    private static final DateTimeFields EMPTY = new DateTimeFields(Collections.<DateTimeFieldRule, Integer>emptyMap());
+    private static final DateTimeFields EMPTY = new DateTimeFields(createMap());
 
     /**
      * The date time map, never null, may be empty.
@@ -91,7 +91,7 @@ public final class DateTimeFields
         if (fieldRule == null) {
             throw new NullPointerException("The field rule must not be null");
         }
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        TreeMap<DateTimeFieldRule, Integer> map = createMap();
         map.put(fieldRule, value);
         return new DateTimeFields(map);
     }
@@ -114,7 +114,7 @@ public final class DateTimeFields
         if (fieldRule1 == null || fieldRule2 == null) {
             throw new NullPointerException("The field rules must not be null");
         }
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        TreeMap<DateTimeFieldRule, Integer> map = createMap();
         map.put(fieldRule1, value1);
         map.put(fieldRule2, value2);
         return new DateTimeFields(map);
@@ -140,14 +140,27 @@ public final class DateTimeFields
             return EMPTY;
         }
         // use a hash map to check for nulls, as tree map and others can throw NPE
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
-        if (map.containsKey(null)) {
-            throw new NullPointerException("Null keys are not permitted in field-value map");
-        }
-        if (map.containsValue(null)) {
-            throw new NullPointerException("Null values are not permitted in field-value map");
+        TreeMap<DateTimeFieldRule, Integer> map = createMap();
+        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+            DateTimeFieldRule key = entry.getKey();
+            Integer value = entry.getValue();
+            if (key == null) {
+                throw new NullPointerException("Null keys are not permitted in field-value map");
+            }
+            if (value == null) {
+                throw new NullPointerException("Null values are not permitted in field-value map");
+            }
+            map.put(key, value);
         }
         return new DateTimeFields(map);
+    }
+
+    /**
+     * Creates a new empty map.
+     * @return ordered representation of internal map
+     */
+    private static TreeMap<DateTimeFieldRule, Integer> createMap() {
+        return new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
     }
 
     //-----------------------------------------------------------------------
@@ -155,7 +168,7 @@ public final class DateTimeFields
      * Constructor.
      * @param assignedMap  the map of fields, which is assigned, not null
      */
-    private DateTimeFields(Map<DateTimeFieldRule, Integer> assignedMap) {
+    private DateTimeFields(TreeMap<DateTimeFieldRule, Integer> assignedMap) {
         fieldValueMap = assignedMap;
     }
 
@@ -179,6 +192,9 @@ public final class DateTimeFields
      * @return true if the field is supported, false otherwise
      */
     public boolean isSupported(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
+            return false;
+        }
         return fieldValueMap.containsKey(fieldRule);
     }
 
@@ -248,6 +264,9 @@ public final class DateTimeFields
      * @return the value mapped to the specified field, null if not present
      */
     public Integer getValueQuiet(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
+            return null;
+        }
         return fieldValueMap.get(fieldRule);
     }
 
@@ -270,7 +289,7 @@ public final class DateTimeFields
      * @return an iterator over the fields in this object, never null
      */
     public Iterator<DateTimeFieldRule> iterator() {
-        return toOrdered().keySet().iterator();
+        return fieldValueMap.keySet().iterator();
     }
 
     //-----------------------------------------------------------------------
@@ -290,7 +309,7 @@ public final class DateTimeFields
         if (fieldRule == null) {
             throw new NullPointerException("The field rule must not be null");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
+        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         clonedMap.put(fieldRule, value);
         return new DateTimeFields(clonedMap);
     }
@@ -320,7 +339,7 @@ public final class DateTimeFields
         if (fieldValueMap.containsValue(null)) {
             throw new NullPointerException("Null values are not permitted in field-value map");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = new HashMap<DateTimeFieldRule, Integer>(this.fieldValueMap);
+        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         clonedMap.putAll(fieldValueMap);
         return new DateTimeFields(clonedMap);
     }
@@ -343,7 +362,7 @@ public final class DateTimeFields
         if (fields.size() == 0 || fields == this) {
             return this;
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
+        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         clonedMap.putAll(fields.fieldValueMap);
         return new DateTimeFields(clonedMap);
     }
@@ -363,7 +382,7 @@ public final class DateTimeFields
         if (fieldRule == null) {
             throw new NullPointerException("The field rule must not be null");
         }
-        Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
+        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         if (clonedMap.remove(fieldRule) == null) {
             return this;
         }
@@ -385,7 +404,7 @@ public final class DateTimeFields
      */
     public DateTimeFields mergeFields() {
         if (fieldValueMap.size() > 1) {
-            Map<DateTimeFieldRule, Integer> clonedMap = toFieldValueMap();
+            TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
             for (DateTimeFieldRule fieldRule : fieldValueMap.keySet()) {
                 fieldRule.mergeFields(clonedMap);
             }
@@ -643,6 +662,15 @@ public final class DateTimeFields
     }
 
     /**
+     * Clones the field-value map.
+     *
+     * @return a clone of the field-value map, never null
+     */
+    private TreeMap<DateTimeFieldRule, Integer> clonedMap() {
+        return new TreeMap<DateTimeFieldRule, Integer>(fieldValueMap);
+    }
+
+    /**
      * Converts this object to a LocalDate.
      * <p>
      * This method will validate and merge the fields to create a date.
@@ -764,18 +792,7 @@ public final class DateTimeFields
      */
     @Override
     public String toString() {
-        return toOrdered().toString();
-    }
-
-    /**
-     * @return ordered representation of internal map
-     */
-    private TreeMap<DateTimeFieldRule, Integer> toOrdered() {
-        //TODO: consider caching
-        TreeMap<DateTimeFieldRule, Integer> ordered =
-                new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
-        ordered.putAll(fieldValueMap);
-        return ordered;
+        return fieldValueMap.toString();
     }
 
 }

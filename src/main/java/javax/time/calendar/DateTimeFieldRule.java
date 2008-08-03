@@ -530,12 +530,13 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     //-----------------------------------------------------------------------
     /**
      * Compares this DateTimeFieldRule to another based on the period unit
-     * followed by the period range.
+     * followed by the period range followed by the chronology name.
      * <p>
      * The period unit is compared first, so MinuteOfHour will be less than
      * HourOfDay, which will be less than DayOfWeek. When the period unit is
      * the same, the period range is compared, so DayOfWeek is less than
-     * DayOfMonth, which is less than DayOfYear.
+     * DayOfMonth, which is less than DayOfYear. Finally, the chronology name
+     * is compared.
      *
      * @param other  the other type to compare to, not null
      * @return the comparator result, negative if less, postive if greater, zero if equal
@@ -547,7 +548,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
             return cmp;
         }
         if (this.getPeriodRange() == other.getPeriodRange()) {
-            return 0;
+            return chronology.getName().compareTo(other.chronology.getName());
         }
         if (this.getPeriodRange() == null) {
             return 1;
@@ -555,7 +556,11 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         if (other.getPeriodRange() == null) {
             return -1;
         }
-        return this.getPeriodRange().compareTo(other.getPeriodRange());
+        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
+        if (cmp != 0) {
+            return cmp;
+        }
+        return chronology.getName().compareTo(other.chronology.getName());
     }
 
     //-----------------------------------------------------------------------
