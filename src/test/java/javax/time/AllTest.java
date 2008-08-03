@@ -45,6 +45,7 @@ import javax.time.calendar.TestOffsetDate;
 import javax.time.calendar.TestOffsetDateTime;
 import javax.time.calendar.TestOffsetDateTime_instants;
 import javax.time.calendar.TestOffsetTime;
+import javax.time.calendar.TestTimeZone;
 import javax.time.calendar.TestYearMonth;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.TestZonedDateTime;
@@ -122,6 +123,7 @@ public class AllTest {
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,
             TestOffsetTime.class,
+            TestTimeZone.class,
             TestYearMonth.class,
             TestZonedDateTime.class,
             TestZoneOffset.class,

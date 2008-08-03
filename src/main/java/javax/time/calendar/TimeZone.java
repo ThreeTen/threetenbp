@@ -32,10 +32,13 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
+import javax.time.calendar.field.DayOfWeek;
 
 /**
  * A time zone representing the set of rules by which the zone offset
@@ -76,14 +79,64 @@ public abstract class TimeZone implements Serializable {
         TimeZone zone = CACHE.get(timeZoneID);
         if (zone == null) {
             if (timeZoneID.startsWith("UTC") || timeZoneID.startsWith("GMT")) {  // not sure about GMT
-                if (timeZoneID.length() == 3) {
-                    return UTC;
-                } else {
-                    return timeZone(ZoneOffset.zoneOffset(timeZoneID.substring(3)));
-                }
+                // 'UTC' will have been dealy with by the cache
+                return timeZone(ZoneOffset.zoneOffset(timeZoneID.substring(3)));
             } else {
-                // TODO
-                zone = UTC;
+                Map<String, Integer> map = new HashMap<String, Integer>();
+                map.put("Europe/Dublin", 0);
+                map.put("Europe/Lisbon", 0);
+                map.put("Europe/London", 0);
+                map.put("Europe/Amsterdam", 1);
+                map.put("Europe/Andorra", 1);
+                map.put("Europe/Belgrade", 1);
+                map.put("Europe/Ljubljana", 1);
+                map.put("Europe/Podgorica", 1);
+                map.put("Europe/Sarajevo", 1);
+                map.put("Europe/Skopje", 1);
+                map.put("Europe/Zagreb", 1);
+                map.put("Europe/Berlin", 1);
+                map.put("Europe/Brussels", 1);
+                map.put("Europe/Budapest", 1);
+                map.put("Europe/Copenhagen", 1);
+                map.put("Europe/Gibraltar", 1);
+                map.put("Europe/Luxembourg", 1);
+                map.put("Europe/Madrid", 1);
+                map.put("Europe/Malta", 1);
+                map.put("Europe/Monaco", 1);
+                map.put("Europe/Oslo", 1);
+                map.put("Europe/Paris", 1);
+                map.put("Europe/Prague", 1);
+                map.put("Europe/Bratislava", 1);
+                map.put("Europe/Rome", 1);
+                map.put("Europe/San_Marino", 1);
+                map.put("Europe/Vatican", 1);
+                map.put("Europe/Stockholm", 1);
+                map.put("Europe/Tirane", 1);
+                map.put("Europe/Vaduz", 1);
+                map.put("Europe/Vienna", 1);
+                map.put("Europe/Warsaw", 1);
+                map.put("Europe/Zurich", 1);
+                map.put("Europe/Athens", 2);
+                map.put("Europe/Bucharest", 2);
+                map.put("Europe/Chisinau", 2);
+                map.put("Europe/Helsinki", 2);
+                map.put("Asia/Istanbul", 2);
+                map.put("Europe/Istanbul", 2);
+                map.put("Europe/Kaliningrad", 2);
+                map.put("Europe/Kiev", 2);
+                map.put("Europe/Minsk", 2);
+                map.put("Europe/Riga", 2);
+                map.put("Europe/Sofia", 2);
+                map.put("Europe/Tallinn", 2);
+                map.put("Europe/Vilnius", 2);
+                Integer standardOffset = map.get(timeZoneID);
+                if (standardOffset != null) {
+                    zone = new EuropeZone(timeZoneID, standardOffset);
+                } else {
+                    zone = UTC;
+                }
+                TimeZone cached = CACHE.putIfAbsent(timeZoneID, zone);
+                zone = (cached != null ? cached : zone);
             }
         }
         return zone;
@@ -115,15 +168,6 @@ public abstract class TimeZone implements Serializable {
     private TimeZone(String timeZoneID) {
         super();
         this.timeZoneID = timeZoneID;
-    }
-
-    /**
-     * Resolves singletons.
-     *
-     * @return the singleton instance
-     */
-    private Object readResolve() {
-        return TimeZone.timeZone(timeZoneID);
     }
 
     //-----------------------------------------------------------------------
@@ -260,7 +304,7 @@ public abstract class TimeZone implements Serializable {
     /**
      * Returns a string representation of the time zone using the ID.
      *
-     * @return the number of years in ISO8601 string format
+     * @return the time zone ID, never null
      */
     @Override
     public String toString() {
@@ -405,7 +449,7 @@ public abstract class TimeZone implements Serializable {
          */
         @Override
         public String toString() {
-            return "Discontinuity";
+            return "Discontinuity from " + offsetBefore + " to " + offsetAfter;
         }
     }
 
@@ -558,6 +602,13 @@ public abstract class TimeZone implements Serializable {
             super(id);
             this.offset = offset;
         }
+        /**
+         * Resolves singletons.
+         * @return the singleton instance
+         */
+        private Object readResolve() {
+            return TimeZone.timeZone(getID());
+        }
         /** {@inheritDoc} */
         @Override
         public ZoneOffset getOffset(Instant instant) {
@@ -572,6 +623,169 @@ public abstract class TimeZone implements Serializable {
         @Override
         public boolean isFixed() {
             return true;
+        }
+    }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Implementation of time zone based on java.util.TimeZone.
+//     */
+//    private static final class UtilZone extends TimeZone {
+//        /** The fixed offset. */
+//        private final java.util.TimeZone utilZone;
+//        /**
+//         * Constructor.
+//         * @param id  the time zone id, not null
+//         * @param utilZone  the java.util.TimeZone instance, not null
+//         */
+//        private UtilZone(String id, java.util.TimeZone utilZone) {
+//            super(id);
+//            this.utilZone = utilZone;
+//        }
+//        /**
+//         * Resolves singletons.
+//         * @return the singleton instance
+//         */
+//        private Object readResolve() {
+//            return TimeZone.timeZone(getID());
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public ZoneOffset getOffset(Instant instant) {
+//            int offsetMillis = utilZone.getOffset(instant.toEpochMillis());
+//            return ZoneOffset.forTotalSeconds(offsetMillis / 1000);
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+////            // TODO: better algorithm / overflows
+////            long wallMillis = dateTime.toLocalDate().toModifiedJulianDays() * 24 * 60 * 60 * 1000 +
+////                    dateTime.toLocalTime().toMilliOfDay();
+////            int offsetMillis = utilZone.getOffset(wallMillis);
+////            long millis = wallMillis - offsetMillis;
+////            return ZoneOffset.forTotalSeconds(offsetMillis / 1000);
+//            int offsetMillis = utilZone.getOffset(
+//                    GregorianCalendar.BC,
+//                    dateTime.getYear().getValue(),
+//                    dateTime.getMonthOfYear().getValue() - 1,
+//                    dateTime.getDayOfMonth().getValue(),
+//                    Calendar.SUNDAY,
+//                    dateTime.toLocalTime().toMilliOfDay());
+//            return ZoneOffset.forTotalSeconds(offsetMillis / 1000);
+//        }
+//        /** {@inheritDoc} */
+//        @Override
+//        public boolean isFixed() {
+//            return utilZone.useDaylightTime();
+//        }
+//    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of time zone based on java.util.TimeZone.
+     */
+    private static final class EuropeZone extends TimeZone {
+        /** The standard offset in hours. */
+        private final int standardOffset;
+        /**
+         * Constructor.
+         * @param id  the time zone id, not null
+         * @param utilZone  the java.util.TimeZone instance, not null
+         */
+        private EuropeZone(String id, int standardOffset) {
+            super(id);
+            this.standardOffset = standardOffset;
+        }
+        /**
+         * Resolves singletons.
+         * @return the singleton instance
+         */
+        private Object readResolve() {
+            return TimeZone.timeZone(getID());
+        }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneOffset getOffset(Instant instant) {
+            OffsetDateTime dt = OffsetDateTime.dateTime(instant, ZoneOffset.UTC);
+            int offsetBefore = standardOffset;
+            int offsetAfter = standardOffset;
+            switch (dt.getMonthOfYear()) {
+                case JANUARY:
+                case FEBRUARY:
+                case NOVEMBER:
+                case DECEMBER:
+                    return ZoneOffset.UTC;
+                case MARCH:
+                    offsetAfter += 1;
+                    break;
+                case APRIL:
+                case MAY:
+                case JUNE:
+                case JULY:
+                case AUGUST:
+                case SEPTEMBER:
+                    return ZoneOffset.zoneOffset("+01:00");
+                case OCTOBER:
+                    offsetBefore += 1;
+                    break;
+            }
+            int dom = dt.getDayOfMonth().getValue();
+            if (dom < 25) {
+                return ZoneOffset.zoneOffset(offsetBefore);
+            }
+            if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(1, 0), ZoneOffset.UTC);
+                return dt.isBefore(cutover) ? ZoneOffset.zoneOffset(offsetBefore) : ZoneOffset.zoneOffset(offsetAfter);
+            }
+            int daysToSun = 7 - dt.getDayOfWeek().getValue();
+            return dom + daysToSun <= 31 ? ZoneOffset.zoneOffset(offsetBefore) : ZoneOffset.zoneOffset(offsetAfter);
+        }
+        /** {@inheritDoc} */
+        @Override
+        public OffsetInfo getOffsetInfo(LocalDateTime dt) {
+            int offsetBefore = standardOffset;
+            int offsetAfter = standardOffset;
+            switch (dt.getMonthOfYear()) {
+                case JANUARY:
+                case FEBRUARY:
+                case NOVEMBER:
+                case DECEMBER:
+                    return ZoneOffset.UTC;
+                case MARCH:
+                    offsetAfter += 1;
+                    break;
+                case APRIL:
+                case MAY:
+                case JUNE:
+                case JULY:
+                case AUGUST:
+                case SEPTEMBER:
+                    return ZoneOffset.zoneOffset("+01:00");
+                case OCTOBER:
+                    offsetBefore += 1;
+                    break;
+            }
+            int dom = dt.getDayOfMonth().getValue();
+            if (dom < 25) {
+                return ZoneOffset.zoneOffset(offsetBefore);
+            }
+            if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                if (dt.getHourOfDay().getValue() < 1 + standardOffset) {
+                    return ZoneOffset.zoneOffset(offsetBefore);
+                }
+                if (dt.getHourOfDay().getValue() >= 2 + standardOffset) {
+                    return ZoneOffset.zoneOffset(offsetAfter);
+                }
+                OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(1, 0), ZoneOffset.UTC);
+                return new Discontinuity(cutover.toInstant(), ZoneOffset.zoneOffset(offsetBefore), ZoneOffset.zoneOffset(offsetAfter));
+            }
+            int daysToSun = 7 - dt.getDayOfWeek().getValue();
+            return dom + daysToSun <= 31 ? ZoneOffset.zoneOffset(offsetBefore) : ZoneOffset.zoneOffset(offsetAfter);
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isFixed() {
+            return false;
         }
     }
 
