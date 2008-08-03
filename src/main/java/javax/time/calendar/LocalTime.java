@@ -534,7 +534,6 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
-    //TODO: consider delegating plus* methods to plus*WithOverflow versions
     /**
      * Returns a copy of this LocalTime with the specified period added.
      * <p>
