@@ -23,13 +23,6 @@
         </sequential>
     </macrodef>
 
-    <path id="codegen.path">
-        <pathelement location="${build.codegen}" />
-        <fileset dir="lib/main">
-            <include name="**/*.jar" />
-        </fileset>
-    </path>
-
     <path id="main.path">
         <pathelement location="${build.main}" />
         <fileset dir="lib/main">
@@ -55,11 +48,6 @@
         <mkdir dir="${lib.test}" />
         <mkdir dir="${lib.coverage}" />
 
-        <get-dependency group="velocity" artifact="velocity" version="1.5" dest="${lib.main}" />
-        <get-dependency group="commons-collections" artifact="commons-collections" version="3.1" dest="${lib.main}" />
-        <get-dependency group="commons-lang" artifact="commons-lang" version="2.1" dest="${lib.main}" />
-        <get-dependency group="oro" artifact="oro" version="2.0.8" dest="${lib.main}" />
-
         <get-dependency group="org/testng" artifact="testng" version="5.1" variant="-jdk15" dest="${lib.test}" />
 
         <get-dependency group="emma" artifact="emma" version="2.0.5312" dest="${lib.coverage}" />
@@ -82,16 +70,6 @@
                windowtitle="JSR-310 - Date and Time API" 
                failonerror="true" packagenames="javax.time**" />
    </target>
-
-    <target name="compile-codegen">
-        <mkdir dir="${build.codegen}" />
-        <javac srcdir="${src.codegen}" destdir="${build.codegen}" classpathref="codegen.path" />
-        <copy todir="${build.codegen}">
-          <fileset dir="${src.codegen}">
-            <exclude name="**/*.java" />
-          </fileset>
-        </copy>
-    </target>
 
     <target name="compile-tests" depends="compile" description="compile the tests">
         <mkdir dir="${build.test}" />
@@ -144,13 +122,8 @@
     </target>
 
     <target name="clean" description="clean up">
-        <delete dir="${build.main}" />
-        <delete dir="${build.test}" />
+        <delete dir="${build}" />
         <delete dir="${dist}" />
-    </target>
-
-    <target name="codegen" depends="compile-codegen">
-        <java classname="jsr310.codegen.CodeGen" classpathref="codegen.path" fork="true"/>
     </target>
 
     <target name="examples" depends="compile-tests">

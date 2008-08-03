@@ -8,11 +8,6 @@
             <properties/>
             <folders>
                 <source-folder>
-                    <label>src\codegen\java</label>
-                    <type>java</type>
-                    <location>src/codegen/java</location>
-                </source-folder>
-                <source-folder>
                     <label>src\main\java</label>
                     <type>java</type>
                     <location>src/main/java</location>
@@ -43,11 +38,6 @@
             </ide-actions>
             <export>
                 <type>folder</type>
-                <location>build/codegen</location>
-                <build-target>compile</build-target>
-            </export>
-            <export>
-                <type>folder</type>
                 <location>build/main</location>
                 <build-target>compile</build-target>
             </export>
@@ -58,10 +48,6 @@
             </export>
             <view>
                 <items>
-                    <source-folder style="packages">
-                        <label>src\codegen\java</label>
-                        <location>src/codegen/java</location>
-                    </source-folder>
                     <source-folder style="packages">
                         <label>src\main\java</label>
                         <location>src/main/java</location>
@@ -80,22 +66,11 @@
                     <ide-action name="test"/>
                     <ide-action name="rebuild"/>
                     <ide-action name="javadoc"/>
-                    <separator />
-                    <action>
-                        <label>Run Code Generator</label>
-                        <target>codegen</target>
-                    </action>
                 </context-menu>
             </view>
             <subprojects/>
         </general-data>
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
-            <compilation-unit>
-                <package-root>src/codegen/java</package-root>
-                <classpath mode="compile">lib/main/commons-collections-3.1.jar;lib/main/commons-lang-2.1.jar;lib/main/oro-2.0.8.jar;lib/main/velocity-1.5.jar</classpath>
-                <built-to>build/codegen</built-to>
-                <source-level>1.5</source-level>
-            </compilation-unit>
             <compilation-unit>
                 <package-root>src/main/java</package-root>
                 <built-to>build/main</built-to>
