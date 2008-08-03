@@ -82,6 +82,7 @@ public abstract class TimeZone implements Serializable {
                 // 'UTC' will have been dealy with by the cache
                 return timeZone(ZoneOffset.zoneOffset(timeZoneID.substring(3)));
             } else {
+                // TODO: proper zone provider
                 Map<String, Integer> map = new HashMap<String, Integer>();
                 map.put("Europe/Dublin", 0);
                 map.put("Europe/Lisbon", 0);
@@ -133,7 +134,21 @@ public abstract class TimeZone implements Serializable {
                 if (standardOffset != null) {
                     zone = new EuropeZone(timeZoneID, standardOffset);
                 } else {
-                    zone = UTC;
+                    map = new HashMap<String, Integer>();
+                    map.put("America/New_York", -5);
+                    map.put("America/Toronto", -5);
+                    map.put("America/Chicago", -6);
+                    map.put("America/Winnipeg", -6);
+                    map.put("America/Denver", -7);
+                    map.put("America/Edmonton", -7);
+                    map.put("America/Los_Angeles", -8);
+                    map.put("America/Vancouver", -8);
+                    standardOffset = map.get(timeZoneID);
+                    if (standardOffset != null) {
+                        zone = new AmericaZone(timeZoneID, standardOffset);
+                    } else {
+                        throw new IllegalArgumentException("Unsupported time zone: " + timeZoneID);
+                    }
                 }
                 TimeZone cached = CACHE.putIfAbsent(timeZoneID, zone);
                 zone = (cached != null ? cached : zone);
@@ -689,11 +704,13 @@ public abstract class TimeZone implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Implementation of time zone based on java.util.TimeZone.
+     * Implementation of European rule time zones.
      */
     private static final class EuropeZone extends TimeZone {
         /** The standard offset in hours. */
-        private final int standardOffset;
+        private final ZoneOffset standardOffset;
+        /** The standard offset in hours. */
+        private final ZoneOffset summerOffset;
         /**
          * Constructor.
          * @param id  the time zone id, not null
@@ -701,7 +718,8 @@ public abstract class TimeZone implements Serializable {
          */
         private EuropeZone(String id, int standardOffset) {
             super(id);
-            this.standardOffset = standardOffset;
+            this.standardOffset = ZoneOffset.zoneOffset(standardOffset);
+            this.summerOffset = ZoneOffset.zoneOffset(standardOffset + 1);
         }
         /**
          * Resolves singletons.
@@ -714,16 +732,16 @@ public abstract class TimeZone implements Serializable {
         @Override
         public ZoneOffset getOffset(Instant instant) {
             OffsetDateTime dt = OffsetDateTime.dateTime(instant, ZoneOffset.UTC);
-            int offsetBefore = standardOffset;
-            int offsetAfter = standardOffset;
+            ZoneOffset offsetBefore = standardOffset;
+            ZoneOffset offsetAfter = standardOffset;
             switch (dt.getMonthOfYear()) {
                 case JANUARY:
                 case FEBRUARY:
                 case NOVEMBER:
                 case DECEMBER:
-                    return ZoneOffset.zoneOffset(standardOffset);
+                    return standardOffset;
                 case MARCH:
-                    offsetAfter += 1;
+                    offsetAfter = summerOffset;
                     break;
                 case APRIL:
                 case MAY:
@@ -731,35 +749,35 @@ public abstract class TimeZone implements Serializable {
                 case JULY:
                 case AUGUST:
                 case SEPTEMBER:
-                    return ZoneOffset.zoneOffset(standardOffset + 1);
+                    return summerOffset;
                 case OCTOBER:
-                    offsetBefore += 1;
+                    offsetBefore = summerOffset;
                     break;
             }
             int dom = dt.getDayOfMonth().getValue();
             if (dom < 25) {
-                return ZoneOffset.zoneOffset(offsetBefore);
+                return offsetBefore;
             }
             if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(1, 0), ZoneOffset.UTC);
-                return dt.isBefore(cutover) ? ZoneOffset.zoneOffset(offsetBefore) : ZoneOffset.zoneOffset(offsetAfter);
+                return instant.isBefore(cutover.toInstant()) ? offsetBefore : offsetAfter;
             }
             int daysToSun = 7 - dt.getDayOfWeek().getValue();
-            return dom + daysToSun <= 31 ? ZoneOffset.zoneOffset(offsetBefore) : ZoneOffset.zoneOffset(offsetAfter);
+            return dom + daysToSun <= 31 ? offsetBefore : offsetAfter;
         }
         /** {@inheritDoc} */
         @Override
         public OffsetInfo getOffsetInfo(LocalDateTime dt) {
-            int offsetBefore = standardOffset;
-            int offsetAfter = standardOffset;
+            ZoneOffset offsetBefore = standardOffset;
+            ZoneOffset offsetAfter = standardOffset;
             switch (dt.getMonthOfYear()) {
                 case JANUARY:
                 case FEBRUARY:
                 case NOVEMBER:
                 case DECEMBER:
-                    return ZoneOffset.zoneOffset(standardOffset);
+                    return standardOffset;
                 case MARCH:
-                    offsetAfter += 1;
+                    offsetAfter = summerOffset;
                     break;
                 case APRIL:
                 case MAY:
@@ -767,27 +785,165 @@ public abstract class TimeZone implements Serializable {
                 case JULY:
                 case AUGUST:
                 case SEPTEMBER:
-                    return ZoneOffset.zoneOffset(standardOffset + 1);
+                    return summerOffset;
                 case OCTOBER:
-                    offsetBefore += 1;
+                    offsetBefore = summerOffset;
                     break;
             }
             int dom = dt.getDayOfMonth().getValue();
             if (dom < 25) {
-                return ZoneOffset.zoneOffset(offsetBefore);
+                return offsetBefore;
             }
             if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                if (dt.getHourOfDay().getValue() < 1 + standardOffset) {
-                    return ZoneOffset.zoneOffset(offsetBefore);
+                if (dt.getHourOfDay().getValue() < 1 + standardOffset.getHoursField()) {
+                    return offsetBefore;
                 }
-                if (dt.getHourOfDay().getValue() >= 2 + standardOffset) {
-                    return ZoneOffset.zoneOffset(offsetAfter);
+                if (dt.getHourOfDay().getValue() >= 2 + standardOffset.getHoursField()) {
+                    return offsetAfter;
                 }
                 OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(1, 0), ZoneOffset.UTC);
-                return new Discontinuity(cutover.toInstant(), ZoneOffset.zoneOffset(offsetBefore), ZoneOffset.zoneOffset(offsetAfter));
+                return new Discontinuity(cutover.toInstant(), offsetBefore, offsetAfter);
             }
             int daysToSun = 7 - dt.getDayOfWeek().getValue();
-            return dom + daysToSun <= 31 ? ZoneOffset.zoneOffset(offsetBefore) : ZoneOffset.zoneOffset(offsetAfter);
+            return dom + daysToSun <= 31 ? offsetBefore : offsetAfter;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isFixed() {
+            return false;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Implementation of American rule time zones.
+     */
+    private static final class AmericaZone extends TimeZone {
+        /** The standard offset in hours. */
+        private final ZoneOffset standardOffset;
+        /** The standard offset in hours. */
+        private final ZoneOffset summerOffset;
+        /**
+         * Constructor.
+         * @param id  the time zone id, not null
+         * @param utilZone  the java.util.TimeZone instance, not null
+         */
+        private AmericaZone(String id, int standardOffset) {
+            super(id);
+            this.standardOffset = ZoneOffset.zoneOffset(standardOffset);
+            this.summerOffset = ZoneOffset.zoneOffset(standardOffset + 1);
+        }
+        /**
+         * Resolves singletons.
+         * @return the singleton instance
+         */
+        private Object readResolve() {
+            return TimeZone.timeZone(getID());
+        }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneOffset getOffset(Instant instant) {
+            OffsetDateTime dt = OffsetDateTime.dateTime(instant, standardOffset);
+            switch (dt.getMonthOfYear()) {
+                case JANUARY:
+                case FEBRUARY:
+                case DECEMBER:
+                    return standardOffset;
+                case MARCH: {
+                    int dom = dt.getDayOfMonth().getValue();
+                    if (dom < 8) {
+                        return standardOffset;
+                    }
+                    if (dom > 14) {
+                        return summerOffset;
+                    }
+                    if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                        OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(2, 0), standardOffset);
+                        return instant.isBefore(cutover.toInstant()) ? standardOffset : summerOffset;
+                    }
+                    int daysToSun = 7 - dt.getDayOfWeek().getValue();
+                    return dom + daysToSun <= 14 ? standardOffset : summerOffset;
+                }
+                case APRIL:
+                case MAY:
+                case JUNE:
+                case JULY:
+                case AUGUST:
+                case SEPTEMBER:
+                case OCTOBER:
+                    return summerOffset;
+                case NOVEMBER: {
+                    int dom = dt.getDayOfMonth().getValue();
+                    if (dom > 7) {
+                        return standardOffset;
+                    }
+                    if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                        OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(2, 0), summerOffset);
+                        return instant.isBefore(cutover.toInstant()) ? summerOffset : standardOffset;
+                    }
+                    int daysToSun = 7 - dt.getDayOfWeek().getValue();
+                    return dom + daysToSun <= 7 ? summerOffset : standardOffset;
+                }
+            }
+            throw new IllegalStateException();
+        }
+        /** {@inheritDoc} */
+        @Override
+        public OffsetInfo getOffsetInfo(LocalDateTime dt) {
+            switch (dt.getMonthOfYear()) {
+                case JANUARY:
+                case FEBRUARY:
+                case DECEMBER:
+                    return standardOffset;
+                case MARCH: {
+                    int dom = dt.getDayOfMonth().getValue();
+                    if (dom < 8) {
+                        return standardOffset;
+                    }
+                    if (dom > 14) {
+                        return summerOffset;
+                    }
+                    if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                        if (dt.getHourOfDay().getValue() < 2) {
+                            return standardOffset;
+                        }
+                        if (dt.getHourOfDay().getValue() >= 3) {
+                            return summerOffset;
+                        }
+                        OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(2, 0), standardOffset);
+                        return new Discontinuity(cutover.toInstant(), standardOffset, summerOffset);
+                    }
+                    int daysToSun = 7 - dt.getDayOfWeek().getValue();
+                    return dom + daysToSun <= 14 ? standardOffset : summerOffset;
+                }
+                case APRIL:
+                case MAY:
+                case JUNE:
+                case JULY:
+                case AUGUST:
+                case SEPTEMBER:
+                case OCTOBER:
+                    return summerOffset;
+                case NOVEMBER: {
+                    int dom = dt.getDayOfMonth().getValue();
+                    if (dom > 7) {
+                        return standardOffset;
+                    }
+                    if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                        if (dt.getHourOfDay().getValue() < 1) {
+                            return summerOffset;
+                        }
+                        if (dt.getHourOfDay().getValue() >= 2) {
+                            return standardOffset;
+                        }
+                        OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(2, 0), summerOffset);
+                        return new Discontinuity(cutover.toInstant(), summerOffset, standardOffset);
+                    }
+                    int daysToSun = 7 - dt.getDayOfWeek().getValue();
+                    return dom + daysToSun <= 7 ? summerOffset : standardOffset;
+                }
+            }
+            throw new IllegalStateException();
         }
         /** {@inheritDoc} */
         @Override
