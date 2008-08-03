@@ -188,7 +188,7 @@ public class DateTimeFormatters {
             .appendLiteral(':')
             .appendValue(ISOChronology.secondOfMinuteRule(), 2)
             .appendLiteral(' ')
-            .appendOffset("Z", false, true)
+            .appendOffset("Z", false, false)
             .toFormatter()
             .withLocale(Locale.ENGLISH);
     }

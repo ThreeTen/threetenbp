@@ -79,6 +79,7 @@ import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
 import javax.time.calendar.format.TestTextParser;
 import javax.time.calendar.format.TestTextPrinter;
+import javax.time.calendar.format.TestZoneOffsetPrinter;
 import javax.time.calendar.i18n.TestCopticChronology;
 import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.period.TestPeriod;
@@ -163,6 +164,7 @@ public class AllTest {
             TestStringLiteralParser.class,
             TestTextPrinter.class,
             TestTextParser.class,
+            TestZoneOffsetPrinter.class,
             // i18n
             TestCopticChronology.class,
             TestCopticDate.class,

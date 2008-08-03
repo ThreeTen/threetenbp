@@ -270,7 +270,7 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder appendOffsetId() {
-        return appendOffset("Z", true, false);
+        return appendOffset("Z", true, true);
     }
 
     /**
@@ -286,18 +286,19 @@ public class DateTimeFormatterBuilder {
      * The include colon parameter controls whether a colon should separate the
      * numeric fields or not.
      * <p>
-     * The exclude seconds parameter controls whether seconds should be excluded
-     * or not. If false, seconds are only output if non-zero.
+     * The allow seconds parameter controls whether seconds may be output.
+     * If false then seconds are never output.
+     * If true then seconds are only output if non-zero.
      *
      * @param utcText  the text to use for UTC, not null
      * @param includeColon  whether to include a colon
-     * @param excludeSeconds  whether to exclude seconds
+     * @param allowSeconds  whether to allow seconds
      * @return this, for chaining, never null
      * @throws NullPointerException if the UTC text is null
      */
-    public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean excludeSeconds) {
+    public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean allowSeconds) {
         FormatUtil.checkNotNull(utcText, "UTC text");
-        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, excludeSeconds);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, allowSeconds);
         appendInternal(pp, pp);
         return this;
     }

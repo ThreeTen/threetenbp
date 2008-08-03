@@ -52,22 +52,22 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     private final boolean includeColon;
     /**
-     * Whether to excludeSeconds.
+     * Whether to allow seconds.
      */
-    private final boolean excludeSeconds;
+    private final boolean allowSeconds;
 
     /**
      * Constructor.
      *
      * @param utcText  the text to use for UTC, not null
      * @param includeColon  whether to include a colon
-     * @param excludeSeconds  whether to exclude seconds
+     * @param allowSeconds  whether to allow seconds
      */
-    ZoneOffsetPrinterParser(String utcText, boolean includeColon, boolean excludeSeconds) {
+    ZoneOffsetPrinterParser(String utcText, boolean includeColon, boolean allowSeconds) {
         // validated by caller
         this.utcText = utcText;
         this.includeColon = includeColon;
-        this.excludeSeconds = excludeSeconds;
+        this.allowSeconds = allowSeconds;
     }
 
     /** {@inheritDoc} */
@@ -79,7 +79,7 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         int totalSecs = offset.getAmountSeconds();
         if (totalSecs == 0) {
             appendable.append(utcText);
-        } else if (includeColon && !excludeSeconds) {
+        } else if (includeColon && (allowSeconds || offset.getSecondsField() == 0)) {
             appendable.append(offset.getID());
         } else {
             int absHours = Math.abs(offset.getHoursField());
@@ -90,7 +90,7 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
                 .append((char) (absHours / 10 + '0')).append((char) (absHours % 10 + '0'))
                 .append(includeColon ? ":" : "")
                 .append((char) (absMinutes / 10 + '0')).append((char) (absMinutes % 10 + '0'));
-            if (!excludeSeconds && absSeconds > 0) {
+            if (allowSeconds && absSeconds > 0) {
                 appendable
                     .append(includeColon ? ":" : "")
                     .append((char) (absSeconds / 10 + '0')).append((char) (absSeconds % 10 + '0'));
