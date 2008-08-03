@@ -84,7 +84,8 @@ public class ZoneResolvers {
     //-----------------------------------------------------------------------
     /**
      * Returns the pre-transition zone resolver, which returns the instant
-     * before the transition for gaps, and the earlier offset for overlaps.
+     * one nanosecond before the transition for gaps, and the earlier offset
+     * for overlaps.
      *
      * @return the pre-transition resolver, never null
      */
@@ -119,7 +120,7 @@ public class ZoneResolvers {
     //-----------------------------------------------------------------------
     /**
      * Returns the post-transition zone resolver, which returns the instant
-     * before the transition for gaps, and the earlier offset for overlaps.
+     * after the transition for gaps, and the later offset for overlaps.
      *
      * @return the post-transition resolver, never null
      */
@@ -154,7 +155,7 @@ public class ZoneResolvers {
     /**
      * Returns the retain offset resolver.
      * <p>
-     * For both a gap and an offset, this resoler examines the offset of the
+     * For both a gap and an offset, this resolver examines the offset of the
      * original object on which the calculation occured. If that offset is one
      * of those that is valid, then it is used.
      *
