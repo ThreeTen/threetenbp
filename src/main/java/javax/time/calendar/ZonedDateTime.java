@@ -149,14 +149,18 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a date and time.
-     * This uses strict resolution, so the date-time must exist for the
-     * specified time zone.
+     * Obtains an instance of <code>ZonedDateTime</code> from a local date and time
+     * where the date-time must be valid for the time zone.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from a date, time and time zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then an exception will be thrown.
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
+     * @throws CalendricalException if the local date-time is invalid for the time zone
      */
     public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
         LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
@@ -164,14 +168,20 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code> from a date and time,
+     * Obtains an instance of <code>ZonedDateTime</code> from a local date and time
      * providing a resolver to handle an invalid date-time.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from a date, time and time zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then the resolver will determine what action to take.
+     * See {@link ZoneResolvers} for common resolver implementations.
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return a ZonedDateTime object, never null
+     * @throws CalendricalException if the reslover cannot resolve an invalid local date-time
      */
     public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
@@ -179,13 +189,17 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>.
-     * This uses strict resolution, so the date-time must exist for the
-     * specified time zone.
+     * Obtains an instance of <code>ZonedDateTime</code> from a local date-time
+     * where the date-time must be valid for the time zone.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from a date-time and time zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then an exception will be thrown.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param zone  the time zone, not null
      * @return an ZonedDateTime object, never null
+     * @throws CalendricalException if the local date-time is invalid for the time zone
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone) {
         LocalDateTime dt = dateTimeProvider.toLocalDateTime();
@@ -193,13 +207,19 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>OffsetDateTime</code>,
+     * Obtains an instance of <code>ZonedDateTime</code> from a local date-time
      * providing a resolver to handle an invalid date-time.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from a date-time and time zone.
+     * If the time is invalid for the zone, due to either being a gap or an overlap,
+     * then the resolver will determine what action to take.
+     * See {@link ZoneResolvers} for common resolver implementations.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
      * @return an ZonedDateTime object, never null
+     * @throws CalendricalException if the reslover cannot resolve an invalid local date-time
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
         LocalDateTime dt = dateTimeProvider.toLocalDateTime();
@@ -207,13 +227,18 @@ public final class ZonedDateTime
     }
 
     /**
-     * Obtains an instance of <code>ZonedDateTime</code>, ensuring that the offset
-     * provided is valid for the time zone.
+     * Obtains an instance of <code>ZonedDateTime</code> from an <code>OffsetDateTime</code>
+     * ensuring that the offset provided is valid for the time zone.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from an offset date-time and time zone.
+     * If the time is invalid for the zone due to a gap then an exception is thrown.
+     * Otherwise, the offset is checked against the zone to ensure it is valid
      *
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws CalendarConversionException if the offset is invalid for the time zone at the date-time
+     * @throws CalendricalException if the date-time is invalid due to a gap in the local time-line
+     * @throws CalendricalException if the offset is invalid for the time zone at the date-time
      */
     public static ZonedDateTime dateTime(OffsetDateTime dateTime, TimeZone zone) {
         if (dateTime == null) {
@@ -226,8 +251,8 @@ public final class ZonedDateTime
         OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
         if (info instanceof ZoneOffset) {
             if (info.equals(inputOffset) == false) {
-                throw new CalendarConversionException("The offset " + inputOffset +
-                        " specified in the OffsetDateTime is invalid for the time zone " + zone);
+                throw new CalendarConversionException("The offset in the date-time " + dateTime +
+                        " is invalid for time zone " + zone);
             }
         } else {
             Discontinuity disc = (Discontinuity) info;
@@ -236,7 +261,7 @@ public final class ZonedDateTime
                         " does not exist in time zone " + zone + " due to a daylight savings gap");
             } else if (disc.containsOffset(inputOffset) == false) {
                 throw new CalendarConversionException("The offset in the date-time " + dateTime +
-                        " is invalid for the time zone " + zone);
+                        " is invalid for time zone " + zone);
             }
         }
         return new ZonedDateTime(dateTime, zone);
@@ -244,11 +269,15 @@ public final class ZonedDateTime
 
     /**
      * Obtains an instance of <code>ZonedDateTime</code> from an <code>Instant</code>.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from an instant and time zone.
+     * If the instant represents a point on the time-line outside the supported year
+     * range then an exception will be thrown.
      *
      * @param instantProvider  the instant to convert, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws CalendarConversionException if the result exceeds the supported date range
+     * @throws CalendricalException if the result exceeds the supported year range
      */
     public static ZonedDateTime dateTime(InstantProvider instantProvider, TimeZone zone) {
         if (instantProvider == null) {
@@ -401,7 +430,7 @@ public final class ZonedDateTime
      * Returns a copy of this ZonedDateTime changing the zone offset to the
      * earlier of the two valid offsets at a local time-line overlap.
      * <p>
-     * This method is only useful when the local time-line overlaps, such as
+     * This method only has any effect when the local time-line overlaps, such as
      * at an autumn daylight savings cutover. In this scenario, there are two
      * valid offsets for the local date-time. Calling this method will return
      * a zoned date-time with the earlier of the two selected.
@@ -430,7 +459,7 @@ public final class ZonedDateTime
      * Returns a copy of this ZonedDateTime changing the zone offset to the
      * later of the two valid offsets at a local time-line overlap.
      * <p>
-     * This method is only useful when the local time-line overlaps, such as
+     * This method only has any effect when the local time-line overlaps, such as
      * at an autumn daylight savings cutover. In this scenario, there are two
      * valid offsets for the local date-time. Calling this method will return
      * a zoned date-time with the later of the two selected.
@@ -455,6 +484,21 @@ public final class ZonedDateTime
         return this;
     }
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Checks if this is an overlap on the local time-line.
+//     * <p>
+//     * When the time zone changes there can be an overlap on the local time-line.
+//     * During the overlap, there are two valid offsets for a single local date-time.
+//     *
+//     * @return true if this is a local time-line overlap
+//     */
+//    public boolean isOverlap() {
+//        // TODO: If OffsetInfo becomes a useful class, then replace this with getOffsetInfo()
+//        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
+//        return info instanceof Discontinuity;  // cannot be a gap, so must be an overlap
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the time zone.
@@ -471,7 +515,7 @@ public final class ZonedDateTime
      * <p>
      * This method changes the time zone and retains the local date-time.
      * The local date-time is only changed if it is invalid for the new
-     * time zone. In that case, the standard resolver is used.
+     * time zone. In that case, the retain offset resolver is used.
      * <p>
      * To change the zone and adjust the local date-time,
      * use {@link #withZoneSameInstant(TimeZone)}.
