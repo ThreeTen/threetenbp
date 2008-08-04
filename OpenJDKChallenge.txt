@@ -41,8 +41,11 @@ submitted as the final project for the OpenJDK challenge.
 The original proposal:
 http://mail.openjdk.java.net/pipermail/challenge-discuss/2008-March/000062.html
 
-The submitted project subversion repository:
+The subversion repository of the final project:
 https://jsr-310.dev.java.net/svn/jsr-310/tags/OpenJDKChallenge
+
+The javadoc of the final project:
+https://jsr-310.dev.java.net/nonav/doc-2008-08-04/index.html
 
 All code is written by Michael Nascimento Santos and Stephen Colebourne.
 They are the joint copyright holders.
