@@ -47,6 +47,15 @@ https://jsr-310.dev.java.net/svn/jsr-310/tags/OpenJDKChallenge
 The javadoc of the final project:
 https://jsr-310.dev.java.net/nonav/doc-2008-08-04/index.html
 
+The JSR-310 home page:
+https://jsr-310.dev.java.net/
+
+The JSR-310 mailing list:
+https://jsr-310.dev.java.net/servlets/SummarizeList?listName=dev
+
+The JSR-310 wiki:
+http://wiki.java.net/bin/view/Projects/DateTimeAPI
+
 All code is written by Michael Nascimento Santos and Stephen Colebourne.
 They are the joint copyright holders.
 See the license files for detail on licensing, warranty and disclaimers.
