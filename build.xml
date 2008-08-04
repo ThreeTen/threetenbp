@@ -96,7 +96,7 @@
                    sourcepath="${src.main}"
                    classname="javax.time.AllTest"
                 classpathref="test.path">
-               <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*" />
+               <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
               <txt outfile="${coverage}/coverage.txt" />
                <html outfile="${coverage}/coverage.html" metrics="method:90,block:90,line:90,class:95" />
         </emmajava>
