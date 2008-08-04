@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.time.period.Period;
+
 /**
  * A time zone offset, such as '+02:00'.
  * <p>
@@ -475,25 +477,22 @@ public final class ZoneOffset
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Converts this offset to a period.
-//     * <p>
-//     * The period returned will have fields for hour, minute and second.
-//     * <p>
-//     * Note that for negative offsets, the values in the period will all be
-//     * negative.
-//     * <p>
-//     * For example, +02:45 will be converted to P2H45M while -01:15 will be
-//     * converted to P-1H-15M.
-//     *
-//     * @return the period equivalent to the zone offset amount, never null
-//     */
-//    public Period toPeriod() {
-//        int hours = getHoursField();
-//        int minutes = getMinutesField();
-//        int seconds = getSecondsField();
-//        return Periods.periodBuilder().hours(hours).minutes(minutes).seconds(seconds).build();
-//    }
+    /**
+     * Converts this offset to a period.
+     * <p>
+     * The period returned will have fields for hour, minute and second.
+     * <p>
+     * Note that for negative offsets, the values in the period will all be
+     * negative.
+     * <p>
+     * For example, +02:45 will be converted to P2H45M while -01:15 will be
+     * converted to P-1H-15M.
+     *
+     * @return the period equivalent to the zone offset amount, never null
+     */
+    public Period toPeriod() {
+        return Period.hoursMinutesSeconds(getHoursField(), getMinutesField(), getSecondsField());
+    }
 
     /**
      * Converts this offset to a time zone.

@@ -41,6 +41,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.period.Period;
+
 import org.testng.annotations.Test;
 
 /**
@@ -396,6 +398,24 @@ public class TestZoneOffset {
     public void test_getSecondsField_negative() {
         ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
         assertEquals(offset.getSecondsField(), -3);
+    }
+
+    //-----------------------------------------------------------------------
+    // toPeriod()
+    //-----------------------------------------------------------------------
+    public void test_toPeriod() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        assertEquals(offset.toPeriod(), Period.hoursMinutesSeconds(1, 2, 3));
+    }
+
+    public void test_toPeriod_negative() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("-01:02:03");
+        assertEquals(offset.toPeriod(), Period.hoursMinutesSeconds(-1, -2, -3));
+    }
+
+    public void test_toPeriod_zero() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        assertEquals(offset.toPeriod(), Period.ZERO);
     }
 
     //-----------------------------------------------------------------------
