@@ -42,6 +42,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -190,7 +191,8 @@ public class TestDateTimeFields {
 
     //-----------------------------------------------------------------------
     public void factory_fields_map() {
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        // using Hashtable checks for incorrect null handling
+        Map<DateTimeFieldRule, Integer> map = new Hashtable<DateTimeFieldRule, Integer>();
         map.put(YEAR_RULE, 2008);
         map.put(MOY_RULE, 6);
         DateTimeFields test = DateTimeFields.fields(map);
@@ -437,8 +439,9 @@ public class TestDateTimeFields {
     // withFields(Map)
     //-----------------------------------------------------------------------
     public void test_withFields_map() {
+        // using Hashtable checks for incorrect null checking
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+        Map<DateTimeFieldRule, Integer> map = new Hashtable<DateTimeFieldRule, Integer>();
         map.put(DOM_RULE, 30);
         DateTimeFields test = base.withFields(map);
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
@@ -1010,6 +1013,12 @@ public class TestDateTimeFields {
         test.validateMatchesDate((LocalDate) null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_validateMatchesDate_null_emptyFields() {
+        DateTimeFields test = DateTimeFields.fields();
+        test.validateMatchesDate((LocalDate) null);
+    }
+
     //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------
@@ -1077,6 +1086,12 @@ public class TestDateTimeFields {
             .withFieldValue(YEAR_RULE, 2008)
             .withFieldValue(MOY_RULE, 6)
             .withFieldValue(DOM_RULE, 30);
+        test.matchesDate((LocalDate) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesDate_null_emptyFields() {
+        DateTimeFields test = DateTimeFields.fields();
         test.matchesDate((LocalDate) null);
     }
 
@@ -1155,6 +1170,12 @@ public class TestDateTimeFields {
         test.validateMatchesTime((LocalTime) null);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_validateMatchesTime_null_emptyFields() {
+        DateTimeFields test = DateTimeFields.fields();
+        test.validateMatchesTime((LocalTime) null);
+    }
+
     //-----------------------------------------------------------------------
     // matchesTime()
     //-----------------------------------------------------------------------
@@ -1215,6 +1236,12 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.fields()
             .withFieldValue(HOUR_RULE, 11)
             .withFieldValue(MIN_RULE, 30);
+        test.matchesTime((LocalTime) null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matchesTime_null_emptyFields() {
+        DateTimeFields test = DateTimeFields.fields();
         test.matchesTime((LocalTime) null);
     }
 

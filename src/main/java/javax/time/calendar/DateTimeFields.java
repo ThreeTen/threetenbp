@@ -88,9 +88,7 @@ public final class DateTimeFields
      * @throws NullPointerException if the field is null
      */
     public static DateTimeFields fields(DateTimeFieldRule fieldRule, int value) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
+        checkNotNull(fieldRule, "The field rule must not be null");
         TreeMap<DateTimeFieldRule, Integer> map = createMap();
         map.put(fieldRule, value);
         return new DateTimeFields(map);
@@ -111,9 +109,8 @@ public final class DateTimeFields
      * @throws NullPointerException if either field is null
      */
     public static DateTimeFields fields(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
-        if (fieldRule1 == null || fieldRule2 == null) {
-            throw new NullPointerException("The field rules must not be null");
-        }
+        checkNotNull(fieldRule1, "The first field rule must not be null");
+        checkNotNull(fieldRule2, "The second field rule must not be null");
         TreeMap<DateTimeFieldRule, Integer> map = createMap();
         map.put(fieldRule1, value1);
         map.put(fieldRule2, value2);
@@ -133,23 +130,17 @@ public final class DateTimeFields
      * @throws NullPointerException if the map contains null keys or values
      */
     public static DateTimeFields fields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-        if (fieldValueMap == null) {
-            throw new NullPointerException("The field-value map must not be null");
-        }
+        checkNotNull(fieldValueMap, "The field-value map must not be null");
         if (fieldValueMap.isEmpty()) {
             return EMPTY;
         }
-        // use a hash map to check for nulls, as tree map and others can throw NPE
+        // don't use contains() as tree map and others can throw NPE
         TreeMap<DateTimeFieldRule, Integer> map = createMap();
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
             DateTimeFieldRule key = entry.getKey();
             Integer value = entry.getValue();
-            if (key == null) {
-                throw new NullPointerException("Null keys are not permitted in field-value map");
-            }
-            if (value == null) {
-                throw new NullPointerException("Null values are not permitted in field-value map");
-            }
+            checkNotNull(key, "Null keys are not permitted in field-value map");
+            checkNotNull(value, "Null values are not permitted in field-value map");
             map.put(key, value);
         }
         return new DateTimeFields(map);
@@ -161,6 +152,19 @@ public final class DateTimeFields
      */
     private static TreeMap<DateTimeFieldRule, Integer> createMap() {
         return new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
+    }
+
+    /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    private static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -237,9 +241,7 @@ public final class DateTimeFields
      * @throws IllegalCalendarFieldValueException if validation is performed and the value is invalid
      */
     public int getValue(DateTimeFieldRule fieldRule, boolean validate) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The rule must not be null");
-        }
+        checkNotNull(fieldRule, "The field rule must not be null");
         Integer value = fieldValueMap.get(fieldRule);
         if (value != null) {
             if (validate) {
@@ -306,9 +308,7 @@ public final class DateTimeFields
      * @return a new, updated DateTimeFields, never null
      */
     public DateTimeFields withFieldValue(DateTimeFieldRule fieldRule, int value) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
+        checkNotNull(fieldRule, "The field rule must not be null");
         TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         clonedMap.put(fieldRule, value);
         return new DateTimeFields(clonedMap);
@@ -327,20 +327,19 @@ public final class DateTimeFields
      * @throws IllegalArgumentException if the map contains null keys or values
      */
     public DateTimeFields withFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-        if (fieldValueMap == null) {
-            throw new NullPointerException("The field-value map must not be null");
-        }
+        checkNotNull(fieldValueMap, "The field-value map must not be null");
         if (fieldValueMap.isEmpty()) {
             return this;
         }
-        if (fieldValueMap.containsKey(null)) {
-            throw new NullPointerException("Null keys are not permitted in field-value map");
-        }
-        if (fieldValueMap.containsValue(null)) {
-            throw new NullPointerException("Null values are not permitted in field-value map");
-        }
+        // don't use contains() as tree map and others can throw NPE
         TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
-        clonedMap.putAll(fieldValueMap);
+        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+            DateTimeFieldRule key = entry.getKey();
+            Integer value = entry.getValue();
+            checkNotNull(key, "Null keys are not permitted in field-value map");
+            checkNotNull(value, "Null values are not permitted in field-value map");
+            clonedMap.put(key, value);
+        }
         return new DateTimeFields(clonedMap);
     }
 
@@ -356,9 +355,7 @@ public final class DateTimeFields
      * @return a new, updated DateTimeFields, never null
      */
     public DateTimeFields withFields(DateTimeFields fields) {
-        if (fields == null) {
-            throw new NullPointerException("The fields must not be null");
-        }
+        checkNotNull(fields, "The field-set must not be null");
         if (fields.size() == 0 || fields == this) {
             return this;
         }
@@ -379,9 +376,7 @@ public final class DateTimeFields
      * @return a new, updated DateTimeFields, never null
      */
     public DateTimeFields withFieldRemoved(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
+        checkNotNull(fieldRule, "The field rule must not be null");
         TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         if (clonedMap.remove(fieldRule) == null) {
             return this;
@@ -577,6 +572,7 @@ public final class DateTimeFields
      * @throws InvalidCalendarFieldException if any date field does not match the specified date
      */
     public DateTimeFields validateMatchesDate(LocalDate date) {
+        checkNotNull(date, "The date to match against must not be null");
         for (DateTimeFieldRule field : new TreeSet<DateTimeFieldRule>(fieldValueMap.keySet())) {
             if (date.isSupported(field) && date.get(field) != fieldValueMap.get(field)) {
                 throw new InvalidCalendarFieldException(
@@ -597,6 +593,7 @@ public final class DateTimeFields
      * @return true if the date fields match, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
+        checkNotNull(date, "The date to match against must not be null");
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
             if (date.isSupported(entry.getKey()) && date.get(entry.getKey()) != entry.getValue()) {
                 return false;
@@ -616,6 +613,7 @@ public final class DateTimeFields
      * @throws InvalidCalendarFieldException if any time field does not match the specified time
      */
     public DateTimeFields validateMatchesTime(LocalTime time) {
+        checkNotNull(time, "The time to match against must not be null");
         for (DateTimeFieldRule field : fieldValueMap.keySet()) {
             if (time.isSupported(field) && time.get(field) != fieldValueMap.get(field)) {
                 throw new InvalidCalendarFieldException(
@@ -636,6 +634,7 @@ public final class DateTimeFields
      * @return true if the time fields match, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
+        checkNotNull(time, "The time to match against must not be null");
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
             if (time.isSupported(entry.getKey()) && time.get(entry.getKey()) != entry.getValue()) {
                 return false;
