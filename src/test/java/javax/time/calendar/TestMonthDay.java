@@ -253,46 +253,6 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertTrue(TEST_07_15.isSupported(RULE_MONTH));
-        assertTrue(TEST_07_15.isSupported(RULE_DOM));
-        
-        // TODO
-//        assertTrue(TEST_07_15.isSupported(ISOChronology.quarterOfYearRule()));
-//        assertTrue(TEST_07_15.isSupported(ISOChronology.monthOfQuarterRule()));
-        
-        assertFalse(TEST_07_15.isSupported(ISOChronology.yearRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.dayOfWeekRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.dayOfYearRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.weekOfMonthRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.weekOfWeekyearRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.weekyearRule()));
-        
-        assertFalse(TEST_07_15.isSupported(ISOChronology.hourOfAmPmRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.minuteOfHourRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.secondOfMinuteRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.nanoOfSecondRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.hourOfAmPmRule()));
-        assertFalse(TEST_07_15.isSupported(ISOChronology.amPmOfDayRule()));
-        
-        assertFalse(TEST_07_15.isSupported(null));
-    }
-
-    public void test_get() {
-        assertEquals(TEST_07_15.get(RULE_MONTH), TEST_07_15.getMonthOfYear().getValue());
-        assertEquals(TEST_07_15.get(RULE_DOM), TEST_07_15.getDayOfMonth().getValue());
-        
-        // TODO
-//        assertEquals(TEST_07_15.get(QuarterOfYear.rule()), TEST_07_15.getMonthOfYear().getQuarterOfYear().getValue());
-//        assertEquals(TEST_07_15.get(ISOChronology.monthOfQuarterRule()), TEST_07_15.getMonthOfYear().getMonthOfQuarter());
-    }
-
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_get_unsupported() {
-        TEST_07_15.get(RULE_YEAR);
-    }
-
-    //-----------------------------------------------------------------------
     // get*()
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleDates")

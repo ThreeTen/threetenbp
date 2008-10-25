@@ -217,35 +217,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
-     * <p>
-     * This method queries whether this <code>MonthDay</code> can
-     * be queried using the specified calendar field.
-     *
-     * @param field  the field to query, not null
-     * @return true if the field is supported
-     */
-    public boolean isSupported(DateTimeFieldRule field) {
-        return field != null && toCalendrical().getValueQuiet(field) != null;
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param field  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     * @throws InvalidCalendarFieldException if the value for the field is invalid
-     */
-    public int get(DateTimeFieldRule field) {
-        return toCalendrical().getValue(field);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the month of year field.
      * <p>
      * This method provides access to an object representing the month field.

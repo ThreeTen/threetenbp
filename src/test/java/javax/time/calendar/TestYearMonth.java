@@ -247,46 +247,6 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertTrue(TEST_2008_06.isSupported(RULE_YEAR));
-        assertTrue(TEST_2008_06.isSupported(RULE_MONTH));
-        
-        // TODO
-//        assertTrue(TEST_07_15.isSupported(ISOChronology.quarterOfYearRule()));
-//        assertTrue(TEST_07_15.isSupported(ISOChronology.monthOfQuarterRule()));
-        
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.dayOfMonthRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.dayOfWeekRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.dayOfYearRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.weekOfMonthRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.weekOfWeekyearRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.weekyearRule()));
-        
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.hourOfDayRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.minuteOfHourRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.secondOfMinuteRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.nanoOfSecondRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.hourOfAmPmRule()));
-        assertFalse(TEST_2008_06.isSupported(ISOChronology.amPmOfDayRule()));
-        
-        assertFalse(TEST_2008_06.isSupported(null));
-    }
-
-    public void test_get() {
-        assertEquals(TEST_2008_06.get(RULE_YEAR), TEST_2008_06.getYear().getValue());
-        assertEquals(TEST_2008_06.get(RULE_MONTH), TEST_2008_06.getMonthOfYear().getValue());
-        
-        // TODO
-//        assertEquals(TEST_07_15.get(QuarterOfYear.rule()), TEST_07_15.getMonthOfYear().getQuarterOfYear().getValue());
-//        assertEquals(TEST_07_15.get(ISOChronology.monthOfQuarterRule()), TEST_07_15.getMonthOfYear().getMonthOfQuarter());
-    }
-
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_get_unsupported() {
-        TEST_2008_06.get(RULE_DOM);
-    }
-
-    //-----------------------------------------------------------------------
     // get*()
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleDates")
