@@ -33,12 +33,16 @@ package javax.time.calendar.field;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateProvider;
+import javax.time.calendar.LocalDate;
 
 /**
  * A representation of a week-based year in the ISO-8601 calendar system.
@@ -72,7 +76,8 @@ import javax.time.calendar.DateProvider;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>, Serializable {
+public final class Weekyear 
+        implements CalendricalProvider, Comparable<Weekyear>, Serializable, DateMatcher {
 
     /**
      * Constant for the minimum week-based-year.
@@ -110,7 +115,7 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
      * Obtains an instance of <code>Weekyear</code> from a value.
      *
      * @param weekyear  the week-based year to represent, from MIN_YEAR to MAX_YEAR
-     * @return the Weekyear singleton, never null
+     * @return the Weekyear instance, never null
      * @throws IllegalCalendarFieldValueException if the weekyear is invalid
      */
     public static Weekyear weekyear(int weekyear) {
@@ -125,10 +130,33 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
      * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return the Weekyear singleton, never null
+     * @return the Weekyear instance, never null
      */
     public static Weekyear weekyear(DateProvider dateProvider) {
-        return new Weekyear(1);  // TODO
+         LocalDate date = LocalDate.date(dateProvider);
+         Year year = date.getYear();
+         int dom;
+
+         switch (date.getMonthOfYear()) {
+            case JANUARY:
+                dom = date.getDayOfMonth().getValue();
+                if (dom < 4) {
+                    int dow = date.getDayOfWeek().getValue();
+                    if (dow > dom + 3) {
+                        year = year.previous();
+                    }
+                }
+                break;
+            case DECEMBER:
+                dom = date.getDayOfMonth().getValue();
+                if (dom > 28) {
+                    int dow = date.getDayOfWeek().getValue();
+                    if (dow <= dom % 7) {
+                        year = year.next();
+                    }
+                }
+         }
+         return Weekyear.weekyear(year.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -151,6 +179,16 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
         return weekyear;
     }
 
+    /**
+     * Checks if the value of this week-based year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return Weekyear.weekyear(date).equals(this);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this field to a <code>Calendrical</code>.
@@ -168,7 +206,14 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
      * @return the length of this weekyear in weeks, either 52 or 53
      */
     public int lengthInWeeks() {
-        return 52; // TODO
+        // TODO: optimize
+        // TODO: make it work with MIN_YEAR and MAX_YEAR
+        LocalDate start = LocalDate.date(weekyear - 1, MonthOfYear.DECEMBER, 28).with(DateAdjusters.nextMonday());
+        LocalDate end = LocalDate.date(weekyear, MonthOfYear.DECEMBER, 28).with(DateAdjusters.nextMonday());
+
+        long weeksAsLong = (end.toModifiedJulianDays() - start.toModifiedJulianDays()) / 7;
+
+        return MathUtils.safeToInt(weeksAsLong);
     }
 
     /**
@@ -177,7 +222,7 @@ public final class Weekyear implements CalendricalProvider, Comparable<Weekyear>
      * @return an object representing the last week of the week-based year
      */
     public WeekOfWeekyear getLastWeekOfWeekyear() {
-        return null; // TODO
+        return WeekOfWeekyear.weekOfWeekyear(lengthInWeeks());
     }
 
     //-----------------------------------------------------------------------
