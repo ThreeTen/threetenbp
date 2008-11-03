@@ -208,10 +208,11 @@ public final class Weekyear
     public int lengthInWeeks() {
         // TODO: optimize
         // TODO: make it work with MIN_YEAR and MAX_YEAR
-        LocalDate start = LocalDate.date(weekyear - 1, MonthOfYear.DECEMBER, 28).with(DateAdjusters.nextMonday());
-        LocalDate end = LocalDate.date(weekyear, MonthOfYear.DECEMBER, 28).with(DateAdjusters.nextMonday());
+        LocalDate start = LocalDate.date(weekyear, MonthOfYear.JANUARY, 4);
+        LocalDate end = LocalDate.date(weekyear, MonthOfYear.DECEMBER, 28);
 
-        long weeksAsLong = (end.toModifiedJulianDays() - start.toModifiedJulianDays()) / 7;
+        long weeksAsLong = (end.toModifiedJulianDays() + (8 - end.getDayOfWeek().getValue()) -
+                start.toModifiedJulianDays() + start.getDayOfWeek().getValue() - 1) / 7;
 
         return MathUtils.safeToInt(weeksAsLong);
     }

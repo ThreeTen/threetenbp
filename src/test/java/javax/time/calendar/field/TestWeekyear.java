@@ -298,6 +298,18 @@ public class TestWeekyear {
         assertEquals(test.lengthInWeeks(), lengthInWeeks);
     }
 
+    public void test_lengthInWeeks_minYear() {
+        Weekyear test = Weekyear.weekyear(Weekyear.MIN_YEAR);
+        //TODO check result
+        test.lengthInWeeks();
+    }
+
+    public void test_lengthInWeeks_maxYear() {
+        Weekyear test = Weekyear.weekyear(Weekyear.MAX_YEAR);
+        //TODO check result
+        test.lengthInWeeks();
+    }
+
     @Test(dataProvider="yearWeek")
     public void test_getLastWeekOfWeekyear(int weekyear, int lastWeekNumber) {
         Weekyear test = Weekyear.weekyear(weekyear);
