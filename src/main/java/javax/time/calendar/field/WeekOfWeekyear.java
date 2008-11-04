@@ -34,12 +34,15 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.MathUtils;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateMatcher;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.LocalDate;
 
 /**
  * A representation of a week of week-based year in the ISO-8601 calendar system.
@@ -59,7 +62,7 @@ import javax.time.calendar.DateTimeFieldRule;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class WeekOfWeekyear implements CalendricalProvider, Comparable<WeekOfWeekyear>, Serializable {
+public final class WeekOfWeekyear implements CalendricalProvider, Comparable<WeekOfWeekyear>, Serializable, DateMatcher {
 
     /**
      * A serialization identifier for this instance.
@@ -124,7 +127,13 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
      * @return the WeekOfWeekyear singleton, never null
      */
     public static WeekOfWeekyear weekOfWeekyear(DateProvider dateProvider) {
-        return new WeekOfWeekyear(1);  // TODO
+        LocalDate date = LocalDate.date(dateProvider);
+        Year year = Weekyear.computeYear(date);
+
+        LocalDate yearStart = LocalDate.date(year, MonthOfYear.JANUARY, DayOfMonth.dayOfMonth(4));
+
+        return weekOfWeekyear(MathUtils.safeToInt((date.toModifiedJulianDays() - yearStart.toModifiedJulianDays() +
+                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1));
     }
 
     //-----------------------------------------------------------------------
@@ -156,6 +165,17 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
         return weekOfWeekyear;
     }
 
+
+    /**
+     * Checks if the value of this week-based year matches the input date.
+     *
+     * @param date  the date to match, not null
+     * @return true if the date matches, false otherwise
+     */
+    public boolean matchesDate(LocalDate date) {
+        return WeekOfWeekyear.weekOfWeekyear(date).equals(this);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Converts this field to a <code>Calendrical</code>.
@@ -174,6 +194,9 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
      * @return true if this week of weekyear is valid for the week-based year
      */
     public boolean isValid(Weekyear weekyear) {
+        if (weekyear == null) {
+            throw new NullPointerException("Weekyear cannot be null");
+        }
         return (weekOfWeekyear < 53 || weekyear.lengthInWeeks() == 53);
     }
 
@@ -191,6 +214,28 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
+    /**
+     * Is this week of week-based year instance after the specified week of week-based year.
+     *
+     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
+     * @return true if this is after the specified week of week-based year
+     * @throws NullPointerException if otherWeekOfWeekyear is null
+     */
+    public boolean isAfter(WeekOfWeekyear otherWeekOfWeekyear) {
+        return compareTo(otherWeekOfWeekyear) > 0;
+    }
+
+    /**
+     * Is this week of week-based year instance before the specified week of week-based year.
+     *
+     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
+     * @return true if this is before the specified week of week-based year
+     * @throws NullPointerException if otherWeekOfWeekyear is null
+     */
+    public boolean isBefore(WeekOfWeekyear otherWeekOfWeekyear) {
+        return compareTo(otherWeekOfWeekyear) < 0;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified, evaluating the week of week-based year.
@@ -200,13 +245,7 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
      */
     @Override
     public boolean equals(Object otherWeekOfWeekyear) {
-        if (this == otherWeekOfWeekyear) {
-            return true;
-        }
-        if (otherWeekOfWeekyear instanceof WeekOfWeekyear) {
-            return weekOfWeekyear == ((WeekOfWeekyear) otherWeekOfWeekyear).weekOfWeekyear;
-        }
-        return false;
+        return this == otherWeekOfWeekyear;
     }
 
     /**

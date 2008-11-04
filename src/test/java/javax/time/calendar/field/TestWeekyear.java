@@ -45,7 +45,6 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;

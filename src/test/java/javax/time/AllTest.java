@@ -63,6 +63,7 @@ import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.field.TestNanoOfSecond;
 import javax.time.calendar.field.TestQuarterOfYear;
 import javax.time.calendar.field.TestSecondOfMinute;
+import javax.time.calendar.field.TestWeekOfWeekyear;
 import javax.time.calendar.field.TestWeekyear;
 import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCalendricalFormatException;
@@ -145,6 +146,7 @@ public class AllTest {
             TestNanoOfSecond.class,
             TestQuarterOfYear.class,
             TestSecondOfMinute.class,
+            TestWeekOfWeekyear.class,
             TestWeekyear.class,
             TestYear.class,
             // calendar rules
@@ -218,7 +220,7 @@ public class AllTest {
                 String desc = tr.getMethod().getDescription() == null ? "" : " " + tr.getMethod().getDescription();
                 System.out.println("FAILED: " + tr.getName() + desc + params);
                 if (throwable != null) {
-                    System.out.println(Utils.stackTrace(throwable, false)[0]);;
+                    System.out.println(Utils.stackTrace(throwable, false)[0]);
                 }
             }
         });

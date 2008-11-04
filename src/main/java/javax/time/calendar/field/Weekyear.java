@@ -37,7 +37,6 @@ import javax.time.MathUtils;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -133,11 +132,15 @@ public final class Weekyear
      * @return the Weekyear instance, never null
      */
     public static Weekyear weekyear(DateProvider dateProvider) {
-         LocalDate date = LocalDate.date(dateProvider);
-         Year year = date.getYear();
-         int dom;
+        LocalDate date = LocalDate.date(dateProvider);
+        return Weekyear.weekyear(computeYear(date).getValue());
+    }
 
-         switch (date.getMonthOfYear()) {
+    static Year computeYear(LocalDate date) {
+        Year year = date.getYear();
+        int dom;
+
+        switch (date.getMonthOfYear()) {
             case JANUARY:
                 dom = date.getDayOfMonth().getValue();
                 if (dom < 4) {
@@ -155,8 +158,9 @@ public final class Weekyear
                         year = year.next();
                     }
                 }
-         }
-         return Weekyear.weekyear(year.getValue());
+        }
+
+        return year;
     }
 
     //-----------------------------------------------------------------------
@@ -207,7 +211,6 @@ public final class Weekyear
      */
     public int lengthInWeeks() {
         // TODO: optimize
-        // TODO: make it work with MIN_YEAR and MAX_YEAR
         LocalDate start = LocalDate.date(weekyear, MonthOfYear.JANUARY, 4);
         LocalDate end = LocalDate.date(weekyear, MonthOfYear.DECEMBER, 28);
 
