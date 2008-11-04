@@ -218,13 +218,7 @@ public final class MinuteOfHour
      */
     @Override
     public boolean equals(Object otherMinuteOfHour) {
-        if (this == otherMinuteOfHour) {
-            return true;
-        }
-        if (otherMinuteOfHour instanceof MinuteOfHour) {
-            return minuteOfHour == ((MinuteOfHour) otherMinuteOfHour).minuteOfHour;
-        }
-        return false;
+        return this == otherMinuteOfHour;
     }
 
     /**

@@ -261,13 +261,7 @@ public final class DayOfMonth
      */
     @Override
     public boolean equals(Object otherDayOfMonth) {
-        if (this == otherDayOfMonth) {
-            return true;
-        }
-        if (otherDayOfMonth instanceof DayOfMonth) {
-            return dayOfMonth == ((DayOfMonth) otherDayOfMonth).dayOfMonth;
-        }
-        return false;
+        return this == otherDayOfMonth;
     }
 
     /**

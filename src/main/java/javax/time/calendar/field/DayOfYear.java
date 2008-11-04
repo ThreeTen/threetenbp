@@ -313,13 +313,7 @@ public final class DayOfYear
      */
     @Override
     public boolean equals(Object otherDayOfYear) {
-        if (this == otherDayOfYear) {
-            return true;
-        }
-        if (otherDayOfYear instanceof DayOfYear) {
-            return dayOfYear == ((DayOfYear) otherDayOfYear).dayOfYear;
-        }
-        return false;
+        return this == otherDayOfYear;
     }
 
     /**

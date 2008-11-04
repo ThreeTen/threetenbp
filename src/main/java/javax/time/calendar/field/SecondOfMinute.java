@@ -218,13 +218,7 @@ public final class SecondOfMinute
      */
     @Override
     public boolean equals(Object otherSecondOfMinute) {
-        if (this == otherSecondOfMinute) {
-            return true;
-        }
-        if (otherSecondOfMinute instanceof SecondOfMinute) {
-            return secondOfMinute == ((SecondOfMinute) otherSecondOfMinute).secondOfMinute;
-        }
-        return false;
+        return this == otherSecondOfMinute;
     }
 
     /**

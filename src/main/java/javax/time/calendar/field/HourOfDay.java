@@ -297,13 +297,7 @@ public final class HourOfDay
      */
     @Override
     public boolean equals(Object otherHourOfDay) {
-        if (this == otherHourOfDay) {
-            return true;
-        }
-        if (otherHourOfDay instanceof HourOfDay) {
-            return hourOfDay == ((HourOfDay) otherHourOfDay).hourOfDay;
-        }
-        return false;
+        return this == otherHourOfDay;
     }
 
     /**
