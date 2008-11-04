@@ -167,7 +167,7 @@ public final class WeekOfWeekyear implements CalendricalProvider, Comparable<Wee
 
 
     /**
-     * Checks if the value of this week-based year matches the input date.
+     * Checks if the value of this week of week-based year matches the input date.
      *
      * @param date  the date to match, not null
      * @return true if the date matches, false otherwise
