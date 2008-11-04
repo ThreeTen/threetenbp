@@ -32,6 +32,9 @@
 
 Items still todo before EDR:
 
+- TimeZone design
+- leap second support
+
 Items todo post EDR:
 
 - lenient parsing
