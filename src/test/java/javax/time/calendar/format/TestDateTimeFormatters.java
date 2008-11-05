@@ -174,7 +174,7 @@ public class TestDateTimeFormatters {
             private int day = 1;
 
             public boolean hasNext() {
-                return !endDate.isAfter(date);
+                return !date.isAfter(endDate);
             }
 
             public Object[] next() {
