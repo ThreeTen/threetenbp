@@ -134,6 +134,33 @@ public class DateTimeFormatters {
     /**
      * Returns the ISO date formatter that formats a date without an offset.
      * <p>
+     * This is the ISO-8601 extended format: yyyy-Www-D.
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     *
+     * @return the ISO week date formatter, never null
+     */
+    public static DateTimeFormatter isoWeekDate() {
+        return ISO_WEEK_DATE;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter ISO_WEEK_DATE;
+    static {
+        ISO_WEEK_DATE = new DateTimeFormatterBuilder()
+            .appendValue(ISOChronology.weekyearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendLiteral("-W")
+            .appendValue(ISOChronology.weekOfWeekyearRule(), 2)
+            .appendLiteral('-')
+            .appendValue(ISOChronology.dayOfWeekRule(), 1)
+            .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the ISO date formatter that formats a date without an offset.
+     * <p>
      * This is the ISO-8601 basic format: yyyyMMdd.
      * <p>
      * The year will print 4 digits, unless this is insufficient, in which

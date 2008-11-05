@@ -37,20 +37,26 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
+import java.util.Iterator;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZonedDateTime;
+import javax.time.calendar.field.WeekOfWeekyear;
+import javax.time.calendar.field.Weekyear;
 import javax.time.calendar.field.Year;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * Test DateTimeFormatters.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
@@ -154,6 +160,62 @@ public class TestDateTimeFormatters {
             fail();
         } catch (CalendricalFormatFieldException ex) {
             assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getValue(), null);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="weekDate")
+    Iterator<Object[]> weekDate() {
+        return new Iterator<Object[]>() {
+            private ZonedDateTime date = ZonedDateTime.dateTime(LocalDateTime.dateTime(2003, 12, 29, 11, 5, 30), TimeZone.UTC);
+            private ZonedDateTime endDate = date.withDate(2005, 1, 2);
+            private int week = 1;
+            private int day = 1;
+
+            public boolean hasNext() {
+                return !endDate.isAfter(date);
+            }
+
+            public Object[] next() {
+                StringBuilder sb = new StringBuilder("2004-W");
+
+                if (week < 10) {
+                    sb.append('0');
+                }
+
+                sb.append(week).append('-').append(day);
+
+                Object[] ret = new Object[] {date, sb.toString()};
+                date = date.plusDays(1);
+                day += 1;
+
+                if (day == 8) {
+                    day = 1;
+                    week++;
+                }
+
+                return ret;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Test(dataProvider="weekDate")
+    public void test_print_weekDate(CalendricalProvider test, String expected) {
+        assertEquals(DateTimeFormatters.isoWeekDate().print(test), expected);
+    }
+
+    public void test_print_weekDate_missingField() {
+        try {
+            CalendricalProvider test = Calendrical.calendrical(Weekyear.rule(), 2004, WeekOfWeekyear.rule(), 1);
+            DateTimeFormatters.isoWeekDate().print(test);
+            fail();
+        } catch (CalendricalFormatFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfWeek());
             assertEquals(ex.getValue(), null);
         }
     }
