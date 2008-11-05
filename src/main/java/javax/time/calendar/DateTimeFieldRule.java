@@ -35,11 +35,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.time.calendar.format.DateTimeFormatSymbols;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -77,8 +74,8 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     private final int minimumValue;
     /** The maximum value for the field. */
     private final int maximumValue;
-    /** True if this is a date field, false for a time field. */
-    private final boolean isDate;
+//    /** True if this is a date field, false for a time field. */
+//    private final boolean isDate;
 
     /**
      * Constructor.
@@ -116,7 +113,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         this.periodRange = periodRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
-        this.isDate = true;  // TODO pass in isDate
+//        this.isDate = true;  // TODO pass in isDate
     }
 
     //-----------------------------------------------------------------------
@@ -143,28 +140,28 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return name;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the field represents part of the date, as opposed to part
-     * of the time.
-     *
-     * @return true if this is a date field, false if this is a time field
-     * @see #isTimeField()
-     */
-    public boolean isDateField() {
-        return isDate;
-    }
-
-    /**
-     * Checks if the field represents part of the time, as opposed to part
-     * of the date.
-     *
-     * @return true if this is a time field, false if this is a date field
-     * @see #isDateField()
-     */
-    public boolean isTimeField() {
-        return !isDate;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Checks if the field represents part of the date, as opposed to part
+//     * of the time.
+//     *
+//     * @return true if this is a date field, false if this is a time field
+//     * @see #isTimeField()
+//     */
+//    public boolean isDateField() {
+//        return isDate;
+//    }
+//
+//    /**
+//     * Checks if the field represents part of the time, as opposed to part
+//     * of the date.
+//     *
+//     * @return true if this is a time field, false if this is a date field
+//     * @see #isDateField()
+//     */
+//    public boolean isTimeField() {
+//        return !isDate;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -190,22 +187,22 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks if the this field is supported using calendrical data that is
-     * completely specified by the unit and range.
-     * <p>
-     * For example, a date object has a unit of days and a range of forever.
-     * If this field is for hour of day, then that cannot be supported by the
-     * unit and range from a date object.
-     *
-     * @param unit  the unit to check, not null
-     * @param range  the range to check, not null
-     * @return true if the field is supported
-     */
-    public boolean isSupported(PeriodUnit unit, PeriodUnit range) {
-        return (periodUnit.compareTo(unit) >= 0) &&
-               (periodRange.compareTo(range) < 0);
-    }
+//    /**
+//     * Checks if the this field is supported using calendrical data that is
+//     * completely specified by the unit and range.
+//     * <p>
+//     * For example, a date object has a unit of days and a range of forever.
+//     * If this field is for hour of day, then that cannot be supported by the
+//     * unit and range from a date object.
+//     *
+//     * @param unit  the unit to check, not null
+//     * @param range  the range to check, not null
+//     * @return true if the field is supported
+//     */
+//    public boolean isSupported(PeriodUnit unit, PeriodUnit range) {
+//        return (periodUnit.compareTo(unit) >= 0) &&
+//               (periodRange.compareTo(range) < 0);
+//    }
 
     /**
      * Gets the value for this field throwing an exception if the field cannot be obtained.
@@ -230,9 +227,10 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @param time  the time, may be null
      * @return the value of the field, null if unable to obtain field
      */
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return null;  // override if field can obtain a value
-    }
+    public abstract Integer getValueQuiet(LocalDate date, LocalTime time);
+//    {
+//        return null;  // override if field can obtain a value
+//    }
 
     /**
      * Merges this field with other fields in the given field-value map using
@@ -433,26 +431,26 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return getMaximumValue();
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the text for this field.
-     * <p>
-     * The value is queried using {@link #getValue(CalendricalProvider)}. The text
-     * is then obtained for that value. If there is no textual mapping, then
-     * the value is returned as per {@link Integer#toString()}.
-     *
-     * @param calendricalProvider  the calendrical provider, not null
-     * @param locale  the locale to use, not null
-     * @param textStyle  the text style, not null
-     * @return the text of the field, never null
-     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
-     */
-    public String getText(CalendricalProvider calendricalProvider, Locale locale, TextStyle textStyle) {
-        int value = getValue(calendricalProvider);
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(this, textStyle, value);
-        return text == null ? Integer.toString(value) : text;
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the text for this field.
+//     * <p>
+//     * The value is queried using {@link #getValue(CalendricalProvider)}. The text
+//     * is then obtained for that value. If there is no textual mapping, then
+//     * the value is returned as per {@link Integer#toString()}.
+//     *
+//     * @param calendricalProvider  the calendrical provider, not null
+//     * @param locale  the locale to use, not null
+//     * @param textStyle  the text style, not null
+//     * @return the text of the field, never null
+//     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
+//     */
+//    public String getText(CalendricalProvider calendricalProvider, Locale locale, TextStyle textStyle) {
+//        int value = getValue(calendricalProvider);
+//        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+//        String text = symbols.getFieldValueText(this, textStyle, value);
+//        return text == null ? Integer.toString(value) : text;
+//    }
 
     //-----------------------------------------------------------------------
     /**
