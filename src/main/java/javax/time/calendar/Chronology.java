@@ -65,8 +65,8 @@ public abstract class Chronology {
     /**
      * Gets the name of the chronology.
      * <p>
-     * The name should not have the suffix 'Chronology'. For example, the
-     * name of {@link ISOChronology} is 'ISO'.
+     * The name should not have the suffix 'Chronology'.
+     * For example, the name of {@link ISOChronology} is 'ISO'.
      *
      * @return the name of the chronology, never null
      */
