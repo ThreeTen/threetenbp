@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Map;
 
 import javax.time.period.PeriodUnit;
 
@@ -217,114 +216,102 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
     public int getValue(CalendricalProvider calendricalProvider) {
+        // TODO
         return calendricalProvider.toCalendrical().getValue(this);
     }
 
     /**
-     * Extracts the value of this field from the date or time specified.
+     * Gets the value of this field from the date or time specified.
      *
      * @param date  the date, may be null
      * @param time  the time, may be null
-     * @return the value of the field, null if unable to obtain field
+     * @return the value of the field
+     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
-    public abstract Integer getValueQuiet(LocalDate date, LocalTime time);
-//    {
-//        return null;  // override if field can obtain a value
-//    }
-
-    /**
-     * Merges this field with other fields in the given field-value map using
-     * lenient merging principles.
-     * <p>
-     * Implementations of this method must merge less significant fields into
-     * more significant fields. For example, the AM/PM field and the hour of AM/PM
-     * field could be merged to form the hour of day field. The exact hierarchy as
-     * to which fields are more significant than others is chronology dependent.
-     * <p>
-     * If the map already contains the field that would be the result of the merge
-     * then the fields that would have been merged should be removed.
-     * No additional attempt to merge or cross-check should take place.
-     * For example, if the map contains the AM/PM, hour of AM/PM and hour of day
-     * fields, then the AM/PM and hour of AM/PM fields should be removed and the
-     * hour of day field left as is.
-     * <p>
-     * The merge must be lenient wherever possible.
-     * For example, merging AM/PM and hour of AM/PM will result in
-     * the AM/PM value * 12 + the hour of AM/PM value. (This algorithm assumes that
-     * AM has the value 0 and PM has the value 1.)
-     * <p>
-     * The merge process is cooperative and controlled by {@link DateTimeFields}.
-     * This method will be invoked on each field in the field-value map until
-     * no more changes are reported. This means that if two fields can be merged,
-     * the merge code only needs to be written in one of the field rules. For
-     * example, the merge code for the AM/PM field and the hour of AM/PM field
-     * should be written in one of the field rules, not both.
-     * <p>
-     * If a merge occurs, then the fields that were merged must be removed from
-     * the map and the resulting field must be added.
-     * <p>
-     * This method will only be called if the field is present in the specified
-     * field-value map.
-     *
-     * @param fieldValueMap  the field-value map to merge and update, contains this field, not null
-     * @throws CalendarFieldException if the values cannot be merged
-     */
-    protected void mergeFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-        // do nothing - override if field can merge fields
+    public final int getValue(LocalDate date, LocalTime time) {
+        Integer value = getValueQuiet(date, time);
+        if (value == null) {
+            throw new UnsupportedCalendarFieldException(this);
+        }
+        return value;
     }
 
     /**
-     * Merges this field with other fields in the given field-value map to form a date.
+     * Gets the value of this field from the date or time specified.
      * <p>
-     * Implementations of this method must attempt to merge the fields into a date.
-     * For example, the year, month and day of month fields could be merged to form a date.
-     * The exact set of fields which merge to form a date is chronology dependent.
-     * <p>
-     * The merge process is cooperative and controlled by {@link DateTimeFields}.
-     * This method will be invoked on each field in the field-value map until
-     * a date is returned. This means that for any set of fields can be merged,
-     * the merge code only needs to be written in one of the field rules.
-     * For example, the merge code for the year, month and day of month fields
-     * should be written in one of the field rules, not all of them.
-     * <p>
-     * If a merge occurs, then the fields that were merged must be removed from the map.
-     * <p>
-     * This method will only be called if the field is present in the specified
-     * field-value map.
+     * A typical implementation of this method checks for null and calculates
+     * the value. For example, here is an implementation for the year field:
+     * <pre>
+     * return (date == null ? null : date.getYear().getValue());
+     * </pre>
      *
-     * @param fieldValues  the field set to merge from, contains this field, not null
-     * @return the date initialised from the field-value map, null if no merge occured
-     * @throws CalendarFieldException if the values cannot be merged
+     * @param date  the date, may be null
+     * @param time  the time, may be null
+     * @return the value of the field, null if unable to derive field
      */
-    protected LocalDate mergeToDate(DateTimeFields fieldValues) {
-        return null;  // override if field can merge to date
+    public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        return null;  // override if field can be derived
     }
 
     /**
-     * Merges this field with other fields in the given field-value map to form a time.
+     * Gets the value of this field from the map of field-value pairs specified.
      * <p>
-     * Implementations of this method must attempt to merge the fields into a time.
-     * For example, the hour, minute and second fields could be merged to form a time.
-     * The exact set of fields which merge to form a time is chronology dependent.
-     * <p>
-     * The merge process is cooperative and controlled by {@link DateTimeFields}.
-     * This method will be invoked on each field in the field-value map until
-     * a time is returned. This means that for any set of fields can be merged,
-     * the merge code only needs to be written in one of the field rules.
-     * For example, the merge code for the hour, minute and second fields
-     * should be written in one of the field rules, not all of them.
-     * <p>
-     * If a merge occurs, then the fields that were merged must be removed from the map.
-     * <p>
-     * This method will only be called if the field is present in the specified
-     * field-value map.
+     * This method queries the map to determine if it holds a value for this field.
+     * If it does, then the value is returned.
+     * Otherwise, an attempt is made to {@link #deriveValue(DateTimeFields) derive}
+     * the value from the value of other fields in the map.
      *
-     * @param fieldValues  the field set to merge from, contains this field, not null
-     * @return the time initialised from the field-value map, null if no merge occured
-     * @throws CalendarFieldException if the values cannot be merged
+     * @param fieldValueMap  the map to derive from, not null
+     * @return the value of the field, null if unable to derive field
      */
-    protected LocalTime.Overflow mergeToTime(DateTimeFields fieldValues) {
-        return null;  // override if field can merge to time
+    public final Integer getValueQuiet(DateTimeFields fieldValueMap) {
+        Integer value = fieldValueMap.getValueQuiet(this);
+        return (value == null ? deriveValue(fieldValueMap) : value);
+    }
+
+    /**
+     * Derives the value of this field from the map of field-value pairs specified.
+     * <p>
+     * This method derives the value for this field from other fields in the map.
+     * The implementation does not check if the map already contains a value for this field.
+     * For example, if this field is QuarterOfYear, then the value can be derived
+     * from MonthOfYear. The implementation must not check to see of the map
+     * already contains a value for QuarterOfYear.
+     * <p>
+     * The derivation can be recursive depending on the hierachy of fields.
+     * This is achieved by using {@link #getValueQuiet} to obtain the parent field rule.
+     * <p>
+     * A typical implementation of this method obtains the parent value and performs a calculation.
+     * For example, here is a simple implementation for the QuarterOfYear field
+     * (which doesn't handle negative numbers or leniency):
+     * <pre>
+     * Integer moyVal = ISOChronology.monthOfYearRule().getValueQuiet(fieldValueMap);
+     * return (moyVal == null ? null : ((moyVal - 1) % 4) + 1);
+     * </pre>
+     * Extracts the value for this field using information in the field map.
+     * <p>
+     * This method is designed to be overridden in subclasses.
+     * The subclass implementation must be thread-safe.
+     *
+     * @param fieldValueMap  the map to derive from, not null
+     * @return the derived value, null if unable to derive
+     */
+    protected Integer deriveValue(DateTimeFields fieldValueMap) {
+        return null;  // do nothing - override if this field can derive
+    }
+
+    /**
+     * Merges this field with other fields in the given field-value map.
+     * <p>
+     * The aim of this method is to assist in the process of extracting the most
+     * date-time information possible from a map of field-value pairs.
+     * The merging process is controlled by the mutable merger instance and
+     * the input and output of the this merge are held there.
+     *
+     * @param merger  the merger instance controlling the merge process, not null
+     */
+    protected void merge(CalendricalMerger merger) {
+        // do nothing - override if this field can merge
     }
 
     //-----------------------------------------------------------------------
@@ -569,7 +556,6 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      */
     @Override
     public String toString() {
-        return getName();
+        return getID();
     }
-
 }

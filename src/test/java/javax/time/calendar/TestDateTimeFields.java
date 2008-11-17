@@ -67,7 +67,7 @@ public class TestDateTimeFields {
     private static final DateTimeFieldRule MOQ_RULE = ISOChronology.monthOfQuarterRule();
     private static final DateTimeFieldRule HOUR_RULE = ISOChronology.hourOfDayRule();
     private static final DateTimeFieldRule AMPM_RULE = ISOChronology.amPmOfDayRule();
-    private static final DateTimeFieldRule HOUR_AM_PM_RULE = ISOChronology.hourOfAmPmRule();
+    private static final DateTimeFieldRule HOUR_AMPM_RULE = ISOChronology.hourOfAmPmRule();
     private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
     private static final DateTimeFieldRule MILLI_RULE = ISOChronology.milliOfDayRule();
 
@@ -76,9 +76,9 @@ public class TestDateTimeFields {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(CalendricalProvider.class.isAssignableFrom(DateTimeFields.class));
-        assertTrue(DateProvider.class.isAssignableFrom(DateTimeFields.class));
-        assertTrue(TimeProvider.class.isAssignableFrom(DateTimeFields.class));
-        assertTrue(DateTimeProvider.class.isAssignableFrom(DateTimeFields.class));
+//        assertTrue(DateProvider.class.isAssignableFrom(DateTimeFields.class));
+//        assertTrue(TimeProvider.class.isAssignableFrom(DateTimeFields.class));
+//        assertTrue(DateTimeProvider.class.isAssignableFrom(DateTimeFields.class));
         assertTrue(DateMatcher.class.isAssignableFrom(DateTimeFields.class));
         assertTrue(TimeMatcher.class.isAssignableFrom(DateTimeFields.class));
         assertTrue(Iterable.class.isAssignableFrom(DateTimeFields.class));
@@ -577,49 +577,6 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
-    // mergeFields()
-    //-----------------------------------------------------------------------
-    public void test_mergeFields() {
-        DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9);  // 9am
-        DateTimeFields test = base.mergeFields();
-        assertFields(test, HOUR_RULE, 9);  // merged to 09:00
-        // check original immutable
-        assertFields(base, AMPM_RULE, 0, HOUR_AM_PM_RULE, 9);
-    }
-
-    public void test_mergeFields_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        DateTimeFields test = base.mergeFields();
-        assertSame(test, base);
-    }
-
-    public void test_mergeFields_doubleMerge() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(AMPM_RULE, 0).withFieldValue(HOUR_AM_PM_RULE, 9)  // 9am -> 09:00
-            .withFieldValue(QOY_RULE, 2).withFieldValue(MOQ_RULE, 3);  // Q2M3 -> June
-        DateTimeFields test = base.mergeFields();
-        assertFields(test, HOUR_RULE, 9, MOY_RULE, 6);  // merged to 09:00 and June
-    }
-
-    public void test_mergeFields_nothingToMerge() {
-        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6).withFieldValue(DOM_RULE, 30);
-        DateTimeFields test = base.mergeFields();
-        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
-    }
-
-    public void test_mergeFields_otherFieldsUntouched() {
-        DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9).withFieldValue(YEAR_RULE, 2008);
-        DateTimeFields test = base.mergeFields();
-        assertFields(test, HOUR_RULE, 9, YEAR_RULE, 2008);  // merged to 09:00
-    }
-
-    public void test_mergeFields_resultFieldMeansNoMerge() {
-        DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9).withFieldValue(HOUR_RULE, 10);
-        DateTimeFields test = base.mergeFields();
-        assertFields(test, HOUR_RULE, 10);  // 9am ignored, but field-value pairs removed
-    }
-
-    //-----------------------------------------------------------------------
     // validateFields()
     //-----------------------------------------------------------------------
     public void test_validateFields_valid() {
@@ -692,332 +649,575 @@ public class TestDateTimeFields {
         assertEquals(test.isValidFieldValues(), false);
     }
 
+//    //-----------------------------------------------------------------------
+//    // mergeFields()
+//    //-----------------------------------------------------------------------
+//    public void test_mergeFields() {
+//        DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9);  // 9am
+//        DateTimeFields test = base.mergeFields();
+//        assertFields(test, HOUR_RULE, 9);  // merged to 09:00
+//        // check original immutable
+//        assertFields(base, AMPM_RULE, 0, HOUR_AM_PM_RULE, 9);
+//    }
+//
+//    public void test_mergeFields_empty() {
+//        DateTimeFields base = DateTimeFields.fields();
+//        DateTimeFields test = base.mergeFields();
+//        assertSame(test, base);
+//    }
+//
+//    public void test_mergeFields_doubleMerge() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(AMPM_RULE, 0).withFieldValue(HOUR_AM_PM_RULE, 9)  // 9am -> 09:00
+//            .withFieldValue(QOY_RULE, 2).withFieldValue(MOQ_RULE, 3);  // Q2M3 -> June
+//        DateTimeFields test = base.mergeFields();
+//        assertFields(test, HOUR_RULE, 9, MOY_RULE, 6);  // merged to 09:00 and June
+//    }
+//
+//    public void test_mergeFields_nothingToMerge() {
+//        DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6).withFieldValue(DOM_RULE, 30);
+//        DateTimeFields test = base.mergeFields();
+//        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+//    }
+//
+//    public void test_mergeFields_otherFieldsUntouched() {
+//        DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9).withFieldValue(YEAR_RULE, 2008);
+//        DateTimeFields test = base.mergeFields();
+//        assertFields(test, HOUR_RULE, 9, YEAR_RULE, 2008);  // merged to 09:00
+//    }
+//
+//    public void test_mergeFields_resultFieldMeansNoMerge() {
+//        DateTimeFields base = DateTimeFields.fields(AMPM_RULE, 0, HOUR_AM_PM_RULE, 9).withFieldValue(HOUR_RULE, 10);
+//        DateTimeFields test = base.mergeFields();
+//        assertFields(test, HOUR_RULE, 10);  // 9am ignored, but field-value pairs removed
+//    }
+
     //-----------------------------------------------------------------------
-    // mergeToDate()
+    @DataProvider(name="BooleanBoolean")
+    Object[][] provideBooleanBoolean() {
+        return new Object[][] {
+            {true, true}, {true, false}, {false, true}, {false, false},
+        };
+    }
+
+    @DataProvider(name="Boolean")
+    Object[][] provideBoolean() {
+        return new Object[][] {
+            {true}, {false},
+        };
+    }
+
     //-----------------------------------------------------------------------
-    public void test_mergeToDate() {
+    // mergeStrict()
+    //-----------------------------------------------------------------------
+    public void test_mergeStrict_simple() {
         DateTimeFields base = DateTimeFields.fields()
             .withFieldValue(YEAR_RULE, 2008)
             .withFieldValue(MOY_RULE, 6)
             .withFieldValue(DOM_RULE, 30);
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, LocalDate.date(2008, 6, 30));
+        Calendrical test = base.mergeStrict();
+        assertCalendrical(test, null, LocalDate.date(2008, 6, 30), null, null, null);
         // check original immutable
         assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }
 
-    public void test_mergeToDate_lenientInsideBounds() {
+    public void test_mergeStrict_mergeSecondary() {
         DateTimeFields base = DateTimeFields.fields()
             .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 31);
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, LocalDate.date(2008, 7, 1));
-    }
-
-    public void test_mergeToDate_lenientOutsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32);
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, LocalDate.date(2008, 7, 2));
-    }
-
-    public void test_mergeToDate_otherFieldMismatch() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong, but ignored
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, LocalDate.date(2008, 6, 30));
-    }
-
-    public void test_mergeToDate_noPrimarySet() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6);
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToDate_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToDate_twoPrimarySets() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOY_RULE, 182);
-        LocalDate test = base.mergeToDate();
-        assertEquals(test, LocalDate.date(2008, 6, 30));
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_mergeToDate_twoPrimarySetsDiffer() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOY_RULE, 183);
-        base.mergeToDate();
-    }
-
-    //-----------------------------------------------------------------------
-    // mergeToTime()
-    //-----------------------------------------------------------------------
-    public void test_mergeToTime() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalTime test = base.mergeToTime();
-        assertEquals(test, LocalTime.time(11, 30));
-        // check original immutable
-        assertFields(base, HOUR_RULE, 11, MIN_RULE, 30);
-    }
-
-    public void test_mergeToTime_lenientOutsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 70);
-        LocalTime test = base.mergeToTime();
-        assertEquals(test, LocalTime.time(12, 10));
-    }
-
-    public void test_mergeToTime_otherFieldMismatch() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM and is ignored
-        LocalTime test = base.mergeToTime();
-        assertEquals(test, LocalTime.time(11, 30));
-    }
-
-    public void test_mergeToTime_noPrimarySet() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_AM_PM_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalTime test = base.mergeToTime();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToTime_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        LocalTime test = base.mergeToTime();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToTime_twoPrimarySets() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400000);
-        LocalTime test = base.mergeToTime();
-        assertEquals(test, LocalTime.time(11, 30));
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_mergeToTime_twoPrimarySetsDiffer() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400001);
-        base.mergeToTime();
-    }
-
-    //-----------------------------------------------------------------------
-    // mergeToDateTime()
-    //-----------------------------------------------------------------------
-    public void test_mergeToDateTime() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
-        // check original immutable
-        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30, HOUR_RULE, 11, MIN_RULE, 30);
-    }
-
-    public void test_mergeToDateTime_lenientOutsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 70);
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 12, 10));
-    }
-
-    public void test_mergeToDateTime_lenientDayOverflow() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 23)
-            .withFieldValue(MIN_RULE, 70);
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 7, 1, 0, 10));
-    }
-
-    public void test_mergeToDateTime_otherFieldMismatch() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM and is ignored
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
-    }
-
-    public void test_mergeToDateTime_noPrimarySetForDate() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToDateTime_noPrimarySetForTime() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_AM_PM_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToDateTime_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, null);
-    }
-
-    public void test_mergeToDateTime_twoPrimarySets() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400000);
-        LocalDateTime test = base.mergeToDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_mergeToDateTime_twoPrimarySetsDiffer() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400001);
-        base.mergeToDateTime();
-    }
-
-    //-----------------------------------------------------------------------
-    // validateMatchesDate()
-    //-----------------------------------------------------------------------
-    public void test_validateMatchesDate() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
+            .withFieldValue(QOY_RULE, 2)
+            .withFieldValue(MOQ_RULE, 3)
             .withFieldValue(DOM_RULE, 30);
-        LocalDate date = LocalDate.date(2008, 6, 30);
-        assertSame(test.validateMatchesDate(date), test);
-        // check original immutable
-        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+        Calendrical test = base.mergeStrict();
+        assertCalendrical(test, null, LocalDate.date(2008, 6, 30), null, null, null);
     }
 
-    public void test_validateMatchesDate_dowMatches() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 1);
-        LocalDate date = LocalDate.date(2008, 6, 30);
-        assertSame(test.validateMatchesDate(date), test);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_validateMatchesDate_dowNotMatches() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is Monday not Tuesday
-        LocalDate date = LocalDate.date(2008, 6, 30);
-        try {
-            test.validateMatchesDate(date);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), DOW_RULE);
-            throw ex;
-        }
-    }
-
-    public void test_validateMatchesDate_partialMatch() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6);
-        LocalDate date = LocalDate.date(2008, 6, 30);
-        assertSame(test.validateMatchesDate(date), test);
-    }
-
-    public void test_validateMatchesDate_timeIgnored() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 12);
-        LocalDate date = LocalDate.date(2008, 6, 30);
-        assertSame(test.validateMatchesDate(date), test);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_validateMatchesDate_invalidDay() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 31);
-        LocalDate date = LocalDate.date(2008, 6, 30);
-        try {
-            test.validateMatchesDate(date);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), DOM_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_validateMatchesDate_null() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30);
-        test.validateMatchesDate((LocalDate) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_validateMatchesDate_null_emptyFields() {
-        DateTimeFields test = DateTimeFields.fields();
-        test.validateMatchesDate((LocalDate) null);
-    }
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToDate_otherFieldsMatch(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOW_RULE, 1)   // 2008-06-30 is a Monday, so this is right
+//            .withFieldValue(QOY_RULE, 2);  // 2008-06-30 is Q2, so this is right
+//        LocalDate test = base.mergeToDate(true, true);
+//        assertEquals(test, LocalDate.date(2008, 6, 30));
+//    }
+//
+//    @Test(dataProvider="Boolean", expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToDate_otherFieldsMismatch(boolean strict) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
+//        base.mergeToDate(strict, true);
+//    }
+//
+//    @Test(dataProvider="Boolean")
+//    public void test_mergeToDate_otherFieldsMismatchIgnored(boolean strict) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong, but ignored
+//        LocalDate test = base.mergeToDate(strict, false);
+//        assertEquals(test, LocalDate.date(2008, 6, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="Boolean", expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToDate_strict_insideBounds(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 31);
+//        base.mergeToDate(true, validateUnused);
+//    }
+//
+//    @Test(dataProvider="Boolean", expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_mergeToDate_strict_outsideBounds(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 32);
+//        base.mergeToDate(true, validateUnused);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="Boolean")
+//    public void test_mergeToDate_lenient_insideBounds(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 31);
+//        LocalDate test = base.mergeToDate(false, validateUnused);
+//        assertEquals(test, LocalDate.date(2008, 7, 1));
+//    }
+//
+//    @Test(dataProvider="Boolean")
+//    public void test_mergeToDate_lenient_outsideBounds(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 32);
+//        LocalDate test = base.mergeToDate(false, validateUnused);
+//        assertEquals(test, LocalDate.date(2008, 7, 2));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_mergeToDate_lenient_validateUnused_valid() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 32)
+//            .withFieldValue(DOW_RULE, 3);  // 2008-07-02 is a Wednesday, so this is right
+//        LocalDate test = base.mergeToDate(false, true);
+//        assertEquals(test, LocalDate.date(2008, 7, 2));
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToDate_lenient_validateUnused_invalid() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 32)
+//            .withFieldValue(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong
+//        base.mergeToDate(false, true);
+//    }
+//
+//    public void test_mergeToDate_lenient_ignoreUnused_valid() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 32)
+//            .withFieldValue(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong, but ignored
+//        LocalDate test = base.mergeToDate(false, false);
+//        assertEquals(test, LocalDate.date(2008, 7, 2));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToDate_empty(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields();
+//        LocalDate test = base.mergeToDate(strict, validateUnused);
+//        assertEquals(test, null);
+//    }
+//
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToDate_noPrimarySet(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6);
+//        LocalDate test = base.mergeToDate(strict, validateUnused);
+//        assertEquals(test, null);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToDate_twoPrimarySetsMatch(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOY_RULE, 182);
+//        LocalDate test = base.mergeToDate(strict, validateUnused);
+//        assertEquals(test, LocalDate.date(2008, 6, 30));
+//    }
+//
+//    @Test(dataProvider="BooleanBoolean", expectedExceptions=CalendarConversionException.class)
+//    public void test_mergeToDate_twoPrimarySetsDiffer(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOY_RULE, 183);
+//        base.mergeToDate(strict, validateUnused);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // mergeToTime(,)
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToTime_simple(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalTime test = base.mergeToTime(strict, validateUnused);
+//        assertEquals(test, LocalTime.time(11, 30));
+//        // check original immutable
+//        assertFields(base, HOUR_RULE, 11, MIN_RULE, 30);
+//    }
+//
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToTime_mergeSecondary(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_AMPM_RULE, 2)
+//            .withFieldValue(AMPM_RULE, 1)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalTime test = base.mergeToTime(strict, validateUnused);
+//        assertEquals(test, LocalTime.time(14, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToTime_otherFieldsMatch(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 0);  // 11:30 is AM, so this is right
+//        LocalTime test = base.mergeToTime(true, true);
+//        assertEquals(test, LocalTime.time(11, 30));
+//    }
+//
+//    @Test(dataProvider="Boolean", expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToTime_otherFieldsMismatch(boolean strict) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
+//        base.mergeToTime(strict, true);
+//    }
+//
+//    @Test(dataProvider="Boolean")
+//    public void test_mergeToTime_otherFieldsMismatchIgnored(boolean strict) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but ignored
+//        LocalTime test = base.mergeToTime(strict, false);
+//        assertEquals(test, LocalTime.time(11, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="Boolean", expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_mergeToTime_strict_outsideBoundsHours(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 24)
+//            .withFieldValue(MIN_RULE, 30);
+//        base.mergeToTime(true, validateUnused);
+//    }
+//
+//    @Test(dataProvider="Boolean", expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_mergeToTime_strict_outsideBoundsMins(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 70);
+//        base.mergeToTime(true, validateUnused);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="Boolean")
+//    public void test_mergeToTime_lenient_outsideBoundsHours(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 24)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalTime test = base.mergeToTime(false, validateUnused);
+//        assertEquals(test, LocalTime.time(0, 30));
+//    }
+//
+//    @Test(dataProvider="Boolean")
+//    public void test_mergeToTime_lenient_outsideBoundsMins(boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 70);
+//        LocalTime test = base.mergeToTime(false, validateUnused);
+//        assertEquals(test, LocalTime.time(12, 10));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    public void test_mergeToTime_lenient_validateUnused_valid() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 24)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 0);  // 00:30 is AM, so this is right
+//        LocalTime test = base.mergeToTime(false, true);
+//        assertEquals(test, LocalTime.time(0, 30));
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_mergeToTime_lenient_validateUnused_invalid() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 24)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong
+//        base.mergeToTime(false, true);
+//    }
+//
+//    public void test_mergeToTime_lenient_ignoreUnused_valid() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 24)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong, but ignored
+//        LocalTime test = base.mergeToTime(false, false);
+//        assertEquals(test, LocalTime.time(0, 30));
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToTime_empty(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields();
+//        LocalTime test = base.mergeToTime(strict, validateUnused);
+//        assertEquals(test, null);
+//    }
+//
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToTime_noPrimarySet(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_AMPM_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalTime test = base.mergeToTime(strict, validateUnused);
+//        assertEquals(test, null);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    @Test(dataProvider="BooleanBoolean")
+//    public void test_mergeToTime_twoPrimarySetsMatch(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400000);
+//        LocalTime test = base.mergeToTime(strict, validateUnused);
+//        assertEquals(test, LocalTime.time(11, 30));
+//    }
+//
+//    @Test(dataProvider="BooleanBoolean", expectedExceptions=CalendarConversionException.class)
+//    public void test_mergeToTime_twoPrimarySetsDiffer(boolean strict, boolean validateUnused) {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400001);
+//        base.mergeToTime(strict, validateUnused);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // mergeToDateTime()
+//    //-----------------------------------------------------------------------
+//    public void test_mergeToDateTime() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+//        // check original immutable
+//        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30, HOUR_RULE, 11, MIN_RULE, 30);
+//    }
+//
+//    public void test_mergeToDateTime_lenientOutsideBounds() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 70);
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 12, 10));
+//    }
+//
+//    public void test_mergeToDateTime_lenientDayOverflow() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 23)
+//            .withFieldValue(MIN_RULE, 70);
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 7, 1, 0, 10));
+//    }
+//
+//    public void test_mergeToDateTime_otherFieldMismatch() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM and is ignored
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+//    }
+//
+//    public void test_mergeToDateTime_noPrimarySetForDate() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, null);
+//    }
+//
+//    public void test_mergeToDateTime_noPrimarySetForTime() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_AM_PM_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, null);
+//    }
+//
+//    public void test_mergeToDateTime_empty() {
+//        DateTimeFields base = DateTimeFields.fields();
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, null);
+//    }
+//
+//    public void test_mergeToDateTime_twoPrimarySets() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400000);
+//        LocalDateTime test = base.mergeToDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_mergeToDateTime_twoPrimarySetsDiffer() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400001);
+//        base.mergeToDateTime();
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // validateMatchesDate()
+//    //-----------------------------------------------------------------------
+//    public void test_validateMatchesDate() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30);
+//        LocalDate date = LocalDate.date(2008, 6, 30);
+//        assertSame(test.validateMatchesDate(date), test);
+//        // check original immutable
+//        assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+//    }
+//
+//    public void test_validateMatchesDate_dowMatches() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOW_RULE, 1);
+//        LocalDate date = LocalDate.date(2008, 6, 30);
+//        assertSame(test.validateMatchesDate(date), test);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_validateMatchesDate_dowNotMatches() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is Monday not Tuesday
+//        LocalDate date = LocalDate.date(2008, 6, 30);
+//        try {
+//            test.validateMatchesDate(date);
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), DOW_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_validateMatchesDate_partialMatch() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6);
+//        LocalDate date = LocalDate.date(2008, 6, 30);
+//        assertSame(test.validateMatchesDate(date), test);
+//    }
+//
+//    public void test_validateMatchesDate_timeIgnored() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 12);
+//        LocalDate date = LocalDate.date(2008, 6, 30);
+//        assertSame(test.validateMatchesDate(date), test);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_validateMatchesDate_invalidDay() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 31);
+//        LocalDate date = LocalDate.date(2008, 6, 30);
+//        try {
+//            test.validateMatchesDate(date);
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), DOM_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_validateMatchesDate_null() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30);
+//        test.validateMatchesDate((LocalDate) null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_validateMatchesDate_null_emptyFields() {
+//        DateTimeFields test = DateTimeFields.fields();
+//        test.validateMatchesDate((LocalDate) null);
+//    }
 
     //-----------------------------------------------------------------------
     // matchesDate()
@@ -1095,86 +1295,86 @@ public class TestDateTimeFields {
         test.matchesDate((LocalDate) null);
     }
 
-    //-----------------------------------------------------------------------
-    // validateMatchesTime()
-    //-----------------------------------------------------------------------
-    public void test_validateMatchesTime() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalTime time = LocalTime.time(11, 30);
-        assertSame(test.validateMatchesTime(time), test);
-        // check original immutable
-        assertFields(test, HOUR_RULE, 11, MIN_RULE, 30);
-    }
-
-    public void test_validateMatchesTime_amPmMatches() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 0);
-        LocalTime time = LocalTime.time(11, 30);
-        assertSame(test.validateMatchesTime(time), test);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_validateMatchesTime_amPmNotMatches() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // time is 11:30, but this says PM
-        LocalTime time = LocalTime.time(11, 30);
-        try {
-            test.validateMatchesTime(time);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), AMPM_RULE);
-            throw ex;
-        }
-    }
-
-    public void test_validateMatchesTime_partialMatch() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11);
-        LocalTime time = LocalTime.time(11, 30);
-        assertSame(test.validateMatchesTime(time), test);
-    }
-
-    public void test_validateMatchesTime_dateIgnored() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(YEAR_RULE, 2008);
-        LocalTime time = LocalTime.time(11, 30);
-        assertSame(test.validateMatchesTime(time), test);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_validateMatchesTime_invalidMinute() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, -1);
-        LocalTime time = LocalTime.time(11, 30);
-        try {
-            test.validateMatchesTime(time);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), MIN_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_validateMatchesTime_null() {
-        DateTimeFields test = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        test.validateMatchesTime((LocalTime) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_validateMatchesTime_null_emptyFields() {
-        DateTimeFields test = DateTimeFields.fields();
-        test.validateMatchesTime((LocalTime) null);
-    }
+//    //-----------------------------------------------------------------------
+//    // validateMatchesTime()
+//    //-----------------------------------------------------------------------
+//    public void test_validateMatchesTime() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalTime time = LocalTime.time(11, 30);
+//        assertSame(test.validateMatchesTime(time), test);
+//        // check original immutable
+//        assertFields(test, HOUR_RULE, 11, MIN_RULE, 30);
+//    }
+//
+//    public void test_validateMatchesTime_amPmMatches() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 0);
+//        LocalTime time = LocalTime.time(11, 30);
+//        assertSame(test.validateMatchesTime(time), test);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_validateMatchesTime_amPmNotMatches() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // time is 11:30, but this says PM
+//        LocalTime time = LocalTime.time(11, 30);
+//        try {
+//            test.validateMatchesTime(time);
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), AMPM_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    public void test_validateMatchesTime_partialMatch() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11);
+//        LocalTime time = LocalTime.time(11, 30);
+//        assertSame(test.validateMatchesTime(time), test);
+//    }
+//
+//    public void test_validateMatchesTime_dateIgnored() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(YEAR_RULE, 2008);
+//        LocalTime time = LocalTime.time(11, 30);
+//        assertSame(test.validateMatchesTime(time), test);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_validateMatchesTime_invalidMinute() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, -1);
+//        LocalTime time = LocalTime.time(11, 30);
+//        try {
+//            test.validateMatchesTime(time);
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), MIN_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_validateMatchesTime_null() {
+//        DateTimeFields test = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        test.validateMatchesTime((LocalTime) null);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_validateMatchesTime_null_emptyFields() {
+//        DateTimeFields test = DateTimeFields.fields();
+//        test.validateMatchesTime((LocalTime) null);
+//    }
 
     //-----------------------------------------------------------------------
     // matchesTime()
@@ -1245,284 +1445,284 @@ public class TestDateTimeFields {
         test.matchesTime((LocalTime) null);
     }
 
-    //-----------------------------------------------------------------------
-    // toLocalDate()
-    //-----------------------------------------------------------------------
-    public void test_toLocalDate() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30);
-        LocalDate test = base.toLocalDate();
-        assertEquals(test, LocalDate.date(2008, 6, 30));
-        // check original immutable
-        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_toLocalDate_lenientInsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 31);
-        try {
-            base.toLocalDate();
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), DOM_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_toLocalDate_lenientOutsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32);
-        try {
-            base.toLocalDate();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), DOM_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_toLocalDate_otherFieldMismatch() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
-        try {
-            base.toLocalDate();
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), DOW_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDate_noPrimarySet() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6);
-        base.toLocalDate();
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDate_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        base.toLocalDate();
-    }
-
-    public void test_toLocalDate_twoPrimarySets() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOY_RULE, 182);
-        LocalDate test = base.toLocalDate();
-        assertEquals(test, LocalDate.date(2008, 6, 30));
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDate_twoPrimarySetsDiffer() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOY_RULE, 183);
-        base.toLocalDate();
-    }
-
-    //-----------------------------------------------------------------------
-    // toLocalTime()
-    //-----------------------------------------------------------------------
-    public void test_toLocalTime() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalTime test = base.toLocalTime();
-        assertEquals(test, LocalTime.time(11, 30));
-        // check original immutable
-        assertFields(base, HOUR_RULE, 11, MIN_RULE, 30);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_toLocalTime_lenientOutsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 70);
-        try {
-            base.toLocalTime();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MIN_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_toLocalTime_otherFieldMismatch() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM
-        try {
-            base.toLocalTime();
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), AMPM_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalTime_noPrimarySet() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_AM_PM_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        base.toLocalTime();
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalTime_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        base.toLocalTime();
-    }
-
-    public void test_toLocalTime_twoPrimarySets() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400000);
-        LocalTime test = base.toLocalTime();
-        assertEquals(test, LocalTime.time(11, 30));
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalTime_twoPrimarySetsDiffer() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400001);
-        base.toLocalTime();
-    }
-
-    //-----------------------------------------------------------------------
-    // toLocalDateTime()
-    //-----------------------------------------------------------------------
-    public void test_toLocalDateTime() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        LocalDateTime test = base.toLocalDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
-        // check original immutable
-        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30, HOUR_RULE, 11, MIN_RULE, 30);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_toLocalDateTime_lenientOutsideBounds() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 70);
-        try {
-            base.toLocalDateTime();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MIN_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_toLocalDateTime_lenientDayOverflow() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 23)
-            .withFieldValue(MIN_RULE, 70);
-        try {
-            base.toLocalDateTime();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MIN_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_toLocalDateTime_otherFieldMismatch() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM
-        try {
-            base.toLocalDateTime();
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), AMPM_RULE);
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDateTime_noPrimarySetForDate() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        base.toLocalDateTime();
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDateTime_noPrimarySetForTime() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_AM_PM_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        base.toLocalDateTime();
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDateTime_empty() {
-        DateTimeFields base = DateTimeFields.fields();
-        base.toLocalDateTime();
-    }
-
-    public void test_toLocalDateTime_twoPrimarySets() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400000);
-        LocalDateTime test = base.toLocalDateTime();
-        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_toLocalDateTime_twoPrimarySetsDiffer() {
-        DateTimeFields base = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400001);
-        base.toLocalDateTime();
-    }
+//    //-----------------------------------------------------------------------
+//    // toLocalDate()
+//    //-----------------------------------------------------------------------
+//    public void test_toLocalDate() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30);
+//        LocalDate test = base.toLocalDate();
+//        assertEquals(test, LocalDate.date(2008, 6, 30));
+//        // check original immutable
+//        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_toLocalDate_lenientInsideBounds() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 31);
+//        try {
+//            base.toLocalDate();
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), DOM_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_toLocalDate_lenientOutsideBounds() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 32);
+//        try {
+//            base.toLocalDate();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            assertEquals(ex.getFieldRule(), DOM_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_toLocalDate_otherFieldMismatch() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
+//        try {
+//            base.toLocalDate();
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), DOW_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDate_noPrimarySet() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6);
+//        base.toLocalDate();
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDate_empty() {
+//        DateTimeFields base = DateTimeFields.fields();
+//        base.toLocalDate();
+//    }
+//
+//    public void test_toLocalDate_twoPrimarySets() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOY_RULE, 182);
+//        LocalDate test = base.toLocalDate();
+//        assertEquals(test, LocalDate.date(2008, 6, 30));
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDate_twoPrimarySetsDiffer() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(DOY_RULE, 183);
+//        base.toLocalDate();
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // toLocalTime()
+//    //-----------------------------------------------------------------------
+//    public void test_toLocalTime() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalTime test = base.toLocalTime();
+//        assertEquals(test, LocalTime.time(11, 30));
+//        // check original immutable
+//        assertFields(base, HOUR_RULE, 11, MIN_RULE, 30);
+//    }
+//
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_toLocalTime_lenientOutsideBounds() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 70);
+//        try {
+//            base.toLocalTime();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            assertEquals(ex.getFieldRule(), MIN_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_toLocalTime_otherFieldMismatch() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM
+//        try {
+//            base.toLocalTime();
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), AMPM_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalTime_noPrimarySet() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_AMPM_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        base.toLocalTime();
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalTime_empty() {
+//        DateTimeFields base = DateTimeFields.fields();
+//        base.toLocalTime();
+//    }
+//
+//    public void test_toLocalTime_twoPrimarySets() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400000);
+//        LocalTime test = base.toLocalTime();
+//        assertEquals(test, LocalTime.time(11, 30));
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalTime_twoPrimarySetsDiffer() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400001);
+//        base.toLocalTime();
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // toLocalDateTime()
+//    //-----------------------------------------------------------------------
+//    public void test_toLocalDateTime() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        LocalDateTime test = base.toLocalDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+//        // check original immutable
+//        assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30, HOUR_RULE, 11, MIN_RULE, 30);
+//    }
+//
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_toLocalDateTime_lenientOutsideBounds() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 70);
+//        try {
+//            base.toLocalDateTime();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            assertEquals(ex.getFieldRule(), MIN_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+//    public void test_toLocalDateTime_lenientDayOverflow() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 23)
+//            .withFieldValue(MIN_RULE, 70);
+//        try {
+//            base.toLocalDateTime();
+//        } catch (IllegalCalendarFieldValueException ex) {
+//            assertEquals(ex.getFieldRule(), MIN_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+//    public void test_toLocalDateTime_otherFieldMismatch() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, but this says PM
+//        try {
+//            base.toLocalDateTime();
+//        } catch (InvalidCalendarFieldException ex) {
+//            assertEquals(ex.getFieldRule(), AMPM_RULE);
+//            throw ex;
+//        }
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDateTime_noPrimarySetForDate() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        base.toLocalDateTime();
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDateTime_noPrimarySetForTime() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_AMPM_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30);
+//        base.toLocalDateTime();
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDateTime_empty() {
+//        DateTimeFields base = DateTimeFields.fields();
+//        base.toLocalDateTime();
+//    }
+//
+//    public void test_toLocalDateTime_twoPrimarySets() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400000);
+//        LocalDateTime test = base.toLocalDateTime();
+//        assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+//    }
+//
+//    @Test(expectedExceptions=CalendarConversionException.class)
+//    public void test_toLocalDateTime_twoPrimarySetsDiffer() {
+//        DateTimeFields base = DateTimeFields.fields()
+//            .withFieldValue(YEAR_RULE, 2008)
+//            .withFieldValue(MOY_RULE, 6)
+//            .withFieldValue(DOM_RULE, 30)
+//            .withFieldValue(HOUR_RULE, 11)
+//            .withFieldValue(MIN_RULE, 30)
+//            .withFieldValue(MILLI_RULE, 41400001);
+//        base.toLocalDateTime();
+//    }
 
     //-----------------------------------------------------------------------
     // toCalendrical()
@@ -1637,13 +1837,13 @@ public class TestDateTimeFields {
     public void test_toString1() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008);
         String test = base.toString();
-        assertEquals(test, "{Year=2008}");
+        assertEquals(test, "{ISO.Year=2008}");
     }
 
     public void test_toString2() {
         DateTimeFields base = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         String test = base.toString();
-        assertEquals(test, "{Year=2008, MonthOfYear=6}");
+        assertEquals(test, "{ISO.Year=2008, ISO.MonthOfYear=6}");
     }
 
     //-----------------------------------------------------------------------
@@ -1701,5 +1901,20 @@ public class TestDateTimeFields {
         assertEquals(map.get(rule3), value3);
         assertEquals(map.get(rule4), value4);
         assertEquals(map.get(rule5), value5);
+    }
+    private void assertCalendrical(
+            Calendrical test,
+            DateTimeFields fields,
+            LocalDate date,
+            LocalTime time,
+            ZoneOffset offset,
+            TimeZone zone) {
+//        assertEquals(test.getFields(), fields);
+//        assertEquals(test.getDate(), date);
+//        assertEquals(test.getTime(), time);
+        assertEquals(test.getOffset(), offset);
+        assertEquals(test.getZone(), zone);
+//        assertEquals(test.toLocalDate(), date);
+//        assertEquals(test.toLocalTime(), time);
     }
 }

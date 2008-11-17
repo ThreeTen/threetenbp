@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.CalendricalException;
-
 /**
  * A set of calendrical information which may or may not be valid.
  * <p>
@@ -209,31 +207,12 @@ public final class Calendrical
      * This method calls both {@link #merge()} and {@link #validate()}.
      * In addition, it checks that
      *
-     * @throws IllegalCalendarFieldValueException if invalid
+     * @throws CalendricalException if invalid
      */
     private void normalize() {
-        LocalDate localDate = date;
-        LocalTime localTime = time;
-        if (localDate == null && localTime == null) {
-            try {
-                LocalDateTime dt = fields.toLocalDateTime();
-                date = dt.toLocalDate();
-                time = dt.toLocalTime();
-            } catch (CalendricalException ex) {
-                try {
-                    localDate = fields.toLocalDate();
-                } catch (CalendricalException ex2) {
-                    localDate = null;
-                }
-                date = localDate;
-                try {
-                    localTime = fields.toLocalTime();
-                } catch (CalendricalException ex2) {
-                    localTime = null;
-                }
-                time = localTime;
-            }
-        }
+        Calendrical cal = fields.mergeStrict();
+        date = cal.date;
+        time = cal.time;
     }
 
     //-----------------------------------------------------------------------

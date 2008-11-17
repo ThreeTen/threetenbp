@@ -210,8 +210,8 @@ public class TestISOChronology {
         assertEquals(rule.getMinimumValue(), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 53);
-        assertEquals(rule.getSmallestMaximumValue(), 52);
-        assertEquals(rule.isFixedValueSet(), false);
+        assertEquals(rule.getSmallestMaximumValue(), 53);
+        assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
         serialize(rule);

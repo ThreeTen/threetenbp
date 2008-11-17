@@ -199,7 +199,7 @@ public class TestDateTimeParseContext {
         test.setOffset(ZoneOffset.zoneOffset(16));
         test.setZone(TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
         
-        assertEquals(test.toString(), "{Year=2008, MonthOfYear=6} +16:00 UTC+18:00");
+        assertEquals(test.toString(), "{ISO.Year=2008, ISO.MonthOfYear=6} +16:00 UTC+18:00");
     }
 
     public void test_toString_empty() throws Exception {

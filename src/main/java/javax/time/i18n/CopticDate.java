@@ -113,24 +113,25 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CopticDate</code>.
+     * Obtains an instance of <code>CopticDate</code> from the coptic year,
+     * month of year and day of month.
      *
-     * @param year  the year to represent
-     * @param monthOfYear  the month of year to represent
-     * @param dayOfMonth  the day of month to represent
+     * @param copticYear  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param copticMonthOfYear  the month of year to represent, from 1 to 13
+     * @param copticDayOfMonth  the day of month to represent, from 1 to 30
      * @return a CopticDate object
      */
-    public static CopticDate copticDate(int year, int monthOfYear, int dayOfMonth) {
-        CopticChronology.INSTANCE.year().checkValue(year);
-        CopticChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
-        CopticChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
-        if (monthOfYear == 13 && dayOfMonth > 5) {
-            if (dayOfMonth > 6 || CopticChronology.isLeapYear(year) == false) {
+    public static CopticDate copticDate(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
+        CopticChronology.INSTANCE.year().checkValue(copticYear);
+        CopticChronology.INSTANCE.monthOfYear().checkValue(copticMonthOfYear);
+        CopticChronology.INSTANCE.dayOfMonth().checkValue(copticDayOfMonth);
+        if (copticMonthOfYear == 13 && copticDayOfMonth > 5) {
+            if (copticDayOfMonth > 6 || CopticChronology.isLeapYear(copticYear) == false) {
                 throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.INSTANCE.dayOfMonth());
             }
         }
-        int epochDays = (year - 1) * 365 + (year / 4) + 30 * (monthOfYear - 1) + dayOfMonth - 1;
-        return new CopticDate(epochDays, year, monthOfYear, dayOfMonth);
+        int epochDays = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
+        return new CopticDate(epochDays, copticYear, copticMonthOfYear, copticDayOfMonth);
     }
 
     /**
@@ -219,23 +220,37 @@ public final class CopticDate
         return CopticChronology.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the specified calendar field is supported.
+     * <p>
+     * This method queries whether this date can be queried using the
+     * specified calendar field.
+     *
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
+     */
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        return fieldRule != null && fieldRule.getValueQuiet(toLocalDate(), null) != null;
+    }
+
     /**
      * Gets the value of the specified calendar field.
      * <p>
      * This method queries the value of the specified calendar field.
      * If the calendar field is not supported then an exception is thrown.
      *
-     * @param field  the field to query, not null
+     * @param fieldRule  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
+     * @throws UnsupportedCalendarFieldException if no value for the field is found
      */
-    public int get(DateTimeFieldRule field) {
-        return toCalendrical().getValue(field);
+    public int get(DateTimeFieldRule fieldRule) {
+        return fieldRule.getValue(toLocalDate(), null);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year value.
+     * Gets the coptic year value.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -244,7 +259,7 @@ public final class CopticDate
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the coptic month of year value.
      *
      * @return the month of year, from 1 to 13
      */
@@ -253,7 +268,7 @@ public final class CopticDate
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the coptic day of month value.
      *
      * @return the day of month, from 1 to 30
      */
@@ -262,7 +277,7 @@ public final class CopticDate
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the coptic day of year value.
      *
      * @return the day of year, from 1 to 366
      */
@@ -272,7 +287,7 @@ public final class CopticDate
     }
 
     /**
-     * Gets the day of week value.
+     * Gets the coptic day of week value.
      *
      * @return the day of week, from 1 (Monday) to 7 (Sunday)
      */
@@ -282,7 +297,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the year represented is a leap year.
+     * Checks if the date represented is a leap year.
      *
      * @return true if this date is in a leap year
      */
@@ -291,7 +306,7 @@ public final class CopticDate
     }
 
     /**
-     * Checks if the year represented is the leap day in a leap year.
+     * Checks if the date represented is the leap day in a leap year.
      * <p>
      * The leap day is when the year is a leap year, the month is 13 and
      * the day is 6.
@@ -353,7 +368,7 @@ public final class CopticDate
     }
 
     /**
-     * Returns a copy of this CopticDate with the day of yeare value altered.
+     * Returns a copy of this CopticDate with the day of year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

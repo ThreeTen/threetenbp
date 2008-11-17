@@ -1170,6 +1170,21 @@ public final class LocalTime
         return new Overflow(newTime, days);
     }
 
+    /**
+     * Returns this time wrapped as an days-overflow.
+     * <p>
+     * This method will generally only be needed by those writing low-level date
+     * and time code that handles days-overflow. An overflow happens when adding
+     * or subtracting to a time and the result overflows the range of a time.
+     * The number of days later (or earlier) of the result is recorded in the overflow.
+     *
+     * @param daysOverflow  the number of days to store
+     * @return the days-overflow, never null
+     */
+    public Overflow toOverflow(int daysOverflow) {
+        return new Overflow(this, daysOverflow);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * The result of addition to a LocalTime allowing the expression of
@@ -1267,4 +1282,5 @@ public final class LocalTime
             return getResultTime().toString() + " + P" + days + "D";
         }
     }
+
 }

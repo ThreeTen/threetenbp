@@ -38,8 +38,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.Map.Entry;
+
+import javax.time.CalendricalException;
 
 /**
  * A set of date-time fields which may or may not be valid.
@@ -53,8 +54,9 @@ import java.util.Map.Entry;
  * @author Stephen Colebourne
  */
 public final class DateTimeFields
-        implements CalendricalProvider, DateProvider, TimeProvider,
-            DateMatcher, TimeMatcher, DateTimeProvider, Iterable<DateTimeFieldRule>, Serializable {
+        implements CalendricalProvider,
+//            DateProvider, TimeProvider, DateTimeProvider,
+            DateMatcher, TimeMatcher, Iterable<DateTimeFieldRule>, Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -64,7 +66,7 @@ public final class DateTimeFields
     /**
      * The date time map, never null, may be empty.
      */
-    private final Map<DateTimeFieldRule, Integer> fieldValueMap;
+    private final TreeMap<DateTimeFieldRule, Integer> fieldValueMap;
 
     /**
      * Obtains an empty instance of <code>DateTimeFields</code>.
@@ -148,6 +150,7 @@ public final class DateTimeFields
 
     /**
      * Creates a new empty map.
+     *
      * @return ordered representation of internal map
      */
     private static TreeMap<DateTimeFieldRule, Integer> createMap() {
@@ -285,8 +288,8 @@ public final class DateTimeFields
      * Iterates through all the fields.
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
-     * around the fields using the for-each loop. The values can be obtained
-     * using {@link #getValue(DateTimeFieldRule)}.
+     * around the fields using the for-each loop. The values can be obtained using
+     * {@link #getValue(DateTimeFieldRule)} or {@link #getValueQuiet(DateTimeFieldRule)}.
      *
      * @return an iterator over the fields in this object, never null
      */
@@ -386,31 +389,6 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Merges the fields combining groups of less significant fields into
-     * more significant ones.
-     * <p>
-     * The merge process is designed to take combinations of less significant
-     * fields and merge them. For example, the AM/PM field and the hour of AM/PM
-     * field could be merged to the hour of day field. The exact hierarchy as to
-     * which fields are more significant than others is chronology dependent.
-     *
-     * @return the new instance, with merged fields, never null
-     * @throws CalendarFieldException if a value cannot be merged as the value is invalid
-     */
-    public DateTimeFields mergeFields() {
-        if (fieldValueMap.size() > 1) {
-            TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
-            for (DateTimeFieldRule fieldRule : fieldValueMap.keySet()) {
-                fieldRule.mergeFields(clonedMap);
-            }
-            if (clonedMap.equals(fieldValueMap) == false) {
-                return new DateTimeFields(clonedMap).mergeFields();
-            }
-        }
-        return this;
-    }
-
-    /**
      * Validates that the value of each field is within its valid range.
      * <p>
      * The validation simply checks that each value is within the normal range
@@ -450,144 +428,52 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Merges the fields to create a date.
+     * Merges the fields in this map to form a calendrical.
      * <p>
-     * This method will merge any complete set of primary fields into a date.
-     * It is normal practice to call {@link #mergeFields()} before calling this
-     * method to ensure that less significant fields are already merged into
-     * the primary fields.
+     * The merge process aims to extract the maximum amount of information
+     * possible from this set of fields. Ideally the outcome will be a date, time
+     * or both, however there may be insufficient information to achieve this.
      * <p>
-     * For example, calling <code>mergeFields</code> would merge the
-     * quarterOfYear and monthOfQuarter fields to form the primary field
-     * of monthOfYear. This method would then take year, monthOfYear and
-     * dayOfMonth fields to form a date.
+     * The process repeatedly calls the field rule {@link DateTimeFieldRule#merge merge}
+     * method to perform the merge on each individual field. Sometimes two or
+     * more fields will combine to form a more significant field. Sometimes they
+     * will combine to form a date or time. The process stops when there no more
+     * merges can occur.
      * <p>
-     * It is possible that this field set contains two sets of primary fields.
-     * For example, if this instance contains year, monthOfYear, dayOfMonth and
-     * dayOfYear, there are two sets of primary fields (year/month/dayOfMonth
-     * and year/dayOfYear). Both sets of primary fields must merge to the
-     * same date or an exception is thrown.
+     * The process is based around hierarchies that can be combined.
+     * For example, QuarterOfYear and MonthOfQuarter can be combined to form MonthOfYear.
+     * Then, MonthOfYear can be combined with DayOfMonth and Year to form a date.
+     * Any fields which take part in a merge will be removed from the result as their
+     * values can be derived from the merged field.
      * <p>
-     * This merge process is lenient. For example, if the month is 13 then this
-     * will resolve to month 1 of the following year (assuming ISO chronology rules).
+     * The exact definition of which fields combine with which is chronology dependent.
+     * For example, see {@link ISOChronology}.
      * <p>
-     * Combining this method with others will make it more strict.
-     * <ul>
-     * <li>Lenient - call <code>fields.mergeFields().mergeToDate()</code></li>
-     * <li>Semi-lenient - call <code>fields.mergeFields().validateFields().mergeToDate()</code>
-     *  which ensures that each field is only lenient within its range of valid values</li>
-     * <li>Strict - call as per semi-lenient and then check the resulting non-null
-     *  date with <code>fields.matchesDate(date)</code></li>
-     * </ul>
+     * The details of the process are controlled by the merge context.
+     * This includes strict/lenient behaviour.
+     * <p>
+     * The merge must result in consistent values for each field, date and time.
+     * If two different values are produced an exception is thrown.
+     * For example, both Year/MonthOfYear/DayOfMonth and Year/DayOfYear will merge to form a date.
+     * If both sets of fields do not produce the same date then an exception will be thrown.
      *
-     * @return the LocalDate, null if there is insufficient information to create a date
-     * @throws CalendarFieldException if a field cannot be merged
-     * @throws CalendarConversionException if the merge creates more than one date and the dates differ
+     * @return the new instance, with merged fields, never null
+     * @throws CalendricalException if the fields cannot be merged
      */
-    public LocalDate mergeToDate() {
-        LocalDate date = null;
-        for (DateTimeFieldRule fieldRule : fieldValueMap.keySet()) {
-            LocalDate loopDate = fieldRule.mergeToDate(this);
-            if (loopDate != null) {
-                if (date != null && date.equals(loopDate) == false) {
-                    throw new CalendarConversionException(
-                        "Cannot convert DateTimeFields to LocalDate, merge process resulted in two different dates: " +
-                            date + " and " + loopDate);
-                }
-                date = loopDate;
-            }
+    public Calendrical mergeStrict() {
+        if (fieldValueMap.size() == 0) {
+            return Calendrical.calendrical();
         }
-        return date;
-    }
-
-    /**
-     * Merges the fields to create a time.
-     * <p>
-     * This method will merge any complete set of primary fields into a time.
-     * It is normal practice to call {@link #mergeFields()} before calling this
-     * method to ensure that less significant fields are already merged into
-     * the primary fields.
-     *
-     * @return the LocalTime, never null
-     * @throws CalendarFieldException if a field cannot be merged
-     * @throws CalendarConversionException if the time cannot be converted
-     */
-    public LocalTime mergeToTime() {
-        LocalTime time = null;
-        for (DateTimeFieldRule fieldRule : fieldValueMap.keySet()) {
-            LocalTime.Overflow loopTime = fieldRule.mergeToTime(this);
-            if (loopTime != null) {
-                if (time != null && time.equals(loopTime.getResultTime()) == false) {
-                    throw new CalendarConversionException(
-                        "Cannot convert DateTimeFields to LocalTime, merge process resulted in two different times: " +
-                            time + " and " + loopTime.getResultTime());
-                }
-                time = loopTime.getResultTime();
-            }
-        }
-        return time;
-    }
-
-    /**
-     * Merges the fields to create a date-time.
-     * <p>
-     * This method will merge any complete set of primary fields into a date-time.
-     * It is normal practice to call {@link #mergeFields()} before calling this
-     * method to ensure that less significant fields are already merged into
-     * the primary fields.
-     *
-     * @return the LocalDateTime, never null
-     * @throws CalendarFieldException if a field cannot be merged
-     * @throws CalendarConversionException if the date-time cannot be converted
-     */
-    public LocalDateTime mergeToDateTime() {
-        LocalDate date = mergeToDate();
-        if (date == null) {
-            return null;
-        }
-        LocalTime.Overflow time = null;
-        for (DateTimeFieldRule fieldRule : fieldValueMap.keySet()) {
-            LocalTime.Overflow loopTime = fieldRule.mergeToTime(this);
-            if (loopTime != null) {
-                if (time != null && time.equals(loopTime) == false) {
-                    throw new CalendarConversionException(
-                        "Cannot convert DateTimeFields to LocalTime, merge process resulted in two different times: " +
-                            time + " and " + loopTime.getResultTime());
-                }
-                time = loopTime;
-            }
-        }
-        return time == null ? null : time.toLocalDateTime(date);
+        CalendricalMerger merger = new CalendricalMerger(this, new CalendricalContext(true, true));
+        merger.merge();
+        return merger.toCalendrical();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Validates that the date fields in this set of fields match the specified date.
-     * <p>
-     * This implementation checks that all date fields in this field set.
-     * Time fields are ignored based on {@link LocalDate#isSupported(DateTimeFieldRule)}.
-     *
-     * @param date  the date to match, not null
-     * @return this, for chaining, never null
-     * @throws InvalidCalendarFieldException if any date field does not match the specified date
-     */
-    public DateTimeFields validateMatchesDate(LocalDate date) {
-        checkNotNull(date, "The date to match against must not be null");
-        for (DateTimeFieldRule field : new TreeSet<DateTimeFieldRule>(fieldValueMap.keySet())) {
-            if (date.isSupported(field) && date.get(field) != fieldValueMap.get(field)) {
-                throw new InvalidCalendarFieldException(
-                    "LocalDate " + date + " does not match the field " +
-                    field.getName() + "=" + fieldValueMap.get(field), field);
-            }
-        }
-        return this;
-    }
-
-    /**
      * Checks if the date fields in this set of fields match the specified date.
      * <p>
-     * This implementation checks that all date fields in this field set.
-     * Time fields are ignored based on {@link LocalDate#isSupported(DateTimeFieldRule)}.
+     * This implementation checks that all date fields in this field set match the input date.
      *
      * @param date  the date to match, not null
      * @return true if the date fields match, false otherwise
@@ -595,7 +481,8 @@ public final class DateTimeFields
     public boolean matchesDate(LocalDate date) {
         checkNotNull(date, "The date to match against must not be null");
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            if (date.isSupported(entry.getKey()) && date.get(entry.getKey()) != entry.getValue()) {
+            Integer dateValue = entry.getKey().getValueQuiet(date, null);
+            if (dateValue != null && dateValue.equals(entry.getValue()) == false) {
                 return false;
             }
         }
@@ -603,32 +490,9 @@ public final class DateTimeFields
     }
 
     /**
-     * Validates that the time fields in this set of fields match the specified time.
-     * <p>
-     * This implementation checks that all time fields in this field set.
-     * Date fields are ignored based on {@link LocalTime#isSupported(DateTimeFieldRule)}.
-     *
-     * @param time  the time to match, not null
-     * @return this, for chaining, never null
-     * @throws InvalidCalendarFieldException if any time field does not match the specified time
-     */
-    public DateTimeFields validateMatchesTime(LocalTime time) {
-        checkNotNull(time, "The time to match against must not be null");
-        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
-            if (time.isSupported(field) && time.get(field) != fieldValueMap.get(field)) {
-                throw new InvalidCalendarFieldException(
-                    "LocalTime " + time + " does not match the field " +
-                    field.getName() + "=" + fieldValueMap.get(field), field);
-            }
-        }
-        return this;
-    }
-
-    /**
      * Checks if the time fields in this set of fields match the specified time.
      * <p>
-     * This implementation checks that all time fields in this field set.
-     * Date fields are ignored based on {@link LocalTime#isSupported(DateTimeFieldRule)}.
+     * This implementation checks that all time fields in this field set match the input time.
      *
      * @param time  the time to match, not null
      * @return true if the time fields match, false otherwise
@@ -636,7 +500,8 @@ public final class DateTimeFields
     public boolean matchesTime(LocalTime time) {
         checkNotNull(time, "The time to match against must not be null");
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            if (time.isSupported(entry.getKey()) && time.get(entry.getKey()) != entry.getValue()) {
+            Integer timeValue = entry.getKey().getValueQuiet(null, time);
+            if (timeValue != null && timeValue.equals(entry.getValue()) == false) {
                 return false;
             }
         }
@@ -665,86 +530,76 @@ public final class DateTimeFields
      *
      * @return a clone of the field-value map, never null
      */
-    private TreeMap<DateTimeFieldRule, Integer> clonedMap() {
-        return new TreeMap<DateTimeFieldRule, Integer>(fieldValueMap);
+    TreeMap<DateTimeFieldRule, Integer> clonedMap() {
+        TreeMap<DateTimeFieldRule, Integer> cloned = createMap();
+        cloned.putAll(fieldValueMap);
+        return cloned;
     }
 
-    /**
-     * Converts this object to a LocalDate.
-     * <p>
-     * This method will validate and merge the fields to create a date.
-     * This method is strict, meaning that the resulting date can be queried
-     * for the same field values as are held in this object.
-     *
-     * @return the merged LocalDate, never null
-     * @throws IllegalCalendarFieldValueException if any field is out of the valid range
-     * @throws CalendarConversionException if the merge creates more than one date and the dates differ
-     * @throws CalendarConversionException if there is insufficient information to create a date
-     * @throws InvalidCalendarFieldException if one of the fields does not match the merged date
-     */
-    public LocalDate toLocalDate() {
-        LocalDate date = validateFields().mergeFields().mergeToDate();
-        if (date == null) {
-            throw new CalendarConversionException(
-                "Cannot convert DateTimeFields to LocalDate, insufficient infomation to create a date");
-        }
-        validateMatchesDate(date);
-        return date;
-    }
-
-    /**
-     * Converts this object to a LocalTime.
-     * <p>
-     * This method will validate and merge the fields to create a time.
-     * This method is strict, meaning that the resulting time can be queried
-     * for the same field values as are held in this object.
-     *
-     * @return the merged LocalTime, never null
-     * @throws IllegalCalendarFieldValueException if any field is out of the valid range
-     * @throws CalendarConversionException if the merge creates more than one date and the dates differ
-     * @throws CalendarConversionException if there is insufficient information to create a date
-     * @throws InvalidCalendarFieldException if one of the fields does not match the merged date
-     */
-    public LocalTime toLocalTime() {
-        LocalTime time = validateFields().mergeFields().mergeToTime();
-        if (time == null) {
-            throw new CalendarConversionException(
-                "Cannot convert DateTimeFields to LocalTime, insufficient infomation to create a date");
-        }
-        validateMatchesTime(time);
-        return time;
-    }
-
-    /**
-     * Converts this object to a LocalDateTime.
-     * <p>
-     * This method will validate and merge the fields to create a time.
-     * This method is strict, meaning that the resulting time can be queried
-     * for the same field values as are held in this object.
-     *
-     * @return the LocalDateTime, never null
-     * @throws InvalidCalendarFieldException if any field is invalid
-     * @throws CalendarConversionException if the date or time cannot be converted
-     */
-    public LocalDateTime toLocalDateTime() {
-        LocalDateTime dateTime = validateFields().mergeFields().mergeToDateTime();
-        if (dateTime == null) {
-            throw new CalendarConversionException(
-                "Cannot convert DateTimeFields to LocalTime, insufficient infomation to create a date");
-        }
-        for (DateTimeFieldRule field : fieldValueMap.keySet()) {
-            if (dateTime.isSupported(field) && dateTime.get(field) != fieldValueMap.get(field)) {
-                throw new InvalidCalendarFieldException(
-                    "Converted LocalTime " + dateTime + " does not match the field " +
-                    field.getName() + "=" + fieldValueMap.get(field), field);
-            }
-        }
-        return dateTime;
-    }
+//    /**
+//     * Converts this object to a LocalDate.
+//     * <p>
+//     * This method will validate and merge the fields to create a date.
+//     * This merge process is strict as defined by {@link #mergeToDate}.
+//     *
+//     * @return the merged LocalDate, never null
+//     * @throws IllegalCalendarFieldValueException if any field is out of the valid range
+//     * @throws CalendarConversionException if the merge creates more than one date and the dates differ
+//     * @throws CalendarConversionException if there is insufficient information to create a date
+//     * @throws InvalidCalendarFieldException if one of the fields does not match the merged date
+//     */
+//    public LocalDate toLocalDate() {
+//        LocalDate date = mergeToDate(true, true);
+//        if (date == null) {
+//            throw new CalendarConversionException(
+//                "Cannot convert DateTimeFields to LocalDate, insufficient infomation to create a date");
+//        }
+//        return date;
+//    }
+//
+//    /**
+//     * Converts this object to a LocalTime.
+//     * <p>
+//     * This method will validate and merge the fields to create a time.
+//     * This merge process is strict as defined by {@link #mergeToTime}.
+//     *
+//     * @return the merged LocalTime, never null
+//     * @throws IllegalCalendarFieldValueException if any field is out of the valid range
+//     * @throws CalendarConversionException if the merge creates more than one date and the dates differ
+//     * @throws CalendarConversionException if there is insufficient information to create a date
+//     * @throws InvalidCalendarFieldException if one of the fields does not match the merged date
+//     */
+//    public LocalTime toLocalTime() {
+//        LocalTime time = mergeToTime(true, true);
+//        if (time == null) {
+//            throw new CalendarConversionException(
+//                "Cannot convert DateTimeFields to LocalTime, insufficient infomation to create a time");
+//        }
+//        return time;
+//    }
+//
+//    /**
+//     * Converts this object to a LocalDateTime.
+//     * <p>
+//     * This method will validate and merge the fields to create a date-time.
+//     * This merge process is strict as defined by {@link #mergeToDateTime}.
+//     *
+//     * @return the LocalDateTime, never null
+//     * @throws InvalidCalendarFieldException if any field is invalid
+//     * @throws CalendarConversionException if the date or time cannot be converted
+//     */
+//    public LocalDateTime toLocalDateTime() {
+//        LocalDateTime dateTime = mergeToDateTime(true, true);
+//        if (dateTime == null) {
+//            throw new CalendarConversionException(
+//                "Cannot convert DateTimeFields to LocalTime, insufficient infomation to create a date-time");
+//        }
+//        return dateTime;
+//    }
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this object to a Calendrical.
+     * Converts this object to a Calendrical without merging the contents.
      *
      * @return the calendrical with the same set of fields, never null
      */

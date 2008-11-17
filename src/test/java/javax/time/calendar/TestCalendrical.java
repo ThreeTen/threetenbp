@@ -618,7 +618,7 @@ public class TestCalendrical {
         assertEquals(test, LocalDate.date(2008, 6, 30));
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_toLocalDate_invalidMergeFields() {
         DateTimeFields fields = DateTimeFields.fields()
             .withFieldValue(YEAR_RULE, 2008)
@@ -659,7 +659,7 @@ public class TestCalendrical {
         assertEquals(test, LocalTime.time(11, 30));
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_toLocalTime_invalidMergeFields() {
         DateTimeFields fields = DateTimeFields.fields()
             .withFieldValue(HOUR_RULE, 11)
@@ -702,7 +702,7 @@ public class TestCalendrical {
         assertEquals(test, LocalDateTime.dateTime(2008, 6, 30, 11, 30));
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_toLocalDateTime_invalidMergeFields() {
         DateTimeFields fields = DateTimeFields.fields()
             .withFieldValue(YEAR_RULE, 2008)
@@ -1006,34 +1006,34 @@ public class TestCalendrical {
     public void test_toString1() {
         Calendrical base = Calendrical.calendrical(YEAR_RULE, 2008);
         String test = base.toString();
-        assertEquals(test, "{Year=2008}");
+        assertEquals(test, "{ISO.Year=2008}");
     }
 
     public void test_toString1_offset() {
         DateTimeFields fields = DateTimeFields.fields(YEAR_RULE, 2008);
         Calendrical base = Calendrical.calendrical(fields, OFFSET_0100, null);
         String test = base.toString();
-        assertEquals(test, "{Year=2008} +01:00");
+        assertEquals(test, "{ISO.Year=2008} +01:00");
     }
 
     public void test_toString1_zone() {
         DateTimeFields fields = DateTimeFields.fields(YEAR_RULE, 2008);
         Calendrical base = Calendrical.calendrical(fields, null, ZONE_UTC);
         String test = base.toString();
-        assertEquals(test, "{Year=2008} UTC");
+        assertEquals(test, "{ISO.Year=2008} UTC");
     }
 
     public void test_toString1_offset_zone() {
         DateTimeFields fields = DateTimeFields.fields(YEAR_RULE, 2008);
         Calendrical base = Calendrical.calendrical(fields, OFFSET_0100, ZONE_UTC);
         String test = base.toString();
-        assertEquals(test, "{Year=2008} +01:00 UTC");
+        assertEquals(test, "{ISO.Year=2008} +01:00 UTC");
     }
 
     public void test_toString2() {
         Calendrical base = Calendrical.calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
         String test = base.toString();
-        assertEquals(test, "{Year=2008, MonthOfYear=6}");
+        assertEquals(test, "{ISO.Year=2008, ISO.MonthOfYear=6}");
     }
 
     //-----------------------------------------------------------------------

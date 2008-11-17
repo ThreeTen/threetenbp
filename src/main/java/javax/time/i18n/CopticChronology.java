@@ -35,6 +35,7 @@ import static javax.time.period.PeriodUnits.*;
 
 import java.io.Serializable;
 
+import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
@@ -226,13 +227,28 @@ public final class CopticChronology extends Chronology implements Serializable {
         private Object readResolve() {
             return INSTANCE;
         }
-        /** {@inheritDoc} */
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (date != null) {
-                return CopticDate.copticDate(date).getYear();
+            return (date == null ? null : CopticDate.copticDate(date).getYear());
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            Integer moyVal = merger.get(CopticChronology.INSTANCE.monthOfYear());
+            Integer domVal = merger.get(CopticChronology.INSTANCE.dayOfMonth());
+            if (moyVal != null && domVal != null) {
+                int year = merger.getValue(this);
+                CopticDate date;
+                if (merger.isStrict()) {
+                    date = CopticDate.copticDate(year, moyVal, domVal);
+                } else {
+                    date = CopticDate.copticDate(year, 1, 1)
+                                .plusMonths(moyVal).plusMonths(-1).plusDays(domVal).plusDays(-1);
+                }
+                merger.storeMergedDate(date.toLocalDate());
+                merger.markFieldAsProcessed(this);
+                merger.markFieldAsProcessed(CopticChronology.INSTANCE.monthOfYear());
+                merger.markFieldAsProcessed(CopticChronology.INSTANCE.dayOfMonth());
             }
-            return null;
         }
     }
 
@@ -252,13 +268,9 @@ public final class CopticChronology extends Chronology implements Serializable {
         private Object readResolve() {
             return INSTANCE;
         }
-        /** {@inheritDoc} */
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (date != null) {
-                return CopticDate.copticDate(date).getMonthOfYear();
-            }
-            return null;
+            return (date == null ? null : CopticDate.copticDate(date).getMonthOfYear());
         }
     }
 
@@ -278,18 +290,13 @@ public final class CopticChronology extends Chronology implements Serializable {
         private Object readResolve() {
             return INSTANCE;
         }
-        /** {@inheritDoc} */
         @Override
         public int getSmallestMaximumValue() {
             return 5;
         }
-        /** {@inheritDoc} */
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (date != null) {
-                return CopticDate.copticDate(date).getDayOfMonth();
-            }
-            return null;
+            return (date == null ? null : CopticDate.copticDate(date).getDayOfMonth());
         }
     }
 
@@ -309,18 +316,29 @@ public final class CopticChronology extends Chronology implements Serializable {
         private Object readResolve() {
             return INSTANCE;
         }
-        /** {@inheritDoc} */
         @Override
         public int getSmallestMaximumValue() {
             return 365;
         }
-        /** {@inheritDoc} */
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (date != null) {
-                return CopticDate.copticDate(date).getDayOfYear();
+            return (date == null ? null : CopticDate.copticDate(date).getDayOfYear());
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            Integer yearVal = merger.get(CopticChronology.INSTANCE.year());
+            if (yearVal != null) {
+                int doy = merger.getValue(this);
+                CopticDate date;
+                if (merger.isStrict()) {
+                    date = CopticDate.copticDate(yearVal, 1, 1).withDayOfYear(doy);
+                } else {
+                    date = CopticDate.copticDate(yearVal, 1, 1).plusDays(doy).plusDays(-1);
+                }
+                merger.storeMergedDate(date.toLocalDate());
+                merger.markFieldAsProcessed(this);
+                merger.markFieldAsProcessed(CopticChronology.INSTANCE.year());
             }
-            return null;
         }
     }
 
@@ -340,14 +358,9 @@ public final class CopticChronology extends Chronology implements Serializable {
         private Object readResolve() {
             return INSTANCE;
         }
-        /** {@inheritDoc} */
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (date != null) {
-                return CopticDate.copticDate(date).getDayOfWeek();
-            }
-            return null;
+            return (date == null ? null : CopticDate.copticDate(date).getDayOfWeek());
         }
     }
-
 }
