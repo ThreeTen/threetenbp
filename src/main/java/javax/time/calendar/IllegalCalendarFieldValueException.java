@@ -49,7 +49,7 @@ public class IllegalCalendarFieldValueException extends CalendarFieldException {
      * @param maxValue  the maximum value allowed
      */
     public IllegalCalendarFieldValueException(DateTimeFieldRule fieldRule, int actual, int minValue, int maxValue) {
-        super("Illegal value for " + fieldRule.getName() + " field, value " + actual +
+        super("Illegal value for " + fieldRule.getID() + " field, value " + actual +
                 " is not in the range " + minValue + " to " + maxValue, fieldRule);
     }
 

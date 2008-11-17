@@ -44,7 +44,7 @@ public class UnsupportedCalendarFieldException extends CalendarFieldException {
      * @param fieldRule  the rule of the field that is not supported, may be null
      */
     public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported", fieldRule);
+        super("Field " + (fieldRule == null ? "null" : fieldRule.getID()) + " is not supported", fieldRule);
     }
 
     /**
@@ -54,7 +54,7 @@ public class UnsupportedCalendarFieldException extends CalendarFieldException {
      * @param objectDescription  the description of the calendrical that does not support the field, may be null
      */
     public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule, String objectDescription) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) + " is not supported on " + objectDescription, fieldRule);
+        super("Field " + (fieldRule == null ? "null" : fieldRule.getID()) + " is not supported on " + objectDescription, fieldRule);
     }
 
 }
