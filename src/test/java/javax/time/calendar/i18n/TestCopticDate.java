@@ -510,7 +510,7 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_toCalendrical() throws Exception {
         Calendrical test = CopticDate.copticDate(1,1,1).toCalendrical();
-        assertEquals(test, Calendrical.calendrical(LocalDate.date(284, 8, 29), null, null, null));
+        assertEquals(test, new Calendrical(LocalDate.date(284, 8, 29), null, null, null));
     }
 
     //-----------------------------------------------------------------------

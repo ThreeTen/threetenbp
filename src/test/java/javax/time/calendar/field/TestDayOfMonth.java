@@ -421,7 +421,7 @@ public class TestDayOfMonth {
     public void test_toCalendrical() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

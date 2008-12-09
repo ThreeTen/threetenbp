@@ -61,16 +61,16 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule implem
     }
     /** {@inheritDoc} */
     @Override
-    protected Integer deriveValue(DateTimeFields fieldValueMap) {
-        Integer yocVal = MockYearOfCenturyFieldRule.INSTANCE.getValueQuiet(fieldValueMap);
+    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+        Integer yocVal = MockYearOfCenturyFieldRule.INSTANCE.getValueQuiet(fieldMap);
         return (yocVal == null ? null : yocVal / 10);
     }
     /** {@inheritDoc} */
     @Override
-    protected void merge(CalendricalMerger merger) {
-        Integer yodVal = merger.get(MockYearOfDecadeFieldRule.INSTANCE);
+    protected void merge(Calendrical.Merger merger) {
+        Integer yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
         if (yodVal != null) {
-            int doc = merger.getValue(this);
+            int doc = merger.getValueInt(this);
             int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc, 10), yodVal);
             merger.storeMergedField(MockYearOfCenturyFieldRule.INSTANCE, yoc);
             merger.markFieldAsProcessed(this);

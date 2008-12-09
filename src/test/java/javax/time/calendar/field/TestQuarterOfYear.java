@@ -156,7 +156,7 @@ public class TestQuarterOfYear {
     public void test_toCalendrical() {
         for (int i = 1; i <= 4; i++) {
             QuarterOfYear test = QuarterOfYear.quarterOfYear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

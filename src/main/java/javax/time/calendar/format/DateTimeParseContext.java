@@ -31,16 +31,11 @@
  */
 package javax.time.calendar.format;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.ZoneOffset;
@@ -61,19 +56,10 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * The date time format symbols, not null.
      */
     private DateTimeFormatSymbols symbols;
-
     /**
-     * The date time map, never null, may be empty.
+     * The calendrical collecting the results.
      */
-    private final Map<DateTimeFieldRule, Integer> fieldValueMap = new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
-    /**
-     * The offset, may be null.
-     */
-    private ZoneOffset offset;
-    /**
-     * The zone, may be null.
-     */
-    private TimeZone zone;
+    private final Calendrical calendrical = new Calendrical();
 
     /**
      * Constructor.
@@ -106,20 +92,20 @@ public final class DateTimeParseContext implements CalendricalProvider {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the map of fields and their values.
-     * <p>
-     * The map will never be null, however it may be empty.
-     * The values contained in the map might contradict the date or time, or
-     * be out of range for the rule.
-     * <p>
-     * For example, the day of month might be set to 50, or the hour to 1000.
-     *
-     * @return a modifiable copy of the field-value map, never null
-     */
-    public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
-        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
-    }
+//    /**
+//     * Gets the map of fields and their values.
+//     * <p>
+//     * The map will never be null, however it may be empty.
+//     * The values contained in the map might contradict the date or time, or
+//     * be out of range for the rule.
+//     * <p>
+//     * For example, the day of month might be set to 50, or the hour to 1000.
+//     *
+//     * @return a modifiable copy of the field-value map, never null
+//     */
+//    public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
+//        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
+//    }
 
     /**
      * Gets the value for the specified field throwing an exception if the
@@ -130,19 +116,12 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * <p>
      * For example, the day of month might be set to 50, or the hour to 1000.
      *
-     * @param rule  the rule to query from the map, not null
+     * @param fieldRule  the rule to query from the map, not null
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
-    public int getFieldValueMapValue(DateTimeFieldRule rule) {
-        if (rule == null) {
-            throw new NullPointerException("The rule must not be null");
-        }
-        Integer value = fieldValueMap.get(rule);
-        if (value != null) {
-            return value;
-        }
-        throw new UnsupportedCalendarFieldException(rule, "Calendrical");
+    public int getFieldValueMapValue(DateTimeFieldRule fieldRule) {
+        return calendrical.getValueInt(fieldRule);
     }
 
     /**
@@ -152,10 +131,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param value  the value to set in the field-value map
      */
     public void setFieldValue(DateTimeFieldRule fieldRule, int value) {
-        if (fieldRule == null) {
-            throw new NullPointerException("The field rule must not be null");
-        }
-        fieldValueMap.put(fieldRule, value);
+        calendrical.getFieldMap().put(fieldRule, value);
     }
 
     //-----------------------------------------------------------------------
@@ -166,7 +142,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return the offset, may be null
      */
     public ZoneOffset getOffset() {
-        return offset;
+        return calendrical.getOffset();
     }
 
     /**
@@ -175,7 +151,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param offset  the zone offset to store, may be null
      */
     public void setOffset(ZoneOffset offset) {
-        this.offset = offset;
+        calendrical.setOffset(offset);
     }
 
     //-----------------------------------------------------------------------
@@ -186,7 +162,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return the zone, may be null
      */
     public TimeZone getZone() {
-        return zone;
+        return calendrical.getZone();
     }
 
     /**
@@ -195,7 +171,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param zone  the zone to store, may be null
      */
     public void setZone(TimeZone zone) {
-        this.zone = zone;
+        calendrical.setZone(zone);
     }
 
     //-----------------------------------------------------------------------
@@ -205,8 +181,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return a new Calendrical with the parsed fields, never null
      */
     public Calendrical toCalendrical() {
-        DateTimeFields fields = DateTimeFields.fields(fieldValueMap);
-        return Calendrical.calendrical(fields, offset, zone);
+        return calendrical;
     }
 
     //-----------------------------------------------------------------------
@@ -217,15 +192,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(fieldValueMap);
-        if (offset != null) {
-            buf.append(' ').append(offset);
-        }
-        if (zone != null) {
-            buf.append(' ').append(zone);
-        }
-        return buf.toString();
+        return calendrical.toString();
     }
 
 }

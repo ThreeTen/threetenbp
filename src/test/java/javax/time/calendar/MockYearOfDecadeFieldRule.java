@@ -59,8 +59,8 @@ public final class MockYearOfDecadeFieldRule extends DateTimeFieldRule implement
     }
     /** {@inheritDoc} */
     @Override
-    protected Integer deriveValue(DateTimeFields fieldValueMap) {
-        Integer yocVal = MockYearOfCenturyFieldRule.INSTANCE.getValueQuiet(fieldValueMap);
+    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+        Integer yocVal = MockYearOfCenturyFieldRule.INSTANCE.getValueQuiet(fieldMap);
         return (yocVal == null ? null : yocVal % 10);
     }
 }

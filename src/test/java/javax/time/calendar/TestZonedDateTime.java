@@ -585,7 +585,7 @@ public class TestZonedDateTime {
         assertEquals(a.toOffsetDate(), OffsetDate.date(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.time(localTime, offset));
         assertEquals(a.toOffsetDateTime(), OffsetDateTime.dateTime(localDateTime, offset));
-        assertEquals(a.toCalendrical(), Calendrical.calendrical(localDateTime.toLocalDate(), localDateTime.toLocalTime(), offset, zone));
+        assertEquals(a.toCalendrical(), new Calendrical(localDateTime.toLocalDate(), localDateTime.toLocalTime(), offset, zone));
         assertEquals(a.toString(), a.toOffsetDateTime().toString() + " " + zone.toString());
     }
 

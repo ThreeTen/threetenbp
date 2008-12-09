@@ -189,7 +189,7 @@ public final class OffsetDate
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      */
     public int get(DateTimeFieldRule fieldRule) {
-        return toCalendrical().getValue(fieldRule);
+        return date.get(fieldRule);
     }
 
     //-----------------------------------------------------------------------
@@ -781,7 +781,7 @@ public final class OffsetDate
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(date, null, offset, null);
+        return new Calendrical(date, null, offset, null);
     }
 
     //-----------------------------------------------------------------------

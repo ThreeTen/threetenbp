@@ -211,8 +211,8 @@ public class TestAmPmOfDay {
     // toCalendrical()
     //-----------------------------------------------------------------------
     public void test_toCalendrical() {
-        assertEquals(AmPmOfDay.AM.toCalendrical(), Calendrical.calendrical(RULE, 0));
-        assertEquals(AmPmOfDay.PM.toCalendrical(), Calendrical.calendrical(RULE, 1));
+        assertEquals(AmPmOfDay.AM.toCalendrical(), new Calendrical(RULE, 0));
+        assertEquals(AmPmOfDay.PM.toCalendrical(), new Calendrical(RULE, 1));
     }
 
     //-----------------------------------------------------------------------

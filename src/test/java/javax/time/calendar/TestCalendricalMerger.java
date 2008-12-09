@@ -31,17 +31,18 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.DateTimeFields.*;
 import static javax.time.calendar.LocalDate.*;
 import static javax.time.calendar.LocalTime.*;
 import static org.testng.Assert.*;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import javax.time.CalendricalException;
+import javax.time.calendar.Calendrical.Merger;
 import javax.time.calendar.LocalTime.Overflow;
 
 import org.testng.Assert;
@@ -67,7 +68,9 @@ public class TestCalendricalMerger {
     private static final DateTimeFieldRule AMPM_RULE = ISOChronology.amPmOfDayRule();
     private static final DateTimeFieldRule HOUR_AMPM_RULE = ISOChronology.hourOfAmPmRule();
     private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
-    private static final DateTimeFieldRule MILLI_RULE = ISOChronology.milliOfDayRule();
+    private static final DateTimeFieldRule SEC_RULE = ISOChronology.secondOfMinuteRule();
+    private static final DateTimeFieldRule MILLISEC_RULE = ISOChronology.milliOfSecondRule();
+    private static final DateTimeFieldRule MILLIDAY_RULE = ISOChronology.milliOfDayRule();
 
     private static final CalendricalContext STRICT_CONTEXT = new CalendricalContext(true, true);
     private static final CalendricalContext STRICT_DISCARD_UNUSED_CONTEXT = new CalendricalContext(true, false);
@@ -77,8 +80,8 @@ public class TestCalendricalMerger {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
-    public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(CalendricalMerger.class));
+//    public void test_interfaces() {
+//        assertTrue(CalendricalProvider.class.isAssignableFrom(CalendricalMerger.class));
 //        assertTrue(DateProvider.class.isAssignableFrom(CalendricalMerger.class));
 //        assertTrue(TimeProvider.class.isAssignableFrom(CalendricalMerger.class));
 //        assertTrue(DateTimeProvider.class.isAssignableFrom(CalendricalMerger.class));
@@ -86,7 +89,7 @@ public class TestCalendricalMerger {
 //        assertTrue(TimeMatcher.class.isAssignableFrom(CalendricalMerger.class));
 //        assertTrue(Iterable.class.isAssignableFrom(CalendricalMerger.class));
 //        assertTrue(Serializable.class.isAssignableFrom(CalendricalMerger.class));
-    }
+//    }
 
 //    @DataProvider(name="simple")
 //    Object[][] data_simple() {
@@ -109,117 +112,83 @@ public class TestCalendricalMerger {
 //        assertEquals(ois.readObject(), fieldMap);
 //    }
 
-    //-----------------------------------------------------------------------
-    // constructors
-    //-----------------------------------------------------------------------
-    public void constructor_strict() {
-        DateTimeFields fields = fields(YEAR_RULE, 2008);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        assertEquals(test.getOriginalFields(), fields);
-        assertEquals(test.getContext(), STRICT_CONTEXT);
-        assertEquals(test.isStrict(), true);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-        assertEquals(test.getMergedFields(), fields);
-        assertEquals(test.getMergedDate(), null);
-        assertEquals(test.getMergedTime(), null);
-    }
-
-    public void constructor_lenient() {
-        DateTimeFields fields = fields(YEAR_RULE, 2008);
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        assertEquals(test.getOriginalFields(), fields);
-        assertEquals(test.getContext(), LENIENT_CONTEXT);
-        assertEquals(test.isStrict(), false);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-        assertEquals(test.getMergedFields(), fields);
-        assertEquals(test.getMergedDate(), null);
-        assertEquals(test.getMergedTime(), null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getProcessedFieldSet()
-    //-----------------------------------------------------------------------
-    public void test_getProcessedFieldSet_modifiableIndependent() {
-        DateTimeFields fields = fields(YEAR_RULE, 2008);
-        CalendricalMerger base = new CalendricalMerger(fields, STRICT_CONTEXT);
-        Set<DateTimeFieldRule> test = base.getProcessedFieldSet();
-        assertEquals(test, new HashSet<DateTimeFieldRule>());
-        test.add(MOQ_RULE);
-        assertEquals(base.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-    }
-
-    //-----------------------------------------------------------------------
-    // get()
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT);
-        assertEquals(test.get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.get(MOY_RULE), Integer.valueOf(6));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_null() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT);
-        test.get(NULL_RULE);
-    }
-
-    public void test_get_fieldNotPresent() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT);
-        assertEquals(test.get(DOM_RULE), null);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_get_strictInvalidValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, -1), STRICT_CONTEXT);
-        assertEquals(test.get(YEAR_RULE), Integer.valueOf(2008));
-        try {
-            test.get(MOY_RULE);
-        } catch (IllegalCalendarFieldValueException ex) {
-            dumpException(ex);
-            assertEquals(ex.getFieldRule(), MOY_RULE);
-            throw ex;
-        }
-    }
-
-    public void test_get_lenientInvalidValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, -1), LENIENT_CONTEXT);
-        assertEquals(test.get(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.get(MOY_RULE), Integer.valueOf(-1));
-    }
+//    //-----------------------------------------------------------------------
+//    // constructors
+//    //-----------------------------------------------------------------------
+//    public void constructor_strict() {
+//        DateTimeFields fields = fields(YEAR_RULE, 2008);
+//        Calendrical.Merger test = new Calendrical.Merger(fields, STRICT_CONTEXT);
+//        assertEquals(test.getOriginalFields(), fields);
+//        assertEquals(test.getContext(), STRICT_CONTEXT);
+//        assertEquals(test.isStrict(), true);
+//        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
+//        assertEquals(test.getMergedFields(), fields);
+//        assertEquals(test.getMergedDate(), null);
+//        assertEquals(test.getMergedTime(), null);
+//    }
+//
+//    public void constructor_lenient() {
+//        DateTimeFields fields = fields(YEAR_RULE, 2008);
+//        Calendrical.Merger test = new Calendrical.Merger(fields, LENIENT_CONTEXT);
+//        assertEquals(test.getOriginalFields(), fields);
+//        assertEquals(test.getContext(), LENIENT_CONTEXT);
+//        assertEquals(test.isStrict(), false);
+//        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
+//        assertEquals(test.getMergedFields(), fields);
+//        assertEquals(test.getMergedDate(), null);
+//        assertEquals(test.getMergedTime(), null);
+//    }
+//
 
     //-----------------------------------------------------------------------
     // getValue()
     //-----------------------------------------------------------------------
     public void test_getValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT);
-        assertEquals(test.getValue(YEAR_RULE), 2008);
-        assertEquals(test.getValue(MOY_RULE), 6);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(merger.getValue(YEAR_RULE), Integer.valueOf(2008));
+                assertEquals(merger.getValue(this), Integer.valueOf(20));
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_getValue_null() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT);
-        test.get(NULL_RULE);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.getValue(NULL_RULE);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_getValue_fieldNotPresent() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT);
-        try {
-            test.getValue(DOM_RULE);
-        } catch (UnsupportedCalendarFieldException ex) {
-            dumpException(ex);
-            assertEquals(ex.getFieldRule(), DOM_RULE);
-            throw ex;
-        }
+    public void test_get_fieldNotPresent() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(merger.getValue(DOM_RULE), null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_getValue_strictInvalidValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, -1), STRICT_CONTEXT);
-        assertEquals(test.getValue(YEAR_RULE), 2008);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                fail();
+            }
+        };
+        Calendrical cal = new Calendrical(MOY_RULE, -1, rule, 20);
         try {
-            test.getValue(MOY_RULE);
+            cal.merge(STRICT_CONTEXT);
         } catch (IllegalCalendarFieldValueException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), MOY_RULE);
@@ -228,40 +197,148 @@ public class TestCalendricalMerger {
     }
 
     public void test_getValue_lenientInvalidValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008, MOY_RULE, -1), LENIENT_CONTEXT);
-        assertEquals(test.getValue(YEAR_RULE), 2008);
-        assertEquals(test.getValue(MOY_RULE), -1);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(merger.getValue(MOY_RULE), Integer.valueOf(-1));
+            }
+        };
+        Calendrical cal = new Calendrical(MOY_RULE, -1, rule, 20);
+        cal.merge(LENIENT_CONTEXT);
+    }
+
+    //-----------------------------------------------------------------------
+    // getValueInt()
+    //-----------------------------------------------------------------------
+    public void test_getValueInt() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(merger.getValueInt(YEAR_RULE), 2008);
+                assertEquals(merger.getValueInt(this), 20);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getValueInt_null() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.getValueInt(NULL_RULE);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
+    }
+
+    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    public void test_getValueInt_fieldNotPresent() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                try {
+                    merger.getValueInt(DOM_RULE);
+                } catch (UnsupportedCalendarFieldException ex) {
+                    dumpException(ex);
+                    assertEquals(ex.getFieldRule(), DOM_RULE);
+                    throw ex;
+                }
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_getValueInt_strictInvalidValue() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                fail();
+            }
+        };
+        Calendrical cal = new Calendrical(MOY_RULE, -1, rule, 20);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (IllegalCalendarFieldValueException ex) {
+            dumpException(ex);
+            assertEquals(ex.getFieldRule(), MOY_RULE);
+            throw ex;
+        }
+    }
+
+    public void test_getValueInt_lenientInvalidValue() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(merger.getValueInt(MOY_RULE), -1);
+            }
+        };
+        Calendrical cal = new Calendrical(MOY_RULE, -1, rule, 20);
+        cal.merge(LENIENT_CONTEXT);
     }
 
     //-----------------------------------------------------------------------
     // markFieldAsProcessed()
     //-----------------------------------------------------------------------
     public void test_markFieldAsProcessed() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-        test.markFieldAsProcessed(YEAR_RULE);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
+                merger.markFieldAsProcessed(YEAR_RULE);
+                assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
     }
 
     public void test_markFieldAsProcessed_set() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-        test.markFieldAsProcessed(YEAR_RULE);
-        test.markFieldAsProcessed(YEAR_RULE);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
+                merger.markFieldAsProcessed(YEAR_RULE);
+                merger.markFieldAsProcessed(YEAR_RULE);
+                assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_markFieldAsProcessed_null() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        test.markFieldAsProcessed(YEAR_RULE);
-        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
+                try {
+                    merger.markFieldAsProcessed(NULL_RULE);
+                } catch (NullPointerException ex) {
+                    assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
+                    throw ex;
+                }
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        cal.merge(STRICT_CONTEXT);
         
+    }
+
+    @SuppressWarnings("unchecked")
+    private Set<DateTimeFieldRule> getProcessedFieldSet(Merger test) {
         try {
-            test.markFieldAsProcessed(NULL_RULE);
-        } catch (NullPointerException ex) {
-            assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
-            throw ex;
+            Field field = Merger.class.getDeclaredField("processedFieldSet");
+            field.setAccessible(true);
+            return (Set<DateTimeFieldRule>) field.get(test);
+        } catch (Exception ex) {
+            fail(ex.toString());
+            return null;
         }
     }
 
@@ -269,241 +346,324 @@ public class TestCalendricalMerger {
     // storeMergedDate()
     //-----------------------------------------------------------------------
     public void test_storeMergedDate() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        LocalDate date = date(2008, 6, 30);
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedDate(date);
-        assertFields(test, YEAR_RULE, 2008, date, null);
+        final LocalDate date = date(2008, 6, 30);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedDate(date);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, rule, 20, date, null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_storeMergedDate_cannotChangeValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        LocalDate date1 = date(2008, 6, 30);
-        test.storeMergedDate(date1);
-        
-        assertFields(test, YEAR_RULE, 2008, date1, null);
-        LocalDate date2 = date(2008, 6, 29);
+        final LocalDate date1 = date(2008, 6, 30);
+        final LocalDate date2 = date(2008, 6, 29);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedDate(date1);
+                merger.storeMergedDate(date2);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
         try {
-            test.storeMergedDate(date2);
+            cal.merge(STRICT_CONTEXT);
         } catch (CalendricalException ex) {
             dumpException(ex);
-            assertFields(test, YEAR_RULE, 2008, date1, null);
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, date1, null);
             throw ex;
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedDate_nullWhenNull() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedDate(null);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedDate(null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (NullPointerException ex) {
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedDate_nullWhenNonNull() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        LocalDate date = date(2008, 6, 30);
-        test.storeMergedDate(date);
-        
-        assertFields(test, YEAR_RULE, 2008, date, null);
-        test.storeMergedDate(null);
+        final LocalDate date = date(2008, 6, 30);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedDate(date);
+                merger.storeMergedDate(null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (NullPointerException ex) {
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, date, null);
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------
-    // storeMergedTime()
+    // storeMergedTime(LocalTime)
     //-----------------------------------------------------------------------
     public void test_storeMergedTime() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        LocalTime.Overflow time = time(16, 30).toOverflow(1);
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedTime(time);
-        assertFields(test, YEAR_RULE, 2008, null, time);
+        final LocalTime time = time(16, 30);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime(time);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, time);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_storeMergedTime_cannotChangeValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        Overflow time1 = time(16, 30).toOverflow(1);
-        test.storeMergedTime(time1);
-        
-        assertFields(test, YEAR_RULE, 2008, null, time1);
-        Overflow time2 = time(16, 29).toOverflow(1);
+        final LocalTime time1 = time(16, 30);
+        final LocalTime time2 = time(16, 29);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime(time1);
+                merger.storeMergedTime(time2);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
         try {
-            test.storeMergedTime(time2);
+            cal.merge(STRICT_CONTEXT);
         } catch (CalendricalException ex) {
             dumpException(ex);
-            assertFields(test, YEAR_RULE, 2008, null, time1);
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, time1);
             throw ex;
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedTime_nullWhenNull() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedTime(null);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime((LocalTime) null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (NullPointerException ex) {
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedTime_nullWhenNonNull() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        Overflow time = time(16, 30).toOverflow(1);
-        test.storeMergedTime(time);
-        
-        assertFields(test, YEAR_RULE, 2008, null, time);
-        test.storeMergedTime(null);
+        final LocalTime time = time(16, 30);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime(time);
+                merger.storeMergedTime((LocalTime) null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (NullPointerException ex) {
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, time);
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // storeMergedTime(LocalTime.Overflow)
+    //-----------------------------------------------------------------------
+    public void test_storeMergedTimeOverflow() {
+        final Overflow time = time(16, 30).toOverflow(1);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime(time);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, time.getResultTime());
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_storeMergedTimeOverflow_cannotChangeValue() {
+        final Overflow time1 = time(16, 30).toOverflow(1);
+        final Overflow time2 = time(16, 29).toOverflow(1);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime(time1);
+                merger.storeMergedTime(time2);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (CalendricalException ex) {
+            dumpException(ex);
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, time1.getResultTime());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_storeMergedTimeOverflow_nullWhenNull() {
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime((LocalTime.Overflow) null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (NullPointerException ex) {
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_storeMergedTimeOverflow_nullWhenNonNull() {
+        final Overflow time = time(16, 30).toOverflow(1);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedTime(time);
+                merger.storeMergedTime((LocalTime.Overflow) null);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        try {
+            cal.merge(STRICT_CONTEXT);
+        } catch (NullPointerException ex) {
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, time.getResultTime());
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------
     // storeMergedField()
     //-----------------------------------------------------------------------
     public void test_storeMergedField() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedField(DOM_RULE, 30);
-        assertFields(test, YEAR_RULE, 2008, DOM_RULE, 30, null, null);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedField(DOM_RULE, 30);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, DOM_RULE, 30, null, null);
     }
 
     public void test_storeMergedField_invalidValueOK() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedField(DOM_RULE, -1);
-        assertFields(test, YEAR_RULE, 2008, DOM_RULE, -1, null, null);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedField(DOM_RULE, -1);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, DOM_RULE, -1, null, null);
     }
 
     public void test_storeMergedField_sameField_sameValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        assertFields(test, YEAR_RULE, 2008, null, null);
-        test.storeMergedField(YEAR_RULE, 2008);
-        assertFields(test, YEAR_RULE, 2008, null, null);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedField(YEAR_RULE, 2008);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_storeMergedField_sameField_differentValue() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
-        assertFields(test, YEAR_RULE, 2008, null, null);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedField(YEAR_RULE, 2007);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
         try {
-            test.storeMergedField(YEAR_RULE, 2007);
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(YEAR_RULE, ex.getFieldRule());
-            assertFields(test, YEAR_RULE, 2008, null, null);
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
             throw ex;
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_storeMergedField_null() {
-        CalendricalMerger test = new CalendricalMerger(fields(YEAR_RULE, 2008), STRICT_CONTEXT);
+        DateTimeFieldRule rule = new MockFieldRule() {
+            @Override
+            protected void merge(Merger merger) {
+                merger.storeMergedField(NULL_RULE, 30);
+            }
+        };
+        Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
         try {
-            test.storeMergedField(NULL_RULE, 30);
+            cal.merge(STRICT_CONTEXT);
         } catch (NullPointerException ex) {
-            assertFields(test, YEAR_RULE, 2008, null, null);
+            assertFields(cal, YEAR_RULE, 2008, rule, 20, null, null);
             throw ex;
         }
     }
 
-//    //-----------------------------------------------------------------------
-//    // deriveValue(field)
-//    //-----------------------------------------------------------------------
-//    public void test_deriveValue_ymd() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(YEAR_RULE, 2008)
-//            .put(MOY_RULE, 6)
-//            .put(DOM_RULE, 30);
-//        assertFieldValue(test.deriveValue(YEAR_RULE), 2008);
-//        assertFieldValue(test.deriveValue(MOY_RULE), 6);
-//        assertFieldValue(test.deriveValue(DOM_RULE), 30);
-//    }
-//
-//    public void test_deriveValue_deriveLarger() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(QOY_RULE, 3)
-//            .put(MOQ_RULE, 2);
-//        assertFieldValue(test.deriveValue(QOY_RULE), 3);  // direct get
-//        assertFieldValue(test.deriveValue(MOQ_RULE), 2);  // direct get
-//        assertFieldValue(test.deriveValue(MOY_RULE), 8);  // derive
-//    }
-//
-//    public void test_deriveValue_derivedSmaller() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(MOY_RULE, 8);
-//        assertFieldValue(test.deriveValue(MOY_RULE), 8);  // direct get
-//        assertFieldValue(test.deriveValue(QOY_RULE), 3);  // derive
-//        assertFieldValue(test.deriveValue(MOQ_RULE), 2);  // derive
-//    }
-//
-//    public void test_deriveValue_derivedTree() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(MockYearOfDecadeFieldRule.INSTANCE, 2)
-//            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-//            .put(MockCenturyFieldRule.INSTANCE, 19);
-//        assertFieldValue(test.deriveValue(MockYearOfDecadeFieldRule.INSTANCE), 2);  // direct get
-//        assertFieldValue(test.deriveValue(MockDecadeOfCenturyFieldRule.INSTANCE), 7);  // direct get
-//        assertFieldValue(test.deriveValue(MockCenturyFieldRule.INSTANCE), 19);  // direct get
-//        assertFieldValue(test.deriveValue(MockYearOfCenturyFieldRule.INSTANCE), 72);  // derive
-//        assertFieldValue(test.deriveValue(YEAR_RULE), 1972);  // derive tree
-//    }
-//
-//    public void test_deriveValue_derivedTree_twoLayersProvideSameField_sameValue() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(MockYearOfDecadeFieldRule.INSTANCE, 2)
-//            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-//            .put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-//        assertFieldValue(test.deriveValue(MockYearOfDecadeFieldRule.INSTANCE), 2);  // direct get
-//        assertFieldValue(test.deriveValue(MockDecadeOfCenturyFieldRule.INSTANCE), 7);  // direct get
-//        assertFieldValue(test.deriveValue(MockYearOfCenturyFieldRule.INSTANCE), 72);  // derive, and check
-//    }
-//
-//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-//    public void test_deriveValue_derivedTree_twoLayersProvideSameField_differentValue() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(MockYearOfDecadeFieldRule.INSTANCE, 1)
-//            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-//            .put(MockYearOfCenturyFieldRule.INSTANCE, 72);
-//        try {
-//            test.deriveValue(MockYearOfCenturyFieldRule.INSTANCE); // 72 and derived 71 differ
-//        } catch (InvalidCalendarFieldException ex ) {
-//            assertEquals(ex.getFieldRule(), MockYearOfCenturyFieldRule.INSTANCE);
-//            throw ex;
-//        }
-//    }
-//
-//    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-//    public void test_deriveValue_derivedTree_twoLayersProvideSameField_notRequestedLayer_differentValue() {
-//        CalendricalMerger test = new CalendricalMerger()
-//            .put(MockYearOfDecadeFieldRule.INSTANCE, 1)
-//            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-//            .put(MockYearOfCenturyFieldRule.INSTANCE, 72)
-//            .put(MockCenturyFieldRule.INSTANCE, 19);
-//        try {
-//            test.deriveValue(ISOChronology.yearRule()); // 72 and derived 71 differ
-//        } catch (InvalidCalendarFieldException ex ) {
-//            assertEquals(ex.getFieldRule(), MockYearOfCenturyFieldRule.INSTANCE);
-//            throw ex;
-//        }
-//    }
-//
     //-----------------------------------------------------------------------
     // merge()
     //-----------------------------------------------------------------------
     public void test_merge() {
-        DateTimeFields fields = fields(AMPM_RULE, 1, HOUR_AMPM_RULE, 9);  // 9pm
-        CalendricalMerger base = new CalendricalMerger(fields, STRICT_CONTEXT);
-        CalendricalMerger test = base.merge();
-        assertSame(test, base);
-        assertFields(test, null, time(21, 00).toOverflow(0));  // merged to 21:00
+        Calendrical cal = new Calendrical(AMPM_RULE, 1, HOUR_AMPM_RULE, 9);  // 9pm
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, null, time(21, 00));  // merged to 21:00
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_merge_strict() {
-        DateTimeFields fields = fields(AMPM_RULE, 1, HOUR_AMPM_RULE, 14);  // 14pm
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical(AMPM_RULE, 1, HOUR_AMPM_RULE, 14);  // 14pm
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (IllegalCalendarFieldValueException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), HOUR_AMPM_RULE);
@@ -512,114 +672,112 @@ public class TestCalendricalMerger {
     }
 
     public void test_merge_lenient() {
-        DateTimeFields fields = fields(AMPM_RULE, 1, HOUR_AMPM_RULE, 14);  // 14pm
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(2, 00).toOverflow(1));  // merged to 02:00 + 1day (26:00)
+        Calendrical cal = new Calendrical(AMPM_RULE, 1, HOUR_AMPM_RULE, 14);  // 14pm
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, null, time(2, 00));  // merged to 02:00 + 1day (26:00)
     }
 
     public void test_merge_empty() {
-        CalendricalMerger base = new CalendricalMerger(fields(), STRICT_CONTEXT);
-        CalendricalMerger test = base.merge();
-        assertSame(test, base);
-        assertEquals(test.getMergedFields().size(), 0);
+        Calendrical cal = new Calendrical();
+        cal.merge(STRICT_CONTEXT);
+        assertEquals(cal.getFieldMap().size(), 0);
     }
 
     public void test_merge_doubleMerge() {
-        DateTimeFields fields = fields()
-            .withFieldValue(AMPM_RULE, 1).withFieldValue(HOUR_AMPM_RULE, 9)  // 9pm -> 21:00
-            .withFieldValue(QOY_RULE, 2).withFieldValue(MOQ_RULE, 3);  // Q2M3 -> June
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, MOY_RULE, 6, null, time(21, 0).toOverflow(0));  // merged to 21:00 and June
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(AMPM_RULE, 1).put(HOUR_AMPM_RULE, 9)  // 9pm -> 21:00
+            .put(QOY_RULE, 2).put(MOQ_RULE, 3);  // Q2M3 -> June
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, MOY_RULE, 6, null, time(21, 0));  // merged to 21:00 and June
     }
 
     public void test_merge_nothingToMerge() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOQ_RULE, 1)
-            .withFieldValue(DOM_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 2008, MOQ_RULE, 1, DOM_RULE, 30, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOQ_RULE, 1)
+            .put(DOM_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 2008, MOQ_RULE, 1, DOM_RULE, 30, null, null);
     }
 
     public void test_merge_otherFieldsUntouched() {
-        DateTimeFields fields = fields()
-            .withFieldValue(QOY_RULE, 3)
-            .withFieldValue(MOQ_RULE, 2)
-            .withFieldValue(MIN_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, MOY_RULE, 8, MIN_RULE, 30, null, null);  // merged to August
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(QOY_RULE, 3)
+            .put(MOQ_RULE, 2)
+            .put(MIN_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, MOY_RULE, 8, MIN_RULE, 30, null, null);  // merged to August
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_inconsistentValue() {
-        DateTimeFields fields = fields()
-            .withFieldValue(AMPM_RULE, 0)
-            .withFieldValue(HOUR_AMPM_RULE, 9)  // 9am
-            .withFieldValue(HOUR_RULE, 10);  // 10am
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(AMPM_RULE, 0)
+            .put(HOUR_AMPM_RULE, 9)  // 9am
+            .put(HOUR_RULE, 10);  // 10am
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), HOUR_RULE);
-            assertFields(test, AMPM_RULE, 0, HOUR_AMPM_RULE, 9, HOUR_RULE, 10, null, null);
+            assertFields(cal, AMPM_RULE, 0, HOUR_AMPM_RULE, 9, HOUR_RULE, 10, null, null);
             throw ex;
         }
     }
 
     public void test_merge_multiLevelMerge_simple() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-            .withFieldValue(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 1972, null, null);  // merged to 1972
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
+            .put(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
+            .put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 1972, null, null);  // merged to 1972
     }
 
     public void test_merge_multiLevelMerge_fullUpToDate() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-            .withFieldValue(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19)  // 19 + 72 -> 1972
-            .withFieldValue(QOY_RULE, 4)
-            .withFieldValue(MOQ_RULE, 3)  // M3 + Q4 -> December
-            .withFieldValue(DOM_RULE, 3);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(1972, 12, 3), null);  // merged to 1972-12-03
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
+            .put(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
+            .put(MockCenturyFieldRule.INSTANCE, 19)  // 19 + 72 -> 1972
+            .put(QOY_RULE, 4)
+            .put(MOQ_RULE, 3)  // M3 + Q4 -> December
+            .put(DOM_RULE, 3);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(1972, 12, 3), null);  // merged to 1972-12-03
     }
 
     public void test_merge_multiLevelMerge_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-            .withFieldValue(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72)  // cross check against year of century
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19)  // 19 + 72 -> 1972
-            .withFieldValue(YEAR_RULE, 1972);  // cross check against year
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 1972, null, null);  // merged to 1972
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
+            .put(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72)  // cross check against year of century
+            .put(MockCenturyFieldRule.INSTANCE, 19)  // 19 + 72 -> 1972
+            .put(YEAR_RULE, 1972);  // cross check against year
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 1972, null, null);  // merged to 1972
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_multiLevelMerge_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
-            .withFieldValue(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 71)  // cross check against year of century
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19)  // 19 + 72 -> 1972
-            .withFieldValue(YEAR_RULE, 1972);  // cross check against year
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)
+            .put(MockYearOfDecadeFieldRule.INSTANCE, 2)  // 7 + 2 -> 72
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 71)  // cross check against year of century
+            .put(MockCenturyFieldRule.INSTANCE, 19)  // 19 + 72 -> 1972
+            .put(YEAR_RULE, 1972);  // cross check against year
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             assertEquals(ex.getFieldRule(), YEAR_RULE);
-            assertFields(test, MockDecadeOfCenturyFieldRule.INSTANCE, 7, MockYearOfDecadeFieldRule.INSTANCE, 2,
+            assertFields(cal, MockDecadeOfCenturyFieldRule.INSTANCE, 7, MockYearOfDecadeFieldRule.INSTANCE, 2,
                     MockYearOfCenturyFieldRule.INSTANCE, 71, MockCenturyFieldRule.INSTANCE, 19, YEAR_RULE, 1972,
                     null, null);
             throw ex;
@@ -628,697 +786,719 @@ public class TestCalendricalMerger {
 
     //-----------------------------------------------------------------------
     public void test_merge_singleLevel_derivableRemoved_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)  // derivable from YearOfCentury
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, MockYearOfCenturyFieldRule.INSTANCE, 72, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)  // derivable from YearOfCentury
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, MockYearOfCenturyFieldRule.INSTANCE, 72, null, null);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_singleLevel_derivableChecked_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from YearOfCentury, value is wrong
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from YearOfCentury, value is wrong
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
-            assertFields(test, MockDecadeOfCenturyFieldRule.INSTANCE, 6, MockYearOfCenturyFieldRule.INSTANCE, 72, null, null);
+            assertFields(cal, MockDecadeOfCenturyFieldRule.INSTANCE, 6, MockYearOfCenturyFieldRule.INSTANCE, 72, null, null);
             throw ex;
         }
     }
 
     public void test_merge_singleLevel_derivableDiscardUnused_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from YearOfCentury, value is wrong
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, MockYearOfCenturyFieldRule.INSTANCE, 72, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from YearOfCentury, value is wrong
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72);
+        cal.merge(STRICT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, MockYearOfCenturyFieldRule.INSTANCE, 72, null, null);
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_multiLevel_simple_derivableRemoved_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)  // derivable from Year
-            .withFieldValue(YEAR_RULE, 1972);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 1972, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)  // derivable from Year
+            .put(YEAR_RULE, 1972);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 1972, null, null);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_multiLevel_simple_derivableChecked_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
-            .withFieldValue(YEAR_RULE, 1972);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
+            .put(YEAR_RULE, 1972);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
-            assertFields(test, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972, null, null);
+            assertFields(cal, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972, null, null);
             throw ex;
         }
     }
 
     public void test_merge_multiLevel_simple_derivableDiscardUnused_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
-            .withFieldValue(YEAR_RULE, 1972);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 1972, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
+            .put(YEAR_RULE, 1972);
+        cal.merge(STRICT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, YEAR_RULE, 1972, null, null);
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_multiLevel_complex_derivableRemoved_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 7)  // derivable from Year
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72)
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 1972, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 7)  // derivable from Year
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72)
+            .put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, YEAR_RULE, 1972, null, null);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_multiLevel_complex_derivableChecked_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72)
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72)
+            .put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), MockDecadeOfCenturyFieldRule.INSTANCE);
-            assertFields(test, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972, null, null);
+            assertFields(cal, MockDecadeOfCenturyFieldRule.INSTANCE, 6, YEAR_RULE, 1972, null, null);
             throw ex;
         }
     }
 
     public void test_merge_multiLevel_complex_derivableDiscardUnused_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
-            .withFieldValue(MockYearOfCenturyFieldRule.INSTANCE, 72)
-            .withFieldValue(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, YEAR_RULE, 1972, null, null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(MockDecadeOfCenturyFieldRule.INSTANCE, 6)  // derivable from Year, value is wrong
+            .put(MockYearOfCenturyFieldRule.INSTANCE, 72)
+            .put(MockCenturyFieldRule.INSTANCE, 19);  // 19 + 72 -> 1972
+        cal.merge(STRICT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, YEAR_RULE, 1972, null, null);
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_merge_toDate_directDMY() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), null);
     }
 
     public void test_merge_toDate_directDY() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(DOY_RULE, 182);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(DOY_RULE, 182);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), null);
     }
 
     public void test_merge_toDate_mergeFieldsThenDMY() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(QOY_RULE, 2)
-            .withFieldValue(MOQ_RULE, 3)
-            .withFieldValue(DOM_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(QOY_RULE, 2)
+            .put(MOQ_RULE, 3)
+            .put(DOM_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), null);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_toDate_direct_strictInvalidWithinBounds() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 31);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 31);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), DOM_RULE);
-            assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 31, null, null);
+            assertFields(cal, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 31, null, null);
             throw ex;
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_merge_toDate_direct_strictInvalidOutsideBounds() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 32);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (IllegalCalendarFieldValueException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), DOM_RULE);
-            assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 32, null, null);
+            assertFields(cal, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 32, null, null);
             throw ex;
         }
     }
 
     public void test_merge_toDate_direct_lenientInvalidWithinBounds() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 31);
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 7, 1), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 31);
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, date(2008, 7, 1), null);
     }
 
     public void test_merge_toDate_direct_lenientInvalidOutsideBounds() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32);
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 7, 2), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 32);
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, date(2008, 7, 2), null);
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toDate_twoPrimarySetsMatch() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOY_RULE, 182);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOY_RULE, 182);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_merge_toDate_twoPrimarySetsDiffer() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOY_RULE, 183);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOY_RULE, 183);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (CalendricalException ex) {
             dumpException(ex);
-            assertEquals(test.getMergedDate(), date(2008, 6, 30));
+            assertEquals(cal.getDate(), date(2008, 6, 30));
             throw ex;
         }
     }
 
     //-----------------------------------------------------------------------
     public void test_mergeToDate_strict_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 1)   // 2008-06-30 is a Monday, so this is right
-            .withFieldValue(QOY_RULE, 2)   // 2008-06-30 is Q2, so this is right
-            .withFieldValue(MIN_RULE, 30);  // ignored
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, MIN_RULE, 30, date(2008, 6, 30), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOW_RULE, 1)   // 2008-06-30 is a Monday, so this is right
+            .put(QOY_RULE, 2)   // 2008-06-30 is Q2, so this is right
+            .put(MIN_RULE, 30);  // ignored
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, MIN_RULE, 30, date(2008, 6, 30), null);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_mergeToDate_strict_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), DOW_RULE);
-            assertFields(test, DOW_RULE, 2, date(2008, 6, 30), null);
+            assertFields(cal, DOW_RULE, 2, date(2008, 6, 30), null);
             throw ex;
         }
     }
 
     public void test_mergeToDate_strict_crossCheck_discardUnused() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong, but discarded
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOW_RULE, 2);  // 2008-06-30 is a Monday, so this is wrong, but discarded
+        cal.merge(STRICT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), null);
     }
 
     //-----------------------------------------------------------------------
     public void test_mergeToDate_lenient_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32)
-            .withFieldValue(DOW_RULE, 3)   // 2008-07-02 is a Wednesday, so this is right
-            .withFieldValue(QOY_RULE, 3)   // 2008-07-02 is Q3, so this is right
-            .withFieldValue(MIN_RULE, 30);  // ignored
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, MIN_RULE, 30, date(2008, 7, 2), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 32)
+            .put(DOW_RULE, 3)   // 2008-07-02 is a Wednesday, so this is right
+            .put(QOY_RULE, 3)   // 2008-07-02 is Q3, so this is right
+            .put(MIN_RULE, 30);  // ignored
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, MIN_RULE, 30, date(2008, 7, 2), null);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_mergeToDate_lenient_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32)
-            .withFieldValue(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 32)
+            .put(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong
         try {
-            test.merge();
+            cal.merge(LENIENT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), DOW_RULE);
-            assertFields(test, DOW_RULE, 2, date(2008, 7, 2), null);
+            assertFields(cal, DOW_RULE, 2, date(2008, 7, 2), null);
             throw ex;
         }
     }
 
     public void test_mergeToDate_lenient_crossCheck_discardUnused() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 32)
-            .withFieldValue(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong, but discarded
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 7, 2), null);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 32)
+            .put(DOW_RULE, 2);  // 2008-07-02 is a Wednesday, so this is wrong, but discarded
+        cal.merge(LENIENT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, date(2008, 7, 2), null);
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_merge_toTime_directHM() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, null, time(11, 30));
     }
 
     public void test_merge_toTime_fieldsThenHM() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_AMPM_RULE, 2)
-            .withFieldValue(AMPM_RULE, 1)
-            .withFieldValue(MIN_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(14, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_AMPM_RULE, 2)
+            .put(AMPM_RULE, 1)
+            .put(MIN_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, null, time(14, 30));
+    }
+
+    public void test_merge_toTime_fieldsThenHMSN() {
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 14)
+            .put(MIN_RULE, 30)
+            .put(SEC_RULE, 50)
+            .put(MILLISEC_RULE, 1);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, null, time(14, 30, 50, 1000000));
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_merge_toTime_strict_outsideBoundsHours() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 24)
-            .withFieldValue(MIN_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 24)
+            .put(MIN_RULE, 30);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), HOUR_RULE);
-            assertFields(test, HOUR_RULE, 24, MIN_RULE, 30, null, null);
+            assertFields(cal, HOUR_RULE, 24, MIN_RULE, 30, null, null);
             throw ex;
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_merge_toTime_strict_outsideBoundsMins() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 70);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 70);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), MIN_RULE);
-            assertFields(test, HOUR_RULE, 11, MIN_RULE, 70, null, null);
+            assertFields(cal, HOUR_RULE, 11, MIN_RULE, 70, null, null);
             throw ex;
         }
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toTime_lenient_outsideBoundsHours() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 24)
-            .withFieldValue(MIN_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(0, 30).toOverflow(1));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 24)
+            .put(MIN_RULE, 30);
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, null, time(0, 30)); // +P1D
     }
 
     public void test_merge_toTime_lenient_outsideBoundsMins() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 70);
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(12, 10).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 70);
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, null, time(12, 10));
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toTime_twoPrimarySetsMatch() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400000);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(MILLIDAY_RULE, 41400000);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, null, time(11, 30));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_merge_toTime_twoPrimarySetsDiffer() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(MILLI_RULE, 41400001);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(MILLIDAY_RULE, 41400001);
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (CalendricalException ex) {
             dumpException(ex);
-            assertEquals(test.getMergedTime(), time(11, 30).toOverflow(0));
-            //assertFields(test, MILLI_RULE, 41400001, null, time(11, 30).toOverflow(0));
+            assertEquals(cal.getTime(), time(11, 30));
+            //assertFields(cal, MILLI_RULE, 41400001, null, time(11, 30));
             throw ex;
         }
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toTime_strict_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 0);  // 11:30 is AM, so this is right
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 0);  // 11:30 is AM, so this is right
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, null, time(11, 30));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_toTime_strict_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
-            assertFields(test, AMPM_RULE, 1, null, time(11, 30).toOverflow(0));
+            assertFields(cal, AMPM_RULE, 1, null, time(11, 30));
             throw ex;
         }
     }
 
     public void test_merge_toTime_strict_crossCheck_discardUnused() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
+        cal.merge(STRICT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, null, time(11, 30));
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toTime_lenient_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 24)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 0);  // 00:30 is AM, so this is right
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(0, 30).toOverflow(1));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 24)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 0);  // 00:30 is AM, so this is right
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, null, time(0, 30)); // +P1D
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_toTime_lenient_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 24)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 24)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong
         try {
-            test.merge();
+            cal.merge(LENIENT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
-            assertFields(test, AMPM_RULE, 1, null, time(0, 30).toOverflow(1));
+            assertFields(cal, AMPM_RULE, 1, null, time(0, 30)); // +P1D
             throw ex;
         }
     }
 
     public void test_merge_toTime_lenient_crossCheck_discardUnused() {
-        DateTimeFields fields = fields()
-            .withFieldValue(HOUR_RULE, 24)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong, but ignored
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, null, time(0, 30).toOverflow(1));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(HOUR_RULE, 24)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 1);  // 00:30 is AM, so this is wrong, but ignored
+        cal.merge(LENIENT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, null, time(0, 30)); // +P1D
     }
 
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_merge_toDateTime_directYMDHM() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30);
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30);
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), time(11, 30));
     }
 
     public void test_merge_toDateTime_lenientOverflow() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 23)
-            .withFieldValue(MIN_RULE, 70);
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), time(0, 10).toOverflow(1));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 23)
+            .put(MIN_RULE, 70);
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, date(2008, 7, 1), time(0, 10));  // +P1D added
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toDateTime_strict_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 0);  // 11:30 is AM, so this is correct
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 0);  // 11:30 is AM, so this is correct
+        cal.merge(STRICT_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), time(11, 30));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_toDateTime_strict_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong
         try {
-            test.merge();
+            cal.merge(STRICT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), AMPM_RULE);
-            assertFields(test, AMPM_RULE, 1, date(2008, 6, 30), time(11, 30).toOverflow(0));
+            assertFields(cal, AMPM_RULE, 1, date(2008, 6, 30), time(11, 30));
             throw ex;
         }
     }
 
     public void test_merge_toDateTime_strict_crossCheck_discardUnused() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 11)
-            .withFieldValue(MIN_RULE, 30)
-            .withFieldValue(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
-        CalendricalMerger test = new CalendricalMerger(fields, STRICT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), time(11, 30).toOverflow(0));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 11)
+            .put(MIN_RULE, 30)
+            .put(AMPM_RULE, 1);  // 11:30 is AM, so this is wrong, but discarded
+        cal.merge(STRICT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, date(2008, 6, 30), time(11, 30));
     }
 
     //-----------------------------------------------------------------------
     public void test_merge_toDateTime_lenient_crossCheck_valid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 23)
-            .withFieldValue(MIN_RULE, 70)
-            .withFieldValue(AMPM_RULE, 0);  // 00:10 is AM, so this is correct
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), time(0, 10).toOverflow(1));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOW_RULE, 1)  // Monday, correct for 2008-06-30
+            .put(HOUR_RULE, 23)
+            .put(MIN_RULE, 70)
+            .put(AMPM_RULE, 0);  // 00:10 is AM, so this is correct
+        cal.merge(LENIENT_CONTEXT);
+        assertFields(cal, date(2008, 7, 1), time(0, 10));  // +P1D added
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_merge_toDateTime_lenient_crossCheck_invalid_daysAdded() {
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(DOW_RULE, 2)  // Tuesday, correct for end result of 2008-07-01, but check is before days added
+            .put(HOUR_RULE, 23)
+            .put(MIN_RULE, 70);
+        try {
+            cal.merge(LENIENT_CONTEXT);
+        } catch (InvalidCalendarFieldException ex) {
+            dumpException(ex);
+            assertEquals(ex.getFieldRule(), DOW_RULE);
+            assertFields(cal, DOW_RULE, 2, date(2008, 6, 30), time(0, 10));  // +P1D
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_merge_toDateTime_lenient_crossCheck_invalid() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 23)
-            .withFieldValue(MIN_RULE, 70)
-            .withFieldValue(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_CONTEXT);
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 23)
+            .put(MIN_RULE, 70)
+            .put(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong
         try {
-            test.merge();
+            cal.merge(LENIENT_CONTEXT);
         } catch (InvalidCalendarFieldException ex) {
             dumpException(ex);
             assertEquals(ex.getFieldRule(), AMPM_RULE);
-            assertFields(test, AMPM_RULE, 1, date(2008, 6, 30), time(0, 10).toOverflow(1));
+            assertFields(cal, AMPM_RULE, 1, date(2008, 6, 30), time(0, 10));  // +P1D
             throw ex;
         }
     }
 
     public void test_merge_toDateTime_lenient_crossCheck_discardUnused() {
-        DateTimeFields fields = fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30)
-            .withFieldValue(HOUR_RULE, 23)
-            .withFieldValue(MIN_RULE, 70)
-            .withFieldValue(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong, but discarded
-        CalendricalMerger test = new CalendricalMerger(fields, LENIENT_DISCARD_UNUSED_CONTEXT);
-        test.merge();
-        assertFields(test, date(2008, 6, 30), time(0, 10).toOverflow(1));
+        Calendrical cal = new Calendrical();
+        cal.getFieldMap()
+            .put(YEAR_RULE, 2008)
+            .put(MOY_RULE, 6)
+            .put(DOM_RULE, 30)
+            .put(HOUR_RULE, 23)
+            .put(MIN_RULE, 70)
+            .put(AMPM_RULE, 1);  // 00:10 is AM, so this is wrong, but discarded
+        cal.merge(LENIENT_DISCARD_UNUSED_CONTEXT);
+        assertFields(cal, date(2008, 7, 1), time(0, 10));  // +P1D added
     }
-
-//    //-----------------------------------------------------------------------
-//    // toString()
-//    //-----------------------------------------------------------------------
-//    public void test_toString() {
-//        CalendricalMerger base = new CalendricalMerger(fields(), STRICT_CONTEXT);
-//        String test = base.toString();
-//        assertNotNull(test);
-//        System.out.println(test);
-//    }
 
     //-----------------------------------------------------------------------
     private static void assertFields(
-            CalendricalMerger merger,
-            LocalDate date, Overflow time) {
-        Map<DateTimeFieldRule, Integer> map = merger.getMergedFields().toFieldValueMap();
+            Calendrical cal,
+            LocalDate date, LocalTime time) {
+        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 0);
-        assertEquals(merger.getMergedDate(), date);
-        assertEquals(merger.getMergedTime(), time);
+        assertEquals(cal.getDate(), date);
+        assertEquals(cal.getTime(), time);
     }
     private static void assertFields(
-            CalendricalMerger merger,
+            Calendrical cal,
             DateTimeFieldRule rule1, int value1,
-            LocalDate date, Overflow time) {
-        Map<DateTimeFieldRule, Integer> map = merger.getMergedFields().toFieldValueMap();
+            LocalDate date, LocalTime time) {
+        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 1);
         assertEquals(map.get(rule1), Integer.valueOf(value1));
-        assertEquals(merger.getMergedDate(), date);
-        assertEquals(merger.getMergedTime(), time);
+        assertEquals(cal.getDate(), date);
+        assertEquals(cal.getTime(), time);
     }
     private static void assertFields(
-            CalendricalMerger merger,
+            Calendrical cal,
             DateTimeFieldRule rule1, int value1,
             DateTimeFieldRule rule2, int value2,
-            LocalDate date, Overflow time) {
-        Map<DateTimeFieldRule, Integer> map = merger.getMergedFields().toFieldValueMap();
+            LocalDate date, LocalTime time) {
+        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 2);
         assertEquals(map.get(rule1), Integer.valueOf(value1));
         assertEquals(map.get(rule2), Integer.valueOf(value2));
-        assertEquals(merger.getMergedDate(), date);
-        assertEquals(merger.getMergedTime(), time);
+        assertEquals(cal.getDate(), date);
+        assertEquals(cal.getTime(), time);
     }
     private static void assertFields(
-            CalendricalMerger merger,
+            Calendrical cal,
             DateTimeFieldRule rule1, int value1,
             DateTimeFieldRule rule2, int value2,
             DateTimeFieldRule rule3, int value3,
-            LocalDate date, Overflow time) {
-        Map<DateTimeFieldRule, Integer> map = merger.getMergedFields().toFieldValueMap();
+            LocalDate date, LocalTime time) {
+        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 3);
         assertEquals(map.get(rule1), Integer.valueOf(value1));
         assertEquals(map.get(rule2), Integer.valueOf(value2));
         assertEquals(map.get(rule3), Integer.valueOf(value3));
-        assertEquals(merger.getMergedDate(), date);
-        assertEquals(merger.getMergedTime(), time);
+        assertEquals(cal.getDate(), date);
+        assertEquals(cal.getTime(), time);
     }
     private static void assertFields(
-            CalendricalMerger merger,
+            Calendrical cal,
             DateTimeFieldRule rule1, int value1,
             DateTimeFieldRule rule2, int value2,
             DateTimeFieldRule rule3, int value3,
             DateTimeFieldRule rule4, int value4,
-            LocalDate date, Overflow time) {
-        Map<DateTimeFieldRule, Integer> map = merger.getMergedFields().toFieldValueMap();
+            LocalDate date, LocalTime time) {
+        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 4);
         assertEquals(map.get(rule1), Integer.valueOf(value1));
         assertEquals(map.get(rule2), Integer.valueOf(value2));
         assertEquals(map.get(rule3), Integer.valueOf(value3));
         assertEquals(map.get(rule4), Integer.valueOf(value4));
-        assertEquals(merger.getMergedDate(), date);
-        assertEquals(merger.getMergedTime(), time);
+        assertEquals(cal.getDate(), date);
+        assertEquals(cal.getTime(), time);
     }
     private static void assertFields(
-            CalendricalMerger merger,
+            Calendrical cal,
             DateTimeFieldRule rule1, int value1,
             DateTimeFieldRule rule2, int value2,
             DateTimeFieldRule rule3, int value3,
             DateTimeFieldRule rule4, int value4,
             DateTimeFieldRule rule5, int value5,
-            LocalDate date, Overflow time) {
-        Map<DateTimeFieldRule, Integer> map = merger.getMergedFields().toFieldValueMap();
+            LocalDate date, LocalTime time) {
+        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 5);
         assertEquals(map.get(rule1), Integer.valueOf(value1));
         assertEquals(map.get(rule2), Integer.valueOf(value2));
         assertEquals(map.get(rule3), Integer.valueOf(value3));
         assertEquals(map.get(rule4), Integer.valueOf(value4));
         assertEquals(map.get(rule5), Integer.valueOf(value5));
-        assertEquals(merger.getMergedDate(), date);
-        assertEquals(merger.getMergedTime(), time);
+        assertEquals(cal.getDate(), date);
+        assertEquals(cal.getTime(), time);
     }
     private static void assertFieldValue(Integer actual, int expected) {
         Assert.assertEquals(actual, (Integer) expected); 

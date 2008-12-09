@@ -3088,14 +3088,14 @@ public class TestLocalDateTime {
     public void test_toCalendrical(int year, int month, int day) {
         LocalDate d = LocalDate.date(year, month, day);
         LocalDateTime dt = LocalDateTime.dateMidnight(d);
-        assertEquals(dt.toCalendrical(), Calendrical.calendrical(d, LocalTime.MIDNIGHT, null, null));
+        assertEquals(dt.toCalendrical(), new Calendrical(d, LocalTime.MIDNIGHT, null, null));
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_toCalendrical(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
         LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
-        assertEquals(dt.toCalendrical(), Calendrical.calendrical(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), t, null, null));
+        assertEquals(dt.toCalendrical(), new Calendrical(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), t, null, null));
     }
 
     //-----------------------------------------------------------------------

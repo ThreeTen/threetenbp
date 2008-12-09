@@ -60,14 +60,14 @@ public class TestPadPrinterDecorator {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = Calendrical.calendrical();
+        emptyCalendrical = new Calendrical();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), 3);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, (Appendable) null, symbols);
     }

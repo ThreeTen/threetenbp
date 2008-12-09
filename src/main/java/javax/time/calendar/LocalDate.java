@@ -103,15 +103,9 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        if (year == null) {
-            throw new NullPointerException("Year must not be null");
-        }
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        if (dayOfMonth == null) {
-            throw new NullPointerException("DayOfMonth must not be null");
-        }
+        ISOChronology.checkNotNull(year, "Year must not be null");
+        ISOChronology.checkNotNull(year, "MonthOfYear must not be null");
+        ISOChronology.checkNotNull(year, "DayOfMonth must not be null");
         if (dayOfMonth.isValid(year, monthOfYear) == false) {
             if (dayOfMonth.getValue() == 29) {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
@@ -157,15 +151,12 @@ public final class LocalDate
      *
      * @param dateProvider  the date provider to use, not null
      * @return a LocalDate object, never null
+     * @throws NullPointerException if the provider is null or returns null
      */
     public static LocalDate date(DateProvider dateProvider) {
-        if (dateProvider == null) {
-            throw new NullPointerException("DateProvider must not be null");
-        }
+        ISOChronology.checkNotNull(dateProvider, "DateProvider must not be null");
         LocalDate result = dateProvider.toLocalDate();
-        if (result == null) {
-            throw new NullPointerException("The DateProvider implementation must not return null");
-        }
+        ISOChronology.checkNotNull(result, "DateProvider implementation must not return null");
         return result;
     }
 
@@ -251,14 +242,14 @@ public final class LocalDate
     /**
      * Checks if the specified calendar field is supported.
      * <p>
-     * This method queries whether this <code>LocalDate</code> can
-     * be queried using the specified calendar field.
+     * This method queries whether this date can be queried using the
+     * specified calendar field.
      *
      * @param fieldRule  the field to query, null returns false
      * @return true if the field is supported, false otherwise
      */
     public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule != null && fieldRule.getValueQuiet(this, null) != null;
+        return fieldRule != null && fieldRule.isSupported(this, null);
     }
 
     /**
@@ -272,7 +263,8 @@ public final class LocalDate
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      */
     public int get(DateTimeFieldRule fieldRule) {
-        return toCalendrical().getValue(fieldRule);
+        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+        return fieldRule.getValue(this, null);
     }
 
     //-----------------------------------------------------------------------
@@ -370,9 +362,7 @@ public final class LocalDate
      */
     private LocalDate resolveDate(DateResolver dateResolver, Year year, MonthOfYear month, DayOfMonth day) {
         LocalDate date = dateResolver.resolveDate(year, month, day);
-        if (date == null) {
-            throw new NullPointerException("The implementation of DateResolver must not return null");
-        }
+        ISOChronology.checkNotNull(date, "DateResolver implementation must not return null");
         return date;
     }
 
@@ -387,12 +377,11 @@ public final class LocalDate
      *
      * @param adjuster  the adjuster to use, not null
      * @return a new updated LocalDate, never null
+     * @throws NullPointerException if the adjuster returned null
      */
     public LocalDate with(DateAdjuster adjuster) {
         LocalDate date = adjuster.adjustDate(this);
-        if (date == null) {
-            throw new NullPointerException("The implementation of DateAdjuster must not return null");
-        }
+        ISOChronology.checkNotNull(date, "DateAdjuster implementation must not return null");
         return date;
     }
 
@@ -931,7 +920,7 @@ public final class LocalDate
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(this, null, null, null);
+        return new Calendrical(this, null, null, null);
     }
 
     //-----------------------------------------------------------------------

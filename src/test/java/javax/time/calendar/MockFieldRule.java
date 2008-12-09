@@ -35,47 +35,16 @@ import static javax.time.period.PeriodUnits.*;
 
 import java.io.Serializable;
 
-import javax.time.MathUtils;
 import javax.time.calendar.field.Year;
 
 /**
- * Mock rule.
+ * Mock rule designed for subclassing.
  *
  * @author Stephen Colebourne
  */
-public final class MockCenturyFieldRule extends DateTimeFieldRule implements Serializable {
-    /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockCenturyFieldRule();
-    /** A serialization identifier for this class. */
-    private static final long serialVersionUID = 1L;
+public class MockFieldRule extends DateTimeFieldRule implements Serializable {
     /** Constructor. */
-    private MockCenturyFieldRule() {
+    MockFieldRule() {
         super(ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
-    }
-    private Object readResolve() {
-        return INSTANCE;
-    }
-    /** {@inheritDoc} */
-    @Override
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return date == null ? null : date.getYear().getValue() / 100;
-    }
-    /** {@inheritDoc} */
-    @Override
-    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-        Integer yearVal = ISOChronology.yearRule().getValueQuiet(fieldMap);
-        return (yearVal == null ? null : yearVal / 100);
-    }
-    /** {@inheritDoc} */
-    @Override
-    protected void merge(Calendrical.Merger merger) {
-        Integer yocVal = merger.getValue(MockYearOfCenturyFieldRule.INSTANCE);
-        if (yocVal != null) {
-            int cen = merger.getValueInt(this);
-            int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen, 100), yocVal);
-            merger.storeMergedField(ISOChronology.yearRule(), year);
-            merger.markFieldAsProcessed(this);
-            merger.markFieldAsProcessed(MockYearOfCenturyFieldRule.INSTANCE);
-        }
     }
 }

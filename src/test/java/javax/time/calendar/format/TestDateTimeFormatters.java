@@ -211,7 +211,7 @@ public class TestDateTimeFormatters {
 
     public void test_print_weekDate_missingField() {
         try {
-            CalendricalProvider test = Calendrical.calendrical(Weekyear.rule(), 2004, WeekOfWeekyear.rule(), 1);
+            CalendricalProvider test = new Calendrical(Weekyear.rule(), 2004, WeekOfWeekyear.rule(), 1);
             DateTimeFormatters.isoWeekDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {

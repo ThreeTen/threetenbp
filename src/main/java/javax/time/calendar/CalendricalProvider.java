@@ -32,7 +32,7 @@
 package javax.time.calendar;
 
 /**
- * Provides read-only access to a calendrical object.
+ * Provides access to a calendrical object.
  * <p>
  * CalendricalProvider is a simple interface that provides uniform access to
  * any object that can provide access to a calendrical.
@@ -50,7 +50,7 @@ package javax.time.calendar;
 public interface CalendricalProvider {
 
     /**
-     * Returns an instance of <code>Calendrical</code> initialised from the
+     * Returns a new instance of <code>Calendrical</code> initialised from the
      * state of this object.
      * <p>
      * This method will take the calendrical information represented by this
@@ -58,7 +58,7 @@ public interface CalendricalProvider {
      * a <code>LocalDate</code> will create a calendrical with year, month
      * and day fields populated.
      *
-     * @return the <code>Calendrical</code> equivalent to this object, never null
+     * @return a new <code>Calendrical</code> equivalent to this object, never null
      */
     Calendrical toCalendrical() ;
 

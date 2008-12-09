@@ -574,7 +574,7 @@ public class TestYear {
     public void test_toCalendrical() {
         for (int i = -4; i <= 2104; i++) {
             Year test = Year.isoYear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

@@ -186,22 +186,16 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Checks if the this field is supported using calendrical data that is
-//     * completely specified by the unit and range.
-//     * <p>
-//     * For example, a date object has a unit of days and a range of forever.
-//     * If this field is for hour of day, then that cannot be supported by the
-//     * unit and range from a date object.
-//     *
-//     * @param unit  the unit to check, not null
-//     * @param range  the range to check, not null
-//     * @return true if the field is supported
-//     */
-//    public boolean isSupported(PeriodUnit unit, PeriodUnit range) {
-//        return (periodUnit.compareTo(unit) >= 0) &&
-//               (periodRange.compareTo(range) < 0);
-//    }
+    /**
+     * Checks if the this field is supported for the specified date and time.
+     *
+     * @param date  the date, may be null
+     * @param time  the time, may be null
+     * @return true if the field is supported
+     */
+    public final boolean isSupported(LocalDate date, LocalTime time) {
+        return (getValueQuiet(date, time) != null);
+    }
 
     /**
      * Gets the value for this field throwing an exception if the field cannot be obtained.
@@ -216,8 +210,9 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
     public int getValue(CalendricalProvider calendricalProvider) {
-        // TODO
-        return calendricalProvider.toCalendrical().getValue(this);
+        int value = calendricalProvider.toCalendrical().getValueInt(this);
+        checkValue(value);
+        return value;
     }
 
     /**
@@ -261,16 +256,16 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * Otherwise, an attempt is made to {@link #deriveValue(DateTimeFields) derive}
      * the value from the value of other fields in the map.
      *
-     * @param fieldValueMap  the map to derive from, not null
+     * @param calendricalFieldMap  the calendrical to derive from, not null
      * @return the value of the field, null if unable to derive field
      */
-    public final Integer getValueQuiet(DateTimeFields fieldValueMap) {
-        Integer value = fieldValueMap.getValueQuiet(this);
-        return (value == null ? deriveValue(fieldValueMap) : value);
+    public final Integer getValueQuiet(Calendrical.FieldMap calendricalFieldMap) {
+        Integer value = calendricalFieldMap.get(this);
+        return (value == null ? deriveValue(calendricalFieldMap) : value);
     }
 
     /**
-     * Derives the value of this field from the map of field-value pairs specified.
+     * Derives the value of this field from the specified calendrical.
      * <p>
      * This method derives the value for this field from other fields in the map.
      * The implementation does not check if the map already contains a value for this field.
@@ -293,10 +288,10 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * This method is designed to be overridden in subclasses.
      * The subclass implementation must be thread-safe.
      *
-     * @param fieldValueMap  the map to derive from, not null
+     * @param calendricalFieldMap  the calendrical to derive from, not null
      * @return the derived value, null if unable to derive
      */
-    protected Integer deriveValue(DateTimeFields fieldValueMap) {
+    protected Integer deriveValue(Calendrical.FieldMap calendricalFieldMap) {
         return null;  // do nothing - override if this field can derive
     }
 
@@ -310,7 +305,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      *
      * @param merger  the merger instance controlling the merge process, not null
      */
-    protected void merge(CalendricalMerger merger) {
+    protected void merge(Calendrical.Merger merger) {
         // do nothing - override if this field can merge
     }
 

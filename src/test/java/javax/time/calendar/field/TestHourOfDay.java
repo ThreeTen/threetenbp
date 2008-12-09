@@ -261,7 +261,7 @@ public class TestHourOfDay {
     public void test_toCalendrical() {
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.hourOfDay(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

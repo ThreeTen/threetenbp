@@ -125,7 +125,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Munday", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOW), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
     }
 
     public void test_parse_noMatch2() throws Exception {
@@ -133,7 +133,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 3);
         assertEquals(newPos, ~3);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOW), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
     }
 
     public void test_parse_noMatch_atEnd() throws Exception {
@@ -141,7 +141,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 6);
         assertEquals(newPos, ~6);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOW), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
     }
 
     //-----------------------------------------------------------------------

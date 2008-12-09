@@ -210,9 +210,12 @@ public class DateTimeFormatter {
     /**
      * Parses the text into a Calendrical.
      * <p>
-     * The result may be invalid including out of range values such as
-     * a month of 65. The methods on Calendrical allow you to handle the
-     * invalid input.
+     * The result may be invalid including out of range values such as a month of 65.
+     * The methods on the calendrical allow you to handle the invalid input.
+     * For example:
+     * <pre>
+     * LocalDateTime dt = parser.parse(str).mergeStrict().toLocalDateTime();
+     * </pre>
      *
      * @param text  the text to parse, not null
      * @return the parsed text, never null
@@ -237,9 +240,12 @@ public class DateTimeFormatter {
     /**
      * Parses the text into a Calendrical.
      * <p>
-     * The result may be invalid including out of range values such as
-     * a month of 65. The methods on Calendrical allow you to handle the
-     * invalid input.
+     * The result may be invalid including out of range values such as a month of 65.
+     * The methods on the calendrical allow you to handle the invalid input.
+     * For example:
+     * <pre>
+     * LocalDateTime dt = parser.parse(str).mergeStrict().toLocalDateTime();
+     * </pre>
      *
      * @param text  the text to parse, not null
      * @param position  the position to parse from, updated with length parsed

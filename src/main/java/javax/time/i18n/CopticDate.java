@@ -457,7 +457,7 @@ public final class CopticDate
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(toLocalDate(), null, null, null);
+        return new Calendrical(toLocalDate(), null, null, null);
     }
 
     //-----------------------------------------------------------------------

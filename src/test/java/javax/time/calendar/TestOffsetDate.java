@@ -317,7 +317,7 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         
         assertSame(a.toLocalDate(), localDate);
-        assertEquals(a.toCalendrical(), Calendrical.calendrical(localDate, null, offset, null));
+        assertEquals(a.toCalendrical(), new Calendrical(localDate, null, offset, null));
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), y % 2 == 0 ? OFFSET_PTWO : OFFSET_PONE);
     }
@@ -1506,7 +1506,7 @@ public class TestOffsetDate {
     @Test(dataProvider="sampleDates")
     public void test_toCalendrical(int year, int month, int day, ZoneOffset offset) {
         OffsetDate t = OffsetDate.date(year, month, day, offset);
-        assertEquals(t.toCalendrical(), Calendrical.calendrical(t.getDate(), null, t.getOffset(), null));
+        assertEquals(t.toCalendrical(), new Calendrical(t.getDate(), null, t.getOffset(), null));
     }
 
     //-----------------------------------------------------------------------

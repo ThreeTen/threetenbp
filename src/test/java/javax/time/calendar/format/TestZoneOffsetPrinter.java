@@ -62,7 +62,7 @@ public class TestZoneOffsetPrinter {
     public void setUp() {
         buf = new StringBuilder("EXISTING");
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = Calendrical.calendrical();
+        emptyCalendrical = new Calendrical();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -70,7 +70,7 @@ public class TestZoneOffsetPrinter {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_0130, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_0130, null);
         pp.print(cal, (Appendable) null, symbols);
     }
 
@@ -96,7 +96,7 @@ public class TestZoneOffsetPrinter {
 
     public void test_print_emptyAppendable() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_0130, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_0130, null);
         buf.setLength(0);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "+01:30");
@@ -105,70 +105,70 @@ public class TestZoneOffsetPrinter {
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_0130, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_0130, null);
         pp.print(cal, exceptionAppenable, symbols);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_0130() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_0130, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_0130, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+01:30");
     }
 
     public void test_print_0130_noColon() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_0130, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_0130, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+0130");
     }
 
     public void test_print_M0245() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_M0245, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_M0245, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING-02:45");
     }
 
     public void test_print_M0245_noColon() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_M0245, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_M0245, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING-0245");
     }
 
     public void test_print_UTC() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("ZZZZ", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, ZoneOffset.UTC, null);
+        Calendrical cal = new Calendrical(null, null, ZoneOffset.UTC, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTINGZZZZ");
     }
 
     public void test_print_123456() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_123456, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_123456, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+12:34:56");
     }
 
     public void test_print_123456_noColon() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_123456, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_123456, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+123456");
     }
 
     public void test_print_123456_noSeconds() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, false);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_123456, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_123456, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+12:34");
     }
 
     public void test_print_123456_noColon_noSeconds() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, false);
-        Calendrical cal = Calendrical.calendrical(null, null, OFFSET_123456, null);
+        Calendrical cal = new Calendrical(null, null, OFFSET_123456, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+1234");
     }

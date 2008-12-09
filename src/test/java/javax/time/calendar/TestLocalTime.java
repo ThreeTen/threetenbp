@@ -1405,7 +1405,7 @@ public class TestLocalTime {
     @Test(dataProvider="sampleTimes")
     public void test_toCalendrical(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
-        assertEquals(t.toCalendrical(), Calendrical.calendrical(null, t, null, null));
+        assertEquals(t.toCalendrical(), new Calendrical(null, t, null, null));
     }
 
     //-----------------------------------------------------------------------

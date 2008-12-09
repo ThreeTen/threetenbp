@@ -389,7 +389,7 @@ public class TestOffsetDateTime {
         assertSame(a.toLocalDateTime(), localDateTime);
         assertEquals(a.toOffsetDate(), OffsetDate.date(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.time(localTime, offset));
-        assertEquals(a.toCalendrical(), Calendrical.calendrical(localDateTime.toLocalDate(), localDateTime.toLocalTime(), offset, null));
+        assertEquals(a.toCalendrical(), new Calendrical(localDateTime.toLocalDate(), localDateTime.toLocalTime(), offset, null));
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
 

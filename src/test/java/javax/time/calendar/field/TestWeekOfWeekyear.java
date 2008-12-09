@@ -215,7 +215,7 @@ public class TestWeekOfWeekyear {
     public void test_toCalendrical() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

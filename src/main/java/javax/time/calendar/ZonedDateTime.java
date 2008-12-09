@@ -385,7 +385,7 @@ public final class ZonedDateTime
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      */
     public int get(DateTimeFieldRule fieldRule) {
-        return toCalendrical().getValue(fieldRule);
+        return dateTime.get(fieldRule);
     }
 
     //-----------------------------------------------------------------------
@@ -1235,7 +1235,7 @@ public final class ZonedDateTime
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(toLocalDate(), toLocalTime(), getOffset(), zone);
+        return new Calendrical(toLocalDate(), toLocalTime(), getOffset(), zone);
     }
 
     //-----------------------------------------------------------------------

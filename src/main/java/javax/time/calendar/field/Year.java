@@ -161,7 +161,7 @@ public final class Year
      * @return true if the field is supported
      */
     public boolean isSupported(DateTimeFieldRule field) {
-        return toCalendrical().getValueQuiet(field) != null;
+        return toCalendrical().isSupported(field);
     }
 
     /**
@@ -175,7 +175,7 @@ public final class Year
      * @throws UnsupportedCalendarFieldException if the field is not supported
      */
     public int get(DateTimeFieldRule field) {
-        return toCalendrical().getValue(field);
+        return toCalendrical().getValueInt(field);
     }
 
     //-----------------------------------------------------------------------
@@ -480,7 +480,7 @@ public final class Year
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

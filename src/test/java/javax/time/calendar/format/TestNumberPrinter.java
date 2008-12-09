@@ -62,14 +62,14 @@ public class TestNumberPrinter {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = Calendrical.calendrical();
+        emptyCalendrical = new Calendrical();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), 3);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -96,7 +96,7 @@ public class TestNumberPrinter {
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), 3);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -105,7 +105,7 @@ public class TestNumberPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), 3);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 3);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -203,7 +203,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), value);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
             pp.print(calendrical, buf, symbols);
@@ -223,7 +223,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NEVER(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), value);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NEVER);
         try {
             pp.print(calendrical, buf, symbols);
@@ -242,7 +242,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NORMAL(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), value);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NORMAL);
         try {
             pp.print(calendrical, buf, symbols);
@@ -261,7 +261,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_ALWAYS(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), value);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.ALWAYS);
         try {
             pp.print(calendrical, buf, symbols);
@@ -280,7 +280,7 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(DayOfMonth.rule(), value);
+        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), value);
         NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
             pp.print(calendrical, buf, symbols);

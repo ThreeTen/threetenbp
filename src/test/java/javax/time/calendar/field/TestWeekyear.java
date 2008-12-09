@@ -270,12 +270,12 @@ public class TestWeekyear {
     public void test_toCalendrical() {
         for (int i = Year.MIN_YEAR; i <= Year.MIN_YEAR + 100; i++) {
             Weekyear test = Weekyear.weekyear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
 
         for (int i = Year.MAX_YEAR; i >= Year.MAX_YEAR - 100; i--) {
             Weekyear test = Weekyear.weekyear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

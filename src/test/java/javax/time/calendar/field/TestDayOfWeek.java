@@ -278,7 +278,7 @@ public class TestDayOfWeek {
     public void test_toCalendrical() {
         for (int i = 1; i <= 7; i++) {
             DayOfWeek test = DayOfWeek.dayOfWeek(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

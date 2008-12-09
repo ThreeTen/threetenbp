@@ -67,14 +67,14 @@ public class TestTextPrinter {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = Calendrical.calendrical();
+        emptyCalendrical = new Calendrical();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(RULE_DOW, 3);
+        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -87,7 +87,7 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(RULE_DOW, 3);
+        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, buf, null);
     }
@@ -100,7 +100,7 @@ public class TestTextPrinter {
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(RULE_DOW, 3);
+        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -109,7 +109,7 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(RULE_DOW, 3);
+        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -160,7 +160,7 @@ public class TestTextPrinter {
 
     @Test(dataProvider="print") 
     public void test_print(DateTimeFieldRule rule, TextStyle style, int dow, String expected) throws Exception {
-        Calendrical calendrical = Calendrical.calendrical(rule, dow);
+        Calendrical calendrical = new Calendrical(rule, dow);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), expected);

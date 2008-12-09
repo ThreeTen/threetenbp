@@ -59,8 +59,8 @@ public final class MockYearOfCenturyFieldRule extends DateTimeFieldRule implemen
     }
     /** {@inheritDoc} */
     @Override
-    protected Integer deriveValue(DateTimeFields fieldValueMap) {
-        Integer yearVal = ISOChronology.yearRule().getValueQuiet(fieldValueMap);
+    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+        Integer yearVal = ISOChronology.yearRule().getValueQuiet(fieldMap);
         return (yearVal == null ? null : yearVal % 100);
     }
 }

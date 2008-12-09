@@ -33,7 +33,6 @@ package javax.time.calendar.format;
 
 import static org.testng.Assert.*;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ public class TestDateTimeParseContext {
         DateTimeParseContext test = new DateTimeParseContext(symbols);
         assertEquals(test.getSymbols(), symbols);
         assertEquals(test.getLocale(), Locale.GERMANY);
-        assertEquals(test.getFieldValueMap(), Collections.EMPTY_MAP);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getZone(), null);
     }
@@ -82,14 +81,14 @@ public class TestDateTimeParseContext {
     public void test_fields_oneField() throws Exception {
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
         DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.getFieldValueMap(), Collections.EMPTY_MAP);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
         
         test.setFieldValue(RULE_YEAR, 2008);
         
         assertEquals(test.getFieldValueMapValue(RULE_YEAR), 2008);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getZone(), null);
-        Map<DateTimeFieldRule, Integer> map = test.getFieldValueMap();
+        Map<DateTimeFieldRule, Integer> map = test.toCalendrical().getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 1);
         assertEquals(map.get(RULE_YEAR), Integer.valueOf(2008));
         //  test cloned and modifiable
@@ -101,17 +100,17 @@ public class TestDateTimeParseContext {
     public void test_fields_twoFields() throws Exception {
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
         DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.getFieldValueMap(), Collections.EMPTY_MAP);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
         
         test.setFieldValue(RULE_YEAR, 2008);
         test.setFieldValue(RULE_MOY, 6);
         
-        assertEquals(test.getFieldValueMap().size(), 2);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 2);
         assertEquals(test.getFieldValueMapValue(RULE_YEAR), 2008);
         assertEquals(test.getFieldValueMapValue(RULE_MOY), 6);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getZone(), null);
-        Map<DateTimeFieldRule, Integer> map = test.getFieldValueMap();
+        Map<DateTimeFieldRule, Integer> map = test.toCalendrical().getFieldMap().toFieldValueMap();
         assertEquals(map.size(), 2);
         assertEquals(map.get(RULE_YEAR), Integer.valueOf(2008));
         assertEquals(map.get(RULE_MOY), Integer.valueOf(6));
@@ -157,7 +156,7 @@ public class TestDateTimeParseContext {
         test.setOffset(ZoneOffset.zoneOffset(18));
         
         assertEquals(test.getOffset(), ZoneOffset.zoneOffset(18));
-        assertEquals(test.getFieldValueMap().size(), 0);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
         assertEquals(test.getZone(), null);
     }
 
@@ -170,7 +169,7 @@ public class TestDateTimeParseContext {
         test.setZone(TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
         
         assertEquals(test.getZone(), TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
-        assertEquals(test.getFieldValueMap().size(), 0);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
         assertEquals(test.getOffset(), null);
     }
 
@@ -185,7 +184,7 @@ public class TestDateTimeParseContext {
         
         Calendrical cal = test.toCalendrical();
         
-        assertEquals(cal.toDateTimeFields().toFieldValueMap(), test.getFieldValueMap());
+        assertEquals(cal.toDateTimeFields().toFieldValueMap(), test.toCalendrical().getFieldMap().toFieldValueMap());
         assertEquals(cal.getOffset(), test.getOffset());
         assertEquals(cal.getZone(), test.getZone());
     }
@@ -206,7 +205,7 @@ public class TestDateTimeParseContext {
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
         DateTimeParseContext test = new DateTimeParseContext(symbols);
         
-        assertEquals(test.toString(), "{}");
+        assertEquals(test.toString(), "");
     }
 
 }

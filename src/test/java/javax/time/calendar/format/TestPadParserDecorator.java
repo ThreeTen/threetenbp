@@ -60,7 +60,7 @@ public class TestPadParserDecorator {
         try {
             int result = pp.parse((DateTimeParseContext) null, "--Z", 0);
             assertEquals(result, 3);
-            assertEquals(context.getFieldValueMap().size(), 0);
+            assertEquals(context.toCalendrical().getFieldMap().size(), 0);
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional
@@ -91,7 +91,7 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "--2", 0);
         assertEquals(result, 3);
-        assertEquals(context.getFieldValueMap().size(), 1);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 1);
         assertEquals(context.getFieldValueMapValue(ISOChronology.monthOfYearRule()), 2);
     }
 
@@ -100,7 +100,7 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "--22", 0);
         assertEquals(result, 3);
-        assertEquals(context.getFieldValueMap().size(), 1);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 1);
         assertEquals(context.getFieldValueMapValue(ISOChronology.monthOfYearRule()), 2);
     }
 
@@ -109,7 +109,7 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "-1", 0);
         assertEquals(result, ~0);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_decoratedErrorPassedBack() throws Exception {
@@ -117,7 +117,7 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "--A", 0);
         assertEquals(result, ~2);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
@@ -134,7 +134,7 @@ public class TestPadParserDecorator {
                 null, new StringLiteralPrinterParser("-HELLO-"), 8, '-');
         int result = pp.parse(context, "--HELLO-", 0);
         assertEquals(result, 8);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
 }

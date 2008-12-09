@@ -1487,7 +1487,7 @@ public class TestLocalDate {
     @Test(dataProvider="sampleDates")
     public void test_toCalendrical(int year, int month, int day) {
         LocalDate t = LocalDate.date(year, month, day);
-        assertEquals(t.toCalendrical(), Calendrical.calendrical(t, null, null, null));
+        assertEquals(t.toCalendrical(), new Calendrical(t, null, null, null));
     }
 
     //-----------------------------------------------------------------------

@@ -181,7 +181,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "A1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     public void test_parse_noMatch2() throws Exception {
@@ -189,7 +189,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "  1", 1);
         assertEquals(newPos, ~1);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     public void test_parse_noMatch_notMinWidthLeft1() throws Exception {
@@ -197,7 +197,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     public void test_parse_noMatch_notMinWidthLeft2_atEnd() throws Exception {
@@ -205,7 +205,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "1", 1);
         assertEquals(newPos, ~1);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     public void test_parse_noMatch_notMinWidthLeft_beforeNonDigit() throws Exception {
@@ -213,7 +213,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 4, SignStyle.NEVER);
         int newPos = pp.parse(context, "1-2", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     public void test_parse_tooBig() throws Exception {
@@ -221,7 +221,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
         int newPos = pp.parse(context, "2147483648", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     public void test_parse_tooSmall() throws Exception {
@@ -229,7 +229,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NORMAL);
         int newPos = pp.parse(context, "-2147483649", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 
     //-----------------------------------------------------------------------
@@ -330,7 +330,7 @@ public class TestNumberParser {
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, parseLen);
         if (parseVal == null) {
-            assertEquals(context.getFieldValueMap().containsKey(RULE_DOM), false);
+            assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
         } else {
             assertEquals(context.getFieldValueMapValue(RULE_DOM), parseVal.intValue());
         }

@@ -222,7 +222,7 @@ public class TestYearMonth {
 
     //-----------------------------------------------------------------------
     public void factory_CalendricalProvider() {
-        CalendricalProvider provider = Calendrical.calendrical(RULE_YEAR, 2008, RULE_MONTH, 6);
+        CalendricalProvider provider = new Calendrical(RULE_YEAR, 2008, RULE_MONTH, 6);
         assertEquals(YearMonth.yearMonth(provider), TEST_2008_06);
     }
 
@@ -572,7 +572,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void test_toCalendrical() {
         YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE_YEAR, 2008, RULE_MONTH, 6));
+        assertEquals(test.toCalendrical(), new Calendrical(RULE_YEAR, 2008, RULE_MONTH, 6));
     }
 
     //-----------------------------------------------------------------------

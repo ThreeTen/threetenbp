@@ -35,7 +35,7 @@ import static javax.time.period.PeriodUnits.*;
 
 import java.io.Serializable;
 
-import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
@@ -232,11 +232,11 @@ public final class CopticChronology extends Chronology implements Serializable {
             return (date == null ? null : CopticDate.copticDate(date).getYear());
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer moyVal = merger.get(CopticChronology.INSTANCE.monthOfYear());
-            Integer domVal = merger.get(CopticChronology.INSTANCE.dayOfMonth());
+        protected void merge(Calendrical.Merger merger) {
+            Integer moyVal = merger.getValue(CopticChronology.INSTANCE.monthOfYear());
+            Integer domVal = merger.getValue(CopticChronology.INSTANCE.dayOfMonth());
             if (moyVal != null && domVal != null) {
-                int year = merger.getValue(this);
+                int year = merger.getValueInt(this);
                 CopticDate date;
                 if (merger.isStrict()) {
                     date = CopticDate.copticDate(year, moyVal, domVal);
@@ -325,10 +325,10 @@ public final class CopticChronology extends Chronology implements Serializable {
             return (date == null ? null : CopticDate.copticDate(date).getDayOfYear());
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer yearVal = merger.get(CopticChronology.INSTANCE.year());
+        protected void merge(Calendrical.Merger merger) {
+            Integer yearVal = merger.getValue(CopticChronology.INSTANCE.year());
             if (yearVal != null) {
-                int doy = merger.getValue(this);
+                int doy = merger.getValueInt(this);
                 CopticDate date;
                 if (merger.isStrict()) {
                     date = CopticDate.copticDate(yearVal, 1, 1).withDayOfYear(doy);

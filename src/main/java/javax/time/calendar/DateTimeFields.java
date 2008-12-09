@@ -40,22 +40,25 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import javax.time.CalendricalException;
-
 /**
- * A set of date-time fields which may or may not be valid.
+ * A set of date-time fields.
  * <p>
- * This class holds a set of field-value pairs which represent a full or partial
- * view of a date, time or date-time. Each value might be invalid, thus
- * for example a month is not limited to the normal range of 1 to 12.
- * Instances must therefore be treated with care.
+ * Instances of this class store a map of field-value pairs.
+ * Together these specify constrints on the dates and times that match.
+ * For example, if an instance stores 'DayOfMonth=13' and 'DayOfWeek=Friday'
+ * then it represents and matches only dates of Friday the Thirteenth.
+ * <p>
+ * All the values will be within the valid range for the field.
+ * However, there is no cross validation between fields.
+ * Thus, it is possible for the date-time represented to never exist.
+ * For exampl, if an instance stores 'DayOfMonth=31' and 'MonthOfYear=February'
+ * then there will never be a matching date.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public final class DateTimeFields
         implements CalendricalProvider,
-//            DateProvider, TimeProvider, DateTimeProvider,
             DateMatcher, TimeMatcher, Iterable<DateTimeFieldRule>, Serializable {
 
     /** Serialization version. */
@@ -87,10 +90,12 @@ public final class DateTimeFields
      * @param fieldRule  the rule, not null
      * @param value  the field value, may be invalid
      * @return a DateTimeFields object, never null
-     * @throws NullPointerException if the field is null
+     * @throws NullPointerException if the field rule is null
+     * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public static DateTimeFields fields(DateTimeFieldRule fieldRule, int value) {
         checkNotNull(fieldRule, "The field rule must not be null");
+        fieldRule.checkValue(value);
         TreeMap<DateTimeFieldRule, Integer> map = createMap();
         map.put(fieldRule, value);
         return new DateTimeFields(map);
@@ -108,11 +113,14 @@ public final class DateTimeFields
      * @param fieldRule2  the second rule, not null
      * @param value2  the second field value
      * @return a DateTimeFields object, never null
-     * @throws NullPointerException if either field is null
+     * @throws NullPointerException if either field rule is null
+     * @throws IllegalCalendarFieldValueException if either value is invalid
      */
     public static DateTimeFields fields(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
         checkNotNull(fieldRule1, "The first field rule must not be null");
         checkNotNull(fieldRule2, "The second field rule must not be null");
+        fieldRule1.checkValue(value1);
+        fieldRule2.checkValue(value2);
         TreeMap<DateTimeFieldRule, Integer> map = createMap();
         map.put(fieldRule1, value1);
         map.put(fieldRule2, value2);
@@ -130,6 +138,7 @@ public final class DateTimeFields
      *  not updated by this factory, not null, contains no nulls
      * @return a DateTimeFields object, never null
      * @throws NullPointerException if the map contains null keys or values
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public static DateTimeFields fields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
         checkNotNull(fieldValueMap, "The field-value map must not be null");
@@ -139,11 +148,12 @@ public final class DateTimeFields
         // don't use contains() as tree map and others can throw NPE
         TreeMap<DateTimeFieldRule, Integer> map = createMap();
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            DateTimeFieldRule key = entry.getKey();
+            DateTimeFieldRule fieldRule = entry.getKey();
             Integer value = entry.getValue();
-            checkNotNull(key, "Null keys are not permitted in field-value map");
+            checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
             checkNotNull(value, "Null values are not permitted in field-value map");
-            map.put(key, value);
+            fieldRule.checkValue(value);
+            map.put(fieldRule, value);
         }
         return new DateTimeFields(map);
     }
@@ -191,91 +201,6 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if a value can be obtained for the specified field.
-     * <p>
-     * This method does not check if the value returned would be valid.
-     *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
-     */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            return false;
-        }
-        return fieldValueMap.containsKey(fieldRule);
-    }
-
-    /**
-     * Gets the value for the specified field throwing an exception if the
-     * field is not in the field-value map.
-     * <p>
-     * The value will be checked for basic validity.
-     * The value returned will be within the valid range for the field.
-     * <p>
-     * Instances of DateTimeFields can hold invalid field values, such as
-     * a day of month of -3 or an hour of 1000. This method ensures that
-     * the result is within the valid range for the field.
-     * No cross-validation between fields is performed.
-     *
-     * @param fieldRule  the rule to query from the map, not null
-     * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field is not in the map
-     * @throws IllegalCalendarFieldValueException if the value is invalid
-     */
-    public int getValue(DateTimeFieldRule fieldRule) {
-        return getValue(fieldRule, true);
-    }
-
-    /**
-     * Gets the value for the specified field throwing an exception if the
-     * field is not in the field-value map.
-     * <p>
-     * The value is optionally checked for basic validity.
-     * <p>
-     * Instances of DateTimeFields can hold invalid field values, such as
-     * a day of month of -3 or an hour of 1000. This method optionally ensures
-     * that the result is within the valid range for the field.
-     * No cross-validation between fields is performed.
-     *
-     * @param fieldRule  the rule to query from the map, not null
-     * @param validate  true to validate the value, false to return the raw value
-     * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field is not in the map
-     * @throws IllegalCalendarFieldValueException if validation is performed and the value is invalid
-     */
-    public int getValue(DateTimeFieldRule fieldRule, boolean validate) {
-        checkNotNull(fieldRule, "The field rule must not be null");
-        Integer value = fieldValueMap.get(fieldRule);
-        if (value != null) {
-            if (validate) {
-                fieldRule.checkValue(value);
-            }
-            return value;
-        }
-        throw new UnsupportedCalendarFieldException(fieldRule, "DateTimeFields");
-    }
-
-    /**
-     * Gets the value for the specified field returning null if the field is
-     * not in the field-value map.
-     * <p>
-     * The value is not validated and might be out of range for the rule.
-     * <p>
-     * Instances of DateTimeFields can hold invalid field values, such as
-     * a day of month of -3 or an hour of 1000. This method performs no
-     * validation on the returned value.
-     *
-     * @param fieldRule  the rule to query from the map, null returns null
-     * @return the value mapped to the specified field, null if not present
-     */
-    public Integer getValueQuiet(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            return null;
-        }
-        return fieldValueMap.get(fieldRule);
-    }
-
-    /**
      * The size of the map of fields to values.
      *
      * @return number of field-value pairs
@@ -289,7 +214,7 @@ public final class DateTimeFields
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop. The values can be obtained using
-     * {@link #getValue(DateTimeFieldRule)} or {@link #getValueQuiet(DateTimeFieldRule)}.
+     * {@link #getValueInt(DateTimeFieldRule)}.
      *
      * @return an iterator over the fields in this object, never null
      */
@@ -299,19 +224,73 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if a value can be obtained for the specified field.
+     *
+     * @param fieldRule  the field to query, null returns false
+     * @return true if the field is supported, false otherwise
+     */
+    public boolean isSupported(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
+            return false;
+        }
+        return fieldValueMap.containsKey(fieldRule);
+    }
+
+    /**
+     * Gets the value for the specified field returning null if the field is
+     * not in the field-value map.
+     * <p>
+     * The value will be within the valid range for the field.
+     * No cross-validation between fields is performed.
+     *
+     * @param fieldRule  the rule to query from the map, null returns null
+     * @return the value mapped to the specified field, null if not present
+     */
+    public Integer getValue(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
+            return null;
+        }
+        return fieldValueMap.get(fieldRule);
+    }
+
+    /**
+     * Gets the value for the specified field throwing an exception if the
+     * field is not in the field-value map.
+     * <p>
+     * The value will be within the valid range for the field.
+     * No cross-validation between fields is performed.
+     *
+     * @param fieldRule  the rule to query from the map, not null
+     * @return the value mapped to the specified field
+     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     */
+    public int getValueInt(DateTimeFieldRule fieldRule) {
+        checkNotNull(fieldRule, "The field rule must not be null");
+        Integer value = fieldValueMap.get(fieldRule);
+        if (value == null) {
+            throw new UnsupportedCalendarFieldException(fieldRule, "DateTimeFields");
+        }
+        return value;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this DateTimeFields with the specified field value.
      * <p>
-     * If this instance already has a value for the field then the value is
-     * replaced. Otherwise the value is added.
+     * If this instance already has a value for the field then the value is replaced.
+     * Otherwise the value is added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param fieldRule  the field to set in the returned set of fields, not null
      * @param value  the value to set in the returned set of fields
      * @return a new, updated DateTimeFields, never null
+     * @throws NullPointerException if the field rule is null
+     * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public DateTimeFields withFieldValue(DateTimeFieldRule fieldRule, int value) {
         checkNotNull(fieldRule, "The field rule must not be null");
+        fieldRule.checkValue(value);
         TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         clonedMap.put(fieldRule, value);
         return new DateTimeFields(clonedMap);
@@ -320,14 +299,15 @@ public final class DateTimeFields
     /**
      * Returns a copy of this DateTimeFields with the fields from the specified set added.
      * <p>
-     * If this instance already has a value for the field then the value is
-     * replaced. Otherwise the value is added.
+     * If this instance already has a value for the field then the value is replaced.
+     * Otherwise the value is added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param fieldValueMap  the new map of fields, not null
      * @return a new, updated DateTimeFields, never null
-     * @throws IllegalArgumentException if the map contains null keys or values
+     * @throws NullPointerException if the map contains null keys or values
+     * @throws IllegalCalendarFieldValueException if any value is invalid
      */
     public DateTimeFields withFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
         checkNotNull(fieldValueMap, "The field-value map must not be null");
@@ -337,11 +317,12 @@ public final class DateTimeFields
         // don't use contains() as tree map and others can throw NPE
         TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            DateTimeFieldRule key = entry.getKey();
+            DateTimeFieldRule fieldRule = entry.getKey();
             Integer value = entry.getValue();
-            checkNotNull(key, "Null keys are not permitted in field-value map");
+            checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
             checkNotNull(value, "Null values are not permitted in field-value map");
-            clonedMap.put(key, value);
+            fieldRule.checkValue(value);
+            clonedMap.put(fieldRule, value);
         }
         return new DateTimeFields(clonedMap);
     }
@@ -349,8 +330,8 @@ public final class DateTimeFields
     /**
      * Returns a copy of this DateTimeFields with the fields from the specified set added.
      * <p>
-     * If this instance already has a value for the field then the value is
-     * replaced. Otherwise the value is added.
+     * If this instance already has a value for the field then the value is replaced.
+     * Otherwise the value is added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -387,87 +368,48 @@ public final class DateTimeFields
         return clonedMap.isEmpty() ? EMPTY : new DateTimeFields(clonedMap);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Validates that the value of each field is within its valid range.
-     * <p>
-     * The validation simply checks that each value is within the normal range
-     * for the field as defined by {@link DateTimeFieldRule#checkValue(int)}.
-     * No cross-validation between fields is performed, thus the field set could
-     * contain an invalid date such as February 31st.
-     *
-     * @return this, for chaining, never null
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public DateTimeFields validateFields() {
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            entry.getKey().checkValue(entry.getValue());
-        }
-        return this;
-    }
-
-    /**
-     * Checks if the value of each field is within its valid range.
-     * <p>
-     * The validation simply checks that each value is within the normal range
-     * for the field as defined by {@link DateTimeFieldRule#isValidValue(int)}.
-     * No cross-validation between fields is performed, thus the field set could
-     * contain an invalid date such as February 31st.
-     *
-     * @return true if all the fields are with in their valid range
-     * @throws IllegalCalendarFieldValueException if any field is invalid
-     */
-    public boolean isValidFieldValues() {
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            if (entry.getKey().isValidValue(entry.getValue()) == false) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Merges the fields in this map to form a calendrical.
-     * <p>
-     * The merge process aims to extract the maximum amount of information
-     * possible from this set of fields. Ideally the outcome will be a date, time
-     * or both, however there may be insufficient information to achieve this.
-     * <p>
-     * The process repeatedly calls the field rule {@link DateTimeFieldRule#merge merge}
-     * method to perform the merge on each individual field. Sometimes two or
-     * more fields will combine to form a more significant field. Sometimes they
-     * will combine to form a date or time. The process stops when there no more
-     * merges can occur.
-     * <p>
-     * The process is based around hierarchies that can be combined.
-     * For example, QuarterOfYear and MonthOfQuarter can be combined to form MonthOfYear.
-     * Then, MonthOfYear can be combined with DayOfMonth and Year to form a date.
-     * Any fields which take part in a merge will be removed from the result as their
-     * values can be derived from the merged field.
-     * <p>
-     * The exact definition of which fields combine with which is chronology dependent.
-     * For example, see {@link ISOChronology}.
-     * <p>
-     * The details of the process are controlled by the merge context.
-     * This includes strict/lenient behaviour.
-     * <p>
-     * The merge must result in consistent values for each field, date and time.
-     * If two different values are produced an exception is thrown.
-     * For example, both Year/MonthOfYear/DayOfMonth and Year/DayOfYear will merge to form a date.
-     * If both sets of fields do not produce the same date then an exception will be thrown.
-     *
-     * @return the new instance, with merged fields, never null
-     * @throws CalendricalException if the fields cannot be merged
-     */
-    public Calendrical mergeStrict() {
-        if (fieldValueMap.size() == 0) {
-            return Calendrical.calendrical();
-        }
-        CalendricalMerger merger = new CalendricalMerger(this, new CalendricalContext(true, true));
-        merger.merge();
-        return merger.toCalendrical();
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Merges the fields in this map to form a calendrical.
+//     * <p>
+//     * The merge process aims to extract the maximum amount of information
+//     * possible from this set of fields. Ideally the outcome will be a date, time
+//     * or both, however there may be insufficient information to achieve this.
+//     * <p>
+//     * The process repeatedly calls the field rule {@link DateTimeFieldRule#merge merge}
+//     * method to perform the merge on each individual field. Sometimes two or
+//     * more fields will combine to form a more significant field. Sometimes they
+//     * will combine to form a date or time. The process stops when there no more
+//     * merges can occur.
+//     * <p>
+//     * The process is based around hierarchies that can be combined.
+//     * For example, QuarterOfYear and MonthOfQuarter can be combined to form MonthOfYear.
+//     * Then, MonthOfYear can be combined with DayOfMonth and Year to form a date.
+//     * Any fields which take part in a merge will be removed from the result as their
+//     * values can be derived from the merged field.
+//     * <p>
+//     * The exact definition of which fields combine with which is chronology dependent.
+//     * For example, see {@link ISOChronology}.
+//     * <p>
+//     * The details of the process are controlled by the merge context.
+//     * This includes strict/lenient behaviour.
+//     * <p>
+//     * The merge must result in consistent values for each field, date and time.
+//     * If two different values are produced an exception is thrown.
+//     * For example, both Year/MonthOfYear/DayOfMonth and Year/DayOfYear will merge to form a date.
+//     * If both sets of fields do not produce the same date then an exception will be thrown.
+//     *
+//     * @return the new instance, with merged fields, never null
+//     * @throws CalendricalException if the fields cannot be merged
+//     */
+//    public Calendrical mergeStrict() {
+//        if (fieldValueMap.size() == 0) {
+//            return new Calendrical();
+//        }
+//        CalendricalMerger merger = new CalendricalMerger(this, new CalendricalContext(true, true));
+//        merger.merge();
+//        return merger.toCalendrical();
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -530,10 +472,19 @@ public final class DateTimeFields
      *
      * @return a clone of the field-value map, never null
      */
-    TreeMap<DateTimeFieldRule, Integer> clonedMap() {
+    private TreeMap<DateTimeFieldRule, Integer> clonedMap() {
         TreeMap<DateTimeFieldRule, Integer> cloned = createMap();
         cloned.putAll(fieldValueMap);
         return cloned;
+    }
+
+    /**
+     * Copies the field-value map into the specified map.
+     *
+     * @param map  the map to copy into, not null
+     */
+    void copyInto(Map<DateTimeFieldRule, Integer> map) {
+        map.putAll(fieldValueMap);
     }
 
 //    /**
@@ -599,12 +550,12 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this object to a Calendrical without merging the contents.
+     * Converts this object to a calendrical with the same set of fields.
      *
      * @return the calendrical with the same set of fields, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(this, null, null);
+        return new Calendrical(this);
     }
 
     //-----------------------------------------------------------------------

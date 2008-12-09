@@ -271,7 +271,7 @@ public final class HourOfDay
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(rule(), getValue());
+        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

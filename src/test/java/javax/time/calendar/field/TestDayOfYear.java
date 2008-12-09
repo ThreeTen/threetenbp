@@ -350,7 +350,7 @@ public class TestDayOfYear {
     public void test_toCalendrical() {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.dayOfYear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

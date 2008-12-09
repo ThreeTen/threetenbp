@@ -84,6 +84,19 @@ public final class ISOChronology extends Chronology implements Serializable {
 //    /** The start of months in a leap year. */
 //    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
+    /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Restrictive constructor.
@@ -556,11 +569,11 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : date.getYear().getValue());
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer moyVal = merger.get(ISOChronology.monthOfYearRule());
-            Integer domVal = merger.get(ISOChronology.dayOfMonthRule());
+        protected void merge(Calendrical.Merger merger) {
+            Integer moyVal = merger.getValue(ISOChronology.monthOfYearRule());
+            Integer domVal = merger.getValue(ISOChronology.dayOfMonthRule());
             if (moyVal != null && domVal != null) {
-                int year = merger.getValue(this);
+                int year = merger.getValueInt(this);
                 LocalDate date = merger.getContext().resolveDate(year, moyVal, domVal);
                 merger.storeMergedDate(date);
                 merger.markFieldAsProcessed(this);
@@ -643,10 +656,10 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : date.getDayOfYear().getValue());
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer year = merger.get(ISOChronology.yearRule());
+        protected void merge(Calendrical.Merger merger) {
+            Integer year = merger.getValue(ISOChronology.yearRule());
             if (year != null) {
-                int doy = merger.getValue(this);
+                int doy = merger.getValueInt(this);
                 if (merger.isStrict() || doy >= 1 && doy <= 365) {  // range is valid for all years
                     merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
                 } else {
@@ -727,12 +740,12 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : date.getDayOfWeek().getValue());
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
+        protected void merge(Calendrical.Merger merger) {
             // TODO: implement, move to Weekyear?
-            Integer wyear = merger.get(ISOChronology.weekyearRule());
-            Integer woy = merger.get(ISOChronology.weekOfWeekyearRule());
+            Integer wyear = merger.getValue(ISOChronology.weekyearRule());
+            Integer woy = merger.getValue(ISOChronology.weekOfWeekyearRule());
             if (wyear != null && woy != null) {
-                int dow = merger.getValue(this);
+                int dow = merger.getValueInt(this);
 //                if (merger.isStrict() || woy >= 1 && woy <= 52) {  // range is valid for all years
 //                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
 //                } else {
@@ -766,8 +779,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : ((date.getDayOfYear().getValue() - 1) % 7) + 1);
         }
         @Override
-        protected Integer deriveValue(DateTimeFields fieldValueMap) {
-            Integer doyVal = monthOfYearRule().getValueQuiet(fieldValueMap);
+        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+            Integer doyVal = monthOfYearRule().getValueQuiet(fieldMap);
             if (doyVal == null) {
                 return null;
             }
@@ -775,11 +788,11 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (doy >= 1 ? ((doy - 1) / 7) + 1 : 0);  // TODO negatives
        }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer year = merger.get(ISOChronology.yearRule());
-            Integer dow = merger.get(ISOChronology.dayOfWeekRule());
+        protected void merge(Calendrical.Merger merger) {
+            Integer year = merger.getValue(ISOChronology.yearRule());
+            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
             if (year != null && dow != null) {
-                int woy = merger.getValue(this);
+                int woy = merger.getValueInt(this);
                 LocalDate date = LocalDate.date(year, 1, 1).plusDays((((long) woy) - 1) * 7);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
                 merger.storeMergedDate(date);
@@ -811,8 +824,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return date == null ? null : date.getMonthOfYear().getQuarterOfYear().getValue();
         }
         @Override
-        protected Integer deriveValue(DateTimeFields fieldValueMap) {
-            Integer moyVal = monthOfYearRule().getValueQuiet(fieldValueMap);
+        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+            Integer moyVal = monthOfYearRule().getValueQuiet(fieldMap);
             if (moyVal == null) {
                 return null;
             }
@@ -820,11 +833,11 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (moy >= 1 ? ((moy - 1) / 3) + 1 : 0);  // TODO negatives
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer moqVal = merger.get(ISOChronology.monthOfQuarterRule());
+        protected void merge(Calendrical.Merger merger) {
+            Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
             if (moqVal != null) {
                 // TODO negatives
-                int qoy = merger.getValue(this);
+                int qoy = merger.getValueInt(this);
                 qoy = MathUtils.safeDecrement(qoy);
                 int moq = MathUtils.safeDecrement(moqVal);
                 int moy = MathUtils.safeAdd(MathUtils.safeMultiply(qoy, 3), moq);
@@ -857,8 +870,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return date == null ? null : date.getMonthOfYear().getMonthOfQuarter();
         }
         @Override
-        protected Integer deriveValue(DateTimeFields fieldValueMap) {
-            Integer moyVal = monthOfYearRule().getValueQuiet(fieldValueMap);
+        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+            Integer moyVal = monthOfYearRule().getValueQuiet(fieldMap);
             if (moyVal == null) {
                 return null;
             }
@@ -892,12 +905,12 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : ((date.getDayOfMonth().getValue() - 1) % 7) + 1);
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer year = merger.get(ISOChronology.yearRule());
-            Integer moy = merger.get(ISOChronology.monthOfYearRule());
-            Integer dow = merger.get(ISOChronology.dayOfWeekRule());
+        protected void merge(Calendrical.Merger merger) {
+            Integer year = merger.getValue(ISOChronology.yearRule());
+            Integer moy = merger.getValue(ISOChronology.monthOfYearRule());
+            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
             if (year != null && moy != null && dow != null) {
-                int wom = merger.getValue(this);
+                int wom = merger.getValueInt(this);
                 LocalDate date = LocalDate.date(year, 1, 1).plusMonths(moy).plusDays((((long) wom) - 1) * 7);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
                 merger.storeMergedDate(date);
@@ -930,11 +943,11 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : time.getHourOfDay().getValue());
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            int hour = merger.getValue(this);
-            Integer minuteObj = merger.get(ISOChronology.minuteOfHourRule());
-            Integer secondObj = merger.get(ISOChronology.secondOfMinuteRule());
-            Integer nanoObj = merger.get(ISOChronology.nanoOfSecondRule());
+        protected void merge(Calendrical.Merger merger) {
+            int hour = merger.getValueInt(this);
+            Integer minuteObj = merger.getValue(ISOChronology.minuteOfHourRule());
+            Integer secondObj = merger.getValue(ISOChronology.secondOfMinuteRule());
+            Integer nanoObj = merger.getValue(ISOChronology.nanoOfSecondRule());
             int minute = 0;
             int second = 0;
             int nano = 0;
@@ -1056,8 +1069,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : (int) (time.toNanoOfDay() / 1000000));
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            long mod = merger.getValue(this);
+        protected void merge(Calendrical.Merger merger) {
+            long mod = merger.getValueInt(this);
             merger.storeMergedTime(LocalTime.MIDNIGHT.plusNanosWithOverflow(mod * 1000000L));
             merger.markFieldAsProcessed(this);
         }
@@ -1084,8 +1097,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : time.getNanoOfSecond().getValue() / 1000000);
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            int mod = merger.getValue(this);
+        protected void merge(Calendrical.Merger merger) {
+            int mod = merger.getValueInt(this);
             int nod = MathUtils.safeMultiply(mod, 1000000);
             merger.storeMergedField(ISOChronology.nanoOfSecondRule(), nod);
             merger.markFieldAsProcessed(this);
@@ -1113,8 +1126,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : time.getHourOfDay().getAmPm().getValue());
         }
         @Override
-        protected Integer deriveValue(DateTimeFields fieldValueMap) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(fieldValueMap);
+        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+            Integer hourVal = hourOfDayRule().getValueQuiet(fieldMap);
             if (hourVal == null) {
                 return null;
             }
@@ -1123,10 +1136,10 @@ public final class ISOChronology extends Chronology implements Serializable {
             return ((hour % 24) / 2);
         }
         @Override
-        protected void merge(CalendricalMerger merger) {
-            Integer hapVal = merger.get(ISOChronology.hourOfAmPmRule());
+        protected void merge(Calendrical.Merger merger) {
+            Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
             if (hapVal != null) {
-                int amPm = merger.getValue(this);
+                int amPm = merger.getValueInt(this);
                 int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
                 merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
                 merger.markFieldAsProcessed(this);
@@ -1156,8 +1169,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : time.getHourOfDay().getHourOfAmPm());
         }
         @Override
-        protected Integer deriveValue(DateTimeFields fieldValueMap) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(fieldValueMap);
+        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+            Integer hourVal = hourOfDayRule().getValueQuiet(fieldMap);
             if (hourVal == null) {
                 return null;
             }

@@ -68,7 +68,7 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = calendrical.getValue(fieldRule, false);
+        int value = calendrical.getValueInt(fieldRule);
         String text = symbols.getFieldValueText(fieldRule, textStyle, value);
         if (text == null) {
             text = FormatUtil.convertToI18N(Integer.toString(value), symbols);

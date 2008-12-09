@@ -228,7 +228,7 @@ public class TestMonthDay {
 
     //-----------------------------------------------------------------------
     public void factory_CalendricalProvider() {
-        CalendricalProvider provider = Calendrical.calendrical(RULE_MONTH, 7, RULE_DOM, 15);
+        CalendricalProvider provider = new Calendrical(RULE_MONTH, 7, RULE_DOM, 15);
         assertEquals(MonthDay.monthDay(provider), TEST_07_15);
     }
 
@@ -574,7 +574,7 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void test_toCalendrical() {
         MonthDay test = MonthDay.monthDay(6, 30);
-        assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE_MONTH, 6, RULE_DOM, 30));
+        assertEquals(test.toCalendrical(), new Calendrical(RULE_MONTH, 6, RULE_DOM, 30));
     }
 
     //-----------------------------------------------------------------------

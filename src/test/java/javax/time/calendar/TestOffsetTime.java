@@ -286,7 +286,7 @@ public class TestOffsetTime {
         assertEquals(a.getNanoOfSecond(), localTime.getNanoOfSecond());
         
         assertSame(a.toLocalTime(), localTime);
-        assertEquals(a.toCalendrical(), Calendrical.calendrical(null, localTime, offset, null));
+        assertEquals(a.toCalendrical(), new Calendrical(null, localTime, offset, null));
         assertEquals(a.toString(), localTime.toString() + offset.toString());
     }
 

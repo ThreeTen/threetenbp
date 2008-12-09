@@ -57,7 +57,7 @@ public class TestCharLiteralParser {
         try {
             int result = pp.parse((DateTimeParseContext) null, "a", 0);
             assertEquals(result, 1);
-            assertEquals(context.getFieldValueMap().size(), 0);
+            assertEquals(context.toCalendrical().getFieldMap().size(), 0);
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional
@@ -87,28 +87,28 @@ public class TestCharLiteralParser {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "a", 0);
         assertEquals(result, 1);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_startStringMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "aOTHER", 0);
         assertEquals(result, 1);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_midStringMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "OTHERaOTHER", 5);
         assertEquals(result, 6);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_endStringMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "OTHERa", 5);
         assertEquals(result, 6);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -116,28 +116,28 @@ public class TestCharLiteralParser {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "", 0);
         assertEquals(result, ~0);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_startStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "b", 0);
         assertEquals(result, ~0);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_midStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "OTHERbOTHER", 5);
         assertEquals(result, ~5);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
     public void test_parse_endStringNoMatch() throws Exception {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "a", 1);
         assertEquals(result, ~1);
-        assertEquals(context.getFieldValueMap().size(), 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 
 }

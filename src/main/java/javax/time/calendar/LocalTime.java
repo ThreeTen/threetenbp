@@ -350,14 +350,14 @@ public final class LocalTime
     /**
      * Checks if the specified calendar field is supported.
      * <p>
-     * This method queries whether this <code>LocalTime</code> can
-     * be queried using the specified calendar field.
+     * This method queries whether this time can be queried using the
+     * specified calendar field.
      *
      * @param fieldRule  the field to query, null returns false
      * @return true if the field is supported, false otherwise
      */
     public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule != null && fieldRule.getValueQuiet(null, this) != null;
+        return fieldRule != null && fieldRule.isSupported(null, this);
     }
 
     /**
@@ -371,7 +371,8 @@ public final class LocalTime
      * @throws UnsupportedCalendarFieldException if no value for the field is found
      */
     public int get(DateTimeFieldRule fieldRule) {
-        return toCalendrical().getValue(fieldRule);
+        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+        return fieldRule.getValue(null, this);
     }
 
     //-----------------------------------------------------------------------
@@ -843,7 +844,7 @@ public final class LocalTime
      * @return the calendrical representation for this instance, never null
      */
     public Calendrical toCalendrical() {
-        return Calendrical.calendrical(null, this, null, null);
+        return new Calendrical(null, this, null, null);
     }
 
     //-----------------------------------------------------------------------

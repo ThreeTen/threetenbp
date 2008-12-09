@@ -572,7 +572,7 @@ public class TestMonthOfYear {
     public void test_toCalendrical() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             MonthOfYear test = MonthOfYear.monthOfYear(i);
-            assertEquals(test.toCalendrical(), Calendrical.calendrical(RULE, i));
+            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 
