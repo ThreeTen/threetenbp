@@ -146,7 +146,7 @@ public class TestCalendricalMerger {
     public void test_getValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(merger.getValue(YEAR_RULE), Integer.valueOf(2008));
                 assertEquals(merger.getValue(this), Integer.valueOf(20));
             }
@@ -159,7 +159,7 @@ public class TestCalendricalMerger {
     public void test_getValue_null() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.getValue(NULL_RULE);
             }
         };
@@ -170,7 +170,7 @@ public class TestCalendricalMerger {
     public void test_get_fieldNotPresent() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(merger.getValue(DOM_RULE), null);
             }
         };
@@ -182,7 +182,7 @@ public class TestCalendricalMerger {
     public void test_getValue_strictInvalidValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 fail();
             }
         };
@@ -199,7 +199,7 @@ public class TestCalendricalMerger {
     public void test_getValue_lenientInvalidValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(merger.getValue(MOY_RULE), Integer.valueOf(-1));
             }
         };
@@ -213,7 +213,7 @@ public class TestCalendricalMerger {
     public void test_getValueInt() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(merger.getValueInt(YEAR_RULE), 2008);
                 assertEquals(merger.getValueInt(this), 20);
             }
@@ -226,7 +226,7 @@ public class TestCalendricalMerger {
     public void test_getValueInt_null() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.getValueInt(NULL_RULE);
             }
         };
@@ -238,7 +238,7 @@ public class TestCalendricalMerger {
     public void test_getValueInt_fieldNotPresent() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 try {
                     merger.getValueInt(DOM_RULE);
                 } catch (UnsupportedCalendarFieldException ex) {
@@ -256,7 +256,7 @@ public class TestCalendricalMerger {
     public void test_getValueInt_strictInvalidValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 fail();
             }
         };
@@ -273,7 +273,7 @@ public class TestCalendricalMerger {
     public void test_getValueInt_lenientInvalidValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(merger.getValueInt(MOY_RULE), -1);
             }
         };
@@ -287,7 +287,7 @@ public class TestCalendricalMerger {
     public void test_markFieldAsProcessed() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
                 merger.markFieldAsProcessed(YEAR_RULE);
                 assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>(Arrays.asList(YEAR_RULE)));
@@ -300,7 +300,7 @@ public class TestCalendricalMerger {
     public void test_markFieldAsProcessed_set() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
                 merger.markFieldAsProcessed(YEAR_RULE);
                 merger.markFieldAsProcessed(YEAR_RULE);
@@ -315,7 +315,7 @@ public class TestCalendricalMerger {
     public void test_markFieldAsProcessed_null() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 assertEquals(getProcessedFieldSet(merger), new HashSet<DateTimeFieldRule>());
                 try {
                     merger.markFieldAsProcessed(NULL_RULE);
@@ -349,7 +349,7 @@ public class TestCalendricalMerger {
         final LocalDate date = date(2008, 6, 30);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedDate(date);
             }
         };
@@ -365,7 +365,7 @@ public class TestCalendricalMerger {
         final LocalDate date2 = date(2008, 6, 29);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedDate(date1);
                 merger.storeMergedDate(date2);
             }
@@ -385,7 +385,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedDate_nullWhenNull() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedDate(null);
             }
         };
@@ -404,7 +404,7 @@ public class TestCalendricalMerger {
         final LocalDate date = date(2008, 6, 30);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedDate(date);
                 merger.storeMergedDate(null);
             }
@@ -426,7 +426,7 @@ public class TestCalendricalMerger {
         final LocalTime time = time(16, 30);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime(time);
             }
         };
@@ -442,7 +442,7 @@ public class TestCalendricalMerger {
         final LocalTime time2 = time(16, 29);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime(time1);
                 merger.storeMergedTime(time2);
             }
@@ -462,7 +462,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedTime_nullWhenNull() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime((LocalTime) null);
             }
         };
@@ -481,7 +481,7 @@ public class TestCalendricalMerger {
         final LocalTime time = time(16, 30);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime(time);
                 merger.storeMergedTime((LocalTime) null);
             }
@@ -503,7 +503,7 @@ public class TestCalendricalMerger {
         final Overflow time = time(16, 30).toOverflow(1);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime(time);
             }
         };
@@ -519,7 +519,7 @@ public class TestCalendricalMerger {
         final Overflow time2 = time(16, 29).toOverflow(1);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime(time1);
                 merger.storeMergedTime(time2);
             }
@@ -538,7 +538,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedTimeOverflow_nullWhenNull() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime((LocalTime.Overflow) null);
             }
         };
@@ -557,7 +557,7 @@ public class TestCalendricalMerger {
         final Overflow time = time(16, 30).toOverflow(1);
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeDateTime(Merger merger) {
                 merger.storeMergedTime(time);
                 merger.storeMergedTime((LocalTime.Overflow) null);
             }
@@ -578,7 +578,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedField() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.storeMergedField(DOM_RULE, 30);
             }
         };
@@ -591,7 +591,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedField_invalidValueOK() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.storeMergedField(DOM_RULE, -1);
             }
         };
@@ -604,7 +604,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedField_sameField_sameValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.storeMergedField(YEAR_RULE, 2008);
             }
         };
@@ -618,7 +618,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedField_sameField_differentValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.storeMergedField(YEAR_RULE, 2007);
             }
         };
@@ -637,7 +637,7 @@ public class TestCalendricalMerger {
     public void test_storeMergedField_null() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
-            protected void merge(Merger merger) {
+            protected void mergeFields(Merger merger) {
                 merger.storeMergedField(NULL_RULE, 30);
             }
         };
@@ -1121,7 +1121,7 @@ public class TestCalendricalMerger {
             .put(HOUR_RULE, 14)
             .put(MIN_RULE, 30)
             .put(SEC_RULE, 50)
-            .put(MILLISEC_RULE, 1);
+            .put(MILLISEC_RULE, 1);  // must be merged to nanos before merge to LocalTime
         cal.merge(STRICT_CONTEXT);
         assertFields(cal, null, time(14, 30, 50, 1000000));
     }

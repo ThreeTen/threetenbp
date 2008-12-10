@@ -296,17 +296,78 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     /**
-     * Merges this field with other fields in the given field-value map.
+     * Merges this field with other fields to form higher level fields.
      * <p>
      * The aim of this method is to assist in the process of extracting the most
      * date-time information possible from a map of field-value pairs.
      * The merging process is controlled by the mutable merger instance and
      * the input and output of the this merge are held there.
+     * <p>
+     * Subclasses that override this method may use methods on the merger to
+     * obtain the values to merge. The value is guaranteed to be available for
+     * this field if this method is called.
+     * <p>
+     * If the override successfully merged some fields then the following must be performed.
+     * The merged field must be stored using {@link Calendrical.Merger#storeMergedField}.
+     * Each field used in the merge must be marked as being used by calling
+     * {@link Calendrical.Merger#markFieldAsProcessed}.
+     * <p>
+     * An example to merge two fields into one - hour of AM/PM and AM/PM:
+     * <pre>
+     *  Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+     *  if (hapVal != null) {
+     *    int amPm = merger.getValueInt(this);
+     *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
+     *    merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
+     *    merger.markFieldAsProcessed(this);
+     *    merger.markFieldAsProcessed(ISOChronology.hourOfAmPmRule());
+     *  }
+     * </pre>
      *
      * @param merger  the merger instance controlling the merge process, not null
      */
-    protected void merge(Calendrical.Merger merger) {
-        // do nothing - override if this field can merge
+    protected void mergeFields(Calendrical.Merger merger) {
+        // do nothing - override if this field can merge to a more significant field
+    }
+
+    /**
+     * Merges this field with other fields to form a date or time.
+     * <p>
+     * The aim of this method is to assist in the process of extracting the most
+     * date-time information possible from a map of field-value pairs.
+     * The merging process is controlled by the mutable merger instance and
+     * the input and output of the this merge are held there.
+     * <p>
+     * Subclasses that override this method may use methods on the merger to
+     * obtain the values to merge. The value is guaranteed to be available for
+     * this field if this method is called.
+     * <p>
+     * If the override successfully merged some fields then the following must be performed.
+     * A merged date must be stored using {@link Calendrical.Merger#storeDate}.
+     * A merged time must be stored using {@link Calendrical.Merger#storeMergedTime(LocalTime)}
+     * if the merge is strict, or {@link Calendrical.Merger#storeMergedTime(javax.time.calendar.LocalTime.Overflow)}
+     * if the merge is lenient.
+     * Each field used in the merge must be marked as being used by calling
+     * {@link Calendrical.Merger#markFieldAsProcessed}.
+     * <p>
+     * An example to merge three fields into a date - year, month and day:
+     * <pre>
+     *  Integer moyVal = merger.getValue(ISOChronology.monthOfYearRule());
+     *  Integer domVal = merger.getValue(ISOChronology.dayOfMonthRule());
+     *  if (moyVal != null && domVal != null) {
+     *    int year = merger.getValueInt(this);
+     *    LocalDate date = merger.getContext().resolveDate(year, moyVal, domVal);
+     *    merger.storeMergedDate(date);
+     *    merger.markFieldAsProcessed(this);
+     *    merger.markFieldAsProcessed(ISOChronology.monthOfYearRule());
+     *    merger.markFieldAsProcessed(ISOChronology.dayOfMonthRule());
+     *  }
+     * </pre>
+     *
+     * @param merger  the merger instance controlling the merge process, not null
+     */
+    protected void mergeDateTime(Calendrical.Merger merger) {
+        // do nothing - override if this field can merge to a date/time
     }
 
     //-----------------------------------------------------------------------

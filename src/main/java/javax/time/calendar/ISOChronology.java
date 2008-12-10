@@ -569,7 +569,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : date.getYear().getValue());
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             Integer moyVal = merger.getValue(ISOChronology.monthOfYearRule());
             Integer domVal = merger.getValue(ISOChronology.dayOfMonthRule());
             if (moyVal != null && domVal != null) {
@@ -656,7 +656,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : date.getDayOfYear().getValue());
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             Integer year = merger.getValue(ISOChronology.yearRule());
             if (year != null) {
                 int doy = merger.getValueInt(this);
@@ -690,6 +690,23 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : Weekyear.weekyear(date).getValue());
+        }
+        @Override
+        protected void mergeDateTime(Calendrical.Merger merger) {
+            // TODO: implement, move to Weekyear?
+            Integer woy = merger.getValue(ISOChronology.weekOfWeekyearRule());
+            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+            if (woy != null && dow != null) {
+                int wyear = merger.getValueInt(this);
+//                if (merger.isStrict() || woy >= 1 && woy <= 52) {  // range is valid for all years
+//                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
+//                } else {
+//                    merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
+//                }
+                merger.markFieldAsProcessed(this);
+                merger.markFieldAsProcessed(ISOChronology.weekOfWeekyearRule());
+                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
+            }
         }
     }
 
@@ -739,23 +756,6 @@ public final class ISOChronology extends Chronology implements Serializable {
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : date.getDayOfWeek().getValue());
         }
-        @Override
-        protected void merge(Calendrical.Merger merger) {
-            // TODO: implement, move to Weekyear?
-            Integer wyear = merger.getValue(ISOChronology.weekyearRule());
-            Integer woy = merger.getValue(ISOChronology.weekOfWeekyearRule());
-            if (wyear != null && woy != null) {
-                int dow = merger.getValueInt(this);
-//                if (merger.isStrict() || woy >= 1 && woy <= 52) {  // range is valid for all years
-//                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
-//                } else {
-//                    merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
-//                }
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.weekyearRule());
-                merger.markFieldAsProcessed(ISOChronology.weekOfWeekyearRule());
-            }
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -788,7 +788,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (doy >= 1 ? ((doy - 1) / 7) + 1 : 0);  // TODO negatives
        }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             Integer year = merger.getValue(ISOChronology.yearRule());
             Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
             if (year != null && dow != null) {
@@ -833,7 +833,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (moy >= 1 ? ((moy - 1) / 3) + 1 : 0);  // TODO negatives
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeFields(Calendrical.Merger merger) {
             Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
             if (moqVal != null) {
                 // TODO negatives
@@ -905,7 +905,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (date == null ? null : ((date.getDayOfMonth().getValue() - 1) % 7) + 1);
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             Integer year = merger.getValue(ISOChronology.yearRule());
             Integer moy = merger.getValue(ISOChronology.monthOfYearRule());
             Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
@@ -943,7 +943,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : time.getHourOfDay().getValue());
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             int hour = merger.getValueInt(this);
             Integer minuteObj = merger.getValue(ISOChronology.minuteOfHourRule());
             Integer secondObj = merger.getValue(ISOChronology.secondOfMinuteRule());
@@ -975,7 +975,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 return;  // no match
             }
             if (merger.isStrict()) {
-                merger.storeMergedTime(LocalTime.time(hour, minute, second, nano).toOverflow(0));
+                merger.storeMergedTime(LocalTime.time(hour, minute, second, nano));
             } else {
                 merger.storeMergedTime(LocalTime.MIDNIGHT.plusWithOverflow(hour, minute, second, nano));
             }
@@ -1069,9 +1069,13 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : (int) (time.toNanoOfDay() / 1000000));
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             long mod = merger.getValueInt(this);
-            merger.storeMergedTime(LocalTime.MIDNIGHT.plusNanosWithOverflow(mod * 1000000L));
+            if (merger.isStrict()) {
+                merger.storeMergedTime(LocalTime.fromNanoOfDay(mod * 1000000L));
+            } else {
+                merger.storeMergedTime(LocalTime.MIDNIGHT.plusNanosWithOverflow(mod * 1000000L));
+            }
             merger.markFieldAsProcessed(this);
         }
     }
@@ -1097,7 +1101,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (time == null ? null : time.getNanoOfSecond().getValue() / 1000000);
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeFields(Calendrical.Merger merger) {
             int mod = merger.getValueInt(this);
             int nod = MathUtils.safeMultiply(mod, 1000000);
             merger.storeMergedField(ISOChronology.nanoOfSecondRule(), nod);
@@ -1136,7 +1140,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return ((hour % 24) / 2);
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeFields(Calendrical.Merger merger) {
             Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
             if (hapVal != null) {
                 int amPm = merger.getValueInt(this);
@@ -1179,281 +1183,5 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (hour % 12);
         }
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Rule implementation.
-//     */
-//    private static enum Rule implements Serializable {
-//        /** Year instance. */
-//        YEAR("Year", YEARS, FOREVER, Year.MIN_YEAR, Year.MAX_YEAR),
-//        /** Year instance. */
-//        MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, 1, 12),
-//        /** Year instance. */
-//        DAY_OF_MONTH("DayOfMonth", DAYS, MONTHS, 1, 31);
-//
-//        /** The name of the rule, not null. */
-//        private final String name;
-//        /** The period unit, not null. */
-//        private final PeriodUnit periodUnit;
-//        /** The period range, not null. */
-//        private final PeriodUnit periodRange;
-//        /** The minimum value for the field. */
-//        private final int minimumValue;
-//        /** The maximum value for the field. */
-//        private final int maximumValue;
-//
-//        /**
-//         * Constructor.
-//         *
-//         * @param name  the name of the type, not null
-//         * @param periodUnit  the period unit, not null
-//         * @param periodRange  the period range, not null
-//         * @param minimumValue  the minimum value
-//         * @param maximumValue  the minimum value
-//         */
-//        private Rule(
-//                String name,
-//                PeriodUnit periodUnit,
-//                PeriodUnit periodRange,
-//                int minimumValue,
-//                int maximumValue) {
-//            this.name = name;
-//            this.periodUnit = periodUnit;
-//            this.periodRange = periodRange;
-//            this.minimumValue = minimumValue;
-//            this.maximumValue = maximumValue;
-//        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Gets the name of the time field type.
-//         * <p>
-//         * Subclasses should use the form 'UnitOfRange' whenever possible.
-//         *
-//         * @return the name of the time field type, never null
-//         */
-//        public String getName() {
-//            return name;
-//        }
-//
-//        /**
-//         * Gets the period unit, which the element which alters within the range.
-//         * <p>
-//         * In the phrase 'hour of day', the unit is the hour.
-//         *
-//         * @return the rule for the unit period, never null
-//         */
-//        public PeriodUnit getPeriodUnit() {
-//            return periodUnit;
-//        }
-//
-//        /**
-//         * Gets the period range, which the field is bound by.
-//         * <p>
-//         * In the phrase 'hour of day', the range is the day.
-//         *
-//         * @return the rule for the range period, never null
-//         */
-//        public PeriodUnit getPeriodRange() {
-//            return periodRange;
-//        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Checks if the this field is supported using calendrical data that is
-//         * completely specified by the unit and range.
-//         * <p>
-//         * For example, a date object has a unit of days and a range of forever.
-//         * If this field is for hour of day, then that cannot be supported by the
-//         * unit and range from a date object.
-//         *
-//         * @param unit  the unit to check, not null
-//         * @param range  the range to check, not null
-//         * @return true if the field is supported
-//         */
-//        public boolean isSupported(PeriodUnit unit, PeriodUnit range) {
-//            return (periodUnit.compareTo(unit) >= 0) &&
-//                   (periodRange.compareTo(range) < 0);
-//        }
-//
-//        /**
-//         * Gets the value of this field.
-//         *
-//         * @param calendrical  the date time, not null
-//         * @return the value of the field
-//         * @throws UnsupportedCalendarFieldException if the value cannot be extracted
-//         */
-//        public int getValue(Calendrical calendrical) {
-//            switch (this) {
-//                case YEAR:
-//                    return calendrical.getDate().getYear().getValue();
-//                default:
-//                    throw new UnsupportedCalendarFieldException(this, "Calendrical");
-//            }
-//        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Checks if the value is invalid and throws an exception if it is.
-//         * This method has no context, so only the outer minimum and maximum
-//         * values are used.
-//         *
-//         * @param value  the value to check
-//         * @throws IllegalCalendarFieldValueException if the value is invalid
-//         */
-//        public void checkValue(int value) {
-//            if (value < getMinimumValue() || value > getMaximumValue()) {
-//                throw new IllegalCalendarFieldValueException(getName(), value, getMinimumValue(), getMaximumValue());
-//            }
-//        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Is the set of values, from the minimum value to the maximum, a fixed
-//         * set, or does it vary according to other fields.
-//         *
-//         * @return true if the set of values is fixed
-//         */
-//        public boolean isFixedValueSet() {
-//            return getMaximumValue() == getSmallestMaximumValue() &&
-//                    getMinimumValue() == getLargestMinimumValue();
-//        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Gets the minimum value that the field can take.
-//         *
-//         * @return the minimum value for this field
-//         */
-//        public int getMinimumValue() {
-//            return minimumValue;
-//        }
-//
-//        /**
-//         * Gets the largest possible minimum value that the field can take.
-//         *
-//         * @return the largest possible minimum value for this field
-//         */
-//        public int getLargestMinimumValue() {
-//            return getMinimumValue();
-//        }
-//
-////        /**
-////         * Gets the minimum value that the field can take using the specified
-////         * calendrical information to refine the accuracy of the response.
-////         *
-////         * @param calendricalContext  context datetime, null returns getMinimumValue()
-////         * @return the minimum value of the field given the context
-////         */
-////        public int getMinimumValue(Calendrical calendricalContext) {
-////            return getMinimumValue();
-////        }
-//    //
-////        /**
-////         * Gets the largest possible minimum value that the field can take using
-////         * the specified calendrical information to refine the accuracy of the response.
-////         *
-////         * @param calendricalContext  context datetime, null returns getLargestMinimumValue()
-////         * @return the largest possible minimum value of the field given the context
-////         */
-////        public int getLargestMinimumValue(Calendrical calendricalContext) {
-////            if (calendricalContext == null) {
-////                return getLargestMinimumValue();
-////            }
-////            return getMinimumValue(calendricalContext);
-////        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Gets the maximum value that the field can take.
-//         *
-//         * @return the maximum value for this field
-//         */
-//        public int getMaximumValue() {
-//            return maximumValue;
-//        }
-//
-//        /**
-//         * Gets the smallest possible maximum value that the field can take.
-//         *
-//         * @return the smallest possible maximum value for this field
-//         */
-//        public int getSmallestMaximumValue() {
-//            return getMaximumValue();
-//        }
-//
-////        /**
-////         * Gets the maximum value that the field can take using the specified
-////         * calendrical information to refine the accuracy of the response.
-////         *
-////         * @param calendricalContext  context datetime, null returns getMaximumValue()
-////         * @return the maximum value of the field given the context
-////         */
-////        public int getMaximumValue(Calendrical calendricalContext) {
-////            return getMaximumValue();
-////        }
-//    //
-////        /**
-////         * Gets the smallest possible maximum value that the field can take using
-////         * the specified calendrical information to refine the accuracy of the response.
-////         *
-////         * @param calendricalContext  context datetime, null returns getSmallestMaximumValue()
-////         * @return the smallest possible maximum value of the field given the context
-////         */
-////        public int getSmallestMaximumValue(Calendrical calendricalContext) {
-////            if (calendricalContext == null) {
-////                return getSmallestMaximumValue();
-////            }
-////            return getMaximumValue(calendricalContext);
-////        }
-//    //
-////        //-----------------------------------------------------------------------
-////        /**
-////         * Checks whether a given calendrical is supported or not.
-////         *
-////         * @param calState  the calendar state to check, not null
-////         * @throws UnsupportedCalendarFieldException if the field is unsupported
-////         */
-////        protected void checkSupported(CalendricalState calState) {
-////            if (calState.getPeriodUnit().compareTo(getPeriodUnit()) > 0 ||
-////                    calState.getPeriodRange().compareTo(getPeriodRange()) < 0) {
-////                throw new UnsupportedCalendarFieldException("Calendar field " + getName() + " cannot be queried");
-////            }
-////        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Compares this TimeFieldRule to another based on the period unit
-//         * followed by the period range.
-//         * <p>
-//         * The period unit is compared first, so MinuteOfHour will be less than
-//         * HourOfDay, which will be less than DayOfWeek. When the period unit is
-//         * the same, the period range is compared, so DayOfWeek is less than
-//         * DayOfMonth, which is less than DayOfYear.
-//         *
-//         * @param other  the other type to compare to, not null
-//         * @return the comparator result, negative if less, postive if greater, zero if equal
-//         * @throws NullPointerException if other is null
-//         */
-//        public int compareTo(DateTimeFieldRule other) {
-//            int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
-//            if (cmp != 0) {
-//                return cmp;
-//            }
-//            return this.getPeriodRange().compareTo(other.getPeriodRange());
-//        }
-//
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Returns a string representation of the rule.
-//         *
-//         * @return a description of the rule
-//         */
-//        @Override
-//        public String toString() {
-//            return getName();
-//        }
-//    }
 
 }

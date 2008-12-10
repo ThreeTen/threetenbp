@@ -1494,7 +1494,8 @@ public final class Calendrical
                 
                 // we keep all the fields in the map during the merge and only remove at the end
                 // once merged, the initial fields can be derived from the merged fields
-                mergeLoop();
+                mergeFieldsLoop();
+                mergeDateTime();
                 
                 // remove the fields that have been merged into more significant fields
                 calendrical.getFieldMap().removeAll(processedFieldSet);
@@ -1516,20 +1517,32 @@ public final class Calendrical
         }
 
         /**
-         * Performs the main merge loop.
+         * Performs the loop to merge the fields.
          *
          * @throws CalendricalException if the merge cannot be completed successfully
          */
-        private void mergeLoop() {
+        private void mergeFieldsLoop() {
             iterator = calendrical.getFieldMap().iterator();
             int protect = 0;  // avoid infinite looping
             while (iterator.hasNext() && protect < 100) {
-                iterator.next().merge(this);
+                iterator.next().mergeFields(this);
                 protect++;
             }
             if (iterator.hasNext()) {
-                throw new CalendricalException("Merge failed, infinite loop blocked, " +
+                throw new CalendricalException("Merge fields failed, infinite loop blocked, " +
                         "probably caused by an incorrectly implemented field rule");
+            }
+        }
+
+        /**
+         * Performs the loop to merge the fields to date/time.
+         *
+         * @throws CalendricalException if the merge cannot be completed successfully
+         */
+        private void mergeDateTime() {
+            iterator = calendrical.getFieldMap().iterator();
+            while (iterator.hasNext()) {
+                iterator.next().mergeDateTime(this);
             }
         }
     }

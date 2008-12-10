@@ -68,7 +68,7 @@ public final class MockCenturyFieldRule extends DateTimeFieldRule implements Ser
     }
     /** {@inheritDoc} */
     @Override
-    protected void merge(Calendrical.Merger merger) {
+    protected void mergeFields(Calendrical.Merger merger) {
         Integer yocVal = merger.getValue(MockYearOfCenturyFieldRule.INSTANCE);
         if (yocVal != null) {
             int cen = merger.getValueInt(this);

@@ -232,7 +232,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return (date == null ? null : CopticDate.copticDate(date).getYear());
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             Integer moyVal = merger.getValue(CopticChronology.INSTANCE.monthOfYear());
             Integer domVal = merger.getValue(CopticChronology.INSTANCE.dayOfMonth());
             if (moyVal != null && domVal != null) {
@@ -325,7 +325,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return (date == null ? null : CopticDate.copticDate(date).getDayOfYear());
         }
         @Override
-        protected void merge(Calendrical.Merger merger) {
+        protected void mergeDateTime(Calendrical.Merger merger) {
             Integer yearVal = merger.getValue(CopticChronology.INSTANCE.year());
             if (yearVal != null) {
                 int doy = merger.getValueInt(this);
