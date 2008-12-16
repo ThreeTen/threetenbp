@@ -36,7 +36,6 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.ParsePosition;
-import java.util.List;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -45,6 +44,14 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
 
 /**
  * Formatter for dates and times.
+ * <p>
+ * This class provides the main applcation entry point for performing formatting.
+ * Formatting consists of printing and parsing.
+ * <p>
+ * Instances of DateTimeFormatter are constructed using DateTimeFormatterBuilder
+ * or by using one of the predefined constants on DateTimeFormatters.
+ * <p>
+ * DateTimeFormatter is thread-safe and immutable.
  *
  * @author Stephen Colebourne
  */
@@ -57,25 +64,19 @@ public class DateTimeFormatter {
     /**
      * The list of printers that will be used, treated as immutable.
      */
-    private final DateTimePrinter[] printers;
-    /**
-     * The list of parsers that will be used, treated as immutable.
-     */
-    private final DateTimeParser[] parsers;
+    private final CompositePrinterParser printerParser;
 
     //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
      * @param locale  the locale to use for text formatting, not null
-     * @param printers  the printers to use, cloned by this method, not null
-     * @param parsers  the parsers to use, cloned by this method, not null
+     * @param printerParser  the printer/parser to use, not null
      */
-    DateTimeFormatter(Locale locale, List<DateTimePrinter> printers, List<DateTimeParser> parsers) {
+    DateTimeFormatter(Locale locale, CompositePrinterParser printerParser) {
         // validated by caller
         this.symbols = DateTimeFormatSymbols.getInstance(locale);
-        this.printers = printers.contains(null) ? null : printers.toArray(new DateTimePrinter[printers.size()]);
-        this.parsers = parsers.contains(null) ? null : parsers.toArray(new DateTimeParser[parsers.size()]);
+        this.printerParser = printerParser;
     }
 
     /**
@@ -83,16 +84,13 @@ public class DateTimeFormatter {
      *
      * @param symbols  the symbols to use for text formatting, not null
      * @param asciiNumerics  whether to use ASCII numerics (true) or locale numerics (false)
-     * @param printers  the printers to use, assigned by this method, not null
-     * @param parsers  the parsers to use, assigned by this method, not null
+     * @param printerParser  the printer/parser to use, not null
      */
     private DateTimeFormatter(
             DateTimeFormatSymbols symbols,
-            DateTimePrinter[] printers,
-            DateTimeParser[] parsers) {
+            CompositePrinterParser printerParser) {
         this.symbols = symbols;
-        this.printers = printers;
-        this.parsers = parsers;
+        this.printerParser = printerParser;
     }
 
     //-----------------------------------------------------------------------
@@ -119,7 +117,7 @@ public class DateTimeFormatter {
             return this;
         }
         DateTimeFormatSymbols newSymbols = DateTimeFormatSymbols.getInstance(locale);
-        return new DateTimeFormatter(newSymbols, printers, parsers);
+        return new DateTimeFormatter(newSymbols, printerParser);
     }
 
     //-----------------------------------------------------------------------
@@ -133,7 +131,7 @@ public class DateTimeFormatter {
      * @return true if the formatter supports printing
      */
     public boolean isPrintSupported() {
-        return printers != null;
+        return printerParser.isPrintSupported();
     }
 
     //-----------------------------------------------------------------------
@@ -177,14 +175,9 @@ public class DateTimeFormatter {
     public void print(CalendricalProvider calendricalProvider, Appendable appendable) {
         FormatUtil.checkNotNull(calendricalProvider, "calendrical provider");
         FormatUtil.checkNotNull(appendable, "appendable");
-        if (printers == null) {
-            throw new UnsupportedOperationException("Formatter does not support printing");
-        }
         Calendrical calendrical = calendricalProvider.toCalendrical();
         try {
-            for (DateTimePrinter printer : printers) {
-                printer.print(calendrical, appendable, symbols);
-            }
+            printerParser.print(calendrical, appendable, symbols);
         } catch (UnsupportedCalendarFieldException ex) {
             throw new CalendricalFormatFieldException(ex);
         } catch (IOException ex) {
@@ -203,7 +196,7 @@ public class DateTimeFormatter {
      * @return true if the formatter supports parsing
      */
     public boolean isParseSupported() {
-        return parsers != null;
+        return printerParser.isParseSupported();
     }
 
     //-----------------------------------------------------------------------
@@ -258,20 +251,26 @@ public class DateTimeFormatter {
     public Calendrical parse(String text, ParsePosition position) {
         FormatUtil.checkNotNull(text, "text to parse");
         FormatUtil.checkNotNull(position, "position to parse from");
-        if (parsers == null) {
-            throw new UnsupportedOperationException("Formatter does not support printing");
-        }
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         int pos = position.getIndex();
-        for (DateTimeParser parser : parsers) {
-            pos = parser.parse(context, text, pos);
-            if (pos < 0) {
-                position.setErrorIndex(~pos);
-                return null;
-            }
+        pos = printerParser.parse(context, text, pos);
+        if (pos < 0) {
+            position.setErrorIndex(~pos);
+            return null;
         }
         position.setIndex(pos);
         return context.toCalendrical();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the formatter as a composite printer parser.
+     *
+     * @param optional  whether the printer/parser should be optional
+     * @return the printer/parser, never null
+     */
+    CompositePrinterParser toPrinterParser(boolean optional) {
+        return printerParser.withOptional(optional);
     }
 
     /**

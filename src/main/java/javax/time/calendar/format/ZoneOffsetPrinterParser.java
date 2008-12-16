@@ -70,6 +70,7 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         this.allowSeconds = allowSeconds;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         ZoneOffset offset = calendrical.getOffset();
@@ -99,6 +100,12 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return (calendrical.getOffset() != null);
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
         if (position > length) {
@@ -106,6 +113,13 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         // TODO
         return position;
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "Offset('" + utcText + "'," + includeColon + "," + allowSeconds + ")";
     }
 
 }

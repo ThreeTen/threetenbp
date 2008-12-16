@@ -72,6 +72,7 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         this.maxWidth = maxWidth;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = calendrical.getValueInt(fieldRule);
@@ -93,6 +94,12 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         }
     }
 
+    /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return calendrical.isSupported(fieldRule);
+    }
+
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
@@ -135,6 +142,13 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
         int value = fieldRule.convertFractionToValue(fraction);
         context.setFieldValue(fieldRule, value);
         return pos;
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "Fraction(" + fieldRule.getID() + "," + minWidth + "," + maxWidth + ")";
     }
 
 }

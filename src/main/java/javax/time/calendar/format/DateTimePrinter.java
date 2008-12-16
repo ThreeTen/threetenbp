@@ -61,4 +61,15 @@ public interface DateTimePrinter {
      */
     void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException;
 
+    /**
+     * Checks if the calendrical contains the data necessary to be printed.
+     * <p>
+     * The implementation should not check the validity of the data, just
+     * whether there is sufficient data to attempt a print.
+     *
+     * @param calendrical  the calendrical to check, not null
+     * @return true if the calendrical can be printed, false if not
+     */
+    boolean isPrintDataAvailable(Calendrical calendrical);
+
 }

@@ -66,6 +66,7 @@ class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         this.textStyle = textStyle;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         TimeZone zone = calendrical.getZone();
@@ -82,6 +83,12 @@ class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return (calendrical.getZone() != null);
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
         if (position > length) {
@@ -89,6 +96,16 @@ class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         }
         // TODO
         return position;
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        if (textStyle == null) {
+            return "ZoneId()";
+        }
+        return "Zone(" + textStyle + ")";
     }
 
 }

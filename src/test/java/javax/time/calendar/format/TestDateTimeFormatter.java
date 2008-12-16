@@ -66,6 +66,7 @@ public class TestDateTimeFormatter {
     private List<DateTimeParser> parsers;
     private StringLiteralPrinterParser stringPP;
     private NumberPrinterParser numberPP;
+    private CompositePrinterParser compPP;
 
     @BeforeMethod
     public void setUp() {
@@ -77,11 +78,12 @@ public class TestDateTimeFormatter {
         printers.add(numberPP);
         parsers.add(stringPP);
         parsers.add(numberPP);
+        compPP = new CompositePrinterParser(printers, parsers, false);
     }
 
     //-----------------------------------------------------------------------
     public void test_constructor() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         assertEquals(test.isPrintSupported(), true);
         assertEquals(test.isParseSupported(), true);
         assertEquals(test.getLocale(), Locale.ENGLISH);
@@ -90,7 +92,7 @@ public class TestDateTimeFormatter {
     public void test_constructor_empty() throws Exception {
         printers.clear();
         parsers.clear();
-        DateTimeFormatter test = new DateTimeFormatter(Locale.FRANCE, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.FRANCE, compPP);
         assertEquals(test.isPrintSupported(), true);
         assertEquals(test.isParseSupported(), true);
         assertEquals(test.getLocale(), Locale.FRANCE);
@@ -98,7 +100,8 @@ public class TestDateTimeFormatter {
 
     public void test_constructor_cannotPrint() throws Exception {
         printers.set(1, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.GERMANY, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.GERMANY, compPP);
         assertEquals(test.isPrintSupported(), false);
         assertEquals(test.isParseSupported(), true);
         assertEquals(test.getLocale(), Locale.GERMANY);
@@ -106,7 +109,8 @@ public class TestDateTimeFormatter {
 
     public void test_constructor_cannotParse() throws Exception {
         parsers.set(1, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.US, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.US, compPP);
         assertEquals(test.isPrintSupported(), true);
         assertEquals(test.isParseSupported(), false);
         assertEquals(test.getLocale(), Locale.US);
@@ -115,7 +119,8 @@ public class TestDateTimeFormatter {
     public void test_constructor_cannotPrintParse() throws Exception {
         printers.set(0, null);
         parsers.set(1, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.UK, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.UK, compPP);
         assertEquals(test.isPrintSupported(), false);
         assertEquals(test.isParseSupported(), false);
         assertEquals(test.getLocale(), Locale.UK);
@@ -123,52 +128,53 @@ public class TestDateTimeFormatter {
 
     //-----------------------------------------------------------------------
     public void test_withLocale() throws Exception {
-        DateTimeFormatter base = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter base = new DateTimeFormatter(Locale.ENGLISH, compPP);
         DateTimeFormatter test = base.withLocale(Locale.GERMAN);
         assertEquals(test.getLocale(), Locale.GERMAN);
     }
 
     public void test_withLocale_same() throws Exception {
-        DateTimeFormatter base = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter base = new DateTimeFormatter(Locale.ENGLISH, compPP);
         DateTimeFormatter test = base.withLocale(Locale.ENGLISH);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_withLocale_null() throws Exception {
-        DateTimeFormatter base = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter base = new DateTimeFormatter(Locale.ENGLISH, compPP);
         base.withLocale((Locale) null);
     }
 
     //-----------------------------------------------------------------------
     public void test_print_Calendrical() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         String result = test.print(LocalDate.date(2008, 6, 30));
         assertEquals(result, "ONE30");
     }
 
     @Test(expectedExceptions=CalendricalFormatException.class)
     public void test_print_Calendrical_noSuchField() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print(LocalTime.time(11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_Calendrical_null() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print((CalendricalProvider) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_print_Calendrical_noPrinting() throws Exception {
         printers.set(0, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print(LocalDate.date(2008, 6, 30));
     }
 
     //-----------------------------------------------------------------------
     public void test_print_CalendricalAppendable() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
         test.print(LocalDate.date(2008, 6, 30), buf);
         assertEquals(buf.toString(), "ONE30");
@@ -176,34 +182,35 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=CalendricalFormatException.class)
     public void test_print_CalendricalAppendable_noSuchField() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
         test.print(LocalTime.time(11, 30), buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_CalendricalAppendable_nullCalendrical() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
         test.print((CalendricalProvider) null, buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_CalendricalAppendable_nullAppendable() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print(LocalDate.date(2008, 6, 30), (Appendable) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_print_CalendricalAppendable_noPrinting() throws Exception {
         printers.set(0, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print(LocalDate.date(2008, 6, 30), new StringBuilder());
     }
 
     @Test(expectedExceptions=IOException.class)  // IOException
     public void test_print_CalendricalAppendable_ioError() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         try {
             test.print(LocalDate.date(2008, 6, 30), new MockIOExceptionAppendable());
         } catch (CalendricalFormatException ex) {
@@ -214,7 +221,7 @@ public class TestDateTimeFormatter {
 
     //-----------------------------------------------------------------------
     public void test_parse_String() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Calendrical result = test.parse("ONE30");
         assertEquals(result.toDateTimeFields().size(), 1);
         assertEquals(result.getValueInt(RULE_DOM), 30);
@@ -222,7 +229,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void test_parse_String_parseError() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         try {
             test.parse("ONEXXX");
         } catch (CalendricalParseException ex) {
@@ -235,7 +242,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void test_parse_String_parseErrorLongText() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         try {
             test.parse("ONEXXX6789012345678901234567890123456789");
         } catch (CalendricalParseException ex) {
@@ -248,20 +255,21 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parse_String_null() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.parse((String) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_parse_String_noParsing() throws Exception {
         parsers.set(0, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.parse("ONE30");
     }
 
     //-----------------------------------------------------------------------
     public void test_parse_StringParsePosition() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(0);
         Calendrical result = test.parse("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
@@ -271,7 +279,7 @@ public class TestDateTimeFormatter {
     }
 
     public void test_parse_StringParsePosition_parseError() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(0);
         Calendrical result = test.parse("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
@@ -281,34 +289,35 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parse_StringParsePosition_nullString() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(0);
         test.parse((String) null, pos);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_parse_StringParsePosition_nullParsePosition() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.parse("ONE30", (ParsePosition) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_parse_StringParsePosition_noParsing() throws Exception {
         parsers.set(0, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.parse("ONE30", new ParsePosition(0));
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_parse_StringParsePosition_invalidPosition() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(6);
         test.parse("ONE30", pos);
     }
 
     //-----------------------------------------------------------------------
     public void test_toFormat_format() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         String result = format.format(LocalDate.date(2008, 6, 30));
         assertEquals(result, "ONE30");
@@ -316,21 +325,21 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toFormat_format_null() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.format(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toFormat_format_badProvider() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.format(new MockCalendricalProviderReturnsNull());
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_toFormat_format_notCalendrical() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.format("Not a CalendricalProvider");
     }
@@ -338,14 +347,15 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_toFormat_format_noPrinting() throws Exception {
         printers.set(1, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.format(LocalDate.date(2008, 6, 30));
     }
 
     //-----------------------------------------------------------------------
     public void test_toFormat_parseObject_String() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         Calendrical result = (Calendrical) format.parseObject("ONE30");
         assertEquals(result.toDateTimeFields().size(), 1);
@@ -354,7 +364,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=ParseException.class)
     public void test_toFormat_parseObject_String_parseError() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         try {
             format.parseObject("ONEXXX");
@@ -367,7 +377,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=ParseException.class)
     public void test_toFormat_parseObject_String_parseErrorLongText() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         try {
             format.parseObject("ONEXXX6789012345678901234567890123456789");
@@ -380,7 +390,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toFormat_parseObject_String_null() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.parseObject((String) null);
     }
@@ -388,14 +398,15 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_toFormat_parseObject_String_noParsing() throws Exception {
         parsers.set(0, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.parseObject("ONE30");
     }
 
     //-----------------------------------------------------------------------
     public void test_toFormat_parseObject_StringParsePosition() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
         Calendrical result = (Calendrical) format.parseObject("ONE30XXX", pos);
@@ -406,7 +417,7 @@ public class TestDateTimeFormatter {
     }
 
     public void test_toFormat_parseObject_StringParsePosition_parseError() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
         Calendrical result = (Calendrical) format.parseObject("ONEXXX", pos);
@@ -417,7 +428,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toFormat_parseObject_StringParsePosition_nullString() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
         format.parseObject((String) null, pos);
@@ -425,7 +436,7 @@ public class TestDateTimeFormatter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_toFormat_parseObject_StringParsePosition_nullParsePosition() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.parseObject("ONE30", (ParsePosition) null);
     }
@@ -433,14 +444,15 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void test_toFormat_parseObject_StringParsePosition_noParsing() throws Exception {
         parsers.set(0, null);
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        compPP = new CompositePrinterParser(printers, parsers, false);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         format.parseObject("ONE30", new ParsePosition(0));
     }
 
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_toFormat_parseObject_StringParsePosition_invalidPosition() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, printers, parsers);
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(6);
         Format format = test.toFormat();
         format.parseObject("ONE30", pos);

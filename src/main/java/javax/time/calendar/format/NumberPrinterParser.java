@@ -93,6 +93,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         this.signStyle = signStyle;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = calendrical.getValueInt(fieldRule);
@@ -130,6 +131,12 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         appendable.append(str);
     }
 
+    /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return calendrical.isSupported(fieldRule);
+    }
+
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
@@ -199,6 +206,19 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         context.setFieldValue(fieldRule, (int) total);
         return pos;
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        if (minWidth == 1 && maxWidth == 10 && signStyle == SignStyle.NORMAL) {
+            return "Number(" + fieldRule.getID() + ")";
+        }
+        if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
+            return "Number(" + fieldRule.getID() + "," + minWidth + ")";
+        }
+        return "Number(" + fieldRule.getID() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
     }
 
 }

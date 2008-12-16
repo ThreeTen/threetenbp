@@ -66,6 +66,7 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         this.textStyle = textStyle;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = calendrical.getValueInt(fieldRule);
@@ -74,6 +75,11 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             text = FormatUtil.convertToI18N(Integer.toString(value), symbols);
         }
         appendable.append(text);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return calendrical.isSupported(fieldRule);
     }
 
     /** {@inheritDoc} */
@@ -92,6 +98,12 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             context.setFieldValue(fieldRule, match[1]);
         }
         return position;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "Text(" + fieldRule.getID() + "," + textStyle + ")";
     }
 
 }

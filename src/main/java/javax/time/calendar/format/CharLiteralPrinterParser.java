@@ -56,9 +56,15 @@ class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
         this.literal = literal;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         appendable.append(literal);
+    }
+
+    /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return true;
     }
 
     /** {@inheritDoc} */
@@ -71,6 +77,12 @@ class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
             return ~position;
         }
         return position + 1;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "'" + literal + "'";
     }
 
 }

@@ -75,6 +75,7 @@ class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
         this.padChar = padChar;
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         StringBuilder buf = new StringBuilder(32);
@@ -89,6 +90,12 @@ class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
         appendable.append(buf);
     }
 
+    /** {@inheritDoc} */
+    public boolean isPrintDataAvailable(Calendrical calendrical) {
+        return printer.isPrintDataAvailable(calendrical);
+    }
+
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         if (position > parseText.length()) {
@@ -122,6 +129,13 @@ class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
         }
         // loop runs at least once, so firstError must be set by the time we get here
         return firstError;  // return error from first parse of decorated field
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "Pad(" + printer + "," + parser + "," + padWidth + "," + padChar + ")";
     }
 
 }

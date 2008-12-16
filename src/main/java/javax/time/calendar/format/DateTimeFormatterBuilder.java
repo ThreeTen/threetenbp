@@ -53,6 +53,10 @@ public class DateTimeFormatterBuilder {
      */
     private final List<DateTimeParser> parsers = new ArrayList<DateTimeParser>();
     /**
+     * The list of parsers that will be used.
+     */
+    private final List<Integer> optionalIndexStack = new ArrayList<Integer>();
+    /**
      * The width to pad the next field to.
      */
     private int padNextWidth;
@@ -373,6 +377,7 @@ public class DateTimeFormatterBuilder {
         return this;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Appends a printer and/or parser to the formatter.
      * <p>
@@ -389,6 +394,44 @@ public class DateTimeFormatterBuilder {
             throw new NullPointerException("One of DateTimePrinter or DateTimeParser must be non-null");
         }
         appendInternal(printer, parser);
+        return this;
+    }
+
+    /**
+     * Appends a formatter to the builder which will optionally print/parse.
+     * <p>
+     * The formatter will print if data is available for all the fields contained within it.
+     * The formatter will parse if the string matches, otherwise no error is returned.
+     *
+     * @param formatter  the formatter to add, not null
+     * @return this, for chaining, never null
+     * @throws NullPointerException if the formatter is null
+     */
+    public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
+        if (formatter == null) {
+            throw new NullPointerException("DateTimeFormatter must not be null");
+        }
+        CompositePrinterParser cpp = formatter.toPrinterParser(false);
+        appendInternal(cpp, cpp);
+        return this;
+    }
+
+    /**
+     * Appends a formatter to the builder which will optionally print/parse.
+     * <p>
+     * The formatter will print if data is available for all the fields contained within it.
+     * The formatter will parse if the string matches, otherwise no error is returned.
+     *
+     * @param formatter  the formatter to add, not null
+     * @return this, for chaining, never null
+     * @throws NullPointerException if the formatter is null
+     */
+    public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
+        if (formatter == null) {
+            throw new NullPointerException("DateTimeFormatter must not be null");
+        }
+        CompositePrinterParser cpp = formatter.toPrinterParser(true);
+        appendInternal(cpp, cpp);
         return this;
     }
 
@@ -453,6 +496,27 @@ public class DateTimeFormatterBuilder {
         return this;
     }
 
+    /**
+     * Mark the start of an optional section.
+     * <p>
+     * The output of printing can include optional sections.
+     * The optional section starts when this method is called and continues to
+     * the end of the builder. Optional sections may be nested.
+     * <p>
+     * Any element that is appended after an optionalStart() will be treated as optional.
+     * The elements will only be printed if the data is available in the input calendrical.
+     * If the elements cannot be successfully parsed then no error is thrown.
+     * For example, if the builder is setup as
+     * <code>builder.appendValue(hourRule).optionalStart().appendValue(minuteRule)</code>
+     * then the minute will only be output if its value can be obtained from the calendrical.
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder optionalStart() {
+        optionalIndexStack.add(printers.size());
+        return this;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Completes this builder by creating the DateTimeFormatter.
@@ -477,7 +541,25 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatter toFormatter(Locale locale) {
         FormatUtil.checkNotNull(locale, "locale");
-        return new DateTimeFormatter(locale, printers, parsers);
+        
+        if (optionalIndexStack.size() > 0) {
+            List<DateTimePrinter> printers = new ArrayList<DateTimePrinter>(this.printers);
+            List<DateTimeParser> parsers = new ArrayList<DateTimeParser>(this.parsers);
+            
+            for (int i = optionalIndexStack.size() - 1; i >= 0; i--) {
+                int optionalIndex = optionalIndexStack.get(i);
+                List<DateTimePrinter> optionalPrinters = printers.subList(optionalIndex, printers.size());
+                List<DateTimeParser> optionalParsers = parsers.subList(optionalIndex, parsers.size());
+                CompositePrinterParser cpp = new CompositePrinterParser(optionalPrinters, optionalParsers, true);
+                optionalPrinters.clear();
+                optionalParsers.clear();
+                printers.add(cpp.isPrintSupported() ? cpp : null);
+                parsers.add(cpp.isParseSupported() ? cpp : null);
+            }
+            return new DateTimeFormatter(locale, new CompositePrinterParser(printers, parsers, false));
+        } else {
+            return new DateTimeFormatter(locale, new CompositePrinterParser(printers, parsers, false));
+        }
     }
 
     //-----------------------------------------------------------------------
