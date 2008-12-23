@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" output="build/test" path="src/test/java"/>
+	<classpathentry kind="src" path="src-openjdk/main/java"/>
+	<classpathentry kind="src" output="build/test" path="src-openjdk/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/main/velocity-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/main/oro-2.0.8.jar"/>
