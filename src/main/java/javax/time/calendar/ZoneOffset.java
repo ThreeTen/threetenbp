@@ -45,8 +45,8 @@ import javax.time.period.Period;
  * A time zone offset is the period of time that a time zone differs from UTC.
  * This is usually a fixed number of hours and minutes.
  * <p>
- * Different parts of the world have different time zone offsets. The rules
- * for how offsets vary by place and time of year are captured in the
+ * Different parts of the world have different time zone offsets.
+ * The rules for how offsets vary by place and time of year are captured in the
  * {@link TimeZone} class.
  * <p>
  * For example, Paris is one hours ahead of UTC in winter and two hours ahead in
@@ -57,6 +57,12 @@ import javax.time.period.Period;
  * In 2008, time zone offsets around the world extended from -12:00 to +14:00.
  * To prevent any problems with that range being extended, yet still provide
  * validation, the range of offsets is restricted to -18:00 to 18:00 inclusive.
+ * <p>
+ * This class is designed primarily for use with the {@link ISOChronology}.
+ * The fields of hours, minutes and seconds make assumptions that are valid for the
+ * standard ISO definitions of those fields. This class may be used with other
+ * calendar systems providing the definition of the time fields matches those
+ * of the ISO calendar system.
  * <p>
  * Instances of ZoneOffset must be compared using {@link #equals}.
  * Implementations may choose to cache certain common offsets, however
