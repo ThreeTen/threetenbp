@@ -108,12 +108,96 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
         int length = parseText.length();
-        if (position > length) {
-            throw new IndexOutOfBoundsException();
+        if (position == length) {
+            return ~position;
         }
-        // TODO
-        return position;
+        ZoneOffset offset = null;
+        if (parseText.regionMatches(false, position, utcText, 0, utcText.length())) {
+            context.setOffset(ZoneOffset.UTC);
+            return position + utcText.length();
+        }
+        
+        char sign = parseText.charAt(position);  // IOOBE if invalid position
+        if (sign == '+' || sign == '-') {
+            int negative = (sign == '-' ? -1 : 1);
+            int[] array = new int[4];
+            array[0] = position + 1;
+            if (parseNumber(array, 1, parseText, true) ||
+                    parseNumber(array, 2, parseText, true) ||
+                    parseNumber(array, 3, parseText, false)) {
+                return ~position;
+            }
+            int total = (array[1] * 60 * 60) + (array[2] * 60) + array[3];
+            if (total > 18 * 60 * 60) {  // max +18:00:00
+                return ~position;
+            }
+            offset = ZoneOffset.zoneOffset(negative * array[1], negative * array[2], negative * array[3]);
+            context.setOffset(offset);
+            return array[0];
+        } else {
+            return ~position;
+        }
     }
+
+    /**
+     * Parse a two digit zero-prefixed number.
+     *
+     * @param array  the array of parsed data, 0=pos,1=hours,2=mins,3=secs, not null
+     * @param arrayIndex  the index to parse the value into
+     * @param parseText  the offset id, not null
+     * @param required  whether this number is required
+     * @return true if an error occurred
+     */
+    private boolean parseNumber(int[] array, int arrayIndex, String parseText, boolean required) {
+        if (allowSeconds == false && arrayIndex == 3) {
+            return false;  // ignore seconds
+        }
+        int pos = array[0];
+        if (includeColon && arrayIndex > 1) {
+            if (pos + 1 > parseText.length() || parseText.charAt(pos) != ':') {
+                return required;
+            }
+            pos++;
+        }
+        if (pos + 2 > parseText.length()) {
+            return required;
+        }
+        char ch1 = parseText.charAt(pos++);
+        char ch2 = parseText.charAt(pos++);
+        if (ch1 < '0' || ch1 > '9' || ch2 < '0' || ch2 > '9') {
+            return required;
+        }
+        int value = (ch1 - 48) * 10 + (ch2 - 48);
+        if (value < 0 || value > 59) {
+            return required;
+        }
+        array[arrayIndex] = value;
+        array[0] = pos;
+        return false;
+    }
+
+//            try {
+//                if (includeColon) {
+//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 6));
+//                    endPos += 6;
+//                } else {
+//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 5));
+//                    endPos += 5;
+//                }
+//            } catch (Exception ex) {
+//                return ~position;
+//            }
+//            try {
+//                if (includeColon) {
+//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 9));
+//                    endPos += 3;
+//                } else {
+//                    offset = ZoneOffset.zoneOffset(parseText.substring(position, position + 7));
+//                    endPos += 2;
+//                }
+//            } catch (Exception ex) {
+//                // ignore
+//            }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
