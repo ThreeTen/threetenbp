@@ -44,6 +44,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -77,6 +78,7 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(TEST_1234_7_15 instanceof CalendricalProvider);
+        assertTrue(TEST_1234_7_15 instanceof DateProvider);
         assertTrue(TEST_1234_7_15 instanceof Serializable);
         assertTrue(TEST_1234_7_15 instanceof Comparable);
     }
