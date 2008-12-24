@@ -55,7 +55,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
     /**
      * The date time format symbols, not null.
      */
-    private DateTimeFormatSymbols symbols;
+    private final DateTimeFormatSymbols symbols;
     /**
      * The calendrical collecting the results.
      */
