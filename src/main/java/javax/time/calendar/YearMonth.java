@@ -36,6 +36,8 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 /**
  * A year-month without a time zone in the ISO-8601 calendar system,
@@ -263,34 +265,23 @@ public final class YearMonth
         return with(MonthOfYear.monthOfYear(monthOfYear));
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this YearMonth with the specified period added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param period  the period to add, not null
-//     * @return a new updated YearMonth, never null
-//     * @throws CalendricalException if the result exceeds the supported date range
-//     */
-//    public YearMonth plus(PeriodView period) {
-//        // TODO
-//        return null;
-//    }
-//
-//    /**
-//     * Returns a copy of this YearMonth with the specified periods added.
-//     * <p>
-//     * This instance is immutable and unaffected by this method call.
-//     *
-//     * @param periods  the periods to add, no nulls
-//     * @return a new updated YearMonth, never null
-//     * @throws CalendricalException if the result exceeds the supported date range
-//     */
-//    public YearMonth plus(PeriodView... periods) {
-//        // TODO
-//        return null;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this YearMonth with the specified period added.
+     * <p>
+     * This adds the amount in years and months in the specified period to this year-month.
+     * Any other amounts, such as days, hours, minutes or seconds are ignored.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to add, not null
+     * @return a new updated YearMonth, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public YearMonth plus(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        return plusYears(period.getYears()).plusMonths(period.getMonths());
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -325,6 +316,68 @@ public final class YearMonth
         }
         long newMonth0 = month.getValue() - 1;
         newMonth0 = newMonth0 + months;
+        int years = (int) (newMonth0 / 12);
+        newMonth0 = newMonth0 % 12;
+        if (newMonth0 < 0) {
+            newMonth0 += 12;
+            years--;
+        }
+        Year newYear = year.plusYears(years);
+        MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
+        return withYearMonth(newYear, newMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this YearMonth with the specified period subtracted.
+     * <p>
+     * This subtracts the amount in years and months in the specified period from this year-month.
+     * Any other amounts, such as days, hours, minutes or seconds are ignored.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subtract, not null
+     * @return a new updated YearMonth, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public YearMonth minus(PeriodProvider periodProvider) {
+        Period period = Period.period(periodProvider);
+        return minusYears(period.getYears()).minusMonths(period.getMonths());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this YearMonth with the specified period in years subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, positive or negative
+     * @return a new updated YearMonth, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public YearMonth minusYears(int years) {
+        if (years == 0) {
+            return this;
+        }
+        Year newYear = year.minusYears(years);
+        return withYearMonth(newYear, month);
+    }
+
+    /**
+     * Returns a copy of this YearMonth with the specified period in months subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, positive or negative
+     * @return a new updated YearMonth, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public YearMonth minusMonths(int months) {
+        if (months == 0) {
+            return this;
+        }
+        long newMonth0 = month.getValue() - 1;
+        newMonth0 = newMonth0 - months;
         int years = (int) (newMonth0 / 12);
         newMonth0 = newMonth0 % 12;
         if (newMonth0 < 0) {
