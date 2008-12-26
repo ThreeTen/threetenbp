@@ -295,6 +295,19 @@ public final class CopticChronology extends Chronology implements Serializable {
             return 5;
         }
         @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            Integer year = calendrical.getValue(CopticChronology.INSTANCE.year());
+            Integer moy = calendrical.getValue(CopticChronology.INSTANCE.monthOfYear());
+            if (year != null && moy != null) {
+                if (moy == 13) {
+                    return isLeapYear(year) ? 6 : 5;
+                } else {
+                    return 30;
+                }
+            }
+            return getMaximumValue();
+        }
+        @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : CopticDate.copticDate(date).getDayOfMonth());
         }
@@ -319,6 +332,14 @@ public final class CopticChronology extends Chronology implements Serializable {
         @Override
         public int getSmallestMaximumValue() {
             return 365;
+        }
+        @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            Integer year = calendrical.getValue(CopticChronology.INSTANCE.year());
+            if (year != null) {
+                return isLeapYear(year) ? 366 : 365;
+            }
+            return getMaximumValue();
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {

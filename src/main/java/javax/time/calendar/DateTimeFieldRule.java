@@ -73,8 +73,6 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     private final int minimumValue;
     /** The maximum value for the field. */
     private final int maximumValue;
-//    /** True if this is a date field, false for a time field. */
-//    private final boolean isDate;
 
     /**
      * Constructor.
@@ -112,7 +110,6 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         this.periodRange = periodRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
-//        this.isDate = true;  // TODO pass in isDate
     }
 
     //-----------------------------------------------------------------------
@@ -138,29 +135,6 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     public String getName() {
         return name;
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Checks if the field represents part of the date, as opposed to part
-//     * of the time.
-//     *
-//     * @return true if this is a date field, false if this is a time field
-//     * @see #isTimeField()
-//     */
-//    public boolean isDateField() {
-//        return isDate;
-//    }
-//
-//    /**
-//     * Checks if the field represents part of the time, as opposed to part
-//     * of the date.
-//     *
-//     * @return true if this is a time field, false if this is a date field
-//     * @see #isDateField()
-//     */
-//    public boolean isTimeField() {
-//        return !isDate;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -423,6 +397,9 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
 
     /**
      * Gets the largest possible minimum value that the field can take.
+     * <p>
+     * The default implementation returns {@link #getMinimumValue()}.
+     * Subclasses must override this as necessary.
      *
      * @return the largest possible minimum value for this field
      */
@@ -430,30 +407,22 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return getMinimumValue();
     }
 
-//    /**
-//     * Gets the minimum value that the field can take using the specified
-//     * calendrical information to refine the accuracy of the response.
-//     *
-//     * @param calendricalContext  context datetime, null returns getMinimumValue()
-//     * @return the minimum value of the field given the context
-//     */
-//    public int getMinimumValue(Calendrical calendricalContext) {
-//        return getMinimumValue();
-//    }
-//
-//    /**
-//     * Gets the largest possible minimum value that the field can take using
-//     * the specified calendrical information to refine the accuracy of the response.
-//     *
-//     * @param calendricalContext  context datetime, null returns getLargestMinimumValue()
-//     * @return the largest possible minimum value of the field given the context
-//     */
-//    public int getLargestMinimumValue(Calendrical calendricalContext) {
-//        if (calendricalContext == null) {
-//            return getLargestMinimumValue();
-//        }
-//        return getMinimumValue(calendricalContext);
-//    }
+    /**
+     * Gets the minimum value that the field can take using the specified
+     * calendrical information to refine the accuracy of the response.
+     * <p>
+     * The result of this method may still be inaccurate, if there is insufficient
+     * information in the calendrical.
+     * <p>
+     * The default implementation returns {@link #getMinimumValue()}.
+     * Subclasses must override this as necessary.
+     *
+     * @param calendrical  context calendrical, not null
+     * @return the minimum value of the field given the context
+     */
+    public int getMinimumValue(Calendrical calendrical) {
+        return getMinimumValue();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -467,10 +436,36 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
 
     /**
      * Gets the smallest possible maximum value that the field can take.
+     * <p>
+     * The default implementation returns {@link #getMaximumValue()}.
+     * Subclasses must override this as necessary.
      *
      * @return the smallest possible maximum value for this field
      */
     public int getSmallestMaximumValue() {
+        return getMaximumValue();
+    }
+
+    /**
+     * Gets the minimum value that the field can take using the specified
+     * calendrical information to refine the accuracy of the response.
+     * <p>
+     * The result of this method will still be inaccurate if there is insufficient
+     * information in the calendrical.
+     * <p>
+     * For example, if this field is the ISO day of month field, then the number
+     * of days in the month varies depending on the month and year. If both the
+     * month and year can be derived from the calendrical, then the maximum value
+     * returned will be accurate. Otherwise the 'best guess' value from
+     * {@link #getMaximumValue()} will be returned.
+     * <p>
+     * The default implementation returns {@link #getMaximumValue()}.
+     * Subclasses must override this as necessary.
+     *
+     * @param calendrical  context calendrical, not null
+     * @return the minimum value of the field given the context
+     */
+    public int getMaximumValue(Calendrical calendrical) {
         return getMaximumValue();
     }
 

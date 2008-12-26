@@ -626,6 +626,16 @@ public final class ISOChronology extends Chronology implements Serializable {
             return 28;
         }
         @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            Integer year = calendrical.getValue(yearRule());
+            Integer moy = calendrical.getValue(monthOfYearRule());
+            if (year != null && moy != null) {
+                MonthOfYear month = MonthOfYear.monthOfYear(moy);
+                return month.lengthInDays(Year.isoYear(year));
+            }
+            return getMaximumValue();
+        }
+        @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : date.getDayOfMonth().getValue());
         }
@@ -650,6 +660,14 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public int getSmallestMaximumValue() {
             return 365;
+        }
+        @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            Integer year = calendrical.getValue(yearRule());
+            if (year != null) {
+                return Year.isoYear(year).lengthInDays();
+            }
+            return getMaximumValue();
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
@@ -730,6 +748,11 @@ public final class ISOChronology extends Chronology implements Serializable {
         public int getSmallestMaximumValue() {
             return 52;
         }
+//        @Override
+//        public int getMaximumValue(Calendrical calendrical) {
+//            // TODO
+//            return getMaximumValue();
+//        }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : WeekOfWeekyear.weekOfWeekyear(date).getValue());
@@ -899,6 +922,14 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public int getSmallestMaximumValue() {
             return 4;
+        }
+        @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            Integer year = calendrical.getValue(yearRule());
+            if (year != null) {
+                return Year.isoYear(year).isLeap() ? 5 : 4;
+            }
+            return getMaximumValue();
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
