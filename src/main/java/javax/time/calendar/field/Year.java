@@ -392,6 +392,16 @@ public final class Year
         return this.equals(date.getYear());
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the length of this year in days.
+     *
+     * @return the length of this year in days, 365 or 366
+     */
+    public int lengthInDays() {
+        return isLeap() ? 366 : 365;
+    }
+
 //    //-----------------------------------------------------------------------
 //    /**
 //     * Gets the ISO proleptic year, from MIN_YEAR to MAX_YEAR.

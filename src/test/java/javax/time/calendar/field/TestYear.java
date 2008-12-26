@@ -516,6 +516,46 @@ public class TestYear {
         test.matchesDate((LocalDate) null);
     }
 
+    //-----------------------------------------------------------------------
+    // lengthInDays()
+    //-----------------------------------------------------------------------
+    public void test_lengthInDays_notLeapYear() {
+        assertEquals(Year.isoYear(1999).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2000).lengthInDays(), 366);
+        assertEquals(Year.isoYear(2001).lengthInDays(), 365);
+        
+        assertEquals(Year.isoYear(2007).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2008).lengthInDays(), 366);
+        assertEquals(Year.isoYear(2009).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2010).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2011).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2012).lengthInDays(), 366);
+        
+        assertEquals(Year.isoYear(2095).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2096).lengthInDays(), 366);
+        assertEquals(Year.isoYear(2097).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2098).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2099).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2100).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2101).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2102).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2103).lengthInDays(), 365);
+        assertEquals(Year.isoYear(2104).lengthInDays(), 366);
+        assertEquals(Year.isoYear(2105).lengthInDays(), 365);
+        
+        assertEquals(Year.isoYear(-500).lengthInDays(), 365);
+        assertEquals(Year.isoYear(-400).lengthInDays(), 366);
+        assertEquals(Year.isoYear(-300).lengthInDays(), 365);
+        assertEquals(Year.isoYear(-200).lengthInDays(), 365);
+        assertEquals(Year.isoYear(-100).lengthInDays(), 365);
+        assertEquals(Year.isoYear(0).lengthInDays(), 366);
+        assertEquals(Year.isoYear(100).lengthInDays(), 365);
+        assertEquals(Year.isoYear(200).lengthInDays(), 365);
+        assertEquals(Year.isoYear(300).lengthInDays(), 365);
+        assertEquals(Year.isoYear(400).lengthInDays(), 366);
+        assertEquals(Year.isoYear(500).lengthInDays(), 365);
+    }
+
 //    //-----------------------------------------------------------------------
 //    // getEstimatedEra()
 //    //-----------------------------------------------------------------------
