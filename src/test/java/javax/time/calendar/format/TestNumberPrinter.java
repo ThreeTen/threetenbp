@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.format;
 
+import static javax.time.calendar.ISOChronology.*;
 import static org.testng.Assert.*;
 
 import java.io.IOException;
@@ -298,6 +299,14 @@ public class TestNumberPrinter {
             assertEquals(ex.getFieldRule(), DayOfMonth.rule());
             assertEquals(ex.getValue(), (Integer) value);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_derivedValue() throws Exception {
+        Calendrical calendrical = new Calendrical(hourOfDayRule(), 13);
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfAmPmRule(), 2, 2, SignStyle.NOT_NEGATIVE);
+        pp.print(calendrical, buf, symbols);
+        assertEquals(buf.toString(), "01");   // 1PM
     }
 
 }

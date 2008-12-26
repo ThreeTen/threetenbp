@@ -414,6 +414,11 @@ public class TestCalendrical {
         assertEquals(test.getValue(MOY_RULE), Integer.valueOf(6));
     }
 
+    public void test_getValue_derived() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getValue(QOY_RULE), Integer.valueOf(2));
+    }
+
     public void test_getValue_outOfRange() {
         Calendrical test = new Calendrical(MOY_RULE, -3);
         assertEquals(test.getValue(MOY_RULE), Integer.valueOf(-3));
@@ -470,6 +475,11 @@ public class TestCalendrical {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
         assertEquals(test.getValueInt(YEAR_RULE), 2008);
         assertEquals(test.getValueInt(MOY_RULE), 6);
+    }
+
+    public void test_getValueInt_derived() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getValueInt(QOY_RULE), 2);
     }
 
     public void test_getValueInt_outOfRange() {
