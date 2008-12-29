@@ -50,7 +50,7 @@ import javax.time.MathUtils;
  * <li>60 seconds in a minute</li>
  * <li>1,000,000,000 nanoseconds in a second</li>
  * </ul>
- * This is exposed in the {@link #normalized()} method.
+ * This is exposed in the {@link #normalized()} and {@link #normalizedWith24HourDays()} methods.
  * Period can be used by any calendar system that makes the same assumptions as shown above.
  * <p>
  * Note that beyond the limits specified above, the stored amounts are only descriptive.
