@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.TimeZone.Discontinuity;
+import javax.time.calendar.TimeZone.OffsetInfo;
 
 /**
  * Strategy for resolving a local date-time to an offset date-time using the
@@ -101,11 +102,11 @@ public abstract class ZoneResolver {
             LocalDateTime newDateTime,
             OffsetDateTime oldDateTime) {
         
-        TimeZone.OffsetInfo offsetInfo = zone.getOffsetInfo(newDateTime);
-        if (offsetInfo instanceof ZoneOffset) {
-            return OffsetDateTime.dateTime(newDateTime, (ZoneOffset) offsetInfo);
+        OffsetInfo info = zone.getOffsetInfo(newDateTime);
+        if (info.isDiscontinuity() == false) {
+            return OffsetDateTime.dateTime(newDateTime, info.getOffset());
         }
-        Discontinuity discontinuity = (Discontinuity) offsetInfo;
+        Discontinuity discontinuity = info.getDiscontinuity();
         OffsetDateTime result = discontinuity.isGap() ?
             handleGap(zone, discontinuity, newDateTime, oldDateTime) :
             handleOverlap(zone, discontinuity, newDateTime, oldDateTime);
@@ -116,23 +117,11 @@ public abstract class ZoneResolver {
                     "ZoneResolver implementation must not return null: " + getClass().getName());
         }
         if (result.toLocalDateTime().equals(newDateTime) == false) {
-            offsetInfo = zone.getOffsetInfo(result.toLocalDateTime());
-            if (offsetInfo instanceof ZoneOffset) {
-                if (result.getOffset().equals(offsetInfo) == false) {
-                    throw new CalendricalException(
-                            "ZoneResolver implementation must return a valid offset for the zone: " + getClass().getName());
-                }
-                return result;
-            }
-            discontinuity = (Discontinuity) offsetInfo;
+            info = zone.getOffsetInfo(result.toLocalDateTime());
         }
-        if (discontinuity.isGap()) {
+        if (info.isValidOffset(result.getOffset()) == false) {
             throw new CalendricalException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + getClass().getName());
-        }
-        if (discontinuity.containsOffset(result.getOffset()) == false) {
-            throw new CalendricalException(
-                    "ZoneResolver implementation must return a valid offset for the zone: " + getClass().getName());
         }
         return result;
     }

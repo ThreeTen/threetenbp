@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.TimeZone.Discontinuity;
 import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -249,20 +248,13 @@ public final class ZonedDateTime
         }
         ZoneOffset inputOffset = dateTime.getOffset();
         OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
-        if (info instanceof ZoneOffset) {
-            if (info.equals(inputOffset) == false) {
-                throw new CalendarConversionException("The offset in the date-time " + dateTime +
-                        " is invalid for time zone " + zone);
-            }
-        } else {
-            Discontinuity disc = (Discontinuity) info;
-            if (disc.isGap()) {
-                throw new CalendarConversionException("The local time " + dateTime +
+        if (info.isValidOffset(inputOffset) == false) {
+            if (info.isDiscontinuity() && info.getDiscontinuity().isGap()) {
+                throw new CalendarConversionException("The local time " + dateTime.toLocalDateTime() +
                         " does not exist in time zone " + zone + " due to a daylight savings gap");
-            } else if (disc.containsOffset(inputOffset) == false) {
-                throw new CalendarConversionException("The offset in the date-time " + dateTime +
-                        " is invalid for time zone " + zone);
             }
+            throw new CalendarConversionException("The offset in the date-time " + dateTime +
+                    " is invalid for time zone " + zone);
         }
         return new ZonedDateTime(dateTime, zone);
     }
@@ -444,9 +436,8 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
         OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
-        if (info instanceof Discontinuity) {
-            Discontinuity dis = (Discontinuity) info;
-            ZoneOffset offset = dis.getOffsetBefore();
+        if (info.isDiscontinuity()) {
+            ZoneOffset offset = info.getDiscontinuity().getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffset(offset);
                 return new ZonedDateTime(newDT, zone);
@@ -473,9 +464,8 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
         OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
-        if (info instanceof Discontinuity) {
-            Discontinuity dis = (Discontinuity) info;
-            ZoneOffset offset = dis.getOffsetAfter();
+        if (info.isDiscontinuity()) {
+            ZoneOffset offset = info.getDiscontinuity().getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
                 OffsetDateTime newDT = dateTime.withOffset(offset);
                 return new ZonedDateTime(newDT, zone);
@@ -494,9 +484,8 @@ public final class ZonedDateTime
 //     * @return true if this is a local time-line overlap
 //     */
 //    public boolean isOverlap() {
-//        // TODO: If OffsetInfo becomes a useful class, then replace this with getOffsetInfo()
 //        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
-//        return info instanceof Discontinuity;  // cannot be a gap, so must be an overlap
+//        return info.isDiscontinuity();  // cannot be a gap, so must be an overlap
 //    }
 
     //-----------------------------------------------------------------------

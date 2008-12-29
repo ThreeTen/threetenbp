@@ -73,7 +73,7 @@ import javax.time.period.Period;
  * @author Stephen Colebourne
  */
 public final class ZoneOffset
-        implements TimeZone.OffsetInfo, Comparable<ZoneOffset>, Serializable {
+        implements Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time zone offset by offset in seconds. */
     private static final ReadWriteLock CACHE_LOCK = new ReentrantReadWriteLock();

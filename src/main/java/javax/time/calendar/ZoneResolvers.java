@@ -112,7 +112,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            Instant instantBefore = discontinuity.getTransition().minusNanos(1);
+            Instant instantBefore = discontinuity.getTransitionInstant().minusNanos(1);
             return OffsetDateTime.dateTime(instantBefore, discontinuity.getOffsetBefore());
         }
         /** {@inheritDoc} */
@@ -147,7 +147,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.dateTime(discontinuity.getTransition(), discontinuity.getOffsetAfter());
+            return discontinuity.getTransitionDateTime();
         }
         /** {@inheritDoc} */
         @Override
@@ -189,14 +189,14 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.dateTime(discontinuity.getTransition(), discontinuity.getOffsetAfter());
+            return discontinuity.getTransitionDateTime();
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            if (oldDateTime != null && discontinuity.containsOffset(oldDateTime.getOffset())) {
+            if (oldDateTime != null && discontinuity.isValidOffset(oldDateTime.getOffset())) {
                 return OffsetDateTime.dateTime(newDateTime, oldDateTime.getOffset());
             }
             return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetAfter());
@@ -234,7 +234,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            LocalDateTime result = newDateTime.plusSeconds(discontinuity.getDiscontinuitySize());
+            LocalDateTime result = newDateTime.plus(discontinuity.getDiscontinuitySize());
             return OffsetDateTime.dateTime(result, discontinuity.getOffsetAfter());
         }
         /** {@inheritDoc} */

@@ -39,13 +39,15 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.period.Period;
 
 /**
  * A time zone representing the set of rules by which the zone offset
  * varies through the year and historically.
  * <p>
- * All supplied subclasses of TimeZone are thread-safe and immutable.
- * Other subclasses of TimeZone should be immutable but this cannot be enforced.
+ * TimeZone is an abstract class and must be implemented with care
+ * to ensure other classes in the framework operate correctly.
+ * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -69,6 +71,7 @@ public abstract class TimeZone implements Serializable {
      */
     private final String timeZoneID;
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>TimeZone</code> using its ID.
      *
@@ -174,6 +177,29 @@ public abstract class TimeZone implements Serializable {
         return zone;
     }
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets a list of all the available zone IDs.
+//     *
+//     * @return a list of available time zone IDs
+//     */
+//    public static List<String> getAvailableIDs() {
+//        return new ArrayList<String>();  // TODO
+//    }
+//
+//    /**
+//     * Gets a list of all the available zone IDs matching the standard zone offset.
+//     * <p>
+//     * This method is useful for finding all those zones that have the same offset
+//     * (standard/winter) but different daylight savings behaviour.
+//     *
+//     * @param standardOffset  the offset to find
+//     * @return a list of available time zone IDs
+//     */
+//    public static List<String> getAvailableIDs(ZoneOffset standardOffset) {
+//        return new ArrayList<String>();  // TODO
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance using the time zone ID.
@@ -237,6 +263,10 @@ public abstract class TimeZone implements Serializable {
 
     /**
      * Is this time zone fixed, such that the offset never varies.
+     * <p>
+     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
+     * {@link OffsetTime} are used in preference to fixed offset time zones
+     * in {@link ZonedDateTime}.
      *
      * @return true if the time zone is fixed and the offset never changes
      */
@@ -329,22 +359,21 @@ public abstract class TimeZone implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Information about a discontinuity in the local time-line.
-     * This is typically caused by daylight savings cutover, either a gap in
-     * spring, or an overlap in autumn.
      * <p>
-     * Discontinuity is thread-safe and immutable.
+     * A discontinuity is normally the result of daylight savings cutovers,
+     * where a gap occurs in spring and an overlap occurs in autumn.
+     * <p>
+     * Discontinuity is immutable and thread-safe.
      *
      * @author Stephen Colebourne
      */
-    public static final class Discontinuity implements OffsetInfo {
+    public static final class Discontinuity {
         /** The transition instant. */
         private final Instant transition;
         /** The offset before the discontinuity. */
         private final ZoneOffset offsetBefore;
         /** The offset at and after the discontinuity. */
         private final ZoneOffset offsetAfter;
-        /** The discontinuity in seconds. */
-        private final int discontinuitySeconds;
         
         /**
          * Constructor for a gap where there are no valid offsets.
@@ -357,18 +386,38 @@ public abstract class TimeZone implements Serializable {
             this.transition = transition;
             this.offsetBefore = offsetBefore;
             this.offsetAfter = offsetAfter;
-            this.discontinuitySeconds = offsetAfter.getAmountSeconds() - offsetBefore.getAmountSeconds();
         }
         
         //-----------------------------------------------------------------------
         /**
          * Gets the transition instant.
-         * This is the first instant after the gap.
+         * This is the first instant after the discontinuity, when the new offset applies.
          *
          * @return the transition instant, not null
          */
-        public Instant getTransition() {
+        public Instant getTransitionInstant() {
             return transition;
+        }
+        
+        /**
+         * Gets the transition instant as an OffsetDateTime.
+         * This is the first date-time after the discontinuity, when the new offset applies.
+         *
+         * @return the transition instant, not null
+         */
+        public OffsetDateTime getTransitionDateTime() {
+            return OffsetDateTime.dateTime(transition, offsetAfter);
+        }
+        
+        /**
+         * Gets the transition instant expressed as a LocalDateTime.
+         * This is the local date-time of the discontinuity, which is the
+         * local date-time at which the clock changed.
+         *
+         * @return the transition instant, not null
+         */
+        public LocalDateTime getTransitionLocal() {
+            return OffsetDateTime.dateTime(transition, offsetBefore).toLocalDateTime();
         }
         
         /**
@@ -394,8 +443,9 @@ public abstract class TimeZone implements Serializable {
          *
          * @return the size of the discontinuity in seconds, positive for gaps, negative for overlaps
          */
-        public int getDiscontinuitySize() {
-            return discontinuitySeconds;
+        public Period getDiscontinuitySize() {
+            int secs = offsetAfter.getAmountSeconds() - offsetBefore.getAmountSeconds();
+            return Period.seconds(secs).normalized();
         }
         
         /**
@@ -404,7 +454,7 @@ public abstract class TimeZone implements Serializable {
          * @return true if this discontinuity is a gap
          */
         public boolean isGap() {
-            return getDiscontinuitySize() > 0;
+            return offsetAfter.getAmountSeconds() > offsetBefore.getAmountSeconds();
         }
         
         /**
@@ -413,20 +463,32 @@ public abstract class TimeZone implements Serializable {
          * @return true if this discontinuity is an overlap
          */
         public boolean isOverlap() {
-            return getDiscontinuitySize() < 0;
+            return offsetAfter.getAmountSeconds() < offsetBefore.getAmountSeconds();
         }
+        
+//        /**
+//         * Checks if the specified offset is one of those described by this discontinuity.
+//         *
+//         * @param offset  the offset to check, null returns false
+//         * @return true if the offset is one of those described by this discontinuity
+//         */
+//        public boolean containsOffset(ZoneOffset offset) {
+//            return offsetBefore.equals(offset) || offsetAfter.equals(offset);
+//        }
         
         /**
-         * Checks if the specified offset is one of those described by this
-         * discontinuity.
+         * Checks if the specified offset is valid during this discontinuity.
+         * A gap will always return false.
+         * An overlap will return true if the offset is either the before or after offset.
          *
          * @param offset  the offset to check, null returns false
-         * @return true if the offset is one of those described by this discontinuity
+         * @return true if the offset is valid during the discontinuity
          */
-        public boolean containsOffset(ZoneOffset offset) {
-            return offsetBefore.equals(offset) || offsetAfter.equals(offset);
+        public boolean isValidOffset(ZoneOffset offset) {
+            return isGap() ? false : (offsetBefore.equals(offset) || offsetAfter.equals(offset));
         }
         
+        //-----------------------------------------------------------------------
         /**
          * Checks if this instance equals another.
          *
@@ -465,148 +527,151 @@ public abstract class TimeZone implements Serializable {
         @Override
         public String toString() {
             StringBuilder buf = new StringBuilder();
-            buf.append("Discontinuity ")
-                .append(isGap() ? "gap" : "overlap")
+            buf.append("Discontinuity[")
+                .append(isGap() ? "Gap" : "Overlap")
                 .append(" from ")
                 .append(offsetBefore)
                 .append(" to ")
-                .append(offsetAfter);
+                .append(offsetAfter)
+                .append(']');
             return buf.toString();
         }
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Marker interface for classes that describe the local time-line.
+     * Information about the valid offsets applicable for a local date-time.
      * <p>
-     * OffsetInfo is thread-safe and immutable.
+     * The mapping from a local date-time to an offset is not straightfoward.
+     * There are three cases:
+     * <ol>
+     * <li>Normal. Where there is a single offset for the local date-time.</li>
+     * <li>Gap. Where there is a gap in the local time-line normally caused by the
+     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
+     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
+     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
+     * </ol>
+     * When using this class, it is vital to check the {@link #isDiscontinuity()}
+     * method to handle the gap and overlap. Alternatively use one of the general
+     * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
+     * <p>
+     * OffsetInfo is immutable and thread-safe.
      *
      * @author Stephen Colebourne
      */
-    public static interface OffsetInfo {
-        // TODO: Perhaps need a BetweenDiscontinuity class to wrap the offset
-        // and define the valid range
-    }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Information about the offsets applicable for a local date-time.
-//     * <p>
-//     * OffsetInfo is thread-safe and immutable.
-//     *
-//     * @author Stephen Colebourne
-//     */
-//    public static class OffsetInfo {
-//        /** The date-time that this info applies to. */
-//        private final LocalDateTime dateTime;
-//        /** The valid offsets. */
-//        private final List<ZoneOffset> validOffsets;
-//        /** The position in the discontinuity of the date-time in seconds. */
-//        private final int discontinuityPositionSeconds;
-//        /** The total size of the discontinuity in seconds. */
-//        private final int discontinuitySizeSeconds;
-//        
-//        /**
-//         * Constructor for a gap where there are no valid offsets.
-//         *
-//         * @param dateTime  the date-time that this info applies to, not null
-//         * @param discontinuityPositionSeconds  the position in the discontinuity, seconds
-//         * @param discontinuityTotalSeconds  the total size of the discontinuity, seconds
-//         * @param offsetsUnmodifiable  the valid offsets, unmodifiable, not null
-//         */
-//        private OffsetInfo(
-//                LocalDateTime dateTime,
-//                int discontinuityPositionSeconds,
-//                int discontinuityTotalSeconds,
-//                List<ZoneOffset> offsetsUnmodifiable) {
-//            this.dateTime = dateTime;
-//            this.discontinuityPositionSeconds = discontinuityPositionSeconds;
-//            this.discontinuitySizeSeconds = discontinuityTotalSeconds;
-//            this.validOffsets = offsetsUnmodifiable;
-//        }
-//        
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Gets the local date-time that this info is applicable to.
-//         *
-//         * @return true if there is no valid offset
-//         */
-//        public LocalDateTime getLocalDateTime() {
-//            return dateTime;
-//        }
-//        
-//        /**
-//         * Is there a gap for this local date-time.
-//         *
-//         * @return true if there is no valid offset
-//         */
-//        public boolean isGap() {
-//            return validOffsets.isEmpty();
-//        }
-//        
-//        /**
-//         * Is there an overlap for this local date-time.
-//         *
-//         * @return true if there is more than one valid offset
-//         */
-//        public boolean isOverlap() {
-//            return validOffsets.size() > 1;
-//        }
-//        
+    public static class OffsetInfo {
+        /** The date-time that this info applies to. */
+        private final LocalDateTime dateTime;
+        /** The offset for the local time-line. */
+        private final ZoneOffset offset;
+        /** The discontinuity in the local time-line. */
+        private final Discontinuity discontinuity;
+        
+        /**
+         * Constructor for a gap where there are no valid offsets.
+         *
+         * @param localOffset  the local offset type, not null
+         * @param dateTime  the date-time that this info applies to, not null
+         */
+        private OffsetInfo(
+                LocalDateTime dateTime,
+                ZoneOffset offset,
+                Discontinuity discontinuity) {
+            this.dateTime = dateTime;
+            this.offset = offset;
+            this.discontinuity = discontinuity;
+        }
+        
+        //-----------------------------------------------------------------------
+        /**
+         * Gets the local date-time that this info is applicable to.
+         *
+         * @return true if there is no valid offset
+         */
+        public LocalDateTime getLocalDateTime() {
+            return dateTime;
+        }
+        
+        /**
+         * Is the offset information for the local date-time a discontinuity.
+         * A discontinuity may be a gap or overlap and is normally caused by
+         * daylight savings cutover.
+         *
+         * @return true if there is a discontinuity in the local time-line
+         */
+        public boolean isDiscontinuity() {
+            return discontinuity != null;
+        }
+        
+        /**
+         * Gets information about the offset for the local time-line.
+         * This method should only be called after calling {@link #isDiscontinuity()}.
+         *
+         * @return true if there is a single valid offset
+         */
+        public ZoneOffset getOffset() {
+            return offset;
+        }
+        
+        /**
+         * Gets information about any discontinuity in the local time-line.
+         * This method should only be called after calling {@link #isDiscontinuity()}.
+         *
+         * @return the discontinuity in the local-time line, null if not a discontinuity
+         */
+        public Discontinuity getDiscontinuity() {
+            return discontinuity;
+        }
+        
+        //-----------------------------------------------------------------------
+        /**
+         * Gets an estimated offset for the local date-time.
+         * <p>
+         * The result will be the same as {@link #getOffset()} except during a discontinuity.
+         * During a discontinuity, the value of {@link Discontinuity#getOffsetAfter()} will
+         * be returned. How meaningful that offset is depends on your application.
+         *
+         * @return a suitable estimated offset, never null
+         */
+        public ZoneOffset getEstimatedOffset() {
+            return isDiscontinuity() ? getDiscontinuity().getOffsetAfter() : offset;
+        }
+        
 //        /**
 //         * Checks if the zone offset is valid for this local date-time.
 //         *
 //         * @param offset  the zone offset to check, not null
 //         * @return the list of offsets from earliest to latest, never null
 //         */
-//        public boolean isValidOffset(ZoneOffset offset) {
-//            return validOffsets.contains(offset);
+//        public boolean containsOffset(ZoneOffset offset) {
+//            return isDiscontinuity() ? discontinuity.containsOffset(offset) : this.offset.equals(offset);
 //        }
-//        
-//        /**
-//         * Gets the list of offsets in order from earliest to latest.
-//         * The returned list is unmodifiable.
-//         *
-//         * @return the list of offsets from earliest to latest, never null
-//         */
-//        public List<ZoneOffset> getOffsets() {
-//            return validOffsets;
-//        }
-//        
-//        /**
-//         * Gets the amount in seconds that the local date-time is within the
-//         * discontinuity.
-//         *
-//         * @return the discontinuity position in seconds
-//         */
-//        public int getDiscontinuityPositionSeconds() {
-//            return discontinuityPositionSeconds;
-//        }
-//        
-//        /**
-//         * Gets the total size in seconds of the discontinuity.
-//         *
-//         * @return the discontinuity total size in seconds
-//         */
-//        public int getDiscontinuitySizeInSeconds() {
-//            return discontinuitySizeSeconds;
-//        }
-//        
-//        /**
-//         * Gets the local date-time that this info is applicable to.
-//         *
-//         * @return true if there is no valid offset
-//         */
-//        public OffsetDateTime getEarliestValidDateTime() {
-//            if (isOverlap()) {
-//                return OffsetDateTime.dateTime(dateTime, validOffsets.get(0));
-//            }
-//            if (isGap()) {
-//                return OffsetDateTime.dateTime(dateTime, validOffsets.get(0));
-//            }
-//            return ;
-//        }
-//    }
+        
+        /**
+         * Checks if the specified offset is valid for this discontinuity.
+         *
+         * @param offset  the offset to check, null returns false
+         * @return true if the offset is one of those described by this discontinuity
+         */
+        public boolean isValidOffset(ZoneOffset offset) {
+            return isDiscontinuity() ? discontinuity.isValidOffset(offset) : this.offset.equals(offset);
+        }
+        
+        //-----------------------------------------------------------------------
+        /**
+         * Gets a string describing this object.
+         *
+         * @return a string for debugging, never null
+         */
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder();
+            buf.append("OffsetInfo[")
+                .append(isDiscontinuity() ? discontinuity : offset)
+                .append(']');
+            return buf.toString();
+        }
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -639,7 +704,7 @@ public abstract class TimeZone implements Serializable {
         /** {@inheritDoc} */
         @Override
         public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-            return offset;
+            return new OffsetInfo(dateTime, offset, null);
         }
         /** {@inheritDoc} */
         @Override
@@ -775,7 +840,7 @@ public abstract class TimeZone implements Serializable {
                 case FEBRUARY:
                 case NOVEMBER:
                 case DECEMBER:
-                    return standardOffset;
+                    return new OffsetInfo(dt, standardOffset, null);
                 case MARCH:
                     offsetAfter = summerOffset;
                     break;
@@ -785,27 +850,27 @@ public abstract class TimeZone implements Serializable {
                 case JULY:
                 case AUGUST:
                 case SEPTEMBER:
-                    return summerOffset;
+                    return new OffsetInfo(dt, summerOffset, null);
                 case OCTOBER:
                     offsetBefore = summerOffset;
                     break;
             }
             int dom = dt.getDayOfMonth().getValue();
             if (dom < 25) {
-                return offsetBefore;
+                return new OffsetInfo(dt, offsetBefore, null);
             }
             if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 if (dt.getHourOfDay().getValue() < 1 + standardOffset.getHoursField()) {
-                    return offsetBefore;
+                    return new OffsetInfo(dt, offsetBefore, null);
                 }
                 if (dt.getHourOfDay().getValue() >= 2 + standardOffset.getHoursField()) {
-                    return offsetAfter;
+                    return new OffsetInfo(dt, offsetAfter, null);
                 }
                 OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(1, 0), ZoneOffset.UTC);
-                return new Discontinuity(cutover.toInstant(), offsetBefore, offsetAfter);
+                return new OffsetInfo(dt, null, new Discontinuity(cutover.toInstant(), offsetBefore, offsetAfter));
             }
             int daysToSun = 7 - dt.getDayOfWeek().getValue();
-            return dom + daysToSun <= 31 ? offsetBefore : offsetAfter;
+            return dom + daysToSun <= 31 ? new OffsetInfo(dt, offsetBefore, null) : new OffsetInfo(dt, offsetAfter, null);
         }
         /** {@inheritDoc} */
         @Override
@@ -894,27 +959,27 @@ public abstract class TimeZone implements Serializable {
                 case JANUARY:
                 case FEBRUARY:
                 case DECEMBER:
-                    return standardOffset;
+                    return new OffsetInfo(dt, standardOffset, null);
                 case MARCH: {
                     int dom = dt.getDayOfMonth().getValue();
                     if (dom < 8) {
-                        return standardOffset;
+                        return new OffsetInfo(dt, standardOffset, null);
                     }
                     if (dom > 14) {
-                        return summerOffset;
+                        return new OffsetInfo(dt, summerOffset, null);
                     }
                     if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
                         if (dt.getHourOfDay().getValue() < 2) {
-                            return standardOffset;
+                            return new OffsetInfo(dt, standardOffset, null);
                         }
                         if (dt.getHourOfDay().getValue() >= 3) {
-                            return summerOffset;
+                            return new OffsetInfo(dt, summerOffset, null);
                         }
                         OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(2, 0), standardOffset);
-                        return new Discontinuity(cutover.toInstant(), standardOffset, summerOffset);
+                        return new OffsetInfo(dt, null, new Discontinuity(cutover.toInstant(), standardOffset, summerOffset));
                     }
                     int daysToSun = 7 - dt.getDayOfWeek().getValue();
-                    return dom + daysToSun <= 14 ? standardOffset : summerOffset;
+                    return dom + daysToSun <= 14 ? new OffsetInfo(dt, standardOffset, null) : new OffsetInfo(dt, summerOffset, null);
                 }
                 case APRIL:
                 case MAY:
@@ -923,24 +988,24 @@ public abstract class TimeZone implements Serializable {
                 case AUGUST:
                 case SEPTEMBER:
                 case OCTOBER:
-                    return summerOffset;
+                    return new OffsetInfo(dt, summerOffset, null);
                 case NOVEMBER: {
                     int dom = dt.getDayOfMonth().getValue();
                     if (dom > 7) {
-                        return standardOffset;
+                        return new OffsetInfo(dt, standardOffset, null);
                     }
                     if (dt.getDayOfWeek() == DayOfWeek.SUNDAY) {
                         if (dt.getHourOfDay().getValue() < 1) {
-                            return summerOffset;
+                            return new OffsetInfo(dt, summerOffset, null);
                         }
                         if (dt.getHourOfDay().getValue() >= 2) {
-                            return standardOffset;
+                            return new OffsetInfo(dt, standardOffset, null);
                         }
                         OffsetDateTime cutover = OffsetDateTime.dateTime(dt.toLocalDate(), LocalTime.time(2, 0), summerOffset);
-                        return new Discontinuity(cutover.toInstant(), summerOffset, standardOffset);
+                        return new OffsetInfo(dt, null, new Discontinuity(cutover.toInstant(), summerOffset, standardOffset));
                     }
                     int daysToSun = 7 - dt.getDayOfWeek().getValue();
-                    return dom + daysToSun <= 7 ? summerOffset : standardOffset;
+                    return dom + daysToSun <= 7 ? new OffsetInfo(dt, summerOffset, null) : new OffsetInfo(dt, standardOffset, null);
                 }
             }
             throw new IllegalStateException();
