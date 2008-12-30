@@ -48,6 +48,7 @@ import javax.time.period.Period;
  * TimeZone is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
+ * It is only intended that the abstract methods are overridden.
  *
  * @author Stephen Colebourne
  */
@@ -73,12 +74,40 @@ public abstract class TimeZone implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of <code>TimeZone</code> using its ID using a map
+     * of aliases to supplement the standard zone IDs.
+     * <p>
+     * Many users of time zones use short abbreviations, such as PST for
+     * 'Pacific Standard Time' and PDT for 'Pacific Daylight Time'.
+     * These abbreviations are not unique, and so cannot be used as identifiers.
+     * This method allows a map of string to time zone to be setup and reused
+     * within an application.
+     *
+     * @param timeZoneID  the time zone id, not null
+     * @param aliasMap  a map of time zone ids (typically abbreviations) to time zones, not null
+     * @return the TimeZone, never null
+     */
+    public static TimeZone timeZone(String timeZoneID, Map<String, TimeZone> aliasMap) {
+        if (timeZoneID == null) {
+            throw new NullPointerException("Time Zone ID must not be null");
+        }
+        if (aliasMap == null) {
+            throw new NullPointerException("Alias map must not be null");
+        }
+        TimeZone zone = aliasMap.get(timeZoneID);
+        return zone == null ? timeZone(timeZoneID) : zone;
+    }
+
+    /**
      * Obtains an instance of <code>TimeZone</code> using its ID.
      *
      * @param timeZoneID  the time zone id, not null
      * @return the TimeZone, never null
      */
     public static TimeZone timeZone(String timeZoneID) {
+        if (timeZoneID == null) {
+            throw new NullPointerException("Time Zone ID must not be null");
+        }
         TimeZone zone = CACHE.get(timeZoneID);
         if (zone == null) {
             if (timeZoneID.startsWith("UTC") || timeZoneID.startsWith("GMT")) {  // not sure about GMT
@@ -167,6 +196,9 @@ public abstract class TimeZone implements Serializable {
      * @return the TimeZone for the offset, never null
      */
     public static TimeZone timeZone(ZoneOffset offset) {
+        if (offset == null) {
+            throw new NullPointerException("ZoneOffset must not be null");
+        }
         String timeZoneID = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
         TimeZone zone = CACHE.get(timeZoneID);
         if (zone == null) {
@@ -217,32 +249,36 @@ public abstract class TimeZone implements Serializable {
      *
      * @return the time zone ID, never null
      */
-    public String getID() {
+    public final String getID() {
         return timeZoneID;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the name of the time zone.
+     * Gets the textual name of this zone.
      *
      * @return the time zone name, never null
      */
     public String getName() {
-        return timeZoneID;
+        return timeZoneID;  // TODO
     }
 
     /**
-     * Gets the short name of the time zone.
+     * Gets the short textual name of this zone.
      *
      * @return the time zone short name, never null
      */
     public String getShortName() {
-        return timeZoneID;
+        return timeZoneID;  // TODO
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the offset applicable at the specified instant.
+     * Gets the offset applicable at the specified instant in this zone.
+     * <p>
+     * For any given instant there can only ever be one valid offset, which
+     * is returned by this method. To access more detailed information about
+     * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
      *
      * @param instant  the instant to find the offset for, not null
      * @return the offset, never null
@@ -250,13 +286,47 @@ public abstract class TimeZone implements Serializable {
     public abstract ZoneOffset getOffset(Instant instant);
 
     /**
-     * Gets the offset information for a local date-time.
+     * Gets the offset information for the specified instant in this zone.
      * <p>
-     * This method can return one of two classes. It will return either
-     * a <code>ZoneOffset</code> or a <code>TimeZone.Discontinuity</code>.
-     * This has to be checked using instanceof.
+     * This provides access to full details as to the offset or offsets applicable
+     * for the local date-time. The mapping from a local date-time to an offset
+     * is not straightfoward. There are three cases:
+     * <ul>
+     * <li>Normal. Where there is a single offset for the local date-time.</li>
+     * <li>Gap. Where there is a gap in the local time-line normally caused by the
+     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
+     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
+     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
+     * </ul>
+     * The returned object provides this information and it is vital to check
+     * {@link OffsetInfo#isDiscontinuity()} to handle the gap or overlap.
      *
-     * @param dateTime  the date-time to find the offset for, not null
+     * @param instant  the instant to find the offset information for, not null
+     * @return the offset information, never null
+     */
+    public OffsetInfo getOffsetInfo(Instant instant) {
+        ZoneOffset offset = getOffset(instant);
+        OffsetDateTime odt = OffsetDateTime.dateTime(instant, offset);
+        return getOffsetInfo(odt.toLocalDateTime());
+    }
+
+    /**
+     * Gets the offset information for a local date-time in this zone.
+     * <p>
+     * This provides access to full details as to the offset or offsets applicable
+     * for the local date-time. The mapping from a local date-time to an offset
+     * is not straightfoward. There are three cases:
+     * <ul>
+     * <li>Normal. Where there is a single offset for the local date-time.</li>
+     * <li>Gap. Where there is a gap in the local time-line normally caused by the
+     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
+     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
+     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
+     * </ul>
+     * The returned object provides this information and it is vital to check
+     * {@link OffsetInfo#isDiscontinuity()} to handle the gap or overlap.
+     *
+     * @param dateTime  the date-time to find the offset information for, not null
      * @return the offset information, never null
      */
     public abstract OffsetInfo getOffsetInfo(LocalDateTime dateTime);
@@ -267,10 +337,15 @@ public abstract class TimeZone implements Serializable {
      * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
      * {@link OffsetTime} are used in preference to fixed offset time zones
      * in {@link ZonedDateTime}.
+     * <p>
+     * The default implementation returns false and it is not intended that
+     * user-supplied subclasses override this.
      *
      * @return true if the time zone is fixed and the offset never changes
      */
-    public abstract boolean isFixed();
+    public boolean isFixed() {
+        return false;
+    }
 
 //    //-----------------------------------------------------------------------
 //    /**
@@ -544,13 +619,13 @@ public abstract class TimeZone implements Serializable {
      * <p>
      * The mapping from a local date-time to an offset is not straightfoward.
      * There are three cases:
-     * <ol>
+     * <ul>
      * <li>Normal. Where there is a single offset for the local date-time.</li>
      * <li>Gap. Where there is a gap in the local time-line normally caused by the
      * spring cutover to daylight savings. There are no valid offsets within the gap</li>
      * <li>Overlap. Where there is a gap in the local time-line normally caused by the
      * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-     * </ol>
+     * </ul>
      * When using this class, it is vital to check the {@link #isDiscontinuity()}
      * method to handle the gap and overlap. Alternatively use one of the general
      * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
@@ -872,11 +947,6 @@ public abstract class TimeZone implements Serializable {
             int daysToSun = 7 - dt.getDayOfWeek().getValue();
             return dom + daysToSun <= 31 ? new OffsetInfo(dt, offsetBefore, null) : new OffsetInfo(dt, offsetAfter, null);
         }
-        /** {@inheritDoc} */
-        @Override
-        public boolean isFixed() {
-            return false;
-        }
     }
 
     //-----------------------------------------------------------------------
@@ -1009,11 +1079,6 @@ public abstract class TimeZone implements Serializable {
                 }
             }
             throw new IllegalStateException();
-        }
-        /** {@inheritDoc} */
-        @Override
-        public boolean isFixed() {
-            return false;
         }
     }
 
