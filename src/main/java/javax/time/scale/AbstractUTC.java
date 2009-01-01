@@ -8,15 +8,17 @@ import java.util.Collections;
 import java.util.Arrays;
 
 /** Model UTC before 1972.
- * 
+ * Prior to the start of UTC in 1961-01-01 time reverts to TAI. It might be better to use a smooth transition ending at 
+ * parity in 1958-01-01 (when TAI matched UT2).
+ * @author Mark Thornton
  */
 public abstract class AbstractUTC extends TimeScale {
-    private static int MJD19700101 = Scale.modifiedJulianDay(1970, 1, 1);
-    private static long SECONDS_PER_DAY = 86400L;
+    private static final int MJD19700101 = Scale.modifiedJulianDay(1970, 1, 1);
+    private static final long SECONDS_PER_DAY = 86400L;
     protected static final int leapEraDelta = 10;
     private static final Entry[] entries;
     private static final Instant[] startInstants;
-    private static Instant leapEraInstant;
+    private static final Instant leapEraInstant;
     public static final List<Entry> UTC_ENTRIES;
 
     protected static final long leapEraSeconds;
@@ -33,6 +35,7 @@ public abstract class AbstractUTC extends TimeScale {
         }
         startInstants = new Instant[entries.length];
         Entry leapEraEntry = null;
+        Instant startLeapEra = null;
         for (int i=0; i<entries.length; i++) {
             AbstractUTC.Entry e = entries[i];
             e.computeTerms();
@@ -43,9 +46,10 @@ public abstract class AbstractUTC extends TimeScale {
             if (e.deltaSeconds == 10)
             {
                 leapEraEntry = e;
-                leapEraInstant = startInstants[i];
+                startLeapEra = startInstants[i];
             }
         }
+        leapEraInstant = startLeapEra;
         oldEraSeconds = entries[0].startInclusiveSeconds;
         leapEraSeconds = leapEraEntry.startInclusiveSeconds;
     }

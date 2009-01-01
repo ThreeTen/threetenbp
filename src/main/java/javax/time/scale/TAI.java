@@ -2,14 +2,19 @@ package javax.time.scale;
 
 import javax.time.TimeScale;
 import javax.time.Instant;
+import java.io.Serializable;
 
 /** International Atomic Time.
  *  * @author Mark Thornton
  */
-public class TAI extends TimeScale {
+public class TAI extends TimeScale implements Serializable {
     public static final TAI INSTANCE = new TAI();
 
     private TAI() {}
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
     public String getName() {
         return "TAI";

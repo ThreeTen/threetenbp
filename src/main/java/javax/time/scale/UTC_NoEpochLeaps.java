@@ -2,15 +2,20 @@ package javax.time.scale;
 
 import javax.time.Instant;
 import javax.time.MathUtils;
+import java.io.Serializable;
 
 /** UTC where epochSeconds does not include leap seconds.
  * The TimeScaleInstant does report leapSecond.
  * @author Mark Thornton
  */
-public class UTC_NoEpochLeaps extends AbstractUTC {
+public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
     public static final UTC_NoEpochLeaps INSTANCE = new UTC_NoEpochLeaps();
 
     private UTC_NoEpochLeaps() {}
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
     @Override
     public TimeScaleInstant getTimeScaleInstant(Instant t) {

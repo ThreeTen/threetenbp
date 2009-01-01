@@ -3,16 +3,21 @@ package javax.time.scale;
 import javax.time.TimeScale;
 import javax.time.Instant;
 import javax.time.MathUtils;
+import java.io.Serializable;
 
 /** TimeScale used by GPS navigation system.
  * @author Mark Thornton
  */
-public class GPS extends TimeScale {
+public class GPS extends TimeScale implements Serializable {
     public static final GPS INSTANCE = new GPS();
 
     private static final int TAI_GPS = 19;
 
     private GPS() {}
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
     public String getName() {
         return "GPS";

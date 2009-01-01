@@ -2,6 +2,7 @@ package javax.time.scale;
 
 import javax.time.Instant;
 import javax.time.MathUtils;
+import java.io.Serializable;
 
 /** Coordinated Universal Time including leap seconds.
      * The epochSeconds include any leap seconds within the interval. Thus epochSeconds are
@@ -9,10 +10,14 @@ import javax.time.MathUtils;
      * reported by getLeapSeconds.
  * @author Mark Thornton
  */
-public class UTC extends AbstractUTC {
+public class UTC extends AbstractUTC implements Serializable {
     public static final UTC INSTANCE = new UTC();
 
     private UTC() {}
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
     @Override
     public String getName() {

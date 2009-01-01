@@ -2,18 +2,22 @@ package javax.time.scale;
 
 import javax.time.Instant;
 import javax.time.MathUtils;
+import java.io.Serializable;
 
 /** UTC with no accounting for leap seconds at all.
  * The TimeScaleInstant does not report leapSecond. In this implementation the leap second will
  * appear as a second occurrence of 23:59:59. Alternative implementations might make the last 
- * two seconds before midnight run at half speed. POSIX spreads the difference over the last 1000 seconds
- * before midnight.
+ * two seconds before midnight run at half speed.
  * @author Mark Thornton
  */
-public class UTC_NoLeaps extends AbstractUTC {
+public class UTC_NoLeaps extends AbstractUTC implements Serializable {
     public static final UTC_NoLeaps INSTANCE = new UTC_NoLeaps();
 
     private UTC_NoLeaps() {}
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
     @Override
     public TimeScaleInstant getTimeScaleInstant(Instant t) {
