@@ -88,6 +88,28 @@ public final class Instant
      */
     private final int nanoOfSecond;
 
+    /** Raw create for TimeScale use.
+     * This does no time scale manipulation.
+     * @param epochSeconds
+     * @param nanoOfSecond
+     * @return
+     */
+    static Instant newInstant(long epochSeconds, int nanoOfSecond) {
+        if (epochSeconds == 0 && nanoOfSecond == 0)
+            return EPOCH;
+        return new Instant(epochSeconds, nanoOfSecond);
+    }
+
+    /** epochSeconds without time scale manipulation. */
+    long getRawEpochSeconds() {
+        return epochSeconds;
+    }
+
+    int getRawNanoOfSecond() {
+        return nanoOfSecond;
+    }
+
+
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>Instant</code> from a provider of instants.
@@ -182,7 +204,10 @@ public final class Instant
         if (nanos < 0) {
             nanos += NANOS_PER_SECOND;
             epochSeconds = MathUtils.safeDecrement(epochSeconds);
-        }
+        } else if (nanos == NANOS_PER_SECOND) {
+			nanos = 0;
+			epochSeconds = MathUtils.safeIncrement(epochSeconds);
+		}
         return new Instant(epochSeconds, nanos);
     }
 
