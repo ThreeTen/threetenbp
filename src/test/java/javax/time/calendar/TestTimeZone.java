@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008,2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -313,13 +313,15 @@ public class TestTimeZone {
         assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(0));
         assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(1));
         assertEquals(dis.getTransitionInstant(), OffsetDateTime.dateTime(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
+        assertEquals(dis.getTransitionDateTime(), OffsetDateTime.dateTime(2008, 3, 30, 1, 0, ZoneOffset.zoneOffset(0)));
+        assertEquals(dis.getTransitionDateTimeAfter(), OffsetDateTime.dateTime(2008, 3, 30, 2, 0, ZoneOffset.zoneOffset(1)));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(0)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), false);
-        assertEquals(dis.toString(), "Discontinuity[Gap from Z to +01:00]");
+        assertEquals(dis.toString(), "Discontinuity[Gap at 2008-03-30T01:00Z to +01:00]");
     }
 
     public void test_London_getOffsetInfo_overlap() {
@@ -334,6 +336,8 @@ public class TestTimeZone {
         assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(1));
         assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(0));
         assertEquals(dis.getTransitionInstant(), OffsetDateTime.dateTime(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
+        assertEquals(dis.getTransitionDateTime(), OffsetDateTime.dateTime(2008, 10, 26, 2, 0, ZoneOffset.zoneOffset(1)));
+        assertEquals(dis.getTransitionDateTimeAfter(), OffsetDateTime.dateTime(2008, 10, 26, 1, 0, ZoneOffset.zoneOffset(0)));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
@@ -342,7 +346,7 @@ public class TestTimeZone {
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(0)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.toString(), "Discontinuity[Overlap from +01:00 to Z]");
+        assertEquals(dis.toString(), "Discontinuity[Overlap at 2008-10-26T02:00+01:00 to Z]");
     }
 
     //-----------------------------------------------------------------------
@@ -466,7 +470,7 @@ public class TestTimeZone {
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(3)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.toString(), "Discontinuity[Gap from +01:00 to +02:00]");
+        assertEquals(dis.toString(), "Discontinuity[Gap at 2008-03-30T02:00+01:00 to +02:00]");
     }
 
     public void test_Paris_getOffsetInfo_overlap() {
@@ -489,7 +493,7 @@ public class TestTimeZone {
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(3)), false);
-        assertEquals(dis.toString(), "Discontinuity[Overlap from +02:00 to +01:00]");
+        assertEquals(dis.toString(), "Discontinuity[Overlap at 2008-10-26T03:00+02:00 to +01:00]");
     }
 
     //-----------------------------------------------------------------------
@@ -636,7 +640,7 @@ public class TestTimeZone {
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-5)), false);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-4)), false);
-        assertEquals(dis.toString(), "Discontinuity[Gap from -05:00 to -04:00]");
+        assertEquals(dis.toString(), "Discontinuity[Gap at 2008-03-09T02:00-05:00 to -04:00]");
     }
 
     public void test_NewYork_getOffsetInfo_overlap() {
@@ -659,7 +663,7 @@ public class TestTimeZone {
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-5)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-4)), true);
         assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.toString(), "Discontinuity[Overlap from -04:00 to -05:00]");
+        assertEquals(dis.toString(), "Discontinuity[Overlap at 2008-11-02T02:00-04:00 to -05:00]");
     }
 
 //    //-----------------------------------------------------------------------

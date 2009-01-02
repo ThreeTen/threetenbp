@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -147,7 +147,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return discontinuity.getTransitionDateTime();
+            return discontinuity.getTransitionDateTimeAfter();
         }
         /** {@inheritDoc} */
         @Override
@@ -189,7 +189,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleGap(
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return discontinuity.getTransitionDateTime();
+            return discontinuity.getTransitionDateTimeAfter();
         }
         /** {@inheritDoc} */
         @Override
