@@ -85,7 +85,7 @@ public class TestFluentAPI {
         
         date = date.with(lastDayOfMonth());
         date = date.with(nextNonWeekendDay());
-        date = date.with(nextMonday());
+//        date = date.with(nextMonday());
         date = date.with(next(MONDAY));
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));

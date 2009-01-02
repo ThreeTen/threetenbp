@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -237,15 +237,15 @@ public final class DateAdjusters {
     //-----------------------------------------------------------------------
     // TODO: This set of adjusters is incomplete, for example what about
     // June this year vs next June vs nextOrCurrent June vs previous...
-    /**
-     * Returns the next Monday adjuster, which adjusts the date to be the
-     * next Monday after the specified date.
-     *
-     * @return the next Monday adjuster, never null
-     */
-    public static DateAdjuster nextMonday() {
-        return new NextOrCurrentDayOfWeek(false, DayOfWeek.MONDAY);
-    }
+//    /**
+//     * Returns the next Monday adjuster, which adjusts the date to be the
+//     * next Monday after the specified date.
+//     *
+//     * @return the next Monday adjuster, never null
+//     */
+//    public static DateAdjuster nextMonday() {
+//        return new RelativeDayOfWeek(0, DayOfWeek.MONDAY);
+//    }
 
     /**
      * Returns the next day of week adjuster, which adjusts the date to be
@@ -258,7 +258,7 @@ public final class DateAdjusters {
         if (dow == null) {
             throw new NullPointerException("dow must not be null");
         }
-        return new NextOrCurrentDayOfWeek(false, dow);
+        return new RelativeDayOfWeek(2, dow);
     }
 
     /**
@@ -273,37 +273,69 @@ public final class DateAdjusters {
         if (dow == null) {
             throw new NullPointerException("dow must not be null");
         }
-        return new NextOrCurrentDayOfWeek(true, dow);
+        return new RelativeDayOfWeek(0, dow);
     }
 
     /**
-     * Implementation of next or current day of week.
+     * Returns the previous day of week adjuster, which adjusts the date to be
+     * the previous of the specified day of week after the specified date.
+     *
+     * @param dow  the dow to move the date to, not null
+     * @return the next day of week adjuster, never null
      */
-    private static final class NextOrCurrentDayOfWeek implements DateAdjuster, Serializable {
+    public static DateAdjuster previous(DayOfWeek dow) {
+        if (dow == null) {
+            throw new NullPointerException("dow must not be null");
+        }
+        return new RelativeDayOfWeek(3, dow);
+    }
+
+    /**
+     * Returns the previous or current day of week adjuster, which adjusts the
+     * date to be be the previous of the specified day of week, returning the
+     * input date if the day of week matched.
+     *
+     * @param dow  the dow to move the date to, not null
+     * @return the next day of week adjuster, never null
+     */
+    public static DateAdjuster previousOrCurrent(DayOfWeek dow) {
+        if (dow == null) {
+            throw new NullPointerException("dow must not be null");
+        }
+        return new RelativeDayOfWeek(1, dow);
+    }
+
+    /**
+     * Implementation of next, previous or current day of week.
+     */
+    private static final class RelativeDayOfWeek implements DateAdjuster, Serializable {
         /**
          * A serialization identifier for this class.
          */
         private static final long serialVersionUID = 1L;
         /** Whether the current date is a valid answer. */
-        private final boolean currentValid;
+        private final int relative;
         /** The day of week to find. */
         private final DayOfWeek dow;
 
-        private NextOrCurrentDayOfWeek(boolean currentValid, DayOfWeek dow) {
-            this.currentValid = currentValid;
+        private RelativeDayOfWeek(int relative, DayOfWeek dow) {
+            this.relative = relative;
             this.dow = dow;
         }
 
         /** {@inheritDoc} */
         public LocalDate adjustDate(LocalDate date) {
             DayOfWeek dow = date.getDayOfWeek();
-
-            if (currentValid && dow == this.dow) {
+            if (relative < 2 && dow == this.dow) {
                 return date;
             }
-
-            int daysDiff = dow.ordinal() - this.dow.ordinal();
-            return date.plusDays(daysDiff >= 0 ? 7 - daysDiff : -daysDiff);
+            if ((relative & 1) == 0) {
+                int daysDiff = dow.ordinal() - this.dow.ordinal();
+                return date.plusDays(daysDiff >= 0 ? 7 - daysDiff : -daysDiff);
+            } else {
+                int daysDiff = this.dow.ordinal() - dow.ordinal();
+                return date.minusDays(daysDiff >= 0 ? 7 - daysDiff : -daysDiff);
+            }
         }
 
         /** {@inheritDoc} */
@@ -315,11 +347,11 @@ public final class DateAdjusters {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof NextOrCurrentDayOfWeek)) {
+            if (!(obj instanceof RelativeDayOfWeek)) {
                 return false;
             }
-            final NextOrCurrentDayOfWeek other = (NextOrCurrentDayOfWeek) obj;
-            if (this.currentValid != other.currentValid) {
+            final RelativeDayOfWeek other = (RelativeDayOfWeek) obj;
+            if (this.relative != other.relative) {
                 return false;
             }
             if (this.dow != other.dow) {
@@ -331,7 +363,7 @@ public final class DateAdjusters {
         @Override
         public int hashCode() {
             int hash = 13;
-            hash = 19 * hash + (currentValid ? 1 : 0);
+            hash = 19 * hash + relative;
             hash = 19 * hash + dow.hashCode();
             return hash;
         }
