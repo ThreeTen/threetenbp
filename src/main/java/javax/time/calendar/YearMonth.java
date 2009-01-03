@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
@@ -469,6 +470,19 @@ public final class YearMonth
         return new Calendrical(
                 ISOChronology.yearRule(), year.getValue(),
                 ISOChronology.monthOfYearRule(), month.getValue());
+    }
+
+    /**
+     * Converts this year-month to a <code>LocalDate</code> using the specified day of month.
+     * <p>
+     * This method will throw an exception if the day of month is invalid for the year-month.
+     *
+     * @param dayOfMonth  the day of month to use, not null
+     * @return the created date, never null
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
+     */
+    public LocalDate toLocalDate(DayOfMonth dayOfMonth) {
+        return LocalDate.date(year, month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

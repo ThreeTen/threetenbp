@@ -578,6 +578,31 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
+    // toLocalDate(Year)
+    //-----------------------------------------------------------------------
+    public void test_toLocalDate() {
+        MonthDay test = MonthDay.monthDay(6, 30);
+        assertEquals(test.toLocalDate(Year.isoYear(2008)), LocalDate.date(2008, 6, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toLocalDate_nullYear() {
+        MonthDay test = MonthDay.monthDay(6, 30);
+        test.toLocalDate((Year) null);
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_toLocalDate_notLeapYear() {
+        MonthDay test = MonthDay.monthDay(2, 29);
+        try {
+            test.toLocalDate(Year.isoYear(2005));
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_comparisons() {

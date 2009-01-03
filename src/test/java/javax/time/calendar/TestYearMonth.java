@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.time.CalendricalException;
+import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.MockPeriodProviderReturnsNull;
@@ -756,6 +757,31 @@ public class TestYearMonth {
     public void test_toCalendrical() {
         YearMonth test = YearMonth.yearMonth(2008, 6);
         assertEquals(test.toCalendrical(), new Calendrical(RULE_YEAR, 2008, RULE_MONTH, 6));
+    }
+
+    //-----------------------------------------------------------------------
+    // toLocalDate(DayOfMonth)
+    //-----------------------------------------------------------------------
+    public void test_toLocalDate() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        assertEquals(test.toLocalDate(DayOfMonth.dayOfMonth(30)), LocalDate.date(2008, 6, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_toLocalDate_nullYear() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        test.toLocalDate((DayOfMonth) null);
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_toLocalDate_invalidDay() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        try {
+            test.toLocalDate(DayOfMonth.dayOfMonth(31));
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

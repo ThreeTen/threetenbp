@@ -420,6 +420,20 @@ public final class MonthDay
                 ISOChronology.dayOfMonthRule(), day.getValue());
     }
 
+    /**
+     * Converts this month-day to a <code>LocalDate</code> in the specified year.
+     * <p>
+     * This method will throw an error if this represents February the 29th and
+     * the year is not a leap year.
+     *
+     * @param year  the year to use, not null
+     * @return the created date, never null
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
+     */
+    public LocalDate toLocalDate(Year year) {
+        return LocalDate.date(year, month, day);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this month-day to another month-day.
