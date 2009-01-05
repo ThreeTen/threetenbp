@@ -1,0 +1,136 @@
+<!--
+  @author Fabio Kung (fabio.kung@gmail.com)
+-->
+<project name="jsr-310-ri" default="jar">
+    <description>
+        Reference Implementation for the JSR 310 - Date and Time API
+    </description>
+
+    <property file="build.properties" />
+
+    <macrodef name="get-dependency">
+        <attribute name="group" />
+        <attribute name="artifact" />
+        <attribute name="version" />
+        <attribute name="variant" default="" />
+        <attribute name="dest" />
+        <sequential>
+            <get
+                src="${maven.ibiblio.url}/@{group}/@{artifact}/@{version}/@{artifact}-@{version}@{variant}.jar"
+                dest="@{dest}/@{artifact}-@{version}@{variant}.jar"
+                verbose="true"
+                usetimestamp="true" />
+        </sequential>
+    </macrodef>
+
+    <path id="main.path">
+        <pathelement location="${build.main}" />
+        <fileset dir="lib/main">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <path id="test.path">
+        <path refid="main.path" />
+        <pathelement location="${build.test}" />
+        <fileset dir="lib/test">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <path id="emma.lib" >
+        <pathelement location="${lib.coverage}/emma-2.0.5312.jar" />
+        <pathelement location="${lib.coverage}/emma_ant-2.0.5312.jar" />
+    </path>
+
+    <target name="resolve-deps">
+        <mkdir dir="${lib.main}" />
+        <mkdir dir="${lib.test}" />
+        <mkdir dir="${lib.coverage}" />
+
+        <get-dependency group="org/testng" artifact="testng" version="5.1" variant="-jdk15" dest="${lib.test}" />
+
+        <get-dependency group="emma" artifact="emma" version="2.0.5312" dest="${lib.coverage}" />
+        <get-dependency group="emma" artifact="emma_ant" version="2.0.5312" dest="${lib.coverage}" />
+    </target>
+
+    <target name="init" depends="resolve-deps">
+        <tstamp />
+    </target>
+
+    <target name="clean" description="clean up">
+        <delete dir="${build}" />
+        <delete dir="${dist}" />
+    </target>
+
+    <target name="compile" depends="init" description="compile the source">
+        <mkdir dir="${build.main}" />
+        <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
+    </target>
+   
+   <target name="javadoc" depends="init" description="generates javadoc for the api">
+      <mkdir dir="${build.javadoc}"/>
+      <javadoc sourcepath="${src.main}" destdir="${build.javadoc}" 
+                classpathref="main.path"
+               windowtitle="JSR-310 - Date and Time API" 
+               failonerror="true"
+               packagenames="javax.time**/*,java.util**/*"
+               overview="${src.main}/javax/time/overview.html" />
+   </target>
+
+    <target name="compile-tests" depends="compile" description="compile the tests">
+        <mkdir dir="${build.test}" />
+        <javac srcdir="${src.test}" destdir="${build.test}" classpathref="test.path" />
+    </target>
+
+    <target name="test" depends="compile-tests" description="run the tests">
+        <taskdef resource="testngtasks" classpathref="test.path" />
+        <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${src.test}" haltonfailure="true" verbose="2">
+            <classfileset dir="${build.test}" includes="**/Test*.class" excludes="java/util/*" />
+        </testng>
+    </target>
+
+    <target name="coverage" depends="compile-tests" description="test coverage">
+        <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+        <mkdir dir="${coverage}" />
+           <emmajava libclasspathref="emma.lib" 
+                   fullmetadata="yes"
+                   sourcepath="${src.main}"
+                   classname="javax.time.AllTest"
+                classpathref="test.path">
+               <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
+              <txt outfile="${coverage}/coverage.txt" />
+               <html outfile="${coverage}/coverage.html" metrics="method:90,block:90,line:90,class:95" />
+        </emmajava>
+    </target>
+
+    <target name="jar" depends="compile" description="build a jar file">
+        <delete dir="${dist}" />
+        <mkdir dir="${dist}" />
+        <jar jarfile="${dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${build.main}" />
+    </target>
+
+    <target name="dist" depends="jar" description="generate the distribution">
+        <mkdir dir="${dist}/${src}" />
+    	<copy todir="${dist}/${src}">
+            <fileset dir="${src}"/>
+        </copy>
+        <copy todir="${dist}/nbproject">
+            <fileset dir="nbproject"/>
+        </copy>
+        <copy file=".classpath" todir="${dist}" />
+        <copy file=".project" todir="${dist}" />
+        <copy file="build.xml" todir="${dist}" />
+        <copy file="checkstyle.xml" todir="${dist}" />
+        <copy file="LICENSE.txt" todir="${dist}" />
+        <copy file="LICENSE_OpenJDK.txt" todir="${dist}" />
+        <copy file="README.txt" todir="${dist}" />
+        <copy file="TODO.txt" todir="${dist}" />
+        <zip destfile="${ant.project.name}-${DSTAMP}.zip" basedir="${dist}" />
+    </target>
+
+    <target name="examples" depends="compile-tests" description="outputs some examples to system out">
+        <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
+    </target>
+
+</project>

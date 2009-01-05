@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>jsr-310-ri</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>src\main\java</label>
+                    <type>java</type>
+                    <location>src/main/java</location>
+                </source-folder>
+                <source-folder>
+                    <label>src\test\java</label>
+                    <type>java</type>
+                    <location>src/test/java</location>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>compile</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="test">
+                    <target>test</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>compile</target>
+                </action>
+                <action name="javadoc">
+                    <target>javadoc</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>folder</type>
+                <location>build/main</location>
+                <build-target>compile</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>build/test</location>
+                <build-target>compile</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>src\main\java</label>
+                        <location>src/main/java</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src\test\java</label>
+                        <location>src/test/java</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="test"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="javadoc"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src/main/java</package-root>
+                <built-to>build/main</built-to>
+                <javadoc-built-to>build/javadoc</javadoc-built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test/java</package-root>
+                <unit-tests/>
+                <classpath mode="boot">src/main/java</classpath>
+                <classpath mode="compile">lib/test/testng-5.1-jdk15.jar</classpath>
+                <built-to>build/test</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+    </configuration>
+</project>

@@ -1,0 +1,6 @@
+Portions of this codebase are derived works of the OpenJDK.
+Changes from the OpenJDK are licensed using the same GPL license as the OpenJDK.
+The authorship of the associated changes is claimed as follows:
+/*
+ * Stephen Colebourne & Michael Nascimento Santos
+ */
