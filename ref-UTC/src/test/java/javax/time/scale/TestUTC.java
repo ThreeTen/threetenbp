@@ -2,7 +2,6 @@ package javax.time.scale;
 
 import javax.time.Instant;
 import javax.time.TimeScale;
-import javax.time.Duration;
 import static javax.time.scale.TestScale.*;
 
 /**
@@ -14,24 +13,24 @@ import static javax.time.scale.TestScale.*;
  */
 public class TestUTC {
     public static void main(String[] args) {
-        Instant t = TimeScale.DEFAULT.instant(date(2008, 12, 31)+time(23,59,59), 0);
-        Duration increment = Duration.millisDuration(250);
-        TimeScale[] scales = {TAI.INSTANCE, UTC.INSTANCE, UTC_NoEpochLeaps.INSTANCE};
+        long epochSeconds = date(2008, 12, 31)+time(23,59,59)+33;
+        TimeScale[] scales = {TAI.SCALE, UTC.SCALE, UTC_NoEpochLeaps.SCALE, UTC_NoLeaps.SCALE};
         for (int i=0; i<13; i++) {
+            TimeScaleInstant tai = TimeScaleInstant.instant(TAI.SCALE, epochSeconds+i/4, (i%4)*250000000);
+            Instant t = Instant.instant(tai);
             System.out.println();
             System.out.println("t="+t);
             for (TimeScale ts: scales) {
-                TimeScaleInstant tsi = ts.getTimeScaleInstant(t);
-                System.out.print("Scale="+ts.getName()+": "+tsi.getEpochSeconds()+"s + "+tsi.getNanoOfSecond()+"ns");
-                if (tsi.isLeapSecondTotalIncluded()) {
-                    System.out.print(", includedLeaps="+tsi.getIncludedLeapSeconds());
+                AbstractInstant tsi = ts.toScale(t);
+                System.out.print("Scale="+ts.getName()+": "+ tsi.toString() +"; "+tsi.getEpochSeconds()+"s + "+tsi.getNanoOfSecond()+"ns");
+                if (tsi.getEpochSeconds() != tsi.getSimpleEpochSeconds()) {
+                    System.out.print(", includedLeaps="+(tsi.getEpochSeconds()-tsi.getSimpleEpochSeconds()));
                 }
                 if (tsi.getLeapSecond() != 0) {
                     System.out.print(", leap="+tsi.getLeapSecond());
                 }
                 System.out.println();
             }
-            t = t.plus(increment);
         }
     }
 }

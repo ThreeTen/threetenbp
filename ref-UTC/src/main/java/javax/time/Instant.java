@@ -34,11 +34,11 @@ package javax.time;
 import java.io.Serializable;
 
 import javax.time.calendar.CalendarConversionException;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
+import javax.time.scale.AbstractInstant;
+import javax.time.scale.UTC_NoEpochLeaps;
 
 /**
- * An instantaneous point on the time-line.
+ * An instantaneous point on the time-line of the default TimeScale.
  * <p>
  * The Java Time Framework models time as a series of instantaneous events,
  * known as instants, along a single time-line. This class represents one
@@ -56,13 +56,17 @@ import javax.time.calendar.ZoneOffset;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class Instant
+public final class Instant extends AbstractInstant
         implements InstantProvider, Comparable<Instant>, Serializable {
     // TODO: Serialized format
     // TODO: Evaluate hashcode
     // TODO: Optimise to 2 private subclasses (second/nano & millis)
     // TODO: Consider BigDecimal
     // TODO: Check for potential overflows
+
+    /** Coordinated Universal Time without leap seconds.
+     * Epoch seconds do not include leap seconds. */
+    public static final TimeScale SCALE = UTC_NoEpochLeaps.SCALE;
 
     /**
      * Constant for the 1970-01-01T00:00:00Z epoch instant.
@@ -88,26 +92,10 @@ public final class Instant
      */
     private final int nanoOfSecond;
 
-    /** Raw create for TimeScale use.
-     * This does no time scale manipulation.
-     * @param epochSeconds
-     * @param nanoOfSecond
-     * @return
+    /** Leap second indicator.
+     *
      */
-    static Instant newInstant(long epochSeconds, int nanoOfSecond) {
-        if (epochSeconds == 0 && nanoOfSecond == 0)
-            return EPOCH;
-        return new Instant(epochSeconds, nanoOfSecond);
-    }
-
-    /** epochSeconds without time scale manipulation. */
-    long getRawEpochSeconds() {
-        return epochSeconds;
-    }
-
-    int getRawNanoOfSecond() {
-        return nanoOfSecond;
-    }
+    private final int leapSecond;
 
 
     //-----------------------------------------------------------------------
@@ -129,6 +117,14 @@ public final class Instant
             throw new NullPointerException("The implementation of InstantProvider must not return null");
         }
         return provided;
+    }
+
+    public static Instant instant(AbstractInstant tsi) {
+        if (tsi instanceof Instant) {
+            return (Instant)tsi;
+        }
+        tsi = SCALE.toScale(tsi);
+        return new Instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond(), tsi.getLeapSecond());
     }
 
     /**
@@ -274,6 +270,18 @@ public final class Instant
         super();
         this.epochSeconds = epochSeconds;
         this.nanoOfSecond = nanoOfSecond;
+        this.leapSecond = 0;
+    }
+
+    Instant(long epochSeconds, int nanoOfSecond, int leapSecond) {
+        super();
+        this.epochSeconds = epochSeconds;
+        this.nanoOfSecond = nanoOfSecond;
+        this.leapSecond = leapSecond;
+    }
+
+    public TimeScale getScale() {
+        return SCALE;
     }
 
     //-----------------------------------------------------------------------
@@ -288,6 +296,10 @@ public final class Instant
         return epochSeconds;
     }
 
+    public long getSimpleEpochSeconds() {
+        return SCALE.getSimpleEpochSeconds(this);
+    }
+
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the second returned by {@link #getEpochSeconds()}.
@@ -296,6 +308,10 @@ public final class Instant
      */
     public int getNanoOfSecond() {
         return nanoOfSecond;
+    }
+
+    public int getLeapSecond() {
+        return leapSecond;
     }
 
     //-----------------------------------------------------------------------
@@ -554,6 +570,10 @@ public final class Instant
         if (cmp != 0) {
             return cmp;
         }
+        cmp = MathUtils.safeCompare(leapSecond, otherInstant.leapSecond);
+        if (cmp != 0) {
+            return cmp;
+        }
         return MathUtils.safeCompare(nanoOfSecond, otherInstant.nanoOfSecond);
     }
 
@@ -594,7 +614,8 @@ public final class Instant
         if (otherInstant instanceof Instant) {
             Instant other = (Instant) otherInstant;
             return this.epochSeconds == other.epochSeconds &&
-                   this.nanoOfSecond == other.nanoOfSecond;
+                   this.nanoOfSecond == other.nanoOfSecond &&
+                    this.leapSecond == other.leapSecond;
         }
         return false;
     }
@@ -608,19 +629,4 @@ public final class Instant
     public int hashCode() {
         return ((int) (epochSeconds ^ (epochSeconds >>> 32))) + 51 * nanoOfSecond;
     }
-
-    //-----------------------------------------------------------------------
-    /**
-     * A string representation of this Instant using ISO-8601 representation.
-     * <p>
-     * The format of the returned string will be <code>yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ</code>.
-     *
-     * @return an ISO-8601 representation of this Instant
-     */
-    @Override
-    public String toString() {
-        // TODO: optimize
-        return OffsetDateTime.dateTime(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
-    }
-
 }

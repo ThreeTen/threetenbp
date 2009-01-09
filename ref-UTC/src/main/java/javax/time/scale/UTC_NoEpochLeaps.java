@@ -1,6 +1,5 @@
 package javax.time.scale;
 
-import javax.time.Instant;
 import javax.time.MathUtils;
 import java.io.Serializable;
 
@@ -9,58 +8,33 @@ import java.io.Serializable;
  * @author Mark Thornton
  */
 public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
-    public static final UTC_NoEpochLeaps INSTANCE = new UTC_NoEpochLeaps();
+    public static final UTC_NoEpochLeaps SCALE = new UTC_NoEpochLeaps();
 
     private UTC_NoEpochLeaps() {}
 
     private Object readResolve() {
-        return INSTANCE;
+        return SCALE;
     }
 
     @Override
-    public TimeScaleInstant getTimeScaleInstant(Instant t) {
-        if (t.isBefore(getLeapEraInstant()))
-            return super.getTimeScaleInstant(t);
-        Entry entry = findEntry(t);
-        long s = getTaiEpochSeconds(t) - entry.getDeltaSeconds();
+    protected AbstractInstant fromTAI(AbstractInstant tsiTAI) {
+        if (InstantComparator.INSTANCE.compare(tsiTAI, getLeapEraInstant()) < 0) {
+            return super.fromTAI(tsiTAI);
+        }
+        Entry entry = findEntry(tsiTAI);
+        long s = tsiTAI.getEpochSeconds() - entry.getDeltaSeconds();
         if (s >= entry.getEndExclusiveSeconds() && entry.getNext() != null)
-            return TimeScaleInstant.leapInstant(entry.getEndExclusiveSeconds()-1, getTaiNanosOfSecond(t), (int)(s+1-entry.getEndExclusiveSeconds()));
+            return TimeScaleInstant.leapInstant(this, entry.getEndExclusiveSeconds()-1, tsiTAI.getNanoOfSecond(), (int)(s+1-entry.getEndExclusiveSeconds()));
         else
-            return TimeScaleInstant.instant(s, getTaiNanosOfSecond(t));
+            return TimeScaleInstant.instant(this, s, tsiTAI.getNanoOfSecond());
     }
 
     @Override
-    public long getEpochSeconds(Instant t) {
-        if (t.isBefore(getLeapEraInstant())) {
-            return super.getEpochSeconds(t);
-        }
-        return getTaiEpochSeconds(t) - findEntry(t).getDeltaSeconds();
-    }
-
-    @Override
-    public int getNanoOfSecond(Instant t) {
-        if (t.isBefore(getLeapEraInstant())) {
-            return super.getNanoOfSecond(t);
-        }
-        return getTaiNanosOfSecond(t);
-    }
-
-    @Override
-    public Instant instant(long epochSeconds, int nanoOfSecond) {
-        if (epochSeconds < leapEraSeconds)
-            return super.instant(epochSeconds, nanoOfSecond);
-        else
-            return checkedTaiInstant(
-                    MathUtils.safeAdd(epochSeconds, findEntry(epochSeconds).getDeltaSeconds()),
-                    nanoOfSecond);
-    }
-
-    public Instant instant(TimeScaleInstant tsi) {
-        if (tsi.getIncludedLeapSeconds() != 0)
+    protected AbstractInstant toTAI(AbstractInstant tsi) {
+        if (tsi.getEpochSeconds() != tsi.getSimpleEpochSeconds() )
             throw new IllegalArgumentException("Time scale does not include leap seconds");
-        if (tsi.getEpochSeconds() < leapEraSeconds) {
-            return super.instant(tsi);
-        }
+        if (tsi.getEpochSeconds() < leapEraSeconds)
+            return super.toTAI(tsi);
         long s = tsi.getEpochSeconds();
         Entry entry = findEntry(s);
         if (tsi.getLeapSecond() != 0) {
@@ -69,7 +43,25 @@ public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
                 throw new IllegalArgumentException("There is no leap second at this instant");
             s += tsi.getLeapSecond();
         }
-        return checkedTaiInstant(MathUtils.safeAdd(s, entry.getDeltaSeconds()), tsi.getNanoOfSecond());
+        return TimeScaleInstant.instant(TAI.SCALE, MathUtils.safeAdd(s, entry.getDeltaSeconds()), tsi.getNanoOfSecond());
+    }
+
+    @Override
+    public TimeScaleInstant toScale(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
+        if (simpleEpochSeconds < leapEraSeconds) {
+            if (leapSecond != 0)
+                throw new IllegalArgumentException("There is no leap second at this instant");
+            return TimeScaleInstant.instant(this, simpleEpochSeconds, nanoOfSecond);
+        }
+        Entry entry = findEntry(simpleEpochSeconds);
+        if (leapSecond != 0) {
+            if (leapSecond < 0 || entry.getNext() == null || simpleEpochSeconds+1 != entry.getEndExclusiveSeconds() ||
+                    leapSecond > (entry.getNext().getDeltaSeconds() -entry.getDeltaSeconds())) {
+                throw new IllegalArgumentException("Invalid leapSecond "+leapSecond);
+            }
+            return TimeScaleInstant.leapInstant(this, simpleEpochSeconds, nanoOfSecond, leapSecond);
+        }
+        return TimeScaleInstant.instant(this, simpleEpochSeconds, nanoOfSecond);
     }
 
     @Override

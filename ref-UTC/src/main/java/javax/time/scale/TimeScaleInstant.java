@@ -1,40 +1,48 @@
 package javax.time.scale;
 
+import javax.time.TimeScale;
+
 /** Point in time relative to a time scale.
  * Time conversions can be done simply by subtracting the included leap seconds from
  * the epochSeconds and the later (optionally) adjusting for leapSecond if that is non zero. 
  * @author Mark Thornton
  */
-public class TimeScaleInstant {
+public class TimeScaleInstant extends AbstractInstant {
+    private final TimeScale scale;
     private final long epochSeconds;
     private final int nanoOfSecond;
 
-    public static TimeScaleInstant instant(long epochSeconds, int nanoOfSecond) {
-        return new TimeScaleInstant(epochSeconds, nanoOfSecond);
+    public static TimeScaleInstant instant(TimeScale scale, long epochSeconds, int nanoOfSecond) {
+        return new TimeScaleInstant(scale, epochSeconds, nanoOfSecond);
     }
 
-    public static TimeScaleInstant instantWithIncludedLeaps(long epochSeconds, int nanoOfSecond, int includedLeapSeconds) {
-        return new WithIncludedLeaps(epochSeconds, nanoOfSecond, includedLeapSeconds);
+    public static TimeScaleInstant instantWithIncludedLeaps(TimeScale scale, long epochSeconds, int nanoOfSecond, int includedLeapSeconds) {
+        return new WithIncludedLeaps(scale, epochSeconds, nanoOfSecond, includedLeapSeconds);
     }
 
-    public static TimeScaleInstant leapInstant(long epochSeconds, int nanoOfSecond, int leapSecond) {
+    public static TimeScaleInstant leapInstant(TimeScale scale, long epochSeconds, int nanoOfSecond, int leapSecond) {
         if (leapSecond == 0)
-            return new TimeScaleInstant(epochSeconds, nanoOfSecond);
+            return new TimeScaleInstant(scale, epochSeconds, nanoOfSecond);
         else
-            return new LeapInstant(epochSeconds, nanoOfSecond, leapSecond);
+            return new LeapInstant(scale, epochSeconds, nanoOfSecond, leapSecond);
     }
 
-    public static TimeScaleInstant leapInstantWithIncludedLeaps(long epochSeconds, int nanoOfSecond, int includedLeapSeconds, int leapSecond) {
+    public static TimeScaleInstant leapInstantWithIncludedLeaps(TimeScale scale, long epochSeconds, int nanoOfSecond, int includedLeapSeconds, int leapSecond) {
         if (leapSecond == 0)
-            return new WithIncludedLeaps(epochSeconds, nanoOfSecond, includedLeapSeconds);
+            return new WithIncludedLeaps(scale, epochSeconds, nanoOfSecond, includedLeapSeconds);
         else
-            return new LeapInstantWithIncludedLeaps(epochSeconds, nanoOfSecond, includedLeapSeconds, leapSecond);
+            return new LeapInstantWithIncludedLeaps(scale, epochSeconds, nanoOfSecond, includedLeapSeconds, leapSecond);
     }
 
-    private TimeScaleInstant(long epochSeconds, int nanoOfSecond) {
+    private TimeScaleInstant(TimeScale scale, long epochSeconds, int nanoOfSecond) {
+        if (scale == null)
+            throw new NullPointerException("Must specify time scale");
+        this.scale = scale;
         this.epochSeconds = epochSeconds;
         this.nanoOfSecond = nanoOfSecond;
     }
+
+    public TimeScale getScale() {return scale;}
 
     /** Seconds since 1 January 1970.
      *
@@ -46,7 +54,7 @@ public class TimeScaleInstant {
     /** Seconds since 1 January 1970, ignoring leap seconds.
      * @return epochSeconds without any included leap seconds 
      */
-    public long getSimpleEpochSeconds() {return epochSeconds-getIncludedLeapSeconds();}
+    public long getSimpleEpochSeconds() {return epochSeconds;}
 
     /** Does epochSeconds include any leap seconds? */
     public boolean isLeapSecondTotalIncluded() {return false;}
@@ -68,8 +76,8 @@ public class TimeScaleInstant {
     private static class LeapInstant extends TimeScaleInstant {
         private final int leapSecond;
 
-        private LeapInstant(long epochSeconds, int nanoOfSecond, int leapSecond) {
-            super(epochSeconds, nanoOfSecond);
+        private LeapInstant(TimeScale scale, long epochSeconds, int nanoOfSecond, int leapSecond) {
+            super(scale, epochSeconds, nanoOfSecond);
             this.leapSecond = leapSecond;
         }
 
@@ -82,14 +90,19 @@ public class TimeScaleInstant {
     private static class WithIncludedLeaps extends TimeScaleInstant {
         private final int includedLeaps;
 
-        private WithIncludedLeaps(long epochSeconds, int nanoOfSecond, int includedLeaps) {
-            super(epochSeconds, nanoOfSecond);
+        private WithIncludedLeaps(TimeScale scale, long epochSeconds, int nanoOfSecond, int includedLeaps) {
+            super(scale, epochSeconds, nanoOfSecond);
             this.includedLeaps = includedLeaps;
         }
 
         @Override
         public boolean isLeapSecondTotalIncluded() {
             return true;
+        }
+
+        @Override
+        public long getSimpleEpochSeconds() {
+            return getEpochSeconds()-includedLeaps-getLeapSecond();
         }
 
         @Override
@@ -101,8 +114,8 @@ public class TimeScaleInstant {
     private static class LeapInstantWithIncludedLeaps extends WithIncludedLeaps {
         private final int leapSecond;
 
-        LeapInstantWithIncludedLeaps(long epochSeconds, int nanoOfSecond, int includedLeaps, int leapSecond) {
-            super(epochSeconds, nanoOfSecond, includedLeaps);
+        LeapInstantWithIncludedLeaps(TimeScale scale, long epochSeconds, int nanoOfSecond, int includedLeaps, int leapSecond) {
+            super(scale, epochSeconds, nanoOfSecond, includedLeaps);
             this.leapSecond = leapSecond;
         }
 
