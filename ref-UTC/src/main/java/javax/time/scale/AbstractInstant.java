@@ -1,14 +1,18 @@
 package javax.time.scale;
 
-import javax.time.TimeScale;
 import javax.time.Instant;
+import javax.time.Duration;
 
 /** An instant in time on a time scale.
  * Should this support Duration operations?
  * Should we implement Comparable<AbstractInstant> here
  * @author Mark Thornton
  */
-public abstract class AbstractInstant {
+public abstract class AbstractInstant<T extends AbstractInstant> {
+    /**
+     * Constant for nanos per second.
+     */
+    private static final int NANOS_PER_SECOND = 1000000000;
     static long SECONDS_PER_DAY = 86400L;
 
     private static int DAYS_STANDARD_YEAR =365;
@@ -139,12 +143,136 @@ public abstract class AbstractInstant {
     /** Seconds since 1970-01-01 without leap seconds.
      * @return seconds since the epoch
      */
-    public abstract long getSimpleEpochSeconds();
+    public long getSimpleEpochSeconds() {
+        return getScale().getSimpleEpochSeconds(this);
+    }
 
     /** leap second after simple epoch instant.
      * @return 1 during a positive leap second.
      */
     public abstract int getLeapSecond();
+
+    protected abstract T factory(long epochSeconds, int nanoOfSecond, int leapSecond);
+
+    /**
+     * Returns a copy of this Instant with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T plus(Duration duration) {
+        // Should the casts really be necessary here?
+        // javac and IntelliJ disagree.
+        return (T)getScale().plus((T)this, duration);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of seconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to add
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T plusSeconds(long seconds) {
+        return plus(Duration.duration(seconds));
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of milliseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param millis  the milliseconds to add
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T plusMillis(long millis) {
+        return plus(Duration.millisDuration(millis));
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of nanoseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to add
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T plusNanos(long nanos) {
+        long seconds = nanos/NANOS_PER_SECOND;
+        int n = (int)(nanos%NANOS_PER_SECOND);
+        if (n < 0) {
+            n += NANOS_PER_SECOND;
+            seconds--;
+        }
+        return plus(Duration.duration(seconds, n));
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified duration subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to subtract, not null
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T minus(Duration duration) {
+        // Should the casts really be necessary here?
+        // javac and IntelliJ disagree.
+        return (T)getScale().minus((T)this, duration);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T minusSeconds(long seconds) {
+        return minus(Duration.duration(seconds));
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of milliseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param millis  the milliseconds to subtract
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T minusMillis(long millis) {
+        return minus(Duration.millisDuration(millis));
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to subtract
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public T minusNanos(long nanos) {
+        long seconds = nanos/NANOS_PER_SECOND;
+        int n = (int)(nanos%NANOS_PER_SECOND);
+        if (n < 0) {
+            n += NANOS_PER_SECOND;
+            seconds--;
+        }
+        return minus(Duration.duration(seconds, n));
+    }
 
     /**
      * A string representation of this Instant using ISO-8601 representation.

@@ -1,6 +1,6 @@
 package javax.time.scale;
 
-import javax.time.TimeScale;
+import javax.time.scale.TimeScale;
 import java.io.Serializable;
 
 /** International Atomic Time.

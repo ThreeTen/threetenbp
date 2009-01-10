@@ -31,6 +31,7 @@
  */
 package javax.time;
 
+import javax.time.scale.TimeScale;
 import java.io.Serializable;
 
 /**
@@ -189,16 +190,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the created Duration, never null
      */
     public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
-        Instant start = startInclusive.toInstant();
-        Instant end = endExclusive.toInstant();
-
-        long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
-        int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
-        if (nanos < 0) {
-            nanos += NANOS_PER_SECOND;
-            secs = MathUtils.safeDecrement(secs);
-        }
-        return new Duration(secs, nanos);
+        return TimeScale.durationBetween(startInclusive.toInstant(), endExclusive.toInstant());
     }
 
     //-----------------------------------------------------------------------

@@ -20,6 +20,7 @@ class TestScale {
     }
 
     public static void main(String[] args) {
+        System.out.println(Instant.instant(Long.MAX_VALUE));
         System.out.println(TimeScaleInstant.instant(TAI.SCALE, Long.MIN_VALUE, 0));
         System.out.println(TimeScaleInstant.instant(TAI.SCALE, Long.MAX_VALUE, 0));
         System.out.println(TimeScaleInstant.leapInstant(UTC_NoEpochLeaps.SCALE, date(2008, 12, 31) + time(23, 59, 59), 500000000, 1).toString());

@@ -1,6 +1,6 @@
 package javax.time.scale;
 
-import javax.time.TimeScale;
+import javax.time.scale.TimeScale;
 import javax.time.MathUtils;
 import java.io.Serializable;
 

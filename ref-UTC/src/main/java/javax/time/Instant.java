@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.calendar.CalendarConversionException;
 import javax.time.scale.AbstractInstant;
 import javax.time.scale.UTC_NoEpochLeaps;
+import javax.time.scale.TimeScale;
 
 /**
  * An instantaneous point on the time-line of the default TimeScale.
@@ -56,7 +57,7 @@ import javax.time.scale.UTC_NoEpochLeaps;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class Instant extends AbstractInstant
+public final class Instant extends AbstractInstant<Instant>
         implements InstantProvider, Comparable<Instant>, Serializable {
     // TODO: Serialized format
     // TODO: Evaluate hashcode
@@ -97,6 +98,13 @@ public final class Instant extends AbstractInstant
      */
     private final int leapSecond;
 
+
+    protected Instant factory(long epochSeconds, int nanoOfSecond, int leapSecond) {
+        if (epochSeconds == 0 && nanoOfSecond == 0 && leapSecond == 0)
+            return EPOCH;
+        else
+            return new Instant(epochSeconds, nanoOfSecond, leapSecond);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -296,10 +304,6 @@ public final class Instant extends AbstractInstant
         return epochSeconds;
     }
 
-    public long getSimpleEpochSeconds() {
-        return SCALE.getSimpleEpochSeconds(this);
-    }
-
     /**
      * Gets the number of nanoseconds, later along the time-line, from the start
      * of the second returned by {@link #getEpochSeconds()}.
@@ -312,213 +316,6 @@ public final class Instant extends AbstractInstant
 
     public int getLeapSecond() {
         return leapSecond;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified duration added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to add, not null
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant plus(Duration duration) {
-        long secsToAdd = duration.getSeconds();
-        int nanosToAdd = duration.getNanoOfSecond();
-        if (secsToAdd == 0 && nanosToAdd == 0) {
-            return this;
-        }
-
-        long secs = MathUtils.safeAdd(epochSeconds, secsToAdd);
-        int nos = nanoOfSecond + nanosToAdd;
-
-        if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;
-            secs = MathUtils.safeIncrement(secs);
-        }
-
-        return new Instant(secs, nos);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified number of seconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param secondsToAdd  the seconds to add
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant plusSeconds(long secondsToAdd) {
-        if (secondsToAdd == 0) {
-            return this;
-        }
-        long secs = MathUtils.safeAdd(epochSeconds, secondsToAdd);
-        return new Instant(secs , nanoOfSecond);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified number of milliseconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param millisToAdd  the milliseconds to add
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant plusMillis(long millisToAdd) {
-        if (millisToAdd == 0) {
-            return this;
-        }
-        long secondsToAdd = millisToAdd / 1000;
-        // add: 0 to 999,000,000, subtract: 0 to -999,000,000
-        int nos = ((int) (millisToAdd % 1000)) * 1000000;
-        // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos += nanoOfSecond;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
-            secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
-            secondsToAdd++;
-        }
-        return new Instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified number of nanoseconds added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanosToAdd  the nanoseconds to add
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant plusNanos(long nanosToAdd) {
-        if (nanosToAdd == 0) {
-            return this;
-        }
-        long secondsToAdd = nanosToAdd / NANOS_PER_SECOND;
-        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToAdd % NANOS_PER_SECOND);
-        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos += nanoOfSecond;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
-            secondsToAdd--;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToAdd++;
-        }
-        return new Instant(MathUtils.safeAdd(epochSeconds, secondsToAdd) , nos);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified duration subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param duration  the duration to subtract, not null
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant minus(Duration duration) {
-        long secsToSubtract = duration.getSeconds();
-        int nanosToSubtract = duration.getNanoOfSecond();
-        if (secsToSubtract == 0 && nanosToSubtract == 0) {
-            return this;
-        }
-        long secs = MathUtils.safeSubtract(epochSeconds, secsToSubtract);
-        int nos = nanoOfSecond - nanosToSubtract;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;
-            secs = MathUtils.safeDecrement(secs);
-        }
-        return new Instant(secs, nos);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified number of seconds subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param secondsToSubtract  the seconds to subtract
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant minusSeconds(long secondsToSubtract) {
-        if (secondsToSubtract == 0) {
-            return this;
-        }
-        long secs = MathUtils.safeSubtract(epochSeconds, secondsToSubtract);
-        return new Instant(secs , nanoOfSecond);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified number of milliseconds subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param millisToSubtract  the milliseconds to subtract
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant minusMillis(long millisToSubtract) {
-        if (millisToSubtract == 0) {
-            return this;
-        }
-
-        long secondsToSubtract = millisToSubtract / 1000;
-        // add: 0 to 999,000,000, subtract: 0 to -999,000,000
-        int nos = ((int) (millisToSubtract % 1000)) * 1000000;
-        // add: 0 to 0 to 1998,999,999, subtract: -999,000,000 to 999,999,999
-        nos = nanoOfSecond - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1,000,000 to 999,999,999
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 998,999,999
-            secondsToSubtract--;
-        }
-        return new Instant(MathUtils.safeSubtract(epochSeconds, secondsToSubtract) , nos);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this Instant with the specified number of nanoseconds subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param nanosToSubtract  the nanoseconds to subtract
-     * @return a new updated Instant, never null
-     * @throws ArithmeticException if the result exceeds the storage capacity
-     */
-    public Instant minusNanos(long nanosToSubtract) {
-        if (nanosToSubtract == 0) {
-            return this;
-        }
-
-        long secondsToSubtract = nanosToSubtract / NANOS_PER_SECOND;
-        // add: 0 to 999,999,999, subtract: 0 to -999,999,999
-        int nos = (int) (nanosToSubtract % NANOS_PER_SECOND);
-        // add: 0 to 0 to 1999,999,998, subtract: -999,999,999 to 999,999,999
-        nos = nanoOfSecond - nos;
-        if (nos < 0) {
-            nos += NANOS_PER_SECOND;  // subtract: 1 to 999,999,999
-            secondsToSubtract++;
-        } else if (nos >= NANOS_PER_SECOND) {
-            nos -= NANOS_PER_SECOND;  // add: 1 to 999,999,999
-            secondsToSubtract--;
-        }
-        return new Instant(MathUtils.safeSubtract(epochSeconds, secondsToSubtract) , nos);
     }
 
     //-----------------------------------------------------------------------

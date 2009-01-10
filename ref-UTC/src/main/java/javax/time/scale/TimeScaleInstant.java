@@ -1,13 +1,13 @@
 package javax.time.scale;
 
-import javax.time.TimeScale;
+import javax.time.scale.TimeScale;
 
 /** Point in time relative to a time scale.
  * Time conversions can be done simply by subtracting the included leap seconds from
  * the epochSeconds and the later (optionally) adjusting for leapSecond if that is non zero. 
  * @author Mark Thornton
  */
-public class TimeScaleInstant extends AbstractInstant {
+public class TimeScaleInstant extends AbstractInstant<TimeScaleInstant> {
     private final TimeScale scale;
     private final long epochSeconds;
     private final int nanoOfSecond;
@@ -32,6 +32,10 @@ public class TimeScaleInstant extends AbstractInstant {
             return new WithIncludedLeaps(scale, epochSeconds, nanoOfSecond, includedLeapSeconds);
         else
             return new LeapInstantWithIncludedLeaps(scale, epochSeconds, nanoOfSecond, includedLeapSeconds, leapSecond);
+    }
+
+    protected TimeScaleInstant factory(long epochSeconds, int nanoOfSecond, int leapSecond) {
+        return leapInstant(getScale(), epochSeconds, nanoOfSecond, leapSecond);
     }
 
     private TimeScaleInstant(TimeScale scale, long epochSeconds, int nanoOfSecond) {

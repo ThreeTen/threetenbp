@@ -1,7 +1,7 @@
 package javax.time.scale;
 
 import javax.time.Instant;
-import javax.time.TimeScale;
+import javax.time.scale.TimeScale;
 import static javax.time.scale.TestScale.*;
 
 /**

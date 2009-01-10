@@ -1,6 +1,6 @@
 package javax.time.scale;
 
-import javax.time.TimeScale;
+import javax.time.scale.TimeScale;
 import javax.time.Instant;
 import static javax.time.scale.TestScale.*;
 
@@ -39,7 +39,7 @@ public class TestTimeScale {
 
     private static void time(TimeScale scale, long epochSeconds) {
         Instant t = Instant.instant(TimeScaleInstant.instant(scale, epochSeconds, 0));
-        System.out.print(scale.getName()+" "+epochSeconds+" ==> TAI: "+t);
+        System.out.print(scale.getName()+" "+epochSeconds+" ==> "+t);
         if (scale != UTC.SCALE) {
             AbstractInstant utc = UTC.SCALE.toScale(t);
             System.out.print("; UTC: "+utc.getEpochSeconds());

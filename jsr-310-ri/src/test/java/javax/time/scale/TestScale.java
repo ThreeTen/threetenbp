@@ -1,5 +1,7 @@
 package javax.time.scale;
 
+import javax.time.Instant;
+
 /** Helper methods for TimeScale tests.
  * These may duplicate some functionality found elsewhere.
  */
@@ -18,4 +20,8 @@ class TestScale {
     }
 
     private TestScale() {}
+
+    public static void main(String[] args) {
+        System.out.println(Instant.instant(Long.MAX_VALUE));
+    }
 }
