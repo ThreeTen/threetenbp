@@ -2,7 +2,7 @@ package javax.time.scale;
 
 import java.util.Comparator;
 
-/** Compare TimeScaleInstant's
+/** Compare AbstractInstant's
  */
 class InstantComparator implements Comparator<AbstractInstant> {
     public static final InstantComparator INSTANCE = new InstantComparator();

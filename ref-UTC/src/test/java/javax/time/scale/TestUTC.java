@@ -16,12 +16,12 @@ public class TestUTC {
         long epochSeconds = date(2008, 12, 31)+time(23,59,59)+33;
         TimeScale[] scales = {TAI.SCALE, UTC.SCALE, UTC_NoEpochLeaps.SCALE, UTC_NoLeaps.SCALE};
         for (int i=0; i<13; i++) {
-            TimeScaleInstant tai = TimeScaleInstant.instant(TAI.SCALE, epochSeconds+i/4, (i%4)*250000000);
+            AbstractInstant tai = TAI.SCALE.instant(epochSeconds + i / 4, (i % 4) * 250000000);
             Instant t = Instant.instant(tai);
             System.out.println();
             System.out.println("t="+t);
             for (TimeScale ts: scales) {
-                AbstractInstant tsi = ts.toScale(t);
+                AbstractInstant tsi = ts.instant(t);
                 System.out.print("Scale="+ts.getName()+": "+ tsi.toString() +"; "+tsi.getEpochSeconds()+"s + "+tsi.getNanoOfSecond()+"ns");
                 if (tsi.getEpochSeconds() != tsi.getSimpleEpochSeconds()) {
                     System.out.print(", includedLeaps="+(tsi.getEpochSeconds()-tsi.getSimpleEpochSeconds()));

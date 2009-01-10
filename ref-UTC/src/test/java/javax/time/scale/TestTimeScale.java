@@ -24,24 +24,24 @@ public class TestTimeScale {
         time(UTC_NoEpochLeaps.SCALE, TestScale.date(1971, 12, 31)+ TestScale.time(23,59,59));
         time(UTC_NoEpochLeaps.SCALE, TestScale.date(1972, 1, 1));
 
-        convertToInstant(TimeScaleInstant.instant(UTC.SCALE, date(2008, 12, 31)+TestScale.time(23, 59, 59), 0));
-        convertToInstant(TimeScaleInstant.leapInstant(UTC.SCALE, date(2008, 12, 31)+TestScale.time(23, 59, 59), 0, 1));
-        convertToInstant(TimeScaleInstant.instant(UTC.SCALE, date(2009, 1, 1), 0));
-        convertToInstant(TimeScaleInstant.instant(UTC_NoEpochLeaps.SCALE, date(2008, 12, 31)+TestScale.time(23, 59, 59), 0));
-        convertToInstant(TimeScaleInstant.leapInstant(UTC_NoEpochLeaps.SCALE, date(2008, 12, 31)+TestScale.time(23, 59, 59), 0, 1));
-        convertToInstant(TimeScaleInstant.instant(UTC_NoEpochLeaps.SCALE, date(2009, 1, 1), 0));
+        convertToInstant(UTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
+        convertToInstant(UTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
+        convertToInstant(UTC.SCALE.instant(date(2009, 1, 1), 0));
+        convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
+        convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
+        convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2009, 1, 1), 0));
     }
 
-    private static void convertToInstant(TimeScaleInstant tsi) {
+    private static void convertToInstant(AbstractInstant tsi) {
         Instant t = Instant.instant(tsi);
         System.out.println(tsi.getSimpleEpochSeconds()+"s, "+tsi.getNanoOfSecond()+"ns, leap="+tsi.getLeapSecond()+" ==> "+t);
     }
 
     private static void time(TimeScale scale, long epochSeconds) {
-        Instant t = Instant.instant(TimeScaleInstant.instant(scale, epochSeconds, 0));
+        Instant t = Instant.instant(scale.instant(epochSeconds, 0));
         System.out.print(scale.getName()+" "+epochSeconds+" ==> "+t);
         if (scale != UTC.SCALE) {
-            AbstractInstant utc = UTC.SCALE.toScale(t);
+            AbstractInstant utc = UTC.SCALE.instant(t);
             System.out.print("; UTC: "+utc.getEpochSeconds());
             int nanos = utc.getNanoOfSecond();
             if (nanos != 0) {

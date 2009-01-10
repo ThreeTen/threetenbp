@@ -2,13 +2,14 @@ package javax.time.scale;
 
 import javax.time.Instant;
 import javax.time.Duration;
+import java.io.Serializable;
 
 /** An instant in time on a time scale.
  * Should this support Duration operations?
- * Should we implement Comparable<AbstractInstant> here
+ * We should also implement Comparable<AbstractInstant> here
  * @author Mark Thornton
  */
-public abstract class AbstractInstant<T extends AbstractInstant> {
+public abstract class AbstractInstant<T extends AbstractInstant> implements Serializable {
     /**
      * Constant for nanos per second.
      */
@@ -25,6 +26,16 @@ public abstract class AbstractInstant<T extends AbstractInstant> {
      - (31+28);
 
     private static final String[] SMALL_NUMBERS;
+
+    /**
+     * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
+     */
+    private final long epochSeconds;
+    /**
+     * The number of nanoseconds, later along the time-line, from the seconds field.
+     * This is always positive, and never exceeds 999,999,999.
+     */
+    private final int nanoOfSecond;
 
     static
     {
@@ -130,15 +141,37 @@ public abstract class AbstractInstant<T extends AbstractInstant> {
         }
     }
 
+    protected AbstractInstant(long epochSeconds, int nanoOfSecond) {
+        this.epochSeconds = epochSeconds;
+        this.nanoOfSecond = nanoOfSecond;
+    }
+
+    /** TimeScale for this instant.
+     *
+     * @return associated time scale.
+     */
     public abstract TimeScale getScale();
 
-    /** Seconds since 1970-01-01.
-     * In some time scales this may include any leap seconds.
-     * @return seconds since the epoch
+    /**
+     * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * Instants on the time-line after the epoch are positive, earlier are negative.
+     *
+     * @return the seconds from the epoch
      */
-    public abstract long getEpochSeconds();
+    public long getEpochSeconds() {
+        return epochSeconds;
+    }
 
-    public abstract int getNanoOfSecond();
+    /**
+     * Gets the number of nanoseconds, later along the time-line, from the start
+     * of the second returned by {@link #getEpochSeconds()}.
+     *
+     * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
+     */
+    public int getNanoOfSecond() {
+        return nanoOfSecond;
+    }
 
     /** Seconds since 1970-01-01 without leap seconds.
      * @return seconds since the epoch
@@ -148,11 +181,32 @@ public abstract class AbstractInstant<T extends AbstractInstant> {
     }
 
     /** leap second after simple epoch instant.
+     * This is never negative. It is used to disambiguate seconds which share the same simple epoch seconds value.
      * @return 1 during a positive leap second.
      */
-    public abstract int getLeapSecond();
+    public int getLeapSecond() {
+        return 0;
+    }
 
     protected abstract T factory(long epochSeconds, int nanoOfSecond, int leapSecond);
+    protected T factory(long epochSeconds, int nanoOfSecond, int leapSecond, int includedLeapSeconds) {
+        return factory(epochSeconds, nanoOfSecond, leapSecond);
+    }
+
+    /** Calculate duration from another instant.
+     * To compute durations between instants which may be on different time scales, use the TimeScale.durationBetween
+     * method. This is required because the result can depend on the TimeScale used to evaluate the difference. For
+     * example the difference between 2008-12-31T23:59:59Z and 2009-01-01T:00:00Z is two seconds in most time scales
+     * (and in reality), but only one second on time scales which ignore the leap second.
+     * @param other another instant on the same time scale.
+     * @return duration from other to this measured on the common time scale.
+     */
+    public Duration durationFrom(AbstractInstant other) {
+        if (getScale().equals(other.getScale())) {
+            return getScale().difference(this, other);
+        }
+        throw new IllegalArgumentException("Other duration on different time scale");
+    }
 
     /**
      * Returns a copy of this Instant with the specified duration added.

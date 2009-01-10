@@ -1,41 +1,56 @@
 package javax.time.scale;
 
-import javax.time.scale.AbstractInstant;
-import javax.time.scale.TimeScaleInstant;
 import javax.time.Duration;
 import javax.time.MathUtils;
 
 /**  Describe time scales such as TAI, UTC, GPS.
  * In particular account for the effects of leap seconds.
+ * Could parameterise this class by its associated subclass of AbstractInstant.
  * @author Mark Thornton
  */
 public abstract class TimeScale {
     protected static final int NANOS_PER_SECOND = 1000000000;
 
+    /** 1970-01-01T00:00 in this time scale. */
+    public abstract AbstractInstant getEpoch();
 
+    /** compute instant in this time scale given a TAI instant.
+     *
+     * @param tsiTAI instant in TAI
+     * @return instant on this time scale.
+     */
     protected abstract AbstractInstant fromTAI(AbstractInstant tsiTAI);
+
+    /** Compute TAI instant corresponding to an instant in this time scale.
+     *
+     * @param t instant in this scale
+     * @return instant on TAI
+     */
     protected abstract AbstractInstant toTAI(AbstractInstant t);
 
-    public static Duration durationBetween(AbstractInstant a, AbstractInstant b) {
-        if (a.getScale().equals(b.getScale())) {
-            return a.getScale().difference(a, b);
-        }
-        /*
-        Note: while it would be possible to convert both instants to a common time scale, the meaning
-        of the resulting duration could depend on the selected time scale.
-         */
-        throw new IllegalArgumentException("Arguments have different TimeScale's");
+    /** Compute duration between two instants.
+     * The difference is evaluated on this scale by converting the instants where necessary
+     * @param a first instant
+     * @param b second instant
+     * @return duration between a and b
+     */
+    public Duration durationBetween(AbstractInstant a, AbstractInstant b) {
+        if (!equals(a.getScale()))
+            a = instant(a);
+        if (!equals(b.getScale()))
+            b = instant(b);
+        return difference(a, b);
     }
 
     /** Compute duration between two instants on this TimeScale.
-     *
+     * The default implementation assumes there are no leap seconds
      * @param a first instant
      * @param b second instant
      * @return difference
      */
     protected Duration difference(AbstractInstant a, AbstractInstant b) {
         long seconds = MathUtils.safeSubtract(a.getEpochSeconds(), b.getEpochSeconds());
-        int nanos = MathUtils.safeSubtract(a.getNanoOfSecond(), b.getNanoOfSecond());
+        int nanos = a.getNanoOfSecond() - b.getNanoOfSecond();
         if (nanos < 0) {
             nanos += NANOS_PER_SECOND;
             seconds = MathUtils.safeDecrement(seconds);
@@ -43,6 +58,12 @@ public abstract class TimeScale {
         return Duration.duration(seconds, nanos);
     }
 
+    /** add a duration to an instant in this time scale.
+     * The default implementation assumes there are no leap seconds.
+     * @param t base instant
+     * @param duration duration to add
+     * @return sum
+     */
     protected <T extends AbstractInstant<T>> T plus(T t, Duration duration) {
         if (duration.equals(Duration.ZERO))
             return t;
@@ -55,6 +76,12 @@ public abstract class TimeScale {
         return t.factory(seconds, nanos, 0);
     }
 
+    /** Subtract a duration from an instant in this time scale.
+     * The default implementation assumes there are no leap seconds.
+     * @param t base instant
+     * @param duration duration to subtract
+     * @return t-duration
+     */
     protected <T extends AbstractInstant<T>> T minus(T t, Duration duration) {
         if (duration.equals(Duration.ZERO))
             return t;
@@ -67,20 +94,47 @@ public abstract class TimeScale {
         return t.factory(seconds, nanos, 0);
     }
 
-    public TimeScaleInstant toScale(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
+    /** Instant in this scale from epoch seconds.
+     *
+     * @param simpleEpochSeconds seconds from epoch <i>without</i> leap seconds.
+     * @param nanoOfSecond nanoseconds after the second
+     * @return instant on this time scale
+     */
+    public AbstractInstant instant(long simpleEpochSeconds, int nanoOfSecond) {
+        return instant(simpleEpochSeconds, nanoOfSecond, 0);
+    }
+
+    /** Instant in this scale from epoch seconds.
+     * @param simpleEpochSeconds seconds from epoch <i>without</i> leap seconds.
+     * @param nanoOfSecond nanoseconds after the second
+     * @param leapSecond leap second after the simpleEpoch second. Zero if not a leap second.
+     * @return instant on this time scale
+     */
+    public AbstractInstant instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
         if (leapSecond != 0) {
             throw new IllegalArgumentException(getName()+" does not permit leap seconds");
         }
-        return TimeScaleInstant.instant(this, simpleEpochSeconds, nanoOfSecond);
+        return getEpoch().factory(simpleEpochSeconds, nanoOfSecond, 0);
     }
 
-    public AbstractInstant toScale(AbstractInstant tsi) {
-        if (tsi.getScale() != this) {
+    /** Convert instant to this scale.
+     *
+     * @param tsi Instant in any time scale
+     * @return An equivalent instant in this timescale
+     */
+    public AbstractInstant instant(AbstractInstant tsi) {
+        if (!equals(tsi.getScale())) {
             tsi = fromTAI(tsi.getScale().toTAI(tsi));
         }
         return tsi;
     }
 
+    /** Compute simple epoch seconds given an instant in this time scale.
+     * The javax.time.Instant class doesn't store simpleEpochSeconds, so it needs to be computed when required.
+     * For most time scales this is trivial.
+     * @param t
+     * @return
+     */
     protected long getSimpleEpochSeconds(AbstractInstant t) {
         return t.getEpochSeconds();
     }

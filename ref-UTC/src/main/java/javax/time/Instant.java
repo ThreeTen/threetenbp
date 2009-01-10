@@ -66,7 +66,8 @@ public final class Instant extends AbstractInstant<Instant>
     // TODO: Check for potential overflows
 
     /** Coordinated Universal Time without leap seconds.
-     * Epoch seconds do not include leap seconds. */
+     * Epoch seconds do not include leap seconds, however the leapSecond field is used
+     * to distinguish leapSeconds. */
     public static final TimeScale SCALE = UTC_NoEpochLeaps.SCALE;
 
     /**
@@ -82,16 +83,6 @@ public final class Instant extends AbstractInstant<Instant>
      * Serialization version id.
      */
     private static final long serialVersionUID = -9114640809030911667L;
-
-    /**
-     * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
-     */
-    private final long epochSeconds;
-    /**
-     * The number of nanoseconds, later along the time-line, from the seconds field.
-     * This is always positive, and never exceeds 999,999,999.
-     */
-    private final int nanoOfSecond;
 
     /** Leap second indicator.
      *
@@ -131,7 +122,9 @@ public final class Instant extends AbstractInstant<Instant>
         if (tsi instanceof Instant) {
             return (Instant)tsi;
         }
-        tsi = SCALE.toScale(tsi);
+        else if (!SCALE.equals(tsi.getScale())) {
+            tsi = SCALE.instant(tsi);
+        }
         return new Instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond(), tsi.getLeapSecond());
     }
 
@@ -275,43 +268,17 @@ public final class Instant extends AbstractInstant<Instant>
      * @param nanoOfSecond  the nanoseconds within the second, must be positive
      */
     private Instant(long epochSeconds, int nanoOfSecond) {
-        super();
-        this.epochSeconds = epochSeconds;
-        this.nanoOfSecond = nanoOfSecond;
+        super(epochSeconds, nanoOfSecond);
         this.leapSecond = 0;
     }
 
     Instant(long epochSeconds, int nanoOfSecond, int leapSecond) {
-        super();
-        this.epochSeconds = epochSeconds;
-        this.nanoOfSecond = nanoOfSecond;
+        super(epochSeconds, nanoOfSecond);
         this.leapSecond = leapSecond;
     }
 
     public TimeScale getScale() {
         return SCALE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * Instants on the time-line after the epoch are positive, earlier are negative.
-     *
-     * @return the seconds from the epoch
-     */
-    public long getEpochSeconds() {
-        return epochSeconds;
-    }
-
-    /**
-     * Gets the number of nanoseconds, later along the time-line, from the start
-     * of the second returned by {@link #getEpochSeconds()}.
-     *
-     * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
-     */
-    public int getNanoOfSecond() {
-        return nanoOfSecond;
     }
 
     public int getLeapSecond() {
@@ -337,8 +304,8 @@ public final class Instant extends AbstractInstant<Instant>
      */
     public long toEpochMillis() {
         try {
-            long millis = MathUtils.safeMultiply(epochSeconds, 1000);
-            return millis + nanoOfSecond / 1000000;
+            long millis = MathUtils.safeMultiply(getEpochSeconds(), 1000);
+            return millis + getNanoOfSecond() / 1000000;
         } catch (ArithmeticException ex) {
             throw new CalendarConversionException("The Instant cannot be represented as epoch milliseconds");
         }
@@ -363,7 +330,7 @@ public final class Instant extends AbstractInstant<Instant>
      * @throws NullPointerException if otherInstant is null
      */
     public int compareTo(Instant otherInstant) {
-        int cmp = MathUtils.safeCompare(epochSeconds, otherInstant.epochSeconds);
+        int cmp = MathUtils.safeCompare(getEpochSeconds(), otherInstant.getEpochSeconds());
         if (cmp != 0) {
             return cmp;
         }
@@ -371,7 +338,7 @@ public final class Instant extends AbstractInstant<Instant>
         if (cmp != 0) {
             return cmp;
         }
-        return MathUtils.safeCompare(nanoOfSecond, otherInstant.nanoOfSecond);
+        return MathUtils.safeCompare(getNanoOfSecond(), otherInstant.getNanoOfSecond());
     }
 
     /**
@@ -410,8 +377,8 @@ public final class Instant extends AbstractInstant<Instant>
         }
         if (otherInstant instanceof Instant) {
             Instant other = (Instant) otherInstant;
-            return this.epochSeconds == other.epochSeconds &&
-                   this.nanoOfSecond == other.nanoOfSecond &&
+            return this.getEpochSeconds() == other.getEpochSeconds() &&
+                   this.getNanoOfSecond() == other.getNanoOfSecond() &&
                     this.leapSecond == other.leapSecond;
         }
         return false;
@@ -424,6 +391,6 @@ public final class Instant extends AbstractInstant<Instant>
      */
     @Override
     public int hashCode() {
-        return ((int) (epochSeconds ^ (epochSeconds >>> 32))) + 51 * nanoOfSecond;
+        return ((int) (getEpochSeconds() ^ (getEpochSeconds() >>> 32))) + 51 * getNanoOfSecond();
     }
 }

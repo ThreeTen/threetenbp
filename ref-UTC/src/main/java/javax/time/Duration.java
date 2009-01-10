@@ -190,7 +190,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the created Duration, never null
      */
     public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
-        return TimeScale.durationBetween(startInclusive.toInstant(), endExclusive.toInstant());
+        return startInclusive.toInstant().durationFrom(endExclusive.toInstant());
     }
 
     //-----------------------------------------------------------------------
