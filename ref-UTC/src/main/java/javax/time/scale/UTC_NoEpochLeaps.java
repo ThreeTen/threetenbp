@@ -8,9 +8,9 @@ import java.io.Serializable;
  * The AbstractInstant does report leapSecond.
  * @author Mark Thornton
  */
-public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
+public class UTC_NoEpochLeaps extends AbstractUTC<UTC_NoEpochLeaps.Instant> implements Serializable {
     public static final UTC_NoEpochLeaps SCALE = new UTC_NoEpochLeaps();
-    public static final AbstractInstant EPOCH = new Instant(0, 0);
+    public static final Instant EPOCH = new Instant(0, 0);
 
     private UTC_NoEpochLeaps() {}
 
@@ -18,12 +18,12 @@ public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
         return SCALE;
     }
 
-    public AbstractInstant getEpoch() {
+    public Instant getEpoch() {
         return EPOCH;
     }
 
     @Override
-    protected AbstractInstant fromTAI(AbstractInstant tsiTAI) {
+    protected Instant fromTAI(TAI.Instant tsiTAI) {
         if (InstantComparator.INSTANCE.compare(tsiTAI, getLeapEraInstant()) < 0) {
             return super.fromTAI(tsiTAI);
         }
@@ -36,7 +36,7 @@ public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
     }
 
     @Override
-    protected AbstractInstant toTAI(AbstractInstant tsi) {
+    protected TAI.Instant toTAI(Instant tsi) {
         if (tsi.getEpochSeconds() != tsi.getSimpleEpochSeconds() )
             throw new IllegalArgumentException("Time scale does not include leap seconds");
         if (tsi.getEpochSeconds() < leapEraSeconds)
@@ -53,7 +53,7 @@ public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
     }
 
     @Override
-    public AbstractInstant instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
+    public Instant instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
         if (simpleEpochSeconds < leapEraSeconds) {
             if (leapSecond != 0)
                 throw new IllegalArgumentException("There is no leap second at this instant");
@@ -83,7 +83,7 @@ public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
     }
 
     @Override
-    protected Duration difference(AbstractInstant a, AbstractInstant b) {
+    protected Duration difference(Instant a, Instant b) {
         long seconds = MathUtils.safeSubtract(a.getEpochSeconds(), b.getEpochSeconds());
         seconds = MathUtils.safeAdd(seconds, getLeapCount(a)-getLeapCount(b));
         int nanos = a.getNanoOfSecond() - b.getNanoOfSecond();
@@ -141,12 +141,12 @@ public class UTC_NoEpochLeaps extends AbstractUTC implements Serializable {
         return newInstant(t, seconds, nanos);
     }
 
-    private static class Instant extends AbstractInstant<Instant> {
+    public static class Instant extends AbstractInstant<Instant> {
         Instant(long epochSeconds, int nanoOfSecond) {
             super(epochSeconds, nanoOfSecond);
         }
 
-        public TimeScale getScale() {
+        public UTC_NoEpochLeaps getScale() {
             return SCALE;
         }
 

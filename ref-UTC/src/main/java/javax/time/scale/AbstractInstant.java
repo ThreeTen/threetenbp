@@ -9,7 +9,7 @@ import java.io.Serializable;
  * We should also implement Comparable<AbstractInstant> here
  * @author Mark Thornton
  */
-public abstract class AbstractInstant<T extends AbstractInstant> implements Serializable {
+public abstract class AbstractInstant<T extends AbstractInstant<T>> implements Serializable {
     /**
      * Constant for nanos per second.
      */
@@ -150,7 +150,7 @@ public abstract class AbstractInstant<T extends AbstractInstant> implements Seri
      *
      * @return associated time scale.
      */
-    public abstract TimeScale getScale();
+    public abstract TimeScale<T> getScale();
 
     /**
      * Gets the number of seconds from the epoch of 1970-01-01T00:00:00Z.
@@ -201,9 +201,9 @@ public abstract class AbstractInstant<T extends AbstractInstant> implements Seri
      * @param other another instant on the same time scale.
      * @return duration from other to this measured on the common time scale.
      */
-    public Duration durationFrom(AbstractInstant other) {
+    public Duration durationFrom(T other) {
         if (getScale().equals(other.getScale())) {
-            return getScale().difference(this, other);
+            return getScale().difference((T)this, other);
         }
         throw new IllegalArgumentException("Other duration on different time scale");
     }

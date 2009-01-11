@@ -6,7 +6,7 @@ import java.io.Serializable;
 /** International Atomic Time.
  *  * @author Mark Thornton
  */
-public class TAI extends TimeScale implements Serializable {
+public class TAI extends TimeScale<TAI.Instant> implements Serializable {
     public static final TAI SCALE = new TAI();
     public static final Instant EPOCH = new Instant(0, 0);
 
@@ -25,11 +25,11 @@ public class TAI extends TimeScale implements Serializable {
     }
 
     @Override
-    protected AbstractInstant fromTAI(AbstractInstant tsiTAI) {
+    protected Instant fromTAI(Instant tsiTAI) {
         return tsiTAI;
     }
 
-    protected AbstractInstant toTAI(AbstractInstant t) {
+    protected Instant toTAI(Instant t) {
         return t;
     }
 
@@ -43,7 +43,7 @@ public class TAI extends TimeScale implements Serializable {
             super(epochSeconds, nanoOfSecond);
         }
 
-        public TimeScale getScale() {
+        public TAI getScale() {
             return SCALE;
         }
 

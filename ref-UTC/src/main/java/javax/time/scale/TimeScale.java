@@ -8,25 +8,25 @@ import javax.time.MathUtils;
  * Could parameterise this class by its associated subclass of AbstractInstant.
  * @author Mark Thornton
  */
-public abstract class TimeScale {
+public abstract class TimeScale<T extends AbstractInstant<T>> {
     protected static final int NANOS_PER_SECOND = 1000000000;
 
     /** 1970-01-01T00:00 in this time scale. */
-    public abstract AbstractInstant getEpoch();
+    public abstract T getEpoch();
 
     /** compute instant in this time scale given a TAI instant.
      *
      * @param tsiTAI instant in TAI
      * @return instant on this time scale.
      */
-    protected abstract AbstractInstant fromTAI(AbstractInstant tsiTAI);
+    protected abstract T fromTAI(TAI.Instant tsiTAI);
 
     /** Compute TAI instant corresponding to an instant in this time scale.
      *
      * @param t instant in this scale
      * @return instant on TAI
      */
-    protected abstract AbstractInstant toTAI(AbstractInstant t);
+    protected abstract TAI.Instant toTAI(T t);
 
     /** Compute duration between two instants.
      * The difference is evaluated on this scale by converting the instants where necessary
@@ -35,11 +35,7 @@ public abstract class TimeScale {
      * @return duration between a and b
      */
     public Duration durationBetween(AbstractInstant a, AbstractInstant b) {
-        if (!equals(a.getScale()))
-            a = instant(a);
-        if (!equals(b.getScale()))
-            b = instant(b);
-        return difference(a, b);
+        return difference(instant(a), instant(b));
     }
 
     /** Compute duration between two instants on this TimeScale.
@@ -48,7 +44,7 @@ public abstract class TimeScale {
      * @param b second instant
      * @return difference
      */
-    protected Duration difference(AbstractInstant a, AbstractInstant b) {
+    protected Duration difference(T a, T b) {
         long seconds = MathUtils.safeSubtract(a.getEpochSeconds(), b.getEpochSeconds());
         int nanos = a.getNanoOfSecond() - b.getNanoOfSecond();
         if (nanos < 0) {
@@ -64,7 +60,7 @@ public abstract class TimeScale {
      * @param duration duration to add
      * @return sum
      */
-    protected <T extends AbstractInstant<T>> T plus(T t, Duration duration) {
+    protected <U extends AbstractInstant<U>> U plus(U t, Duration duration) {
         if (duration.equals(Duration.ZERO))
             return t;
         long seconds = MathUtils.safeAdd(t.getEpochSeconds(), duration.getSeconds());
@@ -82,7 +78,7 @@ public abstract class TimeScale {
      * @param duration duration to subtract
      * @return t-duration
      */
-    protected <T extends AbstractInstant<T>> T minus(T t, Duration duration) {
+    protected <U extends AbstractInstant<U>> U minus(U t, Duration duration) {
         if (duration.equals(Duration.ZERO))
             return t;
         long seconds = MathUtils.safeSubtract(t.getEpochSeconds(), duration.getSeconds());
@@ -100,7 +96,7 @@ public abstract class TimeScale {
      * @param nanoOfSecond nanoseconds after the second
      * @return instant on this time scale
      */
-    public AbstractInstant instant(long simpleEpochSeconds, int nanoOfSecond) {
+    public T instant(long simpleEpochSeconds, int nanoOfSecond) {
         return instant(simpleEpochSeconds, nanoOfSecond, 0);
     }
 
@@ -110,7 +106,7 @@ public abstract class TimeScale {
      * @param leapSecond leap second after the simpleEpoch second. Zero if not a leap second.
      * @return instant on this time scale
      */
-    public AbstractInstant instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
+    public T instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
         if (leapSecond != 0) {
             throw new IllegalArgumentException(getName()+" does not permit leap seconds");
         }
@@ -122,11 +118,11 @@ public abstract class TimeScale {
      * @param tsi Instant in any time scale
      * @return An equivalent instant in this timescale
      */
-    public AbstractInstant instant(AbstractInstant tsi) {
+    public T instant(AbstractInstant tsi) {
         if (!equals(tsi.getScale())) {
             tsi = fromTAI(tsi.getScale().toTAI(tsi));
         }
-        return tsi;
+        return (T)tsi;
     }
 
     /** Compute simple epoch seconds given an instant in this time scale.

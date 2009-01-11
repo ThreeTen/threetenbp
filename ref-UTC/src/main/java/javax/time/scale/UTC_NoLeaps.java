@@ -9,9 +9,9 @@ import java.io.Serializable;
  * two seconds before midnight run at half speed.
  * @author Mark Thornton
  */
-public class UTC_NoLeaps extends AbstractUTC implements Serializable {
+public class UTC_NoLeaps extends AbstractUTC<UTC_NoLeaps.Instant> implements Serializable {
     public static final UTC_NoLeaps SCALE = new UTC_NoLeaps();
-    public static final AbstractInstant EPOCH = new Instant(0, 0);
+    public static final Instant EPOCH = new Instant(0, 0);
 
     private UTC_NoLeaps() {}
 
@@ -19,12 +19,12 @@ public class UTC_NoLeaps extends AbstractUTC implements Serializable {
         return SCALE;
     }
 
-    public AbstractInstant getEpoch() {
+    public Instant getEpoch() {
         return EPOCH;
     }
 
     @Override
-    protected AbstractInstant fromTAI(AbstractInstant tsiTAI) {
+    protected Instant fromTAI(TAI.Instant tsiTAI) {
         if (InstantComparator.INSTANCE.compare(tsiTAI, getLeapEraInstant()) < 0) {
             return super.fromTAI(tsiTAI);
         }
@@ -37,7 +37,7 @@ public class UTC_NoLeaps extends AbstractUTC implements Serializable {
     }
 
     @Override
-    protected AbstractInstant toTAI(AbstractInstant tsi) {
+    protected TAI.Instant toTAI(Instant tsi) {
         if (tsi.getEpochSeconds() != tsi.getSimpleEpochSeconds() || tsi.getLeapSecond() != 0)
             throw new IllegalArgumentException("Time scale does not include leap seconds");
         if (tsi.getEpochSeconds() < leapEraSeconds)
@@ -52,12 +52,12 @@ public class UTC_NoLeaps extends AbstractUTC implements Serializable {
         return "UTC_NoLeaps";
     }
 
-    private static class Instant extends AbstractInstant<Instant> {
+    public static class Instant extends AbstractInstant<Instant> {
         Instant(long epochSeconds, int nanoOfSecond) {
             super(epochSeconds, nanoOfSecond);
         }
 
-        public TimeScale getScale() {
+        public UTC_NoLeaps getScale() {
             return SCALE;
         }
 

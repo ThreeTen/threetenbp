@@ -9,9 +9,9 @@ import java.io.Serializable;
      * TAI-10s (10 seconds was the initial offset) for times after 1972-01-01T00:00.
  * @author Mark Thornton
  */
-public class UTC extends AbstractUTC implements Serializable {
+public class UTC extends AbstractUTC<UTC.Instant> implements Serializable {
     public static final UTC SCALE = new UTC();
-    public static final AbstractInstant EPOCH = new Instant(0, 0, 0);
+    public static final Instant EPOCH = new Instant(0, 0, 0);
 
     private UTC() {}
 
@@ -24,12 +24,12 @@ public class UTC extends AbstractUTC implements Serializable {
         return "UTC";
     }
 
-    public AbstractInstant getEpoch() {
+    public Instant getEpoch() {
         return EPOCH;
     }
 
     @Override
-    protected AbstractInstant fromTAI(AbstractInstant tsiTAI) {
+    protected Instant fromTAI(TAI.Instant tsiTAI) {
         if (InstantComparator.INSTANCE.compare(tsiTAI, getLeapEraInstant()) < 0) {
             return super.fromTAI(tsiTAI);
         }
@@ -45,14 +45,14 @@ public class UTC extends AbstractUTC implements Serializable {
     }
 
     @Override
-    protected AbstractInstant toTAI(AbstractInstant tsi) {
+    protected TAI.Instant toTAI(Instant tsi) {
         if (tsi.getEpochSeconds() < leapEraSeconds)
             return super.toTAI(tsi);
         return TAI.SCALE.instant(MathUtils.safeAdd(tsi.getEpochSeconds(), leapEraDelta), tsi.getNanoOfSecond());
     }
 
     @Override
-    public AbstractInstant instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
+    public Instant instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
         if (simpleEpochSeconds < leapEraSeconds) {
             if (leapSecond != 0)
                 throw new IllegalArgumentException("There is no leap second at this instant");
@@ -122,7 +122,7 @@ public class UTC extends AbstractUTC implements Serializable {
         return newInstant(t, seconds, nanos);
     }
 
-    private static class Instant extends AbstractInstant<Instant> {
+    public static class Instant extends AbstractInstant<Instant> {
         private final int includedLeapSeconds;
 
         Instant(long epochSeconds, int nanoOfSecond, int includedLeapSeconds) {
@@ -130,7 +130,7 @@ public class UTC extends AbstractUTC implements Serializable {
             this.includedLeapSeconds = includedLeapSeconds;
         }
 
-        public TimeScale getScale() {
+        public UTC getScale() {
             return SCALE;
         }
 

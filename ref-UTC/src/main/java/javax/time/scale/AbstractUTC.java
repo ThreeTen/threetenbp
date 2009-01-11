@@ -11,7 +11,7 @@ import java.util.Arrays;
  * parity in 1958-01-01 (when TAI matched UT2).
  * @author Mark Thornton
  */
-public abstract class AbstractUTC extends TimeScale {
+public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScale<T> {
     private static final int MJD19700101 = Scale.modifiedJulianDay(1970, 1, 1);
     private static final long SECONDS_PER_DAY = 86400L;
     protected static final int leapEraDelta = 10;
@@ -81,11 +81,11 @@ public abstract class AbstractUTC extends TimeScale {
         return null;
     }
 
-    protected AbstractInstant fromTAI(AbstractInstant tsiTAI) {
+    protected T fromTAI(TAI.Instant tsiTAI) {
         // if before 1961 simply return input
         Entry entry = findEntry(tsiTAI);
         if (entry == null) {
-            return tsiTAI;
+            return getEpoch().factory(tsiTAI.getEpochSeconds(), tsiTAI.getNanoOfSecond(), 0);
         }
         long s = tsiTAI.getEpochSeconds();
         int nanos = tsiTAI.getNanoOfSecond();
@@ -97,13 +97,13 @@ public abstract class AbstractUTC extends TimeScale {
         return getEpoch().factory(s-(delta-nanos)/NANOS_PER_SECOND, nanos, 0);
     }
 
-    protected AbstractInstant toTAI(AbstractInstant tsi) {
+    protected TAI.Instant toTAI(T tsi) {
         if (tsi.getLeapSecond() != 0)
             throw new IllegalArgumentException("Invalid leap second");
         // if before 1961 simply return input
         assert tsi.getEpochSeconds() < leapEraSeconds;
         if (tsi.getEpochSeconds() < oldEraSeconds) {
-            return tsi;
+            return TAI.SCALE.instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
         }
         Entry entry = findEntry(tsi.getEpochSeconds());
         long delta = entry.getDelta(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
