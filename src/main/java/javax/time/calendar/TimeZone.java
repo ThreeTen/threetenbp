@@ -31,6 +31,10 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.LocalTime.*;
+import static javax.time.calendar.field.DayOfWeek.*;
+import static javax.time.calendar.field.MonthOfYear.*;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +42,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
+import javax.time.calendar.ZoneRulesBuilder.TimeDefinition;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 
 /**
@@ -113,6 +119,51 @@ public abstract class TimeZone implements Serializable {
             if (timeZoneID.startsWith("UTC") || timeZoneID.startsWith("GMT")) {  // not sure about GMT
                 // 'UTC' will have been dealy with by the cache
                 return timeZone(ZoneOffset.zoneOffset(timeZoneID.substring(3)));
+            } else if (timeZoneID.equals("Europe/London")) {
+                ZoneOffset offsetLMT = ZoneOffset.zoneOffset(0, -1, -15);
+                ZoneOffset offset0 = ZoneOffset.zoneOffset(0);
+                ZoneOffset offset1 = ZoneOffset.zoneOffset(1);
+                Period oneHour = Period.hours(1);
+                Period zeroHours = Period.ZERO;
+                
+                ZoneRulesBuilder b = new ZoneRulesBuilder(
+                        offsetLMT, LocalDateTime.dateTime(1847, 12, 1, 0, 0), TimeDefinition.STANDARD);
+                
+                b.addWindow(offset0, LocalDateTime.dateTime(1968, 10, 27, 0, 0), TimeDefinition.WALL);
+                b.addRuleToWindow(1916, MAY, 21, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1916, OCTOBER, 1, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1917, APRIL, 8, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1917, SEPTEMBER, 17, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1918, MARCH, 24, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1918, SEPTEMBER, 30, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1919, MARCH, 30, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1919, SEPTEMBER, 29, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1920, MARCH, 28, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1920, OCTOBER, 25, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                // ...
+                b.addRuleToWindow(1961, 1963, MARCH, 31, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1961, 1968, OCTOBER, 29, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1964, 1967, MARCH, 25, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1968, FEBRUARY, 18, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1972, 1980, MARCH, 22, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1972, 1980, OCTOBER, 29, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                
+                b.addWindow(offset1, LocalDateTime.dateTime(1971, 10, 31, 2, 0), TimeDefinition.UTC);
+                
+                b.addWindow(offset0, LocalDateTime.dateTime(1996, 1, 1, 0, 0), TimeDefinition.WALL);
+                b.addRuleToWindow(1968, FEBRUARY, 18, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1972, 1980, MARCH, 22, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1972, 1980, OCTOBER, 29, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1981, 1995, MARCH, 31, SUNDAY, time(1, 0), TimeDefinition.UTC, oneHour);
+                b.addRuleToWindow(1981, 1989, OCTOBER, 29, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
+                b.addRuleToWindow(1990, 1995, OCTOBER, 28, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
+                
+                b.addWindowForever(offset0);
+                b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), TimeDefinition.UTC, oneHour);
+                b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, 31, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
+                TimeZone london = b.toRules(timeZoneID);
+                TimeZone cached = CACHE.putIfAbsent(timeZoneID, london);
+                zone = (cached != null ? cached : london);
             } else {
                 // TODO: proper zone provider
                 Map<String, Integer> map = new HashMap<String, Integer>();
