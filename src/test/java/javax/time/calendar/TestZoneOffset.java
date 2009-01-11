@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -398,6 +398,44 @@ public class TestZoneOffset {
     public void test_getSecondsField_negative() {
         ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
         assertEquals(offset.getSecondsField(), -3);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_plus_PeriodProvider() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        Period p = Period.hoursMinutesSeconds(4, 6, 8);
+        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+05:08:11"));
+    }
+
+    public void test_plus_PeriodProvider_overflowSecs() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        Period p = Period.hoursMinutesSeconds(4, 6, 68);
+        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+05:09:11"));
+    }
+
+    public void test_plus_PeriodProvider_overflowMins() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        Period p = Period.hoursMinutesSeconds(4, 66, 8);
+        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+06:08:11"));
+    }
+
+    public void test_plus_PeriodProvider_negative() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("-02:04:06");
+        Period p = Period.hoursMinutesSeconds(1, 2, 3);
+        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("-01:02:03"));
+    }
+
+    public void test_plus_PeriodProvider_negativeToPositive() {
+        ZoneOffset offset = ZoneOffset.zoneOffset("-01:02:03");
+        Period p = Period.hoursMinutesSeconds(4, 6, 8);
+        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+03:04:05"));
+    }
+
+    public void test_plus_PeriodProvider_zero() {
+        ZoneOffset offset = ZoneOffset.UTC;
+        assertEquals(offset.plus(Period.ZERO), ZoneOffset.UTC);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,6 +38,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.time.period.Period;
+import javax.time.period.PeriodProvider;
 
 /**
  * A time zone offset, such as '+02:00'.
@@ -266,6 +267,22 @@ public final class ZoneOffset
         return forTotalSeconds(totalSeconds);
     }
 
+//    /**
+//     * Obtains an instance of <code>ZoneOffset</code> from a period.
+//     * <p>
+//     * Only the hour, minute and second fields from the period are used.
+//     * The sign of the hours, minutes and seconds components must match.
+//     * Thus, if the hours is negative, the minutes and seconds must be negative or zero.
+//     *
+//     * @param periodProvider  the period to use, not null
+//     * @return the ZoneOffset, never null
+//     * @throws IllegalArgumentException if the offset is not in the required range
+//     */
+//    public static ZoneOffset zoneOffset(PeriodProvider periodProvider) {
+//        Period period = Period.period(periodProvider);
+//        return zoneOffset(period.getHours(), period.getMinutes(), period.getSeconds());
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Validates the offset fields.
@@ -480,6 +497,27 @@ public final class ZoneOffset
      */
     public int getSecondsField() {
         return amountSeconds % SECONDS_PER_MINUTE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this offset with the specified period added.
+     * <p>
+     * This adds the amount in hours, minutes and seconds from the specified period to this offset.
+     * Any other fields in the period, such as years, months, days or nanos are ignored.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to add, not null
+     * @return a new updated ZoneOffset, never null
+     * @throws IllegalArgumentException if the offset is not in the required range
+     */
+    public ZoneOffset plus(PeriodProvider periodProvider) {
+        Period otherPeriod = Period.period(periodProvider);
+        otherPeriod = Period.hoursMinutesSeconds(otherPeriod.getHours(), otherPeriod.getMinutes(), otherPeriod.getSeconds());
+        Period thisPeriod = toPeriod();
+        Period combined = thisPeriod.plus(otherPeriod).normalized();
+        return zoneOffset(combined.getHours(), combined.getMinutes(), combined.getSeconds());
     }
 
     //-----------------------------------------------------------------------
