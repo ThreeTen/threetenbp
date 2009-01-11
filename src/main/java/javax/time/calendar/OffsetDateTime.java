@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -1513,12 +1514,8 @@ public final class OffsetDateTime
      * @return an Instant representing the same instant, never null
      */
     public Instant toInstant() {
-        long mjd = dateTime.getDate().toModifiedJulianDays();
-        long epochDays = mjd - 40587;
-        long secs = epochDays * 60L * 60L * 24L + dateTime.getTime().toSecondOfDay();
-        secs -= offset.getAmountSeconds();
-        int nanos = dateTime.getTime().getNanoOfSecond().getValue();
-        return Instant.instant(secs, nanos);
+        int nanos = dateTime.getNanoOfSecond().getValue();
+        return Instant.instant(toEpochSeconds(), nanos);
     }
 
     /**
@@ -1575,6 +1572,22 @@ public final class OffsetDateTime
         return new Calendrical(toLocalDate(), toLocalTime(), offset, null);
     }
 
+    /**
+     * Converts this date-time to the number of seconds from the epoch
+     * of 1970-01-01T00:00:00Z.
+     * <p>
+     * Instants on the time-line after the epoch are positive, earlier are negative.
+     *
+     * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
+     */
+    public long toEpochSeconds() {
+        long mjd = dateTime.getDate().toModifiedJulianDays();
+        long epochDays = mjd - 40587;
+        long secs = epochDays * 60L * 60L * 24L + dateTime.getTime().toSecondOfDay();
+        secs -= offset.getAmountSeconds();
+        return secs;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time based on the UTC
@@ -1603,9 +1616,7 @@ public final class OffsetDateTime
         if (offset.equals(other.offset)) {
             return dateTime.compareTo(other.dateTime);
         }
-        LocalDateTime thisUTC = dateTime.plusSeconds(-offset.getAmountSeconds());
-        LocalDateTime otherUTC = other.dateTime.plusSeconds(-other.offset.getAmountSeconds());
-        int compare = thisUTC.compareTo(otherUTC);
+        int compare = MathUtils.safeCompare(toEpochSeconds(), other.toEpochSeconds());
         if (compare == 0) {
             compare = dateTime.compareTo(other.dateTime);
         }

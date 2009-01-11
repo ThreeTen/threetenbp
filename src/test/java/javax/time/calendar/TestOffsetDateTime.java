@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -70,6 +70,8 @@ public class TestOffsetDateTime {
 
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.zoneOffset(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
+    private static final ZoneOffset OFFSET_MONE = ZoneOffset.zoneOffset(-1);
+    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.zoneOffset(-2);
     private OffsetDateTime TEST_DATE_TIME;
 
     @BeforeMethod
@@ -1136,6 +1138,24 @@ public class TestOffsetDateTime {
     public void test_compareTo_hourDifference() {
         OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 10, 0, OFFSET_PONE);
         OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is before b despite being same time-line time
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+    }
+
+    public void test_compareTo_max() {
+        OffsetDateTime a = OffsetDateTime.dateTime(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MTWO);  // a is before b due to offset
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+    }
+
+    public void test_compareTo_min() {
+        OffsetDateTime a = OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -276,6 +276,32 @@ public class TestOffsetDateTime_instants {
         Instant test = dt.toInstant();
         assertEquals(test.getEpochSeconds(), -24L * 60L * 60L);
         assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toEpochSeconds_19700101() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        assertEquals(dt.toEpochSeconds(), 0);
+    }
+
+    public void test_toEpochSeconds_19700101_oneNano() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1970, 1, 1, 0, 0, 0, 1, ZoneOffset.UTC);
+        assertEquals(dt.toEpochSeconds(), 0);
+    }
+
+    public void test_toEpochSeconds_19700101_minusOneNano() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1969, 12, 31, 23, 59, 59, 999999999, ZoneOffset.UTC);
+        assertEquals(dt.toEpochSeconds(), -1);
+    }
+
+    public void test_toEpochSeconds_19700102() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1970, 1, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+        assertEquals(dt.toEpochSeconds(), 24L * 60L * 60L);
+    }
+
+    public void test_toEpochSeconds_19691231() {
+        OffsetDateTime dt = OffsetDateTime.dateTime(1969, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC);
+        assertEquals(dt.toEpochSeconds(), -24L * 60L * 60L);
     }
 
 }
