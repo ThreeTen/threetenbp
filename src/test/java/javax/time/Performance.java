@@ -44,6 +44,9 @@ import java.util.Random;
 
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneResolvers;
+import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatters;
 
@@ -70,19 +73,27 @@ public class Performance {
         LocalTime time = LocalTime.time(12, 30, 20);
         System.out.println(time);
         
-        List<LocalDateTime> jsrs = setupDateTime();
+//        List<LocalDateTime> jsrs = setupDateTime();
+//        queryListDateTime(jsrs);
+//        formatListDateTime(jsrs);
 //        sortListDateTime(jsrs);
-        queryListDateTime(jsrs);
-        formatListDateTime(jsrs);
+
+        List<ZonedDateTime> zdt = setupZonedDateTime();
+        queryListZonedDateTime(zdt);
+        formatListZonedDateTime(zdt);
+        sortListZonedDateTime(zdt);
+
 //        List<LocalTime> times = setupTime();
 //        List<LocalDate> dates = setupDate();
 //        sortList(times);
 //        queryList(times);
 //        formatList(dates);
-        List<GregorianCalendar> gcals = setupGCal();
+
+//        List<GregorianCalendar> gcals = setupGCal();
+//        queryListGCal(gcals);
+//        formatListGCal(gcals);
 //        sortListGCal(gcals);
-        queryListGCal(gcals);
-        formatListGCal(gcals);
+        
     }
 
     //-----------------------------------------------------------------------
@@ -133,6 +144,58 @@ public class Performance {
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
+    }
+
+    //-----------------------------------------------------------------------
+    private static List<ZonedDateTime> setupZonedDateTime() {
+        TimeZone tz = TimeZone.timeZone("Europe/London");
+        Random random = new Random(47658758756875687L);
+        List<ZonedDateTime> list = new ArrayList<ZonedDateTime>(SIZE);
+        long start = System.nanoTime();
+        for (int i = 0; i < SIZE; i++) {
+            ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(
+                    2008/*random.nextInt(10000)*/, random.nextInt(12) + 1, random.nextInt(28) + 1,
+                    random.nextInt(24), random.nextInt(60), random.nextInt(60)),
+                    tz, ZoneResolvers.postTransition());
+            list.add(t);
+        }
+        long end = System.nanoTime();
+        System.out.println("ZonedDT:   Setup:  " + NF.format(end - start) + " ns");
+        return list;
+    }
+
+    private static void sortListZonedDateTime(List<ZonedDateTime> list) {
+        long start = System.nanoTime();
+        Collections.sort(list);
+        long end = System.nanoTime();
+        System.out.println("ZonedDT:   Sort:   " + NF.format(end - start) + " ns");
+    }
+
+    private static void queryListZonedDateTime(List<ZonedDateTime> list) {
+        long total = 0;
+        long start = System.nanoTime();
+        for (ZonedDateTime dt : list) {
+            total += dt.getYear().getValue();
+            total += dt.getMonthOfYear().getValue();
+            total += dt.getDayOfMonth().getValue();
+            total += dt.getHourOfDay().getValue();
+            total += dt.getMinuteOfHour().getValue();
+            total += dt.getSecondOfMinute().getValue();
+        }
+        long end = System.nanoTime();
+        System.out.println("ZonedDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
+    }
+
+    private static void formatListZonedDateTime(List<ZonedDateTime> list) {
+        StringBuilder buf = new StringBuilder();
+        DateTimeFormatter format = DateTimeFormatters.isoDate().withLocale(Locale.ENGLISH);
+        long start = System.nanoTime();
+        for (ZonedDateTime dt : list) {
+            buf.setLength(0);
+            buf.append(format.print(dt));
+        }
+        long end = System.nanoTime();
+        System.out.println("ZonedDT:   Format: " + NF.format(end - start) + " ns" + " " + buf);
     }
 
 //    //-----------------------------------------------------------------------
@@ -195,11 +258,12 @@ public class Performance {
 
     //-----------------------------------------------------------------------
     private static List<GregorianCalendar> setupGCal() {
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("Europe/London");
         Random random = new Random(47658758756875687L);
         List<GregorianCalendar> list = new ArrayList<GregorianCalendar>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            GregorianCalendar t = new GregorianCalendar();
+            GregorianCalendar t = new GregorianCalendar(tz);
             t.setGregorianChange(new Date(Long.MIN_VALUE));
             t.set(random.nextInt(10000), random.nextInt(12), random.nextInt(28) + 1, random.nextInt(24), random.nextInt(60), random.nextInt(60));
             list.add(t);
