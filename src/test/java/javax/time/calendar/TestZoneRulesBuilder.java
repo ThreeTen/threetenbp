@@ -118,8 +118,8 @@ public class TestZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindow(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 31, SUNDAY, time(1, 0), WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
         TimeZone test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1_15);
         assertOverlap(test, 1920, 1, 1, 0, 55, OFFSET_1_15, OFFSET_1);
@@ -137,8 +137,8 @@ public class TestZoneRulesBuilder {
     public void test_combined_endsInSavings() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_0);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
         TimeZone test = b.toRules("Pacific/Auckland");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1_15);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2);
@@ -310,8 +310,8 @@ public class TestZoneRulesBuilder {
     public void test_addWindow_constrainedRules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
         b.addWindow(OFFSET_1, dateTime(2008, 6, 30, 0, 0), STANDARD);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 31, SUNDAY, time(1, 0), WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
         TimeZone test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2_30);
@@ -367,8 +367,8 @@ public class TestZoneRulesBuilder {
     public void test_addWindowForever_rules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 31, SUNDAY, time(1, 0), WALL, PERIOD_0);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
         TimeZone test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
@@ -409,7 +409,7 @@ public class TestZoneRulesBuilder {
     public void test_setFixedSavingsToWindow_cannotMixSavingsWithRule() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, 2020, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, 2020, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
     }
 
@@ -417,7 +417,7 @@ public class TestZoneRulesBuilder {
     public void test_setFixedSavingsToWindow_cannotMixSavingsWithLastRule() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
     }
 
@@ -431,11 +431,11 @@ public class TestZoneRulesBuilder {
     //-----------------------------------------------------------------------
     // addRuleToWindow()
     //-----------------------------------------------------------------------
-    public void test_addRuleToWindow() {
+    public void test_addRuleToWindow_endOfMonth() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, 2001, MARCH, 31, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
-        b.addRuleToWindow(2000, 2001, OCTOBER, 31, SUNDAY, time(1, 0), UTC, PERIOD_0);
+        b.addRuleToWindow(2000, 2001, MARCH, -1, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, 2001, OCTOBER, -1, SUNDAY, time(1, 0), UTC, PERIOD_0);
         TimeZone test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)).getOffset(), OFFSET_1);
         
@@ -452,10 +452,52 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2002, 7, 1, 0, 0)).getOffset(), OFFSET_1);
     }
 
+    public void test_addRuleToWindow_endOfMonthFeb() {
+        ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
+        b.addWindowForever(OFFSET_1);
+        b.addRuleToWindow(2004, 2005, FEBRUARY, -1, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
+        b.addRuleToWindow(2004, 2005, OCTOBER, -1, SUNDAY, time(1, 0), UTC, PERIOD_0);
+        TimeZone test = b.toRules("Europe/London");
+        assertEquals(test.getOffsetInfo(dateTime(2003, 7, 1, 0, 0)).getOffset(), OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2004, 1, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertGap(test, 2004, 2, 29, 2, 30, OFFSET_1, OFFSET_2);  // leap
+        assertEquals(test.getOffsetInfo(dateTime(2004, 7, 1, 0, 0)).getOffset(), OFFSET_2);
+        assertOverlap(test, 2004, 10, 31, 2, 30, OFFSET_2, OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2005, 1, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertGap(test, 2005, 2, 27, 2, 30, OFFSET_1, OFFSET_2);
+        assertEquals(test.getOffsetInfo(dateTime(2005, 7, 1, 0, 0)).getOffset(), OFFSET_2);
+        assertOverlap(test, 2005, 10, 30, 2, 30, OFFSET_2, OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2006, 7, 1, 0, 0)).getOffset(), OFFSET_1);
+    }
+
+    public void test_addRuleToWindow_fromDayOfMonth() {
+        ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
+        b.addWindowForever(OFFSET_1);
+        b.addRuleToWindow(2000, 2001, MARCH, 10, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, 2001, OCTOBER, 10, SUNDAY, time(1, 0), UTC, PERIOD_0);
+        TimeZone test = b.toRules("Europe/London");
+        assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)).getOffset(), OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertGap(test, 2000, 3, 12, 2, 30, OFFSET_1, OFFSET_2);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)).getOffset(), OFFSET_2);
+        assertOverlap(test, 2000, 10, 15, 2, 30, OFFSET_2, OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2001, 1, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertGap(test, 2001, 3, 11, 2, 30, OFFSET_1, OFFSET_2);
+        assertEquals(test.getOffsetInfo(dateTime(2001, 7, 1, 0, 0)).getOffset(), OFFSET_2);
+        assertOverlap(test, 2001, 10, 14, 2, 30, OFFSET_2, OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2002, 7, 1, 0, 0)).getOffset(), OFFSET_1);
+    }
+
     @Test(expectedExceptions=IllegalStateException.class)
     public void test_addRuleToWindow_noWindow() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalStateException.class)
@@ -463,21 +505,21 @@ public class TestZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_addRuleToWindow_illegalYear1() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(Year.MIN_YEAR - 1, 2008, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(Year.MIN_YEAR - 1, 2008, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_addRuleToWindow_illegalYear2() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MIN_YEAR - 1, MARCH, 31, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MIN_YEAR - 1, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -498,21 +540,21 @@ public class TestZoneRulesBuilder {
     public void test_addRuleToWindow_nullTime() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, (LocalTime) null, WALL, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, (LocalTime) null, WALL, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_addRuleToWindow_nullTimeDefinition() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), (TimeDefinition) null, PERIOD_1HOUR30MIN);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), (TimeDefinition) null, PERIOD_1HOUR30MIN);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_addRuleToWindow_nullPeriod() {
         ZoneRulesBuilder b = new ZoneRulesBuilder(OFFSET_1, dateTime(1950, 1, 1, 1, 0), WALL);
         b.addWindowForever(OFFSET_1);
-        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), WALL, (Period) null);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, (Period) null);
     }
 
     //-----------------------------------------------------------------------

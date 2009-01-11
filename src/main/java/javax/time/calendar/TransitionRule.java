@@ -33,12 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.calendar.DateAdjusters;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -59,15 +53,16 @@ class TransitionRule implements Serializable {
     private static final long serialVersionUID = -32352886665458L;
 
     /**
-     * The month of the latest possible date that the cutover might occur
-     * within the date range. The actual date will be adjusted by the dowChange field.
+     * The month of the month-day of the first day of the cutover week.
+     * The actual date will be adjusted by the dowChange field.
      */
     private final MonthOfYear cutoverMonth;
     /**
-     * The day of month of the latest possible date that the cutover might occur
+     * The day of month of the month-day of the first day of the cutover week
      * within the date range. The actual date will be adjusted by the dowChange field.
+     * If null, then it means the last day of month and adjust earlier.
      */
-    private final DayOfMonth cutoverWeekEnd;
+    private final DayOfMonth cutoverWeekStart;
     /**
      * The cutover day of week, null to retain the day of month.
      */
@@ -88,8 +83,8 @@ class TransitionRule implements Serializable {
     /**
      * Constructor.
      *
-     * @param cutoverMonth  the month of the month-day of the last day of week where the cutover ends, not null
-     * @param cutoverWeekEnd  the day of the month-day of the last day of week where the cutover ends, not null
+     * @param cutoverMonth  the month of the month-day of the first day of the cutover week, not null
+     * @param cutoverWeekStart  the day of the month-day of the first day of the cutover week, not null
      * @param dowChange  the required day of week, null if the month-day should not be changed
      * @param cutoverTime  the cutover time in the 'before' offset, not null
      * @param offsetBefore  the offset before the cutover, not null
@@ -97,38 +92,13 @@ class TransitionRule implements Serializable {
      */
     public TransitionRule(
             MonthOfYear cutoverMonth,
-            int cutoverWeekEnd,
+            DayOfMonth cutoverWeekStart,
             DayOfWeek dowChange,
             LocalTime cutoverTime,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
         this.cutoverMonth = cutoverMonth;
-        this.cutoverWeekEnd = DayOfMonth.dayOfMonth(cutoverWeekEnd);
-        this.dowChange = dowChange;
-        this.cutoverTime = cutoverTime;
-        this.offsetBefore = offsetBefore;
-        this.offsetAfter = offsetAfter;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param cutoverMonth  the month of the month-day of the last day of week where the cutover ends, not null
-     * @param cutoverWeekEnd  the day of the month-day of the last day of week where the cutover ends, not null
-     * @param dowChange  the required day of week, null if the month-day should not be changed
-     * @param cutoverTime  the cutover time in the 'before' offset, not null
-     * @param offsetBefore  the offset before the cutover, not null
-     * @param offsetAfter  the offset after the cutover, not null
-     */
-    public TransitionRule(
-            MonthOfYear cutoverMonth,
-            DayOfMonth cutoverWeekEnd,
-            DayOfWeek dowChange,
-            LocalTime cutoverTime,
-            ZoneOffset offsetBefore,
-            ZoneOffset offsetAfter) {
-        this.cutoverMonth = cutoverMonth;
-        this.cutoverWeekEnd = cutoverWeekEnd;
+        this.cutoverWeekStart = cutoverWeekStart;
         this.dowChange = dowChange;
         this.cutoverTime = cutoverTime;
         this.offsetBefore = offsetBefore;
@@ -144,17 +114,16 @@ class TransitionRule implements Serializable {
      */
     public Transition createTransition(Year year) {
         LocalDate date;
-        try {
-            date = LocalDate.date(year, cutoverMonth, cutoverWeekEnd);
-        } catch (InvalidCalendarFieldException ex) {
-            if (cutoverMonth != MonthOfYear.FEBRUARY) {
-                throw ex;
+        if (cutoverWeekStart == null) {
+            date = LocalDate.date(year, cutoverMonth, cutoverMonth.getLastDayOfMonth(year));
+            if (dowChange != null) {
+                date = date.with(DateAdjusters.previousOrCurrent(dowChange));
             }
-            // Feb 29 and not a leap year - use an exception as its a very rare case
-            date = LocalDate.date(year, MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(28));
-        }
-        if (dowChange != null) {
-            date = date.with(DateAdjusters.previousOrCurrent(dowChange));
+        } else {
+            date = LocalDate.date(year, cutoverMonth, cutoverWeekStart);
+            if (dowChange != null) {
+                date = date.with(DateAdjusters.nextOrCurrent(dowChange));
+            }
         }
         OffsetDateTime cutover = OffsetDateTime.dateTime(date, cutoverTime, offsetBefore);
         return new Transition(cutover, offsetAfter);

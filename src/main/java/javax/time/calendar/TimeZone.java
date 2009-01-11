@@ -141,26 +141,26 @@ public abstract class TimeZone implements Serializable {
                 b.addRuleToWindow(1920, MARCH, 28, time(2, 0), TimeDefinition.STANDARD, oneHour);
                 b.addRuleToWindow(1920, OCTOBER, 25, time(2, 0), TimeDefinition.STANDARD, zeroHours);
                 // ...
-                b.addRuleToWindow(1961, 1963, MARCH, 31, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
-                b.addRuleToWindow(1961, 1968, OCTOBER, 29, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
-                b.addRuleToWindow(1964, 1967, MARCH, 25, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1961, 1963, MARCH, -1, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1961, 1968, OCTOBER, 23, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1964, 1967, MARCH, 19, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
                 b.addRuleToWindow(1968, FEBRUARY, 18, time(2, 0), TimeDefinition.STANDARD, oneHour);
-                b.addRuleToWindow(1972, 1980, MARCH, 22, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
-                b.addRuleToWindow(1972, 1980, OCTOBER, 29, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1972, 1980, MARCH, 16, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1972, 1980, OCTOBER, 23, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
                 
                 b.addWindow(offset1, LocalDateTime.dateTime(1971, 10, 31, 2, 0), TimeDefinition.UTC);
                 
                 b.addWindow(offset0, LocalDateTime.dateTime(1996, 1, 1, 0, 0), TimeDefinition.WALL);
                 b.addRuleToWindow(1968, FEBRUARY, 18, time(2, 0), TimeDefinition.STANDARD, oneHour);
-                b.addRuleToWindow(1972, 1980, MARCH, 22, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
-                b.addRuleToWindow(1972, 1980, OCTOBER, 29, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
-                b.addRuleToWindow(1981, 1995, MARCH, 31, SUNDAY, time(1, 0), TimeDefinition.UTC, oneHour);
-                b.addRuleToWindow(1981, 1989, OCTOBER, 29, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
-                b.addRuleToWindow(1990, 1995, OCTOBER, 28, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
+                b.addRuleToWindow(1972, 1980, MARCH, 16, SUNDAY, time(2, 0), TimeDefinition.STANDARD, oneHour);
+                b.addRuleToWindow(1972, 1980, OCTOBER, 23, SUNDAY, time(2, 0), TimeDefinition.STANDARD, zeroHours);
+                b.addRuleToWindow(1981, 1995, MARCH, -1, SUNDAY, time(1, 0), TimeDefinition.UTC, oneHour);
+                b.addRuleToWindow(1981, 1989, OCTOBER, 23, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
+                b.addRuleToWindow(1990, 1995, OCTOBER, 22, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
                 
                 b.addWindowForever(offset0);
-                b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, 31, SUNDAY, time(1, 0), TimeDefinition.UTC, oneHour);
-                b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, 31, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
+                b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), TimeDefinition.UTC, oneHour);
+                b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), TimeDefinition.UTC, zeroHours);
                 TimeZone london = b.toRules(timeZoneID);
                 TimeZone cached = CACHE.putIfAbsent(timeZoneID, london);
                 zone = (cached != null ? cached : london);

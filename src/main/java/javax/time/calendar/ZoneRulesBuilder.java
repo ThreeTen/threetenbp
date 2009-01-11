@@ -36,14 +36,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.time.Instant;
-import javax.time.calendar.DateAdjusters;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.TimeZone;
-import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -250,7 +242,7 @@ public class ZoneRulesBuilder {
      *
      * @param year  the year of the transition, from MIN_YEAR to MAX_YEAR
      * @param month  the month of the transition, not null
-     * @param dayOfMonth  the day of month of the transition, adjusted earlier by dayOfWeek, from 1 to 31
+     * @param dayOfMonth  the day of month of the transition, from 1 to 31, or -1 for the last day of month
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition, not null
@@ -279,7 +271,8 @@ public class ZoneRulesBuilder {
      * @param startYear  the start year of the rule, from MIN_YEAR to MAX_YEAR
      * @param endYear  the end year of the rule, from MIN_YEAR to MAX_YEAR
      * @param month  the month of the transition, not null
-     * @param dayOfMonth  the day of month of the transition, adjusted earlier by dayOfWeek, from 1 to 31
+     * @param dayOfMonth  the day of month of the transition, adjusted by dayOfWeek,
+     *   from 1 to 31 adjusted later, or -1 adjusted earlier from the last day of the month
      * @param dayOfWeek  the day of week to adjust to, null if day of month should not be adjusted
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeDefinition  the definition of how to convert local to actual time, not null
@@ -306,7 +299,9 @@ public class ZoneRulesBuilder {
         checkNotNull(savingAmount, "Savings amount must not be null");
         Year.rule().checkValue(startYear);
         Year.rule().checkValue(endYear);
-        DayOfMonth.rule().checkValue(dayOfMonth);
+        if (dayOfMonth != -1) {
+            DayOfMonth.rule().checkValue(dayOfMonth);
+        }
         if (windowList.isEmpty()) {
             throw new IllegalStateException("Must add a window before adding a rule");
         }
@@ -497,7 +492,8 @@ public class ZoneRulesBuilder {
          * @param startYear  the start year of the rule, from MIN_YEAR to MAX_YEAR
          * @param endYear  the end year of the rule, from MIN_YEAR to MAX_YEAR
          * @param month  the month of the transition, not null
-         * @param dayOfMonth  the day of month of the transition, adjusted earlier by dayOfWeek, from 1 to 31
+         * @param dayOfMonth  the day of month of the transition, adjusted by dayOfWeek,
+         *   from 1 to 31 adjusted later, or -1 adjusted earlier from the last day of the month
          * @param dayOfWeek  the day of week to adjust to, null if day of month should not be adjusted
          * @param time  the time that the transition occurs as defined by timeDefintion, not null
          * @param timeDefinition  the definition of how to convert local to actual time, not null
@@ -660,9 +656,18 @@ public class ZoneRulesBuilder {
          */
         Transition toTransition(ZoneOffset standardOffset, ZoneOffset wallOffset) {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
-            LocalDate date = LocalDate.date(year, month, dayOfMonth);
-            if (dayOfWeek != null) {
-                date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
+            LocalDate date;
+            if (dayOfMonth == -1) {
+                Year yr = Year.isoYear(year);
+                date = LocalDate.date(yr, month, month.getLastDayOfMonth(yr));
+                if (dayOfWeek != null) {
+                    date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
+                }
+            } else {
+                date = LocalDate.date(year, month, dayOfMonth);
+                if (dayOfWeek != null) {
+                    date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
+                }
             }
             LocalDateTime ldt = LocalDateTime.dateTime(date, time);
             OffsetDateTime dt = timeDefinition.createDateTime(ldt, standardOffset, wallOffset);
@@ -678,7 +683,17 @@ public class ZoneRulesBuilder {
          * @return the transition, never null
          */
         TransitionRule toTransitionRule(LocalTime time, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
-            return new TransitionRule(month, dayOfMonth, dayOfWeek, time, offsetBefore, offsetAfter);
+            DayOfMonth dom;
+            if (dayOfMonth == -1) {
+                if (month == MonthOfYear.FEBRUARY) {
+                    dom = null;
+                } else {
+                    dom = DayOfMonth.dayOfMonth(month.maxLengthInDays() - 6);
+                }
+            } else {
+                dom = DayOfMonth.dayOfMonth(dayOfMonth);
+            }
+            return new TransitionRule(month, dom, dayOfWeek, time, offsetBefore, offsetAfter);
         }
 
         /** {@inheritDoc}. */
