@@ -417,7 +417,8 @@ public abstract class TimeZone implements Serializable {
     }
 
     /**
-     * Constructor for a gap where there are no valid offsets.
+     * Creates an offset info for a gap, where there are no valid offsets,
+     * or an overlap, where there are two valid offsets.
      *
      * @param dateTime  the date-time that this info applies to, not null
      * @param cutoverDateTime  the date-time of the discontinuity using the offset before, not null
