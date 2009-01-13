@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008,2009 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -46,8 +46,8 @@ import javax.time.period.PeriodUnit;
  * <p>
  * DateTimeFieldRule is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe.
- * It is recommended that subclasses implement <code>Serializable</code>
+ * All instantiable subclasses must be final, immutable and thread-safe and must
+ * ensure serialization works correctly.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
