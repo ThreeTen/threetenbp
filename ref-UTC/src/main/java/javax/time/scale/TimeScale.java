@@ -5,7 +5,7 @@ import javax.time.MathUtils;
 
 /**  Describe time scales such as TAI, UTC, GPS.
  * In particular account for the effects of leap seconds.
- * Could parameterise this class by its associated subclass of AbstractInstant.
+ * @param <T> The Instant associated with this TimeScale.
  * @author Mark Thornton
  */
 public abstract class TimeScale<T extends AbstractInstant<T>> {
@@ -91,8 +91,9 @@ public abstract class TimeScale<T extends AbstractInstant<T>> {
     }
 
     /** Instant in this scale from epoch seconds.
-     *
-     * @param simpleEpochSeconds seconds from epoch <i>without</i> leap seconds.
+     * This method is equivalent to <code>instant(simpleEpochSeconds, nanoOfSecond, 0)</code>
+     * @param simpleEpochSeconds seconds from epoch <i>without</i> leap seconds. That is seconds calculated assuming
+     * all days are exactly 86400 seconds long.
      * @param nanoOfSecond nanoseconds after the second
      * @return instant on this time scale
      */
@@ -101,10 +102,18 @@ public abstract class TimeScale<T extends AbstractInstant<T>> {
     }
 
     /** Instant in this scale from epoch seconds.
-     * @param simpleEpochSeconds seconds from epoch <i>without</i> leap seconds.
+     * Times during a leap second are specified by giving simpleEpochSecond as the last second before the leap second,
+     * and leapSecond the number of (positive) leap seconds added after it. To date leap seconds have all been positive
+     * and only one at a time, thus the leapSecond parameter should be either zero or one. It is speculated that,
+     * at some future time, double leap seconds or even leap hours may be required to keep the UTC time scale aligned
+     * with UT1.
+     * @param simpleEpochSeconds seconds from epoch <i>without</i> leap seconds. That is seconds calculated assuming
+     * all days are exactly 86400 seconds long.
      * @param nanoOfSecond nanoseconds after the second
      * @param leapSecond leap second after the simpleEpoch second. Zero if not a leap second.
      * @return instant on this time scale
+     * @throws IllegalArgumentException if a leap second is specified and either the time scale doesn't use leap seconds
+     * or there is no leap second following the second specified by <code>simpleEpochSeconds</code>.
      */
     public T instant(long simpleEpochSeconds, int nanoOfSecond, int leapSecond) {
         if (leapSecond != 0) {
