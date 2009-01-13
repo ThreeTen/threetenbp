@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -38,10 +40,6 @@ import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import javax.time.Instant;
-import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.TimeZone;
-import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.Year;
 
 /**
@@ -79,6 +77,18 @@ class ZoneRules extends TimeZone {
      * The map of transitions.
      */
     private final TreeMap<Year, Transition[]> transitionMap = new TreeMap<Year, Transition[]>();
+    /**
+     * The transitions between instants (epoch seconds).
+     */
+    private final long[] instantTransitions;
+    /**
+     * The transitions between local date-times.
+     */
+    private final LocalDateTime[] localTransitions;
+    /**
+     * The offsets for the transitions between local date-times.
+     */
+    private final ZoneOffset[] localTransitionOffsets;
     /**
      * The year that the last rule applies from.
      */
@@ -125,6 +135,31 @@ class ZoneRules extends TimeZone {
         }
         this.lastRuleYear = lastRuleYear;
         this.lastRules = (TransitionRule[]) lastRules.toArray(new TransitionRule[lastRules.size()]);
+        
+        // convert transitions to locals
+        List<LocalDateTime> localTransitionList = new ArrayList<LocalDateTime>();
+        List<ZoneOffset> localTransitionOffsetList = new ArrayList<ZoneOffset>();
+        localTransitionOffsetList.add(baseOffset);
+        for (Transition trans : transitionList) {
+            if (trans.isGap()) {
+                localTransitionList.add(trans.getDateTime().toLocalDateTime());
+                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
+            } else {
+                localTransitionList.add(trans.getDateTimeAfter().toLocalDateTime());
+                localTransitionList.add(trans.getDateTime().toLocalDateTime());
+            }
+            localTransitionOffsetList.add(trans.getOffsetAfter());
+        }
+        this.localTransitions = (LocalDateTime[]) localTransitionList.toArray(
+                new LocalDateTime[localTransitionList.size()]);
+        this.localTransitionOffsets = (ZoneOffset[]) localTransitionOffsetList.toArray(
+                new ZoneOffset[localTransitionOffsetList.size()]);
+        
+        // convert transitions to instants
+        this.instantTransitions = new long[transitionList.size()];
+        for (int i = 0; i < transitionList.size(); i++) {
+            instantTransitions[i] = transitionList.get(i).getInstant().getEpochSeconds();
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -138,6 +173,15 @@ class ZoneRules extends TimeZone {
     /** {@inheritDoc} */
     @Override
     public ZoneOffset getOffset(Instant instant) {
+//        // TODO: last rules
+//        // using historic rules
+//        int index  = Arrays.binarySearch(instantTransitions, instant.getEpochSeconds());
+//        if (index < 0) {
+//            // switch negative insert position to start of matched range
+//            index = -index - 2;
+//        }
+//        return localTransitionOffsets[index + 1];
+        
         OffsetDateTime dt = OffsetDateTime.dateTime(instant, ZoneOffset.UTC);
         Transition[] transArray = findTransitionArray(dt.getYear());
         Transition trans = null;
@@ -153,31 +197,50 @@ class ZoneRules extends TimeZone {
     /** {@inheritDoc} */
     @Override
     public OffsetInfo getOffsetInfo(LocalDateTime dt) {
-        if (transitionMap.isEmpty() || dt.getYear().isBefore(transitionMap.firstKey())) {
+        // check if using last rules
+        if (lastRules.length > 0 && dt.getYear().isBefore(lastRuleYear) == false) {
+            Transition[] transArray = findTransitionArray(dt.getYear());
+            OffsetInfo info = null;
+            for (Transition trans : transArray) {
+                info = findOffsetInfo(dt, trans);
+                if (info.isDiscontinuity() || info.getOffset().equals(trans.getOffsetBefore())) {
+                    return info;
+                }
+            }
+            return info;
+        }
+        
+        // using historic rules
+        int index  = Arrays.binarySearch(localTransitions, dt);
+        if (index == -1) {
+            // before first transition
             return createOffsetInfo(dt, baseOffset);
         }
-        Transition[] transArray;
-        if ((transitionMap.isEmpty() || dt.getYear().isAfter(transitionMap.lastKey())) &&
-                lastRules.length == 0) {
-            ZoneOffset offset = baseOffset;
-            if (transitionMap.isEmpty()) {
-                if (standardOffsetTransitionList.length > 0) {
-                    offset = standardOffsetTransitionList[standardOffsetTransitionList.length - 1].getOffset();
-                }
-                return createOffsetInfo(dt, offset);
+        if (index < 0) {
+            // switch negative insert position to start of matched range
+            index = -index - 2;
+        } else if (index < localTransitions.length - 1 &&
+                localTransitions[index].equals(localTransitions[index + 1])) {
+            // handle overlap immediately following gap
+            index++;
+        }
+        if ((index & 1) == 0) {
+            // gap or overlap
+            LocalDateTime dtBefore = localTransitions[index];
+            LocalDateTime dtAfter = localTransitions[index + 1];
+            ZoneOffset offsetBefore = localTransitionOffsets[index / 2];
+            ZoneOffset offsetAfter = localTransitionOffsets[index / 2 + 1];
+            if (offsetAfter.getAmountSeconds() > offsetBefore.getAmountSeconds()) {
+                // gap
+                return createOffsetInfo(dt, OffsetDateTime.dateTime(dtBefore, offsetBefore), offsetAfter);
+            } else {
+                // overlap
+                return createOffsetInfo(dt, OffsetDateTime.dateTime(dtAfter, offsetBefore), offsetAfter);
             }
-            transArray = transitionMap.lastEntry().getValue();
         } else {
-            transArray = findTransitionArray(dt.getYear());
+            // normal (neither gap or overlap)
+            return createOffsetInfo(dt, localTransitionOffsets[index / 2 + 1]);
         }
-        OffsetInfo info = null;
-        for (Transition trans : transArray) {
-            info = findOffsetInfo(dt, trans);
-            if (info.isDiscontinuity() || info.getOffset().equals(trans.getOffsetBefore())) {
-                return info;
-            }
-        }
-        return info;
     }
 
     private OffsetInfo findOffsetInfo(LocalDateTime dt, Transition trans) {
@@ -220,6 +283,7 @@ class ZoneRules extends TimeZone {
         } else {
             return findTransitionArray(year.previous());
         }
+//        TransitionRule[] ruleArray = lastRules;
         transArray  = new Transition[ruleArray.length];
         for (int i = 0; i < ruleArray.length; i++) {
             transArray[i] = ruleArray[i].createTransition(year);
