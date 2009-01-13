@@ -47,6 +47,7 @@ import javax.time.calendar.field.Year;
  * All instantiable implementations must be final, immutable and thread-safe.
  * It is only intended that the abstract methods are overridden.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 class ZoneRules extends TimeZone {
@@ -133,10 +134,8 @@ class ZoneRules extends TimeZone {
             }
             localTransitionOffsetList.add(trans.getOffsetAfter());
         }
-        this.savingsLocalTransitions = (LocalDateTime[]) localTransitionList.toArray(
-                new LocalDateTime[localTransitionList.size()]);
-        this.wallOffsets = (ZoneOffset[]) localTransitionOffsetList.toArray(
-                new ZoneOffset[localTransitionOffsetList.size()]);
+        this.savingsLocalTransitions = localTransitionList.toArray(new LocalDateTime[localTransitionList.size()]);
+        this.wallOffsets = localTransitionOffsetList.toArray(new ZoneOffset[localTransitionOffsetList.size()]);
         
         // convert savings transitions to instants
         this.savingsInstantTransitions = new long[transitionList.size()];
@@ -145,7 +144,7 @@ class ZoneRules extends TimeZone {
         }
         
         // last rules
-        this.lastRules = (TransitionRule[]) lastRules.toArray(new TransitionRule[lastRules.size()]);
+        this.lastRules = lastRules.toArray(new TransitionRule[lastRules.size()]);
     }
 
     //-----------------------------------------------------------------------
