@@ -57,6 +57,7 @@ import javax.time.period.Period;
  * It must only be used from a single thread.
  * The created TimeZone instances are immutable and thread-safe.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public class ZoneRulesBuilder {
@@ -88,7 +89,7 @@ public class ZoneRulesBuilder {
      */
     public static TimeZone createAlias(String zoneId, String baseZoneId) {
         checkNotNull(zoneId, "Zone id must not be null");
-        checkNotNull(zoneId, "Base zone id must not be null");
+        checkNotNull(baseZoneId, "Base zone id must not be null");
         return new AliasZone(zoneId, baseZoneId);
     }
 
