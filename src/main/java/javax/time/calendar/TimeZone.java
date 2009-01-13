@@ -382,6 +382,54 @@ public abstract class TimeZone implements Serializable {
      */
     public abstract OffsetInfo getOffsetInfo(LocalDateTime dateTime);
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the standard offset for the specified instant in this zone.
+     * <p>
+     * This provides access to historic information on how the standard offset
+     * has changed over time.
+     * The standard offset is the offset before any daylight savings time is applied.
+     * This is typically the offset applicable during winter.
+     *
+     * @param instant  the instant to find the offset information for, not null
+     * @return the standard offset, never null
+     */
+    public abstract ZoneOffset getStandardOffset(Instant instant);
+
+    /**
+     * Gets the amount of daylight savings in use for the specified instant in this zone.
+     * <p>
+     * This provides access to historic information on how the amount of daylight
+     * savings has changed over time.
+     * This is the difference between the standard offset and the actual offset.
+     * It is expressed in hours, minutes and seconds.
+     * Typically the amount is zero during winter and one hour during summer.
+     *
+     * @param instant  the instant to find the offset information for, not null
+     * @return the standard offset, never null
+     */
+    public Period getDaylightSavings(Instant instant) {
+        ZoneOffset standardOffset = getStandardOffset(instant);
+        ZoneOffset actualOffset = getOffset(instant);
+        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+    }
+
+    /**
+     * Gets the standard offset for the specified instant in this zone.
+     * <p>
+     * This provides access to historic information on how the standard offset
+     * has changed over time.
+     * The standard offset is the offset before any daylight savings time is applied.
+     * This is typically the offset applicable during winter.
+     *
+     * @param instant  the instant to find the offset information for, not null
+     * @return the standard offset, never null
+     */
+    public boolean isDaylightSavings(Instant instant) {
+        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Is this time zone fixed, such that the offset never varies.
      * <p>
@@ -840,6 +888,11 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return offset;
+        }
+        /** {@inheritDoc} */
+        @Override
         public boolean isFixed() {
             return true;
         }
@@ -1004,6 +1057,11 @@ public abstract class TimeZone implements Serializable {
             int daysToSun = 7 - dt.getDayOfWeek().getValue();
             return dom + daysToSun <= 31 ? new OffsetInfo(dt, offsetBefore) : new OffsetInfo(dt, offsetAfter);
         }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return standardOffset;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -1136,6 +1194,11 @@ public abstract class TimeZone implements Serializable {
                 }
             }
             throw new IllegalStateException();
+        }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return standardOffset;
         }
     }
 

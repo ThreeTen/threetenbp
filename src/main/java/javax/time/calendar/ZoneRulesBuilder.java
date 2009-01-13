@@ -334,7 +334,7 @@ public class ZoneRulesBuilder {
         OffsetDateTime windowStart = firstWindow.createDateTime(wallOffset);
         
         // build the windows and rules to interesting data
-        int lastRulesStartYear = Year.MAX_YEAR;
+        Year lastRulesStartYear = null;
         for (TZWindow window : windowList) {
             // check if standard offset change
             if (standardOffset.equals(window.standardOffset) == false) {
@@ -381,10 +381,9 @@ public class ZoneRulesBuilder {
             // finally we can calculate the true end of the window, passing it to the next window
             windowStart = window.createDateTime(wallOffset);
         }
-        Year lastRulesYear = Year.isoYear(lastRulesStartYear);
         return new ZoneRules(
                 id, firstWindow.standardOffset, standardOffsetList,
-                transitionList, lastRulesYear, lastTransitionRuleList);
+                transitionList, lastRulesStartYear, lastTransitionRuleList);
     }
 
     //-----------------------------------------------------------------------
@@ -554,7 +553,7 @@ public class ZoneRulesBuilder {
          * @return the start year of the last year rules, MAX_YEAR if no last rules
          * @throws IllegalStateException if there is only one rule defined as being forever
          */
-        int tidyLastRules() {
+        Year tidyLastRules() {
             if (lastRuleList.size() == 1) {
                 throw new IllegalStateException("Cannot have only one rule defined as being forever");
             }
@@ -567,8 +566,10 @@ public class ZoneRulesBuilder {
                 }
                 if (maxLastRuleStartYear == Year.MAX_YEAR) {
                     lastRuleList.clear();
+                    return null;
                 } else {
                     maxLastRuleStartYear++;
+                    return Year.isoYear(maxLastRuleStartYear);
                 }
             } else {
                 // convert all within the endYear limit
@@ -579,8 +580,8 @@ public class ZoneRulesBuilder {
                 }
                 lastRuleList.clear();
                 maxLastRuleStartYear = Year.MAX_YEAR;
+                return null;
             }
-            return maxLastRuleStartYear;
         }
 
         /**
@@ -741,6 +742,12 @@ public class ZoneRulesBuilder {
         @Override
         public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
             return TimeZone.timeZone(baseZoneId).getOffsetInfo(dateTime);
+        }
+
+        /** {@inheritDoc}. */
+        @Override
+        public ZoneOffset getStandardOffset(Instant instant) {
+            return TimeZone.timeZone(baseZoneId).getStandardOffset(instant);
         }
     }
 

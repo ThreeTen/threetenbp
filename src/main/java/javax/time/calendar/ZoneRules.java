@@ -34,10 +34,7 @@ package javax.time.calendar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import javax.time.Instant;
 import javax.time.calendar.field.Year;
@@ -53,8 +50,6 @@ import javax.time.calendar.field.Year;
  * @author Stephen Colebourne
  */
 class ZoneRules extends TimeZone {
-    // TODO: optimise the internal structue
-    // Instant[] and LocalDateTime[] ?
 
     /**
      * A serialization identifier for this class.
@@ -66,37 +61,35 @@ class ZoneRules extends TimeZone {
     private static final Year LAST_CACHED_YEAR = Year.isoYear(2100);
 
     /**
-     * The base offset.
+     * The transitions between standard offsets (epoch seconds), sorted.
      */
-    private final ZoneOffset baseOffset;
+    private final long[] standardTransitions;
     /**
-     * The transitions between standard offsets.
+     * The standard offsets.
      */
-    private final OffsetDateTime[] standardOffsetTransitionList;
+    private final ZoneOffset[] standardOffsets;
     /**
-     * The map of transitions.
+     * The transitions between instants (epoch seconds), sorted.
      */
-    private final TreeMap<Year, Transition[]> transitionMap = new TreeMap<Year, Transition[]>();
+    private final long[] savingsInstantTransitions;
     /**
-     * The transitions between instants (epoch seconds).
+     * The transitions between local date-times, sorted.
+     * This is a paired array, where the first entry is the start of the transition
+     * and the second entry is the end of the transition.
      */
-    private final long[] instantTransitions;
+    private final LocalDateTime[] savingsLocalTransitions;
     /**
-     * The transitions between local date-times.
+     * The wall offsets.
      */
-    private final LocalDateTime[] localTransitions;
-    /**
-     * The offsets for the transitions between local date-times.
-     */
-    private final ZoneOffset[] localTransitionOffsets;
-    /**
-     * The year that the last rule applies from.
-     */
-    private Year lastRuleYear = Year.isoYear(Year.MAX_YEAR);
+    private final ZoneOffset[] wallOffsets;
     /**
      * The last rule.
      */
-    private TransitionRule[] lastRules = null;
+    private final TransitionRule[] lastRules;
+    /**
+     * The map of transitions.
+     */
+    private final TreeMap<Year, Transition[]> lastRulesCache = new TreeMap<Year, Transition[]>();
 
     /**
      * Constructor.
@@ -116,27 +109,17 @@ class ZoneRules extends TimeZone {
             Year lastRuleYear,
             List<TransitionRule> lastRules) {
         super(id);
-        this.baseOffset = baseOffset;
-        this.standardOffsetTransitionList = (OffsetDateTime[]) standardOffsetTransitionList.toArray(
-                new OffsetDateTime[standardOffsetTransitionList.size()]);
-        TreeMap<Year, Set<Transition>> transitionMap = new TreeMap<Year, Set<Transition>>();
-        for (Transition trans : transitionList) {
-            Year year = trans.getDateTime().getYear();
-            Set<Transition> transSet = transitionMap.get(year);
-            if (transSet == null) {
-                transSet = new TreeSet<Transition>();
-                transitionMap.put(year, transSet);
-            }
-            transSet.add(trans);
-        }
-        for (Entry<Year, Set<Transition>> entry : transitionMap.entrySet()) {
-            Transition[] rules = (Transition[]) entry.getValue().toArray(new Transition[entry.getValue().size()]);
-            this.transitionMap.put(entry.getKey(), rules);
-        }
-        this.lastRuleYear = lastRuleYear;
-        this.lastRules = (TransitionRule[]) lastRules.toArray(new TransitionRule[lastRules.size()]);
         
-        // convert transitions to locals
+        // convert standard transitions
+        this.standardTransitions = new long[standardOffsetTransitionList.size()];
+        this.standardOffsets = new ZoneOffset[standardOffsetTransitionList.size() + 1];
+        this.standardOffsets[0] = baseOffset;
+        for (int i = 0; i < standardOffsetTransitionList.size(); i++) {
+            this.standardTransitions[i] = standardOffsetTransitionList.get(i).toEpochSeconds();
+            this.standardOffsets[i + 1] = standardOffsetTransitionList.get(i).getOffset();
+        }
+        
+        // convert savings transitions to locals
         List<LocalDateTime> localTransitionList = new ArrayList<LocalDateTime>();
         List<ZoneOffset> localTransitionOffsetList = new ArrayList<ZoneOffset>();
         localTransitionOffsetList.add(baseOffset);
@@ -150,16 +133,19 @@ class ZoneRules extends TimeZone {
             }
             localTransitionOffsetList.add(trans.getOffsetAfter());
         }
-        this.localTransitions = (LocalDateTime[]) localTransitionList.toArray(
+        this.savingsLocalTransitions = (LocalDateTime[]) localTransitionList.toArray(
                 new LocalDateTime[localTransitionList.size()]);
-        this.localTransitionOffsets = (ZoneOffset[]) localTransitionOffsetList.toArray(
+        this.wallOffsets = (ZoneOffset[]) localTransitionOffsetList.toArray(
                 new ZoneOffset[localTransitionOffsetList.size()]);
         
-        // convert transitions to instants
-        this.instantTransitions = new long[transitionList.size()];
+        // convert savings transitions to instants
+        this.savingsInstantTransitions = new long[transitionList.size()];
         for (int i = 0; i < transitionList.size(); i++) {
-            instantTransitions[i] = transitionList.get(i).getInstant().getEpochSeconds();
+            this.savingsInstantTransitions[i] = transitionList.get(i).getInstant().getEpochSeconds();
         }
+        
+        // last rules
+        this.lastRules = (TransitionRule[]) lastRules.toArray(new TransitionRule[lastRules.size()]);
     }
 
     //-----------------------------------------------------------------------
@@ -170,35 +156,44 @@ class ZoneRules extends TimeZone {
     private Object readResolve() {
         return TimeZone.timeZone(getID());
     }
+
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public ZoneOffset getOffset(Instant instant) {
-//        // TODO: last rules
-//        // using historic rules
-//        int index  = Arrays.binarySearch(instantTransitions, instant.getEpochSeconds());
-//        if (index < 0) {
-//            // switch negative insert position to start of matched range
-//            index = -index - 2;
-//        }
-//        return localTransitionOffsets[index + 1];
+        long epochSecs = instant.getEpochSeconds();
         
-        OffsetDateTime dt = OffsetDateTime.dateTime(instant, ZoneOffset.UTC);
-        Transition[] transArray = findTransitionArray(dt.getYear());
-        Transition trans = null;
-        for (int i = 0; i < transArray.length; i++) {
-            trans = transArray[i];
-            if (instant.isBefore(trans.getInstant())) {
-                return trans.getOffsetBefore();
+        // check if using last rules
+        if (lastRules.length > 0 &&
+                epochSecs > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
+            OffsetDateTime dt = OffsetDateTime.dateTime(instant, wallOffsets[wallOffsets.length - 1]);
+            Transition[] transArray = findTransitionArray(dt.getYear());
+            Transition trans = null;
+            for (int i = 0; i < transArray.length; i++) {
+                trans = transArray[i];
+                if (instant.isBefore(trans.getInstant())) {
+                    return trans.getOffsetBefore();
+                }
             }
+            return trans.getOffsetAfter();
         }
-        return trans.getOffsetAfter();
+        
+        // using historic rules
+        int index  = Arrays.binarySearch(savingsInstantTransitions, epochSecs);
+        if (index < 0) {
+            // switch negative insert position to start of matched range
+            index = -index - 2;
+        }
+        return wallOffsets[index + 1];
     }
 
+    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
     public OffsetInfo getOffsetInfo(LocalDateTime dt) {
         // check if using last rules
-        if (lastRules.length > 0 && dt.getYear().isBefore(lastRuleYear) == false) {
+        if (lastRules.length > 0 &&
+                dt.isAfter(savingsLocalTransitions[savingsLocalTransitions.length - 1])) {
             Transition[] transArray = findTransitionArray(dt.getYear());
             OffsetInfo info = null;
             for (Transition trans : transArray) {
@@ -211,25 +206,25 @@ class ZoneRules extends TimeZone {
         }
         
         // using historic rules
-        int index  = Arrays.binarySearch(localTransitions, dt);
+        int index  = Arrays.binarySearch(savingsLocalTransitions, dt);
         if (index == -1) {
             // before first transition
-            return createOffsetInfo(dt, baseOffset);
+            return createOffsetInfo(dt, wallOffsets[0]);
         }
         if (index < 0) {
             // switch negative insert position to start of matched range
             index = -index - 2;
-        } else if (index < localTransitions.length - 1 &&
-                localTransitions[index].equals(localTransitions[index + 1])) {
+        } else if (index < savingsLocalTransitions.length - 1 &&
+                savingsLocalTransitions[index].equals(savingsLocalTransitions[index + 1])) {
             // handle overlap immediately following gap
             index++;
         }
         if ((index & 1) == 0) {
             // gap or overlap
-            LocalDateTime dtBefore = localTransitions[index];
-            LocalDateTime dtAfter = localTransitions[index + 1];
-            ZoneOffset offsetBefore = localTransitionOffsets[index / 2];
-            ZoneOffset offsetAfter = localTransitionOffsets[index / 2 + 1];
+            LocalDateTime dtBefore = savingsLocalTransitions[index];
+            LocalDateTime dtAfter = savingsLocalTransitions[index + 1];
+            ZoneOffset offsetBefore = wallOffsets[index / 2];
+            ZoneOffset offsetAfter = wallOffsets[index / 2 + 1];
             if (offsetAfter.getAmountSeconds() > offsetBefore.getAmountSeconds()) {
                 // gap
                 return createOffsetInfo(dt, OffsetDateTime.dateTime(dtBefore, offsetBefore), offsetAfter);
@@ -239,10 +234,18 @@ class ZoneRules extends TimeZone {
             }
         } else {
             // normal (neither gap or overlap)
-            return createOffsetInfo(dt, localTransitionOffsets[index / 2 + 1]);
+            return createOffsetInfo(dt, wallOffsets[index / 2 + 1]);
         }
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Finds the offset info for a local date-time and transition.
+     *
+     * @param dt  the date-time, not null
+     * @param trans  the transition, not null
+     * @return the offset info, never null
+     */
     private OffsetInfo findOffsetInfo(LocalDateTime dt, Transition trans) {
         if (trans.isGap()) {
             if (dt.isBefore(trans.getLocal())) {
@@ -273,25 +276,32 @@ class ZoneRules extends TimeZone {
      * @return the transition array, never null
      */
     private Transition[] findTransitionArray(Year year) {
-        Transition[] transArray = transitionMap.get(year);
+        Transition[] transArray = lastRulesCache.get(year);
         if (transArray != null) {
             return transArray;
         }
-        TransitionRule[] ruleArray = null;
-        if (lastRules.length > 0 && year.isBefore(lastRuleYear) == false) {
-            ruleArray = lastRules;
-        } else {
-            return findTransitionArray(year.previous());
-        }
-//        TransitionRule[] ruleArray = lastRules;
+        TransitionRule[] ruleArray = lastRules;
         transArray  = new Transition[ruleArray.length];
         for (int i = 0; i < ruleArray.length; i++) {
             transArray[i] = ruleArray[i].createTransition(year);
         }
-        if (year.isAfter(lastRuleYear) && year.isBefore(LAST_CACHED_YEAR)) {
-            transitionMap.put(year, transArray);
+        if (year.isBefore(LAST_CACHED_YEAR)) {
+            lastRulesCache.put(year, transArray);
         }
         return transArray;
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public ZoneOffset getStandardOffset(Instant instant) {
+        long epochSecs = instant.getEpochSeconds();
+        int index  = Arrays.binarySearch(standardTransitions, epochSecs);
+        if (index < 0) {
+            // switch negative insert position to start of matched range
+            index = -index - 2;
+        }
+        return standardOffsets[index + 1];
     }
 
 }
