@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -735,8 +735,8 @@ public class ZoneRulesBuilder {
 
         /** {@inheritDoc}. */
         @Override
-        public ZoneOffset getOffset(Instant instant) {
-            return TimeZone.timeZone(baseZoneId).getOffset(instant);
+        public ZoneOffset getOffset(InstantProvider instantProvider) {
+            return TimeZone.timeZone(baseZoneId).getOffset(instantProvider);
         }
 
         /** {@inheritDoc}. */
@@ -747,8 +747,8 @@ public class ZoneRulesBuilder {
 
         /** {@inheritDoc}. */
         @Override
-        public ZoneOffset getStandardOffset(Instant instant) {
-            return TimeZone.timeZone(baseZoneId).getStandardOffset(instant);
+        public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
+            return TimeZone.timeZone(baseZoneId).getStandardOffset(instantProvider);
         }
     }
 

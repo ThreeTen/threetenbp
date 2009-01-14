@@ -37,20 +37,18 @@ import java.util.List;
 import java.util.TreeMap;
 
 import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.field.Year;
 
 /**
  * The rules describing how the zone offset varies through the year and historically.
  * <p>
- * TimeZone is an abstract class and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
- * It is only intended that the abstract methods are overridden.
+ * ZoneRules is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-class ZoneRules extends TimeZone {
+final class ZoneRules extends TimeZone {
 
     /**
      * A serialization identifier for this class.
@@ -159,7 +157,8 @@ class ZoneRules extends TimeZone {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public ZoneOffset getOffset(Instant instant) {
+    public ZoneOffset getOffset(InstantProvider instantProvider) {
+        Instant instant = Instant.instant(instantProvider);
         long epochSecs = instant.getEpochSeconds();
         
         // check if using last rules
@@ -293,7 +292,8 @@ class ZoneRules extends TimeZone {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     @Override
-    public ZoneOffset getStandardOffset(Instant instant) {
+    public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
+        Instant instant = Instant.instant(instantProvider);
         long epochSecs = instant.getEpochSeconds();
         int index  = Arrays.binarySearch(standardTransitions, epochSecs);
         if (index < 0) {

@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.ZoneRulesBuilder.TimeDefinition;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.Year;
@@ -334,7 +335,7 @@ public abstract class TimeZone implements Serializable {
      * @param instant  the instant to find the offset for, not null
      * @return the offset, never null
      */
-    public abstract ZoneOffset getOffset(Instant instant);
+    public abstract ZoneOffset getOffset(InstantProvider instant);
 
     /**
      * Gets the offset information for the specified instant in this zone.
@@ -391,10 +392,10 @@ public abstract class TimeZone implements Serializable {
      * The standard offset is the offset before any daylight savings time is applied.
      * This is typically the offset applicable during winter.
      *
-     * @param instant  the instant to find the offset information for, not null
+     * @param instantProvider  the instant to find the offset information for, not null
      * @return the standard offset, never null
      */
-    public abstract ZoneOffset getStandardOffset(Instant instant);
+    public abstract ZoneOffset getStandardOffset(InstantProvider instantProvider);
 
     /**
      * Gets the amount of daylight savings in use for the specified instant in this zone.
@@ -405,10 +406,11 @@ public abstract class TimeZone implements Serializable {
      * It is expressed in hours, minutes and seconds.
      * Typically the amount is zero during winter and one hour during summer.
      *
-     * @param instant  the instant to find the offset information for, not null
+     * @param instantProvider  the instant to find the offset information for, not null
      * @return the standard offset, never null
      */
-    public Period getDaylightSavings(Instant instant) {
+    public Period getDaylightSavings(InstantProvider instantProvider) {
+        Instant instant = Instant.instant(instantProvider);
         ZoneOffset standardOffset = getStandardOffset(instant);
         ZoneOffset actualOffset = getOffset(instant);
         return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
@@ -425,7 +427,7 @@ public abstract class TimeZone implements Serializable {
      * @param instant  the instant to find the offset information for, not null
      * @return the standard offset, never null
      */
-    public boolean isDaylightSavings(Instant instant) {
+    public boolean isDaylightSavings(InstantProvider instant) {
         return (getStandardOffset(instant).equals(getOffset(instant)) == false);
     }
 
@@ -878,7 +880,7 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public ZoneOffset getOffset(Instant instant) {
+        public ZoneOffset getOffset(InstantProvider instant) {
             return offset;
         }
         /** {@inheritDoc} */
@@ -888,7 +890,7 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public ZoneOffset getStandardOffset(Instant instant) {
+        public ZoneOffset getStandardOffset(InstantProvider instant) {
             return offset;
         }
         /** {@inheritDoc} */
@@ -980,7 +982,8 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public ZoneOffset getOffset(Instant instant) {
+        public ZoneOffset getOffset(InstantProvider instantProvider) {
+            Instant instant = Instant.instant(instantProvider);
             OffsetDateTime dt = OffsetDateTime.dateTime(instant, ZoneOffset.UTC);
             ZoneOffset offsetBefore = standardOffset;
             ZoneOffset offsetAfter = standardOffset;
@@ -1059,7 +1062,7 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public ZoneOffset getStandardOffset(Instant instant) {
+        public ZoneOffset getStandardOffset(InstantProvider instant) {
             return standardOffset;
         }
     }
@@ -1092,7 +1095,8 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public ZoneOffset getOffset(Instant instant) {
+        public ZoneOffset getOffset(InstantProvider instantProvider) {
+            Instant instant = Instant.instant(instantProvider);
             OffsetDateTime dt = OffsetDateTime.dateTime(instant, standardOffset);
             switch (dt.getMonthOfYear()) {
                 case JANUARY:
@@ -1197,7 +1201,7 @@ public abstract class TimeZone implements Serializable {
         }
         /** {@inheritDoc} */
         @Override
-        public ZoneOffset getStandardOffset(Instant instant) {
+        public ZoneOffset getStandardOffset(InstantProvider instant) {
             return standardOffset;
         }
     }
