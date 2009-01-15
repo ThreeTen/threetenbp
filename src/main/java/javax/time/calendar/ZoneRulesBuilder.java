@@ -543,7 +543,8 @@ public class ZoneRulesBuilder {
          */
         void validateWindowOrder(TZWindow previous) {
             if (windowEnd.isBefore(previous.windowEnd)) {
-                throw new IllegalStateException("Windows must be added in date-time order");
+                throw new IllegalStateException("Windows must be added in date-time order: " +
+                        windowEnd + " < " + previous.windowEnd);
             }
         }
 
