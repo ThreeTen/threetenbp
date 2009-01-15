@@ -34,16 +34,16 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.DateProvider;
 
 /**
  * A representation of a day of year in the ISO-8601 calendar system.
@@ -118,7 +118,7 @@ public final class DayOfYear
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), dayOfYear, 1, 366);
+            throw new IllegalCalendarFieldValueException(rule(), ++dayOfYear, 1, 366);
         }
     }
 

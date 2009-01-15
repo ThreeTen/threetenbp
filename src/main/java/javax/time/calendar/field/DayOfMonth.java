@@ -34,6 +34,7 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
@@ -41,7 +42,6 @@ import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
@@ -111,7 +111,7 @@ public final class DayOfMonth
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalCalendarFieldValueException(rule(), dayOfMonth, 1, 31);
+            throw new IllegalCalendarFieldValueException(rule(), ++dayOfMonth, 1, 31);
         }
     }
 
