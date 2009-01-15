@@ -162,6 +162,29 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
         return dayOfWeek(dow0 + 1);
     }
 
+    /**
+     * Returns the <code>DayOfWeek</code> instance that corresponds to the first
+     * day of week for a given <code>locale</code>.
+     * <p>If there is no information for a locale, <code>MONDAY</code> is
+     * returned.
+     *
+     * @param locale the locale to use, not null
+     * @return the DayOfWeek singleton, never null
+     */
+    public static DayOfWeek firstDayOfWeekFor(Locale locale) {
+        if (locale == null) {
+            throw new NullPointerException("Locale must not be null");
+        }
+
+        //TODO: Read it from resource bundle
+        if (locale.equals(Locale.US) || (locale.getLanguage().equals("pt") &&
+              locale.getCountry().equals("BR") )) {
+            return SUNDAY;
+        }
+
+        return MONDAY;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructs an instance with the specified day of week.
