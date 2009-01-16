@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.zone;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +38,10 @@ import java.util.TreeMap;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.Year;
 
 /**
@@ -145,14 +149,14 @@ final class ZoneRules extends TimeZone {
         this.lastRules = lastRules.toArray(new TransitionRule[lastRules.size()]);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Resolves singletons.
-     * @return the singleton instance
-     */
-    private Object readResolve() {
-        return TimeZone.timeZone(getID());
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Resolves singletons.
+//     * @return the singleton instance
+//     */
+//    private Object readResolve() {
+//        return TimeZone.timeZone(getID());
+//    }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */

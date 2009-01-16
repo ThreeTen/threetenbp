@@ -29,13 +29,23 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.zone;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.time.InstantProvider;
+import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -324,7 +334,18 @@ public class ZoneRulesBuilder {
         if (windowList.isEmpty()) {
             return TimeZone.timeZone(firstWindow.standardOffset);
         }
-        
+        return toRules(id, new HashMap<Object, Object>());
+    }
+
+    /**
+     * Completes the build converting the builder to a set of time zone rules.
+     *
+     * @param id  the time zone id, not null
+     * @param deduplicateMap  a map for deduplicating the values, not null
+     * @return the zone rules, never null
+     * @throws IllegalStateException if there is only one rule defined as being forever for any given window
+     */
+    TimeZone toRules(String id, Map<Object, Object> deduplicateMap) {
         List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);
         List<Transition> transitionList = new ArrayList<Transition>(256);
         List<TransitionRule> lastTransitionRuleList = new ArrayList<TransitionRule>(2);
@@ -332,7 +353,7 @@ public class ZoneRulesBuilder {
         // initialise the standard offset calculation
         ZoneOffset standardOffset = firstWindow.standardOffset;
         ZoneOffset wallOffset = standardOffset;
-        OffsetDateTime windowStart = firstWindow.createDateTime(wallOffset);
+        OffsetDateTime windowStart = deduplicate(deduplicateMap, firstWindow.createDateTime(wallOffset));
         
         // build the windows and rules to interesting data
         Year lastRulesStartYear = null;
@@ -340,13 +361,13 @@ public class ZoneRulesBuilder {
             // check if standard offset change
             if (standardOffset.equals(window.standardOffset) == false) {
                 standardOffset = window.standardOffset;
-                standardOffsetList.add(windowStart.adjustLocalDateTime(standardOffset));
+                standardOffsetList.add(deduplicate(deduplicateMap, windowStart.adjustLocalDateTime(standardOffset)));
             }
             
             // check if the start of the window represents a transition
             ZoneOffset initialWallOffset = standardOffset;
             if (window.fixedSavingAmount != null) {
-                initialWallOffset = initialWallOffset.plus(window.fixedSavingAmount);
+                initialWallOffset = deduplicate(deduplicateMap, initialWallOffset.plus(window.fixedSavingAmount));
             }
             if (wallOffset.equals(initialWallOffset) == false) {
                 Transition trans = new Transition(windowStart, initialWallOffset);
@@ -360,7 +381,7 @@ public class ZoneRulesBuilder {
             // apply rules
             Collections.sort(window.ruleList);
             for (TZRule rule : window.ruleList) {
-                Transition trans = rule.toTransition(standardOffset, wallOffset);
+                Transition trans = rule.toTransition(deduplicateMap, standardOffset, wallOffset);
                 if (trans.getDateTime().isBefore(windowStart) == false &&
                         trans.getDateTime().isBefore(window.createDateTime(wallOffset)) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
@@ -372,7 +393,7 @@ public class ZoneRulesBuilder {
             // calculate last rules
             Collections.sort(window.lastRuleList);
             for (TZRule lastRule : window.lastRuleList) {
-                Transition trans = lastRule.toTransition(standardOffset, wallOffset);
+                Transition trans = lastRule.toTransition(deduplicateMap, standardOffset, wallOffset);
                 TransitionRule transitionRule = lastRule.toTransitionRule(
                         trans.getLocal().toLocalTime(), trans.getOffsetBefore(), trans.getOffsetAfter());
                 lastTransitionRuleList.add(transitionRule);
@@ -380,11 +401,27 @@ public class ZoneRulesBuilder {
             }
             
             // finally we can calculate the true end of the window, passing it to the next window
-            windowStart = window.createDateTime(wallOffset);
+            windowStart = deduplicate(deduplicateMap, window.createDateTime(wallOffset));
         }
         return new ZoneRules(
                 id, firstWindow.standardOffset, standardOffsetList,
                 transitionList, lastRulesStartYear, lastTransitionRuleList);
+    }
+
+    /**
+     * Deduplicates an object instance.
+     *
+     * @param <T> the generic type
+     * @param deduplicateMap  the deduplicate map, not null
+     * @param object  the object to deduplicate
+     * @return the deduplicated object
+     */
+    @SuppressWarnings("unchecked")
+    static <T> T deduplicate(Map<Object, Object> deduplicateMap, T object) {
+        if (deduplicateMap.containsKey(object) == false) {
+            deduplicateMap.put(object, object);
+        }
+        return (T) deduplicateMap.get(object);
     }
 
     //-----------------------------------------------------------------------
@@ -559,7 +596,7 @@ public class ZoneRulesBuilder {
             if (lastRuleList.size() == 1) {
                 throw new IllegalStateException("Cannot have only one rule defined as being forever");
             }
-            if (isForever()) {
+            if (windowEnd.equals(MAX_DATE_TIME)) {
                 // handle unusual offsets in year before rule starts
                 for (TZRule lastRule : lastRuleList) {
                     addRule(lastRule.year, maxLastRuleStartYear, lastRule.month, lastRule.dayOfMonth,
@@ -584,15 +621,6 @@ public class ZoneRulesBuilder {
                 maxLastRuleStartYear = Year.MAX_YEAR;
                 return null;
             }
-        }
-
-        /**
-         * Checks if the window is the forever window.
-         *
-         * @return true if forever
-         */
-        boolean isForever() {
-            return windowEnd.equals(MAX_DATE_TIME);
         }
 
         /**
@@ -653,11 +681,12 @@ public class ZoneRulesBuilder {
         /**
          * Converts this to a transition.
          *
+         * @param deduplicateMap  a map for deduplicating the values, not null
          * @param standardOffset  the active standard offset, not null
          * @param wallOffset  the active wall offset, not null
          * @return the transition, never null
          */
-        Transition toTransition(ZoneOffset standardOffset, ZoneOffset wallOffset) {
+        Transition toTransition(Map<Object, Object> deduplicateMap, ZoneOffset standardOffset, ZoneOffset wallOffset) {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
             if (dayOfMonth == -1) {
@@ -672,8 +701,9 @@ public class ZoneRulesBuilder {
                     date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
                 }
             }
-            LocalDateTime ldt = LocalDateTime.dateTime(date, time);
-            OffsetDateTime dt = timeDefinition.createDateTime(ldt, standardOffset, wallOffset);
+            date = deduplicate(deduplicateMap, date);
+            LocalDateTime ldt = deduplicate(deduplicateMap, LocalDateTime.dateTime(date, time));
+            OffsetDateTime dt = deduplicate(deduplicateMap, timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
             return new Transition(dt, offsetAfter);
         }
 

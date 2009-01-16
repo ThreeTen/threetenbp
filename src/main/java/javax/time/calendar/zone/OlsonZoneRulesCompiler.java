@@ -29,11 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.zone;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.ObjectOutputStream;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.time.calendar.ZoneRulesBuilder.TimeDefinition;
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
@@ -50,6 +58,7 @@ import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
 /**
@@ -61,10 +70,10 @@ import javax.time.period.Period;
  */
 public final class OlsonZoneRulesCompiler {
 
-//    /**
-//     * The last year to have its transitions cached.
-//     */
-//    private static final Year LAST_CACHED_YEAR = Year.isoYear(2100);
+    /**
+     * A map to deduplicate object instances.
+     */
+    private final Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
 
     /**
      * The olson rules.
@@ -75,13 +84,13 @@ public final class OlsonZoneRulesCompiler {
      */
     private final Map<String, List<OlsonZone>> zones = new HashMap<String, List<OlsonZone>>();
     /**
-     * The built zones.
-     */
-    private final Map<String, TimeZone> builtZones = new HashMap<String, TimeZone>();
-    /**
      * The olson links.
      */
     private final Map<String, String> links = new HashMap<String, String>();
+    /**
+     * The built zones.
+     */
+    private final Map<String, TimeZone> builtZones = new HashMap<String, TimeZone>();
 
     /**
      * Reads a set of Olson files and builds a single combined data file.
@@ -369,6 +378,8 @@ public final class OlsonZoneRulesCompiler {
             String dayRule = st.nextToken();
             if (dayRule.startsWith("last")) {
                 mdt.dayOfMonth = -1;
+                mdt.dayOfWeek = parseDayOfWeek(dayRule.substring(4));
+                mdt.adjustForwards = false;
             } else {
                 int index = dayRule.indexOf(">=");
                 if (index > 0) {
@@ -438,7 +449,7 @@ public final class OlsonZoneRulesCompiler {
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        return cal.mergeStrict().toLocalTime();
+        return deduplicate(cal.mergeStrict().toLocalTime());
     }
 
     private int parseSecs(String str) {
@@ -472,7 +483,7 @@ public final class OlsonZoneRulesCompiler {
 
     private Period parsePeriod(String str) {
         int secs = parseSecs(str);
-        return Period.seconds(secs).normalized();
+        return deduplicate(Period.seconds(secs).normalized());
     }
 
     private TimeDefinition parseTimeDefinition(char c) {
@@ -510,7 +521,7 @@ public final class OlsonZoneRulesCompiler {
             for (OlsonZone olsonZone : olsonZones) {
                 bld = olsonZone.addToBuilder(bld, rules);
             }
-            builtZones.put(zoneId, bld.toRules(zoneId));
+            builtZones.put(zoneId, bld.toRules(zoneId, deduplicateMap));
         }
         
         // build aliases
@@ -522,12 +533,36 @@ public final class OlsonZoneRulesCompiler {
     }
 
     private void outputFile() throws Exception {
-        for (String zoneId : builtZones.keySet()) {
-            System.out.println(zoneId);
-        }
+        File outputFile = new File(destinationDir, "ZoneRuleInfo-Olson-" + version + ".dat");
+        printVerbose("Outputting file: " + outputFile);
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(outputFile));
+        out.writeObject(builtZones);
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 512);
+//        DataOutputStream out = new DataOutputStream(baos);
+//        Map<String, byte[]> data = new HashMap<String, byte[]>();
+//        for (String zoneId : builtZones.keySet()) {
+//            printVerbose("Outputting zone: " + zoneId);
+//            out.
+//        }
+        out.close();
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Deduplicates an object instance.
+     *
+     * @param <T> the generic type
+     * @param object  the object to deduplicate
+     * @return the deduplicated object
+     */
+    @SuppressWarnings("unchecked")
+    <T> T deduplicate(T object) {
+        if (deduplicateMap.containsKey(object) == false) {
+            deduplicateMap.put(object, object);
+        }
+        return (T) deduplicateMap.get(object);
+    }
+
     /**
      * Prints a verbose message.
      * @param message  the message, not null
@@ -542,7 +577,7 @@ public final class OlsonZoneRulesCompiler {
     /**
      * Class representing a month-day-time in the Olson file.
      */
-    private static abstract class OlsonMonthDayTime {
+    private abstract class OlsonMonthDayTime {
         /** The month of the cutover. */
         MonthOfYear month = MonthOfYear.JANUARY;
         /** The day of month of the cutover. */
@@ -571,6 +606,7 @@ public final class OlsonZoneRulesCompiler {
                     date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
                 }
             }
+            date = deduplicate(date);
             return LocalDateTime.dateTime(date, time);
         }
 
@@ -588,7 +624,7 @@ public final class OlsonZoneRulesCompiler {
     /**
      * Class representing a rule line in the Olson file.
      */
-    private static final class OlsonRule extends OlsonMonthDayTime {
+    private final class OlsonRule extends OlsonMonthDayTime {
         /** The start year. */
         int startYear;
         /** The end year. */
@@ -608,7 +644,7 @@ public final class OlsonZoneRulesCompiler {
     /**
      * Class representing a linked set of zone lines in the Olson file.
      */
-    private static final class OlsonZone extends OlsonMonthDayTime {
+    private final class OlsonZone extends OlsonMonthDayTime {
         /** The standard offset. */
         ZoneOffset standardOffset;
         /** The fixed savings amount. */

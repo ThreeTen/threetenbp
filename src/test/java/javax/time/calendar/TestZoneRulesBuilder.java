@@ -33,15 +33,16 @@ package javax.time.calendar;
 
 import static javax.time.calendar.LocalDateTime.*;
 import static javax.time.calendar.LocalTime.*;
-import static javax.time.calendar.ZoneRulesBuilder.TimeDefinition.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.calendar.field.MonthOfYear.*;
+import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.*;
 import static org.testng.Assert.*;
 
 import javax.time.calendar.TimeZone.OffsetInfo;
-import javax.time.calendar.ZoneRulesBuilder.TimeDefinition;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.zone.ZoneRulesBuilder;
+import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
 import org.testng.annotations.Test;
