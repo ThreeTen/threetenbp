@@ -344,12 +344,12 @@ public class ZoneRulesBuilder {
         // initialise the standard offset calculation
         TZWindow firstWindow = windowList.get(0);
         ZoneOffset standardOffset = firstWindow.standardOffset;
-        ZoneOffset wallOffset = standardOffset;
+        Period savings = Period.ZERO;
         if (firstWindow.fixedSavingAmount != null) {
-            wallOffset = deduplicate(deduplicateMap, wallOffset.plus(firstWindow.fixedSavingAmount));
+            savings = firstWindow.fixedSavingAmount;
         }
-        ZoneOffset firstWallOffset = wallOffset;
-        OffsetDateTime windowStart = deduplicate(deduplicateMap, OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, wallOffset));
+        ZoneOffset firstWallOffset = deduplicate(deduplicateMap, standardOffset.plus(savings));
+        OffsetDateTime windowStart = deduplicate(deduplicateMap, OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -359,44 +359,55 @@ public class ZoneRulesBuilder {
                 standardOffsetList.add(deduplicate(deduplicateMap, windowStart.adjustLocalDateTime(standardOffset)));
             }
             
-            // check if the start of the window represents a transition
-            ZoneOffset initialWallOffset = standardOffset;
-            if (window.fixedSavingAmount != null) {
-                initialWallOffset = deduplicate(deduplicateMap, initialWallOffset.plus(window.fixedSavingAmount));
-            }
-            if (wallOffset.equals(initialWallOffset) == false) {
-                Transition trans = new Transition(windowStart, initialWallOffset);
-                transitionList.add(trans);
-                wallOffset = initialWallOffset;
-            }
-            
             // convert last rules to real rules
-            window.tidyLastRules();
+            window.tidy();
             
-            // apply rules
+            // apply rules to find savings amount applicable at start of window
+            Collections.sort(window.ruleList);
+            Period appliedSavings = window.fixedSavingAmount;
+            if (appliedSavings == null) {
+                appliedSavings = savings;
+                for (TZRule rule : window.ruleList) {
+                    Transition trans = rule.toTransition(deduplicateMap, standardOffset, appliedSavings);
+                    if (trans.getDateTime().isBefore(windowStart) == false) {
+                        break;  // break using previous wall offset
+                    }
+                    appliedSavings = rule.savingAmount;
+                }
+            }
+            
+            // check if the start of the window represents a transition
+            ZoneOffset appliedWallOffset = deduplicate(deduplicateMap, standardOffset.plus(appliedSavings));
+            if (windowStart.getOffset().equals(appliedWallOffset) == false) {
+                Transition trans = new Transition(windowStart, appliedWallOffset);
+                transitionList.add(trans);
+            }
+            savings = appliedSavings;
+            
+            // apply rules within the window
             Collections.sort(window.ruleList);
             for (TZRule rule : window.ruleList) {
-                Transition trans = rule.toTransition(deduplicateMap, standardOffset, wallOffset);
+                Transition trans = rule.toTransition(deduplicateMap, standardOffset, savings);
                 if (trans.getDateTime().isBefore(windowStart) == false &&
-                        trans.getDateTime().isBefore(window.createDateTime(wallOffset)) &&
+                        trans.getDateTime().isBefore(window.createDateTime(savings)) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
                     transitionList.add(trans);
-                    wallOffset = trans.getOffsetAfter();
+                    savings = rule.savingAmount;
                 }
             }
             
             // calculate last rules
             Collections.sort(window.lastRuleList);
             for (TZRule lastRule : window.lastRuleList) {
-                Transition trans = lastRule.toTransition(deduplicateMap, standardOffset, wallOffset);
+                Transition trans = lastRule.toTransition(deduplicateMap, standardOffset, savings);
                 TransitionRule transitionRule = lastRule.toTransitionRule(
                         trans.getLocal().toLocalTime(), trans.getOffsetBefore(), trans.getOffsetAfter());
                 lastTransitionRuleList.add(transitionRule);
-                wallOffset = trans.getOffsetAfter();
+                savings = lastRule.savingAmount;
             }
             
             // finally we can calculate the true end of the window, passing it to the next window
-            windowStart = deduplicate(deduplicateMap, window.createDateTime(wallOffset));
+            windowStart = deduplicate(deduplicateMap, window.createDateTime(savings));
         }
         return new ZoneRules(
                 id, firstWindow.standardOffset, firstWallOffset, standardOffsetList,
@@ -584,13 +595,14 @@ public class ZoneRulesBuilder {
          * Adds rules to make the last rules all start from the same year.
          * Also add one more year to avoid weird case where penultimate year has odd offset.
          *
-         * @return the start year of the last year rules, MAX_YEAR if no last rules
          * @throws IllegalStateException if there is only one rule defined as being forever
          */
-        Year tidyLastRules() {
+        void tidy() {
             if (lastRuleList.size() == 1) {
                 throw new IllegalStateException("Cannot have only one rule defined as being forever");
             }
+            
+            // handle last rules
             if (windowEnd.equals(MAX_DATE_TIME)) {
                 // handle unusual offsets in year before rule starts
                 for (TZRule lastRule : lastRuleList) {
@@ -600,10 +612,8 @@ public class ZoneRulesBuilder {
                 }
                 if (maxLastRuleStartYear == Year.MAX_YEAR) {
                     lastRuleList.clear();
-                    return null;
                 } else {
                     maxLastRuleStartYear++;
-                    return Year.isoYear(maxLastRuleStartYear);
                 }
             } else {
                 // convert all within the endYear limit
@@ -614,17 +624,22 @@ public class ZoneRulesBuilder {
                 }
                 lastRuleList.clear();
                 maxLastRuleStartYear = Year.MAX_YEAR;
-                return null;
+            }
+            
+            // default fixed savings to zero
+            if (ruleList.size() == 0 && fixedSavingAmount == null) {
+                fixedSavingAmount = Period.ZERO;
             }
         }
 
         /**
          * Creates the offset date-time for the local date-time at the end of the window.
          *
-         * @param wallOffset  the wall offset, not null
+         * @param savings  the amount of savings in use, not null
          * @return the created offset date-time in the wall offset, never null
          */
-        OffsetDateTime createDateTime(ZoneOffset wallOffset) {
+        OffsetDateTime createDateTime(Period savings) {
+            ZoneOffset wallOffset = standardOffset.plus(savings);
             return timeDefinition.createDateTime(windowEnd, standardOffset, wallOffset);
         }
     }
@@ -678,10 +693,10 @@ public class ZoneRulesBuilder {
          *
          * @param deduplicateMap  a map for deduplicating the values, not null
          * @param standardOffset  the active standard offset, not null
-         * @param wallOffset  the active wall offset, not null
+         * @param savings  the active savings, not null
          * @return the transition, never null
          */
-        Transition toTransition(Map<Object, Object> deduplicateMap, ZoneOffset standardOffset, ZoneOffset wallOffset) {
+        Transition toTransition(Map<Object, Object> deduplicateMap, ZoneOffset standardOffset, Period savings) {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
             if (dayOfMonth == -1) {
@@ -698,6 +713,7 @@ public class ZoneRulesBuilder {
             }
             date = deduplicate(deduplicateMap, date);
             LocalDateTime ldt = deduplicate(deduplicateMap, LocalDateTime.dateTime(date, time));
+            ZoneOffset wallOffset = deduplicate(deduplicateMap, standardOffset.plus(savings));
             OffsetDateTime dt = deduplicate(deduplicateMap, timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
             return new Transition(dt, offsetAfter);
         }

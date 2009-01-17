@@ -118,6 +118,43 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2008, 10, 26, 0, 20, OFFSET_2_30, OFFSET_1);
     }
 
+    public void test_combined_windowChangeDuringDST() {
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
+        b.addWindowForever(OFFSET_1);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
+        TimeZone test = b.toRules("Europe/Dublin");
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertGap(test, 2000, 7, 1, 1, 20, OFFSET_1, OFFSET_2);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 3, 0)).getOffset(), OFFSET_2);
+        assertOverlap(test, 2000, 10, 29, 1, 20, OFFSET_2, OFFSET_1);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 12, 1, 0, 0)).getOffset(), OFFSET_1);
+    }
+
+    public void test_combined_windowChangeWithinDST() {
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
+        b.addWindow(OFFSET_1, dateTime(2000, 8, 1, 2, 0), WALL);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
+        b.addWindowForever(OFFSET_1);
+        TimeZone test = b.toRules("Europe/Dublin");
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 0, 0)).getOffset(), OFFSET_1);
+        assertGap(test, 2000, 7, 1, 1, 20, OFFSET_1, OFFSET_2);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 7, 1, 3, 0)).getOffset(), OFFSET_2);
+        assertOverlap(test, 2000, 8, 1, 1, 20, OFFSET_2, OFFSET_1);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 12, 1, 0, 0)).getOffset(), OFFSET_1);
+    }
+
     public void test_combined_endsInSavings() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1_15, dateTime(1920, 1, 1, 1, 0), WALL);
