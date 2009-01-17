@@ -528,7 +528,7 @@ public final class OlsonZoneRulesCompiler {
         for (String realId : links.keySet()) {
             String aliasId = links.get(realId);
             printVerbose("Linking alias " + aliasId + " to " + realId);
-            builtZones.put(aliasId, ZoneRulesBuilder.createAlias(realId, aliasId));
+            builtZones.put(aliasId, ZoneRulesBuilder.createAlias(aliasId, realId));
         }
     }
 
