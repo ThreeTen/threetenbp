@@ -517,7 +517,7 @@ public final class OlsonZoneRulesCompiler {
         for (String zoneId : zones.keySet()) {
             printVerbose("Building zone " + zoneId);
             List<OlsonZone> olsonZones = zones.get(zoneId);
-            ZoneRulesBuilder bld = null;
+            ZoneRulesBuilder bld = new ZoneRulesBuilder();
             for (OlsonZone olsonZone : olsonZones) {
                 bld = olsonZone.addToBuilder(bld, rules);
             }
@@ -657,13 +657,7 @@ public final class OlsonZoneRulesCompiler {
         Year year;
 
         ZoneRulesBuilder addToBuilder(ZoneRulesBuilder bld, Map<String, List<OlsonRule>> rules) {
-            if (bld == null) {
-                if (year != null) {
-                    return new ZoneRulesBuilder(standardOffset, toDateTime(year.getValue()), timeDefinition);
-                }
-                bld = new ZoneRulesBuilder(standardOffset, LocalDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0), TimeDefinition.WALL);
-                bld.addWindowForever(standardOffset);  // HACK
-            } else if (year != null) {
+            if (year != null) {
                 bld.addWindow(standardOffset, toDateTime(year.getValue()), timeDefinition);
             } else {
                 bld.addWindowForever(standardOffset);

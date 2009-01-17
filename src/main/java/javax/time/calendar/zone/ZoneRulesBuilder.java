@@ -82,10 +82,6 @@ public class ZoneRulesBuilder {
     private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.dateTime(Year.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
 
     /**
-     * The first window with a fixed offset, no savings and no rules.
-     */
-    private TZWindow firstWindow;
-    /**
      * The list of windows.
      */
     private List<TZWindow> windowList = new ArrayList<TZWindow>();
@@ -120,25 +116,15 @@ public class ZoneRulesBuilder {
     /**
      * Constructs an instance of the builder that can be used to create zone rules.
      * <p>
-     * The constructor specifies the period of time before which there was no concept
-     * of standard or daylight savings time. The earliest recorded introducion of
-     * standard time is in December 1835 in Amsterdam and the date varies by country.
-     * Before the standardisation of time, clocks showed a time relative to midday
-     * in that specific location. The offset passed in to this constructor is normally
-     * an estimate of that time based solely on geograpic latitude and longitude.
-     *
-     * @param baseOffset  the offset to use before legal rules were set, not null
-     * @param until  the date-time that the offset applies until, not null
-     * @param untilDefinition  the time type for the until date-time, not null
+     * The builder is used by adding one or more windows representing portions
+     * of the time-line. The standard offset from UTC will be constant within a window,
+     * although two adjacent windows can have the same standard offset.
+     * <p>
+     * Within each window, there can either be a
+     * {@link #setFixedSavingsToWindow fixed savings amount} or a
+     * {@link #addRuleToWindow list of rules}.
      */
-    public ZoneRulesBuilder(
-            ZoneOffset baseOffset,
-            LocalDateTime until,
-            TimeDefinition untilDefinition) {
-        checkNotNull(baseOffset, "Base offset must not be null");
-        checkNotNull(until, "Until date-time must not be null");
-        checkNotNull(untilDefinition, "Time definition must not be null");
-        firstWindow = new TZWindow(baseOffset, until, untilDefinition);
+    public ZoneRulesBuilder() {
     }
 
     //-----------------------------------------------------------------------
@@ -167,8 +153,10 @@ public class ZoneRulesBuilder {
         checkNotNull(until, "Until date-time must not be null");
         checkNotNull(untilDefinition, "Time definition must not be null");
         TZWindow window = new TZWindow(standardOffset, until, untilDefinition);
-        TZWindow previous = windowList.isEmpty() ? firstWindow : windowList.get(windowList.size() - 1);
-        window.validateWindowOrder(previous);
+        if (windowList.size() > 0) {
+            TZWindow previous = windowList.get(windowList.size() - 1);
+            window.validateWindowOrder(previous);
+        }
         windowList.add(window);
         return this;
     }
@@ -327,13 +315,10 @@ public class ZoneRulesBuilder {
      *
      * @param id  the time zone id, not null
      * @return the zone rules, never null
+     * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     public TimeZone toRules(String id) {
-        checkNotNull(id, "Time zone id must not be null");
-        if (windowList.isEmpty()) {
-            return TimeZone.timeZone(firstWindow.standardOffset);
-        }
         return toRules(id, new HashMap<Object, Object>());
     }
 
@@ -343,17 +328,28 @@ public class ZoneRulesBuilder {
      * @param id  the time zone id, not null
      * @param deduplicateMap  a map for deduplicating the values, not null
      * @return the zone rules, never null
+     * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
     TimeZone toRules(String id, Map<Object, Object> deduplicateMap) {
+        checkNotNull(id, "Time zone id must not be null");
+        if (windowList.isEmpty()) {
+            throw new IllegalStateException("No windows have been added to the builder");
+        }
+        
         List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);
         List<Transition> transitionList = new ArrayList<Transition>(256);
         List<TransitionRule> lastTransitionRuleList = new ArrayList<TransitionRule>(2);
         
         // initialise the standard offset calculation
+        TZWindow firstWindow = windowList.get(0);
         ZoneOffset standardOffset = firstWindow.standardOffset;
         ZoneOffset wallOffset = standardOffset;
-        OffsetDateTime windowStart = deduplicate(deduplicateMap, firstWindow.createDateTime(wallOffset));
+        if (firstWindow.fixedSavingAmount != null) {
+            wallOffset = deduplicate(deduplicateMap, wallOffset.plus(firstWindow.fixedSavingAmount));
+        }
+        ZoneOffset firstWallOffset = wallOffset;
+        OffsetDateTime windowStart = deduplicate(deduplicateMap, OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, wallOffset));
         
         // build the windows and rules to interesting data
         Year lastRulesStartYear = null;
@@ -404,7 +400,7 @@ public class ZoneRulesBuilder {
             windowStart = deduplicate(deduplicateMap, window.createDateTime(wallOffset));
         }
         return new ZoneRules(
-                id, firstWindow.standardOffset, standardOffsetList,
+                id, firstWindow.standardOffset, firstWallOffset, standardOffsetList,
                 transitionList, lastRulesStartYear, lastTransitionRuleList);
     }
 

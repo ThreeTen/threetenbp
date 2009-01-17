@@ -98,7 +98,8 @@ final class ZoneRules extends TimeZone {
      * Constructor.
      *
      * @param id  the time zone id, not null
-     * @param baseOffset  the offset to use before legal rules were set, not null
+     * @param baseStandardOffset  the standard offset to use before legal rules were set, not null
+     * @param baseWallOffset  the wall offset to use before legal rules were set, not null
      * @param standardOffsetTransitionList  the list of changes to the standard offset, not null
      * @param transitionList  the list of transitions, not null
      * @param lastRuleYear  the year from which the last rules apply, null if no last rules
@@ -106,7 +107,8 @@ final class ZoneRules extends TimeZone {
      */
     ZoneRules(
             String id,
-            ZoneOffset baseOffset,
+            ZoneOffset baseStandardOffset,
+            ZoneOffset baseWallOffset,
             List<OffsetDateTime> standardOffsetTransitionList,
             List<Transition> transitionList,
             Year lastRuleYear,
@@ -116,7 +118,7 @@ final class ZoneRules extends TimeZone {
         // convert standard transitions
         this.standardTransitions = new long[standardOffsetTransitionList.size()];
         this.standardOffsets = new ZoneOffset[standardOffsetTransitionList.size() + 1];
-        this.standardOffsets[0] = baseOffset;
+        this.standardOffsets[0] = baseStandardOffset;
         for (int i = 0; i < standardOffsetTransitionList.size(); i++) {
             this.standardTransitions[i] = standardOffsetTransitionList.get(i).toEpochSeconds();
             this.standardOffsets[i + 1] = standardOffsetTransitionList.get(i).getOffset();
@@ -125,7 +127,7 @@ final class ZoneRules extends TimeZone {
         // convert savings transitions to locals
         List<LocalDateTime> localTransitionList = new ArrayList<LocalDateTime>();
         List<ZoneOffset> localTransitionOffsetList = new ArrayList<ZoneOffset>();
-        localTransitionOffsetList.add(baseOffset);
+        localTransitionOffsetList.add(baseWallOffset);
         for (Transition trans : transitionList) {
             if (trans.isGap()) {
                 localTransitionList.add(trans.getDateTime().toLocalDateTime());
