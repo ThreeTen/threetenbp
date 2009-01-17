@@ -312,24 +312,66 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 2005, 10, 24, 1, 30, OFFSET_2, OFFSET_1);
     }
 
-// functionality removed
-//    public void test_combined_wallContinuesAcrossWindow() {
-//        TransitionRulesBuilder b = new TransitionRulesBuilder(OFFSET_1, dateTime(1920, 1, 1, 1, 0), WALL);
-//        b.addWindow(OFFSET_1, dateTime(1950, 7, 1, 1, 0), WALL);
-//        b.setFixedSavingsToWindow(PERIOD_1HOUR);  // applies to 1920-1950, but also extends to 2000
-//        b.addWindow(OFFSET_1, dateTime(2000, 7, 1, 1, 0), WALL);
-//        b.addWindowForever(OFFSET_1);
-//        b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
-//        TimeZone test = b.toRules("Europe/London");
-//        
-//        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
-//        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2_30);
-//        
-//        assertEquals(test.getOffsetInfo(dateTime(1915, 1, 1, 0, 0)).getOffset(), OFFSET_1);
-//        assertEquals(test.getOffsetInfo(dateTime(1925, 1, 1, 0, 0)).getOffset(), OFFSET_2);
-//        assertEquals(test.getOffsetInfo(dateTime(1955, 1, 1, 0, 0)).getOffset(), OFFSET_2);
-//        assertEquals(test.getOffsetInfo(dateTime(2005, 1, 1, 0, 0)).getOffset(), OFFSET_2_30);
-//    }
+    public void test_argentina() {
+//      # On October 3, 1999, 0:00 local, Argentina implemented daylight savings time,
+//      # which did not result in the switch of a time zone, as they stayed 9 hours
+//      # from the International Date Line.
+//        Rule    Arg     1989    1993    -       Mar     Sun>=1  0:00    0       -
+//        Rule    Arg     1989    1992    -       Oct     Sun>=15 0:00    1:00    S
+//        Rule    Arg     1999    only    -       Oct     Sun>=1  0:00    1:00    S
+//        Rule    Arg     2000    only    -       Mar     3       0:00    0       -
+//        Zone America/Argentina/Tucuman -4:20:52 - LMT   1894 Oct 31
+//                    -3:00   Arg AR%sT   1999 Oct  3
+//                    -4:00   Arg AR%sT   2000 Mar  3
+        
+        ZoneOffset minus3 = ZoneOffset.zoneOffset(-3);
+        ZoneOffset minus4 = ZoneOffset.zoneOffset(-4);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(minus3, dateTime(1900, 1, 1, 0, 0), WALL);
+        b.addWindow(minus3, dateTime(1999, 10, 3, 0, 0), WALL);
+        b.addRuleToWindow(1993, MARCH, 3, time(0, 0), WALL, PERIOD_0);
+        b.addRuleToWindow(1999, OCTOBER, 3, time(0, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, MARCH, 3, time(0, 0), WALL, PERIOD_0);
+        b.addWindow(minus4, dateTime(2000, 3, 3, 0, 0), WALL);
+        b.addRuleToWindow(1993, MARCH, 3, time(0, 0), WALL, PERIOD_0);
+        b.addRuleToWindow(1999, OCTOBER, 3, time(0, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2000, MARCH, 3, time(0, 0), WALL, PERIOD_0);
+        b.addWindowForever(minus3);
+        TimeZone test = b.toRules("America/Argentina/Tucuman");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), minus3);
+        
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 2, 22, 59)).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 2, 23, 59)).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 3, 0, 0)).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 3, 1, 0)).getOffset(), minus3);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2000, 3, 2, 22, 59)).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 3, 2, 23, 59)).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 3, 3, 0, 0)).getOffset(), minus3);
+        assertEquals(test.getOffsetInfo(dateTime(2000, 3, 3, 1, 0)).getOffset(), minus3);
+    }
+
+    public void test_egypt_dateChange() {
+//    Rule    Egypt   2008    max -   Apr lastFri  0:00s  1:00    S
+//    Rule    Egypt   2008    max -   Aug lastThu 23:00s  0   -
+//    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
+//                            2:00    Egypt EE%sT
+        ZoneOffset plus2 = ZoneOffset.zoneOffset(2);
+        ZoneOffset plus3 = ZoneOffset.zoneOffset(3);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindowForever(plus2);
+        b.addRuleToWindow(2008, Year.MAX_YEAR, APRIL, -1, FRIDAY, time(0, 0), STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(2008, Year.MAX_YEAR, AUGUST, -1, THURSDAY, time(23, 0), STANDARD, PERIOD_0);
+        TimeZone test = b.toRules("Africa/Cairo");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
+        
+        assertGap(test, 2009, 4, 24, 0, 0, plus2, plus3);
+        assertOverlap(test, 2009, 8, 27, 23, 0, plus3, plus2);  // overlaps from Fri 00:00 back to Thu 23:00
+    }
 
     //-----------------------------------------------------------------------
     // addWindow()

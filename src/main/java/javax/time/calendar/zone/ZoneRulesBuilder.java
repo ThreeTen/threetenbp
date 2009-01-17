@@ -353,12 +353,6 @@ public class ZoneRulesBuilder {
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
-            // check if standard offset change
-            if (standardOffset.equals(window.standardOffset) == false) {
-                standardOffset = window.standardOffset;
-                standardOffsetList.add(deduplicate(deduplicateMap, windowStart.adjustLocalDateTime(standardOffset)));
-            }
-            
             // convert last rules to real rules
             window.tidy();
             
@@ -369,11 +363,19 @@ public class ZoneRulesBuilder {
                 appliedSavings = savings;
                 for (TZRule rule : window.ruleList) {
                     Transition trans = rule.toTransition(deduplicateMap, standardOffset, appliedSavings);
-                    if (trans.getDateTime().isBefore(windowStart) == false) {
-                        break;  // break using previous wall offset
+                    if (trans.getDateTime().isAfter(windowStart)) {
+                        // previous savings amount found, which could be the savings amount at
+                        // the instant that the window starts (hence isAfter)
+                        break;
                     }
                     appliedSavings = rule.savingAmount;
                 }
+            }
+            
+            // check if standard offset change
+            if (standardOffset.equals(window.standardOffset) == false) {
+                standardOffset = deduplicate(deduplicateMap, window.standardOffset);
+                standardOffsetList.add(deduplicate(deduplicateMap, windowStart.adjustLocalDateTime(standardOffset)));
             }
             
             // check if the start of the window represents a transition
@@ -399,9 +401,7 @@ public class ZoneRulesBuilder {
             // calculate last rules
             Collections.sort(window.lastRuleList);
             for (TZRule lastRule : window.lastRuleList) {
-                Transition trans = lastRule.toTransition(deduplicateMap, standardOffset, savings);
-                TransitionRule transitionRule = lastRule.toTransitionRule(
-                        trans.getLocal().toLocalTime(), trans.getOffsetBefore(), trans.getOffsetAfter());
+                TransitionRule transitionRule = lastRule.toTransitionRule(deduplicateMap, standardOffset, savings);
                 lastTransitionRuleList.add(transitionRule);
                 savings = lastRule.savingAmount;
             }
@@ -693,10 +693,10 @@ public class ZoneRulesBuilder {
          *
          * @param deduplicateMap  a map for deduplicating the values, not null
          * @param standardOffset  the active standard offset, not null
-         * @param savings  the active savings, not null
+         * @param savingsBefore  the active savings, not null
          * @return the transition, never null
          */
-        Transition toTransition(Map<Object, Object> deduplicateMap, ZoneOffset standardOffset, Period savings) {
+        Transition toTransition(Map<Object, Object> deduplicateMap, ZoneOffset standardOffset, Period savingsBefore) {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
             if (dayOfMonth == -1) {
@@ -713,7 +713,7 @@ public class ZoneRulesBuilder {
             }
             date = deduplicate(deduplicateMap, date);
             LocalDateTime ldt = deduplicate(deduplicateMap, LocalDateTime.dateTime(date, time));
-            ZoneOffset wallOffset = deduplicate(deduplicateMap, standardOffset.plus(savings));
+            ZoneOffset wallOffset = deduplicate(deduplicateMap, standardOffset.plus(savingsBefore));
             OffsetDateTime dt = deduplicate(deduplicateMap, timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
             return new Transition(dt, offsetAfter);
         }
@@ -721,12 +721,13 @@ public class ZoneRulesBuilder {
         /**
          * Converts this to a transition rule.
          *
-         * @param time  the calculated local time, not null
-         * @param offsetBefore  the offset before the transition, not null
-         * @param offsetAfter  the offset after the transition, not null
+         * @param deduplicateMap  a map for deduplicating the values, not null
+         * @param standardOffset  the active standard offset, not null
+         * @param savingsBefore  the active savings before the transition, not null
          * @return the transition, never null
          */
-        TransitionRule toTransitionRule(LocalTime time, ZoneOffset offsetBefore, ZoneOffset offsetAfter) {
+        TransitionRule toTransitionRule(Map<Object, Object> deduplicateMap, ZoneOffset standardOffset, Period savingsBefore) {
+            // optimise stored format
             DayOfMonth dom;
             if (dayOfMonth == -1) {
                 if (month == MonthOfYear.FEBRUARY) {
@@ -737,7 +738,12 @@ public class ZoneRulesBuilder {
             } else {
                 dom = DayOfMonth.dayOfMonth(dayOfMonth);
             }
-            return new TransitionRule(month, dom, dayOfWeek, time, offsetBefore, offsetAfter);
+            
+            // build rule
+            Transition trans = toTransition(deduplicateMap, standardOffset, savingsBefore);
+            return new TransitionRule(
+                    month, dom, dayOfWeek, time, timeDefinition,
+                    standardOffset, trans.getOffsetBefore(), trans.getOffsetAfter());
         }
 
         /** {@inheritDoc}. */

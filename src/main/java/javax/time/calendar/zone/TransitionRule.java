@@ -35,6 +35,7 @@ import java.io.Serializable;
 
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
@@ -42,6 +43,7 @@ import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 
 /**
  * A rule expressing how to create transitions.
@@ -77,6 +79,14 @@ class TransitionRule implements Serializable {
      */
     private final LocalTime cutoverTime;
     /**
+     * The definition of how the local time should be interpretted.
+     */
+    private final TimeDefinition timeDefinition;
+    /**
+     * The standard offset at the cutover.
+     */
+    private final ZoneOffset standardOffset;
+    /**
      * The offset before the cutover.
      */
     private final ZoneOffset offsetBefore;
@@ -92,6 +102,8 @@ class TransitionRule implements Serializable {
      * @param cutoverWeekStart  the day of the month-day of the first day of the cutover week, not null
      * @param dowChange  the required day of week, null if the month-day should not be changed
      * @param cutoverTime  the cutover time in the 'before' offset, not null
+     * @param timeDefnition  how to interpret the cutover
+     * @param standardOffset  the standard offset in force at the cutover, not null
      * @param offsetBefore  the offset before the cutover, not null
      * @param offsetAfter  the offset after the cutover, not null
      */
@@ -100,12 +112,16 @@ class TransitionRule implements Serializable {
             DayOfMonth cutoverWeekStart,
             DayOfWeek dowChange,
             LocalTime cutoverTime,
+            TimeDefinition timeDefnition,
+            ZoneOffset standardOffset,
             ZoneOffset offsetBefore,
             ZoneOffset offsetAfter) {
         this.cutoverMonth = cutoverMonth;
         this.cutoverWeekStart = cutoverWeekStart;
         this.dowChange = dowChange;
         this.cutoverTime = cutoverTime;
+        this.timeDefinition = timeDefnition;
+        this.standardOffset = standardOffset;
         this.offsetBefore = offsetBefore;
         this.offsetAfter = offsetAfter;
     }
@@ -130,7 +146,8 @@ class TransitionRule implements Serializable {
                 date = date.with(DateAdjusters.nextOrCurrent(dowChange));
             }
         }
-        OffsetDateTime cutover = OffsetDateTime.dateTime(date, cutoverTime, offsetBefore);
+        LocalDateTime localDT = LocalDateTime.dateTime(date, cutoverTime);
+        OffsetDateTime cutover = timeDefinition.createDateTime(localDT, standardOffset, offsetBefore);
         return new Transition(cutover, offsetAfter);
     }
 
