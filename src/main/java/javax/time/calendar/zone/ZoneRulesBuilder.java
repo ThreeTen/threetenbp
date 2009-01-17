@@ -354,7 +354,7 @@ public class ZoneRulesBuilder {
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
             // convert last rules to real rules
-            window.tidy();
+            window.tidy(windowStart.getYear().getValue());
             
             // apply rules to find savings amount applicable at start of window
             Collections.sort(window.ruleList);
@@ -595,16 +595,18 @@ public class ZoneRulesBuilder {
          * Adds rules to make the last rules all start from the same year.
          * Also add one more year to avoid weird case where penultimate year has odd offset.
          *
+         * @param windowStartYear  the window start year
          * @throws IllegalStateException if there is only one rule defined as being forever
          */
-        void tidy() {
+        void tidy(int windowStartYear) {
             if (lastRuleList.size() == 1) {
                 throw new IllegalStateException("Cannot have only one rule defined as being forever");
             }
             
             // handle last rules
             if (windowEnd.equals(MAX_DATE_TIME)) {
-                // handle unusual offsets in year before rule starts
+                // setup at least one real rule, which closes off other windows nicely
+                maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear);
                 for (TZRule lastRule : lastRuleList) {
                     addRule(lastRule.year, maxLastRuleStartYear, lastRule.month, lastRule.dayOfMonth,
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeDefinition, lastRule.savingAmount);

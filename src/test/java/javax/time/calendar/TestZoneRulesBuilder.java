@@ -353,7 +353,7 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 3, 1, 0)).getOffset(), minus3);
     }
 
-    public void test_egypt_dateChange() {
+    public void test_cairo_dateChange() {
 //    Rule    Egypt   2008    max -   Apr lastFri  0:00s  1:00    S
 //    Rule    Egypt   2008    max -   Aug lastThu 23:00s  0   -
 //    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
@@ -372,6 +372,36 @@ public class TestZoneRulesBuilder {
         assertGap(test, 2009, 4, 24, 0, 0, plus2, plus3);
         assertOverlap(test, 2009, 8, 27, 23, 0, plus3, plus2);  // overlaps from Fri 00:00 back to Thu 23:00
     }
+
+    public void test_sofia_lastRuleClash() {
+//        Rule    E-Eur   1981    max -   Mar lastSun  0:00   1:00    S
+//        Rule    E-Eur   1996    max -   Oct lastSun  0:00   0   -
+//        Rule    EU      1981    max -   Mar lastSun  1:00u  1:00    S
+//        Rule    EU      1996    max -   Oct lastSun  1:00u  0   -
+//        Zone    Europe/Sofia
+//        2:00    E-Eur   EE%sT   1997
+//        2:00    EU      EE%sT
+          ZoneOffset plus2 = ZoneOffset.zoneOffset(2);
+          ZoneOffset plus3 = ZoneOffset.zoneOffset(3);
+          ZoneRulesBuilder b = new ZoneRulesBuilder();
+          b.addWindow(plus2, dateTime(1997, 1, 1, 0, 0), WALL);
+          b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
+          b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
+          b.addWindowForever(plus2);
+          b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
+          b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), UTC, PERIOD_0);
+          TimeZone test = b.toRules("Europe/Sofia");
+          
+          assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
+          assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
+          
+          assertGap(test, 1996, 3, 31, 1, 0, plus2, plus3);
+          assertOverlap(test, 1996, 10, 27, 0, 0, plus3, plus2);
+          assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 1, 0)).getOffset(), plus2);
+          assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 2, 0)).getOffset(), plus2);
+          assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 3, 0)).getOffset(), plus2);
+          assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 4, 0)).getOffset(), plus2);
+      }
 
     //-----------------------------------------------------------------------
     // addWindow()
