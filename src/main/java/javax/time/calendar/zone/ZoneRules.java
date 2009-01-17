@@ -102,7 +102,6 @@ final class ZoneRules extends TimeZone {
      * @param baseWallOffset  the wall offset to use before legal rules were set, not null
      * @param standardOffsetTransitionList  the list of changes to the standard offset, not null
      * @param transitionList  the list of transitions, not null
-     * @param lastRuleYear  the year from which the last rules apply, null if no last rules
      * @param lastRules  the recurring last rules, not null
      */
     ZoneRules(
@@ -111,7 +110,6 @@ final class ZoneRules extends TimeZone {
             ZoneOffset baseWallOffset,
             List<OffsetDateTime> standardOffsetTransitionList,
             List<Transition> transitionList,
-            Year lastRuleYear,
             List<TransitionRule> lastRules) {
         super(id);
         

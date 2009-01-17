@@ -352,7 +352,6 @@ public class ZoneRulesBuilder {
         OffsetDateTime windowStart = deduplicate(deduplicateMap, OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, wallOffset));
         
         // build the windows and rules to interesting data
-        Year lastRulesStartYear = null;
         for (TZWindow window : windowList) {
             // check if standard offset change
             if (standardOffset.equals(window.standardOffset) == false) {
@@ -372,7 +371,7 @@ public class ZoneRulesBuilder {
             }
             
             // convert last rules to real rules
-            lastRulesStartYear = window.tidyLastRules();
+            window.tidyLastRules();
             
             // apply rules
             Collections.sort(window.ruleList);
@@ -401,7 +400,7 @@ public class ZoneRulesBuilder {
         }
         return new ZoneRules(
                 id, firstWindow.standardOffset, firstWallOffset, standardOffsetList,
-                transitionList, lastRulesStartYear, lastTransitionRuleList);
+                transitionList, lastTransitionRuleList);
     }
 
     /**
