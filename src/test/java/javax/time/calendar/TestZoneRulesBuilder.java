@@ -403,6 +403,41 @@ public class TestZoneRulesBuilder {
           assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 4, 0)).getOffset(), plus2);
       }
 
+    public void test_prague() {
+//    Rule    C-Eur   1944    1945    -   Apr Mon>=1   2:00s  1:00    S
+//    Rule    C-Eur   1944    only    -   Oct  2   2:00s  0   -
+//    Rule    C-Eur   1945    only    -   Sep 16   2:00s  0   -
+//    Rule    Czech   1945    only    -   Apr  8  2:00s   1:00    S
+//    Rule    Czech   1945    only    -   Nov 18  2:00s   0   -
+//    Zone    Europe/Prague   0:57:44 -     LMT   1850
+//                            0:57:44 -     PMT   1891 Oct
+//                            1:00    C-Eur CE%sT 1944 Sep 17 2:00s
+//                            1:00    Czech CE%sT 1979
+//                            1:00    EU    CE%sT
+        ZoneOffset plus1 = ZoneOffset.zoneOffset(1);
+        ZoneOffset plus2 = ZoneOffset.zoneOffset(2);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(plus1, dateTime(1944, 9, 17, 2, 0), STANDARD);
+        b.addRuleToWindow(1944, 1945, APRIL, 1, MONDAY, time(2, 0), STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(1944, OCTOBER, 2, time(2, 0), STANDARD, PERIOD_0);
+        b.addRuleToWindow(1945, SEPTEMBER, 16, time(2, 0), STANDARD, PERIOD_0);
+        b.addWindow(plus1, dateTime(1979, 1, 1, 0, 0), WALL);
+        b.addRuleToWindow(1945, APRIL, 8, time(2, 0), STANDARD, PERIOD_1HOUR);
+        b.addRuleToWindow(1945, NOVEMBER, 18, time(2, 0), STANDARD, PERIOD_0);
+        b.addWindowForever(plus1);
+        TimeZone test = b.toRules("Europe/Sofia");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus1);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus1);
+        
+        assertGap(test, 1944, 4, 3, 2, 30, plus1, plus2);
+        assertOverlap(test, 1944, 9, 17, 2, 30, plus2, plus1);
+        assertEquals(test.getOffsetInfo(dateTime(1944, 9, 17, 3, 30)).getOffset(), plus1);
+        assertEquals(test.getOffsetInfo(dateTime(1944, 9, 17, 4, 30)).getOffset(), plus1);
+        assertGap(test, 1945, 4, 8, 2, 30, plus1, plus2);
+        assertOverlap(test, 1945, 11, 18, 2, 30, plus2, plus1);
+    }
+
     //-----------------------------------------------------------------------
     // addWindow()
     //-----------------------------------------------------------------------

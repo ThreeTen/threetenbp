@@ -360,7 +360,7 @@ public class ZoneRulesBuilder {
             Collections.sort(window.ruleList);
             Period appliedSavings = window.fixedSavingAmount;
             if (appliedSavings == null) {
-                appliedSavings = savings;
+                appliedSavings = Period.ZERO;
                 for (TZRule rule : window.ruleList) {
                     Transition trans = rule.toTransition(deduplicateMap, standardOffset, appliedSavings);
                     if (trans.getDateTime().isAfter(windowStart)) {
