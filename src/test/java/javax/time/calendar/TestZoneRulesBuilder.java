@@ -374,6 +374,8 @@ public class TestZoneRulesBuilder {
     }
 
     public void test_sofia_lastRuleClash() {
+        // UTC rule change in 1996 occurs after Wall change
+        // need to ensure that last rule is only applied to last window
 //        Rule    E-Eur   1981    max -   Mar lastSun  0:00   1:00    S
 //        Rule    E-Eur   1996    max -   Oct lastSun  0:00   0   -
 //        Rule    EU      1981    max -   Mar lastSun  1:00u  1:00    S
@@ -404,6 +406,8 @@ public class TestZoneRulesBuilder {
       }
 
     public void test_prague() {
+        // need to calculate savings applicable at window start based on
+        // first rule being transition from no savings to DST
 //    Rule    C-Eur   1944    1945    -   Apr Mon>=1   2:00s  1:00    S
 //    Rule    C-Eur   1944    only    -   Oct  2   2:00s  0   -
 //    Rule    C-Eur   1945    only    -   Sep 16   2:00s  0   -
@@ -436,6 +440,50 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(1944, 9, 17, 4, 30)).getOffset(), plus1);
         assertGap(test, 1945, 4, 8, 2, 30, plus1, plus2);
         assertOverlap(test, 1945, 11, 18, 2, 30, plus2, plus1);
+    }
+
+    public void test_tbilisi() {
+        // has transition into and out of 1 year of permanent DST (Mar96-Oct97)
+        // where the date in the window and rule are the same
+        // this is weird because the wall time in the rule is amended by the actual
+        // wall time from the zone lines
+//      Rule E-EurAsia  1981    max   -   Mar lastSun  0:00   1:00  S
+//      Rule E-EurAsia  1979    1995  -   Sep lastSun  0:00   0     -
+//      Rule E-EurAsia  1996    max   -   Oct lastSun  0:00   0     -
+//    Zone    Asia/Tbilisi    2:59:16 -   LMT 1880
+//    4:00 E-EurAsia  GE%sT   1996 Oct lastSun
+//    4:00    1:00    GEST    1997 Mar lastSun
+//    4:00 E-EurAsia  GE%sT   2004 Jun 27
+//    3:00 RussiaAsia GE%sT   2005 Mar lastSun 2:00
+//    4:00    -   GET
+        ZoneOffset plus4 = ZoneOffset.zoneOffset(4);
+        ZoneOffset plus5 = ZoneOffset.zoneOffset(5);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(plus4, dateTime(1996, 10, 27, 0, 0), WALL);
+        b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(0, 0), WALL, PERIOD_0);
+        b.addWindow(plus4, dateTime(1997, 3, 30, 0, 0), WALL);
+        b.setFixedSavingsToWindow(PERIOD_1HOUR);
+        b.addWindowForever(plus4);
+        b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(0, 0), WALL, PERIOD_0);
+        TimeZone test = b.toRules("Europe/Sofia");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus4);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus4);
+        
+        assertGap(test, 1996, 3, 31, 0, 30, plus4, plus5);
+//        assertOverlap(test, 1996, 10, 26, 23, 30, plus5, plus4);  // fixed DST blocks overlap
+        assertEquals(test.getOffsetInfo(dateTime(1996, 10, 26, 22, 30)).getOffset(), plus5);
+        assertEquals(test.getOffsetInfo(dateTime(1996, 10, 26, 23, 30)).getOffset(), plus5);
+        assertEquals(test.getOffsetInfo(dateTime(1996, 10, 27, 0, 30)).getOffset(), plus5);
+//        assertOverlap(test, 1997, 3, 30, 0, 30, plus5, plus4);  // end of fixed blocks overlap
+        assertEquals(test.getOffsetInfo(dateTime(1997, 3, 29, 22, 30)).getOffset(), plus5);
+        assertEquals(test.getOffsetInfo(dateTime(1997, 3, 29, 23, 30)).getOffset(), plus5);
+        assertEquals(test.getOffsetInfo(dateTime(1997, 3, 30, 0, 30)).getOffset(), plus5);
+        assertEquals(test.getOffsetInfo(dateTime(1997, 3, 30, 1, 30)).getOffset(), plus5);
+        assertEquals(test.getOffsetInfo(dateTime(1997, 3, 30, 2, 30)).getOffset(), plus5);
+        assertOverlap(test, 1997, 10, 25, 23, 30, plus5, plus4);
     }
 
     //-----------------------------------------------------------------------

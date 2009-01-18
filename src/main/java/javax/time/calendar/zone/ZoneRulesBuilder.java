@@ -353,41 +353,41 @@ public class ZoneRulesBuilder {
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
-            // convert last rules to real rules
+            // tidy the state
             window.tidy(windowStart.getYear().getValue());
             
-            // apply rules to find savings amount applicable at start of window
-            Collections.sort(window.ruleList);
-            Period appliedSavings = window.fixedSavingAmount;
-            if (appliedSavings == null) {
-                appliedSavings = Period.ZERO;
+            // calculate effective savings at the start of the window as implied by
+            // the data in this window (rather than the data from the previous window)
+            Period effectiveSavings = window.fixedSavingAmount;
+            if (effectiveSavings == null) {
+                // apply rules to find savings amount applicable at start of window
+                effectiveSavings = Period.ZERO;
                 for (TZRule rule : window.ruleList) {
-                    Transition trans = rule.toTransition(deduplicateMap, standardOffset, appliedSavings);
+                    Transition trans = rule.toTransition(deduplicateMap, standardOffset, savings);
                     if (trans.getDateTime().isAfter(windowStart)) {
                         // previous savings amount found, which could be the savings amount at
                         // the instant that the window starts (hence isAfter)
                         break;
                     }
-                    appliedSavings = rule.savingAmount;
+                    effectiveSavings = rule.savingAmount;
                 }
             }
             
-            // check if standard offset change
+            // check if standard offset changed, and update it
             if (standardOffset.equals(window.standardOffset) == false) {
                 standardOffset = deduplicate(deduplicateMap, window.standardOffset);
                 standardOffsetList.add(deduplicate(deduplicateMap, windowStart.adjustLocalDateTime(standardOffset)));
             }
             
             // check if the start of the window represents a transition
-            ZoneOffset appliedWallOffset = deduplicate(deduplicateMap, standardOffset.plus(appliedSavings));
-            if (windowStart.getOffset().equals(appliedWallOffset) == false) {
-                Transition trans = new Transition(windowStart, appliedWallOffset);
+            ZoneOffset effectiveWallOffset = deduplicate(deduplicateMap, standardOffset.plus(effectiveSavings));
+            if (windowStart.getOffset().equals(effectiveWallOffset) == false) {
+                Transition trans = new Transition(windowStart, effectiveWallOffset);
                 transitionList.add(trans);
             }
-            savings = appliedSavings;
+            savings = effectiveSavings;
             
             // apply rules within the window
-            Collections.sort(window.ruleList);
             for (TZRule rule : window.ruleList) {
                 Transition trans = rule.toTransition(deduplicateMap, standardOffset, savings);
                 if (trans.getDateTime().isBefore(windowStart) == false &&
@@ -399,7 +399,6 @@ public class ZoneRulesBuilder {
             }
             
             // calculate last rules
-            Collections.sort(window.lastRuleList);
             for (TZRule lastRule : window.lastRuleList) {
                 TransitionRule transitionRule = lastRule.toTransitionRule(deduplicateMap, standardOffset, savings);
                 lastTransitionRuleList.add(transitionRule);
@@ -627,6 +626,10 @@ public class ZoneRulesBuilder {
                 lastRuleList.clear();
                 maxLastRuleStartYear = Year.MAX_YEAR;
             }
+            
+            // ensure lists are sorted
+            Collections.sort(ruleList);
+            Collections.sort(lastRuleList);
             
             // default fixed savings to zero
             if (ruleList.size() == 0 && fixedSavingAmount == null) {
