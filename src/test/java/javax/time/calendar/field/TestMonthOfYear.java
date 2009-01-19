@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008, 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import static org.testng.Assert.*;
 
 import java.io.Serializable;
 
+import java.util.Locale;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
@@ -184,6 +185,74 @@ public class TestMonthOfYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_badDateProvider() {
         MonthOfYear.monthOfYear(new MockDateProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    // getShortText()
+    //-----------------------------------------------------------------------
+    public void test_getShortText_US() {
+        assertEquals(MonthOfYear.JANUARY.getShortText(Locale.US), "Jan");
+        assertEquals(MonthOfYear.FEBRUARY.getShortText(Locale.US), "Feb");
+        assertEquals(MonthOfYear.MARCH.getShortText(Locale.US), "Mar");
+        assertEquals(MonthOfYear.APRIL.getShortText(Locale.US), "Apr");
+        assertEquals(MonthOfYear.MAY.getShortText(Locale.US), "May");
+        assertEquals(MonthOfYear.JUNE.getShortText(Locale.US), "Jun");
+        assertEquals(MonthOfYear.JULY.getShortText(Locale.US), "Jul");
+        assertEquals(MonthOfYear.AUGUST.getShortText(Locale.US), "Aug");
+        assertEquals(MonthOfYear.SEPTEMBER.getShortText(Locale.US), "Sep");
+        assertEquals(MonthOfYear.OCTOBER.getShortText(Locale.US), "Oct");
+        assertEquals(MonthOfYear.NOVEMBER.getShortText(Locale.US), "Nov");
+        assertEquals(MonthOfYear.DECEMBER.getShortText(Locale.US), "Dec");
+    }
+
+    public void test_getShortText_pt_BR() {
+        Locale ptBR = new Locale("pt", "BR");
+        assertEquals(MonthOfYear.JANUARY.getShortText(ptBR), "Jan");
+        assertEquals(MonthOfYear.FEBRUARY.getShortText(ptBR), "Fev");
+        assertEquals(MonthOfYear.MARCH.getShortText(ptBR), "Mar");
+        assertEquals(MonthOfYear.APRIL.getShortText(ptBR), "Abr");
+        assertEquals(MonthOfYear.MAY.getShortText(ptBR), "Mai");
+        assertEquals(MonthOfYear.JUNE.getShortText(ptBR), "Jun");
+        assertEquals(MonthOfYear.JULY.getShortText(ptBR), "Jul");
+        assertEquals(MonthOfYear.AUGUST.getShortText(ptBR), "Ago");
+        assertEquals(MonthOfYear.SEPTEMBER.getShortText(ptBR), "Set");
+        assertEquals(MonthOfYear.OCTOBER.getShortText(ptBR), "Out");
+        assertEquals(MonthOfYear.NOVEMBER.getShortText(ptBR), "Nov");
+        assertEquals(MonthOfYear.DECEMBER.getShortText(ptBR), "Dez");
+    }
+
+    //-----------------------------------------------------------------------
+    // getText()
+    //-----------------------------------------------------------------------
+    public void test_getText_US() {
+        assertEquals(MonthOfYear.JANUARY.getText(Locale.US), "January");
+        assertEquals(MonthOfYear.FEBRUARY.getText(Locale.US), "February");
+        assertEquals(MonthOfYear.MARCH.getText(Locale.US), "March");
+        assertEquals(MonthOfYear.APRIL.getText(Locale.US), "April");
+        assertEquals(MonthOfYear.MAY.getText(Locale.US), "May");
+        assertEquals(MonthOfYear.JUNE.getText(Locale.US), "June");
+        assertEquals(MonthOfYear.JULY.getText(Locale.US), "July");
+        assertEquals(MonthOfYear.AUGUST.getText(Locale.US), "August");
+        assertEquals(MonthOfYear.SEPTEMBER.getText(Locale.US), "September");
+        assertEquals(MonthOfYear.OCTOBER.getText(Locale.US), "October");
+        assertEquals(MonthOfYear.NOVEMBER.getText(Locale.US), "November");
+        assertEquals(MonthOfYear.DECEMBER.getText(Locale.US), "December");
+    }
+
+    public void test_getText_pt_BR() {
+        Locale ptBR = new Locale("pt", "BR");
+        assertEquals(MonthOfYear.JANUARY.getText(ptBR), "Janeiro");
+        assertEquals(MonthOfYear.FEBRUARY.getText(ptBR), "Fevereiro");
+        assertEquals(MonthOfYear.MARCH.getText(ptBR), "Março");
+        assertEquals(MonthOfYear.APRIL.getText(ptBR), "Abril");
+        assertEquals(MonthOfYear.MAY.getText(ptBR), "Maio");
+        assertEquals(MonthOfYear.JUNE.getText(ptBR), "Junho");
+        assertEquals(MonthOfYear.JULY.getText(ptBR), "Julho");
+        assertEquals(MonthOfYear.AUGUST.getText(ptBR), "Agosto");
+        assertEquals(MonthOfYear.SEPTEMBER.getText(ptBR), "Setembro");
+        assertEquals(MonthOfYear.OCTOBER.getText(ptBR), "Outubro");
+        assertEquals(MonthOfYear.NOVEMBER.getText(ptBR), "Novembro");
+        assertEquals(MonthOfYear.DECEMBER.getText(ptBR), "Dezembro");
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2008,2009 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.field;
 
+import java.util.Locale;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
@@ -42,6 +43,8 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.format.DateTimeFormatSymbols;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * A representation of a month of year in the ISO-8601 calendar system.
@@ -201,6 +204,40 @@ public enum MonthOfYear
      */
     public int getValue() {
         return monthOfYear;
+    }
+
+    /**
+     * Gets the month of year value as short text.
+     * <p>
+     * In English, this will return text of the form 'Jan' or 'Dec'.
+     * <p>
+     * If there is no textual mapping for the locale, then the value is
+     * returned as per {@link Integer#toString()}.
+     *
+     * @param locale  the locale to use, not null
+     * @return the short text value of the month of year, never null
+     */
+    public String getShortText(Locale locale) {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(rule(), TextStyle.SHORT, monthOfYear);
+        return text == null ? Integer.toString(monthOfYear) : text;
+    }
+
+    /**
+     * Gets the month of year value as text.
+     * <p>
+     * In English, this will return text of the form 'January' or 'December'.
+     * <p>
+     * If there is no textual mapping for the locale, then the value is
+     * returned as per {@link Integer#toString()}.
+     *
+     * @param locale  the locale to use, not null
+     * @return the long text value of the month of year, never null
+     */
+    public String getText(Locale locale) {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
+        String text = symbols.getFieldValueText(rule(), TextStyle.FULL, monthOfYear);
+        return text == null ? Integer.toString(monthOfYear) : text;
     }
 
     //-----------------------------------------------------------------------
