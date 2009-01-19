@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007, 2008, 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -214,7 +214,7 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the day of week, never null
+     * @return the short text value of the day of week, never null
      */
     public String getShortText(Locale locale) {
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
