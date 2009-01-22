@@ -605,7 +605,7 @@ public class ZoneRulesBuilder {
             // handle last rules
             if (windowEnd.equals(MAX_DATE_TIME)) {
                 // setup at least one real rule, which closes off other windows nicely
-                maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear);
+                maxLastRuleStartYear = Math.max(maxLastRuleStartYear, windowStartYear) + 1;
                 for (TZRule lastRule : lastRuleList) {
                     addRule(lastRule.year, maxLastRuleStartYear, lastRule.month, lastRule.dayOfMonth,
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeDefinition, lastRule.savingAmount);

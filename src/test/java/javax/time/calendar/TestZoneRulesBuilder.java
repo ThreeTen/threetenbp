@@ -486,6 +486,34 @@ public class TestZoneRulesBuilder {
         assertOverlap(test, 1997, 10, 25, 23, 30, plus5, plus4);
     }
 
+    public void test_vincennes() {
+//        Rule    US  2007  max  -   Mar Sun>=8  2:00  1:00  D
+//        Rule    US  2007  max  -   Nov Sun>=1  2:00  0     S
+//    -5:00   -   EST 2006 Apr  2 2:00
+//    -6:00   US  C%sT    2007 Nov  4 2:00
+//    -5:00   US  E%sT
+        ZoneOffset minus5 = ZoneOffset.zoneOffset(-5);
+        ZoneOffset minus6 = ZoneOffset.zoneOffset(-6);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(minus6, dateTime(2007, 11, 4, 2, 0), WALL);
+        b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2007, Year.MAX_YEAR, NOVEMBER, 1, SUNDAY, time(2, 0), WALL, PERIOD_0);
+        b.addWindowForever(minus5);
+        b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(2007, Year.MAX_YEAR, NOVEMBER, 1, SUNDAY, time(2, 0), WALL, PERIOD_0);
+        TimeZone test = b.toRules("America/Indiana/Vincennes");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), minus6);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), minus5);
+        
+        assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 0, 0)).getOffset(), minus6);
+        assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 1, 0)).getOffset(), minus6);
+        assertGap(test, 2007, 3, 11, 2, 0, minus6, minus5);
+        assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 3, 0)).getOffset(), minus5);
+        assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 4, 0)).getOffset(), minus5);
+        assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 5, 0)).getOffset(), minus5);
+    }
+
     //-----------------------------------------------------------------------
     // addWindow()
     //-----------------------------------------------------------------------
