@@ -361,11 +361,12 @@ public class ZoneRulesBuilder {
             // tidy the state
             window.tidy(windowStart.getYear().getValue());
             
-            // calculate effective savings at the start of the window as implied by
-            // the data in this window (rather than the data from the previous window)
+            // calculate effective savings at the start of the window
             Period effectiveSavings = window.fixedSavingAmount;
             if (effectiveSavings == null) {
-                // apply rules to find savings amount applicable at start of window
+                // apply rules from this window together with the standard offset and
+                // savings from the last window to find the savings amount applicable
+                // at start of this window
                 effectiveSavings = Period.ZERO;
                 for (TZRule rule : window.ruleList) {
                     Transition trans = rule.toTransition(standardOffset, savings);
