@@ -487,6 +487,7 @@ public class TestZoneRulesBuilder {
     }
 
     public void test_vincennes() {
+        // need to ensure that at least one real rule is added to expand on the last rule
 //        Rule    US  2007  max  -   Mar Sun>=8  2:00  1:00  D
 //        Rule    US  2007  max  -   Nov Sun>=1  2:00  0     S
 //    -5:00   -   EST 2006 Apr  2 2:00
@@ -512,6 +513,37 @@ public class TestZoneRulesBuilder {
         assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 3, 0)).getOffset(), minus5);
         assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 4, 0)).getOffset(), minus5);
         assertEquals(test.getOffsetInfo(dateTime(2007, 3, 11, 5, 0)).getOffset(), minus5);
+    }
+
+    public void test_iqaluit() {
+        // two hour overlap due to end of daylight and change of standard offset
+//      Rule    Canada  1987   2006 -   Apr Sun>=1  2:00    1:00  D
+//      Rule    Canada  1974   2006 -   Oct lastSun 2:00    0     S
+//      Rule    NT_YK   1987   2006 -   Apr Sun>=1  2:00    1:00  D
+//      Rule    NT_YK   1980   2006 -   Oct lastSun 2:00    0     S
+//                    -5:00   NT_YK   E%sT    1999 Oct 31 2:00
+//                    -6:00   Canada  C%sT
+        ZoneOffset minus4 = ZoneOffset.zoneOffset(-4);
+        ZoneOffset minus5 = ZoneOffset.zoneOffset(-5);
+        ZoneOffset minus6 = ZoneOffset.zoneOffset(-6);
+        ZoneRulesBuilder b = new ZoneRulesBuilder();
+        b.addWindow(minus5, dateTime(1999, 10, 31, 2, 0), WALL);
+        b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1987, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
+        b.addWindowForever(minus6);
+        b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
+        b.addRuleToWindow(1987, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
+        TimeZone test = b.toRules("America/Iqaluit");
+        
+        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), minus5);
+        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), minus6);
+        
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 30, 23, 0)).getOffset(), minus4);
+        assertOverlap(test, 1999, 10, 31, 0, 0, minus4, minus6);
+        assertOverlap(test, 1999, 10, 31, 1, 0, minus4, minus6);
+        assertOverlap(test, 1999, 10, 31, 1, 59, minus4, minus6);
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 31, 2, 0)).getOffset(), minus6);
+        assertEquals(test.getOffsetInfo(dateTime(1999, 10, 31, 3, 0)).getOffset(), minus6);
     }
 
     //-----------------------------------------------------------------------
