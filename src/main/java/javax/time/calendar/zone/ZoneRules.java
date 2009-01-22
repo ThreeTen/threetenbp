@@ -34,7 +34,8 @@ package javax.time.calendar.zone;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
@@ -92,7 +93,7 @@ final class ZoneRules extends TimeZone {
     /**
      * The map of transitions.
      */
-    private final TreeMap<Year, Transition[]> lastRulesCache = new TreeMap<Year, Transition[]>();
+    private final ConcurrentMap<Year, Transition[]> lastRulesCache = new ConcurrentHashMap<Year, Transition[]>();
 
     /**
      * Constructor.
@@ -288,7 +289,7 @@ final class ZoneRules extends TimeZone {
             transArray[i] = ruleArray[i].createTransition(year);
         }
         if (year.isBefore(LAST_CACHED_YEAR)) {
-            lastRulesCache.put(year, transArray);
+            lastRulesCache.putIfAbsent(year, transArray);
         }
         return transArray;
     }
