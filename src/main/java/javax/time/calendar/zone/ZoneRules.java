@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.zone;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +95,7 @@ final class ZoneRules extends TimeZone {
     /**
      * The map of transitions.
      */
-    private final ConcurrentMap<Year, Transition[]> lastRulesCache = new ConcurrentHashMap<Year, Transition[]>();
+    private transient ConcurrentMap<Year, Transition[]> lastRulesCache = new ConcurrentHashMap<Year, Transition[]>();
 
     /**
      * Constructor.
@@ -148,6 +150,18 @@ final class ZoneRules extends TimeZone {
         
         // last rules
         this.lastRules = lastRules.toArray(new TransitionRule[lastRules.size()]);
+    }
+
+    /**
+     * Reinstate the cache.
+     *
+     * @param in  the input
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        lastRulesCache = new ConcurrentHashMap<Year, Transition[]>();
     }
 
 //    //-----------------------------------------------------------------------
