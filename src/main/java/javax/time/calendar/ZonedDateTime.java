@@ -439,7 +439,7 @@ public final class ZonedDateTime
         if (info.isDiscontinuity()) {
             ZoneOffset offset = info.getDiscontinuity().getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
-                OffsetDateTime newDT = dateTime.withOffset(offset);
+                OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);
             }
         }
@@ -467,7 +467,7 @@ public final class ZonedDateTime
         if (info.isDiscontinuity()) {
             ZoneOffset offset = info.getDiscontinuity().getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
-                OffsetDateTime newDT = dateTime.withOffset(offset);
+                OffsetDateTime newDT = dateTime.withOffsetSameLocal(offset);
                 return new ZonedDateTime(newDT, zone);
             }
         }

@@ -484,7 +484,7 @@ public abstract class TimeZone implements Serializable {
          * @return the transition date-time expressed with the after offset, not null
          */
         public OffsetDateTime getTransitionDateTimeAfter() {
-            return transition.adjustLocalDateTime(offsetAfter);
+            return transition.withOffsetSameInstant(offsetAfter);
         }
         
         /**

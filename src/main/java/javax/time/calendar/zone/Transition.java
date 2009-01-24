@@ -68,7 +68,7 @@ class Transition implements Comparable<Transition>, Serializable {
      */
     public Transition(OffsetDateTime transition, ZoneOffset offsetAfter) {
         this.transition = transition;
-        this.transitionAfter = transition.adjustLocalDateTime(offsetAfter);  // cached for performance
+        this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
     }
 
     //-----------------------------------------------------------------------

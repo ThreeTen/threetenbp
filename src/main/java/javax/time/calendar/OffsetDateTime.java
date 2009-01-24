@@ -589,31 +589,41 @@ public final class OffsetDateTime
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with a different zone offset.
+     * Returns a copy of this OffsetDateTime with a different zone offset
+     * using the same local date-time.
      * <p>
-     * This method changes the offset stored in this zoned date to a different
-     * offset. No calculation is performed. The result simply represents the same
-     * date and the new offset.
+     * This method returns an OffsetDateTime that is the combination of the
+     * local date-time from this instance and the specified offset.
+     * No calculation is performed.
+     * <p>
+     * To maintain the same instant on the time-line while changing offsets
+     * use {@link #withOffsetSameInstant}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param offset  the zone offset to change to, not null
      * @return a new updated OffsetDateTime, never null
      */
-    public OffsetDateTime withOffset(ZoneOffset offset) {
+    public OffsetDateTime withOffsetSameLocal(ZoneOffset offset) {
         return offset == this.offset ? this : dateTime(dateTime, offset);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Adjusts the local date-time using the specified offset.
+     * Returns a copy of this OffsetDateTime with a different zone offset
+     * adjusting the local date-time to retain the same instant.
      * <p>
-     * This method changes the zoned time from one offset to another.
-     * If this time represents 10:30+02:00 and the offset specified is
-     * +03:00, then this method will return 11:30+03:00.
+     * This method returns an OffsetDateTime with the specified offset.
+     * The local date-time in the result is adjusted such that the instant
+     * represented by this instance and the instant represented by the
+     * result are equal.
      * <p>
-     * To change the offset whilst keeping the local time,
-     * use {@link #withOffset(ZoneOffset)}.
+     * For example, if this time represents 10:30+02:00 and the offset
+     * specified is +03:00, then this method will return 11:30+03:00.
+     * <p>
+     * This method is useful for finding the current local time in a different offset.
+     * <p>
+     * To change the offset while keeping the local time
+     * use {@link #withOffsetSameLocal}.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -621,7 +631,7 @@ public final class OffsetDateTime
      * @return a new updated OffsetDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
-    public OffsetDateTime adjustLocalDateTime(ZoneOffset offset) {
+    public OffsetDateTime withOffsetSameInstant(ZoneOffset offset) {
         if (offset.equals(this.offset)) {
             return this;
         }
@@ -1660,8 +1670,8 @@ public final class OffsetDateTime
             return true;
         }
         if (other instanceof OffsetDateTime) {
-            OffsetDateTime zonedDateTime = (OffsetDateTime) other;
-            return dateTime.equals(zonedDateTime.dateTime) && offset.equals(zonedDateTime.offset);
+            OffsetDateTime offsetDateTime = (OffsetDateTime) other;
+            return dateTime.equals(offsetDateTime.dateTime) && offset.equals(offsetDateTime.offset);
         }
         return false;
     }

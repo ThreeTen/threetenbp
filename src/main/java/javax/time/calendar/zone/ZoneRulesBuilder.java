@@ -382,7 +382,7 @@ public class ZoneRulesBuilder {
             // check if standard offset changed, and update it
             if (standardOffset.equals(window.standardOffset) == false) {
                 standardOffset = deduplicate(window.standardOffset);
-                standardOffsetList.add(deduplicate(windowStart.adjustLocalDateTime(standardOffset)));
+                standardOffsetList.add(deduplicate(windowStart.withOffsetSameInstant(standardOffset)));
             }
             
             // check if the start of the window represents a transition
@@ -471,9 +471,9 @@ public class ZoneRulesBuilder {
         public OffsetDateTime createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
             switch (this) {
                 case UTC:
-                    return OffsetDateTime.dateTime(dateTime, ZoneOffset.UTC).adjustLocalDateTime(wallOffset);
+                    return OffsetDateTime.dateTime(dateTime, ZoneOffset.UTC).withOffsetSameInstant(wallOffset);
                 case STANDARD:
-                    return OffsetDateTime.dateTime(dateTime, standardOffset).adjustLocalDateTime(wallOffset);
+                    return OffsetDateTime.dateTime(dateTime, standardOffset).withOffsetSameInstant(wallOffset);
                 default:  // WALL
                     return OffsetDateTime.dateTime(dateTime, wallOffset);
             }
