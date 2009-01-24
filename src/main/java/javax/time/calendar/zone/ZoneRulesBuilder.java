@@ -140,7 +140,7 @@ public class ZoneRulesBuilder {
      * or fixed savings. If neither rules or fixed savings are added to the window
      * then the window will default to no savings.
      * <p>
-     * Each window must be addded sequentially, as the start instant of the window
+     * Each window must be added sequentially, as the start instant of the window
      * is derived from the until instant of the previous window.
      *
      * @param standardOffset  the standard offset, not null
@@ -457,7 +457,7 @@ public class ZoneRulesBuilder {
          * Creates the offset date-time from the specified local date-time.
          * <p>
          * This method converts a local date-time to an offset date-time using an
-         * alorithm based on the definition type.
+         * algorithm based on the definition type.
          * The UTC type builds the offset date-time using the UTC offset.
          * The STANDARD type builds the offset date-time using the standard offset.
          * The WALL type builds the offset date-time using the wall offset.
@@ -506,8 +506,8 @@ public class ZoneRulesBuilder {
         /**
          * Constructor.
          *
-         * @param standardOffset  the standard offset applicable during the winow, not null
-         * @param windowEnd  the end of the window, wrt the time definition, null if forever
+         * @param standardOffset  the standard offset applicable during the window, not null
+         * @param windowEnd  the end of the window, relative to the time definition, null if forever
          * @param timeDefinition  the time definition for calculating the true end, not null
          */
         TZWindow(
