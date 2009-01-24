@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -53,7 +53,7 @@ import javax.time.period.PeriodProvider;
  * Thus, for example, the value "2nd October 2007 +02:00" can be stored
  * in a OffsetDate.
  * <p>
- * OffsetDate is thread-safe and immutable.
+ * OffsetDate is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

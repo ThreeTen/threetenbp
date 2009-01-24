@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -55,7 +55,7 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  * this class may be passed into the factory method of any other implementation
  * of <code>DateProvider</code>.
  * <p>
- * CopticDate is thread-safe and immutable.
+ * CopticDate is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ import javax.time.calendar.LocalDate;
  * <b>Do not use ordinal() to obtain the numeric representation of a QuarterOfYear
  * instance. Use getValue() instead.</b>
  * <p>
- * QuarterOfYear is thread-safe and immutable.
+ * QuarterOfYear is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

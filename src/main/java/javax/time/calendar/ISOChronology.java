@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ import javax.time.calendar.field.Year;
  * Thus, dates is the past, and particularly before 1583, may not correspond
  * to historical documents.
  * <p>
- * ISOChronology is thread-safe and immutable.
+ * ISOChronology is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

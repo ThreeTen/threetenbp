@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -66,7 +66,7 @@ import javax.time.period.PeriodProvider;
  * application code should use <code>HistoricDate</code> and define an explicit
  * cutover date between the Julian and Gregorian calendar systems.
  * <p>
- * LocalDate is thread-safe and immutable.
+ * LocalDate is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

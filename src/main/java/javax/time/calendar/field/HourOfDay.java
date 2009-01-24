@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -53,7 +53,7 @@ import javax.time.calendar.TimeProvider;
  * Static factory methods allow you to construct instances.
  * The hour of day may be queried using getValue().
  * <p>
- * HourOfDay is thread-safe and immutable.
+ * HourOfDay is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

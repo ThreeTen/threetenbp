@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,7 +48,7 @@ import javax.time.period.PeriodUnit;
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
  * <p>
- * Weeks is thread-safe and immutable.
+ * Weeks is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

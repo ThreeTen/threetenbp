@@ -58,7 +58,7 @@ import javax.time.period.PeriodProvider;
  * as well as a time zone. Thus, for example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an OffsetDateTime.
  * <p>
- * OffsetDateTime is thread-safe and immutable.
+ * OffsetDateTime is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

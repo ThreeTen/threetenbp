@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -58,7 +58,7 @@ import javax.time.MathUtils;
  * Only when the period is combined with a date/time in a specific calendar system can the
  * duration of the period be calculated.
  * <p>
- * Period is thread-safe and immutable.
+ * Period is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

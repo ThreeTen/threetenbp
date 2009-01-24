@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ import javax.time.calendar.LocalTime;
  * 0001-01-01 (Coptic) equals 0284-08-29 (ISO).
  * The supported range is from Coptic year 1 to year 9999 (inclusive).
  * <p>
- * CopticChronology is thread-safe and immutable.
+ * CopticChronology is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

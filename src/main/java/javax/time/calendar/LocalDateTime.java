@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ import javax.time.period.PeriodProvider;
  * It does not store or represent a time zone. Thus, for example, the value
  * "2nd October 2007 at 13:45.30.123456789" can be stored in an LocalDateTime.
  * <p>
- * LocalDateTime is thread-safe and immutable.
+ * LocalDateTime is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

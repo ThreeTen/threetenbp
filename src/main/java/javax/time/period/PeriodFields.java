@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -55,7 +55,7 @@ import javax.time.calendar.CalendarConversionException;
  * <p>
  * PeriodFields can store units of any kind which makes it usable with any calendar system.
  * <p>
- * PeriodFields is thread-safe and immutable.
+ * PeriodFields is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

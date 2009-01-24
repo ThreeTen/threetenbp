@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ import javax.time.period.PeriodProvider;
  * This class does not store or represent a month, day, time or time zone.
  * Thus, for example, the value "2007" can be stored in a Year.
  * <p>
- * Year is thread-safe and immutable.
+ * Year is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

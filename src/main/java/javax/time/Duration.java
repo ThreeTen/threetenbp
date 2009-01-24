@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * a precision of nanoseconds has been chosen. As a result, the duration class also
  * has a maximum precision of nanoseconds.
  * <p>
- * Duration is thread-safe and immutable.
+ * Duration is immutable and thread-safe.
  * <p>
  * NOTE: Since the number of nanoseconds is represented by a positive integer,
  * negative durations such as <code>PT-0.1S</code> are represented as -1 second

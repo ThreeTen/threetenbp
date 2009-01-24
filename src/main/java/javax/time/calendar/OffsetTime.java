@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -50,7 +50,7 @@ import javax.time.period.PeriodProvider;
  * Thus, for example, the value "13:45.30.123456789+02:00" can be stored
  * in a OffsetTime.
  * <p>
- * OffsetTime is thread-safe and immutable.
+ * OffsetTime is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

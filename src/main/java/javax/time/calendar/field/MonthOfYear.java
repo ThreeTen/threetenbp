@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008,2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,17 +32,18 @@
 package javax.time.calendar.field;
 
 import java.util.Locale;
+
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.format.DateTimeFormatSymbols;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -55,7 +56,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear
  * instance. Use getValue() instead.</b>
  * <p>
- * MonthOfYear is thread-safe and immutable.
+ * MonthOfYear is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

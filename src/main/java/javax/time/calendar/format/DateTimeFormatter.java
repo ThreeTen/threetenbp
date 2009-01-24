@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  * Instances of DateTimeFormatter are constructed using DateTimeFormatterBuilder
  * or by using one of the predefined constants on DateTimeFormatters.
  * <p>
- * DateTimeFormatter is thread-safe and immutable.
+ * DateTimeFormatter is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@ import javax.time.calendar.ZoneOffset;
  * known as the epoch. The Java Time Framework uses the standard Java epoch of
  * 1970-01-01T00:00:00Z.
  * <p>
- * Instant is thread-safe and immutable.
+ * Instant is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

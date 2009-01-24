@@ -69,7 +69,7 @@ import javax.time.period.PeriodProvider;
  * Implementations may choose to cache certain common offsets, however
  * applications must not rely on such caching.
  * <p>
- * ZoneOffset is thread-safe and immutable.
+ * ZoneOffset is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

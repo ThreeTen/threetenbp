@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * An interval of instants. This class can represent inclusive, exclusive or
  * unbounded intervals on one or both ends.
  * <p>
- * InstantInterval is thread-safe and immutable.
+ * InstantInterval is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

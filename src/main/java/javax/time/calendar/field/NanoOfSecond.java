@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ import javax.time.calendar.TimeProvider;
  * Static factory methods allow you to construct instances.
  * The nano of second may be queried using getValue().
  * <p>
- * NanoOfSecond is thread-safe and immutable.
+ * NanoOfSecond is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

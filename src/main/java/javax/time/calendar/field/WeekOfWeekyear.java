@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ import javax.time.calendar.LocalDate;
  * Static factory methods allow you to construct instances.
  * The week of week-based year may be queried using getValue().
  * <p>
- * WeekOfWeekyear is thread-safe and immutable.
+ * WeekOfWeekyear is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne

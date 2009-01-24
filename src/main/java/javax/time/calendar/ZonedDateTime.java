@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -59,7 +59,7 @@ import javax.time.period.PeriodProvider;
  * "2nd October 2007 at 13:45.30.123456789 +02:00 in the Europe/Paris time zone"
  * can be stored in a ZonedDateTime.
  * <p>
- * ZonedDateTime is thread-safe and immutable.
+ * ZonedDateTime is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
