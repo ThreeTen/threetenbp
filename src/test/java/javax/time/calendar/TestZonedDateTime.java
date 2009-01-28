@@ -34,9 +34,7 @@ package javax.time.calendar;
 import static org.testng.Assert.*;
 
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
@@ -521,29 +519,6 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=NullPointerException.class)
-    public void constructor_nullTime() throws Throwable  {
-        Constructor<ZonedDateTime> con = ZonedDateTime.class.getDeclaredConstructor(OffsetDateTime.class, TimeZone.class);
-        con.setAccessible(true);
-        try {
-            con.newInstance(null, ZONE_0100);
-        } catch (InvocationTargetException ex) {
-            throw ex.getCause();
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void constructor_nullZoned() throws Throwable  {
-        Constructor<ZonedDateTime> con = ZonedDateTime.class.getDeclaredConstructor(OffsetDateTime.class, TimeZone.class);
-        con.setAccessible(true);
-        try {
-            con.newInstance(OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_0100), null);
-        } catch (InvocationTargetException ex) {
-            throw ex.getCause();
-        }
-    }
-
-    //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleTimes")
@@ -658,6 +633,24 @@ public class TestZonedDateTime {
         assertSame(test, base);
     }
 
+    public void test_withDateTime_retainOffsetResolver1() {
+        TimeZone newYork = TimeZone.timeZone("America/New_York");
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, newYork, ZoneResolvers.preTransition());
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-4));
+        ZonedDateTime test = base.withDateTime(LocalDateTime.dateTime(2008, 11, 2, 1, 25));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-4));
+    }
+
+    public void test_withDateTime_retainOffsetResolver2() {
+        TimeZone newYork = TimeZone.timeZone("America/New_York");
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, newYork, ZoneResolvers.postTransition());
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-5));
+        ZonedDateTime test = base.withDateTime(LocalDateTime.dateTime(2008, 11, 2, 1, 25));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-5));
+    }
+
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withDateTime_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
@@ -756,11 +749,75 @@ public class TestZonedDateTime {
         assertSame(test, base);
     }
 
+    public void test_withZoneSameLocal_retainOffsetResolver1() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, TimeZone.timeZone("UTC-04:00") );
+        ZonedDateTime test = base.withZoneSameLocal(TimeZone.timeZone("America/New_York"));
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-4));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-4));
+    }
+
+    public void test_withZoneSameLocal_retainOffsetResolver2() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, TimeZone.timeZone("UTC-05:00") );
+        ZonedDateTime test = base.withZoneSameLocal(TimeZone.timeZone("America/New_York"));
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-5));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-5));
+    }
+
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withZoneSameLocal_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         base.withZoneSameLocal(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // withZoneSameLocal(TimeZone,ZoneResolver)
+    //-----------------------------------------------------------------------
+    public void test_withZoneSameLocal_ZoneResolver() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.withZoneSameLocal(ZONE_0200, ZoneResolvers.retainOffset());
+        assertEquals(test.toLocalTime(), base.toLocalTime());
+        assertSame(test.getZone(), ZONE_0200);
+    }
+
+    public void test_withZoneSameLocal_ZoneResolver_noChange() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.withZoneSameLocal(ZONE_0100, ZoneResolvers.retainOffset());
+        assertSame(test, base);
+    }
+
+    public void test_withZoneSameLocal_ZoneResolver_retainOffsetResolver1() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, TimeZone.timeZone("UTC-04:00") );
+        ZonedDateTime test = base.withZoneSameLocal(TimeZone.timeZone("America/New_York"), ZoneResolvers.retainOffset());
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-4));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-4));
+    }
+
+    public void test_withZoneSameLocal_ZoneResolver_retainOffsetResolver2() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, TimeZone.timeZone("UTC-05:00") );
+        ZonedDateTime test = base.withZoneSameLocal(TimeZone.timeZone("America/New_York"), ZoneResolvers.retainOffset());
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-5));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-5));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_withZoneSameLocal_ZoneResolver_nullZone() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        base.withZoneSameLocal(null, ZoneResolvers.retainOffset());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_withZoneSameLocal_ZoneResolver_nullResolver() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        base.withZoneSameLocal(ZONE_0100, (ZoneResolver) null);
     }
 
     //-----------------------------------------------------------------------
@@ -806,6 +863,24 @@ public class TestZonedDateTime {
         assertSame(test, base);
     }
 
+    public void test_with_DateAdjuster_retainOffsetResolver1() {
+        TimeZone newYork = TimeZone.timeZone("America/New_York");
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 1, 1, 30);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, newYork);
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-4));
+        ZonedDateTime test = base.with(LocalDate.date(2008, 11, 2));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-4));
+    }
+
+    public void test_with_DateAdjuster_retainOffsetResolver2() {
+        TimeZone newYork = TimeZone.timeZone("America/New_York");
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 3, 1, 30);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, newYork);
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-5));
+        ZonedDateTime test = base.with(LocalDate.date(2008, 11, 2));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-5));
+    }
+
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_DateAdjuster_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
@@ -836,6 +911,24 @@ public class TestZonedDateTime {
         TimeAdjuster adjuster = LocalTime.time(23, 30, 59, 0);
         ZonedDateTime test = base.with(adjuster);
         assertSame(test, base);
+    }
+
+    public void test_with_TimeAdjuster_retainOffsetResolver1() {
+        TimeZone newYork = TimeZone.timeZone("America/New_York");
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, newYork, ZoneResolvers.preTransition());
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-4));
+        ZonedDateTime test = base.with(LocalTime.time(1, 25));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-4));
+    }
+
+    public void test_with_TimeAdjuster_retainOffsetResolver2() {
+        TimeZone newYork = TimeZone.timeZone("America/New_York");
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 11, 2, 1, 30);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, newYork, ZoneResolvers.postTransition());
+        assertEquals(base.getOffset(), ZoneOffset.zoneOffset(-5));
+        ZonedDateTime test = base.with(LocalTime.time(1, 25));
+        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(-5));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
