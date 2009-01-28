@@ -171,8 +171,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the local date-time is invalid for the time zone
      */
     public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
-        LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
-        return resolve(dt, null, zone, ZoneResolvers.strict());
+        return dateTime(dateProvider, timeProvider, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -210,8 +209,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the local date-time is invalid for the time zone
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone) {
-        LocalDateTime dt = dateTimeProvider.toLocalDateTime();
-        return resolve(dt, null, zone, ZoneResolvers.strict());
+        return dateTime(dateTimeProvider, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -230,7 +228,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
-        LocalDateTime dt = dateTimeProvider.toLocalDateTime();
+        LocalDateTime dt = LocalDateTime.dateTime(dateTimeProvider);
         return resolve(dt, null, zone, resolver);
     }
 
@@ -277,9 +275,8 @@ public final class ZonedDateTime
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public static ZonedDateTime dateTime(InstantProvider instantProvider, TimeZone zone) {
-        ISOChronology.checkNotNull(instantProvider, "InstantProvider must not be null");
+        Instant instant = Instant.instant(instantProvider);
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
-        Instant instant = instantProvider.toInstant();
         ZoneOffset offset = zone.getOffset(instant);
         OffsetDateTime offsetDT = OffsetDateTime.dateTime(instant, offset);
         return new ZonedDateTime(offsetDT, zone);
@@ -377,7 +374,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = dateTimeProvider.toLocalDateTime();
+        LocalDateTime localDateTime = LocalDateTime.dateTime(dateTimeProvider);
         return localDateTime.equals(this.dateTime.toLocalDateTime()) ?
                 this : ZonedDateTime.resolve(localDateTime, dateTime, zone, ZoneResolvers.retainOffset());
     }

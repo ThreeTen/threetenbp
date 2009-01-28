@@ -148,6 +148,11 @@ public final class LocalDate
 
     /**
      * Obtains an instance of <code>LocalDate</code> from a date provider.
+     * <p>
+     * The purpose of this method is to convert a <code>DateProvider</code>
+     * to a <code>LocalDate</code> in the safest possible way. Specifically,
+     * the means checking whether the input parameter is null and
+     * whether the result of the provider is null.
      *
      * @param dateProvider  the date provider to use, not null
      * @return a LocalDate object, never null

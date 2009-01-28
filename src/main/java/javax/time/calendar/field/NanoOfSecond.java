@@ -113,7 +113,7 @@ public final class NanoOfSecond
      * @return the NanoOfSecond instance, never null
      */
     public static NanoOfSecond nanoOfSecond(TimeProvider timeProvider) {
-        return timeProvider.toLocalTime().getNanoOfSecond();
+        return LocalTime.time(timeProvider).getNanoOfSecond();
     }
 
     //-----------------------------------------------------------------------

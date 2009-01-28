@@ -744,6 +744,21 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_date_DateTimeProvider() {
+        assertSame(LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321), TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_DateTimeProvider_null() {
+        LocalDateTime.dateTime(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_date_DateTimeProvider_null_toLocalDateTime() {
+        LocalDateTime.dateTime(new MockDateTimeProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_12_30_40_987654321.getChronology());
     }

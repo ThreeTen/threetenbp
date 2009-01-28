@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,8 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
+
 /**
  * Provides access to a calendrical object.
  * <p>
@@ -59,7 +61,8 @@ public interface CalendricalProvider {
      * and day fields populated.
      *
      * @return a new <code>Calendrical</code> equivalent to this object, never null
+     * @throws CalendricalException if the time cannot be converted
      */
-    Calendrical toCalendrical() ;
+    Calendrical toCalendrical();
 
 }

@@ -122,7 +122,7 @@ public final class SecondOfMinute
      * @return the SecondOfMinute instance, never null
      */
     public static SecondOfMinute secondOfMinute(TimeProvider timeProvider) {
-        return timeProvider.toLocalTime().getSecondOfMinute();
+        return LocalTime.time(timeProvider).getSecondOfMinute();
     }
 
     //-----------------------------------------------------------------------

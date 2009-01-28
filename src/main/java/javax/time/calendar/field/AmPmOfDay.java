@@ -33,9 +33,9 @@ package javax.time.calendar.field;
 
 import java.util.Locale;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
@@ -120,7 +120,7 @@ public enum AmPmOfDay
      * @return the AmPmOfDay enum instance, never null
      */
     public static AmPmOfDay amPmOfDay(TimeProvider timeProvider) {
-        return timeProvider.toLocalTime().getHourOfDay().getAmPm();
+        return LocalTime.time(timeProvider).getHourOfDay().getAmPm();
     }
 
     //-----------------------------------------------------------------------

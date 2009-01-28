@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,20 +31,31 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
+
 /**
- * Provides read-only access to a date in the ISO-8601 calendar system.
+ * Provides access to a date in the ISO-8601 calendar system.
  * <p>
  * DateProvider is a simple interface that provides uniform access to any
  * object that can provide access to a date in the ISO-8601 calendar system.
  * <p>
- * NOTE: The implementation of <code>DateProvider</code> may be mutable.
+ * The implementation of <code>DateProvider</code> may be mutable.
  * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
  * mutable implementation of this interface.
  * The result of {@link #toLocalDate()}, however, is immutable.
  * <p>
- * NOTE: The implementation of <code>DateProvider</code> may provide more
- * information than just a local date. For example, {@link ZonedDateTime},
- * implements this interface and also provides a time and a time zone.
+ * When implementing an API that accepts a DateProvider as a parameter, it is
+ * important to convert the input to a <code>LocalDate</code> once and once only.
+ * It is recommended that this is done at the top of the method before other processing.
+ * This is necessary to handle the case where the implementation of the provider is
+ * mutable and changes in value between two calls to <code>toLocalDate()</code>.
+ * <p>
+ * The recommended way to convert a DateProvider to a LocalDate is using
+ * {@link LocalDate#date(DateProvider)} as this method provides additional null checking.
+ * <p>
+ * The implementation of <code>DateProvider</code> may provide more
+ * information than just a local date. For example, {@link OffsetDate},
+ * implements this interface and also provides a zone offset.
  * <p>
  * DateProvider makes no guarantees about the thread-safety or immutability
  * of implementations.
@@ -67,6 +78,7 @@ public interface DateProvider extends CalendricalProvider {
      * when implementing this method to convert from alternate calendar systems.
      *
      * @return the <code>LocalDate</code> equivalent to this object, never null
+     * @throws CalendricalException if the date cannot be converted
      */
     LocalDate toLocalDate();
 

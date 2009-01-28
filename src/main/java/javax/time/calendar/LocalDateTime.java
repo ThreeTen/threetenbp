@@ -369,6 +369,24 @@ public final class LocalDateTime
         return new LocalDateTime(date, time);
     }
 
+    /**
+     * Obtains an instance of <code>LocalTime</code> from a date-time provider.
+     * <p>
+     * The purpose of this method is to convert a <code>DateTimeProvider</code>
+     * to a <code>LocalDateTime</code> in the safest possible way. Specifically,
+     * the means checking whether the input parameter is null and
+     * whether the result of the provider is null.
+     *
+     * @param dateTimeProvider  the date-time provider to use, not null
+     * @return a LocalDateTime object, never null
+     */
+    public static LocalDateTime dateTime(DateTimeProvider dateTimeProvider) {
+        ISOChronology.checkNotNull(dateTimeProvider, "DateTimeProvider must not be null");
+        LocalDateTime result = dateTimeProvider.toLocalDateTime();
+        ISOChronology.checkNotNull(result, "DateTimeProvider implementation must not return null");
+        return result;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructor.

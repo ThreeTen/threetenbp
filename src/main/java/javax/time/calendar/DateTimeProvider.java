@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,33 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
+
+
 /**
- * Provides read-only access to a date-time in the ISO-8601 calendar system.
+ * Provides access to a date-time in the ISO-8601 calendar system.
  * <p>
  * DateTimeProvider is a simple interface that provides uniform access to any
  * object that can provide access to a date-time in the ISO-8601 calendar system.
  * <p>
- * NOTE: The implementation of <code>DateTimeProvider</code> may be mutable.
+ * The implementation of <code>DateTimeProvider</code> may be mutable.
  * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
  * mutable implementation of this interface.
  * The result of {@link #toLocalDateTime()}, however, is immutable.
  * <p>
- * NOTE: The implementation of <code>DateTimeProvider</code> may provide more
+ * When implementing an API that accepts a DateTimeProvider as a parameter, it is
+ * important to convert the input to a <code>LocalDateTime</code> once and once only.
+ * It is recommended that this is done at the top of the method before other processing.
+ * This is necessary to handle the case where the implementation of the provider is
+ * mutable and changes in value between two calls to <code>toLocalDateTime()</code>.
+ * <p>
+ * The recommended way to convert a DateTimeProvider to a LocalDateTime is using
+ * {@link LocalDateTime#dateTime(DateTimeProvider)} as this method provides additional null checking.
+ * <p>
+ * It is recommended that this interface should only be implemented by classes
+ * that provide time information to at least minute precision.
+ * <p>
+ * The implementation of <code>DateTimeProvider</code> may provide more
  * information than just a local date-time. For example, {@link ZonedDateTime},
  * implements this interface and also provides a time zone.
  * <p>
@@ -68,16 +83,12 @@ public interface DateTimeProvider extends DateProvider, TimeProvider {
      * if this instance only stores hours, minutes and seconds, then the
      * nanoseconds part will be set to zero.
      * <p>
-     * It is recommended that only classes that provide time information to
-     * at least minute precision implement this interface.
-     * For example, a class that only represents the date and hour of day
-     * should not implement <code>DateTimeProvider</code>.
-     * <p>
      * The result of this method is a <code>LocalDateTime</code> which represents
      * a date in the ISO calendar system. Implementors may perform conversion
      * when implementing this method to convert from alternate calendar systems.
      *
      * @return the <code>LocalDateTime</code> equivalent to this object, never null
+     * @throws CalendricalException if the date-time cannot be converted
      */
     LocalDateTime toLocalDateTime();
 

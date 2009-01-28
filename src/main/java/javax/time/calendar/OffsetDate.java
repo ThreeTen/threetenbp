@@ -215,7 +215,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withDate(DateProvider dateProvider) {
-        LocalDate localDate = dateProvider.toLocalDate();
+        LocalDate localDate = LocalDate.date(dateProvider);
         return localDate.equals(this.date) ? this : new OffsetDate(localDate, offset);
     }
 

@@ -409,7 +409,7 @@ public final class OffsetDateTime
      * @return an OffsetDateTime object, never null
      */
     public static OffsetDateTime dateTime(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
-        LocalDateTime dt = dateTimeProvider.toLocalDateTime();
+        LocalDateTime dt = LocalDateTime.dateTime(dateTimeProvider);
         return new OffsetDateTime(dt, offset);
     }
 
@@ -417,19 +417,15 @@ public final class OffsetDateTime
     /**
      * Obtains an instance of <code>OffsetDateTime</code> from an <code>Instant</code>.
      *
-     * @param instant  the instant to convert, not null
+     * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
      * @return an OffsetDateTime object, never null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime dateTime(InstantProvider instant, ZoneOffset offset) {
-        if (instant == null) {
-            throw new NullPointerException("The instant must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("The zone offset must not be null");
-        }
-        Instant i = instant.toInstant();
+    public static OffsetDateTime dateTime(InstantProvider instantProvider, ZoneOffset offset) {
+        Instant i = Instant.instant(instantProvider);
+        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        
         // the following line may cause a wrap, but this will be caught later
         // as not all instants can be represented in an int year
         long epochSecs = i.getEpochSeconds() + offset.getAmountSeconds();
@@ -574,7 +570,7 @@ public final class OffsetDateTime
      * @return a new updated OffsetDateTime, never null
      */
     public OffsetDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = dateTimeProvider.toLocalDateTime();
+        LocalDateTime localDateTime = LocalDateTime.dateTime(dateTimeProvider);
         return localDateTime.equals(this.dateTime) ? this : new OffsetDateTime(localDateTime, offset);
     }
 

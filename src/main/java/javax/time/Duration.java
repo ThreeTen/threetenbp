@@ -189,8 +189,8 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @return the created Duration, never null
      */
     public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
-        Instant start = startInclusive.toInstant();
-        Instant end = endExclusive.toInstant();
+        Instant start = Instant.instant(startInclusive);
+        Instant end = Instant.instant(endExclusive);
 
         long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
         int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();

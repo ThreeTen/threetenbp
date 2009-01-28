@@ -442,7 +442,7 @@ public abstract class InstantInterval
         /** {@inheritDoc} */
         @Override
         public boolean isBefore(InstantProvider instant) {
-            return maximum.compareTo(instant.toInstant()) < 0;
+            return maximum.compareTo(Instant.instant(instant)) < 0;
         }
         /** {@inheritDoc} */
         @Override
@@ -452,7 +452,7 @@ public abstract class InstantInterval
         /** {@inheritDoc} */
         @Override
         public boolean contains(InstantProvider instant) {
-            return instant.toInstant().compareTo(maximum) <= 0;
+            return Instant.instant(instant).compareTo(maximum) <= 0;
         }
         /** {@inheritDoc} */
         @Override
@@ -507,7 +507,7 @@ public abstract class InstantInterval
         /** {@inheritDoc} */
         @Override
         public boolean isBefore(InstantProvider instant) {
-            return maximum.compareTo(instant.toInstant()) <= 0;
+            return maximum.compareTo(Instant.instant(instant)) <= 0;
         }
         /** {@inheritDoc} */
         @Override
@@ -517,7 +517,7 @@ public abstract class InstantInterval
         /** {@inheritDoc} */
         @Override
         public boolean contains(InstantProvider instant) {
-            return instant.toInstant().compareTo(maximum) < 0;
+            return Instant.instant(instant).compareTo(maximum) < 0;
         }
         /** {@inheritDoc} */
         @Override

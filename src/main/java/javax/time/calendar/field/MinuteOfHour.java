@@ -34,9 +34,9 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
@@ -122,7 +122,7 @@ public final class MinuteOfHour
      * @return the MinuteOfHour instance, never null
      */
     public static MinuteOfHour minuteOfHour(TimeProvider timeProvider) {
-        return timeProvider.toLocalTime().getMinuteOfHour();
+        return LocalTime.time(timeProvider).getMinuteOfHour();
     }
 
     //-----------------------------------------------------------------------

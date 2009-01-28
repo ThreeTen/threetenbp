@@ -264,7 +264,7 @@ public final class OffsetTime
      * @return a new updated OffsetTime, never null
      */
     public OffsetTime withTime(TimeProvider timeProvider) {
-        LocalTime localTime = timeProvider.toLocalTime();
+        LocalTime localTime = LocalTime.time(timeProvider);
         return localTime.equals(this.time) ? this : new OffsetTime(localTime, offset);
     }
 

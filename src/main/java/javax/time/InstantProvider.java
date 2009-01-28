@@ -31,18 +31,33 @@
  */
 package javax.time;
 
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.TimeProvider;
+
 /**
- * Provides read-only access to an instant on the time-line.
+ * Provides access to an instant on the time-line.
  * <p>
  * InstantProvider is a simple interface that provides uniform access to any
  * object that can provide access to an <code>Instant</code>.
  * <p>
- * NOTE: The implementation of <code>InstantProvider</code> may be mutable.
+ * The implementation of <code>InstantProvider</code> may be mutable.
  * For example, {@link java.util.Date Date} is a mutable implementation of
  * this interface.
  * The result of {@link #toInstant()}, however, is immutable.
  * <p>
- * NOTE: The implementation of <code>InstantProvider</code> may provide more
+ * When implementing an API that accepts an InstantProvider as a parameter, it is
+ * important to convert the input to a <code>Instant</code> once and once only.
+ * It is recommended that this is done at the top of the method before other processing.
+ * This is necessary to handle the case where the implementation of the provider is
+ * mutable and changes in value between two calls to <code>toInstant()</code>.
+ * <p>
+ * The recommended way to convert a TimeProvider to a LocalTime is using
+ * {@link LocalTime#dateTime(TimeProvider)} as this method provides additional null checking.
+ * <p>
+ * It is recommended that this interface should only be implemented by classes
+ * that provide time information to at least minute precision.
+ * <p>
+ * The implementation of <code>InstantProvider</code> may provide more
  * information than just an instant. For example,
  * {@link javax.time.calendar.ZonedDateTime ZonedDateTime}, implements this
  * interface and also provides full date, time and time zone information.
@@ -67,13 +82,9 @@ public interface InstantProvider {
      * below the precision it does support must be set to zero. For example,
      * if this instance only stores millisecond precision, then the
      * nanoseconds part of the <code>Instant</code> will be set to zero.
-     * <p>
-     * It is recommended that only classes that provide time information to
-     * at least minute precision implement this interface.
-     * For example, a class that only represents the date and hour should not
-     * implement <code>InstantProvider</code>.
      *
      * @return the <code>Instant</code> equivalent to this object, never null
+     * @throws CalendricalException if the time cannot be converted
      */
     Instant toInstant();
 

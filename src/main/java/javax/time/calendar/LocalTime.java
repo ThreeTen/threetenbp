@@ -302,18 +302,19 @@ public final class LocalTime
 
     /**
      * Obtains an instance of <code>LocalTime</code> from a time provider.
+     * <p>
+     * The purpose of this method is to convert a <code>TimeProvider</code>
+     * to a <code>LocalTime</code> in the safest possible way. Specifically,
+     * the means checking whether the input parameter is null and
+     * whether the result of the provider is null.
      *
      * @param timeProvider  the time provider to use, not null
      * @return a LocalTime object, never null
      */
     public static LocalTime time(TimeProvider timeProvider) {
-        if (timeProvider == null) {
-            throw new NullPointerException("TimeProvider must not be null");
-        }
+        ISOChronology.checkNotNull(timeProvider, "TimeProvider must not be null");
         LocalTime result = timeProvider.toLocalTime();
-        if (result == null) {
-            throw new NullPointerException("The implementation of TimeProvider must not return null");
-        }
+        ISOChronology.checkNotNull(result, "TimeProvider implementation must not return null");
         return result;
     }
 
