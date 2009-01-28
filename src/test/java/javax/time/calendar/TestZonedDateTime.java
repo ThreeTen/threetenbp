@@ -1284,6 +1284,157 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // minus(PeriodProvider)
+    //-----------------------------------------------------------------------
+    public void test_minus_PeriodProvider() {
+        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 1, 12, 30, 59, 500), ZONE_0100);
+        ZonedDateTime expected = ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 3, 29, 8, 25, 53, 493), ZONE_0100);
+        assertEquals(t.minus(provider), expected);
+    }
+
+    public void test_minus_PeriodProvider_zero() {
+        ZonedDateTime t = TEST_DATE_TIME.minus(Period.ZERO);
+        assertSame(t, TEST_DATE_TIME);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusYears()
+    //-----------------------------------------------------------------------
+    public void test_minusYears() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusYears(1);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusYears(1), ZONE_0100));
+    }
+
+    public void test_minusYears_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusYears(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusMonths()
+    //-----------------------------------------------------------------------
+    public void test_minusMonths() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusMonths(1);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusMonths(1), ZONE_0100));
+    }
+
+    public void test_minusMonths_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusMonths(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusWeeks()
+    //-----------------------------------------------------------------------
+    public void test_minusWeeks() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusWeeks(1);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusWeeks(1), ZONE_0100));
+    }
+
+    public void test_minusWeeks_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusWeeks(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusDays()
+    //-----------------------------------------------------------------------
+    public void test_minusDays() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusDays(1);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusDays(1), ZONE_0100));
+    }
+
+    public void test_minusDays_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusDays(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusHours()
+    //-----------------------------------------------------------------------
+    public void test_minusHours() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusHours(13);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusHours(13), ZONE_0100));
+    }
+
+    public void test_minusHours_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusHours(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusMinutes()
+    //-----------------------------------------------------------------------
+    public void test_minusMinutes() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusMinutes(30);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusMinutes(30), ZONE_0100));
+    }
+
+    public void test_minusMinutes_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusMinutes(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusSeconds()
+    //-----------------------------------------------------------------------
+    public void test_minusSeconds() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusSeconds(1);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusSeconds(1), ZONE_0100));
+    }
+
+    public void test_minusSeconds_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusSeconds(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // minusNanos()
+    //-----------------------------------------------------------------------
+    public void test_minusNanos() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusNanos(1);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.minusNanos(1), ZONE_0100));
+    }
+
+    public void test_minusNanos_zero() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.minusNanos(0);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
     // matches(DateMatcher)
     //-----------------------------------------------------------------------
     public void test_matches_DateMatcher() {

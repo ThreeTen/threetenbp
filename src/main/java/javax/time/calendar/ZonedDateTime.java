@@ -989,7 +989,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in months added.
      * <p>
-     * This method add the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in three steps:
      * <ol>
      * <li>Add the input months to the month of year field</li>
      * <li>Check if the resulting date would be invalid</li>
@@ -1015,7 +1015,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in weeks added.
      * <p>
-     * This method add the specified amount in weeks to the days field incrementing
+     * This method adds the specified amount in weeks to the days field incrementing
      * the month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1036,7 +1036,7 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in days added.
      * <p>
-     * This method add the specified amount to the days field incrementing the
+     * This method adds the specified amount to the days field incrementing the
      * month and year fields as necessary to ensure the result remains valid.
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
@@ -1120,6 +1120,211 @@ public final class ZonedDateTime
      */
     public ZonedDateTime plusNanos(int nanos) {
         LocalDateTime newDT = dateTime.toLocalDateTime().plusNanos(nanos);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period subtracted.
+     * <p>
+     * This subtracts the specified period from this date-time.
+     * <p>
+     * If the adjusted date results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subtract, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minus(PeriodProvider periodProvider) {
+        return minus(periodProvider, ZoneResolvers.retainOffset());
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period subtracted.
+     * <p>
+     * This subtracts the specified period from this date-time.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param periodProvider  the period to subtract, not null
+     * @param resolver  the resolver to use, not null
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     * @throws CalendricalException if the date-time cannot be resolved
+     */
+    public ZonedDateTime minus(PeriodProvider periodProvider, ZoneResolver resolver) {
+        ISOChronology.checkNotNull(periodProvider, "PeriodProvider must not be null");
+        ISOChronology.checkNotNull(resolver, "ZoneResolver must not be null");
+        LocalDateTime newDT = dateTime.toLocalDateTime().minus(periodProvider);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, resolver));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in years subtracted.
+     * <p>
+     * This method subtracts the specified amount to the years field in three steps:
+     * <ol>
+     * <li>Add the input years to the year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2008-02-29 (leap year) minus one year would result in the
+     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
+     * result, the last valid day of the month, 2009-02-28, is selected instead.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param years  the years to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusYears(int years) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusYears(years);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in months subtracted.
+     * <p>
+     * This method subtracts the specified amount to the months field in three steps:
+     * <ol>
+     * <li>Add the input months to the month of year field</li>
+     * <li>Check if the resulting date would be invalid</li>
+     * <li>Adjust the day of month to the last valid day if necessary</li>
+     * </ol>
+     * <p>
+     * For example, 2007-03-31 minus one month would result in the invalid date
+     * 2007-04-31. Instead of returning an invalid result, the last valid day
+     * of the month, 2007-04-30, is selected instead.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param months  the months to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusMonths(int months) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusMonths(months);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in weeks subtracted.
+     * <p>
+     * This method subtracts the specified amount in weeks to the days field incrementing
+     * the month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 minus one week would result in the 2009-01-07.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param weeks  the weeks to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusWeeks(int weeks) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusWeeks(weeks);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in days subtracted.
+     * <p>
+     * This method subtracts the specified amount to the days field incrementing the
+     * month and year fields as necessary to ensure the result remains valid.
+     * The result is only invalid if the maximum/minimum year is exceeded.
+     * <p>
+     * For example, 2008-12-31 minus one day would result in the 2009-01-01.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusDays(int days) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusDays(days);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in hours subtracted.
+     * <p>
+     * This method uses field based subtraction.
+     * This method changes the field by the specified number of hours.
+     * This may, at daylight savings cutover, result in a duration being subtracted
+     * that is more or less than the specified number of hours.
+     * <p>
+     * For example, consider a time zone where the spring DST cutover means that
+     * the local times 01:00 to 01:59 do not exist. Using this method, subtracting
+     * a period of 2 hours from 02:30 will result in 00:30, but it is important
+     * to note that the change in duration was only 1 hour.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param hours  the hours to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusHours(int hours) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusHours(hours);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in minutes subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param minutes  the minutes to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusMinutes(int minutes) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusMinutes(minutes);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusSeconds(int seconds) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusSeconds(seconds);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
+    }
+
+    /**
+     * Returns a copy of this ZonedDateTime with the specified period in nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanos to subtract, may be negative
+     * @return a new updated ZonedDateTime, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public ZonedDateTime minusNanos(int nanos) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().minusNanos(nanos);
         return (newDT == dateTime.toLocalDateTime() ? this :
             resolve(newDT, dateTime, zone, ZoneResolvers.retainOffset()));
     }
