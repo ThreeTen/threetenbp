@@ -52,10 +52,9 @@ import javax.time.period.PeriodProvider;
  * A date-time with a zone offset from UTC in the ISO-8601 calendar system,
  * such as '2007-12-03T10:15:30+01:00'.
  * <p>
- * OffsetDateTime is an immutable calendrical that represents a date-time, often
- * viewed as year-month-day-hour-minute-second-offset.
+ * OffsetDateTime is an immutable representation of a date-time with an offset.
  * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as a time zone. Thus, for example, the value
+ * as well as the offset from UTC. Thus, for example, the value
  * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an OffsetDateTime.
  * <p>
  * OffsetDateTime is immutable and thread-safe.
@@ -64,8 +63,9 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class OffsetDateTime
-        implements InstantProvider, DateTimeProvider, CalendricalProvider, Comparable<OffsetDateTime>, Serializable, DateMatcher, 
-        TimeMatcher, DateAdjuster, TimeAdjuster {
+        implements CalendricalProvider, InstantProvider, DateTimeProvider,
+        DateMatcher, TimeMatcher, DateAdjuster, TimeAdjuster,
+        Comparable<OffsetDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -595,6 +595,9 @@ public final class OffsetDateTime
      * This method returns an OffsetDateTime that is the combination of the
      * local date-time from this instance and the specified offset.
      * No calculation is performed.
+     * <p>
+     * For example, if this time represents 10:30+02:00 and the offset
+     * specified is +03:00, then this method will return 10:30+03:00.
      * <p>
      * To maintain the same instant on the time-line while changing offsets
      * use {@link #withOffsetSameInstant}.
@@ -1232,7 +1235,7 @@ public final class OffsetDateTime
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param periodProvider  the period to subract, not null
+     * @param periodProvider  the period to subtract, not null
      * @return a new updated OffsetDateTime, never null
      * @throws CalendricalException if the result exceeds the supported date range
      */
@@ -1379,7 +1382,7 @@ public final class OffsetDateTime
     /**
      * Returns a copy of this OffsetDateTime with the specified period in hours subtracted.
      * <p>
-     * This method uses field based subtractition.
+     * This method uses field based subtraction.
      * This method changes the field by the specified number of hours.
      * This may, at daylight savings cutover, result in a duration being subtracted
      * that is more or less than the specified number of hours.
@@ -1619,7 +1622,7 @@ public final class OffsetDateTime
      * consistent with <code>equals()</code>.
      *
      * @param other  the other date-time to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(OffsetDateTime other) {
@@ -1677,9 +1680,9 @@ public final class OffsetDateTime
     }
 
     /**
-     * A hashcode for this date-time.
+     * A hash code for this date-time.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
