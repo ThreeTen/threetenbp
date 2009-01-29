@@ -735,6 +735,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the year value altered.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -749,6 +752,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the month of year value altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -765,6 +771,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the day of month value altered.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
@@ -780,6 +789,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the date values altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This method will return a new instance with the same time fields,
      * but altered date fields.
@@ -803,6 +815,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the hour of day value altered.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
@@ -817,6 +832,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the minute of hour value altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -833,6 +851,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the second of minute value altered.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
@@ -847,6 +868,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the nano of second value altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -868,6 +892,9 @@ public final class ZonedDateTime
      * This is a shorthand for {@link #withTime(int,int,int)} and sets
      * the second field to zero.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
@@ -883,6 +910,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the time values altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -900,6 +930,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the time values altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -960,11 +993,12 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in years added.
      * <p>
-     * This method add the specified amount to the years field in three steps:
+     * This method add the specified amount to the years field in four steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day of month to the last valid day if necessary</li>
+     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
      * </ol>
      * <p>
      * For example, 2008-02-29 (leap year) plus one year would result in the
@@ -986,11 +1020,12 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in months added.
      * <p>
-     * This method adds the specified amount to the months field in three steps:
+     * This method adds the specified amount to the months field in four steps:
      * <ol>
      * <li>Add the input months to the month of year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day of month to the last valid day if necessary</li>
+     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
      * </ol>
      * <p>
      * For example, 2007-03-31 plus one month would result in the invalid date
@@ -1018,6 +1053,9 @@ public final class ZonedDateTime
      * <p>
      * For example, 2008-12-31 plus one week would result in the 2009-01-07.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to add, may be negative
@@ -1038,6 +1076,9 @@ public final class ZonedDateTime
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
      * For example, 2008-12-31 plus one day would result in the 2009-01-01.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1064,6 +1105,9 @@ public final class ZonedDateTime
      * a period of 2 hours to 00:30 will result in 02:30, but it is important
      * to note that the change in duration was only 1 hour.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to add, may be negative
@@ -1078,6 +1122,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the specified period in minutes added.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1094,6 +1141,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in seconds added.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, may be negative
@@ -1108,6 +1158,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the specified period in nanoseconds added.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1127,7 +1180,7 @@ public final class ZonedDateTime
      * <p>
      * This subtracts the specified period from this date-time.
      * <p>
-     * If the adjusted date results in a date-time that is invalid, then the
+     * If the adjustment results in a date-time that is invalid, then the
      * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -1165,11 +1218,12 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in years subtracted.
      * <p>
-     * This method subtracts the specified amount to the years field in three steps:
+     * This method subtracts the specified amount to the years field in four steps:
      * <ol>
      * <li>Add the input years to the year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day of month to the last valid day if necessary</li>
+     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
      * </ol>
      * <p>
      * For example, 2008-02-29 (leap year) minus one year would result in the
@@ -1191,11 +1245,12 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in months subtracted.
      * <p>
-     * This method subtracts the specified amount to the months field in three steps:
+     * This method subtracts the specified amount to the months field in four steps:
      * <ol>
      * <li>Add the input months to the month of year field</li>
      * <li>Check if the resulting date would be invalid</li>
      * <li>Adjust the day of month to the last valid day if necessary</li>
+     * <li>Resolve the date-time using {@link ZoneResolvers#retainOffset()}</li>
      * </ol>
      * <p>
      * For example, 2007-03-31 minus one month would result in the invalid date
@@ -1223,6 +1278,9 @@ public final class ZonedDateTime
      * <p>
      * For example, 2008-12-31 minus one week would result in the 2009-01-07.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param weeks  the weeks to subtract, may be negative
@@ -1243,6 +1301,9 @@ public final class ZonedDateTime
      * The result is only invalid if the maximum/minimum year is exceeded.
      * <p>
      * For example, 2008-12-31 minus one day would result in the 2009-01-01.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1269,6 +1330,9 @@ public final class ZonedDateTime
      * a period of 2 hours from 02:30 will result in 00:30, but it is important
      * to note that the change in duration was only 1 hour.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param hours  the hours to subtract, may be negative
@@ -1283,6 +1347,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the specified period in minutes subtracted.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -1299,6 +1366,9 @@ public final class ZonedDateTime
     /**
      * Returns a copy of this ZonedDateTime with the specified period in seconds subtracted.
      * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, may be negative
@@ -1313,6 +1383,9 @@ public final class ZonedDateTime
 
     /**
      * Returns a copy of this ZonedDateTime with the specified period in nanoseconds subtracted.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
