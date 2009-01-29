@@ -458,11 +458,12 @@ public final class Calendrical
      * possible from this set of fields. Ideally the outcome will be a date, time
      * or both, however there may be insufficient information to achieve this.
      * <p>
-     * The process repeatedly calls the field rule {@link DateTimeFieldRule#merge merge}
-     * method to perform the merge on each individual field. Sometimes two or
-     * more fields will combine to form a more significant field. Sometimes they
-     * will combine to form a date or time. The process stops when there no more
-     * merges can occur.
+     * The process repeatedly calls the field rule {@link DateTimeFieldRule#mergeFields merge fields}
+     * and {@link DateTimeFieldRule#mergeDateTime merge date time} methods to perform
+     * the merge on each individual field.
+     * Sometimes two or more fields will combine to form a more significant field.
+     * Sometimes they will combine to form a date or time.
+     * The process stops when there no more merges can occur.
      * <p>
      * The process is based around hierarchies that can be combined.
      * For example, QuarterOfYear and MonthOfQuarter can be combined to form MonthOfYear.
@@ -496,11 +497,12 @@ public final class Calendrical
      * possible from this set of fields. Ideally the outcome will be a date, time
      * or both, however there may be insufficient information to achieve this.
      * <p>
-     * The process repeatedly calls the field rule {@link DateTimeFieldRule#merge merge}
-     * method to perform the merge on each individual field. Sometimes two or
-     * more fields will combine to form a more significant field. Sometimes they
-     * will combine to form a date or time. The process stops when there no more
-     * merges can occur.
+     * The process repeatedly calls the field rule {@link DateTimeFieldRule#mergeFields merge fields}
+     * and {@link DateTimeFieldRule#mergeDateTime merge date time} methods to perform
+     * the merge on each individual field.
+     * Sometimes two or more fields will combine to form a more significant field.
+     * Sometimes they will combine to form a date or time.
+     * The process stops when there no more merges can occur.
      * <p>
      * The process is based around hierarchies that can be combined.
      * For example, QuarterOfYear and MonthOfQuarter can be combined to form MonthOfYear.
