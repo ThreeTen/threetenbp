@@ -134,7 +134,7 @@ public class TestYear {
     //-----------------------------------------------------------------------
     public void test_isSupported() {
         assertEquals(Year.isoYear(1999).isSupported(RULE), true);
-        assertEquals(Year.isoYear(1999).isSupported(ISOChronology.weekyearRule()), false);
+        assertEquals(Year.isoYear(1999).isSupported(ISOChronology.weekBasedYearRule()), false);
     }
 
     //-----------------------------------------------------------------------
@@ -146,7 +146,7 @@ public class TestYear {
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupportedField() {
-        Year.isoYear(1999).get(ISOChronology.weekyearRule());
+        Year.isoYear(1999).get(ISOChronology.weekBasedYearRule());
     }
 
     @Test(expectedExceptions=NullPointerException.class)

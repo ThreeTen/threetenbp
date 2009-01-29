@@ -442,8 +442,8 @@ public class TestLocalTime {
         assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.dayOfWeekRule()));
         assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.dayOfYearRule()));
         assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekOfMonthRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekOfWeekyearRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekyearRule()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekOfWeekBasedYearRule()));
+        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekBasedYearRule()));
         
         assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.hourOfDayRule()));
         assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.minuteOfHourRule()));

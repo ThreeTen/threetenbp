@@ -164,9 +164,9 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_WEEK_DATE;
     static {
         ISO_WEEK_DATE = new DateTimeFormatterBuilder()
-            .appendValue(ISOChronology.weekyearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+            .appendValue(ISOChronology.weekBasedYearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
-            .appendValue(ISOChronology.weekOfWeekyearRule(), 2)
+            .appendValue(ISOChronology.weekOfWeekBasedYearRule(), 2)
             .appendLiteral('-')
             .appendValue(ISOChronology.dayOfWeekRule(), 1)
             .optionalStart()

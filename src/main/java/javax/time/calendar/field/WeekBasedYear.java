@@ -34,19 +34,19 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
+import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.LocalDate;
 
 /**
  * A representation of a week-based year in the ISO-8601 calendar system.
  * <p>
- * Weekyear is an immutable time field that can only store a week-based year.
+ * WeekBasedYear is an immutable time field that can only store a week-based year.
  * It is a type-safe way of representing a week-based year in an application.
  * <p>
  * A week-based year is the year that is applicable when using the
@@ -68,15 +68,15 @@ import javax.time.calendar.LocalDate;
  * contains the first Thursday of the year.
  * <p>
  * Static factory methods allow you to construct instances.
- * The week-based year may be queried using getValue().
+ * The week-based-year may be queried using getValue().
  * <p>
- * Weekyear is immutable and thread-safe.
+ * WeekBasedYear is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class Weekyear 
-        implements CalendricalProvider, Comparable<Weekyear>, Serializable, DateMatcher {
+public final class WeekBasedYear 
+        implements CalendricalProvider, Comparable<WeekBasedYear>, Serializable, DateMatcher {
 
     /**
      * Constant for the minimum week-based-year.
@@ -106,7 +106,7 @@ public final class Weekyear
      * @return the week-based-year rule, never null
      */
     public static DateTimeFieldRule rule() {
-        return ISOChronology.weekyearRule();
+        return ISOChronology.weekBasedYearRule();
     }
 
     //-----------------------------------------------------------------------
@@ -117,9 +117,9 @@ public final class Weekyear
      * @return the Weekyear instance, never null
      * @throws IllegalCalendarFieldValueException if the weekyear is invalid
      */
-    public static Weekyear weekyear(int weekyear) {
+    public static WeekBasedYear weekyear(int weekyear) {
         rule().checkValue(weekyear);
-        return new Weekyear(weekyear);
+        return new WeekBasedYear(weekyear);
     }
 
     /**
@@ -131,9 +131,9 @@ public final class Weekyear
      * @param dateProvider  the date provider to use, not null
      * @return the Weekyear instance, never null
      */
-    public static Weekyear weekyear(DateProvider dateProvider) {
+    public static WeekBasedYear weekyear(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
-        return Weekyear.weekyear(computeYear(date).getValue());
+        return WeekBasedYear.weekyear(computeYear(date).getValue());
     }
 
     static Year computeYear(LocalDate date) {
@@ -169,7 +169,7 @@ public final class Weekyear
      *
      * @param weekyear  the week-based year to represent
      */
-    private Weekyear(int weekyear) {
+    private WeekBasedYear(int weekyear) {
         this.weekyear = weekyear;
     }
 
@@ -190,7 +190,7 @@ public final class Weekyear
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return Weekyear.weekyear(date).equals(this);
+        return WeekBasedYear.weekyear(date).equals(this);
     }
 
     //-----------------------------------------------------------------------
@@ -225,8 +225,8 @@ public final class Weekyear
      *
      * @return an object representing the last week of the week-based year
      */
-    public WeekOfWeekyear getLastWeekOfWeekyear() {
-        return WeekOfWeekyear.weekOfWeekyear(lengthInWeeks());
+    public WeekOfWeekBasedYear getLastWeekOfWeekyear() {
+        return WeekOfWeekBasedYear.weekOfWeekyear(lengthInWeeks());
     }
 
     //-----------------------------------------------------------------------
@@ -237,7 +237,7 @@ public final class Weekyear
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherWeekyear is null
      */
-    public int compareTo(Weekyear otherWeekyear) {
+    public int compareTo(WeekBasedYear otherWeekyear) {
         int thisValue = this.weekyear;
         int otherValue = otherWeekyear.weekyear;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
@@ -250,7 +250,7 @@ public final class Weekyear
      * @return true if this is after the specified week-based year
      * @throws NullPointerException if otherWeekyear is null
      */
-    public boolean isAfter(Weekyear otherWeekyear) {
+    public boolean isAfter(WeekBasedYear otherWeekyear) {
         return compareTo(otherWeekyear) > 0;
     }
 
@@ -261,7 +261,7 @@ public final class Weekyear
      * @return true if this is before the specified week-based year
      * @throws NullPointerException if otherWeekyear is null
      */
-    public boolean isBefore(Weekyear otherWeekyear) {
+    public boolean isBefore(WeekBasedYear otherWeekyear) {
         return compareTo(otherWeekyear) < 0;
     }
 
@@ -277,8 +277,8 @@ public final class Weekyear
         if (this == otherWeekyear) {
             return true;
         }
-        if (otherWeekyear instanceof Weekyear) {
-            return weekyear == ((Weekyear) otherWeekyear).weekyear;
+        if (otherWeekyear instanceof WeekBasedYear) {
+            return weekyear == ((WeekBasedYear) otherWeekyear).weekyear;
         }
         return false;
     }

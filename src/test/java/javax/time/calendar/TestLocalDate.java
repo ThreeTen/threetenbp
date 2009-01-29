@@ -48,8 +48,8 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.WeekOfWeekyear;
-import javax.time.calendar.field.Weekyear;
+import javax.time.calendar.field.WeekOfWeekBasedYear;
+import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
@@ -277,8 +277,8 @@ public class TestLocalDate {
         assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfWeekRule()));
         assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfYearRule()));
         assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfMonthRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfWeekyearRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekyearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfWeekBasedYearRule()));
+        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekBasedYearRule()));
         
         assertFalse(TEST_2007_07_15.isSupported(ISOChronology.hourOfDayRule()));
         assertFalse(TEST_2007_07_15.isSupported(ISOChronology.minuteOfHourRule()));
@@ -298,8 +298,8 @@ public class TestLocalDate {
         assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfMonthRule()), TEST_2007_07_15.getDayOfMonth().getValue());
         assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfWeekRule()), TEST_2007_07_15.getDayOfWeek().getValue());
         assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15.getDayOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.weekOfWeekyearRule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15).getValue());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.weekyearRule()), Weekyear.weekyear(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.weekOfWeekBasedYearRule()), WeekOfWeekBasedYear.weekOfWeekyear(TEST_2007_07_15).getValue());
+        assertEquals(TEST_2007_07_15.get(ISOChronology.weekBasedYearRule()), WeekBasedYear.weekyear(TEST_2007_07_15).getValue());
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)

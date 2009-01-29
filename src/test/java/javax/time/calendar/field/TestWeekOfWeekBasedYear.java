@@ -56,27 +56,27 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test WeekOfWeekyear.
+ * Test WeekOfWeekBasedYear.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 @Test
-public class TestWeekOfWeekyear {
+public class TestWeekOfWeekBasedYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.weekOfWeekyearRule();
+    private static final DateTimeFieldRule RULE = ISOChronology.weekOfWeekBasedYearRule();
     private static final int MAX_LENGTH = 53;
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(WeekOfWeekyear.class));
-        assertTrue(Serializable.class.isAssignableFrom(WeekOfWeekyear.class));
-        assertTrue(Comparable.class.isAssignableFrom(WeekOfWeekyear.class));
-        assertTrue(DateMatcher.class.isAssignableFrom(WeekOfWeekyear.class));
+        assertTrue(CalendricalProvider.class.isAssignableFrom(WeekOfWeekBasedYear.class));
+        assertTrue(Serializable.class.isAssignableFrom(WeekOfWeekBasedYear.class));
+        assertTrue(Comparable.class.isAssignableFrom(WeekOfWeekBasedYear.class));
+        assertTrue(DateMatcher.class.isAssignableFrom(WeekOfWeekBasedYear.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(1);
+        WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(test);
@@ -88,7 +88,7 @@ public class TestWeekOfWeekyear {
     }
 
     public void test_immutable() {
-        Class<WeekOfWeekyear> cls = WeekOfWeekyear.class;
+        Class<WeekOfWeekBasedYear> cls = WeekOfWeekBasedYear.class;
         assertTrue(Modifier.isPublic(cls.getModifiers()));
         assertTrue(Modifier.isFinal(cls.getModifiers()));
         Field[] fields = cls.getDeclaredFields();
@@ -104,26 +104,26 @@ public class TestWeekOfWeekyear {
 
     //-----------------------------------------------------------------------
     public void test_rule() {
-        assertEquals(WeekOfWeekyear.rule(), RULE);
+        assertEquals(WeekOfWeekBasedYear.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(i);
+            WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(i);
             assertEquals(test.getValue(), i);
-            assertEquals(WeekOfWeekyear.weekOfWeekyear(i), test);
+            assertEquals(WeekOfWeekBasedYear.weekOfWeekyear(i), test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_weekOfWeekyearTooLow() {
-        WeekOfWeekyear.weekOfWeekyear(0);
+        WeekOfWeekBasedYear.weekOfWeekyear(0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_weekOfWeekyearTooHigh() {
-        WeekOfWeekyear.weekOfWeekyear(54);
+        WeekOfWeekBasedYear.weekOfWeekyear(54);
     }
 
     //-----------------------------------------------------------------------
@@ -146,19 +146,19 @@ public class TestWeekOfWeekyear {
                 week++;
             }
 
-            assertEquals(WeekOfWeekyear.weekOfWeekyear(date).getValue(), week);
+            assertEquals(WeekOfWeekBasedYear.weekOfWeekyear(date).getValue(), week);
             date = date.plusDays(1);
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullDateProvider() {
-        WeekOfWeekyear.weekOfWeekyear((DateProvider) null);
+        WeekOfWeekBasedYear.weekOfWeekyear((DateProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_badDateProvider() {
-        WeekOfWeekyear.weekOfWeekyear(new MockDateProviderReturnsNull());
+        WeekOfWeekBasedYear.weekOfWeekyear(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
@@ -176,8 +176,8 @@ public class TestWeekOfWeekyear {
                 week++;
             }
 
-            assertTrue(WeekOfWeekyear.weekOfWeekyear(week).matchesDate(date));
-            assertFalse(WeekOfWeekyear.weekOfWeekyear(week).matchesDate(date.plusDays(7)));
+            assertTrue(WeekOfWeekBasedYear.weekOfWeekyear(week).matchesDate(date));
+            assertFalse(WeekOfWeekBasedYear.weekOfWeekyear(week).matchesDate(date.plusDays(7)));
             date = date.plusDays(1);
         }
     }
@@ -187,25 +187,25 @@ public class TestWeekOfWeekyear {
     //-----------------------------------------------------------------------
     public void test_isValid_52weeks() {
         for (int i = 2000; i < 2004; i++) {
-            Weekyear weekyear = Weekyear.weekyear(i);
+            WeekBasedYear weekyear = WeekBasedYear.weekyear(i);
             for (int w = 1; w < 53; w++) {
-                assertTrue(WeekOfWeekyear.weekOfWeekyear(w).isValid(weekyear));
+                assertTrue(WeekOfWeekBasedYear.weekOfWeekyear(w).isValid(weekyear));
             }
 
-            assertFalse(WeekOfWeekyear.weekOfWeekyear(53).isValid(weekyear));
+            assertFalse(WeekOfWeekBasedYear.weekOfWeekyear(53).isValid(weekyear));
         }
     }
 
     public void test_isValid_53weeks() {
-        Weekyear weekyear = Weekyear.weekyear(2004);
+        WeekBasedYear weekyear = WeekBasedYear.weekyear(2004);
         for (int w = 1; w < 54; w++) {
-            assertTrue(WeekOfWeekyear.weekOfWeekyear(w).isValid(weekyear));
+            assertTrue(WeekOfWeekBasedYear.weekOfWeekyear(w).isValid(weekyear));
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isValid_null() {
-        WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(1);
+        WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(1);
         test.isValid(null);
     }
 
@@ -214,7 +214,7 @@ public class TestWeekOfWeekyear {
     //-----------------------------------------------------------------------
     public void test_toCalendrical() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(i);
+            WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(i);
             assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
@@ -224,9 +224,9 @@ public class TestWeekOfWeekyear {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            WeekOfWeekyear a = WeekOfWeekyear.weekOfWeekyear(i);
+            WeekOfWeekBasedYear a = WeekOfWeekBasedYear.weekOfWeekyear(i);
             for (int j = 1; j <= MAX_LENGTH; j++) {
-                WeekOfWeekyear b = WeekOfWeekyear.weekOfWeekyear(j);
+                WeekOfWeekBasedYear b = WeekOfWeekBasedYear.weekOfWeekyear(j);
                 if (i < j) {
                     assertEquals(a.compareTo(b), -1);
                     assertEquals(b.compareTo(a), 1);
@@ -249,8 +249,8 @@ public class TestWeekOfWeekyear {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_nullWeekOfWeekyear() {
-        WeekOfWeekyear doy = null;
-        WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(1);
+        WeekOfWeekBasedYear doy = null;
+        WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(1);
         test.compareTo(doy);
     }
 
@@ -259,9 +259,9 @@ public class TestWeekOfWeekyear {
     //-----------------------------------------------------------------------
     public void test_equals() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            WeekOfWeekyear a = WeekOfWeekyear.weekOfWeekyear(i);
+            WeekOfWeekBasedYear a = WeekOfWeekBasedYear.weekOfWeekyear(i);
             for (int j = 1; j <= MAX_LENGTH; j++) {
-                WeekOfWeekyear b = WeekOfWeekyear.weekOfWeekyear(j);
+                WeekOfWeekBasedYear b = WeekOfWeekBasedYear.weekOfWeekyear(j);
                 assertTrue(a.equals(a));
                 assertEquals(a.equals(b), i == j);
                 assertEquals(a.hashCode() == b.hashCode(), i == j);
@@ -270,13 +270,13 @@ public class TestWeekOfWeekyear {
     }
 
     public void test_equals_nullWeekOfWeekyear() {
-        WeekOfWeekyear doy = null;
-        WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(1);
+        WeekOfWeekBasedYear doy = null;
+        WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(1);
         assertEquals(test.equals(doy), false);
     }
 
     public void test_equals_incorrectType() {
-        WeekOfWeekyear test = WeekOfWeekyear.weekOfWeekyear(1);
+        WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(1);
         assertEquals(test.equals("Incorrect type"), false);
     }
 
@@ -285,7 +285,7 @@ public class TestWeekOfWeekyear {
     //-----------------------------------------------------------------------
     public void test_toString() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            WeekOfWeekyear a = WeekOfWeekyear.weekOfWeekyear(i);
+            WeekOfWeekBasedYear a = WeekOfWeekBasedYear.weekOfWeekyear(i);
             assertEquals(a.toString(), "WeekOfWeekyear=" + i);
         }
     }

@@ -54,8 +54,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.field.WeekOfWeekyear;
-import javax.time.calendar.field.Weekyear;
+import javax.time.calendar.field.WeekOfWeekBasedYear;
+import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -773,8 +773,8 @@ public class TestLocalDateTime {
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.dayOfWeekRule()));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.dayOfYearRule()));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekOfMonthRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekOfWeekyearRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekyearRule()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekOfWeekBasedYearRule()));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekBasedYearRule()));
         
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.hourOfDayRule()));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.minuteOfHourRule()));
@@ -794,8 +794,8 @@ public class TestLocalDateTime {
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfMonthRule()), 15);
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfWeekRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfWeek().getValue());
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfYear().getValue());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekOfWeekyearRule()), WeekOfWeekyear.weekOfWeekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekyearRule()), Weekyear.weekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekOfWeekBasedYearRule()), WeekOfWeekBasedYear.weekOfWeekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekBasedYearRule()), WeekBasedYear.weekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
 
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.hourOfDayRule()), 12);
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.minuteOfHourRule()), 30);

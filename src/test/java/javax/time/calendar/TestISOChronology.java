@@ -43,7 +43,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import javax.time.calendar.field.Weekyear;
+import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.PeriodUnits;
 
@@ -162,13 +162,13 @@ public class TestISOChronology {
     }
 
     public void test_weekyearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekyearRule();
+        DateTimeFieldRule rule = ISOChronology.weekBasedYearRule();
         assertEquals(rule.getID(), "ISO.Weekyear");
         assertEquals(rule.getName(), "Weekyear");
-        assertEquals(rule.getMinimumValue(), Weekyear.MIN_YEAR);
-        assertEquals(rule.getLargestMinimumValue(), Weekyear.MIN_YEAR);
-        assertEquals(rule.getMaximumValue(), Weekyear.MAX_YEAR);
-        assertEquals(rule.getSmallestMaximumValue(), Weekyear.MAX_YEAR);
+        assertEquals(rule.getMinimumValue(), WeekBasedYear.MIN_YEAR);
+        assertEquals(rule.getLargestMinimumValue(), WeekBasedYear.MIN_YEAR);
+        assertEquals(rule.getMaximumValue(), WeekBasedYear.MAX_YEAR);
+        assertEquals(rule.getSmallestMaximumValue(), WeekBasedYear.MAX_YEAR);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKYEARS);
         assertEquals(rule.getPeriodRange(), null);
@@ -176,7 +176,7 @@ public class TestISOChronology {
     }
 
     public void test_weekOfWeekyearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekOfWeekyearRule();
+        DateTimeFieldRule rule = ISOChronology.weekOfWeekBasedYearRule();
         assertEquals(rule.getID(), "ISO.WeekOfWeekyear");
         assertEquals(rule.getName(), "WeekOfWeekyear");
         assertEquals(rule.getMinimumValue(), 1);

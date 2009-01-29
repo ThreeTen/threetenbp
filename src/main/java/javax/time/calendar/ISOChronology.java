@@ -40,8 +40,8 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.WeekOfWeekyear;
-import javax.time.calendar.field.Weekyear;
+import javax.time.calendar.field.WeekOfWeekBasedYear;
+import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 
 /**
@@ -345,32 +345,32 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Gets the rule for the week-based-year field in the ISO chronology.
      * <p>
-     * This field is the year that results from calculating weeks with the
-     * ISO-8601 algorithm. See {@link #weekOfWeekyear()} for details.
+     * This field is the year that results from calculating weeks with the ISO-8601 algorithm.
+     * See {@link #weekOfWeekBasedYearRule() week of week-based-year} for details.
      * <p>
      * The week year will either be 52 or 53 weeks long, depending on the
      * result of the algorithm for a particular date.
      *
      * @return the rule for the week-based-year field, never null
      */
-    public static DateTimeFieldRule weekyearRule() {
-        return WeekyearRule.INSTANCE;
+    public static DateTimeFieldRule weekBasedYearRule() {
+        return WeekBasedYearRule.INSTANCE;
     }
 
     /**
      * Gets the rule for the week of week-based-year field in the ISO chronology.
      * <p>
-     * This field counts weeks using the ISO-8601 algorithm. The first week of
-     * the year is the week which has at least 4 days in the year using a Monday
-     * to Sunday week definition. Thus it is possible for the first week to start
-     * on any day from the 29th December in the previous year to the 4th January
-     * in the new year. The year which is aligned with this field is known as
-     * the {@link #weekyear() weeekyear}.
+     * This field counts weeks using the ISO-8601 algorithm.
+     * The first week of the year is the week which has at least 4 days in the year
+     * using a Monday to Sunday week definition. Thus it is possible for the first
+     * week to start on any day from the 29th December in the previous year to the
+     * 4th January in the new year. The year which is aligned with this field is
+     * known as the {@link #weekBasedYearRule() week-based-year}.
      *
      * @return the rule for the week of week-based-year field, never null
      */
-    public static DateTimeFieldRule weekOfWeekyearRule() {
-        return WeekOfWeekyearRule.INSTANCE;
+    public static DateTimeFieldRule weekOfWeekBasedYearRule() {
+        return WeekOfWeekBasedYearRule.INSTANCE;
     }
 
     /**
@@ -380,8 +380,8 @@ public final class ISOChronology extends Chronology implements Serializable {
      * These define Monday as value 1 to Sunday as value 7.
      * <p>
      * The enum {@link DayOfWeek} should be used wherever possible in
-     * applications when referring to the day of the week to avoid
-     * hard-coding the values.
+     * applications when referring to the day of the week value to avoid
+     * needing to remember the values from 1 to 7.
      *
      * @return the rule for the day of week field, never null
      */
@@ -520,9 +520,9 @@ public final class ISOChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule for the am/pm of day field.
+     * Gets the rule for the AM/PM of day field.
      * <p>
-     * This field defines the half-day am/pm value. The hour of day from 0 to 11 is
+     * This field defines the half-day AM/PM value. The hour of day from 0 to 11 is
      * defined as AM, while the hours from 12 to 23 are defined as PM.
      * AM is defined with the value 0, while PM is defined with the value 1.
      * <p>
@@ -537,12 +537,12 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the hour of am/pm field.
+     * Gets the rule for the hour of AM/PM field.
      * <p>
-     * This field counts hours sequentially from the start of the half-day am/pm.
+     * This field counts hours sequentially from the start of the half-day AM/PM.
      * The values run from 0 to 11.
      *
-     * @return the rule for the hour of am/pm field, never null
+     * @return the rule for the hour of AM/PM field, never null
      */
     public static DateTimeFieldRule hourOfAmPmRule() {
         return HourOfAmPmRule.INSTANCE;
@@ -693,26 +693,26 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class WeekyearRule extends DateTimeFieldRule implements Serializable {
+    private static final class WeekBasedYearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new WeekyearRule();
+        private static final DateTimeFieldRule INSTANCE = new WeekBasedYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
-        private WeekyearRule() {
-            super(ISOChronology.INSTANCE, "Weekyear", WEEKYEARS, null, Weekyear.MIN_YEAR, Weekyear.MAX_YEAR);
+        private WeekBasedYearRule() {
+            super(ISOChronology.INSTANCE, "Weekyear", WEEKYEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : Weekyear.weekyear(date).getValue());
+            return (date == null ? null : WeekBasedYear.weekyear(date).getValue());
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
             // TODO: implement, move to Weekyear?
-            Integer woy = merger.getValue(ISOChronology.weekOfWeekyearRule());
+            Integer woy = merger.getValue(ISOChronology.weekOfWeekBasedYearRule());
             Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
             if (woy != null && dow != null) {
                 int wyear = merger.getValueInt(this);
@@ -722,7 +722,7 @@ public final class ISOChronology extends Chronology implements Serializable {
 //                    merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
 //                }
                 merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.weekOfWeekyearRule());
+                merger.markFieldAsProcessed(ISOChronology.weekOfWeekBasedYearRule());
                 merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
             }
         }
@@ -732,13 +732,13 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class WeekOfWeekyearRule extends DateTimeFieldRule implements Serializable {
+    private static final class WeekOfWeekBasedYearRule extends DateTimeFieldRule implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new WeekOfWeekyearRule();
+        private static final DateTimeFieldRule INSTANCE = new WeekOfWeekBasedYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
-        private WeekOfWeekyearRule() {
+        private WeekOfWeekBasedYearRule() {
             super(ISOChronology.INSTANCE, "WeekOfWeekyear", WEEKS, WEEKYEARS, 1, 53);
         }
         private Object readResolve() {
@@ -755,7 +755,7 @@ public final class ISOChronology extends Chronology implements Serializable {
 //        }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : WeekOfWeekyear.weekOfWeekyear(date).getValue());
+            return (date == null ? null : WeekOfWeekBasedYear.weekOfWeekyear(date).getValue());
         }
     }
 

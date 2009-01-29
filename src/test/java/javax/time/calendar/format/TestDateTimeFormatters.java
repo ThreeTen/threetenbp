@@ -53,8 +53,8 @@ import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.WeekOfWeekyear;
-import javax.time.calendar.field.Weekyear;
+import javax.time.calendar.field.WeekOfWeekBasedYear;
+import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -376,15 +376,15 @@ public class TestDateTimeFormatters {
 
     public void test_print_isoWeekDate_fields() {
         Calendrical test = new Calendrical();
-        test.getFieldMap().put(Weekyear.rule(), 2004);
-        test.getFieldMap().put(WeekOfWeekyear.rule(), 5);
+        test.getFieldMap().put(WeekBasedYear.rule(), 2004);
+        test.getFieldMap().put(WeekOfWeekBasedYear.rule(), 5);
         test.getFieldMap().put(DayOfWeek.rule(), 2);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "2004-W05-2");
     }
 
     public void test_print_isoWeekDate_missingField() {
         try {
-            CalendricalProvider test = new Calendrical(Weekyear.rule(), 2004, WeekOfWeekyear.rule(), 1);
+            CalendricalProvider test = new Calendrical(WeekBasedYear.rule(), 2004, WeekOfWeekBasedYear.rule(), 1);
             DateTimeFormatters.isoWeekDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {
@@ -396,16 +396,16 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     public void test_parse_weekDate() {
         Calendrical expected = new Calendrical();
-        expected.getFieldMap().put(ISOChronology.weekyearRule(), 2004);
-        expected.getFieldMap().put(ISOChronology.weekOfWeekyearRule(), 1);
+        expected.getFieldMap().put(ISOChronology.weekBasedYearRule(), 2004);
+        expected.getFieldMap().put(ISOChronology.weekOfWeekBasedYearRule(), 1);
         expected.getFieldMap().put(ISOChronology.dayOfWeekRule(), 1);
         assertEquals(DateTimeFormatters.isoWeekDate().parse("2004-W01-1"), expected);
     }
 
     public void test_parse_weekDate_largeYear() {
         Calendrical expected = new Calendrical();
-        expected.getFieldMap().put(ISOChronology.weekyearRule(), 123456);
-        expected.getFieldMap().put(ISOChronology.weekOfWeekyearRule(), 4);
+        expected.getFieldMap().put(ISOChronology.weekBasedYearRule(), 123456);
+        expected.getFieldMap().put(ISOChronology.weekOfWeekBasedYearRule(), 4);
         expected.getFieldMap().put(ISOChronology.dayOfWeekRule(), 5);
         assertEquals(DateTimeFormatters.isoWeekDate().parse("+123456-W04-5"), expected);
     }

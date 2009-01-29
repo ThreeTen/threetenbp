@@ -64,8 +64,8 @@ import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.field.TestNanoOfSecond;
 import javax.time.calendar.field.TestQuarterOfYear;
 import javax.time.calendar.field.TestSecondOfMinute;
-import javax.time.calendar.field.TestWeekOfWeekyear;
-import javax.time.calendar.field.TestWeekyear;
+import javax.time.calendar.field.TestWeekOfWeekBasedYear;
+import javax.time.calendar.field.TestWeekBasedYear;
 import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCalendricalFormatException;
 import javax.time.calendar.format.TestCharLiteralParser;
@@ -149,8 +149,8 @@ public class AllTest {
             TestNanoOfSecond.class,
             TestQuarterOfYear.class,
             TestSecondOfMinute.class,
-            TestWeekOfWeekyear.class,
-            TestWeekyear.class,
+            TestWeekOfWeekBasedYear.class,
+            TestWeekBasedYear.class,
             TestYear.class,
             // calendar rules
             TestDayOfMonthRule.class,
