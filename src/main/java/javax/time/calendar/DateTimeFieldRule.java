@@ -227,7 +227,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * <p>
      * This method queries the map to determine if it holds a value for this field.
      * If it does, then the value is returned.
-     * Otherwise, an attempt is made to {@link #deriveValue(DateTimeFields) derive}
+     * Otherwise, an attempt is made to {@link #deriveValue derive}
      * the value from the value of other fields in the map.
      *
      * @param calendricalFieldMap  the calendrical to derive from, not null
@@ -317,7 +317,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * this field if this method is called.
      * <p>
      * If the override successfully merged some fields then the following must be performed.
-     * A merged date must be stored using {@link Calendrical.Merger#storeDate}.
+     * A merged date must be stored using {@link Calendrical.Merger#storeMergedDate(LocalDate)}.
      * A merged time must be stored using {@link Calendrical.Merger#storeMergedTime(LocalTime)}
      * if the merge is strict, or {@link Calendrical.Merger#storeMergedTime(javax.time.calendar.LocalTime.Overflow)}
      * if the merge is lenient.

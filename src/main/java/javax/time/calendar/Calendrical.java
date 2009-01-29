@@ -286,7 +286,7 @@ public final class Calendrical
      * map returning null if the field is not present.
      * <p>
      * The value will be derived first from the date and/or time.
-     * If that does not suceed, then the field-value map will be queried using
+     * If that does not succeed, then the field-value map will be queried using
      * {@link FieldMap#deriveValue}.
      * Thus, if the date/time and field-value map are inconsistent, the value
      * from the date/time takes precedence.
@@ -309,7 +309,7 @@ public final class Calendrical
      * map throwing an exception if the field is not present or is invalid.
      * <p>
      * The value will be derived first from the date and/or time.
-     * If that does not suceed, then the field-value map will be queried using
+     * If that does not succeed, then the field-value map will be queried using
      * {@link FieldMap#deriveValue}.
      * Thus, if the date/time and field-value map are inconsistent, the value
      * from the date/time takes precedence.
@@ -533,11 +533,12 @@ public final class Calendrical
      * possible from this set of fields. Ideally the outcome will be a date, time
      * or both, however there may be insufficient information to achieve this.
      * <p>
-     * The process repeatedly calls the field rule {@link DateTimeFieldRule#merge merge}
-     * method to perform the merge on each individual field. Sometimes two or
-     * more fields will combine to form a more significant field. Sometimes they
-     * will combine to form a date or time. The process stops when there no more
-     * merges can occur.
+     * The process repeatedly calls the field rule {@link DateTimeFieldRule#mergeFields merge fields}
+     * and {@link DateTimeFieldRule#mergeDateTime merge date time} methods to perform
+     * the merge on each individual field.
+     * Sometimes two or more fields will combine to form a more significant field.
+     * Sometimes they will combine to form a date or time.
+     * The process stops when there no more merges can occur.
      * <p>
      * The process is based around hierarchies that can be combined.
      * For example, QuarterOfYear and MonthOfQuarter can be combined to form MonthOfYear.
@@ -865,7 +866,7 @@ public final class Calendrical
         /**
          * Iterates through all the fields.
          * <p>
-         * This method fulfills the {@link Iterable} interface and allows looping
+         * This method fulfils the {@link Iterable} interface and allows looping
          * around the fields using the for-each loop. The values can be obtained using
          * {@link #get(DateTimeFieldRule)} or {@link #getValueValidated(DateTimeFieldRule)}.
          *
@@ -1215,9 +1216,9 @@ public final class Calendrical
         }
 
         /**
-         * A hashcode for this set of fields.
+         * A hash code for this set of fields.
          *
-         * @return a suitable hashcode
+         * @return a suitable hash code
          */
         @Override
         public int hashCode() {
@@ -1265,7 +1266,7 @@ public final class Calendrical
          */
         private final CalendricalContext context;
         /**
-         * The time inclusing number of days overflow.
+         * The time including number of days overflow.
          */
         private LocalTime.Overflow mergedTime;
         /**
@@ -1400,7 +1401,7 @@ public final class Calendrical
          * <p>
          * It is possible that the field-value map contains multiple hierarchies that
          * can produce a date. In this case, all the hierarchies must produce the same
-         * date, somthing which is validated by this method.
+         * date, something which is validated by this method.
          *
          * @param date  the date to set, not null
          * @throws CalendricalException if the input date does not match a previously stored date
