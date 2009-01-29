@@ -51,7 +51,7 @@ import javax.time.CalendricalException;
  * mutable and changes in value between two calls to <code>toLocalTime()</code>.
  * <p>
  * The recommended way to convert a TimeProvider to a LocalTime is using
- * {@link LocalTime#dateTime(TimeProvider)} as this method provides additional null checking.
+ * {@link LocalTime#time(TimeProvider)} as this method provides additional null checking.
  * <p>
  * It is recommended that this interface should only be implemented by classes
  * that provide time information to at least minute precision.
