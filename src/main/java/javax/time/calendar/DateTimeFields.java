@@ -44,14 +44,14 @@ import java.util.Map.Entry;
  * A set of date-time fields.
  * <p>
  * Instances of this class store a map of field-value pairs.
- * Together these specify constrints on the dates and times that match.
+ * Together these specify constraints on the dates and times that match.
  * For example, if an instance stores 'DayOfMonth=13' and 'DayOfWeek=Friday'
  * then it represents and matches only dates of Friday the Thirteenth.
  * <p>
  * All the values will be within the valid range for the field.
  * However, there is no cross validation between fields.
  * Thus, it is possible for the date-time represented to never exist.
- * For exampl, if an instance stores 'DayOfMonth=31' and 'MonthOfYear=February'
+ * For example, if an instance stores 'DayOfMonth=31' and 'MonthOfYear=February'
  * then there will never be a matching date.
  *
  * @author Michael Nascimento Santos
@@ -212,7 +212,7 @@ public final class DateTimeFields
     /**
      * Iterates through all the fields.
      * <p>
-     * This method fulfills the {@link Iterable} interface and allows looping
+     * This method fulfils the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop. The values can be obtained using
      * {@link #getValueInt(DateTimeFieldRule)}.
      *
@@ -578,9 +578,9 @@ public final class DateTimeFields
     }
 
     /**
-     * A hashcode for this set of fields.
+     * A hash code for this set of fields.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
