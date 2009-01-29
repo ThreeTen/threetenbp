@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -30,19 +30,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Items still todo before EDR:
-
-- TimeZone design
-- leap second support
-
 Items todo post EDR:
 
 - lenient parsing
-- proper TimeZone providers (Olson/IATA)
+- leap second support
+- TimeZone SPI and versioning
 - more calendar systems
+- create formatter using SimpleDateFormat type string
+- OffsetDateTime.fromEpochSeconds()
 
 Possible items:
 
+- Rename DateProvider to LocalDateProvider?
+- separable comparators for providers
 - roll()
 - round()
 - iteration
