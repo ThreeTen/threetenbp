@@ -31,8 +31,6 @@
  */
 package javax.time;
 
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeProvider;
 
 /**
  * Provides access to an instant on the time-line.
@@ -51,8 +49,8 @@ import javax.time.calendar.TimeProvider;
  * This is necessary to handle the case where the implementation of the provider is
  * mutable and changes in value between two calls to <code>toInstant()</code>.
  * <p>
- * The recommended way to convert a TimeProvider to a LocalTime is using
- * {@link LocalTime#dateTime(TimeProvider)} as this method provides additional null checking.
+ * The recommended way to convert an InstantProvider to a Instant is using
+ * {@link Instant#instant(InstantProvider)} as this method provides additional null checking.
  * <p>
  * It is recommended that this interface should only be implemented by classes
  * that provide time information to at least minute precision.
