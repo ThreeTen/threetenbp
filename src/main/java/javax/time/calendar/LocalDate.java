@@ -166,7 +166,10 @@ public final class LocalDate
     }
 
     /**
-     * Obtains an instance of <code>LocalDate</code> from a number of modified julian days.
+     * Obtains an instance of <code>LocalDate</code> from a number of Modified Julian Days.
+     * <p>
+     * The Modified Julian Day count is a simple incrementing count of days
+     * where day 0 is 1858-11-17.
      *
      * @param mjDays  the modified julian day equivalent to the LocalDate
      * @return a LocalDate object, never null
@@ -930,9 +933,12 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Converts the date to modified julian days (MJD).
+     * Converts the date to Modified Julian Days (MJD).
+     * <p>
+     * The Modified Julian Day count is a simple incrementing count of days
+     * where day 0 is 1858-11-17.
      *
-     * @return the modified julian day equivalent to this date
+     * @return the Modified Julian Day equivalent to this date
      */
     public long toModifiedJulianDays() {
         long y = year.getValue();
