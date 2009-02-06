@@ -1108,9 +1108,18 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    public void test_compareTo_time() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PONE);  // a is before b due to time
+    public void test_compareTo_time1() {
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, 3, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 2, OFFSET_PONE);  // a is before b due to time
+        assertEquals(a.compareTo(b) < 0, true);
+        assertEquals(b.compareTo(a) > 0, true);
+        assertEquals(a.compareTo(a) == 0, true);
+        assertEquals(b.compareTo(b) == 0, true);
+    }
+
+    public void test_compareTo_time2() {
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, 2, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, 3, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1176,23 +1185,81 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // isAfter() / isBefore()
+    // isAfter() / isBefore() / equalInstant()
     //-----------------------------------------------------------------------
-    public void test_isBeforeIsAfter() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 58, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);  // a is before b due to time
+    public void test_isBeforeIsAfterIsEqual1() {
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 58, 3, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 2, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.isBefore(b), true);
+        assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
+        
         assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), false);
         assertEquals(b.isAfter(a), true);
+        
         assertEquals(a.isBefore(a), false);
         assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
+    }
+
+    public void test_isBeforeIsAfterIsEqual2() {
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 2, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 3, OFFSET_PONE);  // a is before b due to time
+        assertEquals(a.isBefore(b), true);
+        assertEquals(a.equalInstant(b), false);
+        assertEquals(a.isAfter(b), false);
+        
+        assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), false);
+        assertEquals(b.isAfter(a), true);
+        
+        assertEquals(a.isBefore(a), false);
+        assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
+    }
+
+    public void test_isBeforeIsAfterIsEqual_instantComparison() {
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 10, 0, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is same instant as b
+        assertEquals(a.isBefore(b), false);
+        assertEquals(a.equalInstant(b), true);
+        assertEquals(a.isAfter(b), false);
+        
+        assertEquals(b.isBefore(a), false);
+        assertEquals(b.equalInstant(a), true);
+        assertEquals(b.isAfter(a), false);
+        
+        assertEquals(a.isBefore(a), false);
+        assertEquals(b.isBefore(b), false);
+        
+        assertEquals(a.equalInstant(a), true);
+        assertEquals(b.equalInstant(b), true);
+        
+        assertEquals(a.isAfter(a), false);
+        assertEquals(b.isAfter(b), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isBefore_null() {
         OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         a.isBefore(null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_isEqual_null() {
+        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        a.equalInstant(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

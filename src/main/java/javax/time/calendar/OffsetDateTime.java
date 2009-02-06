@@ -1599,8 +1599,8 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this date-time to another date-time based on the UTC
-     * equivalent date-times then local date-time.
+     * Compares this date-time to another date-time based on the instant
+     * then local date-time.
      * <p>
      * This ordering is consistent with <code>equals()</code>.
      * For example, the following is the comparator order:
@@ -1632,33 +1632,67 @@ public final class OffsetDateTime
         return compare;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Is this date-time after the specified date-time.
-     *
-     * @param other  the other date-time to compare to, not null
-     * @return true if this is after the specified date-time
-     * @throws NullPointerException if <code>other</code> is null
-     */
-    public boolean isAfter(OffsetDateTime other) {
-        return compareTo(other) > 0;
-    }
-
-    /**
-     * Is this date-time before the specified date-time.
+     * Checks if the instant of this date-time is before that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * compares only the instant of the date-time. This is equivalent to using
+     * <code>dateTime1.toInstant().isBefore(dateTime2.toInstant());</code>.
      *
      * @param other  the other date-time to compare to, not null
      * @return true if this point is before the specified date-time
      * @throws NullPointerException if <code>other</code> is null
      */
     public boolean isBefore(OffsetDateTime other) {
-        return compareTo(other) < 0;
+        long thisEpochSecs = toEpochSeconds();
+        long otherEpochSecs = other.toEpochSeconds();
+        return thisEpochSecs < otherEpochSecs ||
+            (thisEpochSecs == otherEpochSecs && getNanoOfSecond().getValue() < other.getNanoOfSecond().getValue());
+    }
+
+    /**
+     * Checks if the instant of this date-time is equal to that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} and {@link #equals}
+     * in that it compares only the instant of the date-time. This is equivalent to using
+     * <code>dateTime1.toInstant().equals(dateTime2.toInstant());</code>.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is after the specified date-time
+     * @throws NullPointerException if <code>other</code> is null
+     */
+    public boolean equalInstant(OffsetDateTime other) {
+        return toEpochSeconds() == other.toEpochSeconds() &&
+            getNanoOfSecond().getValue() == other.getNanoOfSecond().getValue();
+    }
+
+    /**
+     * Checks if the instant of this date-time is after that of the specified date-time.
+     * <p>
+     * This method differs from the comparison in {@link #compareTo} in that it
+     * compares the only the instant of the date-time. This is equivalent to using
+     * <code>dateTime1.toInstant().isAfter(dateTime2.toInstant());</code>.
+     *
+     * @param other  the other date-time to compare to, not null
+     * @return true if this is after the specified date-time
+     * @throws NullPointerException if <code>other</code> is null
+     */
+    public boolean isAfter(OffsetDateTime other) {
+        long thisEpochSecs = toEpochSeconds();
+        long otherEpochSecs = other.toEpochSeconds();
+        return thisEpochSecs > otherEpochSecs ||
+            (thisEpochSecs == otherEpochSecs && getNanoOfSecond().getValue() > other.getNanoOfSecond().getValue());
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this date-time equal to the specified date-time.
+     * Checks if the state of this date-time equal to that of the specified date-time.
      * <p>
-     * This compares the date-time and the offset.
+     * This method returns true if the state of the two objects are equal.
+     * The state consists of the local date-time and the offset.
+     * <p>
+     * To compare for the same instant on the time-line, use {@link #equalInstant}.
      *
      * @param other  the other date-time to compare to, null returns false
      * @return true if this point is equal to the specified date-time
