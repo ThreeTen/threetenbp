@@ -40,8 +40,8 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.WeekBasedYear;
+import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 
 /**
@@ -971,7 +971,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getHourOfDay().getValue());
+            return (time == null ? null : time.getHourOfDay());
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
@@ -1031,7 +1031,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getMinuteOfHour().getValue());
+            return (time == null ? null : time.getMinuteOfHour());
         }
     }
 
@@ -1053,7 +1053,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getSecondOfMinute().getValue());
+            return (time == null ? null : time.getSecondOfMinute());
         }
     }
 
@@ -1075,7 +1075,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getNanoOfSecond().getValue());
+            return (time == null ? null : time.getNanoOfSecond());
         }
     }
 
@@ -1129,7 +1129,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getNanoOfSecond().getValue() / 1000000);
+            return (time == null ? null : time.getNanoOfSecond() / 1000000);
         }
         @Override
         protected void mergeFields(Calendrical.Merger merger) {
@@ -1158,7 +1158,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getHourOfDay().getAmPm().getValue());
+            return (time == null ? null : time.toHourOfDay().getAmPm().getValue());
         }
         @Override
         protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
@@ -1201,7 +1201,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.getHourOfDay().getHourOfAmPm());
+            return (time == null ? null : time.toHourOfDay().getHourOfAmPm());
         }
         @Override
         protected Integer deriveValue(Calendrical.FieldMap fieldMap) {

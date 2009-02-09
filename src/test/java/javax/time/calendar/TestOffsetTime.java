@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,13 +31,13 @@
  */
 package javax.time.calendar;
 
+import static org.testng.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import static org.testng.Assert.*;
-
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -284,6 +284,11 @@ public class TestOffsetTime {
         assertEquals(a.getMinuteOfHour(), localTime.getMinuteOfHour());
         assertEquals(a.getSecondOfMinute(), localTime.getSecondOfMinute());
         assertEquals(a.getNanoOfSecond(), localTime.getNanoOfSecond());
+        
+        assertEquals(a.toHourOfDay(), localTime.toHourOfDay());
+        assertEquals(a.toMinuteOfHour(), localTime.toMinuteOfHour());
+        assertEquals(a.toSecondOfMinute(), localTime.toSecondOfMinute());
+        assertEquals(a.toNanoOfSecond(), localTime.toNanoOfSecond());
         
         assertSame(a.toLocalTime(), localTime);
         assertEquals(a.toCalendrical(), new Calendrical(null, localTime, offset, null));

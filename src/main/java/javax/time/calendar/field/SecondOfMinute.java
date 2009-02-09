@@ -122,7 +122,7 @@ public final class SecondOfMinute
      * @return the SecondOfMinute instance, never null
      */
     public static SecondOfMinute secondOfMinute(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).getSecondOfMinute();
+        return LocalTime.time(timeProvider).toSecondOfMinute();
     }
 
     //-----------------------------------------------------------------------
@@ -168,10 +168,7 @@ public final class SecondOfMinute
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getSecondOfMinute()) {
-            return time;
-        }
-        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), this, time.getNanoOfSecond());
+        return time.withSecondOfMinute(secondOfMinute);
     }
 
     /**
@@ -182,7 +179,7 @@ public final class SecondOfMinute
      * @return true if the time matches, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
-        return this == time.getSecondOfMinute();
+        return secondOfMinute == time.getSecondOfMinute();
     }
 
     //-----------------------------------------------------------------------
@@ -200,7 +197,7 @@ public final class SecondOfMinute
      * Compares this second of minute instance to another.
      *
      * @param otherSecondOfMinute  the other second of minute instance, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherSecondOfMinute is null
      */
     public int compareTo(SecondOfMinute otherSecondOfMinute) {
@@ -222,9 +219,9 @@ public final class SecondOfMinute
     }
 
     /**
-     * A hashcode for the second of minute object.
+     * A hash code for the second of minute object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

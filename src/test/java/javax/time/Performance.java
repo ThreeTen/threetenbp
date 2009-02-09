@@ -126,9 +126,9 @@ public class Performance {
             total += dt.getYear().getValue();
             total += dt.getMonthOfYear().getValue();
             total += dt.getDayOfMonth().getValue();
-            total += dt.getHourOfDay().getValue();
-            total += dt.getMinuteOfHour().getValue();
-            total += dt.getSecondOfMinute().getValue();
+            total += dt.getHourOfDay();
+            total += dt.getMinuteOfHour();
+            total += dt.getSecondOfMinute();
         }
         long end = System.nanoTime();
         System.out.println("LocalDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);
@@ -178,9 +178,9 @@ public class Performance {
             total += dt.getYear().getValue();
             total += dt.getMonthOfYear().getValue();
             total += dt.getDayOfMonth().getValue();
-            total += dt.getHourOfDay().getValue();
-            total += dt.getMinuteOfHour().getValue();
-            total += dt.getSecondOfMinute().getValue();
+            total += dt.getHourOfDay();
+            total += dt.getMinuteOfHour();
+            total += dt.getSecondOfMinute();
         }
         long end = System.nanoTime();
         System.out.println("ZonedDT:   Query:  " + NF.format(end - start) + " ns" + " " + total);

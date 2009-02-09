@@ -136,7 +136,7 @@ public final class HourOfDay
      * @return the HourOfDay instance, never null
      */
     public static HourOfDay hourOfDay(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).getHourOfDay();
+        return LocalTime.time(timeProvider).toHourOfDay();
     }
 
     //-----------------------------------------------------------------------
@@ -182,10 +182,7 @@ public final class HourOfDay
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getHourOfDay()) {
-            return time;
-        }
-        return LocalTime.time(this, time.getMinuteOfHour(), time.getSecondOfMinute(), time.getNanoOfSecond());
+        return time.withHourOfDay(hourOfDay);
     }
 
     /**
@@ -196,7 +193,7 @@ public final class HourOfDay
      * @return true if the time matches, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
-        return this == time.getHourOfDay();
+        return hourOfDay == time.getHourOfDay();
     }
 
     //-----------------------------------------------------------------------
@@ -279,7 +276,7 @@ public final class HourOfDay
      * Compares this hour of day instance to another.
      *
      * @param otherHourOfDay  the other hour of day instance, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherHourOfDay is null
      */
     public int compareTo(HourOfDay otherHourOfDay) {
@@ -301,9 +298,9 @@ public final class HourOfDay
     }
 
     /**
-     * A hashcode for the hour of day object.
+     * A hash code for the hour of day object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

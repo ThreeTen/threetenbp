@@ -182,6 +182,16 @@ public class TestFluentAPI {
 //        year(2008).append(MonthOfYear.JULY).append(dayOfMonth(3))
 //        LocalDateTime dt = date.append(tod);
         
+        
+//        {
+//            Year year = Year.isoYear(2002);
+//            YearMonth sixNationsMonth = year.append(FEBRUARY);
+//            LocalDate englandWales = sixNationsMonth.appendDayOfMonth(12);
+//            
+//            LocalDate engWal = Year.isoYear(2009).append(MARCH).appendDayOfMonth(12);
+//            LocalDate engWal = Year.isoYear(2009).toYearMonth(FEBRUARY).toLocalDate(12);
+//        }
+        
     }
 
 }

@@ -135,10 +135,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonthOfYear().getValue(), 1);
         assertEquals(test.getDayOfMonth().getValue(), 1);
         assertEquals(test.getOffset(), OFFSET_MIN);
-        assertEquals(test.getHourOfDay().getValue(), 0);
-        assertEquals(test.getMinuteOfHour().getValue(), 0);
-        assertEquals(test.getSecondOfMinute().getValue(), 0);
-        assertEquals(test.getNanoOfSecond().getValue(), 0);
+        assertEquals(test.getHourOfDay(), 0);
+        assertEquals(test.getMinuteOfHour(), 0);
+        assertEquals(test.getSecondOfMinute(), 0);
+        assertEquals(test.getNanoOfSecond(), 0);
     }
 
     public void test_factory_dateTime_InstantProvider_minWithMaxOffset() {
@@ -151,10 +151,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonthOfYear().getValue(), 1);
         assertEquals(test.getDayOfMonth().getValue(), 1);
         assertEquals(test.getOffset(), OFFSET_MAX);
-        assertEquals(test.getHourOfDay().getValue(), 0);
-        assertEquals(test.getMinuteOfHour().getValue(), 0);
-        assertEquals(test.getSecondOfMinute().getValue(), 0);
-        assertEquals(test.getNanoOfSecond().getValue(), 0);
+        assertEquals(test.getHourOfDay(), 0);
+        assertEquals(test.getMinuteOfHour(), 0);
+        assertEquals(test.getSecondOfMinute(), 0);
+        assertEquals(test.getNanoOfSecond(), 0);
     }
 
     public void test_factory_dateTime_InstantProvider_maxWithMinOffset() {
@@ -167,10 +167,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonthOfYear().getValue(), 12);
         assertEquals(test.getDayOfMonth().getValue(), 31);
         assertEquals(test.getOffset(), OFFSET_MIN);
-        assertEquals(test.getHourOfDay().getValue(), 23);
-        assertEquals(test.getMinuteOfHour().getValue(), 59);
-        assertEquals(test.getSecondOfMinute().getValue(), 59);
-        assertEquals(test.getNanoOfSecond().getValue(), 0);
+        assertEquals(test.getHourOfDay(), 23);
+        assertEquals(test.getMinuteOfHour(), 59);
+        assertEquals(test.getSecondOfMinute(), 59);
+        assertEquals(test.getNanoOfSecond(), 0);
     }
 
     public void test_factory_dateTime_InstantProvider_maxWithMaxOffset() {
@@ -183,10 +183,10 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getMonthOfYear().getValue(), 12);
         assertEquals(test.getDayOfMonth().getValue(), 31);
         assertEquals(test.getOffset(), OFFSET_MAX);
-        assertEquals(test.getHourOfDay().getValue(), 23);
-        assertEquals(test.getMinuteOfHour().getValue(), 59);
-        assertEquals(test.getSecondOfMinute().getValue(), 59);
-        assertEquals(test.getNanoOfSecond().getValue(), 0);
+        assertEquals(test.getHourOfDay(), 23);
+        assertEquals(test.getMinuteOfHour(), 59);
+        assertEquals(test.getSecondOfMinute(), 59);
+        assertEquals(test.getNanoOfSecond(), 0);
     }
 
     private void doTest_factory_dateTime_InstantProvider_all(int minYear, int maxYear) {

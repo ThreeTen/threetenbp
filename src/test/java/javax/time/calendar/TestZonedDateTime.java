@@ -41,10 +41,7 @@ import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.NanoOfSecond;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -254,10 +251,10 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        assertEquals(test.getHourOfDay(), 11);
+        assertEquals(test.getMinuteOfHour(), 30);
+        assertEquals(test.getSecondOfMinute(), 10);
+        assertEquals(test.getNanoOfSecond(), 500);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -289,25 +286,25 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        assertEquals(test.getHourOfDay(), 11);
+        assertEquals(test.getMinuteOfHour(), 30);
+        assertEquals(test.getSecondOfMinute(), 10);
+        assertEquals(test.getNanoOfSecond(), 500);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
 
-    public void factory_dateTime_DateProviderTimeProviderResolver_reolverUsed() {
+    public void factory_dateTime_DateProviderTimeProviderResolver_resolverUsed() {
         DateProvider dateProvider = LocalDate.date(2008, 3, 30);
         TimeProvider timeProvider = LocalTime.time(2, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(3));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(3));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(0));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+        assertEquals(test.getHourOfDay(), 3);
+        assertEquals(test.getMinuteOfHour(), 0);
+        assertEquals(test.getSecondOfMinute(), 0);
+        assertEquals(test.getNanoOfSecond(), 0);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -357,10 +354,10 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        assertEquals(test.getHourOfDay(), 11);
+        assertEquals(test.getMinuteOfHour(), 30);
+        assertEquals(test.getSecondOfMinute(), 10);
+        assertEquals(test.getNanoOfSecond(), 500);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -388,10 +385,10 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        assertEquals(test.getHourOfDay(), 11);
+        assertEquals(test.getMinuteOfHour(), 30);
+        assertEquals(test.getSecondOfMinute(), 10);
+        assertEquals(test.getNanoOfSecond(), 500);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -402,10 +399,10 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(3));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(3));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(0));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+        assertEquals(test.getHourOfDay(), 3);
+        assertEquals(test.getMinuteOfHour(), 0);
+        assertEquals(test.getSecondOfMinute(), 0);
+        assertEquals(test.getNanoOfSecond(), 0);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -439,10 +436,10 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        assertEquals(test.getHourOfDay(), 11);
+        assertEquals(test.getMinuteOfHour(), 30);
+        assertEquals(test.getSecondOfMinute(), 10);
+        assertEquals(test.getNanoOfSecond(), 500);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -499,10 +496,10 @@ public class TestZonedDateTime {
         assertEquals(test.getYear(), Year.isoYear(2008));
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
         assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        assertEquals(test.getHourOfDay(), 11);
+        assertEquals(test.getMinuteOfHour(), 30);
+        assertEquals(test.getSecondOfMinute(), 10);
+        assertEquals(test.getNanoOfSecond(), 500);
         assertEquals(test.getOffset(), OFFSET_0200);
         assertEquals(test.getZone(), ZONE_PARIS);
     }
@@ -553,6 +550,11 @@ public class TestZonedDateTime {
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
         assertEquals(a.getSecondOfMinute(), localDateTime.getSecondOfMinute());
         assertEquals(a.getNanoOfSecond(), localDateTime.getNanoOfSecond());
+        
+        assertEquals(a.toHourOfDay(), localDateTime.toHourOfDay());
+        assertEquals(a.toMinuteOfHour(), localDateTime.toMinuteOfHour());
+        assertEquals(a.toSecondOfMinute(), localDateTime.toSecondOfMinute());
+        assertEquals(a.toNanoOfSecond(), localDateTime.toNanoOfSecond());
         
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);

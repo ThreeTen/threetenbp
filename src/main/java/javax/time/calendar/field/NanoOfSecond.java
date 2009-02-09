@@ -113,7 +113,7 @@ public final class NanoOfSecond
      * @return the NanoOfSecond instance, never null
      */
     public static NanoOfSecond nanoOfSecond(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).getNanoOfSecond();
+        return LocalTime.time(timeProvider).toNanoOfSecond();
     }
 
     //-----------------------------------------------------------------------
@@ -162,10 +162,7 @@ public final class NanoOfSecond
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getNanoOfSecond()) {
-            return time;
-        }
-        return LocalTime.time(time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute(), this);
+        return time.withNanoOfSecond(nanoOfSecond);
     }
 
     /**
@@ -176,7 +173,7 @@ public final class NanoOfSecond
      * @return true if the time matches, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
-        return this.getValue() == time.getNanoOfSecond().getValue();
+        return nanoOfSecond == time.getNanoOfSecond();
     }
 
     //-----------------------------------------------------------------------
@@ -194,7 +191,7 @@ public final class NanoOfSecond
      * Compares this nano of second instance to another.
      *
      * @param otherNanoOfSecond  the other nano of second instance, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherNanoOfSecond is null
      */
     public int compareTo(NanoOfSecond otherNanoOfSecond) {
@@ -222,9 +219,9 @@ public final class NanoOfSecond
     }
 
     /**
-     * A hashcode for the nano of second object.
+     * A hash code for the nano of second object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

@@ -120,7 +120,7 @@ public enum AmPmOfDay
      * @return the AmPmOfDay enum instance, never null
      */
     public static AmPmOfDay amPmOfDay(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).getHourOfDay().getAmPm();
+        return LocalTime.time(timeProvider).toHourOfDay().getAmPm();
     }
 
     //-----------------------------------------------------------------------
@@ -211,14 +211,8 @@ public enum AmPmOfDay
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        if (this == time.getHourOfDay().getAmPm()) {
-            return time;
-        }
-        return LocalTime.time(
-                HourOfDay.hourOfDay(this, time.getHourOfDay().getHourOfAmPm()),
-                time.getMinuteOfHour(),
-                time.getSecondOfMinute(),
-                time.getNanoOfSecond());
+        int hourOfDay = getValue() * 12 + time.toHourOfDay().getHourOfAmPm();
+        return time.withHourOfDay(hourOfDay);
     }
 
     /**
@@ -229,7 +223,7 @@ public enum AmPmOfDay
      * @return true if the time matches, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
-        return this == time.getHourOfDay().getAmPm();
+        return this == time.toHourOfDay().getAmPm();
     }
 
     //-----------------------------------------------------------------------

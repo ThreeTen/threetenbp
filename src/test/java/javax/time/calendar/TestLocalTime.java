@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.LocalTime.Overflow;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -44,6 +43,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
+import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
@@ -74,10 +74,10 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     private void check(LocalTime time, int h, int m, int s, int n) {
-        assertEquals(time.getHourOfDay().getValue(), h);
-        assertEquals(time.getMinuteOfHour().getValue(), m);
-        assertEquals(time.getSecondOfMinute().getValue(), s);
-        assertEquals(time.getNanoOfSecond().getValue(), n);
+        assertEquals(time.getHourOfDay(), h);
+        assertEquals(time.getMinuteOfHour(), m);
+        assertEquals(time.getSecondOfMinute(), s);
+        assertEquals(time.getNanoOfSecond(), n);
     }
 
     //-----------------------------------------------------------------------
@@ -498,10 +498,15 @@ public class TestLocalTime {
     @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int ns) {
         LocalTime a = LocalTime.time(h, m, s, ns);
-        assertEquals(a.getHourOfDay(), HourOfDay.hourOfDay(h));
-        assertEquals(a.getMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
-        assertEquals(a.getSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
-        assertEquals(a.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(ns));
+        assertEquals(a.getHourOfDay(), h);
+        assertEquals(a.getMinuteOfHour(), m);
+        assertEquals(a.getSecondOfMinute(), s);
+        assertEquals(a.getNanoOfSecond(), ns);
+        
+        assertEquals(a.toHourOfDay(), HourOfDay.hourOfDay(h));
+        assertEquals(a.toMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
+        assertEquals(a.toSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
+        assertEquals(a.toNanoOfSecond(), NanoOfSecond.nanoOfSecond(ns));
     }
 
     //-----------------------------------------------------------------------
@@ -509,7 +514,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void test_with() {
         TimeAdjuster timeAdjuster = AmPmOfDay.AM;
-        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster).getHourOfDay().getValue(), 0);
+        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster).getHourOfDay(), 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -524,7 +529,7 @@ public class TestLocalTime {
         LocalTime t = TEST_12_30_40_987654321;
         for (int i = 0; i < 24; i++) {
             t = t.withHourOfDay(i);
-            assertEquals(t.getHourOfDay().getValue(), i);
+            assertEquals(t.getHourOfDay(), i);
         }
     }
 
@@ -560,7 +565,7 @@ public class TestLocalTime {
         LocalTime t = TEST_12_30_40_987654321;
         for (int i = 0; i < 60; i++) {
             t = t.withMinuteOfHour(i);
-            assertEquals(t.getMinuteOfHour().getValue(), i);
+            assertEquals(t.getMinuteOfHour(), i);
         }
     }
 
@@ -596,7 +601,7 @@ public class TestLocalTime {
         LocalTime t = TEST_12_30_40_987654321;
         for (int i = 0; i < 60; i++) {
             t = t.withSecondOfMinute(i);
-            assertEquals(t.getSecondOfMinute().getValue(), i);
+            assertEquals(t.getSecondOfMinute(), i);
         }
     }
 
@@ -631,13 +636,13 @@ public class TestLocalTime {
     public void test_withNanoOfSecond_normal() {
         LocalTime t = TEST_12_30_40_987654321;
         t = t.withNanoOfSecond(1);
-        assertEquals(t.getNanoOfSecond().getValue(), 1);
+        assertEquals(t.getNanoOfSecond(), 1);
         t = t.withNanoOfSecond(10);
-        assertEquals(t.getNanoOfSecond().getValue(), 10);
+        assertEquals(t.getNanoOfSecond(), 10);
         t = t.withNanoOfSecond(100);
-        assertEquals(t.getNanoOfSecond().getValue(), 100);
+        assertEquals(t.getNanoOfSecond(), 100);
         t = t.withNanoOfSecond(999999999);
-        assertEquals(t.getNanoOfSecond().getValue(), 999999999);
+        assertEquals(t.getNanoOfSecond(), 999999999);
     }
 
     public void test_withNanoOfSecond_noChange() {
@@ -708,7 +713,7 @@ public class TestLocalTime {
         LocalTime t = LocalTime.MIDNIGHT;
         for (int i = 0; i < 50; i++) {
             t = t.plusHours(1);
-            assertEquals(t.getHourOfDay().getValue(), (i + 1) % 24);
+            assertEquals(t.getHourOfDay(), (i + 1) % 24);
         }
     }
 
@@ -716,7 +721,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.plusHours(i);
-            assertEquals(t.getHourOfDay().getValue(), (i + 72) % 24);
+            assertEquals(t.getHourOfDay(), (i + 72) % 24);
         }
     }
 
@@ -724,7 +729,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.time(1, 0);
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.plusHours(i);
-            assertEquals(t.getHourOfDay().getValue(), (1 + i + 72) % 24);
+            assertEquals(t.getHourOfDay(), (1 + i + 72) % 24);
         }
     }
 
@@ -757,8 +762,8 @@ public class TestLocalTime {
                 hour++;
                 min = 0;
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
         }
     }
 
@@ -781,8 +786,8 @@ public class TestLocalTime {
                 hour = 0;
                 min = i;
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
         }
     }
 
@@ -825,9 +830,9 @@ public class TestLocalTime {
                 hour++;
                 min = 0;
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
-            assertEquals(t.getSecondOfMinute().getValue(), sec);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getSecondOfMinute(), sec);
         }
     }
 
@@ -877,9 +882,9 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.plusSeconds(seconds);
 
-        assertEquals(hour, t.getHourOfDay().getValue());
-        assertEquals(min, t.getMinuteOfHour().getValue());
-        assertEquals(sec, t.getSecondOfMinute().getValue());
+        assertEquals(hour, t.getHourOfDay());
+        assertEquals(min, t.getMinuteOfHour());
+        assertEquals(sec, t.getSecondOfMinute());
     }
 
     public void test_plusSeconds_noChange() {
@@ -926,10 +931,10 @@ public class TestLocalTime {
                 hour++;
                 min = 0;
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
-            assertEquals(t.getSecondOfMinute().getValue(), sec);
-            assertEquals(t.getNanoOfSecond().getValue(), nanos);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getSecondOfMinute(), sec);
+            assertEquals(t.getNanoOfSecond(), nanos);
         }
     }
 
@@ -985,10 +990,10 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.plusNanos(nanoseconds);
 
-        assertEquals(hour, t.getHourOfDay().getValue());
-        assertEquals(min, t.getMinuteOfHour().getValue());
-        assertEquals(sec, t.getSecondOfMinute().getValue());
-        assertEquals(nanos, t.getNanoOfSecond().getValue());
+        assertEquals(hour, t.getHourOfDay());
+        assertEquals(min, t.getMinuteOfHour());
+        assertEquals(sec, t.getSecondOfMinute());
+        assertEquals(nanos, t.getNanoOfSecond());
     }
 
     public void test_plusNanos_noChange() {
@@ -1054,7 +1059,7 @@ public class TestLocalTime {
         LocalTime t = LocalTime.MIDNIGHT;
         for (int i = 0; i < 50; i++) {
             t = t.minusHours(1);
-            assertEquals(t.getHourOfDay().getValue(), (((-i + 23) % 24) + 24) % 24, String.valueOf(i));
+            assertEquals(t.getHourOfDay(), (((-i + 23) % 24) + 24) % 24, String.valueOf(i));
         }
     }
 
@@ -1062,7 +1067,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.minusHours(i);
-            assertEquals(t.getHourOfDay().getValue(), ((-i % 24) + 24) % 24);
+            assertEquals(t.getHourOfDay(), ((-i % 24) + 24) % 24);
         }
     }
 
@@ -1070,7 +1075,7 @@ public class TestLocalTime {
         LocalTime base = LocalTime.time(1, 0);
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.minusHours(i);
-            assertEquals(t.getHourOfDay().getValue(), (1 + (-i % 24) + 24) % 24);
+            assertEquals(t.getHourOfDay(), (1 + (-i % 24) + 24) % 24);
         }
     }
 
@@ -1107,8 +1112,8 @@ public class TestLocalTime {
                     hour = 23;
                 }
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
         }
     }
 
@@ -1129,8 +1134,8 @@ public class TestLocalTime {
                 }
             }
 
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
         }
     }
 
@@ -1178,9 +1183,9 @@ public class TestLocalTime {
                     }
                 }
             }
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
-            assertEquals(t.getSecondOfMinute().getValue(), sec);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getSecondOfMinute(), sec);
         }
     }
 
@@ -1230,9 +1235,9 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.minusSeconds(seconds);
 
-        assertEquals(t.getHourOfDay().getValue(), hour);
-        assertEquals(t.getMinuteOfHour().getValue(), min);
-        assertEquals(t.getSecondOfMinute().getValue(), sec);
+        assertEquals(t.getHourOfDay(), hour);
+        assertEquals(t.getMinuteOfHour(), min);
+        assertEquals(t.getSecondOfMinute(), sec);
     }
 
     public void test_minusSeconds_noChange() {
@@ -1287,10 +1292,10 @@ public class TestLocalTime {
                 }
             }
 
-            assertEquals(t.getHourOfDay().getValue(), hour);
-            assertEquals(t.getMinuteOfHour().getValue(), min);
-            assertEquals(t.getSecondOfMinute().getValue(), sec);
-            assertEquals(t.getNanoOfSecond().getValue(), nanos);
+            assertEquals(t.getHourOfDay(), hour);
+            assertEquals(t.getMinuteOfHour(), min);
+            assertEquals(t.getSecondOfMinute(), sec);
+            assertEquals(t.getNanoOfSecond(), nanos);
         }
     }
 
@@ -1346,10 +1351,10 @@ public class TestLocalTime {
         LocalTime base = LocalTime.MIDNIGHT;
         LocalTime t = base.minusNanos(nanoseconds);
 
-        assertEquals(hour, t.getHourOfDay().getValue());
-        assertEquals(min, t.getMinuteOfHour().getValue());
-        assertEquals(sec, t.getSecondOfMinute().getValue());
-        assertEquals(nanos, t.getNanoOfSecond().getValue());
+        assertEquals(hour, t.getHourOfDay());
+        assertEquals(min, t.getMinuteOfHour());
+        assertEquals(sec, t.getSecondOfMinute());
+        assertEquals(nanos, t.getNanoOfSecond());
     }
 
     public void test_minusNanos_noChange() {

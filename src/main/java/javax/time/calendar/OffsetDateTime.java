@@ -702,50 +702,87 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day field.
+     * Gets the hour of day field as an <code>HourOfDay</code>.
      * <p>
      * This method provides access to an object representing the hour of day field.
-     * This can be used to access the {@link HourOfDay#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the hour of day, never null
      */
-    public HourOfDay getHourOfDay() {
+    public HourOfDay toHourOfDay() {
+        return dateTime.toHourOfDay();
+    }
+
+    /**
+     * Gets the minute of hour field as a <code>MinuteOfHour</code>.
+     * <p>
+     * This method provides access to an object representing the minute of hour field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     *
+     * @return the minute of hour, never null
+     */
+    public MinuteOfHour toMinuteOfHour() {
+        return dateTime.toMinuteOfHour();
+    }
+
+    /**
+     * Gets the second of minute field as a <code>SecondOfMinute</code>.
+     * <p>
+     * This method provides access to an object representing the second of minute field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     *
+     * @return the second of minute, never null
+     */
+    public SecondOfMinute toSecondOfMinute() {
+        return dateTime.toSecondOfMinute();
+    }
+
+    /**
+     * Gets the nano of second field as a <code>NanoOfSecond</code>.
+     * <p>
+     * This method provides access to an object representing the nano of second field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     *
+     * @return the nano of second, never null
+     */
+    public NanoOfSecond toNanoOfSecond() {
+        return dateTime.toNanoOfSecond();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the hour of day field.
+     *
+     * @return the hour of day, from 0 to 23
+     */
+    public int getHourOfDay() {
         return dateTime.getHourOfDay();
     }
 
     /**
      * Gets the minute of hour field.
-     * <p>
-     * This method provides access to an object representing the minute of hour field.
-     * This can be used to access the {@link MinuteOfHour#getValue() int value}.
      *
-     * @return the minute of hour, never null
+     * @return the minute of hour, from 0 to 59
      */
-    public MinuteOfHour getMinuteOfHour() {
+    public int getMinuteOfHour() {
         return dateTime.getMinuteOfHour();
     }
 
     /**
      * Gets the second of minute field.
-     * <p>
-     * This method provides access to an object representing the second of minute field.
-     * This can be used to access the {@link SecondOfMinute#getValue() int value}.
      *
-     * @return the second of minute, never null
+     * @return the second of minute, from 0 to 59
      */
-    public SecondOfMinute getSecondOfMinute() {
+    public int getSecondOfMinute() {
         return dateTime.getSecondOfMinute();
     }
 
     /**
      * Gets the nano of second field.
-     * <p>
-     * This method provides access to an object representing the nano of second field.
-     * This can be used to access the {@link NanoOfSecond#getValue() int value}.
      *
-     * @return the nano of second, never null
+     * @return the nano of second, from 0 to 999,999,999
      */
-    public NanoOfSecond getNanoOfSecond() {
+    public int getNanoOfSecond() {
         return dateTime.getNanoOfSecond();
     }
 
@@ -1523,7 +1560,7 @@ public final class OffsetDateTime
      * @return an Instant representing the same instant, never null
      */
     public Instant toInstant() {
-        int nanos = dateTime.getNanoOfSecond().getValue();
+        int nanos = dateTime.getNanoOfSecond();
         return Instant.instant(toEpochSeconds(), nanos);
     }
 
@@ -1648,7 +1685,7 @@ public final class OffsetDateTime
         long thisEpochSecs = toEpochSeconds();
         long otherEpochSecs = other.toEpochSeconds();
         return thisEpochSecs < otherEpochSecs ||
-            (thisEpochSecs == otherEpochSecs && getNanoOfSecond().getValue() < other.getNanoOfSecond().getValue());
+            (thisEpochSecs == otherEpochSecs && getNanoOfSecond() < other.getNanoOfSecond());
     }
 
     /**
@@ -1664,7 +1701,7 @@ public final class OffsetDateTime
      */
     public boolean equalInstant(OffsetDateTime other) {
         return toEpochSeconds() == other.toEpochSeconds() &&
-            getNanoOfSecond().getValue() == other.getNanoOfSecond().getValue();
+            getNanoOfSecond() == other.getNanoOfSecond();
     }
 
     /**
@@ -1682,7 +1719,7 @@ public final class OffsetDateTime
         long thisEpochSecs = toEpochSeconds();
         long otherEpochSecs = other.toEpochSeconds();
         return thisEpochSecs > otherEpochSecs ||
-            (thisEpochSecs == otherEpochSecs && getNanoOfSecond().getValue() > other.getNanoOfSecond().getValue());
+            (thisEpochSecs == otherEpochSecs && getNanoOfSecond() > other.getNanoOfSecond());
     }
 
     //-----------------------------------------------------------------------

@@ -468,8 +468,8 @@ public final class OlsonZoneRulesCompiler {
             throw new IllegalArgumentException(str);
         }
         LocalTime time = cal.mergeStrict().toLocalTime();
-        int secs = time.getHourOfDay().getValue() * 60 * 60 +
-                time.getMinuteOfHour().getValue() * 60 + time.getSecondOfMinute().getValue();
+        int secs = time.getHourOfDay() * 60 * 60 +
+                time.getMinuteOfHour() * 60 + time.getSecondOfMinute();
         if (pos == 1) {
             secs = -secs;
         }
