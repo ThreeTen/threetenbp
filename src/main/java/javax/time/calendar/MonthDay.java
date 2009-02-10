@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
@@ -72,9 +73,9 @@ public final class MonthDay
      */
     private final MonthOfYear month;
     /**
-     * The day of month, not null.
+     * The day of month.
      */
-    private final DayOfMonth day;
+    private final int day;
 
     //-----------------------------------------------------------------------
     /**
@@ -103,7 +104,7 @@ public final class MonthDay
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth.getValue() +
                     " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
         }
-        return new MonthDay(monthOfYear, dayOfMonth);
+        return new MonthDay(monthOfYear, dayOfMonth.getValue());
     }
 
     /**
@@ -157,7 +158,7 @@ public final class MonthDay
      */
     public static MonthDay monthDay(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
-        return new MonthDay(date.getMonthOfYear(), date.toDayOfMonth());
+        return new MonthDay(date.getMonthOfYear(), date.getDayOfMonth());
     }
 
     /**
@@ -182,9 +183,9 @@ public final class MonthDay
      * Constructor, previously validated.
      *
      * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, valid for month, not null
+     * @param dayOfMonth  the day of month to represent, valid for month, from 1 to 31
      */
-    private MonthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+    private MonthDay(MonthOfYear monthOfYear, int dayOfMonth) {
         this.month = monthOfYear;
         this.day = dayOfMonth;
     }
@@ -193,11 +194,11 @@ public final class MonthDay
      * Returns a copy of this month-day with the new month and day, checking
      * to see if a new object is in fact required.
      *
-     * @param newMonth  the month of year to represent, from 1 (January) to 12 (December)
+     * @param newMonth  the month of year to represent, not null
      * @param newDay  the day of month to represent, from 1 to 31
      * @return the month-day, never null
      */
-    private MonthDay withMonthDay(MonthOfYear newMonth, DayOfMonth newDay) {
+    private MonthDay withMonthDay(MonthOfYear newMonth, int newDay) {
         if (month == newMonth && day == newDay) {
             return this;
         }
@@ -217,10 +218,43 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month of year field.
+     * Gets the month of year field as a <code>MonthOfYear</code>.
      * <p>
-     * This method provides access to an object representing the month field.
-     * This can be used to access the {@link MonthOfYear#getValue() int value}.
+     * This method provides access to an object representing the month of year field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     * <p>
+     * This method is the same as {@link #getMonthOfYear()}.
+     *
+     * @return the month of year, never null
+     */
+    public MonthOfYear toMonthOfYear() {
+        return month;
+    }
+
+    /**
+     * Gets the day of month field as a <code>DayOfMonth</code>.
+     * <p>
+     * This method provides access to an object representing the day of month field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     *
+     * @return the day of month, never null
+     */
+    public DayOfMonth toDayOfMonth() {
+        return DayOfMonth.dayOfMonth(day);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the month of year field, which is an enum <code>MonthOfYear</code>.
+     * <p>
+     * This method returns the enum {@link MonthOfYear} for the month.
+     * This avoids confusion as to what <code>int</code> values mean.
+     * If you need access to the primitive <code>int</code> value then the enum
+     * provides the {@link MonthOfYear#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * This includes month lengths, textual names and access to the quarter of year
+     * and month of quarter values.
      *
      * @return the month of year, never null
      */
@@ -231,12 +265,15 @@ public final class MonthDay
     /**
      * Gets the day of month field.
      * <p>
-     * This method provides access to an object representing the day of month field.
-     * This can be used to access the {@link DayOfMonth#getValue() int value}.
+     * This method returns the primitive <code>int</code> value for the day of month.
+     * <p>
+     * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
      *
-     * @return the day of month, never null
+     * @return the day of month, from 1 to 31
      */
-    public DayOfMonth getDayOfMonth() {
+    public int getDayOfMonth() {
         return day;
     }
 
@@ -253,8 +290,8 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        if (day.isValid(SAMPLE_YEAR, monthOfYear) == false) {
-            return withMonthDay(monthOfYear, monthOfYear.getLastDayOfMonth(SAMPLE_YEAR));
+        if (toDayOfMonth().isValid(SAMPLE_YEAR, monthOfYear) == false) {
+            return withMonthDay(monthOfYear, monthOfYear.lengthInDays(SAMPLE_YEAR));
         }
         return withMonthDay(monthOfYear, day);
     }
@@ -276,7 +313,7 @@ public final class MonthDay
             throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
                     dayOfMonth + " for the month " + month, DayOfMonth.rule());
         }
-        return withMonthDay(month, dayOfMonth);
+        return withMonthDay(month, dayOfMonth.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -355,7 +392,7 @@ public final class MonthDay
             return this;
         }
         int monthLength = month.lengthInDays(SAMPLE_YEAR);
-        int newDOM0 = (days % monthLength) + (day.getValue() - 1);
+        int newDOM0 = (days % monthLength) + (day - 1);
         newDOM0 = (newDOM0 + monthLength) % monthLength;
         return withDayOfMonth(++newDOM0);
     }
@@ -388,10 +425,10 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (month == date.getMonthOfYear() && day.getValue() == date.getDayOfMonth()) {
+        if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(date.toYear(), month, day);
+        LocalDate resolved = resolver.resolveDate(date.toYear(), month, toDayOfMonth());
         if (resolved == null) {
             throw new NullPointerException("The implementation of DateResolver must not return null");
         }
@@ -405,7 +442,7 @@ public final class MonthDay
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return month == date.getMonthOfYear() && day.getValue() == date.getDayOfMonth();
+        return month == date.getMonthOfYear() && day == date.getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------
@@ -417,7 +454,7 @@ public final class MonthDay
     public Calendrical toCalendrical() {
         return new Calendrical(
                 ISOChronology.monthOfYearRule(), month.getValue(),
-                ISOChronology.dayOfMonthRule(), day.getValue());
+                ISOChronology.dayOfMonthRule(), day);
     }
 
     /**
@@ -431,6 +468,21 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
      */
     public LocalDate toLocalDate(Year year) {
+        return toLocalDate(year.getValue());
+    }
+
+    /**
+     * Converts this month-day to a <code>LocalDate</code> in the specified year.
+     * <p>
+     * This method will throw an error if this represents February the 29th and
+     * the year is not a leap year.
+     *
+     * @param year  the year to use, from MIN_YEAR to MAX_YEAR
+     * @return the created date, never null
+     * @throws IllegalCalendarFieldValueException if the year is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
+     */
+    public LocalDate toLocalDate(int year) {
         return LocalDate.date(year, month, day);
     }
 
@@ -439,13 +491,13 @@ public final class MonthDay
      * Compares this month-day to another month-day.
      *
      * @param other  the other month-day to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(MonthDay other) {
         int cmp = month.compareTo(other.month);
         if (cmp == 0) {
-            cmp = day.compareTo(other.day);
+            cmp = MathUtils.safeCompare(day, other.day);
         }
         return cmp;
     }
@@ -486,19 +538,19 @@ public final class MonthDay
         }
         if (other instanceof MonthDay) {
             MonthDay otherMD = (MonthDay) other;
-            return month == otherMD.month && day.equals(otherMD.day);
+            return month == otherMD.month && day == otherMD.day;
         }
         return false;
     }
 
     /**
-     * A hashcode for this month-day.
+     * A hash code for this month-day.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return (month.getValue() << 6) + day.getValue();
+        return (month.getValue() << 6) + day;
     }
 
     //-----------------------------------------------------------------------
@@ -512,7 +564,7 @@ public final class MonthDay
     @Override
     public String toString() {
         int monthValue = month.getValue();
-        int dayValue = day.getValue();
+        int dayValue = day;
         return new StringBuilder(10).append("--")
             .append(monthValue < 10 ? "0" : "").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
