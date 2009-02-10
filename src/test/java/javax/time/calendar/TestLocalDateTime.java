@@ -47,7 +47,6 @@ import javax.time.CalendricalException;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
@@ -1089,6 +1088,59 @@ public class TestLocalDateTime {
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withDayOfMonth_invalidCombination() {
         LocalDateTime.dateTime(2007, 11, 30, 12, 30).withDayOfMonth(31);
+    }
+
+    //-----------------------------------------------------------------------
+    // withDate(int,MonthOfYear,int)
+    //-----------------------------------------------------------------------
+    public void test_withDate_iMi() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2008, MonthOfYear.FEBRUARY, 29);
+        check(t, 2008, 2, 29, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_iMi_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, MonthOfYear.JULY, 15);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    public void test_withDate_iMi_sameYear() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, MonthOfYear.JUNE, 14);
+        check(t, 2007, 6, 14, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_iMi_sameMonth() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, MonthOfYear.JULY, 14);
+        check(t, 2006, 7, 14, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_iMi_sameDay() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2006, MonthOfYear.JUNE, 15);
+        check(t, 2006, 6, 15, 12, 30, 40, 987654321);
+    }
+
+    public void test_withDate_iMi_dayChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDate(2007, MonthOfYear.JULY, 16);
+        check(t, 2007, 7, 16, 12, 30, 40, 987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_iMi_yearTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(Integer.MIN_VALUE, MonthOfYear.FEBRUARY, 29);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_withDate_iMi_monthNull() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, null, 29);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_iMi_dayTooLow() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 2, -1);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDate_iMi_dayTooHigh() {
+        TEST_2007_07_15_12_30_40_987654321.withDate(2008, 3, 32);
     }
 
     //-----------------------------------------------------------------------
