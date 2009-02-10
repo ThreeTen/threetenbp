@@ -118,12 +118,21 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     // dateMidnight factories
     //-----------------------------------------------------------------------
+    void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
+        assertEquals(test.getYear(), y);
+        assertEquals(test.getMonthOfYear().getValue(), mo);
+        assertEquals(test.getDayOfMonth(), d);
+        assertEquals(test.getHourOfDay(), h);
+        assertEquals(test.getMinuteOfHour(), m);
+        assertEquals(test.getSecondOfMinute(), s);
+        assertEquals(test.getNanoOfSecond(), n);
+        assertEquals(test.getOffset(), offset);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_dateMidnight_YMD() {
         OffsetDateTime test = OffsetDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.JUNE, DayOfMonth.dayOfMonth(30), OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -149,29 +158,20 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_intMonthInt() {
         OffsetDateTime test = OffsetDateTime.dateMidnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_ints() {
         OffsetDateTime test = OffsetDateTime.dateMidnight(2008, 6, 30, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_DateProvider() {
         DateProvider provider = LocalDate.date(2008, 6, 30);
         OffsetDateTime test = OffsetDateTime.dateMidnight(provider, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JUNE);
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -181,14 +181,7 @@ public class TestOffsetDateTime {
         OffsetDateTime test = OffsetDateTime.dateTime(
                 Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
                 HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -196,14 +189,7 @@ public class TestOffsetDateTime {
         OffsetDateTime test = OffsetDateTime.dateTime(
                 Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
                 HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -212,92 +198,43 @@ public class TestOffsetDateTime {
                 Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
                 HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30),
                 SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHM() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHMS() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, 10, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHMSN() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intsHM() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intsHMS() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intsHMSN() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -305,28 +242,14 @@ public class TestOffsetDateTime {
         DateProvider dateProvider = LocalDate.date(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
         OffsetDateTime test = OffsetDateTime.dateTime(dateProvider, timeProvider, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         OffsetDateTime test = OffsetDateTime.dateTime(provider, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -381,10 +304,21 @@ public class TestOffsetDateTime {
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         
+        assertEquals(a.toYear(), localDate.toYear());
+        assertEquals(a.toMonthOfYear(), localDate.toMonthOfYear());
+        assertEquals(a.toDayOfMonth(), localDate.toDayOfMonth());
+        assertEquals(a.toDayOfYear(), localDate.toDayOfYear());
+        assertEquals(a.toDayOfWeek(), localDate.toDayOfWeek());
+        
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
         assertEquals(a.getSecondOfMinute(), localDateTime.getSecondOfMinute());
         assertEquals(a.getNanoOfSecond(), localDateTime.getNanoOfSecond());
+        
+        assertEquals(a.toHourOfDay(), localDateTime.toHourOfDay());
+        assertEquals(a.toMinuteOfHour(), localDateTime.toMinuteOfHour());
+        assertEquals(a.toSecondOfMinute(), localDateTime.toSecondOfMinute());
+        assertEquals(a.toNanoOfSecond(), localDateTime.toNanoOfSecond());
         
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);

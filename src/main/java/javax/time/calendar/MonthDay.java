@@ -157,7 +157,7 @@ public final class MonthDay
      */
     public static MonthDay monthDay(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
-        return new MonthDay(date.getMonthOfYear(), date.getDayOfMonth());
+        return new MonthDay(date.getMonthOfYear(), date.toDayOfMonth());
     }
 
     /**
@@ -388,10 +388,10 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
+        if (month == date.getMonthOfYear() && day.getValue() == date.getDayOfMonth()) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
+        LocalDate resolved = resolver.resolveDate(date.toYear(), month, day);
         if (resolved == null) {
             throw new NullPointerException("The implementation of DateResolver must not return null");
         }
@@ -405,7 +405,7 @@ public final class MonthDay
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return month == date.getMonthOfYear() && day == date.getDayOfMonth();
+        return month == date.getMonthOfYear() && day.getValue() == date.getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------

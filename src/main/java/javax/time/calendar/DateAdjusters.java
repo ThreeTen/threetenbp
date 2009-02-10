@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.MonthOfYear.*;
 
 import java.io.Serializable;
@@ -105,7 +104,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.getYear());
+                DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.toYear());
                 return date.with(dom);
             }
         },
@@ -113,7 +112,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.date(date.getYear(), DECEMBER, dayOfMonth(31));
+                return LocalDate.date(date.getYear(), DECEMBER, 31);
             }
         },
         /** Next non weekend day adjuster. */

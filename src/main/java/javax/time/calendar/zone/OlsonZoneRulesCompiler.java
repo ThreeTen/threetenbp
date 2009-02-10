@@ -613,7 +613,7 @@ public final class OlsonZoneRulesCompiler {
         void adjustToFowards(int year) {
             if (adjustForwards == false && dayOfMonth > 0) {
                 LocalDate adjustedDate = LocalDate.date(year, month, dayOfMonth).minusDays(6);
-                dayOfMonth = adjustedDate.getDayOfMonth().getValue();
+                dayOfMonth = adjustedDate.getDayOfMonth();
                 month = adjustedDate.getMonthOfYear();
                 adjustForwards = true;
             }

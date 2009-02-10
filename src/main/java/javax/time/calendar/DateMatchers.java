@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -111,14 +111,14 @@ public final class DateMatchers {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public boolean matchesDate(LocalDate date) {
-                return date.getDayOfMonth().getValue() == date.getMonthOfYear().lengthInDays(date.getYear());
+                return date.getDayOfMonth() == date.getMonthOfYear().lengthInDays(date.toYear());
             }
         },
         /** Last day of year matcher. */
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public boolean matchesDate(LocalDate date) {
-                return date.getMonthOfYear() == MonthOfYear.DECEMBER && date.getDayOfMonth().getValue() == 31;
+                return date.getMonthOfYear() == MonthOfYear.DECEMBER && date.getDayOfMonth() == 31;
             }
         },
         /** Non weekend matcher. */
@@ -202,7 +202,7 @@ public final class DateMatchers {
             if (date.getDayOfWeek() != dayOfWeek) {
                 return false;
             }
-            return (date.getDayOfMonth().getValue() - 1) / 7 == ordinal - 1;
+            return (date.getDayOfMonth() - 1) / 7 == ordinal - 1;
         }
 
         /** {@inheritDoc} */

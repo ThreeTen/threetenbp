@@ -125,7 +125,7 @@ public final class YearMonth
      */
     public static YearMonth yearMonth(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
-        return new YearMonth(date.getYear(), date.getMonthOfYear());
+        return new YearMonth(date.toYear(), date.getMonthOfYear());
     }
 
     /**
@@ -440,10 +440,10 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (year.equals(date.getYear()) && month == date.getMonthOfYear()) {
+        if (year.getValue() == date.getYear() && month == date.getMonthOfYear()) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(year, month, date.getDayOfMonth());
+        LocalDate resolved = resolver.resolveDate(year, month, date.toDayOfMonth());
         if (resolved == null) {
             throw new NullPointerException("The implementation of DateResolver must not return null");
         }
@@ -457,7 +457,7 @@ public final class YearMonth
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return year.equals(date.getYear()) && month == date.getMonthOfYear();
+        return year.getValue() == date.getYear() && month == date.getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------

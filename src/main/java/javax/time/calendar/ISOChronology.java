@@ -566,7 +566,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : date.getYear().getValue());
+            return (date == null ? null : date.getYear());
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
@@ -637,7 +637,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : date.getDayOfMonth().getValue());
+            return (date == null ? null : date.getDayOfMonth());
         }
     }
 
@@ -671,7 +671,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : date.getDayOfYear().getValue());
+            return (date == null ? null : date.getDayOfYear());
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
@@ -799,7 +799,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : ((date.getDayOfYear().getValue() - 1) % 7) + 1);
+            return (date == null ? null : ((date.getDayOfYear() - 1) % 7) + 1);
         }
         @Override
         protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
@@ -933,7 +933,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : ((date.getDayOfMonth().getValue() - 1) % 7) + 1);
+            return (date == null ? null : ((date.getDayOfMonth() - 1) % 7) + 1);
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {

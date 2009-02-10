@@ -34,6 +34,7 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
@@ -134,8 +135,8 @@ public final class DayOfYear
     public static DayOfYear dayOfYear(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
         int moy0 = date.getMonthOfYear().ordinal();
-        int dom = date.getDayOfMonth().getValue();
-        if (date.getYear().isLeap()) {
+        int dom = date.getDayOfMonth();
+        if (date.isLeapYear()) {
             return dayOfYear(LEAP_MONTH_START[moy0] + dom);
         } else {
             return dayOfYear(STANDARD_MONTH_START[moy0] + dom);
@@ -254,7 +255,7 @@ public final class DayOfYear
      * @throws IllegalCalendarFieldValueException if the day of year is invalid for the input year
      */
     public LocalDate adjustDate(LocalDate date) {
-        return createDate(date.getYear());
+        return createDate(date.toYear());
     }
 
     /**
@@ -264,7 +265,7 @@ public final class DayOfYear
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return date.getDayOfYear() == this;
+        return date.getDayOfYear() == dayOfYear;
     }
 
     /**
@@ -295,13 +296,11 @@ public final class DayOfYear
      * Compares this day of year instance to another.
      *
      * @param otherDayOfYear  the other day of year instance, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherDayOfYear is null
      */
     public int compareTo(DayOfYear otherDayOfYear) {
-        int thisValue = this.dayOfYear;
-        int otherValue = otherDayOfYear.dayOfYear;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+        return MathUtils.safeCompare(this.dayOfYear, otherDayOfYear.dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -317,9 +316,9 @@ public final class DayOfYear
     }
 
     /**
-     * A hashcode for the day of year object.
+     * A hash code for the day of year object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

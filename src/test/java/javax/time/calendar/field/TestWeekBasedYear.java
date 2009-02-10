@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -232,7 +232,7 @@ public class TestWeekBasedYear {
             private LocalDate date = LocalDate.date(2008, 1, 1);
 
             public boolean hasNext() {
-                return date.getYear().getValue() != 2009;
+                return date.getYear() != 2009;
             }
 
             public Object[] next() {
@@ -384,7 +384,7 @@ public class TestWeekBasedYear {
     public void test_toString() {
         for (int i = -100; i <= 100; i++) {
             WeekBasedYear a = WeekBasedYear.weekyear(i);
-            assertEquals(a.toString(), "Weekyear=" + i);
+            assertEquals(a.toString(), "WeekBasedYear=" + i);
         }
     }
 

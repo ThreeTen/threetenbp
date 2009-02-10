@@ -497,63 +497,67 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field.
+     * Gets the year field as a <code>Year</code>.
      * <p>
      * This method provides access to an object representing the year field.
-     * This can be used to access the {@link Year#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the year, never null
      */
-    public Year getYear() {
-        return date.getYear();
+    public Year toYear() {
+        return date.toYear();
     }
 
     /**
-     * Gets the month of year field.
+     * Gets the month of year field as a <code>MonthOfYear</code>.
      * <p>
-     * This method provides access to an object representing the month field.
-     * This can be used to access the {@link MonthOfYear#getValue() int value}.
+     * This method provides access to an object representing the month of year field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     * <p>
+     * This method is the same as {@link #getMonthOfYear()}.
      *
      * @return the month of year, never null
      */
-    public MonthOfYear getMonthOfYear() {
-        return date.getMonthOfYear();
+    public MonthOfYear toMonthOfYear() {
+        return date.toMonthOfYear();
     }
 
     /**
-     * Gets the day of month field.
+     * Gets the day of month field as a <code>DayOfMonth</code>.
      * <p>
      * This method provides access to an object representing the day of month field.
-     * This can be used to access the {@link DayOfMonth#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the day of month, never null
      */
-    public DayOfMonth getDayOfMonth() {
-        return date.getDayOfMonth();
+    public DayOfMonth toDayOfMonth() {
+        return date.toDayOfMonth();
     }
 
     /**
-     * Gets the day of year field.
+     * Gets the day of year field as a <code>DayOfYear</code>.
      * <p>
      * This method provides access to an object representing the day of year field.
-     * This can be used to access the {@link DayOfYear#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the day of year, never null
      */
-    public DayOfYear getDayOfYear() {
-        return date.getDayOfYear();
+    public DayOfYear toDayOfYear() {
+        return date.toDayOfYear();
     }
 
     /**
-     * Gets the day of week field.
+     * Gets the day of week field as a <code>DayOfWeek</code>.
      * <p>
      * This method provides access to an object representing the day of week field.
-     * This can be used to access the {@link DayOfWeek#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
+     * <p>
+     * This method is the same as {@link #getDayOfWeek()}.
      *
      * @return the day of week, never null
      */
-    public DayOfWeek getDayOfWeek() {
-        return date.getDayOfWeek();
+    public DayOfWeek toDayOfWeek() {
+        return date.toDayOfWeek();
     }
 
     //-----------------------------------------------------------------------
@@ -603,6 +607,88 @@ public final class LocalDateTime
      */
     public NanoOfSecond toNanoOfSecond() {
         return time.toNanoOfSecond();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the year field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the year.
+     * <p>
+     * Additional information about the year can be obtained from via {@link #toYear()}.
+     * This returns a <code>Year</code> object which includes information on whether
+     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the year, from MIN_YEAR to MAX_YEAR
+     */
+    public int getYear() {
+        return date.getYear();
+    }
+
+    /**
+     * Gets the month of year field, which is an enum <code>MonthOfYear</code>.
+     * <p>
+     * This method returns the enum {@link MonthOfYear} for the month.
+     * This avoids confusion as to what <code>int</code> values mean.
+     * If you need access to the primitive <code>int</code> value then the enum
+     * provides the {@link MonthOfYear#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * This includes month lengths, textual names and access to the quarter of year
+     * and month of quarter values.
+     *
+     * @return the month of year, never null
+     */
+    public MonthOfYear getMonthOfYear() {
+        return date.getMonthOfYear();
+    }
+
+    /**
+     * Gets the day of month field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the day of month.
+     * <p>
+     * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the day of month, from 1 to 31
+     */
+    public int getDayOfMonth() {
+        return date.getDayOfMonth();
+    }
+
+    /**
+     * Gets the day of year field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the day of year.
+     * <p>
+     * Additional information about the day of year can be obtained from via {@link #toDayOfYear()}.
+     * This returns a <code>DayOfYear</code> object which can be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the day of year, from 1 to 365, or 366 in a leap year
+     */
+    public int getDayOfYear() {
+        return date.getDayOfYear();
+    }
+
+    /**
+     * Gets the day of week field, which is an enum <code>DayOfWeek</code>.
+     * <p>
+     * This method returns the enum {@link DayOfWeek} for the day of week.
+     * This avoids confusion as to what <code>int</code> values mean.
+     * If you need access to the primitive <code>int</code> value then the enum
+     * provides the {@link DayOfWeek#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the <code>DayOfWeek</code>.
+     * This includes textual names of the values.
+     *
+     * @return the day of week, never null
+     */
+    public DayOfWeek getDayOfWeek() {
+        return date.getDayOfWeek();
     }
 
     //-----------------------------------------------------------------------
@@ -773,6 +859,31 @@ public final class LocalDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return a new updated LocalDateTime, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    public LocalDateTime withDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        if (year == getYear() &&
+                monthOfYear == getMonthOfYear() &&
+                dayOfMonth == getDayOfMonth()) {
+            return this;
+        }
+        LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
+        return withDateTime(newDate, time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the date values altered.
+     * <p>
+     * This method will return a new instance with the same time fields,
+     * but altered date fields.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return a new updated LocalDateTime, never null
@@ -780,9 +891,9 @@ public final class LocalDateTime
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public LocalDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        if (year == getYear().getValue() &&
+        if (year == getYear() &&
                 monthOfYear == getMonthOfYear().getValue() &&
-                dayOfMonth == getDayOfMonth().getValue()) {
+                dayOfMonth == getDayOfMonth()) {
             return this;
         }
         LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);

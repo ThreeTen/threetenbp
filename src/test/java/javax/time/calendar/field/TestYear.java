@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -504,7 +504,7 @@ public class TestYear {
         for (int i = -4; i <= 2104; i++) {
             for (int j = -4; j <= 2104; j++) {
                 Year test = Year.isoYear(j);
-                assertEquals(test.matchesDate(work), work.getYear().getValue() == j);
+                assertEquals(test.matchesDate(work), work.getYear() == j);
             }
             work = work.plusYears(1);
         }

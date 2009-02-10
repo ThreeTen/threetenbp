@@ -641,63 +641,67 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field.
+     * Gets the year field as a <code>Year</code>.
      * <p>
      * This method provides access to an object representing the year field.
-     * This can be used to access the {@link Year#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the year, never null
      */
-    public Year getYear() {
-        return dateTime.getYear();
+    public Year toYear() {
+        return dateTime.toYear();
     }
 
     /**
-     * Gets the month of year field.
+     * Gets the month of year field as a <code>MonthOfYear</code>.
      * <p>
-     * This method provides access to an object representing the month field.
-     * This can be used to access the {@link MonthOfYear#getValue() int value}.
+     * This method provides access to an object representing the month of year field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     * <p>
+     * This method is the same as {@link #getMonthOfYear()}.
      *
      * @return the month of year, never null
      */
-    public MonthOfYear getMonthOfYear() {
-        return dateTime.getMonthOfYear();
+    public MonthOfYear toMonthOfYear() {
+        return dateTime.toMonthOfYear();
     }
 
     /**
-     * Gets the day of month field.
+     * Gets the day of month field as a <code>DayOfMonth</code>.
      * <p>
      * This method provides access to an object representing the day of month field.
-     * This can be used to access the {@link DayOfMonth#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the day of month, never null
      */
-    public DayOfMonth getDayOfMonth() {
-        return dateTime.getDayOfMonth();
+    public DayOfMonth toDayOfMonth() {
+        return dateTime.toDayOfMonth();
     }
 
     /**
-     * Gets the day of year field.
+     * Gets the day of year field as a <code>DayOfYear</code>.
      * <p>
      * This method provides access to an object representing the day of year field.
-     * This can be used to access the {@link DayOfYear#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the day of year, never null
      */
-    public DayOfYear getDayOfYear() {
-        return dateTime.getDayOfYear();
+    public DayOfYear toDayOfYear() {
+        return dateTime.toDayOfYear();
     }
 
     /**
-     * Gets the day of week field.
+     * Gets the day of week field as a <code>DayOfWeek</code>.
      * <p>
      * This method provides access to an object representing the day of week field.
-     * This can be used to access the {@link DayOfWeek#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
+     * <p>
+     * This method is the same as {@link #getDayOfWeek()}.
      *
      * @return the day of week, never null
      */
-    public DayOfWeek getDayOfWeek() {
-        return dateTime.getDayOfWeek();
+    public DayOfWeek toDayOfWeek() {
+        return dateTime.toDayOfWeek();
     }
 
     //-----------------------------------------------------------------------
@@ -747,6 +751,88 @@ public final class OffsetDateTime
      */
     public NanoOfSecond toNanoOfSecond() {
         return dateTime.toNanoOfSecond();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the year field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the year.
+     * <p>
+     * Additional information about the year can be obtained from via {@link #toYear()}.
+     * This returns a <code>Year</code> object which includes information on whether
+     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the year, from MIN_YEAR to MAX_YEAR
+     */
+    public int getYear() {
+        return dateTime.getYear();
+    }
+
+    /**
+     * Gets the month of year field, which is an enum <code>MonthOfYear</code>.
+     * <p>
+     * This method returns the enum {@link MonthOfYear} for the month.
+     * This avoids confusion as to what <code>int</code> values mean.
+     * If you need access to the primitive <code>int</code> value then the enum
+     * provides the {@link MonthOfYear#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * This includes month lengths, textual names and access to the quarter of year
+     * and month of quarter values.
+     *
+     * @return the month of year, never null
+     */
+    public MonthOfYear getMonthOfYear() {
+        return dateTime.getMonthOfYear();
+    }
+
+    /**
+     * Gets the day of month field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the day of month.
+     * <p>
+     * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the day of month, from 1 to 31
+     */
+    public int getDayOfMonth() {
+        return dateTime.getDayOfMonth();
+    }
+
+    /**
+     * Gets the day of year field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the day of year.
+     * <p>
+     * Additional information about the day of year can be obtained from via {@link #toDayOfYear()}.
+     * This returns a <code>DayOfYear</code> object which can be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the day of year, from 1 to 365, or 366 in a leap year
+     */
+    public int getDayOfYear() {
+        return dateTime.getDayOfYear();
+    }
+
+    /**
+     * Gets the day of week field, which is an enum <code>DayOfWeek</code>.
+     * <p>
+     * This method returns the enum {@link DayOfWeek} for the day of week.
+     * This avoids confusion as to what <code>int</code> values mean.
+     * If you need access to the primitive <code>int</code> value then the enum
+     * provides the {@link DayOfWeek#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the <code>DayOfWeek</code>.
+     * This includes textual names of the values.
+     *
+     * @return the day of week, never null
+     */
+    public DayOfWeek getDayOfWeek() {
+        return dateTime.getDayOfWeek();
     }
 
     //-----------------------------------------------------------------------

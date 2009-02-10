@@ -127,7 +127,7 @@ public final class Year
      * @return a Year object, never null
      */
     public static Year year(DateProvider dateProvider) {
-        return LocalDate.date(dateProvider).getYear();
+        return LocalDate.date(dateProvider).toYear();
     }
 
     //-----------------------------------------------------------------------
@@ -372,14 +372,7 @@ public final class Year
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (this.equals(date.getYear())) {
-            return date;
-        }
-        LocalDate resolved = resolver.resolveDate(this, date.getMonthOfYear(), date.getDayOfMonth());
-        if (resolved == null) {
-            throw new NullPointerException("The implementation of DateResolver must not return null");
-        }
-        return resolved;
+        return date.withYear(year, resolver);
     }
 
     /**
@@ -389,7 +382,7 @@ public final class Year
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return this.equals(date.getYear());
+        return date.getYear() == year;
     }
 
     //-----------------------------------------------------------------------
@@ -498,7 +491,7 @@ public final class Year
      * Compares this year to another year.
      *
      * @param other  the other year to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(Year other) {
@@ -546,9 +539,9 @@ public final class Year
     }
 
     /**
-     * A hashcode for this year.
+     * A hash code for this year.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

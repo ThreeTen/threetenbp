@@ -109,12 +109,18 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
+    void check(OffsetTime test, int h, int m, int s, int n, ZoneOffset offset) {
+        assertEquals(test.getHourOfDay(), h);
+        assertEquals(test.getMinuteOfHour(), m);
+        assertEquals(test.getSecondOfMinute(), s);
+        assertEquals(test.getNanoOfSecond(), n);
+        assertEquals(test.getOffset(), offset);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_objectsHM() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+        check(test, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -135,10 +141,7 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void factory_objectsHMS() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+        check(test, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -165,10 +168,7 @@ public class TestOffsetTime {
     public void factory_objectsHMSN() {
         OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30),
                 SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -203,38 +203,26 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void factory_intsHM() {
         OffsetTime test = OffsetTime.time(11, 30, OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(0));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+        check(test, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_intsHMS() {
         OffsetTime test = OffsetTime.time(11, 30, 10, OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(0));
+        check(test, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_intsHMSN() {
         OffsetTime test = OffsetTime.time(11, 30, 10, 500, OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_TimeProvider() {
         TimeProvider localTime = LocalTime.time(11, 30, 10, 500);
         OffsetTime test = OffsetTime.time(localTime, OFFSET_PONE);
-        assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(11));
-        assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour(30));
-        assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(10));
-        assertEquals(test.getNanoOfSecond(), NanoOfSecond.nanoOfSecond(500));
+        check(test, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -81,9 +81,9 @@ public class TestLocalDateTime {
 
     //-----------------------------------------------------------------------
     private void check(LocalDateTime dateTime, int y, int m, int d, int h, int mi, int s, int n) {
-        assertEquals(dateTime.getYear().getValue(), y);
+        assertEquals(dateTime.getYear(), y);
         assertEquals(dateTime.getMonthOfYear().getValue(), m);
-        assertEquals(dateTime.getDayOfMonth().getValue(), d);
+        assertEquals(dateTime.getDayOfMonth(), d);
         assertEquals(dateTime.getHourOfDay(), h);
         assertEquals(dateTime.getMinuteOfHour(), mi);
         assertEquals(dateTime.getSecondOfMinute(), s);
@@ -793,7 +793,7 @@ public class TestLocalDateTime {
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.monthOfQuarterRule()), TEST_2007_07_15_12_30_40_987654321.getMonthOfYear().getMonthOfQuarter());
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfMonthRule()), 15);
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfWeekRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfWeek().getValue());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfYear().getValue());
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfYear());
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekOfWeekBasedYearRule()), WeekOfWeekBasedYear.weekOfWeekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
         assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekBasedYearRule()), WeekBasedYear.weekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
 
@@ -856,9 +856,13 @@ public class TestLocalDateTime {
     @Test(dataProvider="sampleDates")
     public void test_get(int y, int m, int d) {
         LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12, 30);
-        assertEquals(a.getYear(), Year.isoYear(y));
+        assertEquals(a.getYear(), y);
         assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
-        assertEquals(a.getDayOfMonth(), DayOfMonth.dayOfMonth(d));
+        assertEquals(a.getDayOfMonth(), d);
+        
+        assertEquals(a.toYear(), Year.isoYear(y));
+        assertEquals(a.toMonthOfYear(), MonthOfYear.monthOfYear(m));
+        assertEquals(a.toDayOfMonth(), DayOfMonth.dayOfMonth(d));
     }
 
     @Test(dataProvider="sampleDates")
@@ -870,7 +874,7 @@ public class TestLocalDateTime {
             total += MonthOfYear.monthOfYear(i).lengthInDays(year);
         }
         int doy = total + d;
-        assertEquals(a.getDayOfYear(), DayOfYear.dayOfYear(doy));
+        assertEquals(a.getDayOfYear(), doy);
     }
 
     @Test(dataProvider="sampleTimes")

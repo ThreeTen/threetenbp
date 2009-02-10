@@ -327,20 +327,7 @@ public enum MonthOfYear
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (date == null) {
-            throw new NullPointerException("The date must not be null");
-        }
-        if (resolver == null) {
-            throw new NullPointerException("The resolver must not be null");
-        }
-        if (this == date.getMonthOfYear()) {
-            return date;
-        }
-        LocalDate resolved = resolver.resolveDate(date.getYear(), this, date.getDayOfMonth());
-        if (resolved == null) {
-            throw new NullPointerException("The implementation of DateResolver must not return null");
-        }
-        return resolved;
+        return date.withMonthOfYear(monthOfYear, resolver);
     }
 
     /**

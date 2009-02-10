@@ -34,11 +34,7 @@ package javax.time.calendar;
 import static org.testng.Assert.*;
 
 import javax.time.Instant;
-import javax.time.calendar.field.DayOfMonth;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 
 import org.testng.annotations.Test;
@@ -72,12 +68,12 @@ public class TestOffsetDateTime_instants {
         for (int i = 0; i < (24 * 60 * 60); i++) {
             Instant instant = Instant.instant(i);
             OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_PONE);
-            assertEquals(test.getYear(), Year.isoYear(1970));
+            assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
-            assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(1 + (i >= 23 * 60 * 60 ? 1 : 0)));
-            assertEquals(test.getHourOfDay(), HourOfDay.hourOfDay(((i / (60 * 60)) + 1) % 24));
-            assertEquals(test.getMinuteOfHour(), MinuteOfHour.minuteOfHour((i / 60) % 60));
-            assertEquals(test.getSecondOfMinute(), SecondOfMinute.secondOfMinute(i % 60));
+            assertEquals(test.getDayOfMonth(), 1 + (i >= 23 * 60 * 60 ? 1 : 0));
+            assertEquals(test.getHourOfDay(), ((i / (60 * 60)) + 1) % 24);
+            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), i % 60);
         }
     }
 
@@ -131,9 +127,9 @@ public class TestOffsetDateTime_instants {
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.instant(days * 24L * 60L * 60L - OFFSET_MIN.getAmountSeconds());
         OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_MIN);
-        assertEquals(test.getYear().getValue(), Year.MIN_YEAR);
+        assertEquals(test.getYear(), Year.MIN_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 1);
-        assertEquals(test.getDayOfMonth().getValue(), 1);
+        assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MIN);
         assertEquals(test.getHourOfDay(), 0);
         assertEquals(test.getMinuteOfHour(), 0);
@@ -147,9 +143,9 @@ public class TestOffsetDateTime_instants {
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) - days_0000_to_1970;
         Instant instant = Instant.instant(days * 24L * 60L * 60L - OFFSET_MAX.getAmountSeconds());
         OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_MAX);
-        assertEquals(test.getYear().getValue(), Year.MIN_YEAR);
+        assertEquals(test.getYear(), Year.MIN_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 1);
-        assertEquals(test.getDayOfMonth().getValue(), 1);
+        assertEquals(test.getDayOfMonth(), 1);
         assertEquals(test.getOffset(), OFFSET_MAX);
         assertEquals(test.getHourOfDay(), 0);
         assertEquals(test.getMinuteOfHour(), 0);
@@ -163,9 +159,9 @@ public class TestOffsetDateTime_instants {
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
         Instant instant = Instant.instant((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MIN.getAmountSeconds());
         OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_MIN);
-        assertEquals(test.getYear().getValue(), Year.MAX_YEAR);
+        assertEquals(test.getYear(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
-        assertEquals(test.getDayOfMonth().getValue(), 31);
+        assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MIN);
         assertEquals(test.getHourOfDay(), 23);
         assertEquals(test.getMinuteOfHour(), 59);
@@ -179,9 +175,9 @@ public class TestOffsetDateTime_instants {
         long days = (year * 365L + (year / 4 - year / 100 + year / 400)) + 365 - days_0000_to_1970;
         Instant instant = Instant.instant((days + 1) * 24L * 60L * 60L - 1 - OFFSET_MAX.getAmountSeconds());
         OffsetDateTime test = OffsetDateTime.dateTime(instant, OFFSET_MAX);
-        assertEquals(test.getYear().getValue(), Year.MAX_YEAR);
+        assertEquals(test.getYear(), Year.MAX_YEAR);
         assertEquals(test.getMonthOfYear().getValue(), 12);
-        assertEquals(test.getDayOfMonth().getValue(), 31);
+        assertEquals(test.getDayOfMonth(), 31);
         assertEquals(test.getOffset(), OFFSET_MAX);
         assertEquals(test.getHourOfDay(), 23);
         assertEquals(test.getMinuteOfHour(), 59);

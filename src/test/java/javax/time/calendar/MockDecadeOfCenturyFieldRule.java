@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule implem
     /** {@inheritDoc} */
     @Override
     public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return date == null ? null : (date.getYear().getValue() / 10) % 10;
+        return date == null ? null : (date.getYear() / 10) % 10;
     }
     /** {@inheritDoc} */
     @Override

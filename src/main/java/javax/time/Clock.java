@@ -117,7 +117,7 @@ public abstract class Clock {
      * @throws CalendricalException if the instant is outside the supported range of years
      */
     public Year currentYear() {
-        return today().getYear();
+        return today().toYear();
     }
 
     //-----------------------------------------------------------------------

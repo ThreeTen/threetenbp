@@ -39,7 +39,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
@@ -248,9 +247,9 @@ public class TestZonedDateTime {
         DateProvider dateProvider = LocalDate.date(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS);
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 11);
         assertEquals(test.getMinuteOfHour(), 30);
         assertEquals(test.getSecondOfMinute(), 10);
@@ -283,9 +282,9 @@ public class TestZonedDateTime {
         DateProvider dateProvider = LocalDate.date(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 11);
         assertEquals(test.getMinuteOfHour(), 30);
         assertEquals(test.getSecondOfMinute(), 10);
@@ -298,9 +297,9 @@ public class TestZonedDateTime {
         DateProvider dateProvider = LocalDate.date(2008, 3, 30);
         TimeProvider timeProvider = LocalTime.time(2, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(3));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 3);
         assertEquals(test.getMinuteOfHour(), 0);
         assertEquals(test.getSecondOfMinute(), 0);
@@ -351,9 +350,9 @@ public class TestZonedDateTime {
     public void factory_dateTime_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS);
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 11);
         assertEquals(test.getMinuteOfHour(), 30);
         assertEquals(test.getSecondOfMinute(), 10);
@@ -382,9 +381,9 @@ public class TestZonedDateTime {
     public void factory_dateTime_DateTimeProviderResolver() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 11);
         assertEquals(test.getMinuteOfHour(), 30);
         assertEquals(test.getSecondOfMinute(), 10);
@@ -396,9 +395,9 @@ public class TestZonedDateTime {
     public void factory_dateTime_DateTimeProviderResolver_resolverUsed() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 3, 30, 2, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(3));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 3);
         assertEquals(test.getMinuteOfHour(), 0);
         assertEquals(test.getSecondOfMinute(), 0);
@@ -433,9 +432,9 @@ public class TestZonedDateTime {
     public void factory_dateTime_OffsetDateTimeProvider() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
         ZonedDateTime test = ZonedDateTime.dateTime(odt, ZONE_PARIS);
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 11);
         assertEquals(test.getMinuteOfHour(), 30);
         assertEquals(test.getSecondOfMinute(), 10);
@@ -493,9 +492,9 @@ public class TestZonedDateTime {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
         InstantProvider provider = odt.toInstant();
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS);
-        assertEquals(test.getYear(), Year.isoYear(2008));
+        assertEquals(test.getYear(), 2008);
         assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        assertEquals(test.getDayOfMonth(), 30);
         assertEquals(test.getHourOfDay(), 11);
         assertEquals(test.getMinuteOfHour(), 30);
         assertEquals(test.getSecondOfMinute(), 10);

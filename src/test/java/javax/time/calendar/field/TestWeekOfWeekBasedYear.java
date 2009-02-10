@@ -286,7 +286,7 @@ public class TestWeekOfWeekBasedYear {
     public void test_toString() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
             WeekOfWeekBasedYear a = WeekOfWeekBasedYear.weekOfWeekyear(i);
-            assertEquals(a.toString(), "WeekOfWeekyear=" + i);
+            assertEquals(a.toString(), "WeekOfWeekBasedYear=" + i);
         }
     }
 }

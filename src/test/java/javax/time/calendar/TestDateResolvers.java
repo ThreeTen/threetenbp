@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -107,9 +107,9 @@ public class TestDateResolvers {
                 DayOfMonth dayOfMonth = dayOfMonth(i);
                 try {
                     LocalDate test = DateResolvers.strict().resolveDate(year, month, dayOfMonth);
-                    assertEquals(test.getYear(), year);
+                    assertEquals(test.getYear(), year.getValue());
                     assertSame(test.getMonthOfYear(), month);
-                    assertEquals(test.getDayOfMonth(), dayOfMonth);
+                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
                 } catch (InvalidCalendarFieldException icfe) {
                     assertTrue(month.lengthInDays(year) < dayOfMonth.getValue(), "M" + month + "D" + dayOfMonth);
                 }
@@ -154,13 +154,13 @@ public class TestDateResolvers {
             for (int i = 1; i <= 31; i++) {
                 DayOfMonth dayOfMonth = dayOfMonth(i);
                 LocalDate test = DateResolvers.previousValid().resolveDate(year, month, dayOfMonth);
-                assertEquals(test.getYear(), year);
+                assertEquals(test.getYear(), year.getValue());
                 assertSame(test.getMonthOfYear(), month);
 
                 if (dayOfMonth.getValue() <= monthLength) {
-                    assertEquals(test.getDayOfMonth(), dayOfMonth);
+                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
                 } else {
-                    assertEquals(test.getDayOfMonth(), dayOfMonth(monthLength));
+                    assertEquals(test.getDayOfMonth(), monthLength);
                 }
             }
         }
@@ -204,13 +204,13 @@ public class TestDateResolvers {
                 DayOfMonth dayOfMonth = dayOfMonth(i);
                 LocalDate test = DateResolvers.nextValid().resolveDate(year, month, dayOfMonth);
 
-                assertEquals(test.getYear(), year);
+                assertEquals(test.getYear(), year.getValue());
 
                 if (dayOfMonth.getValue() <= monthLength) {
                     assertSame(test.getMonthOfYear(), month);
-                    assertEquals(test.getDayOfMonth(), dayOfMonth);
+                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
                 } else {
-                    assertEquals(test.getDayOfMonth(), dayOfMonth(1));
+                    assertEquals(test.getDayOfMonth(), 1);
                     assertSame(test.getMonthOfYear(), month.next());
                 }
             }
@@ -255,13 +255,13 @@ public class TestDateResolvers {
                 DayOfMonth dayOfMonth = dayOfMonth(i);
                 LocalDate test = DateResolvers.partLenient().resolveDate(year, month, dayOfMonth);
 
-                assertEquals(test.getYear(), year);
+                assertEquals(test.getYear(), year.getValue());
 
                 if (dayOfMonth.getValue() <= monthLength) {
                     assertSame(test.getMonthOfYear(), month);
-                    assertEquals(test.getDayOfMonth(), dayOfMonth);
+                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
                 } else {
-                    assertEquals(test.getDayOfMonth().getValue(), dayOfMonth.getValue() - monthLength);
+                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue() - monthLength);
                     assertSame(test.getMonthOfYear(), month.next());
                 }
             }

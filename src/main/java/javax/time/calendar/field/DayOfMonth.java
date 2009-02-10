@@ -34,6 +34,7 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
@@ -125,7 +126,7 @@ public final class DayOfMonth
      * @return the DayOfMonth singleton, never null
      */
     public static DayOfMonth dayOfMonth(DateProvider dateProvider) {
-        return LocalDate.date(dateProvider).getDayOfMonth();
+        return LocalDate.date(dateProvider).toDayOfMonth();
     }
 
     //-----------------------------------------------------------------------
@@ -185,20 +186,7 @@ public final class DayOfMonth
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (date == null) {
-            throw new NullPointerException("The date must not be null");
-        }
-        if (resolver == null) {
-            throw new NullPointerException("The resolver must not be null");
-        }
-        if (this == date.getDayOfMonth()) {
-            return date;
-        }
-        LocalDate resolved = resolver.resolveDate(date.getYear(), date.getMonthOfYear(), this);
-        if (resolved == null) {
-            throw new NullPointerException("The implementation of DateResolver must not return null");
-        }
-        return resolved;
+        return date.withDayOfMonth(dayOfMonth, resolver);
     }
 
     /**
@@ -208,7 +196,7 @@ public final class DayOfMonth
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return date.getDayOfMonth() == this;
+        return date.getDayOfMonth() == dayOfMonth;
     }
 
     /**
@@ -243,13 +231,11 @@ public final class DayOfMonth
      * Compares this day of month instance to another.
      *
      * @param otherDayOfMonth  the other day of month instance, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherDayOfMonth is null
      */
     public int compareTo(DayOfMonth otherDayOfMonth) {
-        int thisValue = this.dayOfMonth;
-        int otherValue = otherDayOfMonth.dayOfMonth;
-        return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
+        return MathUtils.safeCompare(dayOfMonth, otherDayOfMonth.dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -265,9 +251,9 @@ public final class DayOfMonth
     }
 
     /**
-     * A hashcode for the day of month object.
+     * A hash code for the day of month object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

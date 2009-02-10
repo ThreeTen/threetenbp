@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -328,7 +328,7 @@ public class TestDayOfMonth {
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
-                assertEquals(test.matchesDate(work), work.getDayOfMonth().getValue() == j);
+                assertEquals(test.matchesDate(work), work.getDayOfMonth() == j);
             }
             work = work.plusDays(1);
         }
@@ -339,7 +339,7 @@ public class TestDayOfMonth {
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
-                assertEquals(test.matchesDate(work), work.getDayOfMonth().getValue() == j);
+                assertEquals(test.matchesDate(work), work.getDayOfMonth() == j);
             }
             work = work.plusDays(1);
         }

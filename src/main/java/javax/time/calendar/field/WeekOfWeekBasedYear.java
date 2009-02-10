@@ -45,17 +45,17 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 
 /**
- * A representation of a week of week-based year in the ISO-8601 calendar system.
+ * A representation of a week of week-based-year in the ISO-8601 calendar system.
  * <p>
- * WeekOfWeekBasedYear is an immutable time field that can only store a week of week-based year.
- * It is a type-safe way of representing a week of week-based year in an application.
+ * WeekOfWeekBasedYear is an immutable time field that can only store a week of week-based-year.
+ * It is a type-safe way of representing a week of week-based-year in an application.
  * <p>
- * The week of week-based year is a field that should be used in combination with
+ * The week of week-based-year is a field that should be used in combination with
  * the WeekBasedYear field. Together they represent the ISO-8601 week based date
  * calculation described in {@link WeekBasedYear}.
  * <p>
  * Static factory methods allow you to construct instances.
- * The week of week-based year may be queried using getValue().
+ * The week of week-based-year may be queried using getValue().
  * <p>
  * WeekOfWeekBasedYear is immutable and thread-safe.
  *
@@ -74,7 +74,7 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
     private static final AtomicReferenceArray<WeekOfWeekBasedYear> cache = new AtomicReferenceArray<WeekOfWeekBasedYear>(53);
 
     /**
-     * The week of week-based year being represented.
+     * The week of week-based-year being represented.
      */
     private final int weekOfWeekyear;
 
@@ -93,14 +93,14 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>WeekOfWeekyear</code> from a value.
+     * Obtains an instance of <code>WeekOfWeekBasedYear</code> from a value.
      * <p>
-     * A week of week-based year object represents one of the 53 weeks of the year,
+     * A week of week-based-year object represents one of the 53 weeks of the year,
      * from 1 to 53. These are cached internally and returned as singletons,
      * so they can be compared using ==.
      *
-     * @param weekOfWeekyear  the week of week-based year to represent, from 1 to 53
-     * @return the WeekOfWeekyear singleton, never null
+     * @param weekOfWeekyear  the week of week-based-year to represent, from 1 to 53
+     * @return the WeekOfWeekBasedYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the weekOfWeekyear is invalid
      */
     public static WeekOfWeekBasedYear weekOfWeekyear(int weekOfWeekyear) {
@@ -118,13 +118,13 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
     }
 
     /**
-     * Obtains an instance of <code>WeekOfWeekyear</code> from a date provider.
+     * Obtains an instance of <code>WeekOfWeekBasedYear</code> from a date provider.
      * <p>
-     * This can be used extract a week of week-based year object directly from
+     * This can be used extract a week of week-based-year object directly from
      * any implementation of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return the WeekOfWeekyear singleton, never null
+     * @return the WeekOfWeekBasedYear singleton, never null
      */
     public static WeekOfWeekBasedYear weekOfWeekyear(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -138,9 +138,9 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified week of week-based year.
+     * Constructs an instance with the specified week of week-based-year.
      *
-     * @param weekOfWeekyear  the week of week-based year to represent
+     * @param weekOfWeekyear  the week of week-based-year to represent
      */
     private WeekOfWeekBasedYear(int weekOfWeekyear) {
         this.weekOfWeekyear = weekOfWeekyear;
@@ -157,9 +157,9 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the week of week-based year value.
+     * Gets the week of week-based-year value.
      *
-     * @return the week of week-based year, from 1 to 53
+     * @return the week of week-based-year, from 1 to 53
      */
     public int getValue() {
         return weekOfWeekyear;
@@ -167,7 +167,7 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
 
     /**
-     * Checks if the value of this week of week-based year matches the input date.
+     * Checks if the value of this week of week-based-year matches the input date.
      *
      * @param date  the date to match, not null
      * @return true if the date matches, false otherwise
@@ -188,10 +188,10 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this week of weekyear is valid for the specified week-based year.
+     * Checks if this week of weekyear is valid for the specified week-based-year.
      *
      * @param weekyear  the weekyear to validate against, not null
-     * @return true if this week of weekyear is valid for the week-based year
+     * @return true if this week of weekyear is valid for the week-based-year
      */
     public boolean isValid(WeekBasedYear weekyear) {
         if (weekyear == null) {
@@ -202,56 +202,56 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this week of week-based year instance to another.
+     * Compares this week of week-based-year instance to another.
      *
-     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherWeekOfWeekyear is null
+     * @param otherWeekOfWeekBasedYear  the other week of week-based-year instance, not null
+     * @return the comparator value, negative if less, positive if greater
+     * @throws NullPointerException if otherWeekOfWeekBasedYear is null
      */
-    public int compareTo(WeekOfWeekBasedYear otherWeekOfWeekyear) {
+    public int compareTo(WeekOfWeekBasedYear otherWeekOfWeekBasedYear) {
         int thisValue = this.weekOfWeekyear;
-        int otherValue = otherWeekOfWeekyear.weekOfWeekyear;
+        int otherValue = otherWeekOfWeekBasedYear.weekOfWeekyear;
         return (thisValue < otherValue ? -1 : (thisValue == otherValue ? 0 : 1));
     }
 
     /**
-     * Is this week of week-based year instance after the specified week of week-based year.
+     * Is this week of week-based-year instance after the specified week of week-based-year.
      *
-     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
-     * @return true if this is after the specified week of week-based year
-     * @throws NullPointerException if otherWeekOfWeekyear is null
+     * @param otherWeekOfWeekBasedYear  the other week of week-based-year instance, not null
+     * @return true if this is after the specified week of week-based-year
+     * @throws NullPointerException if otherWeekOfWeekBasedYear is null
      */
-    public boolean isAfter(WeekOfWeekBasedYear otherWeekOfWeekyear) {
-        return compareTo(otherWeekOfWeekyear) > 0;
+    public boolean isAfter(WeekOfWeekBasedYear otherWeekOfWeekBasedYear) {
+        return compareTo(otherWeekOfWeekBasedYear) > 0;
     }
 
     /**
-     * Is this week of week-based year instance before the specified week of week-based year.
+     * Is this week of week-based-year instance before the specified week of week-based-year.
      *
-     * @param otherWeekOfWeekyear  the other week of week-based year instance, not null
-     * @return true if this is before the specified week of week-based year
-     * @throws NullPointerException if otherWeekOfWeekyear is null
+     * @param otherWeekOfWeekBasedYear  the other week of week-based-year instance, not null
+     * @return true if this is before the specified week of week-based-year
+     * @throws NullPointerException if otherWeekOfWeekBasedYear is null
      */
-    public boolean isBefore(WeekOfWeekBasedYear otherWeekOfWeekyear) {
-        return compareTo(otherWeekOfWeekyear) < 0;
+    public boolean isBefore(WeekOfWeekBasedYear otherWeekOfWeekBasedYear) {
+        return compareTo(otherWeekOfWeekBasedYear) < 0;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the week of week-based year.
+     * Is this instance equal to that specified, evaluating the week of week-based-year.
      *
-     * @param otherWeekOfWeekyear  the other week of week-based year instance, null returns false
-     * @return true if the week of week-based year is the same
+     * @param otherWeekOfWeekBasedYear  the other week of week-based-year instance, null returns false
+     * @return true if the week of week-based-year is the same
      */
     @Override
-    public boolean equals(Object otherWeekOfWeekyear) {
-        return this == otherWeekOfWeekyear;
+    public boolean equals(Object otherWeekOfWeekBasedYear) {
+        return this == otherWeekOfWeekBasedYear;
     }
 
     /**
-     * A hashcode for the week of week-based year object.
+     * A hash code for the week of week-based-year object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
@@ -259,13 +259,13 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
     }
 
     /**
-     * A string describing the week of week-based year object.
+     * A string describing the week of week-based-year object.
      *
      * @return a string describing this object
      */
     @Override
     public String toString() {
-        return "WeekOfWeekyear=" + getValue();
+        return "WeekOfWeekBasedYear=" + getValue();
     }
 
 }

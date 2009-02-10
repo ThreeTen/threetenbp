@@ -44,18 +44,18 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 
 /**
- * A representation of a week-based year in the ISO-8601 calendar system.
+ * A representation of a week-based-year in the ISO-8601 calendar system.
  * <p>
- * WeekBasedYear is an immutable time field that can only store a week-based year.
- * It is a type-safe way of representing a week-based year in an application.
+ * WeekBasedYear is an immutable time field that can only store a week-based-year.
+ * It is a type-safe way of representing a week-based-year in an application.
  * <p>
- * A week-based year is the year that is applicable when using the
- * ISO-8601 week based date calculation. In this system, the week-based year
+ * A week-based-year is the year that is applicable when using the
+ * ISO-8601 week based date calculation. In this system, the week-based-year
  * may begin up to three days early or three days late.
  * <p>
- * For example, 2007-01-01 is Monday, thus the the week-based year of 2007
+ * For example, 2007-01-01 is Monday, thus the the week-based-year of 2007
  * also begins on 2007-01-01. In 2008, the first day of the year is Tuesday,
- * with the Monday being in year 2007. However, the week-based year for both
+ * with the Monday being in year 2007. However, the week-based-year for both
  * Monday and Tuesday is 2008.
  * <pre>
  *   Date     DayOfWeek  Week-based year
@@ -92,7 +92,7 @@ public final class WeekBasedYear
     private static final long serialVersionUID = 1L;
 
     /**
-     * The week-based year being represented.
+     * The week-based-year being represented.
      */
     private final int weekyear;
 
@@ -111,11 +111,11 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Weekyear</code> from a value.
+     * Obtains an instance of <code>WeekBasedYear</code> from a value.
      *
-     * @param weekyear  the week-based year to represent, from MIN_YEAR to MAX_YEAR
-     * @return the Weekyear instance, never null
-     * @throws IllegalCalendarFieldValueException if the weekyear is invalid
+     * @param weekyear  the week-based-year to represent, from MIN_YEAR to MAX_YEAR
+     * @return the WeekBasedYear instance, never null
+     * @throws IllegalCalendarFieldValueException if the week-based-year is invalid
      */
     public static WeekBasedYear weekyear(int weekyear) {
         rule().checkValue(weekyear);
@@ -123,13 +123,13 @@ public final class WeekBasedYear
     }
 
     /**
-     * Obtains an instance of <code>Weekyear</code> from a date provider.
+     * Obtains an instance of <code>WeekBasedYear</code> from a date provider.
      * <p>
-     * This can be used extract a weekyear object directly from any implementation
+     * This can be used extract a week-based-year object directly from any implementation
      * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return the Weekyear instance, never null
+     * @return the WeekBasedYear instance, never null
      */
     public static WeekBasedYear weekyear(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -137,12 +137,12 @@ public final class WeekBasedYear
     }
 
     static Year computeYear(LocalDate date) {
-        Year year = date.getYear();
+        Year year = date.toYear();
         int dom;
 
         switch (date.getMonthOfYear()) {
             case JANUARY:
-                dom = date.getDayOfMonth().getValue();
+                dom = date.getDayOfMonth();
                 if (dom < 4) {
                     int dow = date.getDayOfWeek().getValue();
                     if (dow > dom + 3) {
@@ -151,7 +151,7 @@ public final class WeekBasedYear
                 }
                 break;
             case DECEMBER:
-                dom = date.getDayOfMonth().getValue();
+                dom = date.getDayOfMonth();
                 if (dom > 28) {
                     int dow = date.getDayOfWeek().getValue();
                     if (dow <= dom % 7) {
@@ -165,9 +165,9 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified week-based year.
+     * Constructs an instance with the specified week-based-year.
      *
-     * @param weekyear  the week-based year to represent
+     * @param weekyear  the week-based-year to represent
      */
     private WeekBasedYear(int weekyear) {
         this.weekyear = weekyear;
@@ -175,16 +175,16 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the week-based year value.
+     * Gets the week-based-year value.
      *
-     * @return the week-based year, from MIN_YEAR to MAX_YEAR
+     * @return the week-based-year, from MIN_YEAR to MAX_YEAR
      */
     public int getValue() {
         return weekyear;
     }
 
     /**
-     * Checks if the value of this week-based year matches the input date.
+     * Checks if the value of this week-based-year matches the input date.
      *
      * @param date  the date to match, not null
      * @return true if the date matches, false otherwise
@@ -205,9 +205,9 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the length of this week-based year in weeks.
+     * Gets the length of this week-based-year in weeks.
      *
-     * @return the length of this weekyear in weeks, either 52 or 53
+     * @return the length of this week-based-year in weeks, either 52 or 53
      */
     public int lengthInWeeks() {
         // TODO: optimize
@@ -221,9 +221,9 @@ public final class WeekBasedYear
     }
 
     /**
-     * Gets the last week of the week-based year.
+     * Gets the last week of the week-based-year.
      *
-     * @return an object representing the last week of the week-based year
+     * @return an object representing the last week of the week-based-year
      */
     public WeekOfWeekBasedYear getLastWeekOfWeekyear() {
         return WeekOfWeekBasedYear.weekOfWeekyear(lengthInWeeks());
@@ -231,9 +231,9 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this week-based year instance to another.
+     * Compares this week-based-year instance to another.
      *
-     * @param otherWeekyear  the other week-based year instance, not null
+     * @param otherWeekyear  the other week-based-year instance, not null
      * @return the comparator value, negative if less, postive if greater
      * @throws NullPointerException if otherWeekyear is null
      */
@@ -244,10 +244,10 @@ public final class WeekBasedYear
     }
 
     /**
-     * Is this week-based year instance after the specified week-based year.
+     * Is this week-based-year instance after the specified week-based-year.
      *
-     * @param otherWeekyear  the other week-based year instance, not null
-     * @return true if this is after the specified week-based year
+     * @param otherWeekyear  the other week-based-year instance, not null
+     * @return true if this is after the specified week-based-year
      * @throws NullPointerException if otherWeekyear is null
      */
     public boolean isAfter(WeekBasedYear otherWeekyear) {
@@ -255,10 +255,10 @@ public final class WeekBasedYear
     }
 
     /**
-     * Is this week-based year instance before the specified week-based year.
+     * Is this week-based-year instance before the specified week-based-year.
      *
-     * @param otherWeekyear  the other week-based year instance, not null
-     * @return true if this is before the specified week-based year
+     * @param otherWeekyear  the other week-based-year instance, not null
+     * @return true if this is before the specified week-based-year
      * @throws NullPointerException if otherWeekyear is null
      */
     public boolean isBefore(WeekBasedYear otherWeekyear) {
@@ -267,10 +267,10 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the week-based year.
+     * Is this instance equal to that specified, evaluating the week-based-year.
      *
-     * @param otherWeekyear  the other week-based year instance, null returns false
-     * @return true if the week-based year is the same
+     * @param otherWeekyear  the other week-based-year instance, null returns false
+     * @return true if the week-based-year is the same
      */
     @Override
     public boolean equals(Object otherWeekyear) {
@@ -284,9 +284,9 @@ public final class WeekBasedYear
     }
 
     /**
-     * A hashcode for the week-based year object.
+     * A hash code for the week-based-year object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
@@ -294,13 +294,13 @@ public final class WeekBasedYear
     }
 
     /**
-     * A string describing the week-based year object.
+     * A string describing the week-based-year object.
      *
      * @return a string describing this object
      */
     @Override
     public String toString() {
-        return "Weekyear=" + getValue();
+        return "WeekBasedYear=" + getValue();
     }
 
 }

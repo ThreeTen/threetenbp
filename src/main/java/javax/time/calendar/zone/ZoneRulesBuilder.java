@@ -232,8 +232,8 @@ public class ZoneRulesBuilder {
             Period savingAmount) {
         checkNotNull(dateTime, "Rule end date-time must not be null");
         return addRuleToWindow(
-                dateTime.getYear().getValue(), dateTime.getYear().getValue(),
-                dateTime.getMonthOfYear(), dateTime.getDayOfMonth().getValue(),
+                dateTime.getYear(), dateTime.getYear(),
+                dateTime.getMonthOfYear(), dateTime.getDayOfMonth(),
                 null, dateTime.toLocalTime(), timeDefinition, savingAmount);
     }
 
@@ -359,7 +359,7 @@ public class ZoneRulesBuilder {
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
             // tidy the state
-            window.tidy(windowStart.getYear().getValue());
+            window.tidy(windowStart.getYear());
             
             // calculate effective savings at the start of the window
             Period effectiveSavings = window.fixedSavingAmount;
@@ -623,7 +623,7 @@ public class ZoneRulesBuilder {
                 }
             } else {
                 // convert all within the endYear limit
-                int endYear = windowEnd.getYear().getValue();
+                int endYear = windowEnd.getYear();
                 for (TZRule lastRule : lastRuleList) {
                     addRule(lastRule.year, endYear + 1, lastRule.month, lastRule.dayOfMonth,
                         lastRule.dayOfWeek, lastRule.time, lastRule.timeDefinition, lastRule.savingAmount);

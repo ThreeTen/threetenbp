@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,7 +47,6 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.Year;
@@ -109,37 +108,36 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     // factories
     //-----------------------------------------------------------------------
+    void check(OffsetDate test, int y, int mo, int d, ZoneOffset offset) {
+        assertEquals(test.getYear(), y);
+        assertEquals(test.getMonthOfYear().getValue(), mo);
+        assertEquals(test.getDayOfMonth(), d);
+        assertEquals(test.getOffset(), offset);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_date_YMD() {
         OffsetDate test = OffsetDate.date(Year.isoYear(2007), MonthOfYear.JULY, DayOfMonth.dayOfMonth(15), OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2007));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(15));
-        assertEquals(test.getOffset(), OFFSET_PONE);
+        check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_intMonthInt() {
         OffsetDate test = OffsetDate.date(2007, MonthOfYear.JULY, 15, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2007));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(15));
+        check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_ints() {
-        assertEquals(TEST_2007_07_15_PONE.getYear(), Year.isoYear(2007));
-        assertEquals(TEST_2007_07_15_PONE.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(TEST_2007_07_15_PONE.getDayOfMonth(), DayOfMonth.dayOfMonth(15));
+        OffsetDate test = OffsetDate.date(2007, 7, 15, OFFSET_PONE);
+        check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_objects_leapYear() {
         OffsetDate test_2008_02_29 = OffsetDate.date(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), 
                 OFFSET_PONE);
-        assertEquals(test_2008_02_29.getYear(), Year.isoYear(2008));
-        assertEquals(test_2008_02_29.getMonthOfYear(), MonthOfYear.FEBRUARY);
-        assertEquals(test_2008_02_29.getDayOfMonth(), DayOfMonth.dayOfMonth(29));
-        assertEquals(test_2008_02_29.getOffset(), OFFSET_PONE);
+        check(test_2008_02_29, 2008, 2, 29, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -204,10 +202,8 @@ public class TestOffsetDate {
 
     //-----------------------------------------------------------------------
     public void factory_date_intsOffset() {
-        assertEquals(TEST_2007_07_15_PONE.getYear(), Year.isoYear(2007));
-        assertEquals(TEST_2007_07_15_PONE.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(TEST_2007_07_15_PONE.getDayOfMonth(), DayOfMonth.dayOfMonth(15));
-        assertEquals(TEST_2007_07_15_PONE.getOffset(), OFFSET_PONE);
+        OffsetDate test = OffsetDate.date(2007, 7, 15, OFFSET_PONE);
+        check(test, 2007, 7, 15, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -244,9 +240,7 @@ public class TestOffsetDate {
     public void factory_date_DateProvider() {
         DateProvider localDate = LocalDate.date(2008, 6, 30);
         OffsetDate test = OffsetDate.date(localDate, OFFSET_PONE);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
+        check(test, 2008, 6, 30, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -316,6 +310,12 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         
+        assertEquals(a.toYear(), localDate.toYear());
+        assertEquals(a.toMonthOfYear(), localDate.toMonthOfYear());
+        assertEquals(a.toDayOfMonth(), localDate.toDayOfMonth());
+        assertEquals(a.toDayOfYear(), localDate.toDayOfYear());
+        assertEquals(a.toDayOfWeek(), localDate.toDayOfWeek());
+        
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toCalendrical(), new Calendrical(localDate, null, offset, null));
         assertEquals(a.toString(), localDate.toString() + offset.toString());
@@ -331,7 +331,7 @@ public class TestOffsetDate {
             total += MonthOfYear.monthOfYear(i).lengthInDays(year);
         }
         int doy = total + d;
-        assertEquals(a.getDayOfYear(), DayOfYear.dayOfYear(doy));
+        assertEquals(a.getDayOfYear(), doy);
     }
 
     //-----------------------------------------------------------------------
