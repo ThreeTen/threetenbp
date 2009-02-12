@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,8 +34,8 @@ package javax.time.calendar.field;
 import static org.testng.Assert.*;
 
 import java.io.Serializable;
-
 import java.util.Locale;
+
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
@@ -521,6 +521,44 @@ public class TestMonthOfYear {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_lengthInDays_nullYear() {
         MonthOfYear.JANUARY.lengthInDays((Year) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // lengthInDays(int)
+    //-----------------------------------------------------------------------
+    public void test_lengthInDays_int_notLeapYear() {
+        assertEquals(MonthOfYear.JANUARY.lengthInDays(2007), 31);
+        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(2007), 28);
+        assertEquals(MonthOfYear.MARCH.lengthInDays(2007), 31);
+        assertEquals(MonthOfYear.APRIL.lengthInDays(2007), 30);
+        assertEquals(MonthOfYear.MAY.lengthInDays(2007), 31);
+        assertEquals(MonthOfYear.JUNE.lengthInDays(2007), 30);
+        assertEquals(MonthOfYear.JULY.lengthInDays(2007), 31);
+        assertEquals(MonthOfYear.AUGUST.lengthInDays(2007), 31);
+        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(2007), 30);
+        assertEquals(MonthOfYear.OCTOBER.lengthInDays(2007), 31);
+        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(2007), 30);
+        assertEquals(MonthOfYear.DECEMBER.lengthInDays(2007), 31);
+    }
+
+    public void test_lengthInDays_int_leapYear() {
+        assertEquals(MonthOfYear.JANUARY.lengthInDays(2008), 31);
+        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(2008), 29);
+        assertEquals(MonthOfYear.MARCH.lengthInDays(2008), 31);
+        assertEquals(MonthOfYear.APRIL.lengthInDays(2008), 30);
+        assertEquals(MonthOfYear.MAY.lengthInDays(2008), 31);
+        assertEquals(MonthOfYear.JUNE.lengthInDays(2008), 30);
+        assertEquals(MonthOfYear.JULY.lengthInDays(2008), 31);
+        assertEquals(MonthOfYear.AUGUST.lengthInDays(2008), 31);
+        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(2008), 30);
+        assertEquals(MonthOfYear.OCTOBER.lengthInDays(2008), 31);
+        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(2008), 30);
+        assertEquals(MonthOfYear.DECEMBER.lengthInDays(2008), 31);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_lengthInDays_int_invalidYear() {
+        MonthOfYear.JANUARY.lengthInDays(Integer.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------

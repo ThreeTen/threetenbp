@@ -32,9 +32,7 @@
 package javax.time.calendar;
 
 import static javax.time.calendar.LocalDate.*;
-import static javax.time.calendar.field.DayOfMonth.*;
 import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.calendar.field.Year.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -49,7 +47,6 @@ import java.util.Collections;
 
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 
 import org.testng.annotations.Test;
 
@@ -62,15 +59,88 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateMatchers {
 
-    private static final Year YEAR_2007 = isoYear(2007);
-    private static final Year YEAR_2008 = isoYear(2008);
-
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {
         for (Constructor constructor : DateMatchers.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // leapYear()
+    //-----------------------------------------------------------------------
+    public void test_leapYear_serialization() throws IOException, ClassNotFoundException {
+        DateMatcher leapYear = DateMatchers.leapYear();
+        assertTrue(leapYear instanceof Serializable);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(leapYear);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertSame(ois.readObject(), leapYear);
+    }
+
+    public void factory_leapYear() {
+        assertNotNull(DateMatchers.leapYear());
+        assertSame(DateMatchers.leapYear(), DateMatchers.leapYear());
+    }
+
+    public void test_leapYear() {
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1999, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2000, 1, 1)), true);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2001, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2002, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2003, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2004, 1, 1)), true);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2005, 1, 1)), false);
+        
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1500, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1600, 1, 1)), true);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1700, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1800, 1, 1)), false);
+        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1900, 1, 1)), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // leapDay()
+    //-----------------------------------------------------------------------
+    public void test_leapDay_serialization() throws IOException, ClassNotFoundException {
+        DateMatcher leapDay = DateMatchers.leapDay();
+        assertTrue(leapDay instanceof Serializable);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(leapDay);
+        oos.close();
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+                baos.toByteArray()));
+        assertSame(ois.readObject(), leapDay);
+    }
+
+    public void factory_leapDay() {
+        assertNotNull(DateMatchers.leapDay());
+        assertSame(DateMatchers.leapDay(), DateMatchers.leapDay());
+    }
+
+    public void test_leapDay_nonLeap() {
+        LocalDate date = date(2007, 1, 1);
+        for (int i = 1; i <= 365; i++) {
+            assertEquals(DateMatchers.leapDay().matchesDate(date), false);
+            date = date.plusDays(1);
+        }
+    }
+
+    public void test_leapDay_leap() {
+        LocalDate date = date(2008, 1, 1);
+        for (int i = 1; i <= 366; i++) {
+            assertEquals(DateMatchers.leapDay().matchesDate(date), i == 60);
+            date = date.plusDays(1);
         }
     }
 
@@ -98,9 +168,9 @@ public class TestDateMatchers {
 
     public void test_lastDayOfMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int lastDayOfMonthValue = month.lengthInDays(YEAR_2007);
+            int lastDayOfMonthValue = month.lengthInDays(2007);
             for (int i = 1; i <= lastDayOfMonthValue; i++) {
-                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+                LocalDate date = date(2007, month, i);
                 assertEquals(DateMatchers.lastDayOfMonth().matchesDate(date), lastDayOfMonthValue == i);
             }
         }
@@ -108,9 +178,9 @@ public class TestDateMatchers {
 
     public void test_lastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int lastDayOfMonthValue = month.lengthInDays(YEAR_2008);
-            for (int i = 1; i <= month.lengthInDays(YEAR_2008); i++) {
-                LocalDate date = date(YEAR_2008, month, dayOfMonth(i));
+            int lastDayOfMonthValue = month.lengthInDays(2008);
+            for (int i = 1; i <= month.lengthInDays(2008); i++) {
+                LocalDate date = date(2008, month, i);
                 assertEquals(DateMatchers.lastDayOfMonth().matchesDate(date), lastDayOfMonthValue == i);
             }
         }
@@ -140,8 +210,8 @@ public class TestDateMatchers {
 
     public void test_lastDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
-                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+                LocalDate date = date(2007, month, i);
                 assertEquals(DateMatchers.lastDayOfYear().matchesDate(date), month == MonthOfYear.DECEMBER && i == 31);
             }
         }
@@ -149,8 +219,8 @@ public class TestDateMatchers {
 
     public void test_lastDayOfYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(YEAR_2008); i++) {
-                LocalDate date = date(YEAR_2008, month, dayOfMonth(i));
+            for (int i = 1; i <= month.lengthInDays(2008); i++) {
+                LocalDate date = date(2008, month, i);
                 assertEquals(DateMatchers.lastDayOfYear().matchesDate(date), month == MonthOfYear.DECEMBER && i == 31);
             }
         }
@@ -216,8 +286,8 @@ public class TestDateMatchers {
             DayOfWeek firstReference = null;
             int expectedOrdinal = 1;
 
-            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
-                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+                LocalDate date = date(2007, month, i);
                 DayOfWeek expectedDOW = date.getDayOfWeek();
 
                 if (firstReference == null) {
@@ -280,8 +350,8 @@ public class TestDateMatchers {
 
     public void test_firstInMonth() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
-                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+                LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
                     assertEquals(DateMatchers.firstInMonth(dow).matchesDate(date), i < 8 && dow == date.getDayOfWeek());
@@ -314,8 +384,8 @@ public class TestDateMatchers {
 
     public void test_weekendDay() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
-                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+                LocalDate date = date(2007, month, i);
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
                 assertEquals(DateMatchers.weekendDay().matchesDate(date),
                         dayOfWeek == DayOfWeek.SATURDAY || 
@@ -348,8 +418,8 @@ public class TestDateMatchers {
 
     public void test_nonWeekendDay() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(YEAR_2007); i++) {
-                LocalDate date = date(YEAR_2007, month, dayOfMonth(i));
+            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+                LocalDate date = date(2007, month, i);
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
                 assertEquals(DateMatchers.nonWeekendDay().matchesDate(date),
                         dayOfWeek != DayOfWeek.SATURDAY && 

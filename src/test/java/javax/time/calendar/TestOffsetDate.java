@@ -324,11 +324,10 @@ public class TestOffsetDate {
 
     @Test(dataProvider="sampleDates")
     public void test_getDOY(int y, int m, int d, ZoneOffset offset) {
-        Year year = Year.isoYear(y);
         OffsetDate a = OffsetDate.date(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(year);
+            total += MonthOfYear.monthOfYear(i).lengthInDays(y);
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -383,13 +382,12 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
-        Year year = Year.isoYear(2007);
         ZoneOffset[] offsets = new ZoneOffset[] {OFFSET_PONE, OFFSET_PTWO};
 
         for (MonthOfYear month : MonthOfYear.values()) {
-            int length = month.lengthInDays(year);
+            int length = month.lengthInDays(2007);
             for (int i = 1; i <= length; i++) {
-                OffsetDate d = OffsetDate.date(year, month, DayOfMonth.dayOfMonth(i), offsets[i % 2]);
+                OffsetDate d = OffsetDate.date(2007, month, i, offsets[i % 2]);
                 assertSame(d.getDayOfWeek(), dow);
                 dow = dow.next();
             }

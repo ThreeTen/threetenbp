@@ -55,7 +55,27 @@ public final class DateMatchers {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the last day of month matcher, which retuns true if the date
+     * Returns the leap year matcher, which returns true if the date
+     * is in a leap year.
+     *
+     * @return the leap year matcher, never null
+     */
+    public static DateMatcher leapYear() {
+        return Impl.LEAP_YEAR;
+    }
+
+    /**
+     * Returns the leap day matcher, which returns true if the date
+     * is February 29th in a leap year.
+     *
+     * @return the leap day matcher, never null
+     */
+    public static DateMatcher leapDay() {
+        return Impl.LEAP_DAY;
+    }
+
+    /**
+     * Returns the last day of month matcher, which returns true if the date
      * is the last valid day of the month.
      *
      * @return the last day of month matcher, never null
@@ -65,7 +85,7 @@ public final class DateMatchers {
     }
 
     /**
-     * Returns the last day of year matcher, which retuns true if the date is
+     * Returns the last day of year matcher, which returns true if the date is
      * the last valid day of the year.
      *
      * @return the last day of year matcher, never null
@@ -107,11 +127,25 @@ public final class DateMatchers {
      * Enum implementing the adjusters.
      */
     private static enum Impl implements DateMatcher {
+        /** Leap year matcher. */
+        LEAP_YEAR {
+            /** {@inheritDoc} */
+            public boolean matchesDate(LocalDate date) {
+                return ISOChronology.isLeapYear(date.getYear());
+            }
+        },
+        /** Leap day matcher. */
+        LEAP_DAY {
+            /** {@inheritDoc} */
+            public boolean matchesDate(LocalDate date) {
+                return date.getDayOfMonth() == 29 && date.getMonthOfYear() == MonthOfYear.FEBRUARY;
+            }
+        },
         /** Last day of month matcher. */
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public boolean matchesDate(LocalDate date) {
-                return date.getDayOfMonth() == date.getMonthOfYear().lengthInDays(date.toYear());
+                return date.getDayOfMonth() == date.getMonthOfYear().lengthInDays(date.getYear());
             }
         },
         /** Last day of year matcher. */

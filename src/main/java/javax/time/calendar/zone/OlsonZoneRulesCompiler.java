@@ -595,7 +595,7 @@ public final class OlsonZoneRulesCompiler {
             adjustToFowards(year);
             LocalDate date;
             if (dayOfMonth == -1) {
-                dayOfMonth = month.lengthInDays(Year.isoYear(year));
+                dayOfMonth = month.lengthInDays(year);
                 date = LocalDate.date(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));

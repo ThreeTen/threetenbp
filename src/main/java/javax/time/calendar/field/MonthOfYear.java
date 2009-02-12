@@ -365,6 +365,28 @@ public enum MonthOfYear
     }
 
     /**
+     * Gets the length of this month in days.
+     *
+     * @param year  the year to obtain the length for, from MIN_YEAR to MAX_YEAR
+     * @return the length of this month in days, from 28 to 31
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     */
+    public int lengthInDays(int year) {
+        ISOChronology.yearRule().checkValue(year);
+        switch (this) {
+            case FEBRUARY:
+                return (ISOChronology.isLeapYear(year) ? 29 : 28);
+            case APRIL:
+            case JUNE:
+            case SEPTEMBER:
+            case NOVEMBER:
+                return 30;
+            default:
+                return 31;
+        }
+    }
+
+    /**
      * Gets the minimum length of this month in days.
      *
      * @return the minimum length of this month in days, from 28 to 31

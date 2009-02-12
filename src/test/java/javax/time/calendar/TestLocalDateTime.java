@@ -866,11 +866,10 @@ public class TestLocalDateTime {
 
     @Test(dataProvider="sampleDates")
     public void test_getDOY(int y, int m, int d) {
-        Year year = Year.isoYear(y);
         LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12 ,30);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(year);
+            total += MonthOfYear.monthOfYear(i).lengthInDays(y);
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -915,12 +914,10 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
-        Year year = Year.isoYear(2007);
-
         for (MonthOfYear month : MonthOfYear.values()) {
-            int length = month.lengthInDays(year);
+            int length = month.lengthInDays(2007);
             for (int i = 1; i <= length; i++) {
-                LocalDateTime d = LocalDateTime.dateTime(LocalDate.date(year, month, DayOfMonth.dayOfMonth(i)),
+                LocalDateTime d = LocalDateTime.dateTime(LocalDate.date(2007, month, i),
                         TEST_2007_07_15_12_30_40_987654321);
                 assertSame(d.getDayOfWeek(), dow);
                 dow = dow.next();

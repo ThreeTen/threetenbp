@@ -62,11 +62,6 @@ public final class MonthDay
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -254395108L;
-    /**
-     * A sample year that can be used to seed calculations.
-     * This is a leap year to enable the 29th of February.
-     */
-    private static final Year SAMPLE_YEAR = Year.isoYear(2000);
 
     /**
      * The month of year, not null.
@@ -394,7 +389,7 @@ public final class MonthDay
         if (days == 0) {
             return this;
         }
-        int monthLength = month.lengthInDays(SAMPLE_YEAR);
+        int monthLength = month.maxLengthInDays();
         int newDOM0 = (days % monthLength) + (day - 1);
         newDOM0 = (newDOM0 + monthLength) % monthLength;
         return withDayOfMonth(++newDOM0);

@@ -222,7 +222,7 @@ public class TestLocalDate {
     // Since plusDays/minusDays actually depends on MJDays, it cannot be used for testing
     private LocalDate next(LocalDate date) {
         int newDayOfMonth = date.getDayOfMonth() + 1;
-        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(date.toYear())) {
+        if (newDayOfMonth <= date.getMonthOfYear().lengthInDays(date.getYear())) {
             return date.withDayOfMonth(newDayOfMonth);
         }
         date = date.withDayOfMonth(1);
@@ -347,11 +347,10 @@ public class TestLocalDate {
 
     @Test(dataProvider="sampleDates")
     public void test_getDOY(int y, int m, int d) {
-        Year year = Year.isoYear(y);
         LocalDate a = LocalDate.date(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(year);
+            total += MonthOfYear.monthOfYear(i).lengthInDays(y);
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -363,17 +362,34 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
-        Year year = Year.isoYear(2007);
-
         for (MonthOfYear month : MonthOfYear.values()) {
-            int length = month.lengthInDays(year);
+            int length = month.lengthInDays(2007);
             for (int i = 1; i <= length; i++) {
-                LocalDate d = LocalDate.date(year, month, DayOfMonth.dayOfMonth(i));
+                LocalDate d = LocalDate.date(2007, month, i);
                 assertSame(d.getDayOfWeek(), dow);
                 assertSame(d.toDayOfWeek(), dow);
                 dow = dow.next();
             }
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // isLeapYear()
+    //-----------------------------------------------------------------------
+    public void test_isLeapYear() {
+        assertEquals(LocalDate.date(1999, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(2000, 1, 1).isLeapYear(), true);
+        assertEquals(LocalDate.date(2001, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(2002, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(2003, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(2004, 1, 1).isLeapYear(), true);
+        assertEquals(LocalDate.date(2005, 1, 1).isLeapYear(), false);
+        
+        assertEquals(LocalDate.date(1500, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(1600, 1, 1).isLeapYear(), true);
+        assertEquals(LocalDate.date(1700, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(1800, 1, 1).isLeapYear(), false);
+        assertEquals(LocalDate.date(1900, 1, 1).isLeapYear(), false);
     }
 
     //-----------------------------------------------------------------------
