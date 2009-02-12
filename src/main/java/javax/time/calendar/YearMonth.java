@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
@@ -64,9 +65,9 @@ public final class YearMonth
     private static final long serialVersionUID = 1507289123L;
 
     /**
-     * The year, not null.
+     * The year.
      */
-    private final Year year;
+    private final int year;
     /**
      * The month of year, not null.
      */
@@ -81,13 +82,9 @@ public final class YearMonth
      * @return the YearMonth instance, never null
      */
     public static YearMonth yearMonth(Year year, MonthOfYear monthOfYear) {
-        if (year == null) {
-            throw new NullPointerException("Year must not be null");
-        }
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        return new YearMonth(year, monthOfYear);
+        ISOChronology.checkNotNull(year, "Year must not be null");
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        return yearMonth(year.getValue(), monthOfYear);
     }
 
     /**
@@ -99,7 +96,9 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
-        return yearMonth(Year.isoYear(year), monthOfYear);
+        ISOChronology.yearRule().checkValue(year);
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        return new YearMonth(year, monthOfYear);
     }
 
     /**
@@ -111,7 +110,7 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
-        return yearMonth(Year.isoYear(year), MonthOfYear.monthOfYear(monthOfYear));
+        return yearMonth(year, MonthOfYear.monthOfYear(monthOfYear));
     }
 
     /**
@@ -125,7 +124,7 @@ public final class YearMonth
      */
     public static YearMonth yearMonth(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
-        return new YearMonth(date.toYear(), date.getMonthOfYear());
+        return new YearMonth(date.getYear(), date.getMonthOfYear());
     }
 
     /**
@@ -149,10 +148,10 @@ public final class YearMonth
     /**
      * Constructor.
      *
-     * @param year  the year to represent, not null
+     * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      */
-    private YearMonth(Year year, MonthOfYear monthOfYear) {
+    private YearMonth(int year, MonthOfYear monthOfYear) {
         this.year = year;
         this.month = monthOfYear;
     }
@@ -161,12 +160,12 @@ public final class YearMonth
      * Returns a copy of this year-month with the new year and month, checking
      * to see if a new object is in fact required.
      *
-     * @param newYear  the year to represent, not null
-     * @param newMonth  the month of year to represent, not null
+     * @param newYear  the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param newMonth  the month of year to represent, validated not null
      * @return the year-month, never null
      */
-    private YearMonth withYearMonth(Year newYear, MonthOfYear newMonth) {
-        if (year.equals(newYear) && month == newMonth) {
+    private YearMonth withYearMonth(int newYear, MonthOfYear newMonth) {
+        if (year == newYear && month == newMonth) {
             return this;
         }
         return new YearMonth(newYear, newMonth);
@@ -185,22 +184,59 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field.
+     * Gets the year field as a <code>Year</code>.
      * <p>
      * This method provides access to an object representing the year field.
-     * This can be used to access the {@link Year#getValue() int value}.
+     * This allows operations to be performed on this field in a type-safe manner.
      *
      * @return the year, never null
      */
-    public Year getYear() {
+    public Year toYear() {
+        return Year.isoYear(year);
+    }
+
+    /**
+     * Gets the month of year field as a <code>MonthOfYear</code>.
+     * <p>
+     * This method provides access to an object representing the month of year field.
+     * This allows operations to be performed on this field in a type-safe manner.
+     * <p>
+     * This method is the same as {@link #getMonthOfYear()}.
+     *
+     * @return the month of year, never null
+     */
+    public MonthOfYear toMonthOfYear() {
+        return month;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the year field.
+     * <p>
+     * This method returns the primitive <code>int</code> value for the year.
+     * <p>
+     * Additional information about the year can be obtained from via {@link #toYear()}.
+     * This returns a <code>Year</code> object which includes information on whether
+     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * and a {@link DateAdjuster}.
+     *
+     * @return the year, from MIN_YEAR to MAX_YEAR
+     */
+    public int getYear() {
         return year;
     }
 
     /**
-     * Gets the month of year field.
+     * Gets the month of year field, which is an enum <code>MonthOfYear</code>.
      * <p>
-     * This method provides access to an object representing the month field.
-     * This can be used to access the {@link MonthOfYear#getValue() int value}.
+     * This method returns the enum {@link MonthOfYear} for the month.
+     * This avoids confusion as to what <code>int</code> values mean.
+     * If you need access to the primitive <code>int</code> value then the enum
+     * provides the {@link MonthOfYear#getValue() int value}.
+     * <p>
+     * Additional information can be obtained from the <code>MonthOfYear</code>.
+     * This includes month lengths, textual names and access to the quarter of year
+     * and month of quarter values.
      *
      * @return the month of year, never null
      */
@@ -218,10 +254,8 @@ public final class YearMonth
      * @return a new updated YearMonth, never null
      */
     public YearMonth with(Year year) {
-        if (year == null) {
-            throw new NullPointerException("Year must not be null");
-        }
-        return withYearMonth(year, month);
+        ISOChronology.checkNotNull(year, "Year must not be null");
+        return withYear(year.getValue());
     }
 
     /**
@@ -233,9 +267,7 @@ public final class YearMonth
      * @return a new updated YearMonth, never null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return withYearMonth(year, monthOfYear);
     }
 
@@ -250,7 +282,8 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
-        return with(Year.isoYear(year));
+        ISOChronology.yearRule().checkValue(year);
+        return withYearMonth(year, month);
     }
 
     /**
@@ -298,7 +331,7 @@ public final class YearMonth
         if (years == 0) {
             return this;
         }
-        Year newYear = year.plusYears(years);
+        int newYear = ISOChronology.addYears(year, years);
         return withYearMonth(newYear, month);
     }
 
@@ -323,7 +356,7 @@ public final class YearMonth
             newMonth0 += 12;
             years--;
         }
-        Year newYear = year.plusYears(years);
+        int newYear = ISOChronology.addYears(year, years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
         return withYearMonth(newYear, newMonth);
     }
@@ -360,7 +393,7 @@ public final class YearMonth
         if (years == 0) {
             return this;
         }
-        Year newYear = year.minusYears(years);
+        int newYear = ISOChronology.subtractYears(year, years);
         return withYearMonth(newYear, month);
     }
 
@@ -385,7 +418,7 @@ public final class YearMonth
             newMonth0 += 12;
             years--;
         }
-        Year newYear = year.plusYears(years);
+        int newYear = ISOChronology.subtractYears(year, -years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
         return withYearMonth(newYear, newMonth);
     }
@@ -440,13 +473,13 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        if (year.getValue() == date.getYear() && month == date.getMonthOfYear()) {
+        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+        ISOChronology.checkNotNull(resolver, "DateResolver must not be null");
+        if (year == date.getYear() && month == date.getMonthOfYear()) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(year, month, date.toDayOfMonth());
-        if (resolved == null) {
-            throw new NullPointerException("The implementation of DateResolver must not return null");
-        }
+        LocalDate resolved = resolver.resolveDate(toYear(), month, date.toDayOfMonth());
+        ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
 
@@ -457,7 +490,7 @@ public final class YearMonth
      * @return true if the date matches, false otherwise
      */
     public boolean matchesDate(LocalDate date) {
-        return year.getValue() == date.getYear() && month == date.getMonthOfYear();
+        return year == date.getYear() && month == date.getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------
@@ -468,7 +501,7 @@ public final class YearMonth
      */
     public Calendrical toCalendrical() {
         return new Calendrical(
-                ISOChronology.yearRule(), year.getValue(),
+                ISOChronology.yearRule(), year,
                 ISOChronology.monthOfYearRule(), month.getValue());
     }
 
@@ -482,6 +515,19 @@ public final class YearMonth
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
      */
     public LocalDate toLocalDate(DayOfMonth dayOfMonth) {
+        return toLocalDate(dayOfMonth.getValue());
+    }
+
+    /**
+     * Converts this year-month to a <code>LocalDate</code> using the specified day of month.
+     * <p>
+     * This method will throw an exception if the day of month is invalid for the year-month.
+     *
+     * @param dayOfMonth  the day of month to use, not null
+     * @return the created date, never null
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
+     */
+    public LocalDate toLocalDate(int dayOfMonth) {
         return LocalDate.date(year, month, dayOfMonth);
     }
 
@@ -490,11 +536,11 @@ public final class YearMonth
      * Compares this year-month to another year-month.
      *
      * @param other  the other year-month to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if <code>other</code> is null
      */
     public int compareTo(YearMonth other) {
-        int cmp = year.compareTo(other.year);
+        int cmp = MathUtils.safeCompare(year, other.year);
         if (cmp == 0) {
             cmp = month.compareTo(other.month);
         }
@@ -537,19 +583,19 @@ public final class YearMonth
         }
         if (other instanceof YearMonth) {
             YearMonth otherYM = (YearMonth) other;
-            return year.equals(otherYM.year) && month == otherYM.month;
+            return year == otherYM.year && month == otherYM.month;
         }
         return false;
     }
 
     /**
-     * A hashcode for this year-month.
+     * A hash code for this year-month.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return year.getValue() ^ (month.getValue() << 27);
+        return year ^ (month.getValue() << 27);
     }
 
     //-----------------------------------------------------------------------
@@ -562,7 +608,7 @@ public final class YearMonth
      */
     @Override
     public String toString() {
-        int yearValue = year.getValue();
+        int yearValue = year;
         int monthValue = month.getValue();
         int absYear = Math.abs(yearValue);
         StringBuilder buf = new StringBuilder(9);

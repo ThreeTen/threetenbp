@@ -694,14 +694,9 @@ public class TestOffsetDate {
         TEST_2007_07_15_PONE.plusYears(1, new MockDateResolverReturnsNull());
     }
 
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooLarge() {
-        try {
-            OffsetDate.date(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1, DateResolvers.nextValid());
-            fail();
-        } catch (CalendricalException ex) {
-            long year = ((long) Year.MAX_YEAR) + 1;
-            assertEquals(ex.getMessage(), "Year " + year + " exceeds the supported year range");
-        }
+        OffsetDate.date(Year.MAX_YEAR, 1, 1, OFFSET_PONE).plusYears(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)

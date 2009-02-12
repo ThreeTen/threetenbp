@@ -700,8 +700,8 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        Year newYear = Year.isoYear(year).plusYears(years);
-        return resolveDate(dateResolver, newYear.getValue(), month, day);
+        int newYear = ISOChronology.addYears(year, years);
+        return resolveDate(dateResolver, newYear, month, day);
     }
 
     /**
@@ -759,11 +759,11 @@ public final class LocalDate
         newMonth0 = newMonth0 % 12;
         if (newMonth0 < 0) {
             newMonth0 += 12;
-            years = MathUtils.safeDecrement(years);
+            years--;
         }
-        Year newYear = Year.isoYear(year).plusYears(years);
+        int newYear = ISOChronology.addYears(year, years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return resolveDate(dateResolver, newYear.getValue(), newMonth, day);
+        return resolveDate(dateResolver, newYear, newMonth, day);
     }
 
     /**
@@ -884,8 +884,8 @@ public final class LocalDate
         if (years == 0) {
             return this;
         }
-        Year newYear = Year.isoYear(year).minusYears(years);
-        return resolveDate(dateResolver, newYear.getValue(), month, day);
+        int newYear = ISOChronology.subtractYears(year, years);
+        return resolveDate(dateResolver, newYear, month, day);
     }
 
     /**
@@ -937,19 +937,17 @@ public final class LocalDate
         if (months == 0) {
             return this;
         }
-        int years = months / 12;
         long newMonth0 = month.getValue() - 1;
-        newMonth0 = newMonth0 - (months % 12);
-        if (newMonth0 >= 12) {
-            newMonth0 = newMonth0 % 12;
-            years = MathUtils.safeDecrement(years);
-        } else if (newMonth0 < 0) {
+        newMonth0 = newMonth0 - months;
+        int years = (int) (newMonth0 / 12);
+        newMonth0 = newMonth0 % 12;
+        if (newMonth0 < 0) {
             newMonth0 += 12;
-            years = MathUtils.safeIncrement(years);
+            years--;
         }
-        Year newYear = Year.isoYear(year).minusYears(years);
+        int newYear = ISOChronology.subtractYears(year, -years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return resolveDate(dateResolver, newYear.getValue(), newMonth, day);
+        return resolveDate(dateResolver, newYear, newMonth, day);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -545,7 +545,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_DateResolver_nullResolver() {
         MonthDay test = MonthDay.monthDay(2, 29);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        LocalDate date = LocalDate.date(2008, 2, 29);  // same date, but resolver should still NPE
         test.adjustDate(date, (DateResolver) null);
     }
 

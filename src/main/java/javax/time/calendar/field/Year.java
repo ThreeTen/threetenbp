@@ -289,15 +289,11 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        int newYear = 0;
-        try {
-            newYear = MathUtils.safeAdd(year, years);
-            return isoYear(newYear);
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException("Year " + (((long) year) + years) + " exceeds the supported year range");
-        } catch (IllegalCalendarFieldValueException ae) {
-            throw new CalendricalException("Year " + (((long) year) + years) + " exceeds the supported year range");
+        int result = year + years;
+        if (((year ^ result) < 0 && (year ^ years) >= 0) || rule().isValidValue(result) == false) {
+            throw new CalendricalException("Addition exceeds the supported year range: " + year + " + " + years);
         }
+        return isoYear(result);
     }
 
     //-----------------------------------------------------------------------
@@ -331,15 +327,11 @@ public final class Year
         if (years == 0) {
             return this;
         }
-        int newYear = 0;
-        try {
-            newYear = MathUtils.safeSubtract(year, years);
-            return isoYear(newYear);
-        } catch (ArithmeticException ae) {
-            throw new CalendricalException("Year " + (((long) year) - ((long) years)) + " exceeds the supported year range");
-        } catch (IllegalCalendarFieldValueException ae) {
-            throw new CalendricalException("Year " + (((long) year) - ((long) years)) + " exceeds the supported year range");
+        int result = year - years;
+        if (((year ^ result) < 0 && (year ^ years) < 0) || rule().isValidValue(result) == false) {
+            throw new CalendricalException("Subtraction exceeds the supported year range: " + year + " + " + years);
         }
+        return isoYear(result);
     }
 
     //-----------------------------------------------------------------------

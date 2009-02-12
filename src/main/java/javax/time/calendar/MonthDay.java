@@ -94,17 +94,9 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        if (dayOfMonth == null) {
-            throw new NullPointerException("DayOfMonth must not be null");
-        }
-        if (dayOfMonth.isValid(SAMPLE_YEAR, monthOfYear) == false) {
-            throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth.getValue() +
-                    " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
-        }
-        return new MonthDay(monthOfYear, dayOfMonth.getValue());
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        ISOChronology.checkNotNull(dayOfMonth, "DayOfMonth must not be null");
+        return monthDay(monthOfYear, dayOfMonth.getValue());
     }
 
     /**
@@ -124,7 +116,13 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, int dayOfMonth) {
-        return monthDay(monthOfYear, DayOfMonth.dayOfMonth(dayOfMonth));
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        if (dayOfMonth > monthOfYear.maxLengthInDays()) {
+            throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
+                    " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
+        }
+        return new MonthDay(monthOfYear, dayOfMonth);
     }
 
     /**
@@ -144,7 +142,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
-        return monthDay(MonthOfYear.monthOfYear(monthOfYear), DayOfMonth.dayOfMonth(dayOfMonth));
+        return monthDay(MonthOfYear.monthOfYear(monthOfYear), dayOfMonth);
     }
 
     /**
@@ -182,8 +180,8 @@ public final class MonthDay
     /**
      * Constructor, previously validated.
      *
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, valid for month, from 1 to 31
+     * @param monthOfYear  the month of year to represent, validated not null
+     * @param dayOfMonth  the day of month to represent, validated from 1 to 29-31
      */
     private MonthDay(MonthOfYear monthOfYear, int dayOfMonth) {
         this.month = monthOfYear;
@@ -194,8 +192,8 @@ public final class MonthDay
      * Returns a copy of this month-day with the new month and day, checking
      * to see if a new object is in fact required.
      *
-     * @param newMonth  the month of year to represent, not null
-     * @param newDay  the day of month to represent, from 1 to 31
+     * @param newMonth  the month of year to represent, validated not null
+     * @param newDay  the day of month to represent, validated from 1 to 31
      * @return the month-day, never null
      */
     private MonthDay withMonthDay(MonthOfYear newMonth, int newDay) {
@@ -290,8 +288,10 @@ public final class MonthDay
      * @return a new updated MonthDay, never null
      */
     public MonthDay with(MonthOfYear monthOfYear) {
-        if (toDayOfMonth().isValid(SAMPLE_YEAR, monthOfYear) == false) {
-            return withMonthDay(monthOfYear, monthOfYear.lengthInDays(SAMPLE_YEAR));
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        int maxDays = monthOfYear.maxLengthInDays();
+        if (day > maxDays) {
+            return withMonthDay(monthOfYear, maxDays);
         }
         return withMonthDay(monthOfYear, day);
     }
@@ -309,11 +309,8 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public MonthDay with(DayOfMonth dayOfMonth) {
-        if (dayOfMonth.isValid(SAMPLE_YEAR, month) == false) {
-            throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
-                    dayOfMonth + " for the month " + month, DayOfMonth.rule());
-        }
-        return withMonthDay(month, dayOfMonth.getValue());
+        ISOChronology.checkNotNull(dayOfMonth, "DayOfMonth must not be null");
+        return withDayOfMonth(dayOfMonth.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -347,7 +344,13 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public MonthDay withDayOfMonth(int dayOfMonth) {
-        return with(DayOfMonth.dayOfMonth(dayOfMonth));
+        ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
+        int maxDays = month.maxLengthInDays();
+        if (dayOfMonth > maxDays) {
+            throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
+                    dayOfMonth + " for the month " + month, DayOfMonth.rule());
+        }
+        return withMonthDay(month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -425,13 +428,13 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
+        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+        ISOChronology.checkNotNull(resolver, "DateResolver must not be null");
         if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
             return date;
         }
         LocalDate resolved = resolver.resolveDate(date.toYear(), month, toDayOfMonth());
-        if (resolved == null) {
-            throw new NullPointerException("The implementation of DateResolver must not return null");
-        }
+        ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
 

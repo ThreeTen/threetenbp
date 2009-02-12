@@ -35,6 +35,7 @@ import static javax.time.period.PeriodUnits.*;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
@@ -84,6 +85,7 @@ public final class ISOChronology extends Chronology implements Serializable {
 //    /** The start of months in a leap year. */
 //    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
+    //-----------------------------------------------------------------------
     /**
      * Validates that the input value is not null.
      *
@@ -95,6 +97,42 @@ public final class ISOChronology extends Chronology implements Serializable {
         if (object == null) {
             throw new NullPointerException(errorMessage);
         }
+    }
+
+    /**
+     * Adds a number of years to the specified year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to add to, from MIN_YEAR to MAX_YEAR
+     * @param years  the years to add
+     * @return the result
+     * @throws CalendricalException if the result exceeds the supported year range
+     */
+    static int addYears(int year, int years) {
+        int result = year + years;
+        if (((year ^ result) < 0 && (year ^ years) >= 0) || yearRule().isValidValue(result) == false) {
+            throw new CalendricalException("Addition exceeds the supported year range: " + year + " + " + years);
+        }
+        return result;
+    }
+
+    /**
+     * Subtracts a number of years from the specified year.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to add to, from MIN_YEAR to MAX_YEAR
+     * @param years  the years to subtract
+     * @return the result
+     * @throws CalendricalException if the result exceeds the supported year range
+     */
+    static int subtractYears(int year, int years) {
+        int result = year - years;
+        if (((year ^ result) < 0 && (year ^ years) < 0) || yearRule().isValidValue(result) == false) {
+            throw new CalendricalException("Subtraction exceeds the supported year range: " + year + " - " + years);
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------

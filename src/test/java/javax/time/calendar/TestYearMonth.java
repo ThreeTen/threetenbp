@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -107,10 +107,14 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
+    void check(YearMonth test, int y, int m) {
+        assertEquals(test.getYear(), y);
+        assertEquals(test.getMonthOfYear().getValue(), m);
+    }
+    
     public void factory_objects() {
         YearMonth test = YearMonth.yearMonth(Year.isoYear(2008), MonthOfYear.FEBRUARY);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.FEBRUARY);
+        check(test, 2008, 2);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -126,8 +130,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void factory_intsMonth() {
         YearMonth test = YearMonth.yearMonth(2008, MonthOfYear.FEBRUARY);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.FEBRUARY);
+        check(test, 2008, 2);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -161,8 +164,7 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void factory_ints() {
         YearMonth test = YearMonth.yearMonth(2008, 2);
-        assertEquals(test.getYear(), Year.isoYear(2008));
-        assertEquals(test.getMonthOfYear(), MonthOfYear.FEBRUARY);
+        check(test, 2008, 2);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -266,8 +268,11 @@ public class TestYearMonth {
     @Test(dataProvider="sampleDates")
     public void test_get(int y, int m) {
         YearMonth a = YearMonth.yearMonth(y, m);
-        assertEquals(a.getYear(), Year.isoYear(y));
+        assertEquals(a.getYear(), y);
         assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        
+        assertEquals(a.toYear(), Year.isoYear(y));
+        assertEquals(a.toMonthOfYear(), MonthOfYear.monthOfYear(m));
     }
 
     //-----------------------------------------------------------------------
@@ -723,7 +728,7 @@ public class TestYearMonth {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_DateResolver_nullResolver() {
         YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        LocalDate date = LocalDate.date(2008, 6, 30);  // same year-month, should still NPE
         test.adjustDate(date, (DateResolver) null);
     }
 
@@ -778,6 +783,25 @@ public class TestYearMonth {
         YearMonth test = YearMonth.yearMonth(2008, 6);
         try {
             test.toLocalDate(DayOfMonth.dayOfMonth(31));
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // toLocalDate(int)
+    //-----------------------------------------------------------------------
+    public void test_toLocalDate_int() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        assertEquals(test.toLocalDate(30), LocalDate.date(2008, 6, 30));
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_toLocalDate_int_invalidDay() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        try {
+            test.toLocalDate(31);
         } catch (InvalidCalendarFieldException ex) {
             assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
             throw ex;
