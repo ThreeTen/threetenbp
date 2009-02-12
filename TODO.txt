@@ -30,6 +30,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+- format patterns - yyyy-MM-dd
+- strict/lenient parse
+- upper/lower case
+- substitute text (replacing built in text for Months/Years etc)
+- only ASCII numbers
+- parse zone
+- parse optional needs to store and drop back Calendrical properly
+- parse API is too complex to parse Date/Time due to merge
+- Arabic numbers have negative sign after number
+- parseInto(Calendrical)
+- default calendrical to pre-define era for example
+- zone prev/next transition
+- zone providers
+- versions of zone data files
+- period total secs/mins/hours etc
+- construct fields without period units
+- intervals
+- clock
+- return primitives from main getXxx methods
+- time scales
+- DateTimeMatcher
+- DateTimeAdjuster
+- append()?
+- Year.of() Duration.of() plus big static class?
+- first day of week
+- get month/weekday text
+- ZDT constructor taking ODT clash
+- GJCalendar
+- get rule by name
+- get chrono by name
+
 Items todo post EDR:
 
 - lenient parsing
