@@ -199,8 +199,9 @@ public final class DayOfMonth
         return date.getDayOfMonth() == dayOfMonth;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if this day of month is valid for the specified month and year.
+     * Checks if this day of month is valid for the specified year and month.
      *
      * @param year  the year to validate against, not null
      * @param monthOfYear  the month of year to validate against, not null
@@ -208,10 +209,26 @@ public final class DayOfMonth
      */
     public boolean isValid(Year year, MonthOfYear monthOfYear) {
         if (year == null) {
-            throw new NullPointerException("The year must not be null");
+            throw new NullPointerException("Year must not be null");
         }
         if (monthOfYear == null) {
-            throw new NullPointerException("The month of year must not be null");
+            throw new NullPointerException("MonthOfYear must not be null");
+        }
+        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
+    }
+
+    /**
+     * Checks if this day of month is valid for the specified year and month.
+     *
+     * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to validate against, not null
+     * @return true if this day of month is valid for the month and year
+     * @throws IllegalCalendarFieldValueException if the year value is invalid
+     */
+    public boolean isValid(int year, MonthOfYear monthOfYear) {
+        ISOChronology.yearRule().checkValue(year);
+        if (monthOfYear == null) {
+            throw new NullPointerException("MonthOfYear must not be null");
         }
         return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
     }
