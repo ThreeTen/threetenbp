@@ -57,7 +57,7 @@ public final class DateAdjusters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the last day of month adjuster, which retuns a new date with
+     * Returns the last day of month adjuster, which returns a new date with
      * the day of month changed to be the last valid day of the month.
      * <p>
      * The input 2007-01-15 will return 2007-01-31.<br />
@@ -73,7 +73,7 @@ public final class DateAdjusters {
     }
 
     /**
-     * Returns the last day of year adjuster, which retuns a new date with
+     * Returns the last day of year adjuster, which returns a new date with
      * the day of year changed to be the last valid day of the year.
      * <p>
      * The input 2007-01-15 will return 2007-12-31.<br />
@@ -134,7 +134,7 @@ public final class DateAdjusters {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the first in month adjuster, which retuns a new date
+     * Returns the first in month adjuster, which returns a new date
      * in the same month with the first matching day of week. This is used for
      * expressions like 'first tuesday in March'.
      * <p>
@@ -152,7 +152,7 @@ public final class DateAdjusters {
     }
 
     /**
-     * Returns the day of week in month adjuster, which retuns a new date
+     * Returns the day of week in month adjuster, which returns a new date
      * in the same month with the ordinal day of week. This is used for
      * expressions like 'second tuesday in March'.
      * <p>
@@ -250,7 +250,7 @@ public final class DateAdjusters {
      * Returns the next day of week adjuster, which adjusts the date to be
      * the next of the specified day of week after the specified date.
      *
-     * @param dow  the dow to move the date to, not null
+     * @param dow  the day of week to move the date to, not null
      * @return the next day of week adjuster, never null
      */
     public static DateAdjuster next(DayOfWeek dow) {
@@ -265,7 +265,7 @@ public final class DateAdjusters {
      * date to be be the next of the specified day of week, returning the
      * input date if the day of week matched.
      *
-     * @param dow  the dow to move the date to, not null
+     * @param dow  the day of week to move the date to, not null
      * @return the next day of week adjuster, never null
      */
     public static DateAdjuster nextOrCurrent(DayOfWeek dow) {
@@ -279,7 +279,7 @@ public final class DateAdjusters {
      * Returns the previous day of week adjuster, which adjusts the date to be
      * the previous of the specified day of week after the specified date.
      *
-     * @param dow  the dow to move the date to, not null
+     * @param dow  the day of week to move the date to, not null
      * @return the next day of week adjuster, never null
      */
     public static DateAdjuster previous(DayOfWeek dow) {
@@ -294,7 +294,7 @@ public final class DateAdjusters {
      * date to be be the previous of the specified day of week, returning the
      * input date if the day of week matched.
      *
-     * @param dow  the dow to move the date to, not null
+     * @param dow  the day of week to move the date to, not null
      * @return the next day of week adjuster, never null
      */
     public static DateAdjuster previousOrCurrent(DayOfWeek dow) {
