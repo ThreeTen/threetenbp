@@ -45,16 +45,14 @@ import java.util.StringTokenizer;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
@@ -440,9 +438,9 @@ public final class OlsonZoneRulesCompiler {
 
     private LocalTime parseTime(String str) {
         DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(HourOfDay.rule())
-            .optionalStart().appendLiteral(':').appendValue(MinuteOfHour.rule(), 2)
-            .optionalStart().appendLiteral(':').appendValue(SecondOfMinute.rule(), 2)
+            .appendValue(ISOChronology.hourOfDayRule())
+            .optionalStart().appendLiteral(':').appendValue(ISOChronology.minuteOfHourRule(), 2)
+            .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
             .toFormatter();
         ParsePosition pp = new ParsePosition(0);
         Calendrical cal = f.parse(str, pp);
@@ -454,9 +452,9 @@ public final class OlsonZoneRulesCompiler {
 
     private int parseSecs(String str) {
         DateTimeFormatter f = new DateTimeFormatterBuilder()
-            .appendValue(HourOfDay.rule())
-            .optionalStart().appendLiteral(':').appendValue(MinuteOfHour.rule(), 2)
-            .optionalStart().appendLiteral(':').appendValue(SecondOfMinute.rule(), 2)
+            .appendValue(ISOChronology.hourOfDayRule())
+            .optionalStart().appendLiteral(':').appendValue(ISOChronology.minuteOfHourRule(), 2)
+            .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
             .toFormatter();
         int pos = 0;
         if (str.startsWith("-")) {

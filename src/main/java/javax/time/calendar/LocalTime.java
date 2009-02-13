@@ -185,8 +185,8 @@ public final class LocalTime
         if (hourOfDay == 12 && minuteOfHour == 0) {
             return MIDDAY;
         }
-        HourOfDay.rule().checkValue(hourOfDay);
-        MinuteOfHour.rule().checkValue(minuteOfHour);
+        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
         return new LocalTime(hourOfDay, minuteOfHour, 0, 0);
     }
 
@@ -208,9 +208,9 @@ public final class LocalTime
         if (hourOfDay == 12 && minuteOfHour == 0 && secondOfMinute == 0) {
             return MIDDAY;
         }
-        HourOfDay.rule().checkValue(hourOfDay);
-        MinuteOfHour.rule().checkValue(minuteOfHour);
-        SecondOfMinute.rule().checkValue(secondOfMinute);
+        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
+        ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
     }
 
@@ -252,10 +252,10 @@ public final class LocalTime
         if (hourOfDay == 12 && minuteOfHour == 0 && secondOfMinute == 0 && nanoOfSecond == 0) {
             return MIDDAY;
         }
-        HourOfDay.rule().checkValue(hourOfDay);
-        MinuteOfHour.rule().checkValue(minuteOfHour);
-        SecondOfMinute.rule().checkValue(secondOfMinute);
-        NanoOfSecond.rule().checkValue(nanoOfSecond);
+        ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
+        ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
+        ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
     }
 

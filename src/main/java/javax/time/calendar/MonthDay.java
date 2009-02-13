@@ -115,7 +115,7 @@ public final class MonthDay
         ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
             throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                    " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
+                    " is not valid for month " + monthOfYear.name(), ISOChronology.dayOfMonthRule());
         }
         return new MonthDay(monthOfYear, dayOfMonth);
     }
@@ -343,7 +343,7 @@ public final class MonthDay
         int maxDays = month.maxLengthInDays();
         if (dayOfMonth > maxDays) {
             throw new InvalidCalendarFieldException("Day of month cannot be changed to " +
-                    dayOfMonth + " for the month " + month, DayOfMonth.rule());
+                    dayOfMonth + " for the month " + month, ISOChronology.dayOfMonthRule());
         }
         return withMonthDay(month, dayOfMonth);
     }

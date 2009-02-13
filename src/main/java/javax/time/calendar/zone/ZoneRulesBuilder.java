@@ -39,6 +39,7 @@ import java.util.Map;
 
 import javax.time.InstantProvider;
 import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
@@ -300,10 +301,10 @@ public class ZoneRulesBuilder {
         checkNotNull(time, "Rule end time must not be null");
         checkNotNull(timeDefinition, "Time definition must not be null");
         checkNotNull(savingAmount, "Savings amount must not be null");
-        Year.rule().checkValue(startYear);
-        Year.rule().checkValue(endYear);
+        ISOChronology.yearRule().checkValue(startYear);
+        ISOChronology.yearRule().checkValue(endYear);
         if (dayOfMonth != -1) {
-            DayOfMonth.rule().checkValue(dayOfMonth);
+            ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
         }
         if (windowList.isEmpty()) {
             throw new IllegalStateException("Must add a window before adding a rule");

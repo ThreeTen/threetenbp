@@ -157,10 +157,10 @@ public final class LocalDate
         if (dayOfMonth > monthOfYear.lengthInDays(year)) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
-                        year + " is not a leap year", DayOfMonth.rule());
+                        year + " is not a leap year", ISOChronology.dayOfMonthRule());
             } else {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                        " is not valid for month " + monthOfYear.name(), DayOfMonth.rule());
+                        " is not valid for month " + monthOfYear.name(), ISOChronology.dayOfMonthRule());
             }
         }
         return new LocalDate(year, monthOfYear, dayOfMonth);
