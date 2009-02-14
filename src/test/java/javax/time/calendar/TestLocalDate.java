@@ -151,22 +151,22 @@ public class TestLocalDate {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_intsMonth_dayTooLow() {
+    public void factory_date_intsMonth_dayTooLow() {
         LocalDate.date(2007, MonthOfYear.JANUARY, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_intsMonth_dayTooHigh() {
+    public void factory_date_intsMonth_dayTooHigh() {
         LocalDate.date(2007, MonthOfYear.JANUARY, 32);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_date_intsMonth_nullMonth() {
+    public void factory_date_intsMonth_nullMonth() {
         LocalDate.date(2007, null, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_intsMonth_yearTooLow() {
+    public void factory_date_intsMonth_yearTooLow() {
         LocalDate.date(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);
     }
 
@@ -178,28 +178,28 @@ public class TestLocalDate {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_dayTooLow() {
+    public void factory_date_ints_dayTooLow() {
         LocalDate.date(2007, 1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_dayTooHigh() {
+    public void factory_date_ints_dayTooHigh() {
         LocalDate.date(2007, 1, 32);
     }
 
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_monthTooLow() {
+    public void factory_date_ints_monthTooLow() {
         LocalDate.date(2007, 0, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_monthTooHigh() {
+    public void factory_date_ints_monthTooHigh() {
         LocalDate.date(2007, 13, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_yearTooLow() {
+    public void factory_date_ints_yearTooLow() {
         LocalDate.date(Integer.MIN_VALUE, 1, 1);
     }
 

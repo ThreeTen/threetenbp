@@ -244,22 +244,22 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_2ints_hourTooLow() {
+    public void factory_time_2ints_hourTooLow() {
         LocalTime.time(-1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_2ints_hourTooHigh() {
+    public void factory_time_2ints_hourTooHigh() {
         LocalTime.time(24, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_2ints_minuteTooLow() {
+    public void factory_time_2ints_minuteTooLow() {
         LocalTime.time(0, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_2ints_minuteTooHigh() {
+    public void factory_time_2ints_minuteTooHigh() {
         LocalTime.time(0, 60);
     }
 
@@ -280,32 +280,32 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_3ints_hourTooLow() {
+    public void factory_time_3ints_hourTooLow() {
         LocalTime.time(-1, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_3ints_hourTooHigh() {
+    public void factory_time_3ints_hourTooHigh() {
         LocalTime.time(24, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_3ints_minuteTooLow() {
+    public void factory_time_3ints_minuteTooLow() {
         LocalTime.time(0, -1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_3ints_minuteTooHigh() {
+    public void factory_time_3ints_minuteTooHigh() {
         LocalTime.time(0, 60, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_3ints_secondTooLow() {
+    public void factory_time_3ints_secondTooLow() {
         LocalTime.time(0, 0, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_3ints_secondTooHigh() {
+    public void factory_time_3ints_secondTooHigh() {
         LocalTime.time(0, 0, 60);
     }
 
@@ -328,42 +328,42 @@ public class TestLocalTime {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_hourTooLow() {
+    public void factory_time_4ints_hourTooLow() {
         LocalTime.time(-1, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_hourTooHigh() {
+    public void factory_time_4ints_hourTooHigh() {
         LocalTime.time(24, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_minuteTooLow() {
+    public void factory_time_4ints_minuteTooLow() {
         LocalTime.time(0, -1, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_minuteTooHigh() {
+    public void factory_time_4ints_minuteTooHigh() {
         LocalTime.time(0, 60, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_secondTooLow() {
+    public void factory_time_4ints_secondTooLow() {
         LocalTime.time(0, 0, -1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_secondTooHigh() {
+    public void factory_time_4ints_secondTooHigh() {
         LocalTime.time(0, 0, 60, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_nanoTooLow() {
+    public void factory_time_4ints_nanoTooLow() {
         LocalTime.time(0, 0, 0, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_time_4ints_nanoTooHigh() {
+    public void factory_time_4ints_nanoTooHigh() {
         LocalTime.time(0, 0, 0, 1000000000);
     }
 
@@ -373,23 +373,23 @@ public class TestLocalTime {
         check(localTime, 12, 30, 40, 987654321);
     }
 
-    public void test_factory_time_TimeProvider_midnightSingleton() {
+    public void factory_time_TimeProvider_midnightSingleton() {
         LocalTime localTime = LocalTime.time(LocalTime.MIDNIGHT);
         assertSame(localTime, LocalTime.MIDNIGHT);
     }
 
-    public void test_factory_time_TimeProvider_middaySingleton() {
+    public void factory_time_TimeProvider_middaySingleton() {
         LocalTime localTime = LocalTime.time(LocalTime.MIDDAY);
         assertSame(localTime, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_time_TimeProvider_null() {
+    public void factory_time_TimeProvider_null() {
         LocalTime.time(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_time_TimeProvider_null_toLocalTime() {
+    public void factory_time_TimeProvider_null_toLocalTime() {
         LocalTime.time(new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
@@ -407,23 +407,23 @@ public class TestLocalTime {
         check(localTime, 1, 0, 0, 17);
     }
 
-    public void test_factory_fromNanoOfDay_midnightSingleton() {
+    public void factory_fromNanoOfDay_midnightSingleton() {
         LocalTime localTime = LocalTime.fromNanoOfDay(0);
         assertSame(localTime, LocalTime.MIDNIGHT);
     }
 
-    public void test_factory_fromNanoOfDay_middaySingleton() {
+    public void factory_fromNanoOfDay_middaySingleton() {
         LocalTime localTime = LocalTime.fromNanoOfDay(12 * 60 * 60 * 1000000000L);
         assertSame(localTime, LocalTime.MIDDAY);
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_factory_fromNanoOfDay_tooLow() {
+    public void factory_fromNanoOfDay_tooLow() {
         LocalTime.fromNanoOfDay(-1);
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void test_factory_fromNanoOfDay_tooHigh() {
+    public void factory_fromNanoOfDay_tooHigh() {
         LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L + 1);
     }
 
