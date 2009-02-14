@@ -176,27 +176,27 @@ public class TestOffsetDate {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_intsMonthOffset_dayTooLow() {
+    public void factory_date_intsMonthOffset_dayTooLow() {
         OffsetDate.date(2007, MonthOfYear.JANUARY, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_intsMonthOffset_dayTooHigh() {
+    public void factory_date_intsMonthOffset_dayTooHigh() {
         OffsetDate.date(2007, MonthOfYear.JANUARY, 32, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_date_intsMonthOffset_nullMonth() {
+    public void factory_date_intsMonthOffset_nullMonth() {
         OffsetDate.date(2007, null, 30, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_intsMonthOffset_yearTooLow() {
+    public void factory_date_intsMonthOffset_yearTooLow() {
         OffsetDate.date(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_date_intsMonthOffset_nullOffset() {
+    public void factory_date_intsMonthOffset_nullOffset() {
         OffsetDate.date(2007, MonthOfYear.JANUARY, 30, null);
     }
 
@@ -207,32 +207,32 @@ public class TestOffsetDate {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_dayTooLow() {
+    public void factory_date_ints_dayTooLow() {
         OffsetDate.date(2007, 1, 0, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_dayTooHigh() {
+    public void factory_date_ints_dayTooHigh() {
         OffsetDate.date(2007, 1, 32, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_monthTooLow() {
+    public void factory_date_ints_monthTooLow() {
         OffsetDate.date(2007, 0, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_monthTooHigh() {
+    public void factory_date_ints_monthTooHigh() {
         OffsetDate.date(2007, 13, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_date_ints_yearTooLow() {
+    public void factory_date_ints_yearTooLow() {
         OffsetDate.date(Integer.MIN_VALUE, 1, 1, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_date_ints_nullOffset() {
+    public void factory_date_ints_nullOffset() {
         OffsetDate.date(2007, 1, 1, (ZoneOffset) null);
     }
 
