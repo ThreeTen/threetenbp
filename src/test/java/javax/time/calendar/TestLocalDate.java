@@ -109,15 +109,19 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
+    private void check(LocalDate test_2008_02_29, int y, int m, int d) {
+        assertEquals(test_2008_02_29.getYear(), y);
+        assertEquals(test_2008_02_29.getMonthOfYear().getValue(), m);
+        assertEquals(test_2008_02_29.getDayOfMonth(), d);
+    }
+
     public void factory_date_objects() {
         assertEquals(TEST_2007_07_15, LocalDate.date(Year.isoYear(2007), MonthOfYear.JULY, DayOfMonth.dayOfMonth(15)));
     }
 
     public void factory_date_objects_leapYear() {
         LocalDate test_2008_02_29 = LocalDate.date(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
-        assertEquals(test_2008_02_29.getYear(), 2008);
-        assertEquals(test_2008_02_29.getMonthOfYear(), MonthOfYear.FEBRUARY);
-        assertEquals(test_2008_02_29.getDayOfMonth(), 29);
+        check(test_2008_02_29, 2008, 2, 29);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -172,9 +176,7 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void factory_date_ints() {
-        assertEquals(TEST_2007_07_15.getYear(), 2007);
-        assertEquals(TEST_2007_07_15.getMonthOfYear(), MonthOfYear.JULY);
-        assertEquals(TEST_2007_07_15.getDayOfMonth(), 15);
+        check(TEST_2007_07_15, 2007, 7, 15);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -216,6 +218,13 @@ public class TestLocalDate {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateProvider_null_toLocalDate() {
         LocalDate.date(new MockDateProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_date_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        LocalDate test = LocalDate.date(mmp);
+        check(test, 2008, 6, 30);
     }
 
     //-----------------------------------------------------------------------

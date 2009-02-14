@@ -237,8 +237,13 @@ public final class ZonedDateTime
      * ensuring that the offset provided is valid for the time zone.
      * <p>
      * This factory creates a <code>ZonedDateTime</code> from an offset date-time and time zone.
-     * If the time is invalid for the zone due to a gap then an exception is thrown.
-     * Otherwise, the offset is checked against the zone to ensure it is valid
+     * If the date-time is invalid for the zone due to a time-line gap then an exception is thrown.
+     * Otherwise, the offset is checked against the zone to ensure it is valid.
+     * <p>
+     * An alternative to this method is {@link #fromInstant(OffsetDateTime, TimeZone)}.
+     * This method will retain the date and time and throw an exception if
+     * the offset is invalid. The <code>fromInstant</code> method will change the
+     * date and time if necessary to retain the same instant.
      *
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
@@ -262,6 +267,7 @@ public final class ZonedDateTime
         return new ZonedDateTime(dateTime, zone);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>ZonedDateTime</code> from an <code>Instant</code>.
      * <p>
@@ -272,14 +278,47 @@ public final class ZonedDateTime
      * @param instantProvider  the instant to convert, not null
      * @param zone  the time zone, not null
      * @return a ZonedDateTime object, never null
-     * @throws CalendricalException if the result exceeds the supported year range
+     * @throws CalendricalException if the result exceeds the supported range
      */
-    public static ZonedDateTime dateTime(InstantProvider instantProvider, TimeZone zone) {
+    public static ZonedDateTime fromInstant(InstantProvider instantProvider, TimeZone zone) {
         Instant instant = Instant.instant(instantProvider);
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneOffset offset = zone.getOffset(instant);
-        OffsetDateTime offsetDT = OffsetDateTime.dateTime(instant, offset);
+        OffsetDateTime offsetDT = OffsetDateTime.fromInstant(instant, offset);
         return new ZonedDateTime(offsetDT, zone);
+    }
+
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code> from the instant of an <code>OffsetDateTime</code>.
+     * <p>
+     * This factory creates a <code>ZonedDateTime</code> from an offset date-time and time zone.
+     * This is an optimized implementation of:
+     * <pre>
+     * ZonedDateTime.dateTime(offsetDateTime.toInstant(), zone);
+     * </pre>
+     * If the offset date-time is in the wrong offset for the zone at the gap, then the
+     * date, time and offset will be adjusted to ensure that the result has the same instant.
+     * <p>
+     * An alternative to this method is {@link #dateTime(OffsetDateTime, TimeZone)}.
+     * This method will change the date and time if necessary to retain the same instant.
+     * The <code>dateTime</code> method will retain the date and time and throw an exception
+     * if the offset is invalid.
+     *
+     * @param dateTime  the offset date-time to use, not null
+     * @param zone  the time zone, not null
+     * @return a ZonedDateTime object, never null
+     * @throws CalendricalException if the result exceeds the supported range
+     */
+    public static ZonedDateTime fromInstant(OffsetDateTime dateTime, TimeZone zone) {
+        ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+        ISOChronology.checkNotNull(zone, "TimeZone must not be null");
+        ZoneOffset inputOffset = dateTime.getOffset();
+        OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
+        if (info.isValidOffset(inputOffset) == false) {
+            ZoneOffset offsetForInstant = zone.getOffset(dateTime);
+            dateTime = dateTime.withOffsetSameInstant(offsetForInstant);
+        }
+        return new ZonedDateTime(dateTime, zone);
     }
 
     /**
@@ -531,7 +570,7 @@ public final class ZonedDateTime
      * @throws CalendarConversionException if the result exceeds the supported date range
      */
     public ZonedDateTime withZoneSameInstant(TimeZone zone) {
-        return zone == this.zone ? this : dateTime(toInstant(), zone);
+        return zone == this.zone ? this : fromInstant(dateTime, zone);
     }
 
     //-----------------------------------------------------------------------

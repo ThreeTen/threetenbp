@@ -257,7 +257,7 @@ public abstract class TimeZone implements Serializable {
      */
     public OffsetInfo getOffsetInfo(Instant instant) {
         ZoneOffset offset = getOffset(instant);
-        OffsetDateTime odt = OffsetDateTime.dateTime(instant, offset);
+        OffsetDateTime odt = OffsetDateTime.fromInstant(instant, offset);
         return getOffsetInfo(odt.toLocalDateTime());
     }
 

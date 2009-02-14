@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -195,7 +195,7 @@ public abstract class Clock {
      */
     public OffsetDateTime currentOffsetDateTime() {
         Instant instant = instant();
-        return OffsetDateTime.dateTime(instant, timeZone().getOffset(instant));
+        return OffsetDateTime.fromInstant(instant, timeZone().getOffset(instant));
     }
 
     /**
@@ -208,7 +208,7 @@ public abstract class Clock {
      * @throws CalendricalException if the instant is outside the supported range of years
      */
     public ZonedDateTime currentZonedDateTime() {
-        return ZonedDateTime.dateTime(instant(), timeZone());
+        return ZonedDateTime.fromInstant(instant(), timeZone());
     }
 
     //-----------------------------------------------------------------------

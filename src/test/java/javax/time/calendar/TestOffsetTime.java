@@ -226,6 +226,13 @@ public class TestOffsetTime {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_time_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        OffsetTime test = OffsetTime.time(mmp, OFFSET_PTWO);
+        check(test, 11, 30, 10, 500, OFFSET_PTWO);
+    }
+
+    //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullTime() throws Throwable  {
         Constructor<OffsetTime> con = OffsetTime.class.getDeclaredConstructor(LocalTime.class, ZoneOffset.class);

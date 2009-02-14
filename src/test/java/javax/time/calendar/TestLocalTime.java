@@ -402,6 +402,13 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_time_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        LocalTime test = LocalTime.time(mmp);
+        check(test, 11, 30, 10, 500);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_fromNanoOfDay() {
         LocalTime localTime = LocalTime.fromNanoOfDay(60 * 60 * 1000000000L + 17);
         check(localTime, 1, 0, 0, 17);

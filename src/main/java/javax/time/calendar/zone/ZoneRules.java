@@ -183,7 +183,7 @@ final class ZoneRules extends TimeZone {
         // check if using last rules
         if (lastRules.length > 0 &&
                 epochSecs > savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
-            OffsetDateTime dt = OffsetDateTime.dateTime(instant, wallOffsets[wallOffsets.length - 1]);
+            OffsetDateTime dt = OffsetDateTime.fromInstant(instant, wallOffsets[wallOffsets.length - 1]);
             Transition[] transArray = findTransitionArray(dt.toYear());
             Transition trans = null;
             for (int i = 0; i < transArray.length; i++) {

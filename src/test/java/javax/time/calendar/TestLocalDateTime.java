@@ -224,6 +224,13 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_dateMidnight_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        LocalDateTime test = LocalDateTime.dateMidnight(mmp);
+        check(test, 2008, 6, 30, 0, 0, 0, 0);
+    }
+
+    //-----------------------------------------------------------------------
     public void factory_dateTime_5objects() {
         LocalDateTime dateTime = LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.
                 hourOfDay(12), MinuteOfHour.minuteOfHour(30));
@@ -755,6 +762,13 @@ public class TestLocalDateTime {
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateTimeProvider_null_toLocalDateTime() {
         LocalDateTime.dateTime(new MockDateTimeProviderReturnsNull());
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_dateTime_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        LocalDateTime test = LocalDateTime.dateTime(mmp);
+        check(test, 2008, 6, 30, 11, 30, 10, 500);
     }
 
     //-----------------------------------------------------------------------

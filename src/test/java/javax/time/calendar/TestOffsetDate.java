@@ -254,6 +254,13 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    public void factory_date_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDate test = OffsetDate.date(mmp, OFFSET_PTWO);
+        check(test, 2008, 6, 30, OFFSET_PTWO);
+    }
+
+    //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullDate() throws Throwable  {
         Constructor<OffsetDate> con = OffsetDate.class.getDeclaredConstructor(LocalDate.class, ZoneOffset.class);

@@ -521,7 +521,7 @@ public final class Instant
      * Compares this Instant to another.
      *
      * @param otherInstant  the other instant to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherInstant is null
      */
     public int compareTo(Instant otherInstant) {
@@ -575,9 +575,9 @@ public final class Instant
     }
 
     /**
-     * A hashcode for this Instant.
+     * A hash code for this Instant.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
@@ -594,8 +594,8 @@ public final class Instant
      */
     @Override
     public String toString() {
-        // TODO: optimize
-        return OffsetDateTime.dateTime(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
+        // TODO: optimize and handle big instants
+        return OffsetDateTime.fromInstant(this, ZoneOffset.UTC).toLocalDateTime().toString() + 'Z';
     }
 
 }

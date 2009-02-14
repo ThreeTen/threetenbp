@@ -118,7 +118,7 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     // dateMidnight factories
     //-----------------------------------------------------------------------
-    void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
+    private void check(OffsetDateTime test, int y, int mo, int d, int h, int m, int s, int n, ZoneOffset offset) {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonthOfYear().getValue(), mo);
         assertEquals(test.getDayOfMonth(), d);
@@ -172,6 +172,13 @@ public class TestOffsetDateTime {
         DateProvider provider = LocalDate.date(2008, 6, 30);
         OffsetDateTime test = OffsetDateTime.dateMidnight(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_dateMidnight_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime test = OffsetDateTime.dateMidnight(mmp, OFFSET_PTWO);
+        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PTWO);
     }
 
     //-----------------------------------------------------------------------
@@ -245,11 +252,47 @@ public class TestOffsetDateTime {
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProvider_nullDateProvider() {
+        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
+        OffsetDateTime.dateTime((DateProvider) null, timeProvider, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProvider_nullTimeProvider() {
+        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
+        OffsetDateTime.dateTime(dateProvider, (TimeProvider) null, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateProviderTimeProvider_nullOffset() {
+        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime.dateTime(provider, (ZoneOffset) null);
+    }
+
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         OffsetDateTime test = OffsetDateTime.dateTime(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProvider_nullProvider() {
+        OffsetDateTime.dateTime((DateTimeProvider) null, OFFSET_PONE);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_dateTime_DateTimeProvider_nullOffset() {
+        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime.dateTime(provider, (ZoneOffset) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_dateTime_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime test = OffsetDateTime.dateTime(mmp, OFFSET_PTWO);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PTWO);
     }
 
     //-----------------------------------------------------------------------

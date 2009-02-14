@@ -40,7 +40,6 @@ import java.lang.reflect.Modifier;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -125,9 +124,21 @@ public class TestZonedDateTime {
 //        assertEquals(test.getDayOfMonth(), DayOfMonth.dayOfMonth(30));
 //    }
 //
-//    //-----------------------------------------------------------------------
-//    // dateTime factories
-//    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // dateTime factories
+    //-----------------------------------------------------------------------
+    void check(ZonedDateTime test, int y, int m, int d, int h, int min, int s, int n, ZoneOffset offset, TimeZone zone) {
+        assertEquals(test.getYear(), y);
+        assertEquals(test.getMonthOfYear().getValue(), m);
+        assertEquals(test.getDayOfMonth(), d);
+        assertEquals(test.getHourOfDay(), h);
+        assertEquals(test.getMinuteOfHour(), min);
+        assertEquals(test.getSecondOfMinute(), s);
+        assertEquals(test.getNanoOfSecond(), n);
+        assertEquals(test.getOffset(), offset);
+        assertEquals(test.getZone(), zone);
+    }
+
 //    public void factory_dateTime_objectsHM() {
 //        ZonedDateTime test = ZonedDateTime.dateTime(
 //                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
@@ -247,15 +258,7 @@ public class TestZonedDateTime {
         DateProvider dateProvider = LocalDate.date(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS);
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 11);
-        assertEquals(test.getMinuteOfHour(), 30);
-        assertEquals(test.getSecondOfMinute(), 10);
-        assertEquals(test.getNanoOfSecond(), 500);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -282,30 +285,14 @@ public class TestZonedDateTime {
         DateProvider dateProvider = LocalDate.date(2008, 6, 30);
         TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 11);
-        assertEquals(test.getMinuteOfHour(), 30);
-        assertEquals(test.getSecondOfMinute(), 10);
-        assertEquals(test.getNanoOfSecond(), 500);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     public void factory_dateTime_DateProviderTimeProviderResolver_resolverUsed() {
         DateProvider dateProvider = LocalDate.date(2008, 3, 30);
         TimeProvider timeProvider = LocalTime.time(2, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(dateProvider, timeProvider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(3));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 3);
-        assertEquals(test.getMinuteOfHour(), 0);
-        assertEquals(test.getSecondOfMinute(), 0);
-        assertEquals(test.getNanoOfSecond(), 0);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -350,15 +337,7 @@ public class TestZonedDateTime {
     public void factory_dateTime_DateTimeProvider() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS);
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 11);
-        assertEquals(test.getMinuteOfHour(), 30);
-        assertEquals(test.getSecondOfMinute(), 10);
-        assertEquals(test.getNanoOfSecond(), 500);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -381,29 +360,13 @@ public class TestZonedDateTime {
     public void factory_dateTime_DateTimeProviderResolver() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 11);
-        assertEquals(test.getMinuteOfHour(), 30);
-        assertEquals(test.getSecondOfMinute(), 10);
-        assertEquals(test.getNanoOfSecond(), 500);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     public void factory_dateTime_DateTimeProviderResolver_resolverUsed() {
         DateTimeProvider provider = LocalDateTime.dateTime(2008, 3, 30, 2, 30, 10, 500);
         ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS, ZoneResolvers.postTransition());
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(3));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 3);
-        assertEquals(test.getMinuteOfHour(), 0);
-        assertEquals(test.getSecondOfMinute(), 0);
-        assertEquals(test.getNanoOfSecond(), 0);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 3, 30, 3, 0, 0, 0, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -429,22 +392,14 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_OffsetDateTimeProvider() {
+    public void factory_dateTime_OffsetDateTime() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
         ZonedDateTime test = ZonedDateTime.dateTime(odt, ZONE_PARIS);
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 11);
-        assertEquals(test.getMinuteOfHour(), 30);
-        assertEquals(test.getSecondOfMinute(), 10);
-        assertEquals(test.getNanoOfSecond(), 500);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void factory_dateTime_OffsetDateTimeProvider_inGap() {
+    public void factory_dateTime_OffsetDateTime_inGap() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 3, 30, 2, 30, OFFSET_0100);
         try {
             ZonedDateTime.dateTime(odt, ZONE_PARIS);
@@ -455,7 +410,7 @@ public class TestZonedDateTime {
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void factory_dateTime_OffsetDateTimeProvider_inOverlap_invalidOfset() {
+    public void factory_dateTime_OffsetDateTime_inOverlap_invalidOfset() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 10, 26, 2, 30, OFFSET_0130);
         try {
             ZonedDateTime.dateTime(odt, ZONE_PARIS);
@@ -466,7 +421,7 @@ public class TestZonedDateTime {
     }
 
     @Test(expectedExceptions=CalendarConversionException.class)
-    public void factory_dateTime_OffsetDateTimeProvider_invalidOffset() {
+    public void factory_dateTime_OffsetDateTime_invalidOffset() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
         try {
             ZonedDateTime.dateTime(odt, ZONE_PARIS);
@@ -477,41 +432,89 @@ public class TestZonedDateTime {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_OffsetDateTimeProvider_nullDateTime() {
+    public void factory_dateTime_OffsetDateTime_nullDateTime() {
         ZonedDateTime.dateTime((OffsetDateTime) null, ZONE_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_OffsetDateTimeProvider_nullZone() {
+    public void factory_dateTime_OffsetDateTime_nullZone() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
         ZonedDateTime.dateTime(odt, null);
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateTime_InstantProvider() {
+    public void factory_dateTime_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.dateTime(mmp, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_fromInstant_InstantProvider() {
         OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
         InstantProvider provider = odt.toInstant();
-        ZonedDateTime test = ZonedDateTime.dateTime(provider, ZONE_PARIS);
-        assertEquals(test.getYear(), 2008);
-        assertEquals(test.getMonthOfYear(), MonthOfYear.monthOfYear(6));
-        assertEquals(test.getDayOfMonth(), 30);
-        assertEquals(test.getHourOfDay(), 11);
-        assertEquals(test.getMinuteOfHour(), 30);
-        assertEquals(test.getSecondOfMinute(), 10);
-        assertEquals(test.getNanoOfSecond(), 500);
-        assertEquals(test.getOffset(), OFFSET_0200);
-        assertEquals(test.getZone(), ZONE_PARIS);
+        ZonedDateTime test = ZonedDateTime.fromInstant(provider, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_InstantProvider_nullProvider() {
-        ZonedDateTime.dateTime((InstantProvider) null, ZONE_0100);
+    public void factory_fromInstant_InstantProvider_nullProvider() {
+        ZonedDateTime.fromInstant((InstantProvider) null, ZONE_0100);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_InstantProvider_nullZone() {
+    public void factory_fromInstant_InstantProvider_nullZone() {
         InstantProvider provider = Instant.instant(0L);
-        ZonedDateTime.dateTime(provider, null);
+        ZonedDateTime.fromInstant(provider, null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_fromInstant_OffsetDateTime() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
+    }
+
+    public void factory_fromInstant_OffsetDateTime_inGap() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 3, 30, 2, 30, OFFSET_0100);  // DST gap
+        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        check(test, 2008, 3, 30, 3, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // one hour later in summer offset
+    }
+
+    public void factory_fromInstant_OffsetDateTime_inOverlap_earlier() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 10, 26, 2, 30, OFFSET_0200);  // DST overlap
+        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0200, ZONE_PARIS);  // same time and offset
+    }
+
+    public void factory_fromInstant_OffsetDateTime_inOverlap_later() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 10, 26, 2, 30, OFFSET_0100);  // DST overlap
+        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        check(test, 2008, 10, 26, 2, 30, 0, 0, OFFSET_0100, ZONE_PARIS);  // same time and offset
+    }
+
+    public void factory_fromInstant_OffsetDateTime_invalidOffset() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0130);
+        ZonedDateTime test = ZonedDateTime.fromInstant(odt, ZONE_PARIS);
+        check(test, 2008, 6, 30, 12, 0, 10, 500, OFFSET_0200, ZONE_PARIS);  // corrected offset, thus altered time
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_fromInstant_OffsetDateTime_nullDateTime() {
+        ZonedDateTime.fromInstant((OffsetDateTime) null, ZONE_0100);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_fromInstant_OffsetDateTime_nullZone() {
+        OffsetDateTime odt = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_0100);
+        ZonedDateTime.fromInstant(odt, null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_fromInstant_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500, OFFSET_0200);
+        ZonedDateTime test = ZonedDateTime.fromInstant(mmp, ZONE_PARIS);
+        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_0200, ZONE_PARIS);
     }
 
     //-----------------------------------------------------------------------

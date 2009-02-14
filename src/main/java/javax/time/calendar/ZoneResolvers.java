@@ -113,7 +113,7 @@ public final class ZoneResolvers {
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             Instant instantBefore = discontinuity.getTransitionInstant().minusNanos(1);
-            return OffsetDateTime.dateTime(instantBefore, discontinuity.getOffsetBefore());
+            return OffsetDateTime.fromInstant(instantBefore, discontinuity.getOffsetBefore());
         }
         /** {@inheritDoc} */
         @Override

@@ -422,7 +422,7 @@ public final class OffsetDateTime
      * @return an OffsetDateTime object, never null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
-    public static OffsetDateTime dateTime(InstantProvider instantProvider, ZoneOffset offset) {
+    public static OffsetDateTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant i = Instant.instant(instantProvider);
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         
