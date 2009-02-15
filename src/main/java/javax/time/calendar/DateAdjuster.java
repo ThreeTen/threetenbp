@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007,2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ public interface DateAdjuster {
     /**
      * Adjusts the input date returning the adjusted date.
      * <p>
-     * This is a strategy pattern that allows a range of adjustents to be made
+     * This is a strategy pattern that allows a range of adjustments to be made
      * to a date.
      *
      * @param date  the date to adjust, not null
