@@ -34,6 +34,8 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -132,6 +134,31 @@ public final class OffsetDate
      */
     public static OffsetDate date(DateProvider dateProvider, ZoneOffset offset) {
         LocalDate date = LocalDate.date(dateProvider);
+        return new OffsetDate(date, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts an instant to an offset date.
+     * <p>
+     * This conversion drops the time component of the instant.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @param offset  the zone offset, not null
+     * @return the created offset date, never null
+     * @throws CalendarConversionException if the instant exceeds the supported date range
+     */
+    public static OffsetDate fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
+        Instant instant = Instant.instant(instantProvider);
+        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        
+        long epochSecs = instant.getEpochSeconds() + offset.getAmountSeconds();  // overflow caught later
+        long yearZeroDays = (epochSecs / ISOChronology.SECONDS_PER_DAY) + ISOChronology.DAYS_0000_TO_1970;
+        long secsOfDay = epochSecs % ISOChronology.SECONDS_PER_DAY;
+        if (secsOfDay < 0) {
+            yearZeroDays--;  // overflow caught later
+        }
+        LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
         return new OffsetDate(date, offset);
     }
 

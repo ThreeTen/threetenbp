@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
@@ -63,13 +64,25 @@ public final class LocalTime
         implements TimeProvider, CalendricalProvider, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjuster {
 
     /**
+     * Constants for the local time of each hour.
+     */
+    public static final LocalTime[] HOURS = new LocalTime[24];
+    /**
      * Constant for the local time of midnight, 00:00.
      */
-    public static final LocalTime MIDNIGHT = new LocalTime(0, 0, 0, 0);
+    public static final LocalTime MIDNIGHT;
     /**
      * Constant for the local time of midday, 12:00.
      */
-    public static final LocalTime MIDDAY = new LocalTime(12, 0, 0, 0);
+    public static final LocalTime MIDDAY;
+    static {
+        for (int i = 0; i < HOURS.length; i++) {
+            HOURS[i] = new LocalTime(i, 0, 0, 0);
+        }
+        MIDNIGHT = HOURS[0];
+        MIDDAY = HOURS[12];
+    }
+
     /**
      * A serialization identifier for this class.
      */
@@ -116,6 +129,8 @@ public final class LocalTime
     /**
      * Obtains an instance of <code>LocalTime</code> from an hour and minute,
      * setting the second and nanosecond to zero.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
@@ -128,6 +143,8 @@ public final class LocalTime
     /**
      * Obtains an instance of <code>LocalTime</code> from an hour, minute and
      * second, setting the nanosecond to zero.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
@@ -142,6 +159,8 @@ public final class LocalTime
     /**
      * Obtains an instance of <code>LocalTime</code> from an hour, minute,
      * second and nanosecond.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
@@ -172,6 +191,8 @@ public final class LocalTime
      * Obtains an instance of <code>LocalTime</code>.
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
@@ -179,13 +200,10 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour) {
-        if (hourOfDay == 0 && minuteOfHour == 0) {
-            return MIDNIGHT;
-        }
-        if (hourOfDay == 12 && minuteOfHour == 0) {
-            return MIDDAY;
-        }
         ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        if (minuteOfHour == 0) {
+            return HOURS[hourOfDay];  // for performance
+        }
         ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
         return new LocalTime(hourOfDay, minuteOfHour, 0, 0);
     }
@@ -194,6 +212,8 @@ public final class LocalTime
      * Obtains an instance of <code>LocalTime</code>.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
@@ -202,13 +222,10 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        if (hourOfDay == 0 && minuteOfHour == 0 && secondOfMinute == 0) {
-            return MIDNIGHT;
-        }
-        if (hourOfDay == 12 && minuteOfHour == 0 && secondOfMinute == 0) {
-            return MIDDAY;
-        }
         ISOChronology.hourOfDayRule().checkValue(hourOfDay);
+        if ((minuteOfHour | secondOfMinute) == 0) {
+            return HOURS[hourOfDay];  // for performance
+        }
         ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
         ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
         return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, 0);
@@ -237,6 +254,8 @@ public final class LocalTime
 
     /**
      * Obtains an instance of <code>LocalTime</code>.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
@@ -246,43 +265,11 @@ public final class LocalTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        if (hourOfDay == 0 && minuteOfHour == 0 && secondOfMinute == 0 && nanoOfSecond == 0) {
-            return MIDNIGHT;
-        }
-        if (hourOfDay == 12 && minuteOfHour == 0 && secondOfMinute == 0 && nanoOfSecond == 0) {
-            return MIDDAY;
-        }
         ISOChronology.hourOfDayRule().checkValue(hourOfDay);
         ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
         ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
         ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
-        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-    }
-
-    /**
-     * Obtains an instance of <code>LocalTime</code> from a number of nanos of day.
-     *
-     * @param nanoOfDay  the nano of day, from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>
-     * @return a LocalTime object, never null
-     * @throws CalendarConversionException if the nanos of day value is invalid
-     */
-    public static LocalTime fromNanoOfDay(long nanoOfDay) {
-        if (nanoOfDay < 0) {
-            throw new CalendarConversionException("Cannot create LocalTime from nanos of day as value " +
-                    nanoOfDay + " must not be negative");
-        }
-        if (nanoOfDay >= NANOS_PER_DAY) {
-            throw new CalendarConversionException("Cannot create LocalTime from nanos of day as value " +
-                    nanoOfDay + " must be less than " + NANOS_PER_DAY);
-        }
-        
-        int hours = (int) (nanoOfDay / NANOS_PER_HOUR);
-        nanoOfDay -= hours * NANOS_PER_HOUR;
-        int minutes = (int) (nanoOfDay / NANOS_PER_MINUTE);
-        nanoOfDay -= minutes * NANOS_PER_MINUTE;
-        int seconds = (int) (nanoOfDay / NANOS_PER_SECOND);
-        nanoOfDay -= seconds * NANOS_PER_SECOND;
-        return time(hours, minutes, seconds, (int) nanoOfDay);
+        return create(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
     }
 
     /**
@@ -292,6 +279,8 @@ public final class LocalTime
      * to a <code>LocalTime</code> in the safest possible way. Specifically,
      * the means checking whether the input parameter is null and
      * whether the result of the provider is null.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
      *
      * @param timeProvider  the time provider to use, not null
      * @return a LocalTime object, never null
@@ -305,12 +294,97 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Converts a second of day value to a time.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
+     *
+     * @param secondOfDay  the second of day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
+     * @return the created time, never null
+     * @throws IllegalCalendarFieldValueException if the second of day value is invalid
+     */
+    public static LocalTime fromSecondOfDay(long secondOfDay) {
+        ISOChronology.secondOfDayRule().checkValue(secondOfDay);
+        int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
+        secondOfDay -= hours * SECONDS_PER_HOUR;
+        int minutes = (int) (secondOfDay / SECONDS_PER_MINUTE);
+        secondOfDay -= minutes * SECONDS_PER_MINUTE;
+        return create(hours, minutes, (int) secondOfDay, 0);
+    }
+
+    /**
+     * Converts a second of day value, with associated nanos of second, to a time.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
+     *
+     * @param secondOfDay  the second of day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
+     * @param nanoOfSecond  the nano of second, from 0 to 999,999,999
+     * @return the created time, never null
+     * @throws IllegalCalendarFieldValueException if the either input value is invalid
+     */
+    public static LocalTime fromSecondOfDay(long secondOfDay, int nanoOfSecond) {
+        ISOChronology.secondOfDayRule().checkValue(secondOfDay);
+        ISOChronology.nanoOfSecondRule().checkValue(nanoOfSecond);
+        int hours = (int) (secondOfDay / SECONDS_PER_HOUR);
+        secondOfDay -= hours * SECONDS_PER_HOUR;
+        int minutes = (int) (secondOfDay / SECONDS_PER_MINUTE);
+        secondOfDay -= minutes * SECONDS_PER_MINUTE;
+        return create(hours, minutes, (int) secondOfDay, nanoOfSecond);
+    }
+
+    /**
+     * Converts a nanos of day value to a time.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
+     *
+     * @param nanoOfDay  the nano of day, from <code>0</code> to <code>24 * 60 * 60 * 1,000,000,000 - 1</code>
+     * @return the created time, never null
+     * @throws CalendricalException if the nanos of day value is invalid
+     */
+    public static LocalTime fromNanoOfDay(long nanoOfDay) {
+        if (nanoOfDay < 0) {
+            throw new CalendricalException("Cannot create LocalTime from nanos of day as value " +
+                    nanoOfDay + " must not be negative");
+        }
+        if (nanoOfDay >= NANOS_PER_DAY) {
+            throw new CalendricalException("Cannot create LocalTime from nanos of day as value " +
+                    nanoOfDay + " must be less than " + NANOS_PER_DAY);
+        }
+        int hours = (int) (nanoOfDay / NANOS_PER_HOUR);
+        nanoOfDay -= hours * NANOS_PER_HOUR;
+        int minutes = (int) (nanoOfDay / NANOS_PER_MINUTE);
+        nanoOfDay -= minutes * NANOS_PER_MINUTE;
+        int seconds = (int) (nanoOfDay / NANOS_PER_SECOND);
+        nanoOfDay -= seconds * NANOS_PER_SECOND;
+        return create(hours, minutes, seconds, (int) nanoOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a local time from the hour, minute, second and nanosecond parts.
+     * <p>
+     * This factory may return a cached value, but applications must not rely on this.
+     *
+     * @param hourOfDay  the hour of day to represent, validated from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, validated from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, validated from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, validated from 0 to 999,999,999
+     * @return the created time, never null
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    private static LocalTime create(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+        if ((minuteOfHour | secondOfMinute | nanoOfSecond) == 0) {
+            return HOURS[hourOfDay];
+        }
+        return new LocalTime(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    }
+
+    /**
      * Constructor, previously validated.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
-     * @param secondOfMinute  the second of minute to represent, not null
-     * @param nanoOfSecond  the nano of second to represent, not null
+     * @param hourOfDay  the hour of day to represent, validated from 0 to 23
+     * @param minuteOfHour  the minute of hour to represent, validated from 0 to 59
+     * @param secondOfMinute  the second of minute to represent, validated from 0 to 59
+     * @param nanoOfSecond  the nano of second to represent, validated from 0 to 999,999,999
      */
     private LocalTime(
             int hourOfDay, int minuteOfHour,
@@ -319,6 +393,14 @@ public final class LocalTime
         this.minute = (byte) minuteOfHour;
         this.second = (byte) secondOfMinute;
         this.nano = nanoOfSecond;
+    }
+
+    /**
+     * Handle singletons on deserialization.
+     * @return the resolved object.
+     */
+    private Object readResolve() {
+        return create(hour, minute, second, nano);
     }
 
     //-----------------------------------------------------------------------
@@ -873,7 +955,7 @@ public final class LocalTime
      *
      * @return the second of day equivalent to this time
      */
-    int toSecondOfDay() {
+    public int toSecondOfDay() {
         int total = hour * SECONDS_PER_HOUR;
         total += minute * SECONDS_PER_MINUTE;
         total += second;

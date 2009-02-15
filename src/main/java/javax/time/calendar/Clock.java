@@ -266,13 +266,13 @@ public abstract class Clock {
      * This returns today's date from the clock.
      * <p>
      * The local date can only be calculated from an instant if the time-zone is known.
-     * As such, the local date is derived by default from <code>offsetDateTime()</code>.
+     * As such, the local date is derived by default from <code>offsetDate()</code>.
      *
      * @return the current date, never null
      * @throws CalendricalException if the date cannot be created
      */
     public LocalDate today() {
-        return offsetDateTime().toLocalDate();
+        return offsetDate().toLocalDate();
     }
 
     /**
@@ -337,13 +337,13 @@ public abstract class Clock {
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
      * The local time can only be calculated from an instant if the time-zone is known.
-     * As such, the local time is derived by default from <code>offsetDateTime()</code>.
+     * As such, the local time is derived by default from <code>offsetTime()</code>.
      *
      * @return the current time, never null
      * @throws CalendricalException if the time cannot be created
      */
     public LocalTime time() {
-        return offsetDateTime().toLocalTime();
+        return offsetTime().toLocalTime();
     }
 
     /**
@@ -422,13 +422,14 @@ public abstract class Clock {
      * <p>
      * This returns the current offset date from the clock with the correct offset from {@link #getZone()}.
      * <p>
-     * The offset date is derived by default from <code>offsetDateTime()</code>.
+     * The offset date is derived by default from <code>instant()</code> and <code>getZone()</code>.
      *
      * @return the current offset date, never null
      * @throws CalendricalException if the date-time cannot be created
      */
     public OffsetDate offsetDate() {
-        return offsetDateTime().toOffsetDate();
+        Instant instant = instant();
+        return OffsetDate.fromInstant(instant, getZone().getOffset(instant));
     }
 
     //-----------------------------------------------------------------------
@@ -439,13 +440,14 @@ public abstract class Clock {
      * The result is not filtered, and so will have whatever resolution the clock has.
      * For example, the {@link #system system clock} has up to millisecond resolution.
      * <p>
-     * The offset time is derived by default from <code>offsetDateTime()</code>.
+     * The offset time is derived by default from <code>instant()</code> and <code>getZone()</code>.
      *
      * @return the current offset time, never null
      * @throws CalendricalException if the time cannot be created
      */
     public OffsetTime offsetTime() {
-        return offsetDateTime().toOffsetTime();
+        Instant instant = instant();
+        return OffsetTime.fromInstant(instant, getZone().getOffset(instant));
     }
 
     /**

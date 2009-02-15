@@ -43,6 +43,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
+import javax.time.CalendricalException;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.HourOfDay;
@@ -119,10 +120,14 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void constant_MIDNIGHT() {
         check(LocalTime.MIDNIGHT, 0, 0, 0, 0);
+        assertSame(LocalTime.MIDNIGHT, LocalTime.MIDNIGHT);
+        assertSame(LocalTime.MIDNIGHT, LocalTime.time(0, 0));
     }
 
     public void constant_MIDDAY() {
         check(LocalTime.MIDDAY, 12, 0, 0, 0);
+        assertSame(LocalTime.MIDDAY, LocalTime.MIDDAY);
+        assertSame(LocalTime.MIDDAY, LocalTime.time(12, 0));
     }
 
     //-----------------------------------------------------------------------
@@ -131,14 +136,12 @@ public class TestLocalTime {
         check(test, 12, 30, 0, 0);
     }
 
-    public void factory_time_2objects_midnightSingleton() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0));
-        assertSame(test, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_2objects_middaySingleton() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0));
-        assertSame(test, LocalTime.MIDDAY);
+    public void factory_time_2objects_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0));
+            LocalTime test2 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0));
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -157,14 +160,12 @@ public class TestLocalTime {
         check(test, 12, 30, 59, 0);
     }
 
-    public void factory_time_3objects_midnightSingleton() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
-        assertSame(test, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_3objects_middaySingleton() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
-        assertSame(test, LocalTime.MIDDAY);
+    public void factory_time_3objects_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
+            LocalTime test2 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -197,14 +198,12 @@ public class TestLocalTime {
         check(test, 12, 0, 0, 1);
     }
 
-    public void factory_time_4objects_midnightSingleton() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
-        assertSame(test, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_4objects_middaySingleton() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
-        assertSame(test, LocalTime.MIDDAY);
+    public void factory_time_4objects_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
+            LocalTime test2 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -233,14 +232,12 @@ public class TestLocalTime {
         check(test, 12, 30, 0, 0);
     }
 
-    public void factory_time_2ints_midnightSingleton() {
-        LocalTime test = LocalTime.time(0, 0);
-        assertSame(test, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_2ints_middaySingleton() {
-        LocalTime test = LocalTime.time(12, 0);
-        assertSame(test, LocalTime.MIDDAY);
+    public void factory_time_2ints_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(i, 0);
+            LocalTime test2 = LocalTime.time(i, 0);
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -269,14 +266,12 @@ public class TestLocalTime {
         check(test, 12, 30, 40, 0);
     }
 
-    public void factory_time_3ints_midnightSingleton() {
-        LocalTime test = LocalTime.time(0, 0, 0);
-        assertSame(test, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_3ints_middaySingleton() {
-        LocalTime test = LocalTime.time(12, 0, 0);
-        assertSame(test, LocalTime.MIDDAY);
+    public void factory_time_3ints_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(i, 0, 0);
+            LocalTime test2 = LocalTime.time(i, 0, 0);
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -317,14 +312,12 @@ public class TestLocalTime {
         check(test, 12, 0, 40, 987654321);
     }
 
-    public void factory_time_4ints_midnightSingleton() {
-        LocalTime test = LocalTime.time(0, 0, 0, 0);
-        assertSame(test, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_4ints_middaySingleton() {
-        LocalTime test = LocalTime.time(12, 0, 0, 0);
-        assertSame(test, LocalTime.MIDDAY);
+    public void factory_time_4ints_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(i, 0, 0, 0);
+            LocalTime test2 = LocalTime.time(i, 0, 0, 0);
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
@@ -373,14 +366,12 @@ public class TestLocalTime {
         check(localTime, 12, 30, 40, 987654321);
     }
 
-    public void factory_time_TimeProvider_midnightSingleton() {
-        LocalTime localTime = LocalTime.time(LocalTime.MIDNIGHT);
-        assertSame(localTime, LocalTime.MIDNIGHT);
-    }
-
-    public void factory_time_TimeProvider_middaySingleton() {
-        LocalTime localTime = LocalTime.time(LocalTime.MIDDAY);
-        assertSame(localTime, LocalTime.MIDDAY);
+    public void factory_time_TimeProvider_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.time(LocalTime.time(i, 0));
+            LocalTime test2 = LocalTime.time(i, 0);
+            assertSame(test1, test2);
+        }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -409,36 +400,132 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // fromSecondOfDay(long)
+    //-----------------------------------------------------------------------
+    public void factory_fromSecondOfDay() {
+        LocalTime localTime = LocalTime.fromSecondOfDay(2 * 60 * 60 + 17 * 60 + 23);
+        check(localTime, 2, 17, 23, 0);
+    }
+
+    public void factory_fromSecondOfDay_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.fromSecondOfDay(i * 60L * 60L);
+            LocalTime test2 = LocalTime.time(i, 0);
+            assertSame(test1, test2);
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromSecondOfDay_tooLow() {
+        try {
+            LocalTime.fromSecondOfDay(-1);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromSecondOfDay_tooHigh() {
+        try {
+            LocalTime.fromSecondOfDay(24 * 60 * 60);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // fromSecondOfDay(long, int)
+    //-----------------------------------------------------------------------
+    public void factory_fromSecondOfDay_long_int() {
+        LocalTime localTime = LocalTime.fromSecondOfDay(2 * 60 * 60 + 17 * 60 + 23, 987);
+        check(localTime, 2, 17, 23, 987);
+    }
+
+    public void factory_fromSecondOfDay7_long_int_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.fromSecondOfDay(i * 60L * 60L, 0);
+            LocalTime test2 = LocalTime.time(i, 0);
+            assertSame(test1, test2);
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromSecondOfDay_long_int_tooLowSecs() {
+        try {
+            LocalTime.fromSecondOfDay(-1, 0);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromSecondOfDay_long_int_tooHighSecs() {
+        try {
+            LocalTime.fromSecondOfDay(24 * 60 * 60, 0);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromSecondOfDay_long_int_tooLowNanos() {
+        try {
+            LocalTime.fromSecondOfDay(0, -1);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.nanoOfSecondRule());
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromSecondOfDay_long_int_tooHighNanos() {
+        try {
+            LocalTime.fromSecondOfDay(0, 1000000000);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.nanoOfSecondRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // fromNanoOfDay(long)
+    //-----------------------------------------------------------------------
     public void factory_fromNanoOfDay() {
         LocalTime localTime = LocalTime.fromNanoOfDay(60 * 60 * 1000000000L + 17);
         check(localTime, 1, 0, 0, 17);
     }
 
-    public void factory_fromNanoOfDay_midnightSingleton() {
-        LocalTime localTime = LocalTime.fromNanoOfDay(0);
-        assertSame(localTime, LocalTime.MIDNIGHT);
+    public void factory_fromNanoOfDay_singletons() {
+        for (int i = 0; i < 24; i++) {
+            LocalTime test1 = LocalTime.fromNanoOfDay(i * 1000000000L * 60L * 60L);
+            LocalTime test2 = LocalTime.time(i, 0);
+            assertSame(test1, test2);
+        }
     }
 
-    public void factory_fromNanoOfDay_middaySingleton() {
-        LocalTime localTime = LocalTime.fromNanoOfDay(12 * 60 * 60 * 1000000000L);
-        assertSame(localTime, LocalTime.MIDDAY);
-    }
-
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_fromNanoOfDay_tooLow() {
         LocalTime.fromNanoOfDay(-1);
     }
 
-    @Test(expectedExceptions=CalendarConversionException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void factory_fromNanoOfDay_tooHigh() {
-        LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L + 1);
+        LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L);
     }
 
+    //-----------------------------------------------------------------------
+    // getChronology()
     //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertSame(ISOChronology.INSTANCE, TEST_12_30_40_987654321.getChronology());
     }
 
+    //-----------------------------------------------------------------------
+    // isSupported(DateTimeFieldRule)
     //-----------------------------------------------------------------------
     public void test_isSupported() {
         assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.yearRule()));
@@ -462,6 +549,9 @@ public class TestLocalTime {
         assertFalse(TEST_12_30_40_987654321.isSupported(null));
     }
 
+    //-----------------------------------------------------------------------
+    // get(DateTimeFieldRule)
+    //-----------------------------------------------------------------------
     public void test_get() {
         assertEquals(TEST_12_30_40_987654321.get(ISOChronology.hourOfDayRule()), 12);
         assertEquals(TEST_12_30_40_987654321.get(ISOChronology.minuteOfHourRule()), 30);
@@ -1421,6 +1511,25 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
+    // toSecondOfDay()
+    //-----------------------------------------------------------------------
+    public void test_toSecondOfDay() {
+        LocalTime t = LocalTime.time(0, 0);
+        for (int i = 0; i < 24 * 60 * 60; i++) {
+            assertEquals(t.toSecondOfDay(), i);
+            t = t.plusSeconds(1);
+        }
+    }
+
+    public void test_toSecondOfDay_fromNanoOfDay_symmetry() {
+        LocalTime t = LocalTime.time(0, 0);
+        for (int i = 0; i < 24 * 60 * 60; i++) {
+            assertEquals(LocalTime.fromSecondOfDay(t.toSecondOfDay()), t);
+            t = t.plusSeconds(1);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // toNanoOfDay()
     //-----------------------------------------------------------------------
     public void test_toNanoOfDay() {
@@ -1429,21 +1538,19 @@ public class TestLocalTime {
             assertEquals(t.toNanoOfDay(), i);
             t = t.plusNanos(1);
         }
-        
         t = LocalTime.time(0, 0);
         for (int i = 1; i <= 1000000; i++) {
             t = t.minusNanos(1);
-            assertEquals(t.toNanoOfDay(), -i + 24 * 60 * 60 * 1000000000L);
+            assertEquals(t.toNanoOfDay(), 24 * 60 * 60 * 1000000000L - i);
         }
     }
 
-    public void test_toNanoOfDay_fromNanoOfDay_simmetry() {
+    public void test_toNanoOfDay_fromNanoOfDay_symmetry() {
         LocalTime t = LocalTime.time(0, 0);
         for (int i = 0; i < 1000000; i++) {
             assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
             t = t.plusNanos(1);
         }
-        
         t = LocalTime.time(0, 0);
         for (int i = 1; i <= 1000000; i++) {
             t = t.minusNanos(1);

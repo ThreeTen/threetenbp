@@ -33,6 +33,8 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
+import javax.time.Instant;
+import javax.time.InstantProvider;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
@@ -181,6 +183,31 @@ public final class OffsetTime
      */
     public static OffsetTime time(TimeProvider timeProvider, ZoneOffset offset) {
         LocalTime time = LocalTime.time(timeProvider);
+        return new OffsetTime(time, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts an instant to an offset time.
+     * <p>
+     * The date component of the instant is dropped during the conversion.
+     * This means that the conversion can never fail due to the instant being
+     * out of the valid range of dates.
+     *
+     * @param instantProvider  the instant to convert, not null
+     * @param offset  the zone offset, not null
+     * @return the created offset time, never null
+     */
+    public static OffsetTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
+        Instant instant = Instant.instant(instantProvider);
+        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        
+        long secsOfDay = instant.getEpochSeconds() % ISOChronology.SECONDS_PER_DAY;
+        secsOfDay = (secsOfDay + offset.getAmountSeconds()) % ISOChronology.SECONDS_PER_DAY;
+        if (secsOfDay < 0) {
+            secsOfDay += ISOChronology.SECONDS_PER_DAY;
+        }
+        LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
         return new OffsetTime(time, offset);
     }
 

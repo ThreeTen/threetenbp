@@ -68,10 +68,27 @@ public final class ISOChronology extends Chronology implements Serializable {
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The number of seconds in one day.
+     */
+    static final int SECONDS_PER_DAY = 60 * 60 * 24;
+    /**
+     * The number of days in a 400 year cycle.
+     */
+    static final int DAYS_PER_CYCLE = 146097;
+    /**
+     * The number of days from year zero to year 1970.
+     * There are five 400 year cycles from year zero to 2000.
+     * There are 7 leap years from 1970 to 2000.
+     */
+    static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
+    /**
+     * The number of days from year zero to the Modified Julian Day epoch of 1858-11-17.
+     */
+    static final long DAYS_0000_TO_MJD_EPOCH = 678941;
+
 //    /** Number of months in one year. */
 //    private static final int MONTHS_PER_YEAR = 12;
-//    /** Number of seconds in one day. */
-//    private static final int SECONDS_PER_DAY = 60 * 60 * 24;
 //    /** Number of seconds in one hour. */
 //    private static final int SECONDS_PER_HOUR = 60 * 60;
 //    /** Number of seconds in one minute. */
@@ -555,10 +572,23 @@ public final class ISOChronology extends Chronology implements Serializable {
         return NanoOfSecondRule.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for the second of day field.
+     * <p>
+     * This field counts seconds sequentially from the start of the day.
+     * The values run from 0 to 86399.
+     *
+     * @return the rule for the second of day field, never null
+     */
+    public static DateTimeFieldRule secondOfDayRule() {
+        return SecondOfDayRule.INSTANCE;
+    }
+
     /**
      * Gets the rule for the milli of day field.
      * <p>
-     * This field counts nanoseconds sequentially from the start of the second.
+     * This field counts milliseconds sequentially from the start of the day.
      * The values run from 0 to 86399999.
      *
      * @return the rule for the nano of second field, never null
@@ -570,7 +600,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Gets the rule for the milli of second field.
      * <p>
-     * This field counts nanoseconds sequentially from the start of the second.
+     * This field counts milliseconds sequentially from the start of the second.
      * The values run from 0 to 999.
      *
      * @return the rule for the nano of second field, never null
@@ -1137,6 +1167,43 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (time == null ? null : time.getNanoOfSecond());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class SecondOfDayRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new SecondOfDayRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private SecondOfDayRule() {
+            super(ISOChronology.INSTANCE, "SecondOfDay", SECONDS, DAYS, 0, 86399);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            return (time == null ? null : (int) (time.toSecondOfDay()));
+        }
+        @Override
+        protected void mergeDateTime(Calendrical.Merger merger) {
+            int sod = merger.getValueInt(this);
+            Integer nanoObj = merger.getValue(ISOChronology.nanoOfSecondRule());
+            int nano = 0;
+            if (nanoObj != null) {
+                nano = nanoObj;
+            }
+            if (merger.isStrict()) {
+                merger.storeMergedTime(LocalTime.fromSecondOfDay(sod, nano));
+            } else {
+                merger.storeMergedTime(LocalTime.MIDNIGHT.plusWithOverflow(0, 0, sod, nano));
+            }
+            merger.markFieldAsProcessed(this);
         }
     }
 

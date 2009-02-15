@@ -316,6 +316,21 @@ public class TestISOChronology {
         serialize(rule);
     }
 
+    //-----------------------------------------------------------------------
+    public void test_secondOfDayRule() throws Exception {
+        DateTimeFieldRule rule = ISOChronology.secondOfDayRule();
+        assertEquals(rule.getID(), "ISO.SecondOfDay");
+        assertEquals(rule.getName(), "SecondOfDay");
+        assertEquals(rule.getMinimumValue(), 0);
+        assertEquals(rule.getLargestMinimumValue(), 0);
+        assertEquals(rule.getMaximumValue(), 24 * 60 * 60 - 1);
+        assertEquals(rule.getSmallestMaximumValue(), 24 * 60 * 60 - 1);
+        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getPeriodUnit(), PeriodUnits.SECONDS);
+        assertEquals(rule.getPeriodRange(), PeriodUnits.DAYS);
+        serialize(rule);
+    }
+
     public void test_milliOfDayRule() throws Exception {
         DateTimeFieldRule rule = ISOChronology.milliOfDayRule();
         assertEquals(rule.getID(), "ISO.MilliOfDay");

@@ -350,6 +350,8 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * <p>
      * This method has no knowledge of other calendrical fields, thus only the
      * outer minimum and maximum range for the field is validated.
+     * <p>
+     * This method performs the same check as {@link #isValidValue(long)}.
      *
      * @param value  the value to check
      * @return true if the value is valid, false if invalid
@@ -359,10 +361,28 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     }
 
     /**
+     * Checks if the value is valid or invalid for this field.
+     * <p>
+     * This method has no knowledge of other calendrical fields, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * <p>
+     * This method performs the same check as {@link #isValidValue(int)}.
+     *
+     * @param value  the value to check
+     * @return true if the value is valid, false if invalid
+     */
+    public boolean isValidValue(long value) {
+        return (value >= getMinimumValue() && value <= getMaximumValue());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Checks if the value is invalid and throws an exception if it is.
      * <p>
      * This method has no knowledge of other calendrical fields, thus only the
      * outer minimum and maximum range for the field is validated.
+     * <p>
+     * This method performs the same check as {@link #checkValue(long)}.
      *
      * @param value  the value to check
      * @throws IllegalCalendarFieldValueException if the value is invalid
@@ -371,6 +391,25 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         if (value < getMinimumValue() || value > getMaximumValue()) {
             throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
         }
+    }
+
+    /**
+     * Checks if the value is invalid and throws an exception if it is.
+     * <p>
+     * This method has no knowledge of other calendrical fields, thus only the
+     * outer minimum and maximum range for the field is validated.
+     * <p>
+     * This method performs the same check as {@link #checkValue(int)}.
+     *
+     * @param value  the value to check
+     * @return the value cast to an int
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     */
+    public int checkValue(long value) {
+        if (value < getMinimumValue() || value > getMaximumValue()) {
+            throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
+        }
+        return (int) value;
     }
 
     //-----------------------------------------------------------------------

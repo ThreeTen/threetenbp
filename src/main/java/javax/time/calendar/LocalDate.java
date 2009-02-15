@@ -144,29 +144,6 @@ public final class LocalDate
     }
 
     /**
-     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
-     *
-     * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, validated not null
-     * @param dayOfMonth  the day of month to represent, validated from 1 to 31
-     * @return a LocalDate object, never null
-     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
-     */
-    private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        if (dayOfMonth > monthOfYear.lengthInDays(year)) {
-            if (dayOfMonth == 29) {
-                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
-                        year + " is not a leap year", ISOChronology.dayOfMonthRule());
-            } else {
-                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
-                        " is not valid for month " + monthOfYear.name(), ISOChronology.dayOfMonthRule());
-            }
-        }
-        return new LocalDate(year, monthOfYear, dayOfMonth);
-    }
-
-    /**
      * Obtains an instance of <code>LocalDate</code> from a date provider.
      * <p>
      * The purpose of this method is to convert a <code>DateProvider</code>
@@ -185,62 +162,99 @@ public final class LocalDate
         return result;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDate</code> from a number of Modified Julian Days.
+     * Converts an Epoch Day count to a date.
+     * <p>
+     * The Epoch Day count is a simple incrementing count of days
+     * where day 0 is 1970-01-01.
+     *
+     * @param epochDays  the Epoch Day to convert, based on the epoch 1970-01-01
+     * @return the date, never null
+     * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
+     */
+    public static LocalDate fromEpochDays(long epochDays) {
+        return fromYearZeroDays(epochDays + ISOChronology.DAYS_0000_TO_1970);
+    }
+
+    /**
+     * Converts a Modified Julian Day (MJD) count to a date.
      * <p>
      * The Modified Julian Day count is a simple incrementing count of days
      * where day 0 is 1858-11-17.
      *
-     * @param mjDays  the modified julian day equivalent to the LocalDate
+     * @param mjDays  the Modified Julian Day to convert, based on the epoch 1858-11-17
      * @return a LocalDate object, never null
-     * @throws CalendarConversionException if the modified julian days value is outside the supported range
+     * @throws IllegalCalendarFieldValueException if the modified julian days value is outside the supported range
      */
     public static LocalDate fromModifiedJulianDays(long mjDays) {
-        long total = mjDays + 678941;
-        long y = 0;
-        long leapYearCount = 0;
-        int yearLength = -1;
-        
-        do {
-            y += total / 365;
-            total %= 365;
-            total += leapYearCount;
-            if (y >= 0) {
-                leapYearCount = (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
-            } else {
-                leapYearCount = y / 4 - y / 100 + y / 400;
-            }
-            total -= leapYearCount;
+        return fromYearZeroDays(mjDays + ISOChronology.DAYS_0000_TO_MJD_EPOCH);
+    }
 
-            if (total < 0 && total / -365 == 0) {
-                y--;
-                yearLength = 365 + (((y & 3) == 0) && ((y % 100) != 0 || (y % 400) == 0) ? 1 : 0);
-                total = total % -365 + yearLength;
-            } else if (total >= 365) {
-                yearLength = 365 + (((y & 3) == 0) && ((y % 100) != 0 || (y % 400) == 0) ? 1 : 0);
-            }
-        } while (total < 0 || (yearLength != -1 && total >= yearLength));
-        
-        int year = 0;
-        try {
-            year = MathUtils.safeToInt(y);
-        } catch (ArithmeticException ae) {
-            throw new CalendarConversionException("Cannot create LocalDate from modified julian days as value " +
-                    mjDays + " is outside the supported range of years");
+    /**
+     * Converts a year zero day count to a date.
+     * <p>
+     * The year zero day count is a simple incrementing count of days
+     * where day 0 is 0000-01-01.
+     *
+     * @param epochDays  the Epoch Day to convert, based on the epoch 1970-01-01
+     * @return the date, never null
+     * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
+     */
+    static LocalDate fromYearZeroDays(long epochDays) {
+        // find the march-based year
+        epochDays -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
+        long adjust = 0;
+        if (epochDays < 0) {
+            // adjust negative years to positive for calculation
+            long adjustCycles = (epochDays + 1) / ISOChronology.DAYS_PER_CYCLE - 1;
+            adjust = adjustCycles * 400;
+            epochDays += -adjustCycles * ISOChronology.DAYS_PER_CYCLE;
         }
-        
-        MonthOfYear month = MonthOfYear.JANUARY;
-        int monthLength;
-        
-        while (total > (monthLength = month.lengthInDays(year)) - 1) {
-            total -= monthLength;
-            month = month.next();
+        long yearEst = (400 * epochDays + 591) / ISOChronology.DAYS_PER_CYCLE;
+        long doyEst = epochDays - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        if (doyEst < 0) {
+            // fix estimate
+            yearEst--;
+            doyEst = epochDays - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
         }
+        yearEst += adjust;  // reset any negative year
+        int marchDoy0 = (int) doyEst;
         
-        return new LocalDate(year, month, MathUtils.safeToInt(total) + 1);
+        // convert march-based values back to january-based
+        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
+        int month = (marchMonth0 + 2) % 12 + 1;
+        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
+        yearEst += marchMonth0 / 10;
+        
+        // check year now we are certain it is correct
+        int year = ISOChronology.yearRule().checkValue(yearEst);
+        return new LocalDate(year, MonthOfYear.monthOfYear(month), dom);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
+     *
+     * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, validated not null
+     * @param dayOfMonth  the day of month to represent, validated from 1 to 31
+     * @return a LocalDate object, never null
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        if (dayOfMonth > monthOfYear.lengthInDays(year)) {
+            if (dayOfMonth == 29) {
+                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
+                        year + " is not a leap year", ISOChronology.dayOfMonthRule());
+            } else {
+                throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value " + dayOfMonth +
+                        " is not valid for month " + monthOfYear.name(), ISOChronology.dayOfMonthRule());
+            }
+        }
+        return new LocalDate(year, monthOfYear, dayOfMonth);
+    }
+
     /**
      * Constructor, previously validated.
      *
@@ -1086,6 +1100,18 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Converts the date to Epoch Days.
+     * <p>
+     * The Epoch Day count is a simple incrementing count of days
+     * where day 0 is 1970-01-01.
+     *
+     * @return the Modified Julian Day equivalent to this date
+     */
+    public long toEpochDays() {
+        return toYearZeroDays() - ISOChronology.DAYS_0000_TO_1970;
+    }
+
+    /**
      * Converts the date to Modified Julian Days (MJD).
      * <p>
      * The Modified Julian Day count is a simple incrementing count of days
@@ -1094,6 +1120,18 @@ public final class LocalDate
      * @return the Modified Julian Day equivalent to this date
      */
     public long toModifiedJulianDays() {
+        return toYearZeroDays() - ISOChronology.DAYS_0000_TO_MJD_EPOCH;
+    }
+
+    /**
+     * Converts the date to year zero days.
+     * <p>
+     * The year zero day count is a simple incrementing count of days
+     * where day 0 is 0000-01-01.
+     *
+     * @return the year zero days count equal to this date
+     */
+    long toYearZeroDays() {
         long y = year;
         long m = month.getValue();
         long total = 0;
@@ -1111,7 +1149,7 @@ public final class LocalDate
                 total--;
             }
         }
-        return total - 678941;
+        return total;
     }
 
     //-----------------------------------------------------------------------

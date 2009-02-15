@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.Instant;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
@@ -230,6 +231,75 @@ public class TestOffsetTime {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         OffsetTime test = OffsetTime.time(mmp, OFFSET_PTWO);
         check(test, 11, 30, 10, 500, OFFSET_PTWO);
+    }
+
+    //-----------------------------------------------------------------------
+    // fromInstant()
+    //-----------------------------------------------------------------------
+    public void factory_fromInstant_multiProvider_checkAmbiguous() {
+        MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
+        OffsetTime test = OffsetTime.fromInstant(mmp, ZoneOffset.UTC);
+        check(test, 11, 30, 10, 500, ZoneOffset.UTC);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_InstantProvider_nullInstant() {
+        OffsetTime.fromInstant((Instant) null, ZoneOffset.UTC);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_InstantProvider_nullOffset() {
+        Instant instant = Instant.instant(0L);
+        OffsetTime.fromInstant(instant, (ZoneOffset) null);
+    }
+
+    public void factory_fromInstant_InstantProvider_allSecsInDay() {
+        for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
+            Instant instant = Instant.instant(i, 8);
+            OffsetTime test = OffsetTime.fromInstant(instant, ZoneOffset.UTC);
+            assertEquals(test.getHourOfDay(), (i / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), (i / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), i % 60);
+            assertEquals(test.getNanoOfSecond(), 8);
+        }
+    }
+
+    public void factory_fromInstant_InstantProvider_beforeEpoch() {
+        for (int i =-1; i >= -(24 * 60 * 60); i--) {
+            Instant instant = Instant.instant(i, 8);
+            OffsetTime test = OffsetTime.fromInstant(instant, ZoneOffset.UTC);
+            assertEquals(test.getHourOfDay(), ((i + 24 * 60 * 60) / (60 * 60)) % 24);
+            assertEquals(test.getMinuteOfHour(), ((i + 24 * 60 * 60) / 60) % 60);
+            assertEquals(test.getSecondOfMinute(), (i + 24 * 60 * 60) % 60);
+            assertEquals(test.getNanoOfSecond(), 8);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void factory_fromInstant_InstantProvider_maxYear() {
+        OffsetTime test = OffsetTime.fromInstant(Instant.instant(Long.MAX_VALUE), ZoneOffset.UTC);
+        int hour = (int) ((Long.MAX_VALUE / (60 * 60)) % 24);
+        int min = (int) ((Long.MAX_VALUE / 60) % 60);
+        int sec = (int) (Long.MAX_VALUE % 60);
+        assertEquals(test.getHourOfDay(), hour);
+        assertEquals(test.getMinuteOfHour(), min);
+        assertEquals(test.getSecondOfMinute(), sec);
+        assertEquals(test.getNanoOfSecond(), 0);
+    }
+
+    public void factory_fromInstant_InstantProvider_minYear() {
+        long oneDay = 24 * 60 * 60;
+        long addition = ((Long.MAX_VALUE / oneDay) + 2) * oneDay;
+        
+        OffsetTime test = OffsetTime.fromInstant(Instant.instant(Long.MIN_VALUE), ZoneOffset.UTC);
+        long added = Long.MIN_VALUE + addition;
+        int hour = (int) ((added / (60 * 60)) % 24);
+        int min = (int) ((added / 60) % 60);
+        int sec = (int) (added % 60);
+        assertEquals(test.getHourOfDay(), hour);
+        assertEquals(test.getMinuteOfHour(), min);
+        assertEquals(test.getSecondOfMinute(), sec);
+        assertEquals(test.getNanoOfSecond(), 0);
     }
 
     //-----------------------------------------------------------------------

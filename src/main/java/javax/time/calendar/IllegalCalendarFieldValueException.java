@@ -44,28 +44,15 @@ public class IllegalCalendarFieldValueException extends CalendarFieldException {
      * Constructs a new illegal field value exception with no message.
      *
      * @param fieldRule  the field rule, not null
-     * @param actual  the actual invalid value, not null
+     * @param actual  the actual invalid value
      * @param minValue  the minimum value allowed
      * @param maxValue  the maximum value allowed
      */
-    public IllegalCalendarFieldValueException(DateTimeFieldRule fieldRule, int actual, int minValue, int maxValue) {
+    public IllegalCalendarFieldValueException(DateTimeFieldRule fieldRule, long actual, int minValue, int maxValue) {
         super("Illegal value for " + fieldRule.getID() + " field, value " + actual +
                 " is not in the range " + minValue + " to " + maxValue, fieldRule);
     }
 
-//    /**
-//     * Constructs a new illegal field value exception with no message.
-//     *
-//     * @param fieldRule  the field rule, not null
-//     * @param actual  the actual invalid value, not null
-//     * @param minValue  the minimum value allowed
-//     * @param maxValue  the maximum value allowed
-//     */
-//    public IllegalCalendarFieldValueException(DateTimeFieldRule fieldRule, long actual, int minValue, int maxValue) {
-//        super("Illegal value for " + fieldRule.getName() + " field, value " + actual +
-//                " is not in the range " + minValue + " to " + maxValue, fieldRule);
-//    }
-//
     /**
      * Constructs a new illegal field value exception with the specified message.
      *

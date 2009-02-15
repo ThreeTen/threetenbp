@@ -107,11 +107,12 @@ public class TestOffsetDateTime_instants {
 //        System.err.println(end - start);
     }
 
+    //-----------------------------------------------------------------------
     public void factory_fromInstant_InstantProvider_minYear() {
         doTest_factory_fromInstant_InstantProvider_all(Year.MIN_YEAR, Year.MIN_YEAR + 420);
     }
 
-    @Test(expectedExceptions= {CalendarConversionException.class})
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromInstant_InstantProvider_tooLow() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR - 1;
@@ -124,7 +125,7 @@ public class TestOffsetDateTime_instants {
         doTest_factory_fromInstant_InstantProvider_all(Year.MAX_YEAR - 420, Year.MAX_YEAR);
     }
 
-    @Test(expectedExceptions= {CalendarConversionException.class})
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromInstant_InstantProvider_tooBig() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         long year = Year.MAX_YEAR + 1L;
@@ -133,6 +134,7 @@ public class TestOffsetDateTime_instants {
         OffsetDateTime.fromInstant(instant, ZoneOffset.UTC);
     }
 
+    //-----------------------------------------------------------------------
     public void factory_fromInstant_InstantProvider_minWithMinOffset() {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int year = Year.MIN_YEAR;
@@ -197,6 +199,20 @@ public class TestOffsetDateTime_instants {
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromInstant_InstantProvider_maxInstantWithMaxOffset() {
+        Instant instant = Instant.instant(Long.MAX_VALUE);
+        OffsetDateTime.fromInstant(instant, OFFSET_MAX);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_fromInstant_InstantProvider_maxInstantWithMinOffset() {
+        Instant instant = Instant.instant(Long.MAX_VALUE);
+        OffsetDateTime.fromInstant(instant, OFFSET_MIN);
+    }
+
+    //-----------------------------------------------------------------------
     private void doTest_factory_fromInstant_InstantProvider_all(int minYear, int maxYear) {
         long days_0000_to_1970 = (146097 * 5) - (30 * 365 + 7);
         int minOffset = (minYear <= 0 ? 0 : 3);
