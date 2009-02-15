@@ -90,6 +90,20 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of <code>Instant</code> from a provider of instants.
      * <p>
      * In addition to calling {@link InstantProvider#toInstant()} this method
@@ -99,13 +113,9 @@ public final class Instant
      * @return the created instant instance, never null
      */
     public static Instant instant(InstantProvider instantProvider) {
-        if (instantProvider == null) {
-            throw new NullPointerException("Instant provider must not be null");
-        }
+        checkNotNull(instantProvider, "InstantProvider must not be null");
         Instant provided = instantProvider.toInstant();
-        if (provided == null) {
-            throw new NullPointerException("The implementation of InstantProvider must not return null");
-        }
+        checkNotNull(provided, "The implementation of InstantProvider must not return null");
         return provided;
     }
 
@@ -120,7 +130,6 @@ public final class Instant
         if (epochSeconds == 0) {
             return EPOCH;
         }
-
         return new Instant(epochSeconds, 0);
     }
 
