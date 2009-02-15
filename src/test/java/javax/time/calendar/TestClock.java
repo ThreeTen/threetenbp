@@ -31,6 +31,15 @@
  */
 package javax.time.calendar;
 
+import static org.testng.Assert.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import javax.time.TimeSource;
+import javax.time.calendar.field.Year;
+
 import org.testng.annotations.Test;
 
 /**
@@ -41,111 +50,110 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestClock {
-    
-    // TODO
 
-//    //-----------------------------------------------------------------------
-//    public void test_system_isSerializable() throws IOException, ClassNotFoundException {
-//        Clock system = Clock.system();
-//        assertTrue(system instanceof Serializable);
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        ObjectOutputStream oos = new ObjectOutputStream(baos);
-//        oos.writeObject(system);
-//        oos.close();
-//
-//        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-//              baos.toByteArray()));
-//        assertEquals(ois.readObject(), system);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    public void test_system_equals() {
-//        Clock system = Clock.system();
-//        assertFalse(system.equals(null));
-//        assertFalse(system.equals(new Object()));
-//        assertFalse(system.equals(new Clock() {
-//            @Override
-//            public Instant instant() {
-//                return null;
-//            }
-//
-//            @Override
-//            public TimeZone timeZone() {
-//                return null;
-//            }
-//        }));
-//        assertFalse(system.equals(Clock.system(TimeZone.timeZone(ZoneOffset.zoneOffset(1)))));
-//        assertTrue(system.equals(system));
-//        assertTrue(system.equals(Clock.system()));
-//    }
-//
-//    public void test_system_hashCode() {
-//        Clock system = Clock.system();
-//        assertEquals(system.hashCode(), system.hashCode());
-//        assertEquals(system.hashCode(), Clock.system().hashCode());
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * This test assumes an Instant instance can eventually be produced in less than one millisecond
-//     */
-//    public void test_system_instantVersusCurrentTimeMillis() {
-//        Clock system = Clock.system();
-//
-//        long currentTimeMillis = System.currentTimeMillis();
-//        Instant instant = system.instant();
-//
-//        boolean exit = false;
-//
-//        do {
-//            Instant newInstant = system.instant();
-//            long newCurrentTimeMillis = System.currentTimeMillis();
-//
-//            if (currentTimeMillis == newCurrentTimeMillis) {
-//                assertEquals(instant, newInstant);
-//                exit = true;
-//            }
-//
-//            currentTimeMillis = newCurrentTimeMillis;
-//            instant = newInstant;
-//        } while (!exit);
-//    }
-//
-//    @Test(expectedExceptions=NullPointerException.class)
-//    public void test_system_null() {
-//        Clock.system(null);
-//    }
-//
-//    public void test_system_timeZone() {
-//        TimeZone timeZone = TimeZone.timeZone(ZoneOffset.zoneOffset(1));
-//        Clock system = Clock.system(timeZone);
-//        assertSame(timeZone, system.timeZone());
-//        assertSame(timeZone, system.currentZonedDateTime().getZone());
-//    }
-//
-//    //TODO: complete tests
-//    public void test_system_currentYear() {
-//        assertNotNull(Clock.system().currentYear());
-//    }
-//
-//    public void test_system_today() {
-//        assertNotNull(Clock.system().today());
-//    }
-//
-//    public void test_system_yesterday() {
-//        assertNotNull(Clock.system().yesterday());
-//    }
-//
-//    public void test_system_tomorrow() {
-//        assertNotNull(Clock.system().tomorrow());
-//    }
-//
-//    public void test_system_currentTime() {
-//        assertNotNull(Clock.system().currentTime());
-//    }
-//
-//    public void test_system_currentDateTime() {
-//        assertNotNull(Clock.system().currentDateTime());
-//    }
+    static class MockSimpleClock extends Clock {
+    }
+
+    static class MockClock extends Clock {
+        final TimeSource timeSource;
+        final TimeZone timeZone;
+        MockClock(TimeSource ts, TimeZone tz) {
+            timeSource = ts;
+            timeZone = tz;
+        }
+        @Override
+        public TimeSource getSource() {
+            return timeSource;
+        }
+        @Override
+        public Clock withSource(TimeSource timeSource) {
+            return new MockClock(timeSource, timeZone);
+        }
+        @Override
+        public TimeZone getZone() {
+            return timeZone;
+        }
+        @Override
+        public Clock withZone(TimeZone timeZone) {
+            return new MockClock(timeSource, timeZone);
+        }
+    }
+
+    private static final ZoneOffset OFFSET = ZoneOffset.zoneOffset(2);
+    private static final OffsetDateTime DATE_TIME = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET);
+    private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
+    private static final TimeZone ZONE = TimeZone.timeZone("Europe/Paris");
+    private static final Clock MOCK = new MockClock(TIME_SOURCE, ZONE);
+
+    //-----------------------------------------------------------------------
+    public void test_simpleClock() throws Exception {
+        Clock test = new MockSimpleClock();
+        Method[] methods = Clock.class.getDeclaredMethods();
+        for (Method method : methods) {
+            if (Modifier.isPublic(method.getModifiers()) &&
+                    Modifier.isStatic(method.getModifiers()) == false &&
+                    method.getParameterTypes().length == 0) {
+                try {
+                    method.invoke(test);
+                    fail("Excepted UnsupportedOperationException");
+                } catch (InvocationTargetException ex) {
+                    if (ex.getCause().getClass() != UnsupportedOperationException.class) {
+                        fail("Excepted UnsupportedOperationException, received " + ex.getCause().getClass());
+                    }
+                }
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_mockClock_get() {
+        assertEquals(MOCK.getSource(), TIME_SOURCE);
+        assertEquals(MOCK.getZone(), ZONE);
+    }
+
+    public void test_mockClock_withSource() {
+        Clock changed = MOCK.withSource(TimeSource.system());
+        assertEquals(changed.getSource(), TimeSource.system());
+        assertEquals(changed.getZone(), ZONE);
+    }
+
+    public void test_mockClock_withZone() {
+        TimeZone london = TimeZone.timeZone("Europe/London");
+        Clock changed = MOCK.withZone(london);
+        assertEquals(changed.getSource(), TIME_SOURCE);
+        assertEquals(changed.getZone(), london);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_mockClock_dateAndTime() {
+        assertEquals(MOCK.today(), LocalDate.date(2008, 6, 30));
+        assertEquals(MOCK.yesterday(), LocalDate.date(2008, 6, 29));
+        assertEquals(MOCK.tomorrow(), LocalDate.date(2008, 7, 1));
+        
+        assertEquals(MOCK.year(), Year.isoYear(2008));
+        assertEquals(MOCK.yearMonth(), YearMonth.yearMonth(2008, 6));
+        
+        assertEquals(MOCK.time(), LocalTime.time(11, 30, 10, 500));
+        assertEquals(MOCK.timeToSecond(), LocalTime.time(11, 30, 10));
+        assertEquals(MOCK.timeToMinute(), LocalTime.time(11, 30));
+        
+        assertEquals(MOCK.dateTime(), LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500));
+        assertEquals(MOCK.dateTimeToSecond(), LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10));
+        assertEquals(MOCK.dateTimeToMinute(), LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+        
+        assertEquals(MOCK.offsetDate(), OffsetDate.date(2008, 6, 30, OFFSET));
+        
+        assertEquals(MOCK.offsetTime(), OffsetTime.time(11, 30, 10, 500, OFFSET));
+        assertEquals(MOCK.offsetTimeToSecond(), OffsetTime.time(11, 30, 10, OFFSET));
+        assertEquals(MOCK.offsetTimeToMinute(), OffsetTime.time(11, 30, OFFSET));
+        
+        assertEquals(MOCK.offsetDateTime(), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET));
+        assertEquals(MOCK.offsetDateTimeToSecond(), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, OFFSET));
+        assertEquals(MOCK.offsetDateTimeToMinute(), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET));
+        
+        assertEquals(MOCK.zonedDateTime(), ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500), ZONE));
+        assertEquals(MOCK.zonedDateTimeToSecond(), ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10), ZONE));
+        assertEquals(MOCK.zonedDateTimeToMinute(), ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE));
+    }
+
 }
