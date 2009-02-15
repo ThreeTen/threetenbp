@@ -92,7 +92,7 @@ public final class OffsetDateTime
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateMidnight(
@@ -111,7 +111,7 @@ public final class OffsetDateTime
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -131,7 +131,7 @@ public final class OffsetDateTime
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -149,7 +149,7 @@ public final class OffsetDateTime
      *
      * @param dateProvider  the date provider to use, not null
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      */
     public static OffsetDateTime dateMidnight(DateProvider dateProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.dateMidnight(dateProvider);
@@ -167,7 +167,7 @@ public final class OffsetDateTime
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
@@ -189,7 +189,7 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param secondOfMinute  the second of minute to represent, not null
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
@@ -213,7 +213,7 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, not null
      * @param nanoOfSecond  the nano of second to represent, not null
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDateTime dateTime(
@@ -238,7 +238,7 @@ public final class OffsetDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -263,7 +263,7 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -287,7 +287,7 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -312,7 +312,7 @@ public final class OffsetDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -337,7 +337,7 @@ public final class OffsetDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -361,7 +361,7 @@ public final class OffsetDateTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -380,7 +380,7 @@ public final class OffsetDateTime
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
-     * @return a OffsetDateTime object, never null
+     * @return the offset date-time, never null
      */
     public static OffsetDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
@@ -392,7 +392,7 @@ public final class OffsetDateTime
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetDateTime object, never null
+     * @return the offset date-time, never null
      */
     public static OffsetDateTime dateTime(DateTimeProvider dateTimeProvider, ZoneOffset offset) {
         LocalDateTime dt = LocalDateTime.dateTime(dateTimeProvider);
@@ -405,7 +405,7 @@ public final class OffsetDateTime
      *
      * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
-     * @return the created offset date-time, never null
+     * @return the offset date-time, never null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     public static OffsetDateTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {

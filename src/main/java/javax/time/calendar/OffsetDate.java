@@ -85,7 +85,7 @@ public final class OffsetDate
      * @param monthOfYear  the month of year, not null
      * @param dayOfMonth  the day of month to represent, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetDate object, never null
+     * @return the offset date, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth, ZoneOffset offset) {
@@ -100,7 +100,7 @@ public final class OffsetDate
      * @param monthOfYear  the month of year, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
-     * @return an OffsetDate object, never null
+     * @return the offset date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -116,7 +116,7 @@ public final class OffsetDate
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param offset  the zone offset, not null
-     * @return an OffsetDate object, never null
+     * @return the offset date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -130,7 +130,7 @@ public final class OffsetDate
      *
      * @param dateProvider  the date provider to use, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetDate object, never null
+     * @return the offset date, never null
      */
     public static OffsetDate date(DateProvider dateProvider, ZoneOffset offset) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -145,7 +145,7 @@ public final class OffsetDate
      *
      * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
-     * @return the created offset date, never null
+     * @return the offset date, never null
      * @throws CalendarConversionException if the instant exceeds the supported date range
      */
     public static OffsetDate fromInstant(InstantProvider instantProvider, ZoneOffset offset) {

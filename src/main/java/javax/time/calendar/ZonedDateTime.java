@@ -167,7 +167,7 @@ public final class ZonedDateTime
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
      * @param zone  the time zone, not null
-     * @return a ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time zone
      */
     public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
@@ -187,7 +187,7 @@ public final class ZonedDateTime
      * @param timeProvider  the time provider to use, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
-     * @return a ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
@@ -205,7 +205,7 @@ public final class ZonedDateTime
      *
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param zone  the time zone, not null
-     * @return an ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time zone
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone) {
@@ -224,7 +224,7 @@ public final class ZonedDateTime
      * @param dateTimeProvider  the date-time provider to use, not null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
-     * @return an ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
     public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
@@ -247,7 +247,7 @@ public final class ZonedDateTime
      *
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
-     * @return a ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the date-time is invalid due to a gap in the local time-line
      * @throws CalendricalException if the offset is invalid for the time zone at the date-time
      */
@@ -277,7 +277,7 @@ public final class ZonedDateTime
      *
      * @param instantProvider  the instant to convert, not null
      * @param zone  the time zone, not null
-     * @return a ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime fromInstant(InstantProvider instantProvider, TimeZone zone) {
@@ -306,7 +306,7 @@ public final class ZonedDateTime
      *
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
-     * @return a ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the result exceeds the supported range
      */
     public static ZonedDateTime fromInstant(OffsetDateTime dateTime, TimeZone zone) {
@@ -328,7 +328,7 @@ public final class ZonedDateTime
      * @param oldDateTime  the old date-time prior to the calculation, may be null
      * @param zone  the time zone, not null
      * @param resolver  the resolver from local date-time to zoned, not null
-     * @return a ZonedDateTime object, never null
+     * @return the zoned date-time, never null
      * @throws CalendricalException if the date-time cannot be resolved
      */
     private static ZonedDateTime resolve(LocalDateTime dateTime, OffsetDateTime oldDateTime, TimeZone zone, ZoneResolver resolver) {

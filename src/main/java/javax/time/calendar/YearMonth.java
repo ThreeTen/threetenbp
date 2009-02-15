@@ -79,7 +79,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, not null
      * @param monthOfYear  the month of year to represent, not null
-     * @return the YearMonth instance, never null
+     * @return the year-month, never null
      */
     public static YearMonth yearMonth(Year year, MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(year, "Year must not be null");
@@ -92,7 +92,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
-     * @return the YearMonth instance, never null
+     * @return the year-month, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
@@ -106,7 +106,7 @@ public final class YearMonth
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return the YearMonth instance, never null
+     * @return the year-month, never null
      * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
@@ -120,7 +120,7 @@ public final class YearMonth
      * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return a YearMonth object, never null
+     * @return the year-month, never null
      */
     public static YearMonth yearMonth(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -130,10 +130,11 @@ public final class YearMonth
     /**
      * Obtains an instance of <code>YearMonth</code> from a Calendrical.
      * <p>
-     * This method will create a YearMonth from the Calendrical.
+     * This method will create a YearMonth from the Calendrical by extracting
+     * the year and month of year fields.
      *
      * @param calendricalProvider  the calendrical to use, not null
-     * @return the YearMonth instance, never null
+     * @return the year-month, never null
      * @throws UnsupportedCalendarFieldException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */

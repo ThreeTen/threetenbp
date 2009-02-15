@@ -82,7 +82,7 @@ public final class OffsetTime
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      */
     public static OffsetTime time(
             HourOfDay hourOfDay, MinuteOfHour minuteOfHour, ZoneOffset offset) {
@@ -98,7 +98,7 @@ public final class OffsetTime
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param secondOfMinute  the second of minute to represent, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      */
     public static OffsetTime time(
             HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
@@ -116,7 +116,7 @@ public final class OffsetTime
      * @param secondOfMinute  the second of minute to represent, not null
      * @param nanoOfSecond  the nano of second to represent, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      */
     public static OffsetTime time(
             HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
@@ -133,7 +133,7 @@ public final class OffsetTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
@@ -150,7 +150,7 @@ public final class OffsetTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
@@ -166,7 +166,7 @@ public final class OffsetTime
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
@@ -179,7 +179,7 @@ public final class OffsetTime
      *
      * @param timeProvider  the time provider to use, not null
      * @param offset  the zone offset, not null
-     * @return an OffsetTime object, never null
+     * @return the offset time, never null
      */
     public static OffsetTime time(TimeProvider timeProvider, ZoneOffset offset) {
         LocalTime time = LocalTime.time(timeProvider);
@@ -196,7 +196,7 @@ public final class OffsetTime
      *
      * @param instantProvider  the instant to convert, not null
      * @param offset  the zone offset, not null
-     * @return the created offset time, never null
+     * @return the offset time, never null
      */
     public static OffsetTime fromInstant(InstantProvider instantProvider, ZoneOffset offset) {
         Instant instant = Instant.instant(instantProvider);

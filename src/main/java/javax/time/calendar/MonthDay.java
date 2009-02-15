@@ -85,7 +85,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
-     * @return the MonthDay instance, never null
+     * @return the month-day, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
@@ -106,7 +106,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return the MonthDay instance, never null
+     * @return the month-day, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
@@ -132,7 +132,7 @@ public final class MonthDay
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return the MonthDay instance, never null
+     * @return the month-day, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
@@ -147,7 +147,7 @@ public final class MonthDay
      * of DateProvider, including those in other calendar systems.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return the MonthDay instance, never null
+     * @return the month-day, never null
      */
     public static MonthDay monthDay(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -157,10 +157,11 @@ public final class MonthDay
     /**
      * Obtains an instance of <code>MonthDay</code> from a Calendrical.
      * <p>
-     * This method will create a MonthDay from the Calendrical.
+     * This method will create a MonthDay from the Calendrical by extracting the
+     * month of year and day of month fields.
      *
      * @param calendricalProvider  the calendrical provider to use, not null
-     * @return the MonthDay instance, never null
+     * @return the month-day, never null
      * @throws UnsupportedCalendarFieldException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
