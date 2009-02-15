@@ -35,6 +35,7 @@ import java.util.Arrays;
 
 import javax.time.calendar.TestCalendrical;
 import javax.time.calendar.TestCalendricalMerger;
+import javax.time.calendar.TestClock;
 import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateMatchers;
 import javax.time.calendar.TestDateResolvers;
@@ -64,8 +65,8 @@ import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.field.TestNanoOfSecond;
 import javax.time.calendar.field.TestQuarterOfYear;
 import javax.time.calendar.field.TestSecondOfMinute;
-import javax.time.calendar.field.TestWeekOfWeekBasedYear;
 import javax.time.calendar.field.TestWeekBasedYear;
+import javax.time.calendar.field.TestWeekOfWeekBasedYear;
 import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCalendricalFormatException;
 import javax.time.calendar.format.TestCharLiteralParser;
@@ -113,13 +114,16 @@ public class AllTest {
         TestNG testng = new TestNG();
         testng.setTestClasses(new Class[] {
             // main classes
-            TestClock.class,
             TestDuration.class,
             TestInstant.class,
             TestMathUtils.class,
+            TestTimeSource_Fixed.class,
+            TestTimeSource_OffsetSystem.class,
+            TestTimeSource_System.class,
             // calendar classes
             TestCalendrical.class,
             TestCalendricalMerger.class,
+            TestClock.class,
             TestDateAdjusters.class,
             TestDateMatchers.class,
             TestDateResolvers.class,

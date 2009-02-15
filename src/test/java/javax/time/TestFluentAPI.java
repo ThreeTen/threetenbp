@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,6 +41,7 @@ import static javax.time.calendar.field.MonthOfYear.*;
 import static javax.time.calendar.field.Year.*;
 import static javax.time.period.Period.*;
 
+import javax.time.calendar.Clock;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
@@ -59,7 +60,9 @@ import javax.time.period.Period;
 public class TestFluentAPI {
 
     public static void main(String[] args) {
-        LocalTime tod = Clock.system().currentTime();
+        Clock clock = Clock.systemDefaultZone();
+        
+        LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6)).plus(minutes(2));
         if (tod.matches(AmPmOfDay.AM)) {
@@ -67,8 +70,8 @@ public class TestFluentAPI {
         }
         
         LocalDate date = null;
-        date = Clock.system().today().plusDays(3);
-        date = Clock.system().today().plus(days(3));
+        date = clock.today().plusDays(3);
+        date = clock.today().plus(days(3));
 //        date = Clock.system().today().plus(Days.days(3));
         
         date = date(2007, 3, 20);

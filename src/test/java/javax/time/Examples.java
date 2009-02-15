@@ -42,6 +42,7 @@ import static javax.time.period.Period.*;
 
 import java.util.Locale;
 
+import javax.time.calendar.Clock;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -67,47 +68,49 @@ public class Examples {
      * @param args  no arguments needed
      */
     public static void main(String[] args) {
-        ZonedDateTime zdt = Clock.system().currentZonedDateTime();
+        Clock clock = Clock.systemDefaultZone();
+        
+        ZonedDateTime zdt = clock.zonedDateTime();
         System.out.println("Current date-time: " + zdt);
         
-        ZonedDateTime zdtNewYork = Clock.system(timeZone("America/New_York")).currentZonedDateTime();
+        ZonedDateTime zdtNewYork = Clock.system(timeZone("America/New_York")).zonedDateTime();
         System.out.println("Current date-time in New York: " + zdtNewYork);
         
-        ZonedDateTime zdtParis = Clock.system(timeZone("Europe/Paris")).currentZonedDateTime();
+        ZonedDateTime zdtParis = Clock.system(timeZone("Europe/Paris")).zonedDateTime();
         System.out.println("Current date-time in Paris: " + zdtParis);
         
-        LocalDateTime ldt = Clock.system().currentDateTime();
+        LocalDateTime ldt = clock.dateTime();
         System.out.println("Current local date-time: " + ldt);
         
-        Year year = Clock.system().currentYear();
+        Year year = clock.year();
         System.out.println("Year: " + year.getValue());
         
-        LocalDate today = Clock.system().today();
+        LocalDate today = clock.today();
         System.out.println("Today: " + today);
         
-        LocalDate tomorrow = Clock.system().tomorrow();
+        LocalDate tomorrow = clock.tomorrow();
         System.out.println("Tomorrow: " + tomorrow);
         
-        LocalDate yesterday = Clock.system().yesterday();
+        LocalDate yesterday = clock.yesterday();
         System.out.println("Yesterday: " + yesterday);
         
-        LocalTime time = Clock.system().currentTime();
+        LocalTime time = clock.time();
         System.out.println("Current time of day: " + time);
         
-        LocalDate later = Clock.system().today().plusMonths(2).plusDays(3);
+        LocalDate later = clock.today().plusMonths(2).plusDays(3);
         System.out.println("Two months three days after today: " + later);
         
         Period period = yearsMonthsDays(1, 3, 5);
-        LocalDate moreLater = Clock.system().today().plus(period);
+        LocalDate moreLater = clock.today().plus(period);
         System.out.println("Period " + period + " after today : " + moreLater);
         
-        LocalDate dec = Clock.system().today().with(DECEMBER);
+        LocalDate dec = clock.today().with(DECEMBER);
         System.out.println("Change to same day in December: " + dec);
         
-        LocalDate lastDayOfMonth = Clock.system().today().with(lastDayOfMonth());
+        LocalDate lastDayOfMonth = clock.today().with(lastDayOfMonth());
         System.out.println("Last day of month: " + lastDayOfMonth);
         
-        LocalDate tempDate = Clock.system().today();
+        LocalDate tempDate = clock.today();
         boolean fri13 = tempDate.matches(FRIDAY) && tempDate.matches(dayOfMonth(13));
         System.out.println("Is Friday the Thirteenth: " + fri13);
         
