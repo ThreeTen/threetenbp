@@ -90,7 +90,7 @@ public final class LocalDateTime
      * @param year  the year to represent, not null
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDateTime dateMidnight(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
@@ -107,7 +107,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -125,7 +125,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -141,7 +141,7 @@ public final class LocalDateTime
      * The time fields will be set to zero by this factory method.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      */
     public static LocalDateTime dateMidnight(DateProvider dateProvider) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -158,7 +158,7 @@ public final class LocalDateTime
      * @param dayOfMonth  the day of month to represent, not null
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDateTime dateTime(
@@ -179,7 +179,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour of day to represent, not null
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param secondOfMinute  the second of minute to represent, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDateTime dateTime(
@@ -201,7 +201,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute of hour to represent, not null
      * @param secondOfMinute  the second of minute to represent, not null
      * @param nanoOfSecond  the nano of second to represent, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDateTime dateTime(
@@ -225,7 +225,7 @@ public final class LocalDateTime
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -249,7 +249,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -272,7 +272,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -296,7 +296,7 @@ public final class LocalDateTime
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -320,7 +320,7 @@ public final class LocalDateTime
      * @param hourOfDay  the hour of day to represent, from 0 to 23
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -343,7 +343,7 @@ public final class LocalDateTime
      * @param minuteOfHour  the minute of hour to represent, from 0 to 59
      * @param secondOfMinute  the second of minute to represent, from 0 to 59
      * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -361,7 +361,7 @@ public final class LocalDateTime
      *
      * @param dateProvider  the date provider to use, not null
      * @param timeProvider  the time provider to use, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      */
     public static LocalDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider) {
         LocalDate date = LocalDate.date(dateProvider);
@@ -378,7 +378,7 @@ public final class LocalDateTime
      * whether the result of the provider is null.
      *
      * @param dateTimeProvider  the date-time provider to use, not null
-     * @return a LocalDateTime object, never null
+     * @return the local date-time, never null
      */
     public static LocalDateTime dateTime(DateTimeProvider dateTimeProvider) {
         ISOChronology.checkNotNull(dateTimeProvider, "DateTimeProvider must not be null");

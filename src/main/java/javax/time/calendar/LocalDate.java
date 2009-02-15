@@ -99,7 +99,7 @@ public final class LocalDate
      * @param year  the year to represent, not null
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, not null
-     * @return a LocalDate object, never null
+     * @return the local date, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
@@ -115,7 +115,7 @@ public final class LocalDate
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a LocalDate object, never null
+     * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -132,7 +132,7 @@ public final class LocalDate
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a LocalDate object, never null
+     * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -152,7 +152,7 @@ public final class LocalDate
      * whether the result of the provider is null.
      *
      * @param dateProvider  the date provider to use, not null
-     * @return a LocalDate object, never null
+     * @return the local date, never null
      * @throws NullPointerException if the provider is null or returns null
      */
     public static LocalDate date(DateProvider dateProvider) {
@@ -170,7 +170,7 @@ public final class LocalDate
      * where day 0 is 1970-01-01.
      *
      * @param epochDays  the Epoch Day to convert, based on the epoch 1970-01-01
-     * @return the date, never null
+     * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
     public static LocalDate fromEpochDays(long epochDays) {
@@ -184,7 +184,7 @@ public final class LocalDate
      * where day 0 is 1858-11-17.
      *
      * @param mjDays  the Modified Julian Day to convert, based on the epoch 1858-11-17
-     * @return a LocalDate object, never null
+     * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the modified julian days value is outside the supported range
      */
     public static LocalDate fromModifiedJulianDays(long mjDays) {
@@ -198,7 +198,7 @@ public final class LocalDate
      * where day 0 is 0000-01-01.
      *
      * @param epochDays  the Epoch Day to convert, based on the epoch 1970-01-01
-     * @return the date, never null
+     * @return the local date, never null
      * @throws IllegalCalendarFieldValueException if the epoch days exceeds the supported date range
      */
     static LocalDate fromYearZeroDays(long epochDays) {
@@ -234,12 +234,12 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
+     * Creates a local date from the year, month and day fields.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, validated not null
      * @param dayOfMonth  the day of month to represent, validated from 1 to 31
-     * @return a LocalDate object, never null
+     * @return the local date, never null
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
