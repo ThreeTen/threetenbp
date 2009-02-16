@@ -177,6 +177,38 @@ public class TestZoneResolvers {
     }
 
     //-----------------------------------------------------------------------
+    // postGapPreOverlap()
+    //-----------------------------------------------------------------------
+    public void postGapPreOverlap_factory() {
+        assertNotNull(ZoneResolvers.postGapPreOverlap());
+        assertSame(ZoneResolvers.postGapPreOverlap(), ZoneResolvers.postGapPreOverlap());
+    }
+
+    public void postGapPreOverlap_winter() {
+        OffsetDateTime resolved = ZoneResolvers.postGapPreOverlap().resolve(ZONE_PARIS, DT_WINTER, null);
+        assertEquals(resolved.getDateTime(), DT_WINTER);
+        assertEquals(resolved.getOffset(), OFFSET_0100);
+    }
+
+    public void postGapPreOverlap_summer() {
+        OffsetDateTime resolved = ZoneResolvers.postGapPreOverlap().resolve(ZONE_PARIS, DT_SUMMER, null);
+        assertEquals(resolved.getDateTime(), DT_SUMMER);
+        assertEquals(resolved.getOffset(), OFFSET_0200);
+    }
+
+    public void postGapPreOverlap_gap() {
+        OffsetDateTime resolved = ZoneResolvers.postGapPreOverlap().resolve(ZONE_PARIS, DT_PARIS_GAP, null);
+        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses later
+    }
+
+    public void postGapPreOverlap_overlap() {
+        OffsetDateTime resolved = ZoneResolvers.postGapPreOverlap().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null);
+        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
+        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses earlier
+    }
+
+    //-----------------------------------------------------------------------
     // retainOffset()
     //-----------------------------------------------------------------------
     public void retainOffset_factory() {

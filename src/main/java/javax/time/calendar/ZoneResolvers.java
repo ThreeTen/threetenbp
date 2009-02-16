@@ -105,7 +105,7 @@ public final class ZoneResolvers {
      */
     private static class PreTransition extends ZoneResolver {
         /** The singleton instance. */
-        private static final PreTransition INSTANCE = new PreTransition();
+        private static final ZoneResolver INSTANCE = new PreTransition();
         
         /** {@inheritDoc} */
         @Override
@@ -140,7 +140,7 @@ public final class ZoneResolvers {
      */
     private static class PostTransition extends ZoneResolver {
         /** The singleton instance. */
-        private static final PostTransition INSTANCE = new PostTransition();
+        private static final ZoneResolver INSTANCE = new PostTransition();
         
         /** {@inheritDoc} */
         @Override
@@ -155,6 +155,40 @@ public final class ZoneResolvers {
                 TimeZone zone, Discontinuity discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetAfter());
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the post-gap-pre-overlap zone resolver, which returns the instant
+     * after the transition for gaps, and the earlier offset for overlaps.
+     *
+     * @return the post-transition resolver, never null
+     */
+    public static ZoneResolver postGapPreOverlap() {
+        return PostGapPreOverlap.INSTANCE;
+    }
+
+    /**
+     * Class implementing postGapPreOverlap resolver.
+     */
+    private static class PostGapPreOverlap extends ZoneResolver {
+        /** The singleton instance. */
+        private static final ZoneResolver INSTANCE = new PostGapPreOverlap();
+        
+        /** {@inheritDoc} */
+        @Override
+        protected OffsetDateTime handleGap(
+                TimeZone zone, Discontinuity discontinuity,
+                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
+            return discontinuity.getTransitionDateTimeAfter();
+        }
+        /** {@inheritDoc} */
+        @Override
+        protected OffsetDateTime handleOverlap(
+                TimeZone zone, Discontinuity discontinuity,
+                LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
+            return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetBefore());
         }
     }
 
@@ -182,7 +216,7 @@ public final class ZoneResolvers {
      */
     private static class RetainOffset extends ZoneResolver {
         /** The singleton instance. */
-        private static final RetainOffset INSTANCE = new RetainOffset();
+        private static final ZoneResolver INSTANCE = new RetainOffset();
         
         /** {@inheritDoc} */
         @Override
@@ -227,7 +261,7 @@ public final class ZoneResolvers {
      */
     private static class PushForward extends ZoneResolver {
         /** The singleton instance. */
-        private static final PushForward INSTANCE = new PushForward();
+        private static final ZoneResolver INSTANCE = new PushForward();
         
         /** {@inheritDoc} */
         @Override
