@@ -75,7 +75,7 @@ public abstract class ZoneResolver {
      * @param newDateTime  the new date-time, not null
      * @param oldDateTime  the old date-time before the adjustment, may be null
      * @return the resolved values, returned as a (year,month,day) tuple, never null
-     * @throws IllegalCalendarFieldValueException if a field cannot be resolved
+     * @throws CalendricalException if the date-time cannot be resolved
      */
     public final OffsetDateTime resolve(
             TimeZone zone,
