@@ -39,14 +39,10 @@ import javax.time.CalendricalException;
  * CalendricalProvider is a simple interface that provides uniform access to
  * any object that can provide access to a calendrical.
  * <p>
- * NOTE: The implementation of <code>CalendricalProvider</code> may be mutable.
- * For example, {@link java.util.GregorianCalendar GregorianCalendar} is a
- * mutable implementation of this interface.
- * The result of {@link #toCalendrical()}, however, is immutable.
- * <p>
  * CalendricalProvider makes no guarantees about the thread-safety or
  * immutability of implementations.
  *
+ * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
 public interface CalendricalProvider {
