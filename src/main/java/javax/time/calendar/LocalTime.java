@@ -915,6 +915,22 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns an offset time formed from this time and the specified offset.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified offset -
+     * to form an instance of <code>OffsetTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param offset  the offset to use, not null
+     * @return the offset time formed from this time and the specified offset, never null
+     */
+    public OffsetTime atOffset(ZoneOffset offset) {
+        return OffsetTime.time(this, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this time to a <code>DateTimeFields</code> containing the
      * hour, minute, second and nano fields.
      *

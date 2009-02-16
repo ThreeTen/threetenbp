@@ -44,6 +44,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 import javax.time.InstantProvider;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.HourOfDay;
@@ -68,6 +69,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestOffsetDateTime {
 
+    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.zoneOffset(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
     private static final ZoneOffset OFFSET_MONE = ZoneOffset.zoneOffset(-1);
@@ -1080,6 +1083,81 @@ public class TestOffsetDateTime {
     public void test_matches_TimeMatcher_null() {
         OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.matches((TimeMatcher) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atZoneSameInstant()
+    //-----------------------------------------------------------------------
+    public void test_atZone() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_MTWO);
+        assertEquals(t.atZoneSameInstant(ZONE_PARIS),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 15, 30), ZONE_PARIS));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZone_nullTimeZone() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        t.atZoneSameInstant((TimeZone) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atZoneSimilarLocal()
+    //-----------------------------------------------------------------------
+    public void test_atZoneSimilarLocal() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_MTWO);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+    }
+
+    public void test_atZoneSimilarLocal_dstGap() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
+        System.out.println(ZONE_GAZA.getOffset(t));
+        assertEquals(t.atZoneSimilarLocal(ZONE_GAZA),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZoneSimilarLocal_nullTimeZone() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        t.atZoneSimilarLocal((TimeZone) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_atZoneSimilarLocal_resolver() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_MTWO);
+        assertEquals(t.atZoneSimilarLocal(ZONE_PARIS, ZoneResolvers.postTransition()),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+    }
+
+    public void test_atZoneSimilarLocal_resolver_dstGap() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
+        System.out.println(ZONE_GAZA.getOffset(t));
+        assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.postTransition()),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+    }
+
+    public void test_atZoneSimilarLocal_resolver_dstGap_pre() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
+        assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.preTransition()),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZoneSimilarLocal_resolver_nullTimeZone() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        t.atZoneSimilarLocal((TimeZone) null, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZoneSimilarLocal_resolver_nullResolver() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        t.atZoneSimilarLocal(ZONE_PARIS, (ZoneResolver) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_atZoneSimilarLocal_resolver_badResolver() {
+        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_PTWO);
+        t.atZoneSimilarLocal(ZONE_GAZA, new MockZoneResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------

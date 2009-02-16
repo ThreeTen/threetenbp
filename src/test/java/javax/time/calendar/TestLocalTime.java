@@ -66,6 +66,9 @@ import org.testng.annotations.Test;
  */
 @Test(timeOut=5000)
 public class TestLocalTime {
+
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
+
     private LocalTime TEST_12_30_40_987654321;
 
     @BeforeMethod
@@ -1490,6 +1493,20 @@ public class TestLocalTime {
 //        assertFalse(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
         assertTrue(TEST_12_30_40_987654321.matches(AmPmOfDay.PM));
         assertFalse(TEST_12_30_40_987654321.matches(AmPmOfDay.AM));
+    }
+
+    //-----------------------------------------------------------------------
+    // atOffset()
+    //-----------------------------------------------------------------------
+    public void test_atOffset() {
+        LocalTime t = LocalTime.time(11, 30);
+        assertEquals(t.atOffset(OFFSET_PTWO), OffsetTime.time(11, 30, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atOffset_nullZoneOffset() {
+        LocalTime t = LocalTime.time(11, 30);
+        t.atOffset((ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------

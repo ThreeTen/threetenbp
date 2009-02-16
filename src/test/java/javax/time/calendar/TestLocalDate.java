@@ -70,6 +70,10 @@ public class TestLocalDate {
 
     private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
     private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
+    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
+    
     private LocalDate TEST_2007_07_15;
     private long MAX_VALID_EPOCHDAYS;
     private long MIN_VALID_EPOCHDAYS;
@@ -1643,6 +1647,63 @@ public class TestLocalDate {
         assertFalse(TEST_2007_07_15.matches(DayOfMonth.dayOfMonth(14)));
         assertTrue(TEST_2007_07_15.matches(DayOfWeek.SUNDAY));
         assertFalse(TEST_2007_07_15.matches(DayOfWeek.MONDAY));
+    }
+
+    //-----------------------------------------------------------------------
+    // atTime()
+    //-----------------------------------------------------------------------
+    public void test_atTime() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        assertEquals(t.atTime(LocalTime.time(11, 30)), LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atTime_nullLocalTime() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        t.atTime((LocalTime) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atMidnight()
+    //-----------------------------------------------------------------------
+    public void test_atMidnight() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        assertEquals(t.atMidnight(), LocalDateTime.dateTime(2008, 6, 30, 0, 0));
+    }
+
+    //-----------------------------------------------------------------------
+    // atOffset()
+    //-----------------------------------------------------------------------
+    public void test_atOffset() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDate.date(2008, 6, 30, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atOffset_nullZoneOffset() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        t.atOffset((ZoneOffset) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atStartOfDayInZone()
+    //-----------------------------------------------------------------------
+    public void test_atStartOfDayInZone() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        assertEquals(t.atStartOfDayInZone(ZONE_PARIS),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 0, 0), ZONE_PARIS));
+    }
+
+    public void test_atStartOfDayInZone_dstGap() {
+        LocalDate t = LocalDate.date(2007, 4, 1);
+        assertEquals(t.atStartOfDayInZone(ZONE_GAZA),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atStartOfDayInZone_nullTimeZone() {
+        LocalDate t = LocalDate.date(2008, 6, 30);
+        t.atStartOfDayInZone((TimeZone) null);
     }
 
     //-----------------------------------------------------------------------

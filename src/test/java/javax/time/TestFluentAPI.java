@@ -44,8 +44,13 @@ import static javax.time.period.Period.*;
 import javax.time.calendar.Clock;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -182,8 +187,13 @@ public class TestFluentAPI {
 //        secondOfMinute(sec);
 //        minuteOfHour(min);
         
-//        year(2008).append(MonthOfYear.JULY).append(dayOfMonth(3))
-//        LocalDateTime dt = date.append(tod);
+        ZoneOffset offset = ZoneOffset.zoneOffset(1);
+        TimeZone paris = TimeZone.timeZone("Europe/Paris");
+        
+        LocalDateTime ldt = date.atTime(tod);
+        OffsetDateTime odt = date.atTime(tod).atOffset(offset);
+        ZonedDateTime zdt1 = date.atStartOfDayInZone(paris);
+        ZonedDateTime zdt2 = date.atMidnight().atZone(paris);
         
         
 //        {

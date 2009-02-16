@@ -71,6 +71,11 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestLocalDateTime {
+
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
+    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
+
     private LocalDateTime TEST_2007_07_15_12_30_40_987654321;
 
     @BeforeMethod
@@ -3146,6 +3151,78 @@ public class TestLocalDateTime {
 //        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.PM));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.AM));
+    }
+
+    //-----------------------------------------------------------------------
+    // atOffset()
+    //-----------------------------------------------------------------------
+    public void test_atOffset() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atOffset_nullZoneOffset() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        t.atOffset((ZoneOffset) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atZone()
+    //-----------------------------------------------------------------------
+    public void test_atZone() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        assertEquals(t.atZone(ZONE_PARIS),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+    }
+
+    public void test_atZone_dstGap() {
+        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        assertEquals(t.atZone(ZONE_GAZA),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZone_nullTimeZone() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        t.atZone((TimeZone) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_atZone_resolver() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        assertEquals(t.atZone(ZONE_PARIS, ZoneResolvers.postTransition()),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+    }
+
+    public void test_atZone_resolver_dstGap() {
+        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        assertEquals(t.atZone(ZONE_GAZA, ZoneResolvers.postTransition()),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+    }
+
+    public void test_atZone_resolver_dstGap_pre() {
+        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        assertEquals(t.atZone(ZONE_GAZA, ZoneResolvers.preTransition()),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZone_resolver_nullTimeZone() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        t.atZone((TimeZone) null, ZoneResolvers.strict());
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atZone_resolver_nullResolver() {
+        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        t.atZone(ZONE_PARIS, (ZoneResolver) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_atZone_resolver_badResolver() {
+        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        t.atZone(ZONE_GAZA, new MockZoneResolverReturnsNull());
     }
 
     //-----------------------------------------------------------------------

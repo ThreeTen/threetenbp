@@ -880,6 +880,63 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
+     * Returns an offset date-time formed from this date at the specified time.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified time -
+     * to form an instance of <code>OffsetDateTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param time  the time to use, not null
+     * @return the offset date-time formed from this date and the specified time, never null
+     */
+    public OffsetDateTime atTime(LocalTime time) {
+        return OffsetDateTime.dateTime(this, time, getOffset());
+    }
+
+    /**
+     * Returns an offset date-time formed from this date at the time of midnight.
+     * <p>
+     * This merges the two objects - <code>this</code> and {@link LocalTime#MIDNIGHT} -
+     * to form an instance of <code>OffsetDateTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @return the offset date-time formed from this date and the time of midnight, never null
+     */
+    public OffsetDateTime atMidnight() {
+        return OffsetDateTime.dateTime(this, LocalTime.MIDNIGHT, getOffset());
+    }
+
+    /**
+     * Returns a zoned date-time from this date at the earliest valid time according
+     * to the rules in the time-zone ignoring the current offset.
+     * <p>
+     * Time-zone rules, such as daylight savings, mean that not every time on the
+     * local time-line exists. When this method converts the date to a date-time it
+     * adjusts the time and offset as necessary to ensure that the time is as early
+     * as possible on the date, which is typically midnight. Internally this is
+     * achieved using the {@link ZoneResolvers#postGapPreOverlap() zone resolver}.
+     * <p>
+     * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
+     * followed by {@link OffsetDateTime#atZone(TimeZone)}. Note that the resolver used
+     * by <code>atZone()</code> is different to that used here (it chooses the later
+     * offset in an overlap, whereas this method chooses the earlier offset).
+     * <p>
+     * The offset from this date is ignored during the conversion.
+     * This ensures that the resultant date-time has the same date as this.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
+     */
+    public ZonedDateTime atStartOfDayInZone(TimeZone zone) {
+        return ZonedDateTime.dateTime(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date to a <code>LocalDate</code>.
      *
      * @return a LocalDate with the same date as this instance, never null

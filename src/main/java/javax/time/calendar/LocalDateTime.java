@@ -1535,6 +1535,63 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns an offset date-time formed from this date-time and the specified offset.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified offset -
+     * to form an instance of <code>OffsetDateTime</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param offset  the offset to use, not null
+     * @return the offset date-time formed from this date-time and the specified offset, never null
+     */
+    public OffsetDateTime atOffset(ZoneOffset offset) {
+        return OffsetDateTime.dateTime(this, offset);
+    }
+
+    /**
+     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * <p>
+     * Time-zone rules, such as daylight savings, mean that not every time on the
+     * local time-line exists. When this method converts the date to a date-time it adjusts
+     * the time and offset according to the {@link ZoneResolvers#postTransition()} rules.
+     * This selects the date-time immediately after a gap and the later offset in overlaps.
+     * <p>
+     * Finer control over gaps and overlaps is available in two ways.
+     * If you simply want to use the earlier offset at overlaps then call
+     * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
+     * Alternately, pass a specific resolver to {@link #atZone(TimeZone, ZoneResolver)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @return the zoned date-time formed from this date-time, never null
+     */
+    public ZonedDateTime atZone(TimeZone zone) {
+        return ZonedDateTime.dateTime(this, zone, ZoneResolvers.postTransition());
+    }
+
+    /**
+     * Returns a zoned date-time formed from this date-time and the specified time-zone
+     * taking control of what occurs in time-line gaps and overlaps.
+     * <p>
+     * Time-zone rules, such as daylight savings, mean that not every time on the
+     * local time-line exists. When this method converts the date to a date-time it adjusts
+     * the time and offset according to the specified zone resolver.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @param resolver  the zone resolver to use for gaps and overlaps, not null
+     * @return the zoned date-time formed from this date-time, never null
+     * @throws CalendricalException if the date-time cannot be resolved
+     */
+    public ZonedDateTime atZone(TimeZone zone, ZoneResolver resolver) {
+        return ZonedDateTime.dateTime(this, zone, resolver);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date-time to a <code>LocalDate</code>.
      *
      * @return a LocalDate representing the date fields of this date-time, never null

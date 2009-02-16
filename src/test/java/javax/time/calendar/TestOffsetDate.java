@@ -68,6 +68,9 @@ import org.testng.annotations.Test;
 public class TestOffsetDate {
     private static final ZoneOffset OFFSET_PONE = ZoneOffset.zoneOffset(1);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
+    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
+    
     private OffsetDate TEST_2007_07_15_PONE;
     private OffsetDate MAX_DATE;
     private OffsetDate MIN_DATE;
@@ -305,10 +308,10 @@ public class TestOffsetDate {
     public void factory_fromInstant_InstantProvider_allSecsInDay_offset() {
         for (int i = 0; i < (2 * 24 * 60 * 60); i++) {
             Instant instant = Instant.instant(i);
-            OffsetDate test = OffsetDate.fromInstant(instant.plusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
+            OffsetDate test = OffsetDate.fromInstant(instant.minusSeconds(OFFSET_PONE.getAmountSeconds()), OFFSET_PONE);
             assertEquals(test.getYear(), 1970);
             assertEquals(test.getMonthOfYear(), MonthOfYear.JANUARY);
-            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60 ? 1 : 2));
+            assertEquals(test.getDayOfMonth(), (i < 24 * 60 * 60) ? 1 : 2);
         }
     }
 
@@ -1584,6 +1587,49 @@ public class TestOffsetDate {
     public void test_matches_null() {
         OffsetDate base = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
         base.matches(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atTime()
+    //-----------------------------------------------------------------------
+    public void test_atTime() {
+        OffsetDate t = OffsetDate.date(2008, 6, 30, OFFSET_PTWO);
+        assertEquals(t.atTime(LocalTime.time(11, 30)), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atTime_nullLocalTime() {
+        OffsetDate t = OffsetDate.date(2008, 6, 30, OFFSET_PTWO);
+        t.atTime((LocalTime) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atMidnight()
+    //-----------------------------------------------------------------------
+    public void test_atMidnight() {
+        OffsetDate t = OffsetDate.date(2008, 6, 30, OFFSET_PTWO);
+        assertEquals(t.atMidnight(), OffsetDateTime.dateTime(2008, 6, 30, 0, 0, OFFSET_PTWO));
+    }
+
+    //-----------------------------------------------------------------------
+    // atStartOfDayInZone()
+    //-----------------------------------------------------------------------
+    public void test_atStartOfDayInZone() {
+        OffsetDate t = OffsetDate.date(2008, 6, 30, OFFSET_PTWO);
+        assertEquals(t.atStartOfDayInZone(ZONE_PARIS),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 0, 0), ZONE_PARIS));
+    }
+
+    public void test_atStartOfDayInZone_dstGap() {
+        OffsetDate t = OffsetDate.date(2007, 4, 1, OFFSET_PTWO);
+        assertEquals(t.atStartOfDayInZone(ZONE_GAZA),
+                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atStartOfDayInZone_nullZoneOffset() {
+        OffsetDate t = OffsetDate.date(2008, 6, 30, OFFSET_PTWO);
+        t.atStartOfDayInZone((TimeZone) null);
     }
 
     //-----------------------------------------------------------------------

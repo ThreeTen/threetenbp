@@ -1576,6 +1576,78 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a zoned date-time formed from the instant represented by this
+     * date-time and the specified time-zone.
+     * <p>
+     * This conversion will ignore the visible local date-time and use the underlying instant instead.
+     * This avoids any problems with local time-line gaps or overlaps.
+     * The result might have different values for fields such as hour, minute an even day.
+     * <p>
+     * To attempt to retain the values of the fields, use {@link #atZoneSimilarLocal(TimeZone)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @return the zoned date-time formed from this date-time, never null
+     */
+    public ZonedDateTime atZoneSameInstant(TimeZone zone) {
+        return ZonedDateTime.fromInstant(this, zone);
+    }
+
+    /**
+     * Returns a zoned date-time formed from this date-time and the specified time-zone.
+     * <p>
+     * Time-zone rules, such as daylight savings, mean that not every time on the
+     * local time-line exists. As a result, this method can only convert the date-time
+     * to the same time if the time-zone rules permit it. If not then a similar time is returned.
+     * <p>
+     * This method uses the {@link ZoneResolvers#postTransition() post transition} rules
+     * to determine what to do when a gap or overlap occurs. These rules select the
+     * date-time immediately after a gap and the later offset in overlaps.
+     * <p>
+     * Finer control over gaps and overlaps is available in two ways.
+     * If you simply want to use the earlier offset at overlaps then call
+     * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
+     * Alternately, pass a specific resolver to {@link #atZone(TimeZone, ZoneResolver)}.
+     * <p>
+     * To create a zoned date-time at the same instant irrespective of the local time-line,
+     * use {@link #atZoneSameInstant(TimeZone)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
+     */
+    public ZonedDateTime atZoneSimilarLocal(TimeZone zone) {
+        return ZonedDateTime.dateTime(this, zone, ZoneResolvers.postTransition());
+    }
+
+    /**
+     * Returns a zoned date-time formed from this date-time and the specified time-zone
+     * taking control of what occurs in time-line gaps and overlaps.
+     * <p>
+     * Time-zone rules, such as daylight savings, mean that not every time on the
+     * local time-line exists. As a result, this method can only convert the date-time
+     * to the same time if the time-zone rules permit it. If not then a similar time is returned.
+     * <p>
+     * This method uses the specified resolver to determine what to do when a gap or overlap occurs.
+     * <p>
+     * To create a zoned date-time at the same instant irrespective of the local time-line,
+     * use {@link #atZoneSameInstant(TimeZone)}.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param zone  the time-zone to use, not null
+     * @param resolver  the zone resolver to use for gaps and overlaps, not null
+     * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
+     * @throws CalendricalException if the date-time cannot be resolved
+     */
+    public ZonedDateTime atZoneSimilarLocal(TimeZone zone, ZoneResolver resolver) {
+        return ZonedDateTime.dateTime(this, zone, resolver);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date-time to an <code>Instant</code>.
      *
      * @return an Instant representing the same instant, never null
