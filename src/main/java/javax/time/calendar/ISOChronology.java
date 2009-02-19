@@ -770,7 +770,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (year != null) {
                 int doy = merger.getValueInt(this);
                 if (merger.isStrict() || doy >= 1 && doy <= 365) {  // range is valid for all years
-                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
+                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).atYear(year));
                 } else {
                     merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
                 }

@@ -446,6 +446,37 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a date formed from this month-day at the specified year.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified year -
+     * to form an instance of <code>LocalDate</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to use, not null
+     * @return the local date formed from this month-day and the specified year, never null
+     */
+    public LocalDate atYear(Year year) {
+        return atYear(year.getValue());
+    }
+
+    /**
+     * Returns a date formed from this month-day at the specified year.
+     * <p>
+     * This method merges <code>this</code> and the specified year to form an
+     * instance of <code>LocalDate</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to use, from MIN_YEAR to MAX_YEAR
+     * @return the local date formed from this month-day and the specified year, never null
+     */
+    public LocalDate atYear(int year) {
+        return LocalDate.date(year, month, day);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date to a <code>Calendrical</code>.
      *
      * @return the calendrical representation for this instance, never null
@@ -454,35 +485,6 @@ public final class MonthDay
         return new Calendrical(
                 ISOChronology.monthOfYearRule(), month.getValue(),
                 ISOChronology.dayOfMonthRule(), day);
-    }
-
-    /**
-     * Converts this month-day to a <code>LocalDate</code> in the specified year.
-     * <p>
-     * This method will throw an error if this represents February the 29th and
-     * the year is not a leap year.
-     *
-     * @param year  the year to use, not null
-     * @return the created date, never null
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
-     */
-    public LocalDate toLocalDate(Year year) {
-        return toLocalDate(year.getValue());
-    }
-
-    /**
-     * Converts this month-day to a <code>LocalDate</code> in the specified year.
-     * <p>
-     * This method will throw an error if this represents February the 29th and
-     * the year is not a leap year.
-     *
-     * @param year  the year to use, from MIN_YEAR to MAX_YEAR
-     * @return the created date, never null
-     * @throws IllegalCalendarFieldValueException if the year is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
-     */
-    public LocalDate toLocalDate(int year) {
-        return LocalDate.date(year, month, day);
     }
 
     //-----------------------------------------------------------------------

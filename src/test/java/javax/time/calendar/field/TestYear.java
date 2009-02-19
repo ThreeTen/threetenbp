@@ -50,7 +50,9 @@ import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
+import javax.time.calendar.MonthDay;
 import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.YearMonth;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -607,6 +609,64 @@ public class TestYear {
 //        assertEquals(Year.isoYear(-100).getYearOfISOCentury(), 0);
 //        assertEquals(Year.isoYear(-101).getYearOfISOCentury(), 1);
 //    }
+
+    //-----------------------------------------------------------------------
+    // atMonth(MonthOfYear)
+    //-----------------------------------------------------------------------
+    public void test_atMonth() {
+        Year test = Year.isoYear(2008);
+        assertEquals(test.atMonth(MonthOfYear.JUNE), YearMonth.yearMonth(2008, 6));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atMonth_nullMonth() {
+        Year test = Year.isoYear(2008);
+        test.atMonth((MonthOfYear) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atMonth(int)
+    //-----------------------------------------------------------------------
+    public void test_atMonth_int() {
+        Year test = Year.isoYear(2008);
+        assertEquals(test.atMonth(6), YearMonth.yearMonth(2008, 6));
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atMonth_int_invalidMonth() {
+        Year test = Year.isoYear(2008);
+        try {
+            test.atMonth(13);
+        } catch (IllegalCalendarFieldValueException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.monthOfYearRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // atMonthDay(MonthOfYear)
+    //-----------------------------------------------------------------------
+    public void test_atMonthDay() {
+        Year test = Year.isoYear(2008);
+        assertEquals(test.atMonthDay(MonthDay.monthDay(6, 30)), LocalDate.date(2008, 6, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atMonthDay_nullMonthDay() {
+        Year test = Year.isoYear(2008);
+        test.atMonthDay((MonthDay) null);
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atMonthDay_invalidMonthDay() {
+        Year test = Year.isoYear(2008);
+        try {
+            test.atMonthDay(MonthDay.monthDay(6, 31));
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
+    }
 
     //-----------------------------------------------------------------------
     // toCalendrical()

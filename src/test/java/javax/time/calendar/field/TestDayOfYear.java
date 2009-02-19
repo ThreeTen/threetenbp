@@ -168,44 +168,6 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // createDate(Year)
-    //-----------------------------------------------------------------------
-    public void test_createDate_Year_notLeapYear() {
-        LocalDate expected = LocalDate.date(2007, 1, 1);
-        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
-            assertEquals(test.createDate(YEAR_STANDARD), expected);
-            expected = expected.plusDays(1);
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_createDate_fromStartOfYear_notLeapYear_day366() {
-        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
-        try {
-            test.createDate(YEAR_STANDARD);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE);
-            throw ex;
-        }
-    }
-
-    public void test_createDate_Year_leapYear() {
-        LocalDate expected = LocalDate.date(2008, 1, 1);
-        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
-            assertEquals(test.createDate(YEAR_LEAP), expected);
-            expected = expected.plusDays(1);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_createDate_Year_nullYear() {
-        DayOfYear test = DayOfYear.dayOfYear(1);
-        test.createDate((Year) null);
-    }
-
-    //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
     public void test_adjustDate_fromStartOfYear_notLeapYear() {
@@ -312,7 +274,7 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // isValid()
+    // isValid(Year)
     //-----------------------------------------------------------------------
     public void test_isValid_notLeapYear() {
         Year year = YEAR_STANDARD;
@@ -342,6 +304,105 @@ public class TestDayOfYear {
         Year year = null;
         DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
         test.isValid(year);
+    }
+
+    //-----------------------------------------------------------------------
+    // isValid(int)
+    //-----------------------------------------------------------------------
+    public void test_isValid_int_notLeapYear() {
+        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
+            DayOfYear test = DayOfYear.dayOfYear(i);
+            assertEquals(test.isValid(2007), i < LEAP_YEAR_LENGTH);
+        }
+    }
+
+    public void test_isValid_int_leapYear() {
+        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
+            DayOfYear test = DayOfYear.dayOfYear(i);
+            assertEquals(test.isValid(2008), true);
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_isValid_int_invalidDay() {
+        DayOfYear test = DayOfYear.dayOfYear(1);
+        assertEquals(test.isValid(Year.MIN_YEAR - 1), false);
+    }
+
+    //-----------------------------------------------------------------------
+    // atYear(Year)
+    //-----------------------------------------------------------------------
+    public void test_atYear_Year_notLeapYear() {
+        LocalDate expected = LocalDate.date(2007, 1, 1);
+        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
+            DayOfYear test = DayOfYear.dayOfYear(i);
+            assertEquals(test.atYear(YEAR_STANDARD), expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atYear_fromStartOfYear_notLeapYear_day366() {
+        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
+        try {
+            test.atYear(YEAR_STANDARD);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), RULE);
+            throw ex;
+        }
+    }
+
+    public void test_atYear_Year_leapYear() {
+        LocalDate expected = LocalDate.date(2008, 1, 1);
+        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
+            DayOfYear test = DayOfYear.dayOfYear(i);
+            assertEquals(test.atYear(YEAR_LEAP), expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atYear_Year_nullYear() {
+        DayOfYear test = DayOfYear.dayOfYear(1);
+        test.atYear((Year) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // atYear(int)
+    //-----------------------------------------------------------------------
+    public void test_atYear_int_notLeapYear() {
+        LocalDate expected = LocalDate.date(2007, 1, 1);
+        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
+            DayOfYear test = DayOfYear.dayOfYear(i);
+            assertEquals(test.atYear(2007), expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atYear_int_fromStartOfYear_notLeapYear_day366() {
+        DayOfYear test = DayOfYear.dayOfYear(LEAP_YEAR_LENGTH);
+        try {
+            test.atYear(2007);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), RULE);
+            throw ex;
+        }
+    }
+
+    public void test_atYear_int_leapYear() {
+        LocalDate expected = LocalDate.date(2008, 1, 1);
+        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
+            DayOfYear test = DayOfYear.dayOfYear(i);
+            assertEquals(test.atYear(2008), expected);
+            expected = expected.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_atYear_int_invalidDay() {
+        DayOfYear test = DayOfYear.dayOfYear(1);
+        test.atYear(Year.MIN_YEAR - 1);
     }
 
     //-----------------------------------------------------------------------

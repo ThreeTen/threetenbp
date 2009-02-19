@@ -50,6 +50,7 @@ import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
+import javax.time.calendar.MonthDay;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -671,6 +672,50 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
         assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
         assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
+    }
+
+    //-----------------------------------------------------------------------
+    // atDay(DayOfMonth)
+    //-----------------------------------------------------------------------
+    public void test_atDay() {
+        MonthOfYear test = MonthOfYear.JUNE;
+        assertEquals(test.atDay(DayOfMonth.dayOfMonth(30)), MonthDay.monthDay(6, 30));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_atDay_nullYear() {
+        MonthOfYear test = MonthOfYear.JUNE;
+        test.atDay((DayOfMonth) null);
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atDay_invalidDay() {
+        MonthOfYear test = MonthOfYear.JUNE;
+        try {
+            test.atDay(DayOfMonth.dayOfMonth(31));
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // atDay(int)
+    //-----------------------------------------------------------------------
+    public void test_atDay_int() {
+        MonthOfYear test = MonthOfYear.JUNE;
+        assertEquals(test.atDay(30), MonthDay.monthDay(6, 30));
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_atDay_int_invalidDay() {
+        MonthOfYear test = MonthOfYear.JUNE;
+        try {
+            test.atDay(31);
+        } catch (InvalidCalendarFieldException ex) {
+            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

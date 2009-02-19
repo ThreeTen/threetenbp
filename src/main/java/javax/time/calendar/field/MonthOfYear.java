@@ -43,7 +43,9 @@ import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.MonthDay;
 import javax.time.calendar.format.DateTimeFormatSymbols;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -460,6 +462,39 @@ public enum MonthOfYear
      */
     public int getMonthOfQuarter() {
         return (ordinal() % 3) + 1;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a month-day formed from this month at the specified day of month.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified day -
+     * to form an instance of <code>MonthDay</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to use, not null
+     * @return the month-day formed from this month and the specified day, never null
+     * @throws InvalidCalendarFieldException when the day is invalid for the month
+     */
+    public MonthDay atDay(DayOfMonth dayOfMonth) {
+        return atDay(dayOfMonth.getValue());
+    }
+
+    /**
+     * Returns a month-day formed from this month at the specified day of month.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified day -
+     * to form an instance of <code>MonthDay</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to use, from 1 to 31
+     * @return the month-day formed from this month and the specified day, never null
+     * @throws InvalidCalendarFieldException when the day is invalid for the month
+     */
+    public MonthDay atDay(int dayOfMonth) {
+        return MonthDay.monthDay(this, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

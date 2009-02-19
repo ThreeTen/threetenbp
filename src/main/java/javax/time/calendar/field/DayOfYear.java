@@ -217,31 +217,6 @@ public final class DayOfYear
 //        return DayOfMonth.dayOfMonth(dayOfYear - array[month - 1]);
 //    }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Creates a date using this day of year and the given year.
-     *
-     * @param year  the year that the day of year occurs in, not null
-     * @return the date, never null
-     * @throws InvalidCalendarFieldException if the day does not occur in the year
-     */
-    public LocalDate createDate(Year year) {
-        if (isValid(year) == false) {
-            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, rule());
-        }
-        int doy0 = dayOfYear - 1;
-        int[] array = (year.isLeap() ? LEAP_MONTH_START : STANDARD_MONTH_START);
-        int month = 1;
-        for ( ; month < 12; month++) {
-            if (doy0 < array[month]) {
-                break;
-            }
-        }
-        MonthOfYear moy = MonthOfYear.monthOfYear(month);
-        DayOfMonth dom = DayOfMonth.dayOfMonth(dayOfYear - array[month - 1]);
-        return LocalDate.date(year, moy, dom);
-    }
-
     /**
      * Adjusts a date to have the value of this day of year, returning a new date.
      * <p>
@@ -255,7 +230,7 @@ public final class DayOfYear
      * @throws IllegalCalendarFieldValueException if the day of year is invalid for the input year
      */
     public LocalDate adjustDate(LocalDate date) {
-        return createDate(date.toYear());
+        return atYear(date.toYear());
     }
 
     /**
@@ -268,6 +243,7 @@ public final class DayOfYear
         return date.getDayOfYear() == dayOfYear;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Checks if this day of year is valid for the specified year.
      *
@@ -276,9 +252,71 @@ public final class DayOfYear
      */
     public boolean isValid(Year year) {
         if (year == null) {
-            throw new NullPointerException("The year must not be null");
+            throw new NullPointerException("Year must not be null");
         }
         return (dayOfYear < 366 || year.isLeap());
+    }
+
+    /**
+     * Checks if this day of year is valid for the specified year.
+     *
+     * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
+     * @return true if this day of year is valid for the year
+     * @throws IllegalCalendarFieldValueException if the year is out of range
+     */
+    public boolean isValid(int year) {
+        ISOChronology.yearRule().checkValue(year);
+        return (dayOfYear < 366 || ISOChronology.isLeapYear(year));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a date formed from this day of year at the specified year.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified year -
+     * to form an instance of <code>LocalDate</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to use, not null
+     * @return the local date formed from this day and the specified year, never null
+     * @throws InvalidCalendarFieldException if the day does not occur in the year
+     */
+    public LocalDate atYear(Year year) {
+        if (year == null) {
+            throw new NullPointerException("Year must not be null");
+        }
+        return atYear(year.getValue());
+    }
+
+    /**
+     * Returns a date formed from this day of year at the specified year.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified year -
+     * to form an instance of <code>LocalDate</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to use, from MIN_YEAR to MAX_YEAR
+     * @return the local date formed from this day and the specified year, never null
+     * @throws InvalidCalendarFieldException if the day does not occur in the year
+     */
+    public LocalDate atYear(int year) {
+        boolean leap = ISOChronology.isLeapYear(year);
+        if (dayOfYear == 366 && leap == false) {
+            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, rule());
+        }
+        int doy0 = dayOfYear - 1;
+        int[] array = (leap ? LEAP_MONTH_START : STANDARD_MONTH_START);
+        int month = 1;
+        for ( ; month < 12; month++) {
+            if (doy0 < array[month]) {
+                break;
+            }
+        }
+        MonthOfYear moy = MonthOfYear.monthOfYear(month);
+        int dom = dayOfYear - array[month - 1];
+        return LocalDate.date(year, moy, dom);
     }
 
     //-----------------------------------------------------------------------

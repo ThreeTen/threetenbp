@@ -49,7 +49,7 @@ import javax.time.period.PeriodProvider;
  * This class does not store or represent a day, time or time zone.
  * Thus, for example, the value "October 2007" can be stored in a YearMonth.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * <p>
  * YearMonth is immutable and thread-safe.
  *
@@ -496,6 +496,39 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a date formed from this year-month at the specified day of month.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified day -
+     * to form an instance of <code>LocalDate</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to use, not null
+     * @return the local date formed from this year-month and the specified day, never null
+     * @throws InvalidCalendarFieldException when the day is invalid for the year-month
+     */
+    public LocalDate atDay(DayOfMonth dayOfMonth) {
+        return atDay(dayOfMonth.getValue());
+    }
+
+    /**
+     * Returns a date formed from this year-month at the specified day of month.
+     * <p>
+     * This method merges <code>this</code> and the specified day to form an
+     * instance of <code>LocalDate</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to use, from 1 to 31
+     * @return the local date formed from this year-month and the specified day, never null
+     * @throws InvalidCalendarFieldException when the day is invalid for the year-month
+     */
+    public LocalDate atDay(int dayOfMonth) {
+        return LocalDate.date(year, month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date to a <code>Calendrical</code>.
      *
      * @return the calendrical representation for this instance, never null
@@ -504,32 +537,6 @@ public final class YearMonth
         return new Calendrical(
                 ISOChronology.yearRule(), year,
                 ISOChronology.monthOfYearRule(), month.getValue());
-    }
-
-    /**
-     * Converts this year-month to a <code>LocalDate</code> using the specified day of month.
-     * <p>
-     * This method will throw an exception if the day of month is invalid for the year-month.
-     *
-     * @param dayOfMonth  the day of month to use, not null
-     * @return the created date, never null
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
-     */
-    public LocalDate toLocalDate(DayOfMonth dayOfMonth) {
-        return toLocalDate(dayOfMonth.getValue());
-    }
-
-    /**
-     * Converts this year-month to a <code>LocalDate</code> using the specified day of month.
-     * <p>
-     * This method will throw an exception if the day of month is invalid for the year-month.
-     *
-     * @param dayOfMonth  the day of month to use, not null
-     * @return the created date, never null
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year-month
-     */
-    public LocalDate toLocalDate(int dayOfMonth) {
-        return LocalDate.date(year, month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------

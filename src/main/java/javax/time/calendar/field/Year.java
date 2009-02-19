@@ -45,8 +45,11 @@ import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.MonthDay;
 import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.YearMonth;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -467,6 +470,69 @@ public final class Year
 //        int yoc = year % 100;
 //        return yoc < 0 ? yoc + 100 : yoc;
 //    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a year-month formed from this year at the specified month.
+     * <p>
+     * This method merges <code>this</code> and the specified month to form an
+     * instance of <code>YearMonth</code>.
+     * <p>
+     * This method can be used as part of a chain to produce a date:
+     * <pre>
+     * LocalDate date = year.atMonth(month).atDay(day);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to use, not null
+     * @return the year-month formed from this year and the specified month, never null
+     */
+    public YearMonth atMonth(MonthOfYear monthOfYear) {
+        return YearMonth.yearMonth(year, monthOfYear);
+    }
+
+    /**
+     * Returns a year-month formed from this year at the specified month.
+     * <p>
+     * This method merges <code>this</code> and the specified month to form an
+     * instance of <code>YearMonth</code>.
+     * <p>
+     * This method can be used as part of a chain to produce a date:
+     * <pre>
+     * LocalDate date = year.atMonth(month).atDay(day);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to use, from 1 (January) to 12 (December)
+     * @return the year-month formed from this year and the specified month, never null
+     */
+    public YearMonth atMonth(int monthOfYear) {
+        return YearMonth.yearMonth(year, monthOfYear);
+    }
+
+    /**
+     * Returns a date formed from this year at the specified month-day.
+     * <p>
+     * This merges the two objects - <code>this</code> and the specified day -
+     * to form an instance of <code>LocalDate</code>.
+     * <p>
+     * As an alternative to this method if you only have separate values for
+     * the month and day of month you can chain using <code>atMonth</code>:
+     * <pre>
+     * LocalDate date = year.atMonth(month).atDay(day);
+     * </pre>
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthDay  the month-day to use, not null
+     * @return the local date formed from this year and the specified month-day, never null
+     * @throws InvalidCalendarFieldException if the month-day is February 29th and this is not a leap year
+     */
+    public LocalDate atMonthDay(MonthDay monthDay) {
+        return LocalDate.date(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
+    }
 
     //-----------------------------------------------------------------------
     /**
