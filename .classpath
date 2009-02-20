@@ -5,10 +5,6 @@
 	<classpathentry kind="src" path="src-openjdk/main/java"/>
 	<classpathentry kind="src" output="build/test" path="src-openjdk/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/main/velocity-1.5.jar"/>
-	<classpathentry kind="lib" path="lib/main/oro-2.0.8.jar"/>
-	<classpathentry kind="lib" path="lib/main/commons-lang-2.1.jar"/>
-	<classpathentry kind="lib" path="lib/main/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/test/testng-5.1-jdk15.jar"/>
 	<classpathentry kind="output" path="build/main"/>
 </classpath>
