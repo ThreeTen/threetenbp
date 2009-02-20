@@ -48,7 +48,7 @@
         <mkdir dir="${lib.test}" />
         <mkdir dir="${lib.coverage}" />
 
-        <get-dependency group="org/testng" artifact="testng" version="5.1" variant="-jdk15" dest="${lib.test}" />
+        <get-dependency group="org/testng" artifact="testng" version="5.8" variant="-jdk15" dest="${lib.test}" />
 
         <get-dependency group="emma" artifact="emma" version="2.0.5312" dest="${lib.coverage}" />
         <get-dependency group="emma" artifact="emma_ant" version="2.0.5312" dest="${lib.coverage}" />
@@ -66,9 +66,11 @@
     <target name="compile" depends="init" description="compile the source">
         <mkdir dir="${build.main}" />
         <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
+        <copy file="${src.main}/javax/time/calendar/zone/ZoneRuleInfo-Olson-2008i.dat" 
+                            todir="${build.main}/javax/time/calendar/zone/" />
     </target>
    
-   <target name="javadoc" depends="init" description="generates javadoc for the api">
+    <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
       <javadoc sourcepath="${src.main}" destdir="${build.javadoc}" 
                 classpathref="main.path"
@@ -76,7 +78,7 @@
                failonerror="true"
                packagenames="javax.time**/*,java.util**/*"
                overview="${src.main}/javax/time/overview.html" />
-   </target>
+    </target>
 
     <target name="compile-tests" depends="compile" description="compile the tests">
         <mkdir dir="${build.test}" />
@@ -86,6 +88,7 @@
     <target name="test" depends="compile-tests" description="run the tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
         <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${src.test}" haltonfailure="true" verbose="2">
+            <jvmarg value="-Xmx512M" />
             <classfileset dir="${build.test}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
     </target>
@@ -112,7 +115,7 @@
 
     <target name="dist" depends="jar" description="generate the distribution">
         <mkdir dir="${dist}/${src}" />
-    	<copy todir="${dist}/${src}">
+        <copy todir="${dist}/${src}">
             <fileset dir="${src}"/>
         </copy>
         <copy todir="${dist}/nbproject">
