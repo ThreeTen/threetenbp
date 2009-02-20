@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1111,7 +1113,6 @@ public class TestOffsetDateTime {
 
     public void test_atZoneSimilarLocal_dstGap() {
         OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
-        System.out.println(ZONE_GAZA.getOffset(t));
         assertEquals(t.atZoneSimilarLocal(ZONE_GAZA),
                 ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
@@ -1131,7 +1132,6 @@ public class TestOffsetDateTime {
 
     public void test_atZoneSimilarLocal_resolver_dstGap() {
         OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
-        System.out.println(ZONE_GAZA.getOffset(t));
         assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.postTransition()),
                 ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
