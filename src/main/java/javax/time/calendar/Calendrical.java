@@ -475,7 +475,7 @@ public final class Calendrical
      * For example, see {@link ISOChronology}.
      * <p>
      * The details of the process are controlled by the merge context.
-     * This includes strict/lenient behaviour.
+     * This includes strict/lenient behavior.
      * <p>
      * The merge must result in consistent values for each field, date and time.
      * If two different values are produced an exception is thrown.
@@ -514,7 +514,7 @@ public final class Calendrical
      * For example, see {@link ISOChronology}.
      * <p>
      * The details of the process are controlled by the merge context.
-     * This includes strict/lenient behaviour.
+     * This includes strict/lenient behavior.
      * <p>
      * The merge must result in consistent values for each field, date and time.
      * If two different values are produced an exception is thrown.
@@ -552,7 +552,7 @@ public final class Calendrical
      * For example, see {@link ISOChronology}.
      * <p>
      * The details of the process are controlled by the merge context.
-     * This includes strict/lenient behaviour.
+     * This includes strict/lenient behavior.
      * <p>
      * The merge must result in consistent values for each field, date and time.
      * If two different values are produced an exception is thrown.
@@ -857,9 +857,11 @@ public final class Calendrical
 
         //-----------------------------------------------------------------------
         /**
-         * The size of the map of fields to values.
+         * Returns the size of the map of fields to values.
+         * <p>
+         * This method returns the number of field-value pairs stored.
          *
-         * @return number of field-value pairs
+         * @return number of field-value pairs, zero or greater
          */
         public int size() {
             return fieldValueMap.size();
@@ -1199,8 +1201,8 @@ public final class Calendrical
         /**
          * Is this field map equal to the specified map.
          *
-         * @param obj  the other field set to compare to, null returns false
-         * @return true if this instance is equal to the specified field set
+         * @param obj  the other field map to compare to, null returns false
+         * @return true if this instance is equal to the specified field map
          */
         @Override
         public boolean equals(Object obj) {
@@ -1238,6 +1240,7 @@ public final class Calendrical
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Stateful helper used during the calendrical merge process.
      * <p>
