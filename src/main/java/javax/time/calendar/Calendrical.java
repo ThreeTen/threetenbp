@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -868,7 +868,7 @@ public final class Calendrical
         /**
          * Iterates through all the fields.
          * <p>
-         * This method fulfils the {@link Iterable} interface and allows looping
+         * This method fulfills the {@link Iterable} interface and allows looping
          * around the fields using the for-each loop. The values can be obtained using
          * {@link #get(DateTimeFieldRule)} or {@link #getValueValidated(DateTimeFieldRule)}.
          *
@@ -891,10 +891,7 @@ public final class Calendrical
          * @return true if the field is supported, false otherwise
          */
         public boolean contains(DateTimeFieldRule fieldRule) {
-            if (fieldRule == null) {
-                return false;
-            }
-            return fieldValueMap.containsKey(fieldRule);
+            return fieldRule != null && fieldValueMap.containsKey(fieldRule);
         }
 
         /**
