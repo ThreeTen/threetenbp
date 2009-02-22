@@ -42,7 +42,7 @@ import javax.time.MathUtils;
  * As an example, "3 months, 4 days and 7 hours" can be stored.
  * <p>
  * Period stores just six units - years, months, days, hours, minutes and seconds.
- * There is an implied relationship between some of these units:
+ * Certain methods have an implied relationship between some of these units:
  * <ul>
  * <li>12 months in a year</li>
  * <li>24 hours in a day (ignoring time zones)</li>
@@ -50,8 +50,9 @@ import javax.time.MathUtils;
  * <li>60 seconds in a minute</li>
  * <li>1,000,000,000 nanoseconds in a second</li>
  * </ul>
- * This is exposed in the {@link #normalized()} and {@link #normalizedWith24HourDays()} methods.
- * Period can be used by any calendar system that makes the same assumptions as shown above.
+ * Period can be used to store data for use by any calendar system.
+ * However, those methods which make the assumptions above will only be valid
+ * for use if the calendar system matches the assumptions.
  * <p>
  * Note that beyond the limits specified above, the stored amounts are only descriptive.
  * For example, a year in two calendar systems may differ in length.
@@ -896,6 +897,255 @@ public final class Period
         total /= 24;
         int days = MathUtils.safeToInt(total);
         return period(years, months, days, hours, minutes, seconds, nanos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the total number of years represented by this period using standard
+     * assumptions for the meaning of month.
+     * <p>
+     * This method ignores days, hours, minutes, seconds and nanos.
+     * It calculates using the assumption:
+     * <ul>
+     * <li>12 months in a year</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of years
+     */
+    public long totalYears() {
+        return ((long) years) + ((long) months) / 12L;
+    }
+
+    /**
+     * Gets the total number of months represented by this period using standard
+     * assumptions for the meaning of month.
+     * <p>
+     * This method ignores days, hours, minutes, seconds and nanos.
+     * It calculates using the assumption:
+     * <ul>
+     * <li>12 months in a year</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of years
+     */
+    public long totalMonths() {
+        return ((long) years) * 12L + ((long) months);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the total number of days represented by this period using standard
+     * assumptions for the meaning of day, hour, minute and second.
+     * <p>
+     * This method ignores years and months.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>24 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of days
+     */
+    public long totalDaysWith24HourDays() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return days + (hours + (minutes + (seconds + (nanos / 1000000000L)) / 60L) / 60L) / 24L;  // will not overflow
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the total number of hours represented by this period using standard
+     * assumptions for the meaning of hour, minute and second.
+     * <p>
+     * This method ignores years, months and days.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of hours
+     */
+    public long totalHours() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return hours + (minutes + (seconds + (nanos / 1000000000L)) / 60L) / 60L;  // will not overflow
+    }
+
+    /**
+     * Gets the total number of hours represented by this period using standard
+     * assumptions for the meaning of day, hour, minute and second.
+     * <p>
+     * This method ignores years and months.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>24 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of hours
+     */
+    public long totalHoursWith24HourDays() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return days * 24L + hours + (minutes + (seconds + (nanos / 1000000000L)) / 60L) / 60L;  // will not overflow
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the total number of minutes represented by this period using standard
+     * assumptions for the meaning of hour, minute and second.
+     * <p>
+     * This method ignores years, months and days.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of minutes
+     */
+    public long totalMinutes() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return hours * 60L + minutes + (seconds + (nanos / 1000000000L)) / 60L;  // will not overflow
+    }
+
+    /**
+     * Gets the total number of minutes represented by this period using standard
+     * assumptions for the meaning of day, hour, minute and second.
+     * <p>
+     * This method ignores years and months.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>24 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of minutes
+     */
+    public long totalMinutesWith24HourDays() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return (days * 24L + hours) * 60L + minutes + (seconds + (nanos / 1000000000L)) / 60L;  // will not overflow
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the total number of seconds represented by this period using standard
+     * assumptions for the meaning of hour, minute and second.
+     * <p>
+     * This method ignores years, months and days.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of seconds
+     */
+    public long totalSeconds() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return (hours * 60L + minutes) * 60L + seconds + nanos / 1000000000L;  // will not overflow
+    }
+
+    /**
+     * Gets the total number of seconds represented by this period using standard
+     * assumptions for the meaning of day, hour, minute and second.
+     * <p>
+     * This method ignores years and months.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>24 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of seconds
+     */
+    public long totalSecondsWith24HourDays() {
+        if (this == ZERO) {
+            return 0;
+        }
+        return ((days * 24L + hours) * 60L + minutes) * 60L + seconds + nanos / 1000000000L;  // will not overflow
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the total number of nanoseconds represented by this period using standard
+     * assumptions for the meaning of hour, minute and second.
+     * <p>
+     * This method ignores years, months and days.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of nanoseconds
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public long totalNanos() {
+        if (this == ZERO) {
+            return 0;
+        }
+        long secs = ((hours * 60L + minutes) * 60L + seconds);  // will not overflow
+        long otherNanos = MathUtils.safeMultiply(secs, 1000000000L);
+        return MathUtils.safeAdd(otherNanos, nanos);
+    }
+
+    /**
+     * Gets the total number of nanoseconds represented by this period using standard
+     * assumptions for the meaning of day, hour, minute and second.
+     * <p>
+     * This method ignores years and months.
+     * It calculates using assumptions:
+     * <ul>
+     * <li>24 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return the total number of nanoseconds
+     * @throws ArithmeticException if the calculation result overflows
+     */
+    public long totalNanosWith24HourDays() {
+        if (this == ZERO) {
+            return 0;
+        }
+        long secs = (((days * 24L + hours) * 60L + minutes) * 60L + seconds);  // will not overflow
+        long otherNanos = MathUtils.safeMultiply(secs, 1000000000L);
+        return MathUtils.safeAdd(otherNanos, nanos);
     }
 
     //-----------------------------------------------------------------------
