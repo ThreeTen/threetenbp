@@ -161,51 +161,54 @@ public final class MathUtils {
     /**
      * Safely multiply a long by an int.
      *
-     * @param val1  the first value
-     * @param scalar  the second value
+     * @param a  the first value
+     * @param b  the second value
      * @return the new total
      * @throws ArithmeticException if the result overflows a long
      */
-    public static long safeMultiply(long val1, int scalar) {
-        switch (scalar) {
+    public static long safeMultiply(long a, int b) {
+        switch (b) {
             case -1:
-                return -val1;
+                if (a == Long.MIN_VALUE) {
+                    throw new ArithmeticException("Multiplication overflows a long: " + a + " * " + b);
+                }
+                return -a;
             case 0:
                 return 0L;
             case 1:
-                return val1;
+                return a;
         }
-        long total = val1 * scalar;
-        if (total / scalar != val1) {
-            throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + scalar);
+        long total = a * b;
+        if (total / b != a) {
+            throw new ArithmeticException("Multiplication overflows a long: " + a + " * " + b);
         }
         return total;
     }
 
-//    /**
-//     * Multiply two values throwing an exception if overflow occurs.
-//     *
-//     * @param val1  the first value
-//     * @param val2  the second value
-//     * @return the new total
-//     * @throws ArithmeticException if the result overflows a long
-//     */
-//    public static long safeMultiply(long val1, long val2) {
-//        if (val2 == 1) {
-//            return val1;
-//        }
-//        if (val1 == 1) {
-//            return val2;
-//        }
-//        if (val1 == 0 || val2 == 0) {
-//            return 0;
-//        }
-//        long total = val1 * val2;
-//        if (total / val2 != val1) {
-//            throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2);
-//        }
-//        return total;
-//    }
+    /**
+     * Multiply two values throwing an exception if overflow occurs.
+     *
+     * @param a  the first value
+     * @param b  the second value
+     * @return the new total
+     * @throws ArithmeticException if the result overflows a long
+     */
+    public static long safeMultiply(long a, long b) {
+        if (b == 1) {
+            return a;
+        }
+        if (a == 1) {
+            return b;
+        }
+        if (a == 0 || b == 0) {
+            return 0;
+        }
+        long total = a * b;
+        if (total / b != a) {
+            throw new ArithmeticException("Multiplication overflows a long: " + a + " * " + b);
+        }
+        return total;
+    }
 
     //-----------------------------------------------------------------------
     /**
