@@ -48,7 +48,7 @@ import javax.time.CalendricalException;
 public interface CalendricalProvider {
 
     /**
-     * Returns a new instance of <code>Calendrical</code> initialised from the
+     * Returns a new instance of <code>Calendrical</code> initialized from the
      * state of this object.
      * <p>
      * This method will take the calendrical information represented by this

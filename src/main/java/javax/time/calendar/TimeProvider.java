@@ -69,7 +69,7 @@ import javax.time.CalendricalException;
 public interface TimeProvider extends CalendricalProvider {
 
     /**
-     * Returns an instance of <code>LocalTime</code> initialised from the
+     * Returns an instance of <code>LocalTime</code> initialized from the
      * state of this object.
      * <p>
      * This method will take the time represented by this object and return

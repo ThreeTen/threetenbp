@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import javax.time.CalendricalException;
 
-
 /**
  * Provides access to a date-time in the ISO-8601 calendar system.
  * <p>
@@ -70,7 +69,7 @@ import javax.time.CalendricalException;
 public interface DateTimeProvider extends DateProvider, TimeProvider {
 
     /**
-     * Returns an instance of <code>LocalDateTime</code> initialised from the
+     * Returns an instance of <code>LocalDateTime</code> initialized from the
      * state of this object.
      * <p>
      * This method will take the date-time represented by this object and return
