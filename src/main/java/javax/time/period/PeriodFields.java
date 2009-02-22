@@ -31,7 +31,13 @@
  */
 package javax.time.period;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.DAYS;
+import static javax.time.period.PeriodUnits.HOURS;
+import static javax.time.period.PeriodUnits.MINUTES;
+import static javax.time.period.PeriodUnits.MONTHS;
+import static javax.time.period.PeriodUnits.NANOS;
+import static javax.time.period.PeriodUnits.SECONDS;
+import static javax.time.period.PeriodUnits.YEARS;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -39,6 +45,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
@@ -61,12 +68,11 @@ import javax.time.calendar.CalendarConversionException;
  */
 public final class PeriodFields
         implements PeriodProvider, Iterable<PeriodUnit>, Serializable {
-    // TODO: Maybe hold Long/BigDecimal/Number internally
 
     /**
      * A constant for a period of zero.
      */
-    public static final PeriodFields ZERO = new PeriodFields(new TreeMap<PeriodUnit, Integer>());
+    public static final PeriodFields ZERO = new PeriodFields(new TreeMap<PeriodUnit, Long>());
     /**
      * A serialization identifier for this class.
      */
@@ -75,7 +81,7 @@ public final class PeriodFields
     /**
      * The map of period fields.
      */
-    private final TreeMap<PeriodUnit, Integer> unitAmountMap;
+    private final TreeMap<PeriodUnit, Long> unitAmountMap;
 
     //-----------------------------------------------------------------------
     /**
@@ -86,11 +92,9 @@ public final class PeriodFields
      * @return the created period instance, never null
      * @throws NullPointerException if the period unit is null
      */
-    public static PeriodFields periodFields(int amount, PeriodUnit unit) {
-        if (unit == null) {
-            throw new NullPointerException("Period unit must not be null");
-        }
-        TreeMap<PeriodUnit, Integer> internalMap = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
+    public static PeriodFields periodFields(long amount, PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
+        TreeMap<PeriodUnit, Long> internalMap = createMap();
         internalMap.put(unit, amount);
         return create(internalMap);
     }
@@ -103,18 +107,20 @@ public final class PeriodFields
      * @return the created period instance, never null
      * @throws NullPointerException if the map is null or contains nulls
      */
-    public static PeriodFields periodFields(Map<PeriodUnit, Integer> unitAmountMap) {
-        if (unitAmountMap == null) {
-            throw new NullPointerException("Period map must not be null");
-        }
+    public static PeriodFields periodFields(Map<PeriodUnit, ? extends Number> unitAmountMap) {
+        checkNotNull(unitAmountMap, "Unit-amount map must not be null");
         if (unitAmountMap.isEmpty()) {
             return ZERO;
         }
-        if (unitAmountMap.containsKey(null) || unitAmountMap.containsValue(null)) {
-            throw new NullPointerException("Period map must not contain null");
+        // don't use contains() as tree map and others can throw NPE
+        TreeMap<PeriodUnit, Long> internalMap = createMap();
+        for (Entry<PeriodUnit, ? extends Number> entry : unitAmountMap.entrySet()) {
+            PeriodUnit fieldRule = entry.getKey();
+            Number value = entry.getValue();
+            checkNotNull(fieldRule, "Null keys are not permitted in unit-amount map");
+            checkNotNull(value, "Null values are not permitted in unit-amount map");
+            internalMap.put(fieldRule, (value instanceof Long ? (Long) value : value.longValue()));
         }
-        TreeMap<PeriodUnit, Integer> internalMap = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
-        internalMap.putAll(unitAmountMap);
         return create(internalMap);
     }
 
@@ -128,38 +134,45 @@ public final class PeriodFields
      * @throws NullPointerException if the period provider is null
      */
     public static PeriodFields periodFields(PeriodProvider periodProvider) {
-        //TODO: this probably is not the right thing to do
-        Period period = Period.period(periodProvider).normalized();
+        Period period = Period.period(periodProvider);
         if (period.isZero()) {
             return ZERO;
         }
-        TreeMap<PeriodUnit, Integer> map = new TreeMap<PeriodUnit, Integer>(Collections.reverseOrder());
+        TreeMap<PeriodUnit, Long> map = createMap();
         if (period.getYears() != 0) {
-            map.put(YEARS, period.getYears());
+            map.put(YEARS, Long.valueOf(period.getYears()));
         }
         if (period.getMonths() != 0) {
-            map.put(MONTHS, period.getMonths());
+            map.put(MONTHS, Long.valueOf(period.getMonths()));
         }
         if (period.getDays() != 0) {
-            map.put(DAYS, period.getDays());
+            map.put(DAYS, Long.valueOf(period.getDays()));
         }
         if (period.getHours() != 0) {
-            map.put(HOURS, period.getHours());
+            map.put(HOURS, Long.valueOf(period.getHours()));
         }
         if (period.getMinutes() != 0) {
-            map.put(MINUTES, period.getMinutes());
+            map.put(MINUTES, Long.valueOf(period.getMinutes()));
         }
         if (period.getSeconds() != 0) {
-            map.put(SECONDS, period.getSeconds());
+            map.put(SECONDS, Long.valueOf(period.getSeconds()));
         }
-        
-        //TODO: this probably is not the right thing to do
         if (period.getNanos() != 0) {
-            map.put(NANOS, MathUtils.safeToInt(period.getNanos()));
+            map.put(NANOS, Long.valueOf(period.getNanos()));
         }
-        return PeriodFields.create(map);
+        return create(map);
     }
+
     //-----------------------------------------------------------------------
+    /**
+     * Creates a new empty map.
+     *
+     * @return ordered representation of internal map
+     */
+    private static TreeMap<PeriodUnit, Long> createMap() {
+        return new TreeMap<PeriodUnit, Long>(Collections.reverseOrder());
+    }
+
     /**
      * Internal factory to create an instance using a pre-built map.
      * The map must not be used by the calling code after calling the constructor.
@@ -167,11 +180,24 @@ public final class PeriodFields
      * @param periodMap  the map of periods to represent, not null, assigned not cloned
      * @return the created period, never null
      */
-    static PeriodFields create(TreeMap<PeriodUnit, Integer> periodMap) {
+    private static PeriodFields create(TreeMap<PeriodUnit, Long> periodMap) {
         if (periodMap.isEmpty()) {
             return ZERO;
         }
         return new PeriodFields(periodMap);
+    }
+
+    /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -181,7 +207,7 @@ public final class PeriodFields
      *
      * @param periodMap  the map of periods to represent, not null and safe to assign
      */
-    private PeriodFields(TreeMap<PeriodUnit, Integer> periodMap) {
+    private PeriodFields(TreeMap<PeriodUnit, Long> periodMap) {
         this.unitAmountMap = periodMap;
     }
 
@@ -207,7 +233,7 @@ public final class PeriodFields
         if (this == ZERO) {
             return true;
         }
-        for (Integer value : unitAmountMap.values()) {
+        for (Long value : unitAmountMap.values()) {
             if (value != 0) {
                 return false;
             }
@@ -216,65 +242,6 @@ public final class PeriodFields
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the amount of the period for the specified unit, returning
-     * null if this period does have an amount for the unit.
-     *
-     * @param unit  the unit to query, not null
-     * @return the period amount
-     * @throws NullPointerException if the period unit is null
-     * @throws CalendricalException if there is no amount for the unit
-     */
-    public int getAmount(PeriodUnit unit) {
-        if (unit == null) {
-            throw new NullPointerException("Period unit must not be null");
-        }
-        Integer amount = unitAmountMap.get(unit);
-        if (amount == null) {
-            throw new CalendricalException("No amount for unit: " + unit);
-        }
-        return amount;
-    }
-
-    /**
-     * Gets the amount of the period for the specified unit, returning
-     * null if this period does have an amount for the unit.
-     *
-     * @param unit  the unit to query, not null
-     * @param defaultValue  the default value to return if the unit is not present
-     * @return the period amount
-     * @throws NullPointerException if the period unit is null
-     */
-    public int getAmount(PeriodUnit unit, int defaultValue) {
-        if (unit == null) {
-            throw new NullPointerException("Period unit must not be null");
-        }
-        Integer amount = unitAmountMap.get(unit);
-        return amount == null ? defaultValue : amount;
-    }
-
-    /**
-     * Gets the amount of the period for the specified unit, returning
-     * zero if this period does have an amount for the unit.
-     *
-     * @param unit  the unit to query, null returns null
-     * @return the period amount, null if unit not present
-     */
-    public Integer getAmountQuiet(PeriodUnit unit) {
-        return unit == null ? null : unitAmountMap.get(unit);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks whether this period contains an amount for the unit.
-     *
-     * @param unit  the unit to query, null returns false
-     * @return true if the map contains an amount for the unit
-     */
-    public boolean contains(PeriodUnit unit) {
-        return unitAmountMap.containsKey(unit);
-    }
-
     /**
      * Returns the size of the set of unit-amount pairs.
      *
@@ -287,14 +254,102 @@ public final class PeriodFields
     /**
      * Iterates through all the units in the period.
      * <p>
-     * This method fulfuls the {@link Iterable} interface and allows looping
+     * This method fulfills the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop. The values can be obtained
-     * using {@link #getAmount(PeriodUnit)}.
+     * using {@link #get(PeriodUnit)}.
      *
      * @return an iterator over the fields in this object, never null
      */
     public Iterator<PeriodUnit> iterator() {
         return unitAmountMap.keySet().iterator();
+    }
+
+    /**
+     * Checks whether this period contains an amount for the unit.
+     *
+     * @param unit  the unit to query, null returns false
+     * @return true if the map contains an amount for the unit
+     */
+    public boolean contains(PeriodUnit unit) {
+        return unitAmountMap.containsKey(unit);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the amount of the period for the specified unit, throwing an
+     * exception if this period does have an amount for the unit.
+     *
+     * @param unit  the unit to query, not null
+     * @return the period amount
+     * @throws NullPointerException if the period unit is null
+     * @throws CalendricalException if there is no amount for the unit
+     */
+    public long get(PeriodUnit unit) {
+        checkNotNull(unit, "PeriodUnit must not be null");
+        Long amount = unitAmountMap.get(unit);
+        if (amount == null) {
+            throw new CalendricalException("No amount for unit: " + unit);
+        }
+        return amount;
+    }
+
+    /**
+     * Gets the amount of the period for the specified unit, throwing an
+     * exception if this period does have an amount for the unit.
+     * <p>
+     * The amount is safely converted to an <code>int</code>.
+     *
+     * @param unit  the unit to query, not null
+     * @return the period amount
+     * @throws NullPointerException if the period unit is null
+     * @throws CalendricalException if there is no amount for the unit
+     * @throws ArithmeticException if the amount is too large to be returned in an int
+     */
+    public int getInt(PeriodUnit unit) {
+        return MathUtils.safeToInt(get(unit));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the amount of the period for the specified unit, returning
+     * the default value if this period does have an amount for the unit.
+     *
+     * @param unit  the unit to query, not null
+     * @param defaultValue  the default value to return if the unit is not present
+     * @return the period amount
+     * @throws NullPointerException if the period unit is null
+     */
+    public long get(PeriodUnit unit, long defaultValue) {
+        checkNotNull(unit, "PeriodUnit must not be null");
+        Long amount = unitAmountMap.get(unit);
+        return amount == null ? defaultValue : amount;
+    }
+
+    /**
+     * Gets the amount of the period for the specified unit, returning
+     * the default value if this period does have an amount for the unit.
+     * <p>
+     * The amount is safely converted to an <code>int</code>.
+     *
+     * @param unit  the unit to query, not null
+     * @param defaultValue  the default value to return if the unit is not present
+     * @return the period amount
+     * @throws NullPointerException if the period unit is null
+     * @throws ArithmeticException if the amount is too large to be returned in an int
+     */
+    public int getInt(PeriodUnit unit, int defaultValue) {
+        return MathUtils.safeToInt(get(unit, defaultValue));
+    }
+
+    /**
+     * Gets the amount of the period for the specified unit, returning
+     * null if this period does have an amount for the unit.
+     *
+     * @param unit  the unit to query, null returns null
+     * @return the period amount, null if unit not present
+     */
+    public Long getAmount(PeriodUnit unit) {
+        return unit == null ? null : unitAmountMap.get(unit);
     }
 
     //-----------------------------------------------------------------------
@@ -309,8 +364,8 @@ public final class PeriodFields
         if (isZero()) {
             return ZERO;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
-        copy.values().removeAll(Collections.singleton(Integer.valueOf(0)));
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        copy.values().removeAll(Collections.singleton(Long.valueOf(0)));
         return create(copy);
     }
 
@@ -335,7 +390,7 @@ public final class PeriodFields
         if (period == ZERO) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         copy.putAll(period.unitAmountMap);
         return create(copy);
     }
@@ -353,12 +408,12 @@ public final class PeriodFields
      * @return a new updated period instance, never null
      * @throws NullPointerException if the period unit is null
      */
-    public PeriodFields with(int amount, PeriodUnit unit) {
-        Integer existing = getAmountQuiet(unit);
+    public PeriodFields with(long amount, PeriodUnit unit) {
+        Long existing = getAmount(unit);
         if (existing != null && existing == amount) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         copy.put(unit, amount);
         return create(copy);
     }
@@ -376,13 +431,11 @@ public final class PeriodFields
      * @throws NullPointerException if the period unit is null
      */
     public PeriodFields withUnitRemoved(PeriodUnit unit) {
-        if (unit == null) {
-            throw new NullPointerException("Period unit must not be null");
-        }
+        checkNotNull(unit, "PeriodUnit must not be null");
         if (unitAmountMap.containsKey(unit) == false) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         copy.remove(unit);
         return create(copy);
     }
@@ -403,19 +456,17 @@ public final class PeriodFields
      * @throws NullPointerException if the period to add is null
      */
     public PeriodFields plus(PeriodFields period) {
-        if (period == null) {
-            throw new NullPointerException("Period must not be null");
-        }
+        checkNotNull(period, "PeriodFields must not be null");
         if (this == ZERO) {
             return period;
         }
         if (period.isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         for (PeriodUnit unit : period) {
-            int amountToAdd = period.unitAmountMap.get(unit);
-            int current = this.getAmount(unit, 0);
+            long amountToAdd = period.unitAmountMap.get(unit);
+            long current = this.get(unit, 0);
             copy.put(unit, MathUtils.safeAdd(current, amountToAdd));
         }
         return create(copy);
@@ -437,19 +488,17 @@ public final class PeriodFields
      * @throws NullPointerException if the period to subtract is null
      */
     public PeriodFields minus(PeriodFields period) {
-        if (period == null) {
-            throw new NullPointerException("Period must not be null");
-        }
+        checkNotNull(period, "PeriodFields must not be null");
         if (this == ZERO) {
             return period;
         }
         if (period.isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         for (PeriodUnit unit : period) {
-            int amountToSubtract = period.unitAmountMap.get(unit);
-            int current = this.getAmount(unit, 0);
+            long amountToSubtract = period.unitAmountMap.get(unit);
+            long current = this.get(unit, 0);
             copy.put(unit, MathUtils.safeSubtract(current, amountToSubtract));
         }
         return create(copy);
@@ -468,9 +517,9 @@ public final class PeriodFields
         if (scalar == 1 || isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         for (PeriodUnit unit : this) {
-            int current = unitAmountMap.get(unit);
+            long current = unitAmountMap.get(unit);
             copy.put(unit, MathUtils.safeMultiply(current, scalar));
         }
         return create(copy);
@@ -491,9 +540,9 @@ public final class PeriodFields
         if (divisor == 1 || isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Integer> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = cloneMap();
         for (PeriodUnit unit : this) {
-            int current = unitAmountMap.get(unit);
+            long current = unitAmountMap.get(unit);
             copy.put(unit, current / divisor);
         }
         return create(copy);
@@ -515,19 +564,22 @@ public final class PeriodFields
      * @return the cloned map, never null
      */
     @SuppressWarnings("unchecked")
-    private TreeMap<PeriodUnit, Integer> cloneMap() {
+    private TreeMap<PeriodUnit, Long> cloneMap() {
         return (TreeMap) unitAmountMap.clone();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the unit-amount map which defines the period.
-     * The map is sorted by the unit, returning the largest first.
+     * Converts this object to a map of units to amounts.
+     * <p>
+     * The returned map will never be null, however it may be empty.
+     * It is sorted by the unit, returning the largest first.
+     * It is independent of this object - changes will not be reflected back.
      *
-     * @return the map of period amounts, never null, never contains null or zero
+     * @return the independent, modifiable map of period amounts, never null, never contains null
      */
-    public SortedMap<PeriodUnit, Integer> toUnitAmountMap() {
-        return Collections.unmodifiableSortedMap(unitAmountMap);
+    public SortedMap<PeriodUnit, Long> toUnitAmountMap() {
+        return cloneMap();
     }
 
     /**
@@ -537,30 +589,30 @@ public final class PeriodFields
      * which can be stored in a <code>Period</code>.
      *
      * @return the equivalent period instance, never null
-     * @throws CalendarConversionException if this period cannot be converted
+     * @throws CalendricalException if this period cannot be converted
      */
     public Period toPeriod() {
         if (isZero()) {
             return Period.ZERO;
         }
-        Map<PeriodUnit, Integer> copy = cloneMap();
-        Integer years = copy.remove(YEARS);
-        Integer months = copy.remove(MONTHS);
-        Integer days = copy.remove(DAYS);
-        Integer hours = copy.remove(HOURS);
-        Integer minutes = copy.remove(MINUTES);
-        Integer seconds = copy.remove(SECONDS);
-        Integer nanos = copy.remove(NANOS);
+        Map<PeriodUnit, Long> copy = cloneMap();
+        Long years = copy.remove(YEARS);
+        Long months = copy.remove(MONTHS);
+        Long days = copy.remove(DAYS);
+        Long hours = copy.remove(HOURS);
+        Long minutes = copy.remove(MINUTES);
+        Long seconds = copy.remove(SECONDS);
+        Long nanos = copy.remove(NANOS);
         if (copy.size() > 0) {
-            throw new CalendarConversionException("Unable to convert to a Period as the following fields are incompatible: " + copy);
+            throw new CalendarConversionException("Unable to convert to a Period as the following fields are incompatible: " + copy.keySet());
         }
         return Period.period(
-                    years == null ? 0 : years,
-                    months == null ? 0 : months,
-                    days == null ? 0 : days,
-                    hours == null ? 0 : hours,
-                    minutes == null ? 0 : minutes,
-                    seconds == null ? 0 : seconds,
+                    years == null ? 0 : MathUtils.safeToInt(years),
+                    months == null ? 0 : MathUtils.safeToInt(months),
+                    days == null ? 0 : MathUtils.safeToInt(days),
+                    hours == null ? 0 : MathUtils.safeToInt(hours),
+                    minutes == null ? 0 : MathUtils.safeToInt(minutes),
+                    seconds == null ? 0 : MathUtils.safeToInt(seconds),
                     nanos == null ? 0 : nanos);
     }
 

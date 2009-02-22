@@ -1521,21 +1521,21 @@ public class TestPeriod {
         Period test = Period.period(1, 2, 3, 4, 5, 6);
         PeriodFields fields = test.toPeriodFields();
         assertEquals(fields.size(), 6);
-        assertEquals(fields.getAmount(YEARS), 1);
-        assertEquals(fields.getAmount(MONTHS), 2);
-        assertEquals(fields.getAmount(DAYS), 3);
-        assertEquals(fields.getAmount(HOURS), 4);
-        assertEquals(fields.getAmount(MINUTES), 5);
-        assertEquals(fields.getAmount(SECONDS), 6);
+        assertEquals(fields.get(YEARS), 1);
+        assertEquals(fields.get(MONTHS), 2);
+        assertEquals(fields.get(DAYS), 3);
+        assertEquals(fields.get(HOURS), 4);
+        assertEquals(fields.get(MINUTES), 5);
+        assertEquals(fields.get(SECONDS), 6);
     }
 
     public void test_toPeriodFields_zeroRemoved() {
         Period test = Period.period(1, 0, 3, 0, 5, 0);
         PeriodFields fields = test.toPeriodFields();
         assertEquals(fields.size(), 3);
-        assertEquals(fields.getAmount(YEARS), 1);
-        assertEquals(fields.getAmount(DAYS), 3);
-        assertEquals(fields.getAmount(MINUTES), 5);
+        assertEquals(fields.get(YEARS), 1);
+        assertEquals(fields.get(DAYS), 3);
+        assertEquals(fields.get(MINUTES), 5);
         assertEquals(fields.contains(MONTHS), false);
         assertEquals(fields.contains(HOURS), false);
         assertEquals(fields.contains(SECONDS), false);

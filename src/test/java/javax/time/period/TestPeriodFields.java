@@ -31,8 +31,17 @@
  */
 package javax.time.period;
 
-import static javax.time.period.PeriodUnits.*;
-import static org.testng.Assert.*;
+import static javax.time.period.PeriodUnits.DAYS;
+import static javax.time.period.PeriodUnits.HOURS;
+import static javax.time.period.PeriodUnits.MINUTES;
+import static javax.time.period.PeriodUnits.MONTHS;
+import static javax.time.period.PeriodUnits.NANOS;
+import static javax.time.period.PeriodUnits.QUARTERS;
+import static javax.time.period.PeriodUnits.SECONDS;
+import static javax.time.period.PeriodUnits.YEARS;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,16 +71,16 @@ import org.testng.annotations.Test;
 @Test
 public class TestPeriodFields {
 
-    private static final Map<PeriodUnit, Integer> MAP_EMPTY = new HashMap<PeriodUnit, Integer>();
-    private static final Map<PeriodUnit, Integer> MAP_NULL = null;
+    private static final Map<PeriodUnit, Long> MAP_EMPTY = new HashMap<PeriodUnit, Long>();
+    private static final Map<PeriodUnit, Long> MAP_NULL = null;
     private PeriodFields fixtureP2Y5D;
     private PeriodFields fixtureZeroYears;
 
     @BeforeTest
     public void setUp() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 2);
-        map.put(DAYS, 5);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 2L);
+        map.put(DAYS, 5L);
         fixtureP2Y5D = PeriodFields.periodFields(map);
         fixtureZeroYears = PeriodFields.periodFields(0, YEARS);
     }
@@ -139,8 +148,8 @@ public class TestPeriodFields {
         assertPeriodFields(PeriodFields.periodFields(1, YEARS), 1, YEARS);
         assertPeriodFields(fixtureZeroYears, 0, YEARS);
         assertPeriodFields(PeriodFields.periodFields(-1, YEARS), -1, YEARS);
-        assertPeriodFields(PeriodFields.periodFields(Integer.MAX_VALUE, YEARS), Integer.MAX_VALUE, YEARS);
-        assertPeriodFields(PeriodFields.periodFields(Integer.MIN_VALUE, YEARS), Integer.MIN_VALUE, YEARS);
+        assertPeriodFields(PeriodFields.periodFields(Long.MAX_VALUE, YEARS), Long.MAX_VALUE, YEARS);
+        assertPeriodFields(PeriodFields.periodFields(Long.MIN_VALUE, YEARS), Long.MIN_VALUE, YEARS);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -150,19 +159,19 @@ public class TestPeriodFields {
 
     //-----------------------------------------------------------------------
     public void factory_map() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 1);
-        map.put(DAYS, -2);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 1L);
+        map.put(DAYS, -2L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(test, 1, YEARS, -2, DAYS);
     }
 
     public void factory_map_cloned() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 1);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 1L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(test, 1, YEARS);
-        map.put(DAYS, 2);
+        map.put(DAYS, 2L);
         assertPeriodFields(test, 1, YEARS);
     }
 
@@ -178,16 +187,16 @@ public class TestPeriodFields {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_map_nullKey() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 1);
-        map.put(null, 2);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 1L);
+        map.put(null, 2L);
         PeriodFields.periodFields(map);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_map_nullValue() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 1);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 1L);
         map.put(DAYS, null);
         PeriodFields.periodFields(map);
     }
@@ -197,13 +206,13 @@ public class TestPeriodFields {
         PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
         PeriodFields test = PeriodFields.periodFields(provider);
         assertEquals(test.size(), 7);
-        assertEquals(test.getAmount(YEARS), 1);
-        assertEquals(test.getAmount(MONTHS), 2);
-        assertEquals(test.getAmount(DAYS), 3);
-        assertEquals(test.getAmount(HOURS), 4);
-        assertEquals(test.getAmount(MINUTES), 5);
-        assertEquals(test.getAmount(SECONDS), 6);
-        assertEquals(test.getAmount(NANOS), 7);
+        assertEquals(test.get(YEARS), 1);
+        assertEquals(test.get(MONTHS), 2);
+        assertEquals(test.get(DAYS), 3);
+        assertEquals(test.get(HOURS), 4);
+        assertEquals(test.get(MINUTES), 5);
+        assertEquals(test.get(SECONDS), 6);
+        assertEquals(test.get(NANOS), 7);
     }
 
     public void factory_period_provider_zeroesRemoved() {
@@ -235,66 +244,114 @@ public class TestPeriodFields {
         assertEquals(fixtureZeroYears.isZero(), true);
         assertEquals(PeriodFields.periodFields(1, YEARS).isZero(), false);
         
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 0);
-        map.put(DAYS, 0);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 0L);
+        map.put(DAYS, 0L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertEquals(test.isZero(), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // get(PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(fixtureP2Y5D.get(YEARS), 2L);
+        assertEquals(fixtureP2Y5D.get(DAYS), 5L);
+        assertEquals(fixtureZeroYears.get(YEARS), 0L);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_null() {
+        fixtureP2Y5D.get((PeriodUnit) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_get_notPresent() {
+        fixtureP2Y5D.get(MONTHS);
+    }
+
+    //-----------------------------------------------------------------------
+    // getInt(PeriodUnit)
+    //-----------------------------------------------------------------------
+    public void test_getInt() {
+        assertEquals(fixtureP2Y5D.getInt(YEARS), 2);
+        assertEquals(fixtureP2Y5D.getInt(DAYS), 5);
+        assertEquals(fixtureZeroYears.getInt(YEARS), 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getInt_null() {
+        fixtureP2Y5D.getInt((PeriodUnit) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_getInt_notPresent() {
+        fixtureP2Y5D.getInt(MONTHS);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_getInt_tooBig() {
+        PeriodFields.periodFields(Integer.MAX_VALUE + 1L, MONTHS).getInt(MONTHS);
+    }
+
+    //-----------------------------------------------------------------------
+    // get(PeriodUnit,long)
+    //-----------------------------------------------------------------------
+    public void test_get_long() {
+        assertEquals(fixtureP2Y5D.get(YEARS, 0), 2L);
+        assertEquals(fixtureP2Y5D.get(DAYS, 0), 5L);
+        assertEquals(fixtureZeroYears.get(YEARS, 1), 0L);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_long_null() {
+        fixtureP2Y5D.get((PeriodUnit) null, 0L);
+    }
+
+    public void test_get_long_notPresent() {
+        assertEquals(fixtureP2Y5D.get(MONTHS, 0L), 0L);
+        assertEquals(fixtureP2Y5D.get(MONTHS, 101L), 101L);
+    }
+
+    //-----------------------------------------------------------------------
+    // getInt(PeriodUnit, int)
+    //-----------------------------------------------------------------------
+    public void test_getInt_int() {
+        assertEquals(fixtureP2Y5D.getInt(YEARS), 2);
+        assertEquals(fixtureP2Y5D.getInt(DAYS), 5);
+        assertEquals(fixtureZeroYears.getInt(YEARS), 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getInt_int_null() {
+        fixtureP2Y5D.getInt((PeriodUnit) null);
+    }
+
+    public void test_getInt_int_notPresent() {
+        assertEquals(fixtureP2Y5D.getInt(MONTHS, 0), 0);
+        assertEquals(fixtureP2Y5D.getInt(MONTHS, 101), 101);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_getInt_int_tooBig() {
+        PeriodFields.periodFields(Integer.MAX_VALUE + 1L, MONTHS).getInt(MONTHS);
     }
 
     //-----------------------------------------------------------------------
     // getAmount(PeriodUnit)
     //-----------------------------------------------------------------------
     public void test_getAmount() {
-        assertEquals(fixtureP2Y5D.getAmount(YEARS), 2);
-        assertEquals(fixtureP2Y5D.getAmount(DAYS), 5);
-        assertEquals(fixtureZeroYears.getAmount(YEARS), 0);
+        assertEquals(fixtureP2Y5D.getAmount(YEARS), Long.valueOf(2));
+        assertEquals(fixtureP2Y5D.getAmount(DAYS), Long.valueOf(5));
+        assertEquals(fixtureZeroYears.getAmount(YEARS), Long.valueOf(0));
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
     public void test_getAmount_null() {
-        fixtureP2Y5D.getAmount((PeriodUnit) null);
+        assertEquals(fixtureP2Y5D.getAmount((PeriodUnit) null), null);
     }
 
-    @Test(expectedExceptions=CalendricalException.class)
     public void test_getAmount_notPresent() {
-        fixtureP2Y5D.getAmount(MONTHS);
-    }
-
-    //-----------------------------------------------------------------------
-    // getAmount(PeriodUnit,int)
-    //-----------------------------------------------------------------------
-    public void test_getAmount_int() {
-        assertEquals(fixtureP2Y5D.getAmount(YEARS, 0), 2);
-        assertEquals(fixtureP2Y5D.getAmount(DAYS, 0), 5);
-        assertEquals(fixtureZeroYears.getAmount(YEARS, 1), 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getAmount_int_null() {
-        fixtureP2Y5D.getAmount((PeriodUnit) null, 0);
-    }
-
-    public void test_getAmount_int_notPresent() {
-        assertEquals(fixtureP2Y5D.getAmount(MONTHS, 0), 0);
-        assertEquals(fixtureP2Y5D.getAmount(MONTHS, 101), 101);
-    }
-
-    //-----------------------------------------------------------------------
-    // getAmountQuiet(PeriodUnit)
-    //-----------------------------------------------------------------------
-    public void test_getAmountQuiet() {
-        assertEquals(fixtureP2Y5D.getAmountQuiet(YEARS), Integer.valueOf(2));
-        assertEquals(fixtureP2Y5D.getAmountQuiet(DAYS), Integer.valueOf(5));
-        assertEquals(fixtureZeroYears.getAmountQuiet(YEARS), Integer.valueOf(0));
-    }
-
-    public void test_getAmountQuiet_null() {
-        assertEquals(fixtureP2Y5D.getAmountQuiet((PeriodUnit) null), null);
-    }
-
-    public void test_getAmountQuiet_notPresent() {
-        assertEquals(fixtureP2Y5D.getAmountQuiet(MONTHS), null);
+        assertEquals(fixtureP2Y5D.getAmount(MONTHS), null);
     }
 
     //-----------------------------------------------------------------------
@@ -338,21 +395,21 @@ public class TestPeriodFields {
     // withZeroesRemoved()
     //-----------------------------------------------------------------------
     public void test_withZeroesRemoved() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 2);
-        map.put(DAYS, 0);
-        map.put(HOURS, -3);
-        map.put(SECONDS, 0);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 2L);
+        map.put(DAYS, 0L);
+        map.put(HOURS, -3L);
+        map.put(SECONDS, 0L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(test.withZeroesRemoved(), 2, YEARS, -3, HOURS);
     }
 
     public void test_withZeroesRemoved_toZero() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 0);
-        map.put(DAYS, 0);
-        map.put(HOURS, 0);
-        map.put(SECONDS, 0);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 0L);
+        map.put(DAYS, 0L);
+        map.put(HOURS, 0L);
+        map.put(SECONDS, 0L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertSame(test.withZeroesRemoved(), PeriodFields.ZERO);
     }
@@ -365,25 +422,25 @@ public class TestPeriodFields {
     // with(PeriodFields)
     //-----------------------------------------------------------------------
     public void test_with_PeriodFields() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 4);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 4L);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(test.with(fixtureP2Y5D), 2, YEARS, 8, MONTHS, 5, DAYS);
     }
 
     public void test_with_PeriodFields_zeroYearsBase() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(MONTHS, 4);
-        map.put(DAYS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(MONTHS, 4L);
+        map.put(DAYS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(fixtureZeroYears.with(test), 0, YEARS, 4, MONTHS, 8, DAYS);
     }
 
     public void test_with_PeriodFields_zeroYearsParam() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(MONTHS, 4);
-        map.put(DAYS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(MONTHS, 4L);
+        map.put(DAYS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(test.with(fixtureZeroYears), 0, YEARS, 4, MONTHS, 8, DAYS);
     }
@@ -445,9 +502,9 @@ public class TestPeriodFields {
     // plus(PeriodFields)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodFields() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 4);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 4L);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map).plus(fixtureP2Y5D);
         assertPeriodFields(test, 6, YEARS, 8, MONTHS, 5, DAYS);
     }
@@ -468,18 +525,18 @@ public class TestPeriodFields {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_PeriodFields_overflowTooBig() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, Integer.MAX_VALUE);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, Long.MAX_VALUE);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         test.plus(PeriodFields.periodFields(1, YEARS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_plus_PeriodFields_overflowTooSmall() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, Integer.MIN_VALUE);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, Long.MIN_VALUE);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         test.plus(PeriodFields.periodFields(-1, YEARS));
     }
@@ -488,9 +545,9 @@ public class TestPeriodFields {
     // minus(PeriodFields)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodFields() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 4);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 4L);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map).minus(fixtureP2Y5D);
         assertPeriodFields(test, 2, YEARS, 8, MONTHS, -5, DAYS);
     }
@@ -511,18 +568,18 @@ public class TestPeriodFields {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_PeriodFields_overflowTooBig() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, Integer.MAX_VALUE);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, Long.MAX_VALUE);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         test.minus(PeriodFields.periodFields(-1, YEARS));
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_minus_PeriodFields_overflowTooSmall() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, Integer.MIN_VALUE);
-        map.put(MONTHS, 8);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, Long.MIN_VALUE);
+        map.put(MONTHS, 8L);
         PeriodFields test = PeriodFields.periodFields(map);
         test.minus(PeriodFields.periodFields(1, YEARS));
     }
@@ -553,13 +610,13 @@ public class TestPeriodFields {
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_multipliedBy_overflowTooBig() {
-        PeriodFields test = PeriodFields.periodFields(Integer.MAX_VALUE / 2 + 1, YEARS);
+        PeriodFields test = PeriodFields.periodFields(Long.MAX_VALUE / 2 + 1, YEARS);
         test.multipliedBy(2);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_multipliedBy_overflowTooSmall() {
-        PeriodFields test = PeriodFields.periodFields(Integer.MIN_VALUE / 2 - 1, YEARS);
+        PeriodFields test = PeriodFields.periodFields(Long.MIN_VALUE / 2 - 1, YEARS);
         test.multipliedBy(2);
     }
 
@@ -567,9 +624,9 @@ public class TestPeriodFields {
     // dividedBy()
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        Map<PeriodUnit, Integer> map = new HashMap<PeriodUnit, Integer>();
-        map.put(YEARS, 12);
-        map.put(MONTHS, 15);
+        Map<PeriodUnit, Long> map = new HashMap<PeriodUnit, Long>();
+        map.put(YEARS, 12L);
+        map.put(MONTHS, 15L);
         PeriodFields test = PeriodFields.periodFields(map);
         assertPeriodFields(test.dividedBy(2), 6, YEARS, 7, MONTHS);
         assertPeriodFields(test.dividedBy(-3), -4, YEARS, -5, MONTHS);
@@ -618,22 +675,24 @@ public class TestPeriodFields {
     }
 
     public void test_negated_max() {
-        assertPeriodFields(PeriodFields.periodFields(Integer.MAX_VALUE, YEARS).negated(), -Integer.MAX_VALUE, YEARS);
+        assertPeriodFields(PeriodFields.periodFields(Long.MAX_VALUE, YEARS).negated(), -Long.MAX_VALUE, YEARS);
     }
 
     @Test(expectedExceptions=ArithmeticException.class)
     public void test_negated_overflow() {
-        PeriodFields.periodFields(Integer.MIN_VALUE, YEARS).negated();
+        PeriodFields.periodFields(Long.MIN_VALUE, YEARS).negated();
     }
 
     //-----------------------------------------------------------------------
     // toUnitAmountMap()
     //-----------------------------------------------------------------------
     public void test_toUnitAmountMap() {
-        SortedMap<PeriodUnit, Integer> map = fixtureP2Y5D.toUnitAmountMap();
+        SortedMap<PeriodUnit, Long> map = fixtureP2Y5D.toUnitAmountMap();
         assertEquals(map.size(), 2);
-        assertEquals(map.get(YEARS), Integer.valueOf(2));
-        assertEquals(map.get(DAYS), Integer.valueOf(5));
+        assertEquals(map.get(YEARS), Long.valueOf(2));
+        assertEquals(map.get(DAYS), Long.valueOf(5));
+        map.clear();
+        assertPeriodFields(fixtureP2Y5D, 2, YEARS, 5, DAYS);
     }
 
     //-----------------------------------------------------------------------
@@ -760,55 +819,55 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    private void assertPeriodFields(PeriodFields test, int amount1, PeriodUnit unit1) {
+    private void assertPeriodFields(PeriodFields test, long amount1, PeriodUnit unit1) {
         assertEquals(test.size(), 1);
         assertEquals(test.contains(unit1), true);
-        assertEquals(test.getAmount(unit1), amount1);
-        assertEquals(test.getAmount(unit1, -100), amount1);
-        assertEquals(test.getAmountQuiet(unit1), Integer.valueOf(amount1));
+        assertEquals(test.get(unit1), amount1);
+        assertEquals(test.get(unit1, -100), amount1);
+        assertEquals(test.getAmount(unit1), Long.valueOf(amount1));
         assertEquals(test.isZero(), amount1 == 0);
-        SortedMap<PeriodUnit, Integer> map = test.toUnitAmountMap();
+        SortedMap<PeriodUnit, Long> map = test.toUnitAmountMap();
         assertEquals(map.size(), 1);
-        assertEquals(map.get(unit1), Integer.valueOf(amount1));
+        assertEquals(map.get(unit1), Long.valueOf(amount1));
     }
 
-    private void assertPeriodFields(PeriodFields test, int amount1, PeriodUnit unit1, int amount2, PeriodUnit unit2) {
+    private void assertPeriodFields(PeriodFields test, long amount1, PeriodUnit unit1, long amount2, PeriodUnit unit2) {
         assertEquals(test.size(), 2);
         assertEquals(test.contains(unit1), true);
         assertEquals(test.contains(unit2), true);
-        assertEquals(test.getAmount(unit1), amount1);
-        assertEquals(test.getAmount(unit2), amount2);
-        assertEquals(test.getAmount(unit1, -100), amount1);
-        assertEquals(test.getAmount(unit2, -100), amount2);
-        assertEquals(test.getAmountQuiet(unit1), Integer.valueOf(amount1));
-        assertEquals(test.getAmountQuiet(unit2), Integer.valueOf(amount2));
+        assertEquals(test.get(unit1), amount1);
+        assertEquals(test.get(unit2), amount2);
+        assertEquals(test.get(unit1, -100), amount1);
+        assertEquals(test.get(unit2, -100), amount2);
+        assertEquals(test.getAmount(unit1), Long.valueOf(amount1));
+        assertEquals(test.getAmount(unit2), Long.valueOf(amount2));
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0);
-        SortedMap<PeriodUnit, Integer> map = test.toUnitAmountMap();
+        SortedMap<PeriodUnit, Long> map = test.toUnitAmountMap();
         assertEquals(map.size(), 2);
-        assertEquals(map.get(unit1), Integer.valueOf(amount1));
-        assertEquals(map.get(unit2), Integer.valueOf(amount2));
+        assertEquals(map.get(unit1), Long.valueOf(amount1));
+        assertEquals(map.get(unit2), Long.valueOf(amount2));
     }
 
-    private void assertPeriodFields(PeriodFields test, int amount1, PeriodUnit unit1, int amount2, PeriodUnit unit2, int amount3, PeriodUnit unit3) {
+    private void assertPeriodFields(PeriodFields test, long amount1, PeriodUnit unit1, long amount2, PeriodUnit unit2, long amount3, PeriodUnit unit3) {
         assertEquals(test.size(), 3);
         assertEquals(test.contains(unit1), true);
         assertEquals(test.contains(unit2), true);
         assertEquals(test.contains(unit3), true);
-        assertEquals(test.getAmount(unit1), amount1);
-        assertEquals(test.getAmount(unit2), amount2);
-        assertEquals(test.getAmount(unit3), amount3);
-        assertEquals(test.getAmount(unit1, -100), amount1);
-        assertEquals(test.getAmount(unit2, -100), amount2);
-        assertEquals(test.getAmount(unit3, -100), amount3);
-        assertEquals(test.getAmountQuiet(unit1), Integer.valueOf(amount1));
-        assertEquals(test.getAmountQuiet(unit2), Integer.valueOf(amount2));
-        assertEquals(test.getAmountQuiet(unit3), Integer.valueOf(amount3));
+        assertEquals(test.get(unit1), amount1);
+        assertEquals(test.get(unit2), amount2);
+        assertEquals(test.get(unit3), amount3);
+        assertEquals(test.get(unit1, -100), amount1);
+        assertEquals(test.get(unit2, -100), amount2);
+        assertEquals(test.get(unit3, -100), amount3);
+        assertEquals(test.getAmount(unit1), Long.valueOf(amount1));
+        assertEquals(test.getAmount(unit2), Long.valueOf(amount2));
+        assertEquals(test.getAmount(unit3), Long.valueOf(amount3));
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0 && amount3 == 0);
-        SortedMap<PeriodUnit, Integer> map = test.toUnitAmountMap();
+        SortedMap<PeriodUnit, Long> map = test.toUnitAmountMap();
         assertEquals(map.size(), 3);
-        assertEquals(map.get(unit1), Integer.valueOf(amount1));
-        assertEquals(map.get(unit2), Integer.valueOf(amount2));
-        assertEquals(map.get(unit3), Integer.valueOf(amount3));
+        assertEquals(map.get(unit1), Long.valueOf(amount1));
+        assertEquals(map.get(unit2), Long.valueOf(amount2));
+        assertEquals(map.get(unit3), Long.valueOf(amount3));
     }
 
 }
