@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,15 +31,15 @@
  */
 package javax.time.period;
 
-import javax.time.calendar.CalendarConversionException;
+import javax.time.CalendricalException;
 
 /**
- * Provides access to an instance of a period.
+ * Provides access to a period of time, such as '2 years and 5 months'.
  * <p>
  * PeriodProvider is a simple interface that provides uniform access to
  * any object that can provide access to a period.
  * <p>
- * NOTE: The implementation of <code>PeriodProvider</code> may be mutable.
+ * The implementation of <code>PeriodProvider</code> may be mutable.
  * The result of {@link #toPeriod()}, however, is immutable.
  * <p>
  * PeriodProvider makes no guarantees about the thread-safety or
@@ -50,14 +50,14 @@ import javax.time.calendar.CalendarConversionException;
 public interface PeriodProvider {
 
     /**
-     * Returns an instance of <code>Period</code> initialised from the
+     * Returns an instance of <code>Period</code> initialized from the
      * state of this object.
      * <p>
      * This method will take the period information represented by this
      * object and return the best matching {@link Period}.
      *
      * @return the <code>Period</code> equivalent to this object, never null
-     * @throws CalendarConversionException if the period cannot be converted
+     * @throws CalendricalException if the period cannot be converted
      */
     Period toPeriod();
 
