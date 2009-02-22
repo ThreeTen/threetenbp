@@ -184,7 +184,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @throws UnsupportedCalendarFieldException if the value cannot be extracted
      */
     public int getValue(CalendricalProvider calendricalProvider) {
-        int value = calendricalProvider.toCalendrical().getValueInt(this);
+        int value = calendricalProvider.toCalendrical().deriveValue(this);
         checkValue(value);
         return value;
     }
@@ -234,7 +234,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @return the value of the field, null if unable to derive field
      */
     public final Integer getValueQuiet(Calendrical.FieldMap calendricalFieldMap) {
-        Integer value = calendricalFieldMap.get(this);
+        Integer value = calendricalFieldMap.getQuiet(this);
         return (value == null ? deriveValue(calendricalFieldMap) : value);
     }
 
@@ -247,7 +247,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * from MonthOfYear. The implementation must not check to see of the map
      * already contains a value for QuarterOfYear.
      * <p>
-     * The derivation can be recursive depending on the hierachy of fields.
+     * The derivation can be recursive depending on the hierarchy of fields.
      * This is achieved by using {@link #getValueQuiet} to obtain the parent field rule.
      * <p>
      * A typical implementation of this method obtains the parent value and performs a calculation.

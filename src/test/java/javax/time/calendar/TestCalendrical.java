@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -360,175 +364,174 @@ public class TestCalendrical {
     }
 
     //-----------------------------------------------------------------------
-    // isSupported()
+    // isDerivable()
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
+    public void test_isDerivable() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.isSupported(YEAR_RULE), true);
-        assertEquals(test.isSupported(MOY_RULE), true);
+        assertEquals(test.isDerivable(YEAR_RULE), true);
+        assertEquals(test.isDerivable(MOY_RULE), true);
     }
 
-    public void test_isSupported_outOfRange() {
+    public void test_isDerivable_outOfRange() {
         Calendrical test = new Calendrical(MOY_RULE, -3);
-        assertEquals(test.isSupported(MOY_RULE), true);
+        assertEquals(test.isDerivable(MOY_RULE), true);
     }
 
-    public void test_isSupported_null() {
+    public void test_isDerivable_null() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.isSupported(NULL_RULE), false);
+        assertEquals(test.isDerivable(NULL_RULE), false);
     }
 
-    public void test_isSupported_fieldNotPresent() {
+    public void test_isDerivable_fieldNotPresent() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.isSupported(DOM_RULE), false);
-        assertEquals(test.isSupported(DOW_RULE), false);
+        assertEquals(test.isDerivable(DOM_RULE), false);
+        assertEquals(test.isDerivable(DOW_RULE), false);
     }
 
-    public void test_isSupported_empty() {
+    public void test_isDerivable_empty() {
         Calendrical test = new Calendrical();
-        assertEquals(test.isSupported(YEAR_RULE), false);
-        assertEquals(test.isSupported(HOUR_RULE), false);
+        assertEquals(test.isDerivable(YEAR_RULE), false);
+        assertEquals(test.isDerivable(HOUR_RULE), false);
     }
 
-    public void test_isSupported_fromDate() {
+    public void test_isDerivable_fromDate() {
         Calendrical test = new Calendrical(DATE_2008_06_30, null, null, null);
-        assertEquals(test.isSupported(YEAR_RULE), true);
-        assertEquals(test.isSupported(DOW_RULE), true);
-        assertEquals(test.isSupported(HOUR_RULE), false);
+        assertEquals(test.isDerivable(YEAR_RULE), true);
+        assertEquals(test.isDerivable(DOW_RULE), true);
+        assertEquals(test.isDerivable(HOUR_RULE), false);
     }
 
-    public void test_isSupported_fromTime() {
+    public void test_isDerivable_fromTime() {
         Calendrical test = new Calendrical(null, TIME_10_15_30, null, null);
-        assertEquals(test.isSupported(HOUR_RULE), true);
-        assertEquals(test.isSupported(MIN_RULE), true);
-        assertEquals(test.isSupported(SEC_RULE), true);
-        assertEquals(test.isSupported(YEAR_RULE), false);
+        assertEquals(test.isDerivable(HOUR_RULE), true);
+        assertEquals(test.isDerivable(MIN_RULE), true);
+        assertEquals(test.isDerivable(SEC_RULE), true);
+        assertEquals(test.isDerivable(YEAR_RULE), false);
     }
 
     //-----------------------------------------------------------------------
-    // getValue()
+    // deriveValue()
     //-----------------------------------------------------------------------
-    public void test_getValue() {
+    public void test_deriveValue() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValue(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getValue(MOY_RULE), Integer.valueOf(6));
+        assertEquals(test.deriveValue(YEAR_RULE), 2008);
+        assertEquals(test.deriveValue(MOY_RULE), 6);
     }
 
-    public void test_getValue_derived() {
+    public void test_deriveValue_derived() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValue(QOY_RULE), Integer.valueOf(2));
+        assertEquals(test.deriveValue(QOY_RULE), 2);
     }
 
-    public void test_getValue_outOfRange() {
+    public void test_deriveValue_outOfRange() {
         Calendrical test = new Calendrical(MOY_RULE, -3);
-        assertEquals(test.getValue(MOY_RULE), Integer.valueOf(-3));
+        assertEquals(test.deriveValue(MOY_RULE), -3);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_getValue_null() {
+    public void test_deriveValue_null() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        test.getValue(NULL_RULE);
-    }
-
-    public void test_getValue_fieldNotPresent() {
-        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValue(DOM_RULE), null);
-        assertEquals(test.getValue(DOW_RULE), null);
-    }
-
-    public void test_getValue_fromDate() {
-        Calendrical test = new Calendrical(DATE_2008_06_30, null, null, null);
-        assertEquals(test.getValue(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getValue(MOY_RULE), Integer.valueOf(6));
-        assertEquals(test.getValue(DOM_RULE), Integer.valueOf(30));
-        assertEquals(test.getValue(DOW_RULE), Integer.valueOf(1));
-    }
-
-    public void test_getValue_fromTime() {
-        Calendrical test = new Calendrical(null, TIME_10_15_30, null, null);
-        assertEquals(test.getValue(HOUR_RULE), Integer.valueOf(10));
-        assertEquals(test.getValue(MIN_RULE), Integer.valueOf(15));
-        assertEquals(test.getValue(SEC_RULE), Integer.valueOf(30));
-    }
-
-    public void test_getValue_dateTakesPrecedence() {
-        Calendrical test = new Calendrical(YEAR_RULE, 2009);
-        test.setDate(DATE_2008_06_30);
-        assertEquals(test.getValue(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getValue(MOY_RULE), Integer.valueOf(6));
-        assertEquals(test.getValue(DOM_RULE), Integer.valueOf(30));
-        assertEquals(test.getValue(DOW_RULE), Integer.valueOf(1));
-    }
-
-    public void test_getValue_timeTakesPrecedence() {
-        Calendrical test = new Calendrical(HOUR_RULE, 14);
-        test.setTime(TIME_10_15_30);
-        assertEquals(test.getValue(HOUR_RULE), Integer.valueOf(10));
-        assertEquals(test.getValue(MIN_RULE), Integer.valueOf(15));
-        assertEquals(test.getValue(SEC_RULE), Integer.valueOf(30));
-    }
-
-    //-----------------------------------------------------------------------
-    // getValueInt()
-    //-----------------------------------------------------------------------
-    public void test_getValueInt() {
-        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValueInt(YEAR_RULE), 2008);
-        assertEquals(test.getValueInt(MOY_RULE), 6);
-    }
-
-    public void test_getValueInt_derived() {
-        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValueInt(QOY_RULE), 2);
-    }
-
-    public void test_getValueInt_outOfRange() {
-        Calendrical test = new Calendrical(MOY_RULE, -3);
-        assertEquals(test.getValueInt(MOY_RULE), -3);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getValueInt_null() {
-        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        test.getValueInt(NULL_RULE);
+        test.deriveValue(NULL_RULE);
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_getValueInt_fieldNotPresent() {
+    public void test_deriveValue_fieldNotPresent() {
         Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
-        test.getValueInt(DOM_RULE);
+        test.deriveValue(DOM_RULE);
     }
 
-    public void test_getValueInt_fromDate() {
+    public void test_deriveValue_fromDate() {
         Calendrical test = new Calendrical(DATE_2008_06_30, null, null, null);
-        assertEquals(test.getValueInt(YEAR_RULE), 2008);
-        assertEquals(test.getValueInt(MOY_RULE), 6);
-        assertEquals(test.getValueInt(DOM_RULE), 30);
-        assertEquals(test.getValueInt(DOW_RULE), 1);
+        assertEquals(test.deriveValue(YEAR_RULE), 2008);
+        assertEquals(test.deriveValue(MOY_RULE), 6);
+        assertEquals(test.deriveValue(DOM_RULE), 30);
+        assertEquals(test.deriveValue(DOW_RULE), 1);
     }
 
-    public void test_getValueInt_fromTime() {
+    public void test_deriveValue_fromTime() {
         Calendrical test = new Calendrical(null, TIME_10_15_30, null, null);
-        assertEquals(test.getValueInt(HOUR_RULE), 10);
-        assertEquals(test.getValueInt(MIN_RULE), 15);
-        assertEquals(test.getValueInt(SEC_RULE), 30);
+        assertEquals(test.deriveValue(HOUR_RULE), 10);
+        assertEquals(test.deriveValue(MIN_RULE), 15);
+        assertEquals(test.deriveValue(SEC_RULE), 30);
     }
 
-    public void test_getValueInt_dateTakesPrecedence() {
+    public void test_deriveValue_dateTakesPrecedence() {
         Calendrical test = new Calendrical(YEAR_RULE, 2009);
         test.setDate(DATE_2008_06_30);
-        assertEquals(test.getValueInt(YEAR_RULE), 2008);
-        assertEquals(test.getValueInt(MOY_RULE), 6);
-        assertEquals(test.getValueInt(DOM_RULE), 30);
-        assertEquals(test.getValueInt(DOW_RULE), 1);
+        assertEquals(test.deriveValue(YEAR_RULE), 2008);
+        assertEquals(test.deriveValue(MOY_RULE), 6);
+        assertEquals(test.deriveValue(DOM_RULE), 30);
+        assertEquals(test.deriveValue(DOW_RULE), 1);
     }
 
-    public void test_getValueInt_timeTakesPrecedence() {
+    public void test_deriveValue_timeTakesPrecedence() {
         Calendrical test = new Calendrical(HOUR_RULE, 14);
         test.setTime(TIME_10_15_30);
-        assertEquals(test.getValueInt(HOUR_RULE), 10);
-        assertEquals(test.getValueInt(MIN_RULE), 15);
-        assertEquals(test.getValueInt(SEC_RULE), 30);
+        assertEquals(test.deriveValue(HOUR_RULE), 10);
+        assertEquals(test.deriveValue(MIN_RULE), 15);
+        assertEquals(test.deriveValue(SEC_RULE), 30);
+    }
+
+    //-----------------------------------------------------------------------
+    // deriveValueQuiet()
+    //-----------------------------------------------------------------------
+    public void test_deriveValueQuiet() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.deriveValueQuiet(YEAR_RULE), Integer.valueOf(2008));
+        assertEquals(test.deriveValueQuiet(MOY_RULE), Integer.valueOf(6));
+    }
+
+    public void test_deriveValueQuiet_derived() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.deriveValueQuiet(QOY_RULE), Integer.valueOf(2));
+    }
+
+    public void test_deriveValueQuiet_outOfRange() {
+        Calendrical test = new Calendrical(MOY_RULE, -3);
+        assertEquals(test.deriveValueQuiet(MOY_RULE), Integer.valueOf(-3));
+    }
+
+    public void test_deriveValueQuiet_null() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.deriveValueQuiet(NULL_RULE), null);
+    }
+
+    public void test_deriveValueQuiet_fieldNotPresent() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.deriveValueQuiet(DOM_RULE), null);
+        assertEquals(test.deriveValueQuiet(DOW_RULE), null);
+    }
+
+    public void test_deriveValueQuiet_fromDate() {
+        Calendrical test = new Calendrical(DATE_2008_06_30, null, null, null);
+        assertEquals(test.deriveValueQuiet(YEAR_RULE), Integer.valueOf(2008));
+        assertEquals(test.deriveValueQuiet(MOY_RULE), Integer.valueOf(6));
+        assertEquals(test.deriveValueQuiet(DOM_RULE), Integer.valueOf(30));
+        assertEquals(test.deriveValueQuiet(DOW_RULE), Integer.valueOf(1));
+    }
+
+    public void test_deriveValueQuiet_fromTime() {
+        Calendrical test = new Calendrical(null, TIME_10_15_30, null, null);
+        assertEquals(test.deriveValueQuiet(HOUR_RULE), Integer.valueOf(10));
+        assertEquals(test.deriveValueQuiet(MIN_RULE), Integer.valueOf(15));
+        assertEquals(test.deriveValueQuiet(SEC_RULE), Integer.valueOf(30));
+    }
+
+    public void test_deriveValueQuiet_dateTakesPrecedence() {
+        Calendrical test = new Calendrical(YEAR_RULE, 2009);
+        test.setDate(DATE_2008_06_30);
+        assertEquals(test.deriveValueQuiet(YEAR_RULE), Integer.valueOf(2008));
+        assertEquals(test.deriveValueQuiet(MOY_RULE), Integer.valueOf(6));
+        assertEquals(test.deriveValueQuiet(DOM_RULE), Integer.valueOf(30));
+        assertEquals(test.deriveValueQuiet(DOW_RULE), Integer.valueOf(1));
+    }
+
+    public void test_deriveValueQuiet_timeTakesPrecedence() {
+        Calendrical test = new Calendrical(HOUR_RULE, 14);
+        test.setTime(TIME_10_15_30);
+        assertEquals(test.deriveValueQuiet(HOUR_RULE), Integer.valueOf(10));
+        assertEquals(test.deriveValueQuiet(MIN_RULE), Integer.valueOf(15));
+        assertEquals(test.deriveValueQuiet(SEC_RULE), Integer.valueOf(30));
     }
 
     //-----------------------------------------------------------------------
@@ -867,8 +870,8 @@ public class TestCalendrical {
         Calendrical base = new Calendrical(fields);
         DateTimeFields test = base.toDateTimeFields();
         assertEquals(test.size(), 2);
-        assertEquals(test.getValueInt(YEAR_RULE), 2008);
-        assertEquals(test.getValueInt(MOY_RULE), 6);
+        assertEquals(test.get(YEAR_RULE), 2008);
+        assertEquals(test.get(MOY_RULE), 6);
     }
 
     //-----------------------------------------------------------------------
@@ -1258,15 +1261,15 @@ public class TestCalendrical {
             Calendrical calendrical,
             DateTimeFieldRule rule1, int value1) {
         assertEquals(calendrical.getFieldMap().size(), 1);
-        assertEquals(calendrical.getFieldMap().getInt(rule1), value1);
+        assertEquals(calendrical.getFieldMap().get(rule1), value1);
     }
     private void assertFields(
             Calendrical calendrical,
             DateTimeFieldRule rule1, int value1,
             DateTimeFieldRule rule2, int value2) {
         assertEquals(calendrical.getFieldMap().size(), 2);
-        assertEquals(calendrical.getFieldMap().getInt(rule1), value1);
-        assertEquals(calendrical.getFieldMap().getInt(rule2), value2);
+        assertEquals(calendrical.getFieldMap().get(rule1), value1);
+        assertEquals(calendrical.getFieldMap().get(rule2), value2);
     }
     private static void dumpException(Exception ex) {
         // this is used to allow a human to inspect the error messages to see if they are understandable

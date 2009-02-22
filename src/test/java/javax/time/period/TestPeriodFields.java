@@ -338,20 +338,20 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // getAmount(PeriodUnit)
+    // getQuiet(PeriodUnit)
     //-----------------------------------------------------------------------
-    public void test_getAmount() {
-        assertEquals(fixtureP2Y5D.getAmount(YEARS), Long.valueOf(2));
-        assertEquals(fixtureP2Y5D.getAmount(DAYS), Long.valueOf(5));
-        assertEquals(fixtureZeroYears.getAmount(YEARS), Long.valueOf(0));
+    public void test_getQuiet() {
+        assertEquals(fixtureP2Y5D.getQuiet(YEARS), Long.valueOf(2));
+        assertEquals(fixtureP2Y5D.getQuiet(DAYS), Long.valueOf(5));
+        assertEquals(fixtureZeroYears.getQuiet(YEARS), Long.valueOf(0));
     }
 
-    public void test_getAmount_null() {
-        assertEquals(fixtureP2Y5D.getAmount((PeriodUnit) null), null);
+    public void test_getQuiet_null() {
+        assertEquals(fixtureP2Y5D.getQuiet((PeriodUnit) null), null);
     }
 
-    public void test_getAmount_notPresent() {
-        assertEquals(fixtureP2Y5D.getAmount(MONTHS), null);
+    public void test_getQuiet_notPresent() {
+        assertEquals(fixtureP2Y5D.getQuiet(MONTHS), null);
     }
 
     //-----------------------------------------------------------------------
@@ -824,7 +824,7 @@ public class TestPeriodFields {
         assertEquals(test.contains(unit1), true);
         assertEquals(test.get(unit1), amount1);
         assertEquals(test.get(unit1, -100), amount1);
-        assertEquals(test.getAmount(unit1), Long.valueOf(amount1));
+        assertEquals(test.getQuiet(unit1), Long.valueOf(amount1));
         assertEquals(test.isZero(), amount1 == 0);
         SortedMap<PeriodUnit, Long> map = test.toUnitAmountMap();
         assertEquals(map.size(), 1);
@@ -839,8 +839,8 @@ public class TestPeriodFields {
         assertEquals(test.get(unit2), amount2);
         assertEquals(test.get(unit1, -100), amount1);
         assertEquals(test.get(unit2, -100), amount2);
-        assertEquals(test.getAmount(unit1), Long.valueOf(amount1));
-        assertEquals(test.getAmount(unit2), Long.valueOf(amount2));
+        assertEquals(test.getQuiet(unit1), Long.valueOf(amount1));
+        assertEquals(test.getQuiet(unit2), Long.valueOf(amount2));
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0);
         SortedMap<PeriodUnit, Long> map = test.toUnitAmountMap();
         assertEquals(map.size(), 2);
@@ -859,9 +859,9 @@ public class TestPeriodFields {
         assertEquals(test.get(unit1, -100), amount1);
         assertEquals(test.get(unit2, -100), amount2);
         assertEquals(test.get(unit3, -100), amount3);
-        assertEquals(test.getAmount(unit1), Long.valueOf(amount1));
-        assertEquals(test.getAmount(unit2), Long.valueOf(amount2));
-        assertEquals(test.getAmount(unit3), Long.valueOf(amount3));
+        assertEquals(test.getQuiet(unit1), Long.valueOf(amount1));
+        assertEquals(test.getQuiet(unit2), Long.valueOf(amount2));
+        assertEquals(test.getQuiet(unit3), Long.valueOf(amount3));
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0 && amount3 == 0);
         SortedMap<PeriodUnit, Long> map = test.toUnitAmountMap();
         assertEquals(map.size(), 3);

@@ -140,8 +140,8 @@ public final class YearMonth
      */
     public static YearMonth yearMonth(CalendricalProvider calendricalProvider) {
         Calendrical calendrical = calendricalProvider.toCalendrical();
-        int year = calendrical.getValueInt(ISOChronology.yearRule());
-        int month = calendrical.getValueInt(ISOChronology.monthOfYearRule());
+        int year = calendrical.deriveValue(ISOChronology.yearRule());
+        int month = calendrical.deriveValue(ISOChronology.monthOfYearRule());
         return yearMonth(year, month);
     }
 

@@ -661,10 +661,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer moyVal = merger.getValue(ISOChronology.monthOfYearRule());
-            Integer domVal = merger.getValue(ISOChronology.dayOfMonthRule());
+            Integer moyVal = merger.getValueQuiet(ISOChronology.monthOfYearRule());
+            Integer domVal = merger.getValueQuiet(ISOChronology.dayOfMonthRule());
             if (moyVal != null && domVal != null) {
-                int year = merger.getValueInt(this);
+                int year = merger.getValue(this);
                 LocalDate date = merger.getContext().resolveDate(year, moyVal, domVal);
                 merger.storeMergedDate(date);
                 merger.markFieldAsProcessed(this);
@@ -718,8 +718,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.getValue(yearRule());
-            Integer moy = calendrical.getValue(monthOfYearRule());
+            Integer year = calendrical.deriveValueQuiet(yearRule());
+            Integer moy = calendrical.deriveValueQuiet(monthOfYearRule());
             if (year != null && moy != null) {
                 MonthOfYear month = MonthOfYear.monthOfYear(moy);
                 return month.lengthInDays(year);
@@ -754,7 +754,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.getValue(yearRule());
+            Integer year = calendrical.deriveValueQuiet(yearRule());
             if (year != null) {
                 return Year.isoYear(year).lengthInDays();
             }
@@ -766,9 +766,9 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer year = merger.getValue(ISOChronology.yearRule());
+            Integer year = merger.getValueQuiet(ISOChronology.yearRule());
             if (year != null) {
-                int doy = merger.getValueInt(this);
+                int doy = merger.getValue(this);
                 if (merger.isStrict() || doy >= 1 && doy <= 365) {  // range is valid for all years
                     merger.storeMergedDate(DayOfYear.dayOfYear(doy).atYear(year));
                 } else {
@@ -803,10 +803,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
             // TODO: implement, move to Weekyear?
-            Integer woy = merger.getValue(ISOChronology.weekOfWeekBasedYearRule());
-            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+            Integer woy = merger.getValueQuiet(ISOChronology.weekOfWeekBasedYearRule());
+            Integer dow = merger.getValueQuiet(ISOChronology.dayOfWeekRule());
             if (woy != null && dow != null) {
-                int wyear = merger.getValueInt(this);
+                int wyear = merger.getValue(this);
 //                if (merger.isStrict() || woy >= 1 && woy <= 52) {  // range is valid for all years
 //                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
 //                } else {
@@ -903,10 +903,10 @@ public final class ISOChronology extends Chronology implements Serializable {
        }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer year = merger.getValue(ISOChronology.yearRule());
-            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+            Integer year = merger.getValueQuiet(ISOChronology.yearRule());
+            Integer dow = merger.getValueQuiet(ISOChronology.dayOfWeekRule());
             if (year != null && dow != null) {
-                int woy = merger.getValueInt(this);
+                int woy = merger.getValue(this);
                 LocalDate date = LocalDate.date(year, 1, 1).plusDays((((long) woy) - 1) * 7);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
                 merger.storeMergedDate(date);
@@ -948,10 +948,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeFields(Calendrical.Merger merger) {
-            Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
+            Integer moqVal = merger.getValueQuiet(ISOChronology.monthOfQuarterRule());
             if (moqVal != null) {
                 // TODO negatives
-                int qoy = merger.getValueInt(this);
+                int qoy = merger.getValue(this);
                 qoy = MathUtils.safeDecrement(qoy);
                 int moq = MathUtils.safeDecrement(moqVal);
                 int moy = MathUtils.safeAdd(MathUtils.safeMultiply(qoy, 3), moq);
@@ -1016,7 +1016,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.getValue(yearRule());
+            Integer year = calendrical.deriveValueQuiet(yearRule());
             if (year != null) {
                 return Year.isoYear(year).isLeap() ? 5 : 4;
             }
@@ -1028,11 +1028,11 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer year = merger.getValue(ISOChronology.yearRule());
-            Integer moy = merger.getValue(ISOChronology.monthOfYearRule());
-            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+            Integer year = merger.getValueQuiet(ISOChronology.yearRule());
+            Integer moy = merger.getValueQuiet(ISOChronology.monthOfYearRule());
+            Integer dow = merger.getValueQuiet(ISOChronology.dayOfWeekRule());
             if (year != null && moy != null && dow != null) {
-                int wom = merger.getValueInt(this);
+                int wom = merger.getValue(this);
                 LocalDate date = LocalDate.date(year, 1, 1).plusMonths(moy).plusDays((((long) wom) - 1) * 7);
                 date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
                 merger.storeMergedDate(date);
@@ -1066,10 +1066,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            int hour = merger.getValueInt(this);
-            Integer minuteObj = merger.getValue(ISOChronology.minuteOfHourRule());
-            Integer secondObj = merger.getValue(ISOChronology.secondOfMinuteRule());
-            Integer nanoObj = merger.getValue(ISOChronology.nanoOfSecondRule());
+            int hour = merger.getValue(this);
+            Integer minuteObj = merger.getValueQuiet(ISOChronology.minuteOfHourRule());
+            Integer secondObj = merger.getValueQuiet(ISOChronology.secondOfMinuteRule());
+            Integer nanoObj = merger.getValueQuiet(ISOChronology.nanoOfSecondRule());
             int minute = 0;
             int second = 0;
             int nano = 0;
@@ -1192,8 +1192,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            int sod = merger.getValueInt(this);
-            Integer nanoObj = merger.getValue(ISOChronology.nanoOfSecondRule());
+            int sod = merger.getValue(this);
+            Integer nanoObj = merger.getValueQuiet(ISOChronology.nanoOfSecondRule());
             int nano = 0;
             if (nanoObj != null) {
                 nano = nanoObj;
@@ -1229,7 +1229,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            long mod = merger.getValueInt(this);
+            long mod = merger.getValue(this);
             if (merger.isStrict()) {
                 merger.storeMergedTime(LocalTime.fromNanoOfDay(mod * 1000000L));
             } else {
@@ -1261,7 +1261,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeFields(Calendrical.Merger merger) {
-            int mod = merger.getValueInt(this);
+            int mod = merger.getValue(this);
             int nod = MathUtils.safeMultiply(mod, 1000000);
             merger.storeMergedField(ISOChronology.nanoOfSecondRule(), nod);
             merger.markFieldAsProcessed(this);
@@ -1300,9 +1300,9 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeFields(Calendrical.Merger merger) {
-            Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+            Integer hapVal = merger.getValueQuiet(ISOChronology.hourOfAmPmRule());
             if (hapVal != null) {
-                int amPm = merger.getValueInt(this);
+                int amPm = merger.getValue(this);
                 int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
                 merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
                 merger.markFieldAsProcessed(this);

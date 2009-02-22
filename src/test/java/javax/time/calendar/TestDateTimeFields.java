@@ -301,38 +301,19 @@ public class TestDateTimeFields {
     }
 
     //-----------------------------------------------------------------------
-    // getValue()
+    // get()
     //-----------------------------------------------------------------------
-    public void test_getValue() {
+    public void test_get() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValue(YEAR_RULE), Integer.valueOf(2008));
-        assertEquals(test.getValue(MOY_RULE), Integer.valueOf(6));
-    }
-
-    public void test_getValue_null() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValue(NULL_RULE), null);
-    }
-
-    public void test_getValue_fieldNotPresent() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValue(DOM_RULE), null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getValueInt()
-    //-----------------------------------------------------------------------
-    public void test_getValueInt() {
-        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        assertEquals(test.getValueInt(YEAR_RULE), 2008);
-        assertEquals(test.getValueInt(MOY_RULE), 6);
+        assertEquals(test.get(YEAR_RULE), 2008);
+        assertEquals(test.get(MOY_RULE), 6);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_getValueInt_illegalValue() {
+    public void test_get_illegalValue() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 0);
         try {
-            test.getValueInt(MOY_RULE);
+            test.get(MOY_RULE);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getFieldRule(), MOY_RULE);
             throw ex;
@@ -340,20 +321,39 @@ public class TestDateTimeFields {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_getValueInt_null() {
+    public void test_get_null() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        test.getValueInt(NULL_RULE);
+        test.get(NULL_RULE);
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_getValueInt_fieldNotPresent() {
+    public void test_get_fieldNotPresent() {
         DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
         try {
-            test.getValueInt(DOM_RULE);
+            test.get(DOM_RULE);
         } catch (UnsupportedCalendarFieldException ex) {
             assertEquals(ex.getFieldRule(), DOM_RULE);
             throw ex;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // getQuiet()
+    //-----------------------------------------------------------------------
+    public void test_getQuiet() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getQuiet(YEAR_RULE), Integer.valueOf(2008));
+        assertEquals(test.getQuiet(MOY_RULE), Integer.valueOf(6));
+    }
+
+    public void test_getQuiet_null() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getQuiet(NULL_RULE), null);
+    }
+
+    public void test_getQuiet_fieldNotPresent() {
+        DateTimeFields test = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
+        assertEquals(test.getQuiet(DOM_RULE), null);
     }
 
     //-----------------------------------------------------------------------

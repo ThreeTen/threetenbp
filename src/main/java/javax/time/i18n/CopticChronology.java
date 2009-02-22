@@ -233,10 +233,10 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer moyVal = merger.getValue(CopticChronology.INSTANCE.monthOfYear());
-            Integer domVal = merger.getValue(CopticChronology.INSTANCE.dayOfMonth());
+            Integer moyVal = merger.getValueQuiet(CopticChronology.INSTANCE.monthOfYear());
+            Integer domVal = merger.getValueQuiet(CopticChronology.INSTANCE.dayOfMonth());
             if (moyVal != null && domVal != null) {
-                int year = merger.getValueInt(this);
+                int year = merger.getValue(this);
                 CopticDate date;
                 if (merger.isStrict()) {
                     date = CopticDate.copticDate(year, moyVal, domVal);
@@ -296,8 +296,8 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.getValue(CopticChronology.INSTANCE.year());
-            Integer moy = calendrical.getValue(CopticChronology.INSTANCE.monthOfYear());
+            Integer year = calendrical.deriveValueQuiet(CopticChronology.INSTANCE.year());
+            Integer moy = calendrical.deriveValueQuiet(CopticChronology.INSTANCE.monthOfYear());
             if (year != null && moy != null) {
                 if (moy == 13) {
                     return isLeapYear(year) ? 6 : 5;
@@ -335,7 +335,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.getValue(CopticChronology.INSTANCE.year());
+            Integer year = calendrical.deriveValueQuiet(CopticChronology.INSTANCE.year());
             if (year != null) {
                 return isLeapYear(year) ? 366 : 365;
             }
@@ -347,9 +347,9 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer yearVal = merger.getValue(CopticChronology.INSTANCE.year());
+            Integer yearVal = merger.getValueQuiet(CopticChronology.INSTANCE.year());
             if (yearVal != null) {
-                int doy = merger.getValueInt(this);
+                int doy = merger.getValue(this);
                 CopticDate date;
                 if (merger.isStrict()) {
                     date = CopticDate.copticDate(yearVal, 1, 1).withDayOfYear(doy);

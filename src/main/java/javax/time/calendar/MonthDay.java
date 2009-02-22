@@ -167,8 +167,8 @@ public final class MonthDay
      */
     public static MonthDay monthDay(CalendricalProvider calendricalProvider) {
         Calendrical calendrical = calendricalProvider.toCalendrical();
-        int month = calendrical.getValueInt(ISOChronology.monthOfYearRule());
-        int dom = calendrical.getValueInt(ISOChronology.dayOfMonthRule());
+        int month = calendrical.deriveValue(ISOChronology.monthOfYearRule());
+        int dom = calendrical.deriveValue(ISOChronology.dayOfMonthRule());
         return monthDay(month, dom);
     }
 

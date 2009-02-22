@@ -75,7 +75,7 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = calendrical.getValueInt(fieldRule);
+        int value = calendrical.deriveValue(fieldRule);
         BigDecimal fraction = fieldRule.convertValueToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {
@@ -96,7 +96,7 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return calendrical.isSupported(fieldRule);
+        return calendrical.isDerivable(fieldRule);
     }
 
     //-----------------------------------------------------------------------

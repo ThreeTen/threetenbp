@@ -224,7 +224,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Calendrical result = test.parse("ONE30");
         assertEquals(result.toDateTimeFields().size(), 1);
-        assertEquals(result.getValueInt(RULE_DOM), 30);
+        assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
@@ -275,7 +275,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.toDateTimeFields().size(), 1);
-        assertEquals(result.getValueInt(RULE_DOM), 30);
+        assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
     public void test_parse_StringParsePosition_parseError() throws Exception {
@@ -359,7 +359,7 @@ public class TestDateTimeFormatter {
         Format format = test.toFormat();
         Calendrical result = (Calendrical) format.parseObject("ONE30");
         assertEquals(result.toDateTimeFields().size(), 1);
-        assertEquals(result.getValueInt(RULE_DOM), 30);
+        assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
     @Test(expectedExceptions=ParseException.class)
@@ -413,7 +413,7 @@ public class TestDateTimeFormatter {
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
         assertEquals(result.toDateTimeFields().size(), 1);
-        assertEquals(result.getValueInt(RULE_DOM), 30);
+        assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
     public void test_toFormat_parseObject_StringParsePosition_parseError() throws Exception {

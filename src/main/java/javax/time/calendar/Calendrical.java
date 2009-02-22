@@ -265,43 +265,16 @@ public final class Calendrical
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified field is supported.
+     * Checks if the specified field can be derived.
      * <p>
      * This method checks if the field can be derived from the date, time or
      * field-value map. No check is performed on the validity of the value.
      *
-     * @param fieldRule  the rule to query from the map, not null
-     * @return the value for the specified field, null if value not present
-     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @param fieldRule  the rule to query from the map, null returns false
+     * @return true if a value can be derived for the field
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            return false;
-        }
-        return (getValue(fieldRule) != null);
-    }
-
-    /**
-     * Derives the value for the specified field from the date, time or field-value
-     * map returning null if the field is not present.
-     * <p>
-     * The value will be derived first from the date and/or time.
-     * If that does not succeed, then the field-value map will be queried using
-     * {@link FieldMap#deriveValue}.
-     * Thus, if the date/time and field-value map are inconsistent, the value
-     * from the date/time takes precedence.
-     * <p>
-     * A calendrical can hold invalid values, such as a day of month of -3 or an hour of 1000.
-     * This method performs no validation on the returned value.
-     *
-     * @param fieldRule  the rule to query from the map, not null
-     * @return the value for the specified field, null if value not present
-     * @throws IllegalCalendarFieldValueException if the value is invalid
-     */
-    public Integer getValue(DateTimeFieldRule fieldRule) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        Integer value = fieldRule.getValueQuiet(date, time);
-        return (value == null ? fieldMap.deriveValue(fieldRule) : value);
+    public boolean isDerivable(DateTimeFieldRule fieldRule) {
+        return (deriveValueQuiet(fieldRule) != null);
     }
 
     /**
@@ -320,14 +293,38 @@ public final class Calendrical
      * @param fieldRule  the rule to query from the map, not null
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
-     * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public int getValueInt(DateTimeFieldRule fieldRule) {
-        Integer value = getValue(fieldRule);
-        if (value != null) {
-            return value;
+    public int deriveValue(DateTimeFieldRule fieldRule) {
+        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+        Integer value = deriveValueQuiet(fieldRule);
+        if (value == null) {
+            throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
         }
-        throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
+        return value;
+    }
+
+    /**
+     * Derives the value for the specified field from the date, time or field-value
+     * map quietly returning null if the field is not present.
+     * <p>
+     * The value will be derived first from the date and/or time.
+     * If that does not succeed, then the field-value map will be queried using
+     * {@link FieldMap#deriveValue}.
+     * Thus, if the date/time and field-value map are inconsistent, the value
+     * from the date/time takes precedence.
+     * <p>
+     * A calendrical can hold invalid values, such as a day of month of -3 or an hour of 1000.
+     * This method performs no validation on the returned value.
+     *
+     * @param fieldRule  the rule to query from the map, null returns null
+     * @return the value for the specified field, null if value not present
+     */
+    public Integer deriveValueQuiet(DateTimeFieldRule fieldRule) {
+        if (fieldRule == null) {
+            return null;
+        }
+        Integer value = fieldRule.getValueQuiet(date, time);
+        return (value == null ? fieldMap.deriveValueQuiet(fieldRule) : value);
     }
 
     //-----------------------------------------------------------------------
@@ -872,7 +869,7 @@ public final class Calendrical
          * <p>
          * This method fulfills the {@link Iterable} interface and allows looping
          * around the fields using the for-each loop. The values can be obtained using
-         * {@link #get(DateTimeFieldRule)} or {@link #getValueValidated(DateTimeFieldRule)}.
+         * {@link #get(DateTimeFieldRule)} or {@link #getValidated(DateTimeFieldRule)}.
          *
          * @return an iterator over the fields in this object, never null
          */
@@ -916,26 +913,6 @@ public final class Calendrical
 
         //-----------------------------------------------------------------------
         /**
-         * Gets the value directly from the field-value map returning null if the
-         * field is not present.
-         * <p>
-         * This method only finds the value for the field if it is actually held in the map.
-         * If the value is not held directly, it may be {@link #deriveValue able to be derived}.
-         * <p>
-         * The value is not validated and might be out of range for the rule.
-         * <p>
-         * A calendrical can hold invalid values, such as a day of month of -3 or an hour of 1000.
-         * This method performs no validation on the returned value.
-         *
-         * @param fieldRule  the rule to query from the map, not null
-         * @return the value mapped to the specified field, null if not present
-         */
-        public Integer get(DateTimeFieldRule fieldRule) {
-            ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-            return fieldValueMap.get(fieldRule);
-        }
-
-        /**
          * Gets the value directly from the field-value map throwing an exception
          * if the field is not present.
          * <p>
@@ -948,14 +925,14 @@ public final class Calendrical
          * @param fieldRule  the rule to query from the map, not null
          * @return the value mapped to the specified field
          * @throws UnsupportedCalendarFieldException if the field is not in the map
-         * @throws IllegalCalendarFieldValueException if the value is invalid
          */
-        public int getInt(DateTimeFieldRule fieldRule) {
-            Integer value = get(fieldRule);
-            if (value != null) {
-                return value;
+        public int get(DateTimeFieldRule fieldRule) {
+            ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+            Integer value = fieldValueMap.get(fieldRule);
+            if (value == null) {
+                throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
             }
-            throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
+            return value;
         }
 
         /**
@@ -974,13 +951,29 @@ public final class Calendrical
          * @throws UnsupportedCalendarFieldException if the field is not in the map
          * @throws IllegalCalendarFieldValueException if the value is invalid
          */
-        public int getIntValidated(DateTimeFieldRule fieldRule) {
-            Integer value = get(fieldRule);
-            if (value != null) {
-                fieldRule.checkValue(value);
-                return value;
-            }
-            throw new UnsupportedCalendarFieldException(fieldRule, "Calendrical");
+        public int getValidated(DateTimeFieldRule fieldRule) {
+            int value = get(fieldRule);
+            fieldRule.checkValue(value);
+            return value;
+        }
+
+        /**
+         * Gets the value directly from the field-value map quietly returning null
+         * if the field is not present.
+         * <p>
+         * This method only finds the value for the field if it is actually held in the map.
+         * If the value is not held directly, it may be {@link #deriveValue able to be derived}.
+         * <p>
+         * The value is not validated and might be out of range for the rule.
+         * <p>
+         * A calendrical can hold invalid values, such as a day of month of -3 or an hour of 1000.
+         * This method performs no validation on the returned value.
+         *
+         * @param fieldRule  the rule to query from the map, null returns null
+         * @return the value mapped to the specified field, null if not present
+         */
+        public Integer getQuiet(DateTimeFieldRule fieldRule) {
+            return fieldRule == null ? null : fieldValueMap.get(fieldRule);
         }
 
         //-----------------------------------------------------------------------
@@ -1027,23 +1020,27 @@ public final class Calendrical
             return this;
         }
 
-//        /**
-//         * Puts a map of field-value pairs into the field-value map.
-//         * <p>
-//         * This method adds the specified field-value pairs to the map.
-//         * If this instance already has a value for a field then the value is replaced.
-//         * Otherwise the value is added.
-//         *
-//         * @param fields  the map of field-value pairs to store, not null
-//         * @return this, for method chaining, never null
-//         */
-//        public Fields putFields(DateTimeFields fields) {
-//            ISOChronology.checkNotNull(fields, "DateTimeFields must not be null");
-//            return fields.copyInto(fieldValueMap);
-//        }
+        /**
+         * Puts a map of field-value pairs into the field-value map.
+         * <p>
+         * This method adds the specified field-value pairs to the map.
+         * If this instance already has a value for a field then the value is replaced.
+         * Otherwise the value is added.
+         *
+         * @param fields  the map of field-value pairs to store, not null
+         * @return this, for method chaining, never null
+         */
+        public FieldMap putAll(DateTimeFields fields) {
+            ISOChronology.checkNotNull(fields, "DateTimeFields must not be null");
+            fields.copyInto(fieldValueMap);
+            return this;
+        }
 
         /**
-         * Removes the specified field rule directly from the field-value map.
+         * Removes the specified field rule from the field-value map.
+         * <p>
+         * If this object holds a mapping for the specified rule then the mapping
+         * will be removed.
          *
          * @param fieldRule  the field to remove, not null
          * @return this, for method chaining, never null
@@ -1055,7 +1052,9 @@ public final class Calendrical
         }
 
         /**
-         * Removes the specified field rule directly from the field-value map.
+         * Removes the specified field rules directly from the field-value map.
+         * <p>
+         * This will remove the mapping for each of the specified rules from this object.
          *
          * @param fieldRules  the fields to remove, not null
          * @return this, for method chaining, never null
@@ -1121,7 +1120,7 @@ public final class Calendrical
         //-----------------------------------------------------------------------
         /**
          * Derives the value of the requested field from the information in the
-         * field-value map returning null if the value cannot be derived.
+         * field-value map quietly returning null if the value cannot be derived.
          * <p>
          * For example, if this map contains the ISO Hour of Day field, then it
          * is possible to derive the Hour of AM/PM and the AM/PM values.
@@ -1131,12 +1130,11 @@ public final class Calendrical
          * A calendrical can hold invalid values, such as a day of month of -3 or an hour of 1000.
          * This method performs no validation on the returned value.
          *
-         * @param fieldRule  the rule to query from the map, not null
-         * @return the value of the specified field derived from this map, null if not present
+         * @param fieldRule  the rule to query from the map, null returns null
+         * @return the value of the specified field derived from this map, null if cannot be derived
          */
-        public Integer deriveValue(DateTimeFieldRule fieldRule) {
-            ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-            return fieldRule.getValueQuiet(this);
+        public Integer deriveValueQuiet(DateTimeFieldRule fieldRule) {
+            return fieldRule == null ? null : fieldRule.getValueQuiet(this);
         }
 
         //-----------------------------------------------------------------------
@@ -1186,9 +1184,12 @@ public final class Calendrical
 
         //-----------------------------------------------------------------------
         /**
-         * Converts this instance to a map.
+         * Converts this object to a map of fields to values.
+         * <p>
+         * The returned map will never be null, however it may be empty.
+         * It is independent of this object - changes will not be reflected back.
          *
-         * @return a modifiable copy of the field-value map, never null
+         * @return an independent, modifiable copy of the field-value map, never null
          */
         public Map<DateTimeFieldRule, Integer> toFieldValueMap() {
             Map<DateTimeFieldRule, Integer> cloned =
@@ -1338,26 +1339,6 @@ public final class Calendrical
 
         //-----------------------------------------------------------------------
         /**
-         * Gets the value for the specified field, returning null if the field is not present.
-         * <p>
-         * This obtains the value for the field as defined in the underlying field-value map.
-         * If the map does not define the field, null is returned.
-         * <p>
-         * The underlying field-value map is unvalidated and can contain out of range
-         * values, such as a day of month of -3 or an hour of 1000.
-         * If the context is strict, then the result of this method will be validated
-         * before it is returned. This ensures that the value will be between the
-         * minimum and maximum values for that field.
-         *
-         * @param fieldRule  the rule to query from the map, not null
-         * @return the value mapped to the specified field, null if not present
-         * @throws IllegalCalendarFieldValueException if the merge is strict and the value is invalid
-         */
-        public Integer getValue(DateTimeFieldRule fieldRule) {
-            return calendrical.getFieldMap().get(fieldRule);
-        }
-
-        /**
          * Gets the value for the specified field, throwing an exception if the field is not present.
          * <p>
          * This obtains the value for the field as defined in the underlying field-value map.
@@ -1373,8 +1354,28 @@ public final class Calendrical
          * @return the value mapped to the specified field
          * @throws UnsupportedCalendarFieldException if the field is not supported
          */
-        public int getValueInt(DateTimeFieldRule fieldRule) {
-            return calendrical.getFieldMap().getInt(fieldRule);
+        public int getValue(DateTimeFieldRule fieldRule) {
+            return calendrical.getFieldMap().get(fieldRule);
+        }
+
+        /**
+         * Gets the value for the specified field, quietly returning null if the field is not present.
+         * <p>
+         * This obtains the value for the field as defined in the underlying field-value map.
+         * If the map does not define the field, null is returned.
+         * <p>
+         * The underlying field-value map is unvalidated and can contain out of range
+         * values, such as a day of month of -3 or an hour of 1000.
+         * If the context is strict, then the result of this method will be validated
+         * before it is returned. This ensures that the value will be between the
+         * minimum and maximum values for that field.
+         *
+         * @param fieldRule  the rule to query from the map, null returns null
+         * @return the value mapped to the specified field, null if not present
+         * @throws IllegalCalendarFieldValueException if the merge is strict and the value is invalid
+         */
+        public Integer getValueQuiet(DateTimeFieldRule fieldRule) {
+            return calendrical.getFieldMap().getQuiet(fieldRule);
         }
 
         //-----------------------------------------------------------------------
@@ -1471,7 +1472,7 @@ public final class Calendrical
          */
         public void storeMergedField(DateTimeFieldRule fieldRule, int value) {
             ISOChronology.checkNotNull(fieldRule, "Field rule must not be null");
-            Integer oldValue = calendrical.getFieldMap().get(fieldRule);
+            Integer oldValue = calendrical.getFieldMap().getQuiet(fieldRule);
             if (oldValue != null) {
                 if (oldValue.intValue() != value) {
                     throw new InvalidCalendarFieldException("Merge resulted in two different values, " + value +
@@ -1509,7 +1510,7 @@ public final class Calendrical
          * For example, see {@link ISOChronology}.
          * <p>
          * The details of the process are controlled by the merge context.
-         * This includes strict/lenient behaviour.
+         * This includes strict/lenient behavior.
          * <p>
          * The merge must result in consistent values for each field, date and time.
          * If two different values are produced an exception is thrown.

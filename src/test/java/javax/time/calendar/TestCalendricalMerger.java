@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDate.*;
-import static javax.time.calendar.LocalTime.*;
-import static org.testng.Assert.*;
+import static javax.time.calendar.LocalDate.date;
+import static javax.time.calendar.LocalTime.time;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -45,7 +46,6 @@ import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical.Merger;
 import javax.time.calendar.LocalTime.Overflow;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -54,8 +54,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestCalendricalMerger {
 
-    @SuppressWarnings("unchecked")
-    private static final Map<DateTimeFieldRule, Integer> NULL_MAP = (Map) null;
     private static final DateTimeFieldRule NULL_RULE = null;
     private static final DateTimeFieldRule YEAR_RULE = ISOChronology.yearRule();
     private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
@@ -80,65 +78,6 @@ public class TestCalendricalMerger {
     //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
-//    public void test_interfaces() {
-//        assertTrue(CalendricalProvider.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(DateProvider.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(TimeProvider.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(DateTimeProvider.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(DateMatcher.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(TimeMatcher.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(Iterable.class.isAssignableFrom(CalendricalMerger.class));
-//        assertTrue(Serializable.class.isAssignableFrom(CalendricalMerger.class));
-//    }
-
-//    @DataProvider(name="simple")
-//    Object[][] data_simple() {
-//        return new Object[][] {
-//            {new CalendricalMerger(DateTimeFields.fields(), STRICT_CONTEXT)},
-//            {new CalendricalMerger(DateTimeFields.fields(YEAR_RULE, 2008), STRICT_CONTEXT)},
-//            {new CalendricalMerger(DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6), STRICT_CONTEXT)},
-//        };
-//    }
-//
-//    @Test(dataProvider="simple")
-//    public void test_serialization(CalendricalMerger fieldMap) throws Exception {
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        ObjectOutputStream oos = new ObjectOutputStream(baos);
-//        oos.writeObject(fieldMap);
-//        oos.close();
-//        
-//        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-//                baos.toByteArray()));
-//        assertEquals(ois.readObject(), fieldMap);
-//    }
-
-//    //-----------------------------------------------------------------------
-//    // constructors
-//    //-----------------------------------------------------------------------
-//    public void constructor_strict() {
-//        DateTimeFields fields = fields(YEAR_RULE, 2008);
-//        Calendrical.Merger test = new Calendrical.Merger(fields, STRICT_CONTEXT);
-//        assertEquals(test.getOriginalFields(), fields);
-//        assertEquals(test.getContext(), STRICT_CONTEXT);
-//        assertEquals(test.isStrict(), true);
-//        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-//        assertEquals(test.getMergedFields(), fields);
-//        assertEquals(test.getMergedDate(), null);
-//        assertEquals(test.getMergedTime(), null);
-//    }
-//
-//    public void constructor_lenient() {
-//        DateTimeFields fields = fields(YEAR_RULE, 2008);
-//        Calendrical.Merger test = new Calendrical.Merger(fields, LENIENT_CONTEXT);
-//        assertEquals(test.getOriginalFields(), fields);
-//        assertEquals(test.getContext(), LENIENT_CONTEXT);
-//        assertEquals(test.isStrict(), false);
-//        assertEquals(test.getProcessedFieldSet(), new HashSet<DateTimeFieldRule>());
-//        assertEquals(test.getMergedFields(), fields);
-//        assertEquals(test.getMergedDate(), null);
-//        assertEquals(test.getMergedTime(), null);
-//    }
-//
 
     //-----------------------------------------------------------------------
     // getValue()
@@ -147,8 +86,8 @@ public class TestCalendricalMerger {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                assertEquals(merger.getValue(YEAR_RULE), Integer.valueOf(2008));
-                assertEquals(merger.getValue(this), Integer.valueOf(20));
+                assertEquals(merger.getValue(YEAR_RULE), 2008);
+                assertEquals(merger.getValue(this), 20);
             }
         };
         Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
@@ -167,11 +106,18 @@ public class TestCalendricalMerger {
         cal.merge(STRICT_CONTEXT);
     }
 
-    public void test_get_fieldNotPresent() {
+    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    public void test_getValue_fieldNotPresent() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                assertEquals(merger.getValue(DOM_RULE), null);
+                try {
+                    merger.getValue(DOM_RULE);
+                } catch (UnsupportedCalendarFieldException ex) {
+                    dumpException(ex);
+                    assertEquals(ex.getFieldRule(), DOM_RULE);
+                    throw ex;
+                }
             }
         };
         Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
@@ -200,7 +146,7 @@ public class TestCalendricalMerger {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                assertEquals(merger.getValue(MOY_RULE), Integer.valueOf(-1));
+                assertEquals(merger.getValue(MOY_RULE), -1);
             }
         };
         Calendrical cal = new Calendrical(MOY_RULE, -1, rule, 20);
@@ -208,44 +154,36 @@ public class TestCalendricalMerger {
     }
 
     //-----------------------------------------------------------------------
-    // getValueInt()
+    // getValueQuiet()
     //-----------------------------------------------------------------------
-    public void test_getValueInt() {
+    public void test_getValueQuiet() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                assertEquals(merger.getValueInt(YEAR_RULE), 2008);
-                assertEquals(merger.getValueInt(this), 20);
+                assertEquals(merger.getValueQuiet(YEAR_RULE), Integer.valueOf(2008));
+                assertEquals(merger.getValueQuiet(this), Integer.valueOf(20));
             }
         };
         Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
         cal.merge(STRICT_CONTEXT);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getValueInt_null() {
+    public void test_getValueQuiet_null() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                merger.getValueInt(NULL_RULE);
+                assertEquals(merger.getValueQuiet(NULL_RULE), null);
             }
         };
         Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
         cal.merge(STRICT_CONTEXT);
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
-    public void test_getValueInt_fieldNotPresent() {
+    public void test_get_getValueQuiet_fieldNotPresent() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                try {
-                    merger.getValueInt(DOM_RULE);
-                } catch (UnsupportedCalendarFieldException ex) {
-                    dumpException(ex);
-                    assertEquals(ex.getFieldRule(), DOM_RULE);
-                    throw ex;
-                }
+                assertEquals(merger.getValueQuiet(DOM_RULE), null);
             }
         };
         Calendrical cal = new Calendrical(YEAR_RULE, 2008, rule, 20);
@@ -253,7 +191,7 @@ public class TestCalendricalMerger {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_getValueInt_strictInvalidValue() {
+    public void test_getValueQuiet_strictInvalidValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
@@ -270,11 +208,11 @@ public class TestCalendricalMerger {
         }
     }
 
-    public void test_getValueInt_lenientInvalidValue() {
+    public void test_getValueQuiet_lenientInvalidValue() {
         DateTimeFieldRule rule = new MockFieldRule() {
             @Override
             protected void mergeFields(Merger merger) {
-                assertEquals(merger.getValueInt(MOY_RULE), -1);
+                assertEquals(merger.getValueQuiet(MOY_RULE), Integer.valueOf(-1));
             }
         };
         Calendrical cal = new Calendrical(MOY_RULE, -1, rule, 20);
@@ -1466,22 +1404,22 @@ public class TestCalendricalMerger {
         assertEquals(cal.getDate(), date);
         assertEquals(cal.getTime(), time);
     }
-    private static void assertFields(
-            Calendrical cal,
-            DateTimeFieldRule rule1, int value1,
-            DateTimeFieldRule rule2, int value2,
-            DateTimeFieldRule rule3, int value3,
-            DateTimeFieldRule rule4, int value4,
-            LocalDate date, LocalTime time) {
-        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
-        assertEquals(map.size(), 4);
-        assertEquals(map.get(rule1), Integer.valueOf(value1));
-        assertEquals(map.get(rule2), Integer.valueOf(value2));
-        assertEquals(map.get(rule3), Integer.valueOf(value3));
-        assertEquals(map.get(rule4), Integer.valueOf(value4));
-        assertEquals(cal.getDate(), date);
-        assertEquals(cal.getTime(), time);
-    }
+//    private static void assertFields(
+//            Calendrical cal,
+//            DateTimeFieldRule rule1, int value1,
+//            DateTimeFieldRule rule2, int value2,
+//            DateTimeFieldRule rule3, int value3,
+//            DateTimeFieldRule rule4, int value4,
+//            LocalDate date, LocalTime time) {
+//        Map<DateTimeFieldRule, Integer> map = cal.getFieldMap().toFieldValueMap();
+//        assertEquals(map.size(), 4);
+//        assertEquals(map.get(rule1), Integer.valueOf(value1));
+//        assertEquals(map.get(rule2), Integer.valueOf(value2));
+//        assertEquals(map.get(rule3), Integer.valueOf(value3));
+//        assertEquals(map.get(rule4), Integer.valueOf(value4));
+//        assertEquals(cal.getDate(), date);
+//        assertEquals(cal.getTime(), time);
+//    }
     private static void assertFields(
             Calendrical cal,
             DateTimeFieldRule rule1, int value1,
@@ -1500,9 +1438,9 @@ public class TestCalendricalMerger {
         assertEquals(cal.getDate(), date);
         assertEquals(cal.getTime(), time);
     }
-    private static void assertFieldValue(Integer actual, int expected) {
-        Assert.assertEquals(actual, (Integer) expected); 
-    }
+//    private static void assertFieldValue(Integer actual, int expected) {
+//        Assert.assertEquals(actual, (Integer) expected); 
+//    }
     private static void dumpException(Exception ex) {
         // this is used to allow a human to inspect the error messages to see if they are understandable
         System.out.println(ex.getMessage());

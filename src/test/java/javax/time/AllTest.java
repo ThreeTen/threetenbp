@@ -34,6 +34,7 @@ package javax.time;
 import java.util.Arrays;
 
 import javax.time.calendar.TestCalendrical;
+import javax.time.calendar.TestCalendricalFieldMap;
 import javax.time.calendar.TestCalendricalMerger;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
@@ -123,6 +124,7 @@ public class AllTest {
             TestTimeSource_System.class,
             // calendar classes
             TestCalendrical.class,
+            TestCalendricalFieldMap.class,
             TestCalendricalMerger.class,
             TestClock.class,
             TestClock_TimeSourceClock.class,

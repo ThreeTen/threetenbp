@@ -342,13 +342,13 @@ public final class PeriodFields
     }
 
     /**
-     * Gets the amount of the period for the specified unit, returning
+     * Gets the amount of the period for the specified unit quietly returning
      * null if this period does have an amount for the unit.
      *
      * @param unit  the unit to query, null returns null
      * @return the period amount, null if unit not present
      */
-    public Long getAmount(PeriodUnit unit) {
+    public Long getQuiet(PeriodUnit unit) {
         return unit == null ? null : unitAmountMap.get(unit);
     }
 
@@ -409,7 +409,7 @@ public final class PeriodFields
      * @throws NullPointerException if the period unit is null
      */
     public PeriodFields with(long amount, PeriodUnit unit) {
-        Long existing = getAmount(unit);
+        Long existing = getQuiet(unit);
         if (existing != null && existing == amount) {
             return this;
         }

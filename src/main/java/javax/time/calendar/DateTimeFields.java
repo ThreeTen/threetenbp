@@ -209,7 +209,7 @@ public final class DateTimeFields
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
      * around the fields using the for-each loop. The values can be obtained using
-     * {@link #getValueInt(DateTimeFieldRule)}.
+     * {@link #get(DateTimeFieldRule)}.
      *
      * @return an iterator over the fields in this object, never null
      */
@@ -231,40 +231,40 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value for the specified field returning null if the field is
-     * not in the field-value map.
-     * <p>
-     * The value will be within the valid range for the field.
-     * No cross-validation between fields is performed.
-     *
-     * @param fieldRule  the rule to query from the map, null returns null
-     * @return the value mapped to the specified field, null if not present
-     */
-    public Integer getValue(DateTimeFieldRule fieldRule) {
-        if (fieldRule == null) {
-            return null;
-        }
-        return fieldValueMap.get(fieldRule);
-    }
-
-    /**
      * Gets the value for the specified field throwing an exception if the
      * field is not in the field-value map.
      * <p>
      * The value will be within the valid range for the field.
-     * No cross-validation between fields is performed.
+     * <p>
+     * No attempt is made to derive values - the result is simply based on
+     * the contents of the stored field-value map. If you want to derive a
+     * value then convert this object to a <code>Calendrical</code> and
+     * use {@link Calendrical#deriveValue(DateTimeFieldRule)}.
      *
      * @param fieldRule  the rule to query from the map, not null
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
-    public int getValueInt(DateTimeFieldRule fieldRule) {
+    public int get(DateTimeFieldRule fieldRule) {
         ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         Integer value = fieldValueMap.get(fieldRule);
         if (value == null) {
             throw new UnsupportedCalendarFieldException(fieldRule, "DateTimeFields");
         }
         return value;
+    }
+
+    /**
+     * Gets the value for the specified field quietly returning null
+     * if the field is not in the field-value map.
+     * <p>
+     * The value will be within the valid range for the field.
+     *
+     * @param fieldRule  the rule to query from the map, null returns null
+     * @return the value mapped to the specified field, null if not present
+     */
+    public Integer getQuiet(DateTimeFieldRule fieldRule) {
+        return fieldRule == null ? null : fieldValueMap.get(fieldRule);
     }
 
     //-----------------------------------------------------------------------

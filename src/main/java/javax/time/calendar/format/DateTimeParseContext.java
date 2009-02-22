@@ -121,7 +121,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
     public int getFieldValueMapValue(DateTimeFieldRule fieldRule) {
-        return calendrical.getValueInt(fieldRule);
+        return calendrical.deriveValue(fieldRule);
     }
 
     /**
