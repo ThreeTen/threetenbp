@@ -33,6 +33,8 @@ package javax.time.period;
 
 import java.io.Serializable;
 
+import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.MathUtils;
 
 /**
@@ -408,6 +410,17 @@ public final class Period
      */
     public long getNanos() {
         return nanos;
+    }
+
+    /**
+     * Gets the amount of nanoseconds of the overall period safely converted
+     * to an <code>int</code>.
+     *
+     * @return the amount of nanoseconds of the overall period
+     * @throws ArithmeticException if the number of nanoseconds exceeds the capacity of an int
+     */
+    public int getNanosInt() {
+        return MathUtils.safeToInt(nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -807,9 +820,10 @@ public final class Period
      * Returns a copy of this period with all amounts normalized to the
      * standard ranges for date-time fields.
      * <p>
-     * Two normalizations occur, one for years and months, and one for hours, minutes and seconds.
+     * Two normalizations occur, one for years and months, and one for
+     * hours, minutes, seconds and nanoseconds.
      * Days are not normalized, as a day may vary in length at daylight savings cutover.
-     * For example, a period of P1Y15M1DT28H will be normalized to 2Y3M1DT28H.
+     * For example, a period of P1Y15M1DT28H61M will be normalized to P2Y3M1DT29H1M.
      * <p>
      * Note that this method normalizes using assumptions:
      * <ul>
@@ -853,9 +867,9 @@ public final class Period
      * standard ranges for date-time fields including the assumption that
      * days are 24 hours long.
      * <p>
-     * Two normalizations occur, one for years and months, and one for hours, minutes and seconds.
-     * The number of hours may optionally be normalized into days based on an input parameter.
-     * For example, a period of P1Y15M1DT28H will be normalized to 2Y3M2DT4H.
+     * Two normalizations occur, one for years and months, and one for
+     * days, hours, minutes, seconds and nanoseconds.
+     * For example, a period of P1Y15M1DT28H will be normalized to P2Y3M2DT4H.
      * <p>
      * Note that this method normalizes using assumptions:
      * <ul>
@@ -1169,6 +1183,66 @@ public final class Period
     public PeriodFields toPeriodFields() {
         // TODO: Maybe remove?
         return PeriodFields.periodFields(this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Converts this object to a <code>Duration</code> using the hours, minutes,
+     * seconds and nanoseconds fields.
+     * If years, months or days are present an exception is thrown.
+     * <p>
+     * The duration is calculated using assumptions:
+     * <ul>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return <code>this</code>, never null
+     * @throws CalendricalException if the period cannot be converted as it contains years/months/days
+     */
+    public Duration toDuration() {
+        if ((years | months | days) > 0) {
+            throw new CalendricalException("Unable to convert period to duration as years/months/days are present: " + this);
+        }
+        long secs = totalSeconds();
+        int remainderNanos = (int) (nanos % 1000000000L);
+        if (remainderNanos < 0) {
+            remainderNanos += 1000000000;
+            secs--;
+        }
+        return Duration.duration(secs, remainderNanos);
+    }
+
+    /**
+     * Converts this object to a <code>Duration</code> using the days, hours, minutes,
+     * seconds and nanoseconds fields.
+     * If years or months are present an exception is thrown.
+     * <p>
+     * The duration is calculated using assumptions:
+     * <ul>
+     * <li>60 hours in a day</li>
+     * <li>60 minutes in an hour</li>
+     * <li>60 seconds in a minute</li>
+     * <li>1,000,000,000 nanoseconds in a second</li>
+     * </ul>
+     * This method is only appropriate to call if these assumptions are met.
+     *
+     * @return <code>this</code>, never null
+     * @throws CalendricalException if the period cannot be converted as it contains years/months/days
+     */
+    public Duration toDurationWith24HourDays() {
+        if ((years | months) > 0) {
+            throw new CalendricalException("Unable to convert period to duration as years/months are present: " + this);
+        }
+        long secs = totalSecondsWith24HourDays();
+        int remainderNanos = (int) (nanos % 1000000000L);
+        if (remainderNanos < 0) {
+            remainderNanos += 1000000000;
+            secs--;
+        }
+        return Duration.duration(secs, remainderNanos);
     }
 
     //-----------------------------------------------------------------------

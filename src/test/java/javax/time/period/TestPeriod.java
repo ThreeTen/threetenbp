@@ -53,6 +53,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 
+import javax.time.CalendricalException;
+import javax.time.Duration;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -265,6 +268,20 @@ public class TestPeriod {
         assertEquals(Period.period(0, 0, 0, 0, 0, 6, 0).isZero(), false);
         assertEquals(Period.period(0, 0, 0, 0, 0, 0, 7).isZero(), false);
         assertEquals(Period.period(0, 0, 0, 0, 0, 0).isZero(), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // getNanosInt()
+    //-----------------------------------------------------------------------
+    public void test_getNanosInt() {
+        Period test = Period.nanos(Integer.MAX_VALUE);
+        assertEquals(test.getNanosInt(), Integer.MAX_VALUE);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_getNanosInt_tooBig() {
+        Period test = Period.nanos(Integer.MAX_VALUE + 1L);
+        test.getNanosInt();
     }
 
     //-----------------------------------------------------------------------
@@ -1419,9 +1436,9 @@ public class TestPeriod {
     public void test_totalSecondsWith24HourDays_big() {
         BigInteger calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
                             .add(MAX_BINT)
-                            .add(MAX_BINT.multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
+                            .add(MAX_BINT.multiply(BINT_24).add(MAX_BINT).multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
         long s = new BigDecimal(calc).longValueExact();
-        Period test = Period.period(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+        Period test = Period.period(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
         assertEquals(test.totalSecondsWith24HourDays(), s);
     }
 
@@ -1543,6 +1560,102 @@ public class TestPeriod {
 
     public void test_toPeriodFields_zero() {
         assertSame(Period.ZERO.toPeriodFields(), PeriodFields.ZERO);
+    }
+
+    //-----------------------------------------------------------------------
+    // toDuration()
+    //-----------------------------------------------------------------------
+    public void test_toDuration() {
+        assertEquals(Period.ZERO.toDuration(), Duration.duration(0));
+        assertEquals(Period.period(0, 0, 0, 4, 5, 6, 7).toDuration(), Duration.duration((4 * 60 + 5) * 60L + 6, 7));
+    }
+
+    public void test_toDuration_calculation() {
+        assertEquals(Period.period(0, 0, 0, 2, 0, 0, 0).toDuration(), Duration.duration(2 * 3600));
+        assertEquals(Period.period(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.duration(120));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.duration(2));
+        
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDuration(), Duration.duration(3, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L).toDuration(), Duration.duration(4, 0));
+    }
+
+    public void test_toDuration_negatives() {
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 1).toDuration(), Duration.duration(2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, -1).toDuration(), Duration.duration(1, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, 1).toDuration(), Duration.duration(-2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, -1).toDuration(), Duration.duration(-3, 999999999));
+    }
+
+    public void test_toDuration_big() {
+        BigInteger calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
+                            .add(MAX_BINT)
+                            .add(MAX_BINT.multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
+        long s = new BigDecimal(calc).longValueExact();
+        calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
+        int n = new BigDecimal(calc).intValueExact();
+        Period test = Period.period(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+        assertEquals(test.toDuration(), Duration.duration(s, n));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toDuration_years() {
+        Period.period(1, 0, 0, 4, 5, 6, 7).toDuration();
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toDuration_months() {
+        Period.period(0, 1, 0, 4, 5, 6, 7).toDuration();
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toDuration_days() {
+        Period.period(0, 0, 1, 4, 5, 6, 7).toDuration();
+    }
+
+    //-----------------------------------------------------------------------
+    // toDurationWith24HourDays()
+    //-----------------------------------------------------------------------
+    public void test_toDurationWith24HourDays() {
+        assertEquals(Period.ZERO.toDurationWith24HourDays(), Duration.duration(0));
+        assertEquals(Period.period(0, 0, 3, 4, 5, 6, 7).toDurationWith24HourDays(), Duration.duration(((3 * 24 + 4) * 60 + 5) * 60L + 6, 7));
+    }
+
+    public void test_toDurationWith24HourDays_calculation() {
+        assertEquals(Period.period(0, 0, 2, 0, 0, 0, 0).toDurationWith24HourDays(), Duration.duration(2 * 24 * 3600));
+        assertEquals(Period.period(0, 0, 0, 2, 0, 0, 0).toDurationWith24HourDays(), Duration.duration(2 * 3600));
+        assertEquals(Period.period(0, 0, 0, 0, 2, 0, 0).toDurationWith24HourDays(), Duration.duration(120));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 0).toDurationWith24HourDays(), Duration.duration(2));
+        
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDurationWith24HourDays(), Duration.duration(3, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L).toDurationWith24HourDays(), Duration.duration(4, 0));
+    }
+
+    public void test_toDurationWith24HourDays_negatives() {
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 1).toDurationWith24HourDays(), Duration.duration(2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, -1).toDurationWith24HourDays(), Duration.duration(1, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, 1).toDurationWith24HourDays(), Duration.duration(-2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, -1).toDurationWith24HourDays(), Duration.duration(-3, 999999999));
+    }
+
+    public void test_toDurationWith24HourDays_big() {
+        BigInteger calc = BigInteger.valueOf(Long.MAX_VALUE).divide(BINT_1BN)
+                            .add(MAX_BINT)
+                            .add(MAX_BINT.multiply(BINT_24).add(MAX_BINT).multiply(BINT_60).add(MAX_BINT).multiply(BINT_60));
+        long s = new BigDecimal(calc).longValueExact();
+        calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
+        int n = new BigDecimal(calc).intValueExact();
+        Period test = Period.period(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
+        assertEquals(test.toDurationWith24HourDays(), Duration.duration(s, n));
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toDurationWith24HourDays_years() {
+        Period.period(1, 0, 0, 4, 5, 6, 7).toDurationWith24HourDays();
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_toDurationWith24HourDays_months() {
+        Period.period(0, 1, 0, 4, 5, 6, 7).toDurationWith24HourDays();
     }
 
     //-----------------------------------------------------------------------
