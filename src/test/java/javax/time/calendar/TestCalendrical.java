@@ -1105,9 +1105,9 @@ public class TestCalendrical {
 
     public void test_equals_fields_date_notEqual() {
         DateTimeFields fields = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30);
+            .with(YEAR_RULE, 2008)
+            .with(MOY_RULE, 6)
+            .with(DOM_RULE, 30);
         LocalDate date = DATE_2008_06_30;
         Calendrical a = new Calendrical(fields);
         Calendrical b = new Calendrical(date, null, null, null);
@@ -1119,8 +1119,8 @@ public class TestCalendrical {
 
     public void test_equals_fields_dateEqual_fields_notEqual() {
         DateTimeFields fields = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(DOY_RULE, 182);
+            .with(YEAR_RULE, 2008)
+            .with(DOY_RULE, 182);
         LocalDate date = DATE_2008_06_30;
         Calendrical a = new Calendrical(fields);
         Calendrical b = new Calendrical(date, null, null, null);
@@ -1132,9 +1132,9 @@ public class TestCalendrical {
 
     public void test_equals_fields_fieldsIdentical_equal() {
         DateTimeFields fields = DateTimeFields.fields()
-            .withFieldValue(YEAR_RULE, 2008)
-            .withFieldValue(MOY_RULE, 6)
-            .withFieldValue(DOM_RULE, 30);
+            .with(YEAR_RULE, 2008)
+            .with(MOY_RULE, 6)
+            .with(DOM_RULE, 30);
         Calendrical a = new Calendrical(fields);
         Calendrical b = new Calendrical(fields);
         assertEquals(a.equals(b), true);

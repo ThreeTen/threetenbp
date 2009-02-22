@@ -282,7 +282,7 @@ public final class DateTimeFields
      * @throws NullPointerException if DateTimeFieldRule is null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public DateTimeFields withFieldValue(DateTimeFieldRule fieldRule, int value) {
+    public DateTimeFields with(DateTimeFieldRule fieldRule, int value) {
         ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         fieldRule.checkValue(value);
         TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
@@ -290,39 +290,39 @@ public final class DateTimeFields
         return new DateTimeFields(clonedMap);
     }
 
-    /**
-     * Returns a copy of this DateTimeFields with the fields from the specified map added.
-     * <p>
-     * If this instance already has a value for any field then the value is replaced.
-     * Otherwise the value is added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param fieldValueMap  the new map of fields, not null
-     * @return a new, updated DateTimeFields, never null
-     * @throws NullPointerException if the map contains null keys or values
-     * @throws IllegalCalendarFieldValueException if any value is invalid
-     */
-    public DateTimeFields withFields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
-        ISOChronology.checkNotNull(fieldValueMap, "The field-value map must not be null");
-        if (fieldValueMap.isEmpty()) {
-            return this;
-        }
-        // don't use contains() as tree map and others can throw NPE
-        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            DateTimeFieldRule fieldRule = entry.getKey();
-            Integer value = entry.getValue();
-            ISOChronology.checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
-            ISOChronology.checkNotNull(value, "Null values are not permitted in field-value map");
-            fieldRule.checkValue(value);
-            clonedMap.put(fieldRule, value);
-        }
-        return new DateTimeFields(clonedMap);
-    }
+//    /**
+//     * Returns a copy of this DateTimeFields with the fields from the specified map added.
+//     * <p>
+//     * If this instance already has a value for any field then the value is replaced.
+//     * Otherwise the value is added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param fieldValueMap  the new map of fields, not null
+//     * @return a new, updated DateTimeFields, never null
+//     * @throws NullPointerException if the map contains null keys or values
+//     * @throws IllegalCalendarFieldValueException if any value is invalid
+//     */
+//    public DateTimeFields with(Map<DateTimeFieldRule, Integer> fieldValueMap) {
+//        ISOChronology.checkNotNull(fieldValueMap, "Field-value map must not be null");
+//        if (fieldValueMap.isEmpty()) {
+//            return this;
+//        }
+//        // don't use contains() as tree map and others can throw NPE
+//        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
+//        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
+//            DateTimeFieldRule fieldRule = entry.getKey();
+//            Integer value = entry.getValue();
+//            ISOChronology.checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
+//            ISOChronology.checkNotNull(value, "Null values are not permitted in field-value map");
+//            fieldRule.checkValue(value);
+//            clonedMap.put(fieldRule, value);
+//        }
+//        return new DateTimeFields(clonedMap);
+//    }
 
     /**
-     * Returns a copy of this DateTimeFields with the fields from the specified set added.
+     * Returns a copy of this DateTimeFields with the specified fields added.
      * <p>
      * If this instance already has a value for the field then the value is replaced.
      * Otherwise the value is added.
@@ -332,8 +332,8 @@ public final class DateTimeFields
      * @param fields  the fields to add to the returned object, not null
      * @return a new, updated DateTimeFields, never null
      */
-    public DateTimeFields withFields(DateTimeFields fields) {
-        ISOChronology.checkNotNull(fields, "The field-set must not be null");
+    public DateTimeFields with(DateTimeFields fields) {
+        ISOChronology.checkNotNull(fields, "DateTimeFields must not be null");
         if (fields.size() == 0 || fields == this) {
             return this;
         }
@@ -391,7 +391,7 @@ public final class DateTimeFields
      * @return true if the time fields match, false otherwise
      */
     public boolean matchesTime(LocalTime time) {
-        ISOChronology.checkNotNull(time, "The time to match against must not be null");
+        ISOChronology.checkNotNull(time, "LocalTime must not be null");
         for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
             Integer timeValue = entry.getKey().getValueQuiet(null, time);
             if (timeValue != null && timeValue.equals(entry.getValue()) == false) {

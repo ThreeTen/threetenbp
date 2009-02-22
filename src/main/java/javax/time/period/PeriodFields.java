@@ -101,6 +101,10 @@ public final class PeriodFields
 
     /**
      * Obtains an instance of <code>PeriodFields</code> from a set of unit-amount pairs.
+     * <p>
+     * The amount to store for each unit is obtained by calling {@link Number#longValue()}.
+     * This will lose any decimal places for instances of <code>Double</code> and <code>Float</code>.
+     * It may also silently lose precision for instances of <code>BigInteger</code> or <code>BigDecimal</code>.
      *
      * @param unitAmountMap  a map of periods that will be used to create this
      *  period, not updated by this method, not null, contains no nulls
@@ -364,12 +368,64 @@ public final class PeriodFields
         if (isZero()) {
             return ZERO;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         copy.values().removeAll(Collections.singleton(Long.valueOf(0)));
         return create(copy);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this period with the specified amount for the unit.
+     * <p>
+     * If this period already contains an amount for the unit then the amount
+     * is replaced. Otherwise, the unit-amount pair is added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the amount to update the new instance with
+     * @param unit  the unit to update, not null
+     * @return a new updated period instance, never null
+     * @throws NullPointerException if the period unit is null
+     */
+    public PeriodFields with(long amount, PeriodUnit unit) {
+        Long existing = getQuiet(unit);
+        if (existing != null && existing == amount) {
+            return this;
+        }
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
+        copy.put(unit, amount);
+        return create(copy);
+    }
+
+//    /**
+//     * Returns a copy of this period with the amounts from the specified map added.
+//     * <p>
+//     * If this instance already has an amount for any unit then the value is replaced.
+//     * Otherwise the value is added.
+//     * <p>
+//     * This instance is immutable and unaffected by this method call.
+//     *
+//     * @param unitAmountMap  the new map of fields, not null
+//     * @return a new updated period instance, never null
+//     * @throws NullPointerException if the map contains null keys or values
+//     */
+//    public PeriodFields with(Map<PeriodUnit, Long> unitAmountMap) {
+//        checkNotNull(unitAmountMap, "The field-value map must not be null");
+//        if (unitAmountMap.isEmpty()) {
+//            return this;
+//        }
+//        // don't use contains() as tree map and others can throw NPE
+//        TreeMap<PeriodUnit, Long> clonedMap = clonedMap();
+//        for (Entry<PeriodUnit, Long> entry : unitAmountMap.entrySet()) {
+//            PeriodUnit unit = entry.getKey();
+//            Long value = entry.getValue();
+//            checkNotNull(unit, "Null keys are not permitted in field-value map");
+//            checkNotNull(value, "Null values are not permitted in field-value map");
+//            clonedMap.put(unit, value);
+//        }
+//        return new PeriodFields(clonedMap);
+//    }
+
     /**
      * Returns a copy of this period with the specified values altered.
      * <p>
@@ -390,31 +446,8 @@ public final class PeriodFields
         if (period == ZERO) {
             return this;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         copy.putAll(period.unitAmountMap);
-        return create(copy);
-    }
-
-    /**
-     * Returns a copy of this period with the specified amount for the unit.
-     * <p>
-     * If this period already contains an amount for the unit then the amount
-     * is replaced. Otherwise, the unit-amount pair is added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param amount  the amount to update the new instance with
-     * @param unit  the unit to update, not null
-     * @return a new updated period instance, never null
-     * @throws NullPointerException if the period unit is null
-     */
-    public PeriodFields with(long amount, PeriodUnit unit) {
-        Long existing = getQuiet(unit);
-        if (existing != null && existing == amount) {
-            return this;
-        }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
-        copy.put(unit, amount);
         return create(copy);
     }
 
@@ -435,7 +468,7 @@ public final class PeriodFields
         if (unitAmountMap.containsKey(unit) == false) {
             return this;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         copy.remove(unit);
         return create(copy);
     }
@@ -463,7 +496,7 @@ public final class PeriodFields
         if (period.isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         for (PeriodUnit unit : period) {
             long amountToAdd = period.unitAmountMap.get(unit);
             long current = this.get(unit, 0);
@@ -495,7 +528,7 @@ public final class PeriodFields
         if (period.isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         for (PeriodUnit unit : period) {
             long amountToSubtract = period.unitAmountMap.get(unit);
             long current = this.get(unit, 0);
@@ -517,7 +550,7 @@ public final class PeriodFields
         if (scalar == 1 || isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         for (PeriodUnit unit : this) {
             long current = unitAmountMap.get(unit);
             copy.put(unit, MathUtils.safeMultiply(current, scalar));
@@ -540,7 +573,7 @@ public final class PeriodFields
         if (divisor == 1 || isZero()) {
             return this;
         }
-        TreeMap<PeriodUnit, Long> copy = cloneMap();
+        TreeMap<PeriodUnit, Long> copy = clonedMap();
         for (PeriodUnit unit : this) {
             long current = unitAmountMap.get(unit);
             copy.put(unit, current / divisor);
@@ -564,7 +597,7 @@ public final class PeriodFields
      * @return the cloned map, never null
      */
     @SuppressWarnings("unchecked")
-    private TreeMap<PeriodUnit, Long> cloneMap() {
+    private TreeMap<PeriodUnit, Long> clonedMap() {
         return (TreeMap) unitAmountMap.clone();
     }
 
@@ -579,7 +612,7 @@ public final class PeriodFields
      * @return the independent, modifiable map of period amounts, never null, never contains null
      */
     public SortedMap<PeriodUnit, Long> toUnitAmountMap() {
-        return cloneMap();
+        return clonedMap();
     }
 
     /**
@@ -595,7 +628,7 @@ public final class PeriodFields
         if (isZero()) {
             return Period.ZERO;
         }
-        Map<PeriodUnit, Long> copy = cloneMap();
+        Map<PeriodUnit, Long> copy = clonedMap();
         Long years = copy.remove(YEARS);
         Long months = copy.remove(MONTHS);
         Long days = copy.remove(DAYS);
