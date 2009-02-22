@@ -55,8 +55,8 @@ import java.io.Serializable;
  */
 public final class Duration implements Comparable<Duration>, Serializable {
     // TODO: Serialized format
-    // TODO: Evaluate hashcode
-    // TODO: Optimise to 2 private subclasses (second/nano & millis)
+    // TODO: Evaluate hash code
+    // TODO: Optimize to 2 private subclasses (second/nano & millis)
     // TODO: Consider BigDecimal
     // TODO: Check for potential overflows
 
@@ -86,112 +86,119 @@ public final class Duration implements Comparable<Duration>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Factory method to create an instance of Duration using seconds with
-     * a zero nanosecond fraction.
+     * no further fraction of a second.
      *
-     * @param epochSeconds  the number of seconds
+     * @param seconds  the number of seconds
      * @return the created Duration, never null
      */
-    public static Duration duration(long epochSeconds) {
-        if (epochSeconds == 0) {
+    public static Duration duration(long seconds) {
+        if (seconds == 0) {
             return ZERO;
         }
 
-        return new Duration(epochSeconds, 0);
+        return new Duration(seconds, 0);
     }
 
     /**
      * Factory method to create an instance of Duration using seconds and
-     * nanosecond fraction of second.
+     * an adjustment in nanoseconds.
+     * <p>
+     * This methods allows an arbitrary number of nanoseconds to be passed in.
+     * If the nanoseconds is not in the range 0 to 999,999,999 then both the
+     * seconds and nanoseconds will be adjusted to fit.
+     * Thus, the following are equivalent:
+     * <pre>
+     *  Duration.duration(3, 1);
+     *  Duration.duration(4, -999999999);
+     *  Duration.duration(2, 1000000001);
+     * </pre>
      *
-     * @param epochSeconds  the number of seconds
-     * @param nanoOfSecond  the nanoseconds within the second, must be positive
+     * @param seconds  the number of seconds
+     * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return the created Duration, never null
-     * @throws IllegalArgumentException if nanoOfSecond is not in the range 0 to 999,999,999
+     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of a long
      */
-    public static Duration duration(long epochSeconds, int nanoOfSecond) {
-        if (nanoOfSecond < 0) {
-            throw new IllegalArgumentException("NanoOfSecond must be positive but was " + nanoOfSecond);
-        }
-        if (nanoOfSecond > 999999999) {
-            throw new IllegalArgumentException("NanoOfSecond must not be more than 999,999,999 but was " + nanoOfSecond);
-        }
-
-        if (epochSeconds == 0 && nanoOfSecond == 0) {
+    public static Duration duration(long seconds, long nanoAdjustment) {
+        if (seconds == 0 && nanoAdjustment == 0) {
             return ZERO;
         }
-
-        return new Duration(epochSeconds, nanoOfSecond);
+        long secs = MathUtils.safeAdd(seconds, nanoAdjustment / NANOS_PER_SECOND);
+        int nos = (int) (nanoAdjustment % NANOS_PER_SECOND);
+        if (nos < 0) {
+            nos += NANOS_PER_SECOND;
+            secs = MathUtils.safeDecrement(secs);
+        }
+        return new Duration(secs, nos);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Factory method to create an instance of Duration using milliseconds
-     * with no further fraction of a second.
+     * with no further fraction of a millisecond.
      *
-     * @param epochMillis  the number of milliseconds
+     * @param millis  the number of milliseconds
      * @return the created Duration, never null
      */
-    public static Duration millisDuration(long epochMillis) {
-        if (epochMillis < 0) {
-            epochMillis++;
-            long epochSeconds = epochMillis / 1000;
-            int millis = ((int) (epochMillis % 1000));  // 0 to -999
-            millis = 999 + millis;  // 0 to 999
-            return new Duration(epochSeconds - 1, millis * 1000000);
-        }
-
-        if (epochMillis == 0) {
+    public static Duration millisDuration(long millis) {
+        if (millis == 0) {
             return ZERO;
         }
-
-        return new Duration(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000);
+        long secs = millis / 1000;
+        int mos = (int) (millis % 1000);
+        if (mos < 0) {
+            mos += 1000;
+            secs--;
+        }
+        return new Duration(secs, mos * 1000000);
     }
 
     /**
-     * Factory method to create an instance of Duration using milliseconds
-     * and nanosecond fraction of millisecond.
+     * Factory method to create an instance of Duration using milliseconds and
+     * an adjustment in nanoseconds.
+     * <p>
+     * This methods allows an arbitrary number of nanoseconds to be passed in.
+     * If the nanoseconds is not in the range 0 to 999,999,999 then both the
+     * milliseconds and nanoseconds will be adjusted to fit.
+     * Thus, the following are equivalent:
+     * <pre>
+     *  Duration.duration(3, 1);
+     *  Duration.duration(4, -999999);
+     *  Duration.duration(2, 1000001);
+     * </pre>
      *
-     * @param epochMillis  the number of milliseconds
-     * @param nanoOfMillisecond  the nanoseconds within the millisecond, must be positive
+     * @param millis  the number of milliseconds
+     * @param nanoAdjustment  the nanosecond adjustment to the number of milliseconds, positive or negative
      * @return the created Duration, never null
-     * @throws IllegalArgumentException if nanoOfMillisecond is not in the range 0 to 999,999
      */
-    public static Duration millisDuration(long epochMillis, int nanoOfMillisecond) {
-        if (nanoOfMillisecond < 0) {
-            throw new IllegalArgumentException("NanoOfMillisecond must be positive but was " + nanoOfMillisecond);
-        }
-        if (nanoOfMillisecond > 999999) {
-            throw new IllegalArgumentException("NanoOfMillisecond must not be more than 999,999 but was " + nanoOfMillisecond);
-        }
-        if (epochMillis < 0) {
-            epochMillis++;
-            long epochSeconds = epochMillis / 1000;
-            int millis = ((int) (epochMillis % 1000));  // 0 to -999
-            millis = 999 + millis;  // 0 to 999
-            return new Duration(epochSeconds - 1, millis * 1000000 + nanoOfMillisecond);
-        }
-
-        if (epochMillis == 0 && nanoOfMillisecond == 0) {
+    public static Duration millisDuration(long millis, long nanoAdjustment) {
+        if (millis == 0 && nanoAdjustment == 0) {
             return ZERO;
         }
-
-        return new Duration(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000 + nanoOfMillisecond);
+        long secs = (millis / 1000) + (nanoAdjustment / NANOS_PER_SECOND);
+        long nanos = ((millis % 1000) * 1000000) + (nanoAdjustment % NANOS_PER_SECOND);
+        secs += nanos / NANOS_PER_SECOND;
+        int nos = (int) (nanos % NANOS_PER_SECOND);
+        if (nos < 0) {
+            nos += NANOS_PER_SECOND;
+            secs--;
+        }
+        return new Duration(secs, nos);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Factory method to create an instance of Duration representing the
-     * duration between two instants. This method may return a negative
-     * duration if the end is after the start.
+     * duration between two instants. This method will return a negative
+     * duration if the end is before the start.
      *
      * @param startInclusive  the start instant, inclusive, not null
      * @param endExclusive  the end instant, exclusive, not null
      * @return the created Duration, never null
+     * @throws ArithmeticException if the duration exceeds the capacity of seconds stored in a long
      */
     public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
         Instant start = Instant.instant(startInclusive);
         Instant end = Instant.instant(endExclusive);
-
         long secs = MathUtils.safeSubtract(end.getEpochSeconds(), start.getEpochSeconds());
         int nanos = end.getNanoOfSecond() - start.getNanoOfSecond();
         if (nanos < 0) {
@@ -213,6 +220,18 @@ public final class Duration implements Comparable<Duration>, Serializable {
         super();
         this.durationSeconds = epochSeconds;
         this.nanoOfSecond = nanoOfSecond;
+    }
+
+    /**
+     * Resolves singletons.
+     *
+     * @return the resolved instance
+     */
+    private Object readResolve() {
+        if (durationSeconds == 0 && nanoOfSecond == 0) {
+            return ZERO;
+        }
+        return this;
     }
 
     //-----------------------------------------------------------------------
@@ -548,7 +567,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * Compares this Duration to another.
      *
      * @param otherDuration  the other duration to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherDuration is null
      */
     public int compareTo(Duration otherDuration) {
@@ -602,9 +621,9 @@ public final class Duration implements Comparable<Duration>, Serializable {
     }
 
     /**
-     * A hashcode for this Duration.
+     * A hash code for this Duration.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {

@@ -1206,13 +1206,8 @@ public final class Period
         if ((years | months | days) > 0) {
             throw new CalendricalException("Unable to convert period to duration as years/months/days are present: " + this);
         }
-        long secs = totalSeconds();
-        int remainderNanos = (int) (nanos % 1000000000L);
-        if (remainderNanos < 0) {
-            remainderNanos += 1000000000;
-            secs--;
-        }
-        return Duration.duration(secs, remainderNanos);
+        long secs = (hours * 60L + minutes) * 60L + seconds;  // will not overflow
+        return Duration.duration(secs, nanos);
     }
 
     /**
@@ -1236,13 +1231,8 @@ public final class Period
         if ((years | months) > 0) {
             throw new CalendricalException("Unable to convert period to duration as years/months are present: " + this);
         }
-        long secs = totalSecondsWith24HourDays();
-        int remainderNanos = (int) (nanos % 1000000000L);
-        if (remainderNanos < 0) {
-            remainderNanos += 1000000000;
-            secs--;
-        }
-        return Duration.duration(secs, remainderNanos);
+        long secs = ((days * 24L + hours) * 60L + minutes) * 60L + seconds;  // will not overflow
+        return Duration.duration(secs, nanos);
     }
 
     //-----------------------------------------------------------------------

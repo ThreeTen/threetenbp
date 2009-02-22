@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,10 @@
  */
 package javax.time;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,6 +71,8 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // duration(long)
+    //-----------------------------------------------------------------------
     public void factory_duration_long() {
         for (long i = -2; i <= 2; i++) {
             Duration t = Duration.duration(i);
@@ -76,12 +81,20 @@ public class TestDuration {
         }
     }
 
-    public void factory_duration_long_int() {
+    //-----------------------------------------------------------------------
+    // duration(long,long)
+    //-----------------------------------------------------------------------
+    public void factory_duration_long_long() {
         for (long i = -2; i <= 2; i++) {
             for (int j = 0; j < 10; j++) {
                 Duration t = Duration.duration(i, j);
                 assertEquals(t.getSeconds(), i);
                 assertEquals(t.getNanoOfSecond(), j);
+            }
+            for (int j = -10; j < 0; j++) {
+                Duration t = Duration.duration(i, j);
+                assertEquals(t.getSeconds(), i - 1);
+                assertEquals(t.getNanoOfSecond(), j + 1000000000);
             }
             for (int j = 999999990; j < 1000000000; j++) {
                 Duration t = Duration.duration(i, j);
@@ -91,16 +104,19 @@ public class TestDuration {
         }
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_duration_long_int_nanosNegative() {
-        Duration.duration(0L, -1);
+    public void factory_duration_long_long_nanosNegativeAdjusted() {
+        Duration test = Duration.duration(2L, -1);
+        assertEquals(test.getSeconds(), 1);
+        assertEquals(test.getNanoOfSecond(), 999999999);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_duration_long_int_nanosTooLarge() {
-        Duration.duration(0L, 1000000000);
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_duration_long_long_tooBig() {
+        Duration.duration(Long.MAX_VALUE, 1000000000);
     }
 
+    //-----------------------------------------------------------------------
+    // millisDuration(long)
     //-----------------------------------------------------------------------
     @DataProvider(name="MillisDurationNoNanos")
     Object[][] provider_factory_millisDuration_long() {
@@ -121,14 +137,16 @@ public class TestDuration {
 
     @Test(dataProvider="MillisDurationNoNanos")
     public void factory_millisDuration_long(long millis, long expectedSeconds, int expectedNanoOfSecond) {
-        Duration t = Duration.millisDuration(millis);
-        assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+        Duration test = Duration.millisDuration(millis);
+        assertEquals(test.getSeconds(), expectedSeconds);
+        assertEquals(test.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
+    // millisDuration(long,long)
+    //-----------------------------------------------------------------------
     @DataProvider(name="MillisDurationWithNanos")
-    Object[][] provider_factory_millisDuration_long_int() {
+    Object[][] provider_factory_millisDuration_long_long() {
         return new Object[][] {
             {0, 0, 0, 0},
             {1, 0, 0, 1000000},
@@ -161,26 +179,34 @@ public class TestDuration {
             {-999, 999999, -1, 1999999},
             {-1000, 999999, -1, 999999},
             {-1001, 999999, -2, 999999999},
+            
+            {1, -1, 0, 1000000 - 1},
+            {1000, -1, 0, 1000000000 - 1},
+            {2000, -1, 1, 1000000000 - 1},
+            {3, 1, 0, 3000001},
+            {4, -999999, 0, 3000001},
+            {2, 1000001, 0, 3000001},
         };
     }
 
     @Test(dataProvider="MillisDurationWithNanos")
-    public void factory_millisDuration_long_int(long millis, int nanos, long expectedSeconds, int expectedNanoOfSecond) {
-        Duration t = Duration.millisDuration(millis, nanos);
-        assertEquals(t.getSeconds(), expectedSeconds);
-        assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
+    public void factory_millisDuration_long_long(long millis, int nanos, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration test = Duration.millisDuration(millis, nanos);
+        assertEquals(test.getSeconds(), expectedSeconds);
+        assertEquals(test.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_millisDuration_long_int_nanosNegative() {
-        Duration.millisDuration(0L, -1);
+    public void factory_millisDuration_long_long_nanosNegativeAdjusted() {
+        long nanos = ((Long.MAX_VALUE % 1000) * 1000000) + (Long.MAX_VALUE % 1000000000);
+        long secs = (Long.MAX_VALUE / 1000) + (Long.MAX_VALUE / 1000000000) + nanos / 1000000000;
+        nanos = nanos % 1000000000;
+        Duration test = Duration.millisDuration(Long.MAX_VALUE, Long.MAX_VALUE);
+        assertEquals(test.getSeconds(), secs);
+        assertEquals(test.getNanoOfSecond(), nanos);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_millisDuration_long_int_nanosTooLarge() {
-        Duration.millisDuration(0L, 1000000000);
-    }
-
+    //-----------------------------------------------------------------------
+    // durationBetween()
     //-----------------------------------------------------------------------
     @DataProvider(name="DurationBetween")
     Object[][] provider_factory_durationBetween_Instant_Instant() {
@@ -202,8 +228,29 @@ public class TestDuration {
         assertEquals(t.getNanoOfSecond(), expectedNanoOfSecond);
     }
 
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void factory_durationBetween_Instant_Instant_tooBig() {
+        Instant start = Instant.instant(-1);
+        Instant end = Instant.instant(Long.MAX_VALUE);
+        Duration.durationBetween(start, end);
+    }
+
+    //-----------------------------------------------------------------------
+    // serialization
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {
+        Duration orginal = Duration.ZERO;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(orginal);
+        out.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(bais);
+        Duration ser = (Duration) in.readObject();
+        assertSame(ser, Duration.ZERO);
+    }
+
+    public void test_deserialization() throws Exception {
         Duration orginal = Duration.duration(2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -215,6 +262,8 @@ public class TestDuration {
         assertEquals(Duration.duration(2), ser);
     }
 
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_comparisons() {
         doTest_comparisons_Duration(
