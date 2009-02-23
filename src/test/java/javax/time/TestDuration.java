@@ -413,6 +413,130 @@ public class TestDuration {
     }
 
     //-----------------------------------------------------------------------
+    // parse(String)
+    //-----------------------------------------------------------------------
+    @DataProvider(name="Parse")
+    Object[][] provider_factory_parse() {
+        return new Object[][] {
+            {"PT0S", 0, 0},
+            {"pT0S", 0, 0},
+            {"Pt0S", 0, 0},
+            {"PT0s", 0, 0},
+            
+            {"PT1S", 1, 0},
+            {"PT12S", 12, 0},
+            {"PT123456789S", 123456789, 0},
+            {"PT" + Long.MAX_VALUE + "S", Long.MAX_VALUE, 0},
+            
+            {"PT-1S", -1, 0},
+            {"PT-12S", -12, 0},
+            {"PT-123456789S", -123456789, 0},
+            {"PT" + Long.MIN_VALUE + "S", Long.MIN_VALUE, 0},
+            
+            {"PT1.1S", 1, 100000000},
+            {"PT1.12S", 1, 120000000},
+            {"PT1.123S", 1, 123000000},
+            {"PT1.1234S", 1, 123400000},
+            {"PT1.12345S", 1, 123450000},
+            {"PT1.123456S", 1, 123456000},
+            {"PT1.1234567S", 1, 123456700},
+            {"PT1.12345678S", 1, 123456780},
+            {"PT1.123456789S", 1, 123456789},
+            
+            {"PT-1.1S", -2, 1000000000 - 100000000},
+            {"PT-1.12S", -2, 1000000000 - 120000000},
+            {"PT-1.123S", -2, 1000000000 - 123000000},
+            {"PT-1.1234S", -2, 1000000000 - 123400000},
+            {"PT-1.12345S", -2, 1000000000 - 123450000},
+            {"PT-1.123456S", -2, 1000000000 - 123456000},
+            {"PT-1.1234567S", -2, 1000000000 - 123456700},
+            {"PT-1.12345678S", -2, 1000000000 - 123456780},
+            {"PT-1.123456789S", -2, 1000000000 - 123456789},
+            
+            {"PT" + Long.MAX_VALUE + ".123456789S", Long.MAX_VALUE, 123456789},
+            {"PT" + Long.MIN_VALUE + ".000000000S", Long.MIN_VALUE, 0},
+        };
+    }
+
+    @Test(dataProvider="Parse")
+    public void factory_parse(String text, long expectedSeconds, int expectedNanoOfSecond) {
+        Duration t = Duration.parse(text);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanosAdjustment(), expectedNanoOfSecond);
+    }
+
+    @Test(dataProvider="Parse")
+    public void factory_parse_comma(String text, long expectedSeconds, int expectedNanoOfSecond) {
+        text = text.replace('.', ',');
+        Duration t = Duration.parse(text);
+        assertEquals(t.getSeconds(), expectedSeconds);
+        assertEquals(t.getNanosAdjustment(), expectedNanoOfSecond);
+    }
+
+    @DataProvider(name="ParseFailures")
+    Object[][] provider_factory_parseFailures() {
+        return new Object[][] {
+            {""},
+            {"PTS"},
+            {"AT0S"},
+            {"PA0S"},
+            {"PT0A"},
+            
+            {"PT+S"},
+            {"PT-S"},
+            {"PT.S"},
+            {"PTAS"},
+            
+            {"PT+0S"},
+            {"PT-0S"},
+            {"PT+1S"},
+            {"PT-.S"},
+            
+            {"PT1ABC2S"},
+            {"PT1.1ABC2S"},
+            
+            {"PT123456789123456789123456789S"},
+            {"PT0.1234567891S"},
+            {"PT1.S"},
+            {"PT.1S"},
+            
+            {"PT2.-3"},
+            {"PT-2.-3"},
+        };
+    }
+
+    @Test(dataProvider="ParseFailures", expectedExceptions=IllegalArgumentException.class)
+    public void factory_parseFailures(String text) {
+        Duration.parse(text);
+    }
+
+    @Test(dataProvider="ParseFailures", expectedExceptions=IllegalArgumentException.class)
+    public void factory_parseFailures_comma(String text) {
+        text = text.replace('.', ',');
+        Duration.parse(text);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void factory_parse_tooBig() {
+        Duration.parse("PT" + Long.MAX_VALUE + "1S");
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void factory_parse_tooBig_decimal() {
+        Duration.parse("PT" + Long.MAX_VALUE + "1.1S");
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void factory_parse_tooSmall() {
+        Duration.parse("PT" + Long.MIN_VALUE + "1S");
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void factory_parse_tooSmall_decimal() {
+        Duration.parse("PT" + Long.MIN_VALUE + ".1S");
+    }
+
+    //-----------------------------------------------------------------------
     // serialization
     //-----------------------------------------------------------------------
     public void test_deserializationSingleton() throws Exception {

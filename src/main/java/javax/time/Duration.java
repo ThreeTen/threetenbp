@@ -118,7 +118,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      * @param seconds  the number of seconds
      * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
      * @return the created Duration, never null
-     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of a long
+     * @throws ArithmeticException if the adjustment causes the seconds to exceed the capacity of Duration
      */
     public static Duration seconds(long seconds, long nanoAdjustment) {
         if (seconds == 0 && nanoAdjustment == 0) {
@@ -211,7 +211,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param nanos  the number of nanoseconds, not null
      * @return the created Duration, never null
-     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of a Duration
+     * @throws ArithmeticException if the input nanoseconds exceeds the capacity of Duration
      */
     public static Duration nanos(BigInteger nanos) {
         Instant.checkNotNull(nanos, "Nanos must not be null");
@@ -234,6 +234,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param minutes  the number of minutes
      * @return the created Duration, never null
+     * @throws ArithmeticException if the input minutes exceeds the capacity of Duration
      */
     public static Duration standardMinutes(long minutes) {
         if (minutes == 0) {
@@ -250,6 +251,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param hours  the number of hours
      * @return the created Duration, never null
+     * @throws ArithmeticException if the input hours exceeds the capacity of Duration
      */
     public static Duration standardHours(long hours) {
         if (hours == 0) {
@@ -267,6 +269,7 @@ public final class Duration implements Comparable<Duration>, Serializable {
      *
      * @param days  the number of days
      * @return the created Duration, never null
+     * @throws ArithmeticException if the input days exceeds the capacity of Duration
      */
     public static Duration standardDays(long days) {
         if (days == 0) {
@@ -277,14 +280,13 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Factory method to create an instance of Duration representing the
-     * duration between two instants. This method will return a negative
-     * duration if the end is before the start.
+     * Obtains an instance of <code>Duration</code> representing the duration between two instants.
+     * This method will return a negative duration if the end is before the start.
      *
      * @param startInclusive  the start instant, inclusive, not null
      * @param endExclusive  the end instant, exclusive, not null
      * @return the created Duration, never null
-     * @throws ArithmeticException if the duration exceeds the capacity of seconds stored in a long
+     * @throws ArithmeticException if the duration exceeds the capacity of Duration
      */
     public static Duration durationBetween(InstantProvider startInclusive, InstantProvider endExclusive) {
         Instant start = Instant.instant(startInclusive);
@@ -296,6 +298,87 @@ public final class Duration implements Comparable<Duration>, Serializable {
             secs = MathUtils.safeDecrement(secs);
         }
         return create(secs, nanos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>Duration</code> from a string.
+     * <p>
+     * This will parse the string produced by <code>toString()</code> which is
+     * the ISO8601 format <code>PTsecsS</code> where <code>secs</code> is
+     * the number of seconds with optional decimal part.
+     * The number must consist of ASCII numerals.
+     * There must only be a negative sign at the start of the number and it can
+     * only be present if the value is less then zero.
+     * There must be at least one digit before any decimal point.
+     * There must be between 1 and 9 inclusive digits after any decimal point.
+     * The letters (P, T and S) will be accepted in upper or lower case.
+     * The decimal point may be either a dot or a comma.
+     *
+     * @param text  the text to parse, not null
+     * @return the created Duration, never null
+     * @throws IllegalArgumentException if the text cannot be parsed to a Duration
+     */
+    public static Duration parse(final String text) {
+        Instant.checkNotNull(text, "String must not be null");
+        int len = text.length();
+        if (len < 4 ||
+                (text.charAt(0) != 'P' && text.charAt(0) != 'p') ||
+                (text.charAt(1) != 'T' && text.charAt(1) != 't') ||
+                (text.charAt(len - 1) != 'S' && text.charAt(len - 1) != 's') ||
+                (len == 5 && text.charAt(2) == '-' && text.charAt(3) == '0')) {
+            throw new IllegalArgumentException("Text '" + text + "' cannot be parsed as a Duration");
+        }
+        String numberText = text.substring(2, len - 1).replace(',', '.');
+        int dot = numberText.indexOf('.');
+        try {
+            if (dot == -1) {
+                return create(Long.parseLong(numberText), 0);
+            }
+            boolean negative = false;
+            if (numberText.charAt(0) == '-') {
+                negative = true;
+            }
+            long secs = Long.parseLong(numberText.substring(0, dot));
+            numberText = numberText.substring(dot + 1);
+            len = numberText.length();
+            if (len == 0 || len > 9 || numberText.charAt(0) == '-') {
+                throw new IllegalArgumentException("Text '" + numberText + "' cannot be parsed as a Duration");
+            }
+            int nanos = Integer.parseInt(numberText);
+            switch (len) {
+                case 1:
+                    nanos *= 100000000;
+                    break;
+                case 2:
+                    nanos *= 10000000;
+                    break;
+                case 3:
+                    nanos *= 1000000;
+                    break;
+                case 4:
+                    nanos *= 100000;
+                    break;
+                case 5:
+                    nanos *= 10000;
+                    break;
+                case 6:
+                    nanos *= 1000;
+                    break;
+                case 7:
+                    nanos *= 100;
+                    break;
+                case 8:
+                    nanos *= 10;
+                    break;
+            }
+            return negative ? seconds(secs, -nanos) : create(secs, nanos);
+            
+        } catch (ArithmeticException ex) {
+            throw new IllegalArgumentException("Text '" + text + "' cannot be parsed as a Duration", ex);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Text '" + text + "' cannot be parsed as a Duration", ex);
+        }
     }
 
     //-----------------------------------------------------------------------
