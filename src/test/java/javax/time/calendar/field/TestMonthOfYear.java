@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -244,7 +246,7 @@ public class TestMonthOfYear {
         Locale ptBR = new Locale("pt", "BR");
         assertEquals(MonthOfYear.JANUARY.getText(ptBR), "Janeiro");
         assertEquals(MonthOfYear.FEBRUARY.getText(ptBR), "Fevereiro");
-        assertEquals(MonthOfYear.MARCH.getText(ptBR), "Março");
+        assertEquals(MonthOfYear.MARCH.getText(ptBR), "Mar\u00E7o");
         assertEquals(MonthOfYear.APRIL.getText(ptBR), "Abril");
         assertEquals(MonthOfYear.MAY.getText(ptBR), "Maio");
         assertEquals(MonthOfYear.JUNE.getText(ptBR), "Junho");

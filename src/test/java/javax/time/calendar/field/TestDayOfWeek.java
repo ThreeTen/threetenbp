@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -166,7 +168,7 @@ public class TestDayOfWeek {
         assertEquals(DayOfWeek.WEDNESDAY.getShortText(ptBR), "Qua");
         assertEquals(DayOfWeek.THURSDAY.getShortText(ptBR), "Qui");
         assertEquals(DayOfWeek.FRIDAY.getShortText(ptBR), "Sex");
-        assertEquals(DayOfWeek.SATURDAY.getShortText(ptBR), "Sáb");
+        assertEquals(DayOfWeek.SATURDAY.getShortText(ptBR), "S\u00E1b");
         assertEquals(DayOfWeek.SUNDAY.getShortText(ptBR), "Dom");
     }
 
@@ -196,11 +198,11 @@ public class TestDayOfWeek {
     public void test_getText_pt_BR() {
         Locale ptBR = new Locale("pt", "BR");
         assertEquals(DayOfWeek.MONDAY.getText(ptBR), "Segunda-feira");
-        assertEquals(DayOfWeek.TUESDAY.getText(ptBR), "Terça-feira");
+        assertEquals(DayOfWeek.TUESDAY.getText(ptBR), "Ter\u00E7a-feira");
         assertEquals(DayOfWeek.WEDNESDAY.getText(ptBR), "Quarta-feira");
         assertEquals(DayOfWeek.THURSDAY.getText(ptBR), "Quinta-feira");
         assertEquals(DayOfWeek.FRIDAY.getText(ptBR), "Sexta-feira");
-        assertEquals(DayOfWeek.SATURDAY.getText(ptBR), "Sábado");
+        assertEquals(DayOfWeek.SATURDAY.getText(ptBR), "S\u00E1bado");
         assertEquals(DayOfWeek.SUNDAY.getText(ptBR), "Domingo");
     }
 
