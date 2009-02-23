@@ -136,7 +136,7 @@ public final class DayOfYear
         LocalDate date = LocalDate.date(dateProvider);
         int moy0 = date.getMonthOfYear().ordinal();
         int dom = date.getDayOfMonth();
-        if (date.isLeapYear()) {
+        if (ISOChronology.isLeapYear(date.getYear())) {
             return dayOfYear(LEAP_MONTH_START[moy0] + dom);
         } else {
             return dayOfYear(STANDARD_MONTH_START[moy0] + dom);
