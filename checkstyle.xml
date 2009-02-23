@@ -4,7 +4,7 @@
     "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
 
 <module name="Checker">
-	<!-- set default severity to warnig to stay compatible -->
+	<!-- set default severity to warning to stay compatible -->
     <property name="severity" value="warning"/>
 	<module name="SuppressionFilter">
         <property name="file" value="${basedir}/suppressions.xml" />
@@ -103,7 +103,7 @@
       <module name="TabCharacter" />
       <module name="TypeName" />
       <module name="TypecastParenPad" />
-      <module name="UnusedImports" />
+      <!--module name="UnusedImports" /-->
       <module name="UpperEll" />
       <module name="VisibilityModifier" />
       <module name="WhitespaceAfter" />

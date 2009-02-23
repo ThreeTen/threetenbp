@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour
-        implements CalendricalProvider, Comparable<MinuteOfHour>, Serializable, TimeAdjuster, TimeMatcher {
+        implements CalendricalProvider, Comparable<MinuteOfHour>, TimeAdjuster, TimeMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -68,7 +68,7 @@ public final class MinuteOfHour
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<MinuteOfHour> cache = new AtomicReferenceArray<MinuteOfHour>(60);
+    private static final AtomicReferenceArray<MinuteOfHour> CACHE = new AtomicReferenceArray<MinuteOfHour>(60);
 
     /**
      * The minute of hour being represented.
@@ -98,11 +98,11 @@ public final class MinuteOfHour
      */
     public static MinuteOfHour minuteOfHour(int minuteOfHour) {
         try {
-            MinuteOfHour result = cache.get(minuteOfHour);
+            MinuteOfHour result = CACHE.get(minuteOfHour);
             if (result == null) {
                 MinuteOfHour temp = new MinuteOfHour(minuteOfHour);
-                cache.compareAndSet(minuteOfHour, null, temp);
-                result = cache.get(minuteOfHour);
+                CACHE.compareAndSet(minuteOfHour, null, temp);
+                result = CACHE.get(minuteOfHour);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {

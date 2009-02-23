@@ -62,7 +62,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
-        implements CalendricalProvider, Comparable<DayOfMonth>, Serializable, DateAdjuster, DateMatcher {
+        implements CalendricalProvider, Comparable<DayOfMonth>, DateAdjuster, DateMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -71,7 +71,7 @@ public final class DayOfMonth
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<DayOfMonth> cache = new AtomicReferenceArray<DayOfMonth>(31);
+    private static final AtomicReferenceArray<DayOfMonth> CACHE = new AtomicReferenceArray<DayOfMonth>(31);
 
     /**
      * The day of month being represented, from 1 to 31.
@@ -104,11 +104,11 @@ public final class DayOfMonth
      */
     public static DayOfMonth dayOfMonth(int dayOfMonth) {
         try {
-            DayOfMonth result = cache.get(--dayOfMonth);
+            DayOfMonth result = CACHE.get(--dayOfMonth);
             if (result == null) {
                 DayOfMonth temp = new DayOfMonth(dayOfMonth + 1);
-                cache.compareAndSet(dayOfMonth, null, temp);
-                result = cache.get(dayOfMonth);
+                CACHE.compareAndSet(dayOfMonth, null, temp);
+                result = CACHE.get(dayOfMonth);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {

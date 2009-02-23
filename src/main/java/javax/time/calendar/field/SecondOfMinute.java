@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class SecondOfMinute
-        implements CalendricalProvider, Comparable<SecondOfMinute>, Serializable, TimeAdjuster, TimeMatcher {
+        implements CalendricalProvider, Comparable<SecondOfMinute>, TimeAdjuster, TimeMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -68,7 +68,7 @@ public final class SecondOfMinute
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<SecondOfMinute> cache = new AtomicReferenceArray<SecondOfMinute>(60);
+    private static final AtomicReferenceArray<SecondOfMinute> CACHE = new AtomicReferenceArray<SecondOfMinute>(60);
 
     /**
      * The second of minute being represented.
@@ -98,11 +98,11 @@ public final class SecondOfMinute
      */
     public static SecondOfMinute secondOfMinute(int secondOfMinute) {
         try {
-            SecondOfMinute result = cache.get(secondOfMinute);
+            SecondOfMinute result = CACHE.get(secondOfMinute);
             if (result == null) {
                 SecondOfMinute temp = new SecondOfMinute(secondOfMinute);
-                cache.compareAndSet(secondOfMinute, null, temp);
-                result = cache.get(secondOfMinute);
+                CACHE.compareAndSet(secondOfMinute, null, temp);
+                result = CACHE.get(secondOfMinute);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {

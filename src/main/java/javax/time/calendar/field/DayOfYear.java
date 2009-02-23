@@ -61,7 +61,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfYear
-        implements CalendricalProvider, Comparable<DayOfYear>, Serializable, DateAdjuster, DateMatcher {
+        implements CalendricalProvider, Comparable<DayOfYear>, DateAdjuster, DateMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -70,7 +70,7 @@ public final class DayOfYear
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<DayOfYear> cache = new AtomicReferenceArray<DayOfYear>(366);
+    private static final AtomicReferenceArray<DayOfYear> CACHE = new AtomicReferenceArray<DayOfYear>(366);
     /**
      * The start of months in a standard year.
      */
@@ -111,11 +111,11 @@ public final class DayOfYear
      */
     public static DayOfYear dayOfYear(int dayOfYear) {
         try {
-            DayOfYear result = cache.get(--dayOfYear);
+            DayOfYear result = CACHE.get(--dayOfYear);
             if (result == null) {
                 DayOfYear temp = new DayOfYear(dayOfYear + 1);
-                cache.compareAndSet(dayOfYear, null, temp);
-                result = cache.get(dayOfYear);
+                CACHE.compareAndSet(dayOfYear, null, temp);
+                result = CACHE.get(dayOfYear);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {

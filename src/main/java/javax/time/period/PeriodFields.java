@@ -637,7 +637,8 @@ public final class PeriodFields
         Long seconds = copy.remove(SECONDS);
         Long nanos = copy.remove(NANOS);
         if (copy.size() > 0) {
-            throw new CalendarConversionException("Unable to convert to a Period as the following fields are incompatible: " + copy.keySet());
+            throw new CalendarConversionException(
+                    "Unable to convert to a Period as the following fields are incompatible: " + copy.keySet());
         }
         return Period.period(
                     years == null ? 0 : MathUtils.safeToInt(years),

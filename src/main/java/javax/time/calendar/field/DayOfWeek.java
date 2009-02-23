@@ -178,7 +178,7 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
 
         //TODO: Read it from resource bundle
         if (locale.equals(Locale.US) || (locale.getLanguage().equals("pt") &&
-              locale.getCountry().equals("BR") )) {
+              locale.getCountry().equals("BR"))) {
             return SUNDAY;
         }
 

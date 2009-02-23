@@ -62,7 +62,7 @@ import javax.time.calendar.LocalDate;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparable<WeekOfWeekBasedYear>, Serializable, DateMatcher {
+public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparable<WeekOfWeekBasedYear>, DateMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -71,7 +71,7 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<WeekOfWeekBasedYear> cache = new AtomicReferenceArray<WeekOfWeekBasedYear>(53);
+    private static final AtomicReferenceArray<WeekOfWeekBasedYear> CACHE = new AtomicReferenceArray<WeekOfWeekBasedYear>(53);
 
     /**
      * The week of week-based-year being represented.
@@ -105,11 +105,11 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
      */
     public static WeekOfWeekBasedYear weekOfWeekyear(int weekOfWeekyear) {
         try {
-            WeekOfWeekBasedYear result = cache.get(--weekOfWeekyear);
+            WeekOfWeekBasedYear result = CACHE.get(--weekOfWeekyear);
             if (result == null) {
                 WeekOfWeekBasedYear temp = new WeekOfWeekBasedYear(weekOfWeekyear + 1);
-                cache.compareAndSet(weekOfWeekyear, null, temp);
-                result = cache.get(weekOfWeekyear);
+                CACHE.compareAndSet(weekOfWeekyear, null, temp);
+                result = CACHE.get(weekOfWeekyear);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {

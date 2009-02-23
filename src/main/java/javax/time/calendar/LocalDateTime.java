@@ -63,8 +63,8 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements DateTimeProvider, CalendricalProvider, Comparable<LocalDateTime>, Serializable, DateMatcher, TimeMatcher, DateAdjuster, 
-        TimeAdjuster {
+        implements DateTimeProvider, CalendricalProvider, Comparable<LocalDateTime>,
+                    DateMatcher, TimeMatcher, DateAdjuster, TimeAdjuster, Serializable {
 
     /**
      * A serialization identifier for this class.

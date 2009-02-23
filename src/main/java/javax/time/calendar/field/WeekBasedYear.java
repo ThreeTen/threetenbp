@@ -75,8 +75,8 @@ import javax.time.calendar.LocalDate;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class WeekBasedYear 
-        implements CalendricalProvider, Comparable<WeekBasedYear>, Serializable, DateMatcher {
+public final class WeekBasedYear
+        implements CalendricalProvider, Comparable<WeekBasedYear>, DateMatcher, Serializable {
 
     /**
      * Constant for the minimum week-based-year.
@@ -136,6 +136,11 @@ public final class WeekBasedYear
         return WeekBasedYear.weekyear(computeYear(date).getValue());
     }
 
+    /**
+     * Calculates the year.
+     * @param date  the date
+     * @return the year
+     */
     static Year computeYear(LocalDate date) {
         Year year = date.toYear();
         int dom;

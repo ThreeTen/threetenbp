@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class HourOfDay
-        implements CalendricalProvider, Comparable<HourOfDay>, Serializable, TimeAdjuster, TimeMatcher {
+        implements CalendricalProvider, Comparable<HourOfDay>, TimeAdjuster, TimeMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -68,7 +68,7 @@ public final class HourOfDay
     /**
      * Cache of singleton instances.
      */
-    private static final AtomicReferenceArray<HourOfDay> cache = new AtomicReferenceArray<HourOfDay>(24);
+    private static final AtomicReferenceArray<HourOfDay> CACHE = new AtomicReferenceArray<HourOfDay>(24);
 
     /**
      * The hour of day being represented.
@@ -98,11 +98,11 @@ public final class HourOfDay
      */
     public static HourOfDay hourOfDay(int hourOfDay) {
         try {
-            HourOfDay result = cache.get(hourOfDay);
+            HourOfDay result = CACHE.get(hourOfDay);
             if (result == null) {
                 HourOfDay temp = new HourOfDay(hourOfDay);
-                cache.compareAndSet(hourOfDay, null, temp);
-                result = cache.get(hourOfDay);
+                CACHE.compareAndSet(hourOfDay, null, temp);
+                result = CACHE.get(hourOfDay);
             }
             return result;
         } catch (IndexOutOfBoundsException ex) {

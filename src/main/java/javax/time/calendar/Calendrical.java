@@ -361,7 +361,7 @@ public final class Calendrical
                         throw new InvalidCalendarFieldException("Calendrical contains field map value " +
                                 fieldRule.getID() + "=" + mapValue + " that is inconsistent with " +
                                 errorText + errorValue, fieldRule);
-//                        
+
 //                        throw new InvalidCalendarFieldException("Calendrical contains a " + errorText +
 //                                errorValue + " that is inconsistent with the value " + mapValue +
 //                                " for " + fieldRule.getID(), fieldRule);
@@ -556,10 +556,12 @@ public final class Calendrical
      * For example, both Year/MonthOfYear/DayOfMonth and Year/DayOfYear will merge to form a date.
      * If both sets of fields do not produce the same date then an exception will be thrown.
      *
+     * @param context  the context to use for merging, not null
      * @return the new instance, with merged fields, never null
      * @throws CalendricalException if the fields cannot be merged
      */
     public Calendrical merge(CalendricalContext context) {
+        ISOChronology.checkNotNull(context, "CalendricalContext must not be null");
         if (fieldMap.size() > 0) {
             Merger merger = new Merger(this, context);
             merger.merge();
@@ -1284,12 +1286,10 @@ public final class Calendrical
         /**
          * Constructs an instance using a specific context.
          *
-         * @param calendrical  the calendrical to merge, not null
-         * @param context  the context to use, not null
+         * @param calendrical  the calendrical to merge, validated not null
+         * @param context  the context to use, validated not null
          */
         private Merger(Calendrical calendrical, CalendricalContext context) {
-            ISOChronology.checkNotNull(calendrical, "The calendrical must not be null");
-            ISOChronology.checkNotNull(context, "The calendrical context must not be null");
             this.calendrical = calendrical;
             this.context = context;
         }
