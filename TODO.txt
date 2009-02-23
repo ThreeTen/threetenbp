@@ -30,10 +30,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+MathUtils
+- can't be public, can't put in java.math as we require JDK5 support
+
+Duration
+- parse factory
+
+Instant
+- review in line with changes to Duration
+- parse factory
+
+Date/Time classes
+- factories from Calendrical... ?
+- parse factories
+
+Date/Time fields
+- isJanuary()
+- isMonday()
+- parse factories
+
+Date/Time formatting
 - format patterns - yyyy-MM-dd
 - strict/lenient parse
 - upper/lower case
-- substitute text (replacing built in text for Months/Years etc)
+- substitute text (replacing built in text for Months/DOW etc)
 - only ASCII numbers
 - parse zone
 - parse optional needs to store and drop back Calendrical properly
@@ -41,37 +61,44 @@
 - Arabic numbers have negative sign after number
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
+
+Time zones
 - zone prev/next transition
-- zone providers
+- SPI and zone providers
 - versions of zone data files
-- period total secs/mins/hours etc
-- construct fields without period units
-- intervals
-- time scales
+
+Periods
+- toDays() etc, if we keep those classes
+- construct fields without period units (what does this mean?)
+- formatting (defer? but need parse factory)
+
+Intervals
+- intervals (defer completely?)
+
+Time scales
+- time scales (minimum?)
+
+Matchers/Adjusters
 - DateTimeMatcher
 - DateTimeAdjuster
+
+Calendars
+- period units in chronologies?
+- GJCalendar
+- more calendar systems
+
+General
+- test separable comparators for providers
 - Year.of() Duration.of() plus big static class?
 - first day of week
 - get month/weekday text
-- GJCalendar
 - get rule by name
 - get chrono by name
-
-Items todo post EDR:
-
-- lenient parsing
-- leap second support
-- TimeZone SPI and versioning
-- more calendar systems
 - create formatter using SimpleDateFormat type string
 - OffsetDateTime.fromEpochSeconds()
 
-Possible items:
-
+Possible items
 - Rename DateProvider to LocalDateProvider?
-- separable comparators for providers
 - roll()
 - round()
 - iteration
-- intervals?
-- time scale? (see ICU)
