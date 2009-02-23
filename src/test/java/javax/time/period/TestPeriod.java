@@ -1566,24 +1566,24 @@ public class TestPeriod {
     // toDuration()
     //-----------------------------------------------------------------------
     public void test_toDuration() {
-        assertEquals(Period.ZERO.toDuration(), Duration.duration(0));
-        assertEquals(Period.period(0, 0, 0, 4, 5, 6, 7).toDuration(), Duration.duration((4 * 60 + 5) * 60L + 6, 7));
+        assertEquals(Period.ZERO.toDuration(), Duration.seconds(0));
+        assertEquals(Period.period(0, 0, 0, 4, 5, 6, 7).toDuration(), Duration.seconds((4 * 60 + 5) * 60L + 6, 7));
     }
 
     public void test_toDuration_calculation() {
-        assertEquals(Period.period(0, 0, 0, 2, 0, 0, 0).toDuration(), Duration.duration(2 * 3600));
-        assertEquals(Period.period(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.duration(120));
-        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.duration(2));
+        assertEquals(Period.period(0, 0, 0, 2, 0, 0, 0).toDuration(), Duration.seconds(2 * 3600));
+        assertEquals(Period.period(0, 0, 0, 0, 2, 0, 0).toDuration(), Duration.seconds(120));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 0).toDuration(), Duration.seconds(2));
         
-        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDuration(), Duration.duration(3, 999999999));
-        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L).toDuration(), Duration.duration(4, 0));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDuration(), Duration.seconds(3, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L).toDuration(), Duration.seconds(4, 0));
     }
 
     public void test_toDuration_negatives() {
-        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 1).toDuration(), Duration.duration(2, 1));
-        assertEquals(Period.period(0, 0, 0, 0, 0, 2, -1).toDuration(), Duration.duration(1, 999999999));
-        assertEquals(Period.period(0, 0, 0, 0, 0, -2, 1).toDuration(), Duration.duration(-2, 1));
-        assertEquals(Period.period(0, 0, 0, 0, 0, -2, -1).toDuration(), Duration.duration(-3, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 1).toDuration(), Duration.seconds(2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, -1).toDuration(), Duration.seconds(1, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, 1).toDuration(), Duration.seconds(-2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, -1).toDuration(), Duration.seconds(-3, 999999999));
     }
 
     public void test_toDuration_big() {
@@ -1594,7 +1594,7 @@ public class TestPeriod {
         calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
         int n = new BigDecimal(calc).intValueExact();
         Period test = Period.period(0, 0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        assertEquals(test.toDuration(), Duration.duration(s, n));
+        assertEquals(test.toDuration(), Duration.seconds(s, n));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
@@ -1616,25 +1616,25 @@ public class TestPeriod {
     // toDurationWith24HourDays()
     //-----------------------------------------------------------------------
     public void test_toDurationWith24HourDays() {
-        assertEquals(Period.ZERO.toDurationWith24HourDays(), Duration.duration(0));
-        assertEquals(Period.period(0, 0, 3, 4, 5, 6, 7).toDurationWith24HourDays(), Duration.duration(((3 * 24 + 4) * 60 + 5) * 60L + 6, 7));
+        assertEquals(Period.ZERO.toDurationWith24HourDays(), Duration.seconds(0));
+        assertEquals(Period.period(0, 0, 3, 4, 5, 6, 7).toDurationWith24HourDays(), Duration.seconds(((3 * 24 + 4) * 60 + 5) * 60L + 6, 7));
     }
 
     public void test_toDurationWith24HourDays_calculation() {
-        assertEquals(Period.period(0, 0, 2, 0, 0, 0, 0).toDurationWith24HourDays(), Duration.duration(2 * 24 * 3600));
-        assertEquals(Period.period(0, 0, 0, 2, 0, 0, 0).toDurationWith24HourDays(), Duration.duration(2 * 3600));
-        assertEquals(Period.period(0, 0, 0, 0, 2, 0, 0).toDurationWith24HourDays(), Duration.duration(120));
-        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 0).toDurationWith24HourDays(), Duration.duration(2));
+        assertEquals(Period.period(0, 0, 2, 0, 0, 0, 0).toDurationWith24HourDays(), Duration.seconds(2 * 24 * 3600));
+        assertEquals(Period.period(0, 0, 0, 2, 0, 0, 0).toDurationWith24HourDays(), Duration.seconds(2 * 3600));
+        assertEquals(Period.period(0, 0, 0, 0, 2, 0, 0).toDurationWith24HourDays(), Duration.seconds(120));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 0).toDurationWith24HourDays(), Duration.seconds(2));
         
-        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDurationWith24HourDays(), Duration.duration(3, 999999999));
-        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L).toDurationWith24HourDays(), Duration.duration(4, 0));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L - 1).toDurationWith24HourDays(), Duration.seconds(3, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 3, 1000000000L).toDurationWith24HourDays(), Duration.seconds(4, 0));
     }
 
     public void test_toDurationWith24HourDays_negatives() {
-        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 1).toDurationWith24HourDays(), Duration.duration(2, 1));
-        assertEquals(Period.period(0, 0, 0, 0, 0, 2, -1).toDurationWith24HourDays(), Duration.duration(1, 999999999));
-        assertEquals(Period.period(0, 0, 0, 0, 0, -2, 1).toDurationWith24HourDays(), Duration.duration(-2, 1));
-        assertEquals(Period.period(0, 0, 0, 0, 0, -2, -1).toDurationWith24HourDays(), Duration.duration(-3, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, 1).toDurationWith24HourDays(), Duration.seconds(2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, 2, -1).toDurationWith24HourDays(), Duration.seconds(1, 999999999));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, 1).toDurationWith24HourDays(), Duration.seconds(-2, 1));
+        assertEquals(Period.period(0, 0, 0, 0, 0, -2, -1).toDurationWith24HourDays(), Duration.seconds(-3, 999999999));
     }
 
     public void test_toDurationWith24HourDays_big() {
@@ -1645,7 +1645,7 @@ public class TestPeriod {
         calc = BigInteger.valueOf(Long.MAX_VALUE).remainder(BINT_1BN);
         int n = new BigDecimal(calc).intValueExact();
         Period test = Period.period(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Long.MAX_VALUE);
-        assertEquals(test.toDurationWith24HourDays(), Duration.duration(s, n));
+        assertEquals(test.toDurationWith24HourDays(), Duration.seconds(s, n));
     }
 
     @Test(expectedExceptions=CalendricalException.class)

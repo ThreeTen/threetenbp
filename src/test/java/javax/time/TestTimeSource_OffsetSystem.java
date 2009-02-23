@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestTimeSource_OffsetSystem {
 
-    private static final Duration OFFSET = Duration.duration(2);
+    private static final Duration OFFSET = Duration.seconds(2);
 
     //-----------------------------------------------------------------------
     public void test_offset_isSerializable() throws IOException, ClassNotFoundException {

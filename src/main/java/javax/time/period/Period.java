@@ -1207,7 +1207,7 @@ public final class Period
             throw new CalendricalException("Unable to convert period to duration as years/months/days are present: " + this);
         }
         long secs = (hours * 60L + minutes) * 60L + seconds;  // will not overflow
-        return Duration.duration(secs, nanos);
+        return Duration.seconds(secs, nanos);
     }
 
     /**
@@ -1232,7 +1232,7 @@ public final class Period
             throw new CalendricalException("Unable to convert period to duration as years/months are present: " + this);
         }
         long secs = ((days * 24L + hours) * 60L + minutes) * 60L + seconds;  // will not overflow
-        return Duration.duration(secs, nanos);
+        return Duration.seconds(secs, nanos);
     }
 
     //-----------------------------------------------------------------------
