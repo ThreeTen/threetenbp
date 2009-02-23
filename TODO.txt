@@ -34,7 +34,6 @@ MathUtils
 - can't be public, can't put in java.math as we require JDK5 support
 
 Duration
-- parse factory
 
 Instant
 - review in line with changes to Duration
