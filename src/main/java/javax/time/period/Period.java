@@ -214,7 +214,7 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Creates a period of years.
+     * Obtains an instance of <code>Period</code> from a number of years.
      *
      * @param years  the amount of years
      * @return the created period instance, never null
@@ -227,7 +227,7 @@ public final class Period
     }
 
     /**
-     * Creates a period of months.
+     * Obtains an instance of <code>Period</code> from a number of months.
      *
      * @param months  the amount of months
      * @return the created period instance, never null
@@ -240,7 +240,7 @@ public final class Period
     }
 
     /**
-     * Creates a period of days.
+     * Obtains an instance of <code>Period</code> from a number of days.
      *
      * @param days  the amount of days
      * @return the created period instance, never null
@@ -253,7 +253,7 @@ public final class Period
     }
 
     /**
-     * Creates a period of hours.
+     * Obtains an instance of <code>Period</code> from a number of hours.
      *
      * @param hours  the amount of hours
      * @return the created period instance, never null
@@ -266,7 +266,7 @@ public final class Period
     }
 
     /**
-     * Creates a period of minutes.
+     * Obtains an instance of <code>Period</code> from a number of minutes.
      *
      * @param minutes  the amount of minutes
      * @return the created period instance, never null
@@ -279,7 +279,7 @@ public final class Period
     }
 
     /**
-     * Creates a period of seconds.
+     * Obtains an instance of <code>Period</code> from a number of seconds.
      *
      * @param seconds  the amount of seconds
      * @return the created period instance, never null
@@ -292,7 +292,7 @@ public final class Period
     }
 
     /**
-     * Creates a period of nanoseconds.
+     * Obtains an instance of <code>Period</code> from a number of nanoseconds.
      *
      * @param nanos  the amount of nanos
      * @return the created period instance, never null
@@ -302,6 +302,41 @@ public final class Period
             return ZERO;
         }
         return new Period(0, 0, 0, 0, 0, 0, nanos);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>Period</code> from a string.
+     * <p>
+     * This will parse the string produced by <code>toString()</code> which is
+     * a subset of the ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.
+     * <p>
+     * The string consists of a series of numbers with a suffix identifying their meaning.
+     * The values, and suffixes, must be in the sequence year, month, day, hour, minute, second.
+     * Any of the number/suffix pairs may be omitted providing at least one is present.
+     * If the period is zero, the value is normally represented as <code>PT0S</code>.
+     * The numbers must consist of ASCII digits.
+     * Any of the numbers may be negative. Negative zero is not accepted.
+     * The number of nanoseconds is expressed as an optional fraction of the seconds.
+     * There must be at least one digit before any decimal point.
+     * There must be between 1 and 9 inclusive digits after any decimal point.
+     * The letters will all be accepted in upper or lower case.
+     * The decimal point may be either a dot or a comma.
+     *
+     * @param text  the text to parse, not null
+     * @return the created Period, never null
+     * @throws IllegalArgumentException if the text cannot be parsed to a Period
+     */
+    public static Period parse(final String text) {
+        int years = 0;
+        int months = 0;
+        int days = 0;
+        int hours = 0;
+        int mins = 0;
+        int secs = 0;
+        long nanos = 0;
+        // TODO: implement, see Duration.parse()
+        return period(years, months, days, hours, mins, secs, nanos);
     }
 
     //-----------------------------------------------------------------------
