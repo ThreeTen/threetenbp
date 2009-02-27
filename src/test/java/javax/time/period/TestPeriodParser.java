@@ -33,8 +33,6 @@ package javax.time.period;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.Duration;
-
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -206,6 +204,7 @@ public class TestPeriodParser {
         	{"P0S0D0YT0S0M0.0H"},
         	{"PT0M0H0.0S"},
         	{"PT0M0H"},
+        	{"PT0S0M"},
         };
     }
     
