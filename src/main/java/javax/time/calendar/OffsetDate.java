@@ -399,6 +399,10 @@ public final class OffsetDate
     public int getDayOfYear() {
         return date.getDayOfYear();
     }
+    
+    public long toEpochDays() {
+        return date.toEpochDays();
+    }
 
     /**
      * Gets the day of week field, which is an enum <code>DayOfWeek</code>.

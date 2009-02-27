@@ -117,11 +117,14 @@ public class TestTimeZone {
         ObjectInputStream in = new ObjectInputStream(bais);
         TimeZone result = (TimeZone) in.readObject();
         
-        assertSame(result, test);
+        assertEquals(result, test);
     }
 
     public void test_serialization_America() throws Exception {
         TimeZone test = TimeZone.timeZone("America/Chicago");
+        
+        TimeZone tz = TimeZone.timeZone("America/Chicago");
+        assertSame(tz, test);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -132,7 +135,7 @@ public class TestTimeZone {
         ObjectInputStream in = new ObjectInputStream(bais);
         TimeZone result = (TimeZone) in.readObject();
         
-        assertSame(result, test);
+        assertEquals(result, test);
     }
 
     //-----------------------------------------------------------------------

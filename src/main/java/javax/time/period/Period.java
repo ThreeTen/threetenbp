@@ -328,15 +328,7 @@ public final class Period
      * @throws IllegalArgumentException if the text cannot be parsed to a Period
      */
     public static Period parse(final String text) {
-        int years = 0;
-        int months = 0;
-        int days = 0;
-        int hours = 0;
-        int mins = 0;
-        int secs = 0;
-        long nanos = 0;
-        // TODO: implement, see Duration.parse()
-        return period(years, months, days, hours, mins, secs, nanos);
+        return PeriodParser.getInstance().parse(text);
     }
 
     //-----------------------------------------------------------------------
