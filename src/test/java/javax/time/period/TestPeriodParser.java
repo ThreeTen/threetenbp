@@ -205,6 +205,7 @@ public class TestPeriodParser {
         	{"PT0M0H0.0S"},
         	{"PT0M0H"},
         	{"PT0S0M"},
+        	{"PT0.0M2S"},
         };
     }
     

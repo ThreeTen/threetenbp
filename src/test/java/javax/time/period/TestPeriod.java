@@ -1822,7 +1822,7 @@ public class TestPeriod {
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
-    @DataProvider(name="toString")
+    @DataProvider(name="toStringAndParse")
     Object[][] data_toString() {
         return new Object[][] {
             {Period.ZERO, "PT0S"},
@@ -1837,7 +1837,7 @@ public class TestPeriod {
         };
     }
 
-    @Test(dataProvider="toString")
+    @Test(dataProvider="toStringAndParse")
     public void test_toString(Period test, String expected) {
         assertEquals(test.toString(), expected);
         assertSame(test.toString(), test.toString());  // repeat to check caching
@@ -1852,6 +1852,11 @@ public class TestPeriod {
         assertEquals(test.getMinutes(), mn);
         assertEquals(test.getSeconds(), s);
         assertEquals(test.getNanos(), n);
+    }
+    
+    @Test(dataProvider="toStringAndParse")
+    public void test_parse(Period test, String expected) {
+    	assertEquals(test, Period.parse(expected));
     }
 
 }

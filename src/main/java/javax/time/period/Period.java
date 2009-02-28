@@ -306,7 +306,7 @@ public final class Period
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>Period</code> from a string.
+     * Obtains an instance of <code>Period</code> from a string formatted as <code>PnYnMnDTnHnMn.nS</code>.
      * <p>
      * This will parse the string produced by <code>toString()</code> which is
      * a subset of the ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.

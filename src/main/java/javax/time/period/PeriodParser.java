@@ -32,11 +32,9 @@
 package javax.time.period;
 
 /**
- * An period parser that returns Obtains an instance of <code>Period</code> from a string.
+ * An period parser that creates an instance of <code>Period</code> from a string using the
+ * ISO8601 period format <code>PnYnMnDTnHnMn.nS</code>.
  *
- * This is used to ...
- *
- * PeriodParser is thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -178,11 +176,29 @@ public class PeriodParser {
     
     private String prepareTime(String s) throws Exception {
         if (s.contains(".")) {
+            if (s.contains("1.S")) {
+                System.out.println("ok...");
+            }
             int i = s.indexOf(".") + 1;
-            // verify that a digit follows the decimal point
-            if (i >= s.length() || !Character.isDigit(s.charAt(i))) {
+            
+            // verify that the first character after the dot is a digit
+            if (Character.isDigit(s.charAt(i))) {
+                i++;
+            } else {
                 throw new Exception("Decimal point must be followed by a digit");
             }
+            
+            // verify that only digits follow the decimal point followed by an S
+            while (i < s.length()) {
+                // || !Character.isDigit(s.charAt(i))
+                char c = s.charAt(i);
+                if (Character.isDigit(c) || c == 'S') {
+                    i++;
+                } else {
+                    throw new Exception("Decimal point must be followed by a digit");
+                }
+            }
+            
             s = s.replace("S", "N").replace(".", "S");
         }
 
