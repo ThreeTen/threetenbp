@@ -225,7 +225,7 @@ public class DateTimeFormatter {
             if (str.length() > 32) {
                 str = str.substring(0, 32) + "...";
             }
-            throw new CalendricalParseException("The calendrical could not be parsed: " + str, text, pos.getErrorIndex());
+            throw new CalendricalParseException("Calendrical could not be parsed: " + str, text, pos.getErrorIndex());
         }
         return result;
     }
