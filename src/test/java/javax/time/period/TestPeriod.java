@@ -254,6 +254,21 @@ public class TestPeriod {
     }
 
     //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="toStringAndParse")
+    public void test_parse(Period test, String expected) {
+        if (Math.signum(test.getSeconds()) == Math.signum(test.getNanos())) {
+            assertEquals(test, Period.parse(expected));
+        }
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_parse_nullText() {
+        Period.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
     // isZero()
     //-----------------------------------------------------------------------
     public void test_isZero() {
@@ -1834,6 +1849,15 @@ public class TestPeriod {
             {Period.minutes(1), "PT1M"},
             {Period.seconds(1), "PT1S"},
             {Period.period(1, 2, 3, 4, 5, 6), "P1Y2M3DT4H5M6S"},
+            {Period.period(1, 2, 3, 4, 5, 6, 700000000), "P1Y2M3DT4H5M6.7S"},
+            {Period.period(0, 0, 0, 0, 0, 0, 100000000), "PT0.1S"},
+            {Period.period(0, 0, 0, 0, 0, 0, -100000000), "PT-0.1S"},
+            {Period.period(0, 0, 0, 0, 0, 1, -900000000), "PT0.1S"},
+            {Period.period(0, 0, 0, 0, 0, -1, 900000000), "PT-0.1S"},
+            {Period.period(0, 0, 0, 0, 0, 1, 100000000), "PT1.1S"},
+            {Period.period(0, 0, 0, 0, 0, 1, -100000000), "PT0.9S"},
+            {Period.period(0, 0, 0, 0, 0, -1, 100000000), "PT-0.9S"},
+            {Period.period(0, 0, 0, 0, 0, -1, -100000000), "PT-1.1S"},
         };
     }
 
@@ -1852,11 +1876,6 @@ public class TestPeriod {
         assertEquals(test.getMinutes(), mn);
         assertEquals(test.getSeconds(), s);
         assertEquals(test.getNanos(), n);
-    }
-    
-    @Test(dataProvider="toStringAndParse")
-    public void test_parse(Period test, String expected) {
-    	assertEquals(test, Period.parse(expected));
     }
 
 }

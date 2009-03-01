@@ -36,6 +36,7 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
+import javax.time.calendar.format.CalendricalParseException;
 
 /**
  * An immutable period consisting of the standard year, month, day, hour, minute, second and nanosecond units.
@@ -325,9 +326,10 @@ public final class Period
      *
      * @param text  the text to parse, not null
      * @return the created Period, never null
-     * @throws IllegalArgumentException if the text cannot be parsed to a Period
+     * @throws CalendricalParseException if the text cannot be parsed to a Period
      */
     public static Period parse(final String text) {
+        PeriodFields.checkNotNull(text, "Text to parse must not be null");
         return PeriodParser.getInstance().parse(text);
     }
 
@@ -1309,10 +1311,10 @@ public final class Period
      */
     @Override
     public String toString() {
-        String s = string;
-        if (s == null) {
+        String str = string;
+        if (str == null) {
             if (this == ZERO) {
-                s = "PT0S";
+                str = "PT0S";
             } else {
                 StringBuilder buf = new StringBuilder();
                 buf.append('P');
@@ -1325,7 +1327,7 @@ public final class Period
                 if (days != 0) {
                     buf.append(days).append('D');
                 }
-                if ((hours | minutes | seconds) != 0) {
+                if ((hours | minutes | seconds) != 0 || nanos != 0) {
                     buf.append('T');
                     if (hours != 0) {
                         buf.append(hours).append('H');
@@ -1333,15 +1335,38 @@ public final class Period
                     if (minutes != 0) {
                         buf.append(minutes).append('M');
                     }
-                    if (seconds != 0) {
-                        buf.append(seconds).append('S');
+                    if (seconds != 0 || nanos != 0) {
+                        if (nanos == 0) {
+                            buf.append(seconds).append('S');
+                        } else {
+                            long s = seconds + (nanos / 1000000000);
+                            long n = nanos % 1000000000;
+                            if (s < 0 && n > 0) {
+                                n -= 1000000000;
+                                s++;
+                            } else if (s > 0 && n < 0) {
+                                n += 1000000000;
+                                s--;
+                            }
+                            if (n < 0) {
+                                n = -n;
+                                if (s == 0) {
+                                    buf.append('-');
+                                }
+                            }
+                            buf.append(s).append('.').append(n);
+                            while (buf.charAt(buf.length() - 1) == '0') {
+                                buf.setLength(buf.length() - 1);
+                            }
+                            buf.append('S');
+                        }
                     }
                 }
-                s = buf.toString();
+                str = buf.toString();
             }
-            string = s;
+            string = str;
         }
-        return s;
+        return str;
     }
 
 }
