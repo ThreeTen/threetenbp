@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -56,6 +56,20 @@ public class CalendricalParseException extends RuntimeException {
      */
     public CalendricalParseException(String message, String parsedString, int errorIndex) {
         super(message);
+        this.parsedString = parsedString;
+        this.errorIndex = errorIndex;
+    }
+
+    /**
+     * Constructs a new exception with the specified message.
+     *
+     * @param message  the message to use for this exception, may be null
+     * @param parsedString  the parsed text, should not be null
+     * @param errorIndex  the index in the parsed string that was invalid, should be a valid index
+     * @param cause  the cause exception, may be null
+     */
+    public CalendricalParseException(String message, String parsedString, int errorIndex, Throwable cause) {
+        super(message, cause);
         this.parsedString = parsedString;
         this.errorIndex = errorIndex;
     }
