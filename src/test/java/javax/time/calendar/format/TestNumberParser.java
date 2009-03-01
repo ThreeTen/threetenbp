@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
@@ -91,6 +91,13 @@ public class TestNumberParser {
         context.setFieldValue(RULE_DOM, 2);
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         pp.parse(context, "12", 3);
+    }
+
+    public void test_parse_negativeZero() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NORMAL);
+        int newPos = pp.parse(context, "-0", 0);
+        assertEquals(newPos, ~0);
     }
 
     //-----------------------------------------------------------------------

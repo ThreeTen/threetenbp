@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -188,6 +188,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             total = total * 10 + digit;
         }
         if (negative) {
+            if (total == 0) {
+                return ~(position - 1);  // minus zero not allowed
+            }
             total = -total;
         } else if (signStyle == SignStyle.EXCEEDS_PAD) {
             int parseLen = pos - position;
