@@ -43,6 +43,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import javax.time.calendar.format.CalendricalParseException;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -505,35 +507,40 @@ public class TestDuration {
         };
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=IllegalArgumentException.class)
+    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
     public void factory_parseFailures(String text) {
         Duration.parse(text);
     }
 
-    @Test(dataProvider="ParseFailures", expectedExceptions=IllegalArgumentException.class)
+    @Test(dataProvider="ParseFailures", expectedExceptions=CalendricalParseException.class)
     public void factory_parseFailures_comma(String text) {
         text = text.replace('.', ',');
         Duration.parse(text);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooBig() {
         Duration.parse("PT" + Long.MAX_VALUE + "1S");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooBig_decimal() {
         Duration.parse("PT" + Long.MAX_VALUE + "1.1S");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooSmall() {
         Duration.parse("PT" + Long.MIN_VALUE + "1S");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalParseException.class)
     public void factory_parse_tooSmall_decimal() {
         Duration.parse("PT" + Long.MIN_VALUE + ".1S");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        Duration.parse((String) null);
     }
 
     //-----------------------------------------------------------------------
