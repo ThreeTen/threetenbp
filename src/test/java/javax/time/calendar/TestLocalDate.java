@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -55,6 +56,7 @@ import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -336,6 +338,42 @@ public class TestLocalDate {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_fromModifiedJulianDays_belowMin() {
         LocalDate.fromModifiedJulianDays(MIN_VALID_MJDAYS - 1);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleToString")
+    public void factory_parse_happyScenarios(int y, int m, int d, String parsable) {
+        LocalDate t = LocalDate.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getYear(), y, parsable);
+        assertEquals(t.getMonthOfYear().getValue(), m, parsable);
+        assertEquals(t.getDayOfMonth(), d, parsable);
+    }
+
+    @DataProvider(name="sampleBadParse")
+    Object[][] provider_sampleBadParse() {
+        return new Object[][]{
+                {"2008/07/05"},
+                {"10000-01-01"},
+                {"2008-1-1"},
+                {"2008--01"},
+                {"ABCD-02-01"},
+                {"2008-AB-01"},
+                {"2008-02-AB"},
+                {"-0000-02-01"},
+        };
+    }
+
+    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    public void factory_parse_unhappyScenarios(String unparsable) {
+        LocalDate.parse(unparsable);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        LocalDate.parse((String) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1937,6 +1975,12 @@ public class TestLocalDate {
             {2007, 12, 31, "2007-12-31"},
             {999, 12, 31, "0999-12-31"},
             {-1, 1, 2, "-0001-01-02"},
+            {9999, 12, 31, "9999-12-31"},
+            {-9999, 12, 31, "-9999-12-31"},
+            {10000, 1, 1, "+10000-01-01"},
+            {-10000, 1, 1, "-10000-01-01"},
+            {12345678, 1, 1, "+12345678-01-01"},
+            {-12345678, 1, 1, "-12345678-01-01"},
         };
     }
 
@@ -1946,7 +1990,7 @@ public class TestLocalDate {
         String str = t.toString();
         assertEquals(str, expected);
     }
-    
+
     //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------

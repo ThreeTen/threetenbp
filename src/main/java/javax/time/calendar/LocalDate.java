@@ -42,6 +42,8 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -91,6 +93,16 @@ public final class LocalDate
      * The day of month.
      */
     private final int day;
+    /**
+     * Parser.
+     */
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+                .appendValue(ISOChronology.yearRule(), 4, 10, DateTimeFormatterBuilder.SignStyle.EXCEEDS_PAD)
+                .appendLiteral('-')
+                .appendValue(ISOChronology.monthOfYearRule(), 2)
+                .appendLiteral('-')
+                .appendValue(ISOChronology.dayOfMonthRule())
+                .toFormatter();
 
     //-----------------------------------------------------------------------
     /**
@@ -230,6 +242,26 @@ public final class LocalDate
         // check year now we are certain it is correct
         int year = ISOChronology.yearRule().checkValue(yearEst);
         return new LocalDate(year, MonthOfYear.monthOfYear(month), dom);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDate</code> from a string.
+     * <p>
+     * This will parse the string produced by <code>toString()</code> which is
+     * a subset the ISO8601 date format <code>yyyy-MM-dd</code>.
+     * The year has a minimum of four digits.
+     * If the year is greater than four digits then it must be prefixed by a plus symbol.
+     * The month and day must always have two digits.
+     * The numbers must consist of ASCII digits.
+     * Negative zero is not accepted.
+     *
+     * @param text  the String to parse such as '2007-12-03', not null
+     * @return the <code>LocalDate</code>, never null
+     */
+    public static LocalDate parse(String text) {
+        ISOChronology.checkNotNull(text, "Text to parse must not be null");
+        return PARSER.parse(text).mergeStrict().toLocalDate();
     }
 
     //-----------------------------------------------------------------------
@@ -1295,7 +1327,7 @@ public final class LocalDate
         int monthValue = month.getValue();
         int dayValue = day;
         int absYear = Math.abs(yearValue);
-        StringBuilder buf = new StringBuilder(12);
+        StringBuilder buf = new StringBuilder(10);
         if (absYear < 1000) {
             if (yearValue < 0) {
                 buf.append(yearValue - 10000).deleteCharAt(1);
@@ -1303,6 +1335,9 @@ public final class LocalDate
                 buf.append(yearValue + 10000).deleteCharAt(0);
             }
         } else {
+            if (yearValue > 9999) {
+                buf.append('+');
+            }
             buf.append(yearValue);
         }
         return buf.append(monthValue < 10 ? "-0" : "-")
