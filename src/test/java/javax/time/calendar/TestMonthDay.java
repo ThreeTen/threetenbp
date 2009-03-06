@@ -31,7 +31,10 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,6 +50,7 @@ import java.util.Set;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -766,6 +770,76 @@ public class TestMonthDay {
         MonthDay test = MonthDay.monthDay(m, d);
         String str = test.toString();
         assertEquals(str, expected);
+    }
+    
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @DataProvider(name="goodParseData")
+    Object[][] provider_goodParseData() {
+    	return new Object[][] {
+    			{"--01-01", MonthDay.monthDay(1, 1)},
+    			{"--01-31", MonthDay.monthDay(1, 31)},
+    			{"--02-01", MonthDay.monthDay(2, 1)},
+    			{"--02-29", MonthDay.monthDay(2, 29)},
+    			{"--03-01", MonthDay.monthDay(3, 1)},
+    			{"--03-31", MonthDay.monthDay(3, 31)},
+    			{"--04-01", MonthDay.monthDay(4, 1)},
+    			{"--04-30", MonthDay.monthDay(4, 30)},
+    			{"--05-01", MonthDay.monthDay(5, 1)},
+    			{"--05-31", MonthDay.monthDay(5, 31)},
+    			{"--06-01", MonthDay.monthDay(6, 1)},
+    			{"--06-30", MonthDay.monthDay(6, 30)},
+    			{"--07-01", MonthDay.monthDay(7, 1)},
+    			{"--07-31", MonthDay.monthDay(7, 31)},
+    			{"--08-01", MonthDay.monthDay(8, 1)},
+    			{"--08-31", MonthDay.monthDay(8, 31)},
+    			{"--09-01", MonthDay.monthDay(9, 1)},
+    			{"--09-30", MonthDay.monthDay(9, 30)},
+    			{"--10-01", MonthDay.monthDay(10, 1)},
+    			{"--10-31", MonthDay.monthDay(10, 31)},
+    			{"--11-01", MonthDay.monthDay(11, 1)},
+    			{"--11-30", MonthDay.monthDay(11, 30)},
+    			{"--12-01", MonthDay.monthDay(12, 1)},
+    			{"--12-31", MonthDay.monthDay(12, 31)},
+    	};
+    }
+    
+    @Test(dataProvider="goodParseData")
+    public void test_successfulParse(String text, MonthDay expected) {
+    	MonthDay monthDay = MonthDay.parse(text);
+    	assertEquals(monthDay, expected);
+    }
+    
+    @DataProvider(name="badParseData")
+    Object[][] provider_badParseData() {
+    	return new Object[][] {
+    			{"", 0},
+    			{"-00", 0},
+    			{"--FEB-23", 2},
+    			{"--01-0", 5},
+    			{"--01-3A", 5},
+    			{"--00-01", 2},
+    			{"--01-32", 5},
+    	};
+    }
+    
+    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
+    public void test_failedParse(String text, int pos) {
+    	try {
+    		MonthDay.parse(text);
+    		fail(String.format("Parse should have failed for %s at position %d", text, pos));
+    	}
+    	catch (CalendricalParseException ex) {
+    		assertEquals(ex.getParsedString(), text);
+    		assertEquals(ex.getErrorIndex(), pos);
+    		throw ex;
+    	}
+    }
+    
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_ParseNull() {
+    	MonthDay.parse(null);
     }
 
 }
