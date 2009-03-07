@@ -38,6 +38,9 @@ import javax.time.MathUtils;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -72,6 +75,14 @@ public final class YearMonth
      * The month of year, not null.
      */
     private final MonthOfYear month;
+    /**
+     * Parser.
+     */
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+        .appendValue(ISOChronology.yearRule(), 4)
+        .appendLiteral('-')
+        .appendValue(ISOChronology.monthOfYearRule(), 2)
+        .toFormatter();
 
     //-----------------------------------------------------------------------
     /**
@@ -143,6 +154,36 @@ public final class YearMonth
         int year = calendrical.deriveValue(ISOChronology.yearRule());
         int month = calendrical.deriveValue(ISOChronology.monthOfYearRule());
         return yearMonth(year, month);
+    }
+    
+    /**
+     * Obtains an instance of <code>YearMonth</code> from a text string.
+     * <p>
+     *
+     * @param text the ISO8601 compatible input string
+     * @return the YearMonth, never null
+     * @throws CalendricalParseException if the text cannot be parsed to YearMonth
+     */
+    public static YearMonth parse(String text) {
+        ISOChronology.checkNotNull(text, "Text to parse must not be null");
+
+        try {
+            Calendrical cal = PARSER.parse(text).mergeStrict();
+            
+            int year = cal.deriveValue(ISOChronology.yearRule());
+            int month = cal.deriveValue(ISOChronology.monthOfYearRule());
+            
+            return YearMonth.yearMonth(year, month);
+        } catch (IllegalCalendarFieldValueException ex) {
+            int idx = 0;
+            // try to identify if this was a month or day problem
+            if ("Year".equals(ex.getFieldRule().getName())) {
+                idx = 0;
+            } else if ("MonthOfYear".equals(ex.getFieldRule().getName())) {
+                idx = 5;
+            }
+            throw new CalendricalParseException("YearMonth could not be parsed", text, idx, ex);
+        }
     }
 
     //-----------------------------------------------------------------------
