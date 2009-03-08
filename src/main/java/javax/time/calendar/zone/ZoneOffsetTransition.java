@@ -51,7 +51,7 @@ import javax.time.period.Period;
  * Overlaps occur where there are local date-times that exist twice.
  * An example would be when the offset changes from +02:00 to +01:00.
  * <p>
- * Transition is immutable and thread-safe.
+ * ZoneOffsetTransition is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -69,19 +69,6 @@ public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransiti
      * The transition date-time with the offset after the discontinuity.
      */
     private final OffsetDateTime transitionAfter;
-
-//    /**
-//     * Obtains an instance of <code>ZoneOffsetTransition</code>.
-//     *
-//     * @param transition  the transition date-time with the offset before the discontinuity, not null
-//     * @param offsetAfter  the offset at and after the discontinuity, not null
-//     * @return the transition, never null
-//     */
-//    public static ZoneOffsetTransition getInstance(OffsetDateTime transition, ZoneOffset offsetAfter) {
-//        ZoneRules.checkNotNull(transition, "OffsetDateTime must not be null");
-//        ZoneRules.checkNotNull(transition, "ZoneOffset must not be null");
-//        return new ZoneOffsetTransition(transition, transition.withOffsetSameInstant(offsetAfter));
-//    }
 
     //-----------------------------------------------------------------------
     /**
