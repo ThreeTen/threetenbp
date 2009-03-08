@@ -31,12 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -369,6 +364,16 @@ public class TestLocalDate {
     @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
     public void factory_parse_unhappyScenarios(String unparsable) {
         LocalDate.parse(unparsable);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue() {
+        LocalDate.parse("2008-06-32");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue() {
+        LocalDate.parse("2008-06-31");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
