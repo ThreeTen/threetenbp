@@ -983,13 +983,13 @@ public class TestYearMonth {
     }
 
     @Test(dataProvider="goodParseData")
-    public void test_successfulParse(String text, YearMonth expected) {
+    public void factory_parse_success(String text, YearMonth expected) {
     	YearMonth yearMonth = YearMonth.parse(text);
     	assertEquals(yearMonth, expected);
     }
 
 //    @Test(dataProvider="goodParseData")
-//    public void test_successfulParse_noDash(String text, YearMonth expected) {
+//    public void factory_parse_success_noDash(String text, YearMonth expected) {
 //        text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
 //        YearMonth yearMonth = YearMonth.parse(text);
 //        assertEquals(yearMonth, expected);
@@ -1018,7 +1018,7 @@ public class TestYearMonth {
     }
 
     @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-    public void test_failedParse(String text, int pos) {
+    public void factory_parse_fail(String text, int pos) {
     	try {
     		YearMonth.parse(text);
     		fail(String.format("Parse should have failed for %s at position %d", text, pos));
@@ -1030,7 +1030,7 @@ public class TestYearMonth {
     }
 
 //    @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-//    public void test_failedParse_noDash(String text, int pos) {
+//    public void factory_parse_fail_noDash(String text, int pos) {
 //        if (text.lastIndexOf('-') >= 0) {
 //            text = text.substring(0, text.lastIndexOf('-')) + text.substring(text.lastIndexOf('-') + 1);
 //        }

@@ -168,7 +168,7 @@ public final class YearMonth
      * If there are more than 4 digits then the year must be prefixed with the plus symbol.
      * Negative years are allowed, but not negative zero.
      * <p>
-     * The month has 2 digits and has values from 1 to 12.
+     * The month of year has 2 digits and has values from 1 to 12.
      *
      * @param text  the text to parse such as '2007-12', not null
      * @return the parsed year-month, never null
@@ -177,7 +177,7 @@ public final class YearMonth
      */
     public static YearMonth parse(String text) {
         ISOChronology.checkNotNull(text, "Text to parse must not be null");
-        return yearMonth((CalendricalProvider) PARSER.parse(text));
+        return yearMonth(PARSER.parse(text));
     }
 
     //-----------------------------------------------------------------------
