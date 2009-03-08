@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -223,7 +223,7 @@ public class TestDateTimeFormatter {
     public void test_parse_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Calendrical result = test.parse("ONE30");
-        assertEquals(result.toDateTimeFields().size(), 1);
+        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
         assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
@@ -274,7 +274,7 @@ public class TestDateTimeFormatter {
         Calendrical result = test.parse("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.toDateTimeFields().size(), 1);
+        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
         assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
@@ -358,7 +358,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         Calendrical result = (Calendrical) format.parseObject("ONE30");
-        assertEquals(result.toDateTimeFields().size(), 1);
+        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
         assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 
@@ -412,7 +412,7 @@ public class TestDateTimeFormatter {
         Calendrical result = (Calendrical) format.parseObject("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.toDateTimeFields().size(), 1);
+        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
         assertEquals(result.deriveValue(RULE_DOM), 30);
     }
 

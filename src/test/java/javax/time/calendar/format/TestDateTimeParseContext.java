@@ -184,7 +184,7 @@ public class TestDateTimeParseContext {
         
         Calendrical cal = test.toCalendrical();
         
-        assertEquals(cal.toDateTimeFields().toFieldValueMap(), test.toCalendrical().getFieldMap().toFieldValueMap());
+        assertEquals(cal.getFieldMap(), test.toCalendrical().getFieldMap());
         assertEquals(cal.getOffset(), test.getOffset());
         assertEquals(cal.getZone(), test.getZone());
     }

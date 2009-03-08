@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -83,9 +79,6 @@ public class TestCalendrical {
     //-----------------------------------------------------------------------
     public void test_interfaces() {
         assertTrue(CalendricalProvider.class.isAssignableFrom(Calendrical.class));
-        assertTrue(DateProvider.class.isAssignableFrom(Calendrical.class));
-        assertTrue(TimeProvider.class.isAssignableFrom(Calendrical.class));
-        assertTrue(DateTimeProvider.class.isAssignableFrom(Calendrical.class));
         assertTrue(Serializable.class.isAssignableFrom(Calendrical.class));
     }
 
@@ -862,18 +855,6 @@ public class TestCalendrical {
 //        assertSame(test, base);
 //    }
 //
-    //-----------------------------------------------------------------------
-    // toDateTimeFields()
-    //-----------------------------------------------------------------------
-    public void test_toDateTimeFields() {
-        DateTimeFields fields = DateTimeFields.fields(YEAR_RULE, 2008, MOY_RULE, 6);
-        Calendrical base = new Calendrical(fields);
-        DateTimeFields test = base.toDateTimeFields();
-        assertEquals(test.size(), 2);
-        assertEquals(test.get(YEAR_RULE), 2008);
-        assertEquals(test.get(MOY_RULE), 6);
-    }
-
     //-----------------------------------------------------------------------
     // toLocalDate()
     //-----------------------------------------------------------------------

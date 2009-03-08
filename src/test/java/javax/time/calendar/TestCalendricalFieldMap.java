@@ -31,8 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -290,6 +289,17 @@ public class TestCalendricalFieldMap {
     public void test_deriveValueQuiet_null() {
         Calendrical test = new Calendrical(MOY_RULE, 8);
         assertEquals(test.getFieldMap().deriveValueQuiet(NULL_RULE), null);
+    }
+
+    //-----------------------------------------------------------------------
+    // toDateTimeFields()
+    //-----------------------------------------------------------------------
+    public void test_toDateTimeFields() {
+        Calendrical base = new Calendrical(YEAR_RULE, 2008, MOY_RULE, 6);
+        DateTimeFields test = base.getFieldMap().toDateTimeFields();
+        assertEquals(test.size(), 2);
+        assertEquals(test.get(YEAR_RULE), 2008);
+        assertEquals(test.get(MOY_RULE), 6);
     }
 
     // TODO: more tests

@@ -31,9 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -700,7 +698,7 @@ public class TestDateTimeFields {
         Calendrical test = base.toCalendrical();
         assertEquals(test.getOffset(), null);
         assertEquals(test.getZone(), null);
-        assertFields(test.toDateTimeFields(), YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
+        assertFields(test.getFieldMap().toDateTimeFields(), YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
         // check original immutable
         assertFields(base, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
     }

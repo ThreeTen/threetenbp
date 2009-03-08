@@ -46,19 +46,36 @@ import javax.time.CalendricalException;
  * A flexible representation of calendrical information which may or may not be valid.
  * <p>
  * Dates and times often need to be processed even when they are not fully valid.
- * Instances of calendrical can hold any combination of date and time information.
- * This includes date, time, offset, zone and a field-value map, all are optional.
+ * <code>Calendrical</code> permits that processing to occur, however the cost is
+ * a complicated state model. <b>Use this class with care.</b>
  * <p>
- * A calendrical may contain partially complete or conflicting information.
+ * Instances of calendrical hold any combination of date and time information.
+ * The five pieces of state are date, time, offset, zone and a field-value map.
+ * Each piece of state is optional, allowing the calendrical to contain incomplete information.
+ * <p>
+ * The state of a calendrical can conflict itself.
  * For example, the date might be '2007-12-03' while the field-value map holds the
- * month as February.
- * Another example, the offset might be '+02:00' while the time zone is 'Asia/Tokyo'
- * (the offset '+02:00' is never valid for this time zone).
+ * month as February. This can be checked using {@link #checkConsistent()}.
+ * Values that can be derived from other values, such as MonthOfYear from date, can be
+ * removed using {@link #removeDerivable()}.
  * <p>
- * In addition, the field-value map may contain values that are outside the
+ * The state in the field-value map can also be merged according to rules.
+ * For example, parsing might read in 'HourOfAmPm=9', 'AmPm=PM' and 'MinuteOfHour=25'.
+ * Using the {@link #mergeStrict()} and related methods these different fields can
+ * be merged into a <code>LocalTime</code>.
+ * <p>
+ * Virtually any two parts of the state can conflict.
+ * For example, the offset might be '+01:00' while the time zone is 'Asia/Tokyo'.
+ * This is invalid as the offset '+01:00' is never valid for Tokyo.
+ * This can be checked manually if desired before calling {@link #toZonedDateTime()}.
+ * <p>
+ * Finally, the field-value map may contain values that are outside the
  * normal range for the field. For example, a day of month of -3 or an hour of 1000.
+ * The {@link #mergeLenient()} method can be used to interpret these values.
  * <p>
- * Given the complicated possible state of this class, care must be used.
+ * Each method is documented to explain how it handles the possible conflicting cases.
+ * A key method is {@link #merge(CalendricalContext)} which takes all the available
+ * data and attempts to merge it together into meaningful information.
  * <p>
  * Calendrical is mutable and cannot be shared safely between threads without
  * external synchronization.
@@ -67,10 +84,10 @@ import javax.time.CalendricalException;
  * @author Stephen Colebourne
  */
 public final class Calendrical
-        implements CalendricalProvider, DateProvider, TimeProvider, DateTimeProvider, Serializable {
+        implements CalendricalProvider, Serializable {
 
     /** Serialization version. */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 273575873876986L;
 
     /**
      * The field map, never null.
@@ -107,6 +124,9 @@ public final class Calendrical
      * A calendrical can hold state that is not a valid date-time.
      * Thus, this constructor does not check to see if the value is valid for the field.
      * For example, you could setup a calendrical with a day of month of 75.
+     * <p>
+     * On completion, the created calendrical will contain a field-value map
+     * with one mapping. The date, time, offset and zone will be null.
      *
      * @param fieldRule  the rule, not null
      * @param value  the field value, may be invalid
@@ -123,6 +143,9 @@ public final class Calendrical
      * A calendrical can hold state that is not a valid date-time.
      * Thus, this constructor does not check to see if the value is valid for the field.
      * For example, you could setup a calendrical with a day of month of 75.
+     * <p>
+     * On completion, the created calendrical will contain a field-value map
+     * with two mappings. The date, time, offset and zone will be null.
      *
      * @param fieldRule1  the first rule, not null
      * @param value1  the first field value
@@ -143,10 +166,13 @@ public final class Calendrical
      * Thus, this constructor does not cross reference the date or time with the offset or zone.
      * For example, the zone could be set to 'America/New_York' and the offset could be
      * set to '+01:00', even though that is never a valid offset for the New York zone.
+     * <p>
+     * On completion, the created calendrical will contain an empty field-value map.
+     * The date, time, offset and zone will be populated based on the parameters specified.
      *
      * @param date  the optional local date, such as '2007-12-03', may be null
      * @param time  the optional local time, such as '10:15:30', may be null
-     * @param offset  the optional time zone offset, such as '+02:00', may be null
+     * @param offset  the optional time zone offset, such as '+01:00', may be null
      * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
      */
     public Calendrical(LocalDate date, LocalTime time, ZoneOffset offset, TimeZone zone) {
@@ -159,6 +185,9 @@ public final class Calendrical
 
     /**
      * Constructor creating a calendrical from a set of fields.
+     * <p>
+     * On completion, the created calendrical will contain a field-value map with
+     * mapping copied from the input object. The date, time, offset and zone will be null.
      *
      * @param fields  the fields to copy, not null
      */
@@ -170,8 +199,9 @@ public final class Calendrical
     /**
      * Gets the field-value map.
      * <p>
-     * The map is part of the state of this instance.
-     * Changing the returned map changes the state of this calendrical.
+     * The field map is part of the state of this calendrical.
+     * Changing the returned map changes the state of this calendrical but does
+     * not affect any other state
      *
      * @return the connected field value map, never null
      */
@@ -182,6 +212,8 @@ public final class Calendrical
     //-----------------------------------------------------------------------
     /**
      * Gets the date, such as '2007-12-03'.
+     * <p>
+     * The date is part of the state of this calendrical.
      * The date and the field-value map may have conflicting values.
      *
      * @return the date, may be null
@@ -192,6 +224,9 @@ public final class Calendrical
 
     /**
      * Sets the date, such as '2007-12-03'.
+     * <p>
+     * The date is part of the state of this calendrical.
+     * Changing the date does not affect any other part of the state.
      * The date and the field-value map may have conflicting values.
      *
      * @param date  the date, may be null
@@ -203,6 +238,8 @@ public final class Calendrical
     //-----------------------------------------------------------------------
     /**
      * Gets the time, such as '10:15:30'.
+     * <p>
+     * The time is part of the state of this calendrical.
      * The time and the field-value map may have conflicting values.
      *
      * @return the time, may be null
@@ -213,6 +250,9 @@ public final class Calendrical
 
     /**
      * Sets the time, such as '10:15:30'.
+     * <p>
+     * The time is part of the state of this calendrical.
+     * Changing the time does not affect any other part of the state.
      * The time and the field-value map may have conflicting values.
      *
      * @param time  the time, may be null
@@ -223,7 +263,9 @@ public final class Calendrical
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time zone offset, such as '+02:00'.
+     * Gets the time zone offset, such as '+01:00'.
+     * <p>
+     * The offset is part of the state of this calendrical.
      * The zone offset and time zone may have conflicting values.
      *
      * @return the offset, may be null
@@ -233,7 +275,10 @@ public final class Calendrical
     }
 
     /**
-     * Sets the time zone offset, such as '+02:00'.
+     * Sets the time zone offset, such as '+01:00'.
+     * <p>
+     * The time is part of the state of this calendrical.
+     * Changing the offset does not affect any other part of the state.
      * The zone offset and time zone may have conflicting values.
      *
      * @param offset  the offset, may be null
@@ -245,6 +290,8 @@ public final class Calendrical
     //-----------------------------------------------------------------------
     /**
      * Gets the time zone rules, such as 'Europe/Paris'.
+     * <p>
+     * The zone is part of the state of this calendrical.
      * The time zone and zone offset may have conflicting values.
      *
      * @return the zone, may be null
@@ -255,6 +302,9 @@ public final class Calendrical
 
     /**
      * Sets the time zone rules, such as 'Europe/Paris'.
+     * <p>
+     * The zone is part of the state of this calendrical.
+     * Changing the zone does not affect any other part of the state.
      * The time zone and zone offset may have conflicting values.
      *
      * @param zone  the zone, may be null
@@ -331,8 +381,13 @@ public final class Calendrical
     /**
      * Checks this calendrical for consistency.
      * <p>
-     * This method ensures that the values in the field-value map edo not conflict
-     * those in the date, time or field-value map.
+     * This method ensures that the each value in the field-value map does not
+     * conflict with the date, time or any other value in field-value map.
+     * <p>
+     * For example, if the date was '2007-12-03' and the field-value map contained
+     * a mapping of 'MonthOfYear=November', then the state would be inconsistent
+     * and an exception would be thrown. If the mapping was 'MonthOfYear=December'
+     * then the state would be consistent and the method would return normally.
      *
      * @throws InvalidCalendarFieldException if any field is inconsistent
      */
@@ -376,8 +431,12 @@ public final class Calendrical
      * Removes any field from the map that can be derived from the date, time
      * or from another field without checking if the removed value matches.
      * <p>
-     * For example, if the field map contains 'MonthOfYear' and the date is
-     * non-null, then the month will be removed from the map.
+     * For example, if the field-value map contains 'MonthOfYear' and the date is
+     * non-null, then the month will be removed from the map as it can be derived
+     * from the date.
+     * <p>
+     * No check is performed to see if the derived value would be the same as the
+     * removed value. See {@link #checkConsistent()}.
      */
     public void removeDerivable() {
         if (date != null || time != null) {
@@ -471,8 +530,10 @@ public final class Calendrical
      * The exact definition of which fields combine with which is chronology dependent.
      * For example, see {@link ISOChronology}.
      * <p>
-     * The details of the process are controlled by the merge context.
-     * This includes strict/lenient behavior.
+     * This method uses strict merging. This means that each value in the field-value map
+     * must be completely valid. For example, field-value mappings representing
+     * 'MonthOfYear=June' and 'DayOfMonth=32' are invalid in combination and will throw an
+     * exception. See {@link #mergeLenient()} for alternate behavior.
      * <p>
      * The merge must result in consistent values for each field, date and time.
      * If two different values are produced an exception is thrown.
@@ -510,8 +571,10 @@ public final class Calendrical
      * The exact definition of which fields combine with which is chronology dependent.
      * For example, see {@link ISOChronology}.
      * <p>
-     * The details of the process are controlled by the merge context.
-     * This includes strict/lenient behavior.
+     * This method uses lenient merging. This approach allows invalid combinations to be
+     * interpreted. For example, field-value mappings representing 'MonthOfYear=June' and
+     * 'DayOfMonth=32' would normally be invalid in combination, however lenient merging
+     * will adjust this to be 'July 1st'. See {@link #mergeStrict()} for alternate behavior.
      * <p>
      * The merge must result in consistent values for each field, date and time.
      * If two different values are produced an exception is thrown.
@@ -571,34 +634,15 @@ public final class Calendrical
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this calendrical to a DateTimeFields, returning only those
-     * fields in the field-value map.
-     * <p>
-     * This calendrical is converted to a fields instance by returning only
-     * those fields in the field-value map. There will typically be other
-     * date-time content in the date or time fields of this calendrical.
-     * They will be ignored.
-     * <p>
-     * To obtain the best results, call one of the merge methods before calling
-     * this method.
-     * <pre>
-     * DateTimeFields fields = calendrical.mergeStrict().toDateTimeFields();
-     * </pre>
-     *
-     * @return the DateTimeFields, never null
-     */
-    public DateTimeFields toDateTimeFields() {
-        return DateTimeFields.fields(fieldMap.toFieldValueMap());  // optimize
-    }
-
-    /**
      * Converts this calendrical to a LocalDate.
      * <p>
-     * This calendrical is converted to a date by returning the date field.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>LocalDate</code> simply returns the date from the state.
      * If the date is null then an exception is thrown.
      * <p>
-     * There will typically be date-time content in the field-value map of this calendrical.
-     * In order to use that, call one of the merge methods before calling this method.
+     * Any date information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
      * <pre>
      * LocalDate date = calendrical.mergeStrict().toLocalDate();
      * </pre>
@@ -617,11 +661,13 @@ public final class Calendrical
     /**
      * Converts this calendrical to a LocalTime.
      * <p>
-     * This calendrical is converted to a time by returning the time field.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>LocalTime</code> simply returns the time from the state.
      * If the time is null then an exception is thrown.
      * <p>
-     * There will typically be date-time content in the field-value map of this calendrical.
-     * In order to use that, call one of the merge methods before calling this method.
+     * Any time information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
      * <pre>
      * LocalTime time = calendrical.mergeStrict().toLocalTime();
      * </pre>
@@ -640,9 +686,16 @@ public final class Calendrical
     /**
      * Converts this calendrical to a LocalDateTime.
      * <p>
-     * This method will convert the date-time information stored to a LocalDateTime.
-     * If this calendrical was created using a DateTimeFields, then the fields
-     * will be merged to obtain the date-time, see {@link DateTimeFields}.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>LocalDateTime</code> simply combines the date and time from the state.
+     * If either the date or time is null then an exception is thrown.
+     * <p>
+     * Any date-time information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
+     * <pre>
+     * LocalDateTime dateTime = calendrical.mergeStrict().toLocalDateTime();
+     * </pre>
      *
      * @return the LocalDateTime, never null
      * @throws CalendarConversionException if the date or time cannot be converted
@@ -659,9 +712,16 @@ public final class Calendrical
     /**
      * Converts this object to an OffsetDate.
      * <p>
-     * This method will convert the date-time information stored to an OffsetDate.
-     * If this calendrical was created using a DateTimeFields, then the fields
-     * will be merged to obtain the date, see {@link DateTimeFields}.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>OffsetDate</code> simply combines the date and offset from the state.
+     * If either the date or offset is null then an exception is thrown.
+     * <p>
+     * Any date information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
+     * <pre>
+     * OffsetDate date = calendrical.mergeStrict().toOffsetDate();
+     * </pre>
      *
      * @return the OffsetDate, never null
      * @throws CalendarConversionException if the date cannot be converted, or the offset is null
@@ -676,9 +736,16 @@ public final class Calendrical
     /**
      * Converts this object to an OffsetTime.
      * <p>
-     * This method will convert the date-time information stored to an OffsetTime.
-     * If this calendrical was created using a DateTimeFields, then the fields
-     * will be merged to obtain the time, see {@link DateTimeFields}.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>OffsetTime</code> simply combines the time and offset from the state.
+     * If either the time or offset is null then an exception is thrown.
+     * <p>
+     * Any time information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
+     * <pre>
+     * OffsetTime time = calendrical.mergeStrict().toOffsetTime();
+     * </pre>
      *
      * @return the OffsetTime, never null
      * @throws CalendarConversionException if the time cannot be converted, or the offset is null
@@ -693,9 +760,16 @@ public final class Calendrical
     /**
      * Converts this object to an OffsetDateTime.
      * <p>
-     * This method will convert the date-time information stored to an OffsetDateTime.
-     * If this calendrical was created using a DateTimeFields, then the fields
-     * will be merged to obtain the date-time, see {@link DateTimeFields}.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>OffsetDateTime</code> simply combines the date, time and offset from the state.
+     * If either the date, time or offset is null then an exception is thrown.
+     * <p>
+     * Any date-time information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
+     * <pre>
+     * OffsetDateTime dateTime = calendrical.mergeStrict().toOffsetDateTime();
+     * </pre>
      *
      * @return the OffsetDateTime, never null
      * @throws CalendarConversionException if the date or time cannot be converted, or the offset is null
@@ -711,9 +785,16 @@ public final class Calendrical
     /**
      * Converts this object to a ZonedDateTime.
      * <p>
-     * This method will convert the date-time information stored to an ZonedDateTime.
-     * If this calendrical was created using a DateTimeFields, then the fields
-     * will be merged to obtain the date-time, see {@link DateTimeFields}.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * The conversion to a <code>OffsetDateTime</code> combines the date, time, offset and zone from the state.
+     * If any of the date, time, offset or zone is null then an exception is thrown.
+     * <p>
+     * Any date-time information held in the field-value map is ignored.
+     * Thus, it is standard practice to call one of the <code>merge</code> methods
+     * before calling this method:
+     * <pre>
+     * ZonedDateTime dateTime = calendrical.mergeStrict().toZonedDateTime();
+     * </pre>
      *
      * @return the ZonedDateTime, never null
      * @throws CalendarConversionException if the date or time cannot be converted, or the offset or zone is null
@@ -729,6 +810,8 @@ public final class Calendrical
     //-----------------------------------------------------------------------
     /**
      * Converts this object to a Calendrical, returning a clone.
+     * <p>
+     * The returned instance is a clone of this object, with the same state.
      *
      * @return a clone of this instance, never null
      */
@@ -742,7 +825,8 @@ public final class Calendrical
     /**
      * Is this calendrical equal to the specified calendrical.
      * <p>
-     * The comparison is based on the fields, date, time, offset and zone.
+     * The comparison is based on the five pieces of state - date, time, offset
+     * zone and field-value map.
      *
      * @param obj  the other Calendrical to compare to, null returns false
      * @return true if this instance is equal to the specified Calendrical
@@ -774,7 +858,8 @@ public final class Calendrical
     /**
      * A hash code for this calendrical.
      * <p>
-     * The hash code is based on the fields, date, time, offset and zone.
+     * The hash code is based on the five pieces of state - date, time, offset
+     * zone and field-value map.
      *
      * @return a suitable hash code
      */
@@ -823,8 +908,12 @@ public final class Calendrical
     /**
      * Mutable map of date-time fields that may be invalid.
      * <p>
-     * The field map is part of the state of the underlying calendrical.
-     * Changes to this instance directly affect the underlying calendrical.
+     * A calendrical contains five pieces of state - date, time, offset, zone and field-value map.
+     * This object is the field-value map, and changes made to this object directly
+     * affect the associated calendrical.
+     * <p>
+     * Changes made to this object do not affect the date, time, offset or zone
+     * of the associated calendrical.
      * <p>
      * Calendrical.FieldMap is mutable and not thread-safe.
      * It must only be used from a single thread and must not be passed between threads.
@@ -1185,6 +1274,19 @@ public final class Calendrical
         }
 
         //-----------------------------------------------------------------------
+        /**
+         * Converts this object to a DateTimeFields.
+         * <p>
+         * The returned <code>DateTimeFields</code> will contain all the mappings
+         * from this object. Other related information from the calendrical,
+         * such as the date or time, is not used.
+         *
+         * @return the DateTimeFields, never null
+         */
+        public DateTimeFields toDateTimeFields() {
+            return DateTimeFields.fields(toFieldValueMap());  // optimize
+        }
+
         /**
          * Converts this object to a map of fields to values.
          * <p>
