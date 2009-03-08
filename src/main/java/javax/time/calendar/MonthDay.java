@@ -65,15 +65,6 @@ public final class MonthDay
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -254395108L;
-
-    /**
-     * The month of year, not null.
-     */
-    private final MonthOfYear month;
-    /**
-     * The day of month.
-     */
-    private final int day;
     /**
      * Parser.
      */
@@ -83,6 +74,15 @@ public final class MonthDay
         .appendLiteral('-')
         .appendValue(ISOChronology.dayOfMonthRule(), 2)
         .toFormatter();
+
+    /**
+     * The month of year, not null.
+     */
+    private final MonthOfYear month;
+    /**
+     * The day of month.
+     */
+    private final int day;
 
     //-----------------------------------------------------------------------
     /**
@@ -183,34 +183,27 @@ public final class MonthDay
         int dom = calendrical.deriveValue(ISOChronology.dayOfMonthRule());
         return monthDay(month, dom);
     }
-    
+
     /**
      * Obtains an instance of <code>MonthDay</code> from a text string.
      * <p>
+     * The following formats are accepted in ASCII:
+     * <ul>
+     * <li>--{monthOfYear}-{dayOfMonth}
+     * </ul>
+     * The month of year has 2 digits and has values from 1 to 12.
+     * <p>
+     * The day of month has 2 digits with values from 1 to 31 appropriate to the month.
      *
-     * @param text the ISO8601 compatible input string
-     * @return the MonthDay, never null
+     * @param text  the text to parse such as '--12-03', not null
+     * @return the parsed year-month, never null
      * @throws CalendricalParseException if the text cannot be parsed to MonthDay
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay parse(String text) {
         ISOChronology.checkNotNull(text, "Text to parse must not be null");
-        
-        try {
-            Calendrical cal = PARSER.parse(text).mergeStrict();
-            int month = cal.deriveValue(ISOChronology.monthOfYearRule());
-            int day = cal.deriveValue(ISOChronology.dayOfMonthRule());
-            
-            return MonthDay.monthDay(month, day);
-        } catch (IllegalCalendarFieldValueException ex) {
-            int idx = 0;
-            // try to identify if this was a month or day problem
-            if ("DayOfMonth".equals(ex.getFieldRule().getName())) {
-                idx = 5;
-            } else if ("MonthOfYear".equals(ex.getFieldRule().getName())) {
-                idx = 2;
-            }
-            throw new CalendricalParseException("MonthDay could not be parsed", text, idx, ex);
-        }
+        return monthDay(PARSER.parse(text));
     }
 
     //-----------------------------------------------------------------------

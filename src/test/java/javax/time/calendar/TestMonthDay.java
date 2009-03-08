@@ -31,10 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -804,13 +801,14 @@ public class TestMonthDay {
     			{"--12-31", MonthDay.monthDay(12, 31)},
     	};
     }
-    
+
     @Test(dataProvider="goodParseData")
-    public void test_successfulParse(String text, MonthDay expected) {
+    public void factory_parse_success(String text, MonthDay expected) {
     	MonthDay monthDay = MonthDay.parse(text);
     	assertEquals(monthDay, expected);
     }
-    
+
+    //-----------------------------------------------------------------------
     @DataProvider(name="badParseData")
     Object[][] provider_badParseData() {
     	return new Object[][] {
@@ -819,13 +817,11 @@ public class TestMonthDay {
     			{"--FEB-23", 2},
     			{"--01-0", 5},
     			{"--01-3A", 5},
-    			{"--00-01", 2},
-    			{"--01-32", 5},
     	};
     }
-    
+
     @Test(dataProvider="badParseData", expectedExceptions=CalendricalParseException.class)
-    public void test_failedParse(String text, int pos) {
+    public void factory_parse_fail(String text, int pos) {
     	try {
     		MonthDay.parse(text);
     		fail(String.format("Parse should have failed for %s at position %d", text, pos));
@@ -836,9 +832,20 @@ public class TestMonthDay {
     		throw ex;
     	}
     }
-    
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue() {
+        MonthDay.parse("--06-32");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue() {
+        MonthDay.parse("--06-31");
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_ParseNull() {
+    public void factory_parse_nullText() {
     	MonthDay.parse(null);
     }
 
