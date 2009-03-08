@@ -45,7 +45,7 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
 /**
  * Formatter for dates and times.
  * <p>
- * This class provides the main applcation entry point for performing formatting.
+ * This class provides the main application entry point for performing formatting.
  * Formatting consists of printing and parsing.
  * <p>
  * Instances of DateTimeFormatter are constructed using DateTimeFormatterBuilder
@@ -189,7 +189,7 @@ public class DateTimeFormatter {
     /**
      * Checks whether this formatter can parse.
      * <p>
-     * Depending on how this formatter is initialised, it may not be possible
+     * Depending on how this formatter is initialized, it may not be possible
      * for it to parse at all. This method allows the caller to check whether
      * the parse methods will throw UnsupportedOperationException or not.
      *
@@ -201,7 +201,11 @@ public class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Parses the text into a Calendrical.
+     * Fully parses the text into a Calendrical.
+     * <p>
+     * This parses the entire text into a calendrical. If the parse completes
+     * without reading the entire length of the text, and exception is thrown.
+     * If a problem occurs during parsing, an exception is thrown.
      * <p>
      * The result may be invalid including out of range values such as a month of 65.
      * The methods on the calendrical allow you to handle the invalid input.
@@ -220,12 +224,14 @@ public class DateTimeFormatter {
     public Calendrical parse(String text) {
         ParsePosition pos = new ParsePosition(0);
         Calendrical result = parse(text, pos);
-        if (pos.getErrorIndex() >= 0) {
+        boolean textNotConsumed = pos.getIndex() < text.length();
+        if (textNotConsumed || pos.getErrorIndex() >= 0) {
             String str = text;
-            if (str.length() > 32) {
-                str = str.substring(0, 32) + "...";
+            if (str.length() > 64) {
+                str = str.substring(0, 64) + "...";
             }
-            throw new CalendricalParseException("Calendrical could not be parsed: " + str, text, pos.getErrorIndex());
+            throw new CalendricalParseException("Text could not be parsed: " + str, text,
+                    pos.getErrorIndex() >= 0 ? pos.getErrorIndex() : pos.getIndex());
         }
         return result;
     }

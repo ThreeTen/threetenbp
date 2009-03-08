@@ -244,11 +244,24 @@ public class TestDateTimeFormatter {
     public void test_parse_String_parseErrorLongText() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         try {
-            test.parse("ONEXXX6789012345678901234567890123456789");
+            test.parse("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
         } catch (CalendricalParseException ex) {
-            assertEquals(ex.getMessage().endsWith(": ONEXXX67890123456789012345678901..."), true);
-            assertEquals(ex.getParsedString(), "ONEXXX6789012345678901234567890123456789");
+            assertEquals(ex.getMessage().endsWith(": ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
+            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
             assertEquals(ex.getErrorIndex(), 3);
+            throw ex;
+        }
+    }
+
+    @Test(expectedExceptions=CalendricalParseException.class)
+    public void test_parse_String_parseIncomplete() throws Exception {
+        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
+        try {
+            test.parse("ONE30SomethingElse");
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().endsWith(": ONE30SomethingElse"), true);
+            assertEquals(ex.getParsedString(), "ONE30SomethingElse");
+            assertEquals(ex.getErrorIndex(), 5);
             throw ex;
         }
     }
@@ -380,10 +393,11 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         try {
-            format.parseObject("ONEXXX6789012345678901234567890123456789");
-        } catch (ParseException ex) {
-            assertEquals(ex.getMessage().endsWith(": ONEXXX67890123456789012345678901..."), true);
-            assertEquals(ex.getErrorOffset(), 3);
+            format.parseObject("ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
+        } catch (CalendricalParseException ex) {
+            assertEquals(ex.getMessage().endsWith(": ONEXXX6789012345678901234567890123456789012345678901234567890123..."), true);
+            assertEquals(ex.getParsedString(), "ONEXXX67890123456789012345678901234567890123456789012345678901234567890123456789");
+            assertEquals(ex.getErrorIndex(), 3);
             throw ex;
         }
     }
