@@ -50,6 +50,7 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -518,6 +519,58 @@ public class TestLocalTime {
     @Test(expectedExceptions=CalendricalException.class)
     public void factory_fromNanoOfDay_tooHigh() {
         LocalTime.fromNanoOfDay(24 * 60 * 60 * 1000000000L);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider = "sampleToString")
+    public void factory_parse_happyScenarios(int h, int m, int s, int n, String parsable) {
+        LocalTime t = LocalTime.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getHourOfDay(), h);
+        assertEquals(t.getMinuteOfHour(), m);
+        assertEquals(t.getSecondOfMinute(), s);
+        assertEquals(t.getNanoOfSecond(), n);
+    }
+
+    @DataProvider(name="sampleBadParse")
+    Object[][] provider_sampleBadParse() {
+        return new Object[][]{
+                {"00;00"},
+                {"12-00"},
+                {"-01:00"},
+                {"00:00:00-09"},
+                {"00:00:00,09"},
+                {"00:00:abs"}
+        };
+    }
+
+    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    public void factory_parse_unhappyScenarios(String unparsable) {
+        LocalTime.parse(unparsable);
+    }
+
+    //-----------------------------------------------------------------------s
+    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    public void factory_parse_illegalHour() {
+        LocalTime.parse("25:00");
+    }
+
+    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    public void factory_parse_illegalMinute() {
+        LocalTime.parse("12:60");
+    }
+
+    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    public void factory_parse_illegalSecond() {
+        LocalTime.parse("12:12:60");
+    }
+
+    //-----------------------------------------------------------------------s
+    @Test(expectedExceptions = {NullPointerException.class})
+    public void factory_parse_nullTest() {
+        LocalTime.parse((String) null);
     }
 
     //-----------------------------------------------------------------------

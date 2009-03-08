@@ -41,6 +41,9 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -107,6 +110,19 @@ public final class LocalTime
     private static final long NANOS_PER_HOUR = NANOS_PER_MINUTE * MINUTES_PER_HOUR;
     /** Nanos per day. */
     private static final long NANOS_PER_DAY = NANOS_PER_HOUR * HOURS_PER_DAY;
+    /**
+     * Parser
+     */
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+            .appendValue(ISOChronology.hourOfDayRule(), 2)
+            .appendLiteral(':')
+            .appendValue(ISOChronology.minuteOfHourRule(), 2)
+            .optionalStart()
+            .appendLiteral(':')
+            .appendValue(ISOChronology.secondOfMinuteRule())
+            .optionalStart()
+            .appendFraction(ISOChronology.nanoOfSecondRule(), 1, 9)
+            .toFormatter();
 
     /**
      * The hour.
@@ -356,6 +372,33 @@ public final class LocalTime
         int seconds = (int) (nanoOfDay / NANOS_PER_SECOND);
         nanoOfDay -= seconds * NANOS_PER_SECOND;
         return create(hours, minutes, seconds, (int) nanoOfDay);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalTime</code> from a string.
+     * <p>
+     * The following formats are accepted in ASCII:
+     * <ul>
+     * <li>{hour}:{minute}
+     * <li>{hour}:{minute}:{second}
+     * <li>{hour}:{minute}:{second}.{nanosecondFraction}
+     * </ul>
+     * <p>
+     * The hour has 2 digits with values from 0 to 23.
+     * The minute has 2 digits with values from 0 to 59.
+     * The second has 2 digits with values from 0 to 59.
+     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
+     *
+     * @param time  the text to parse such as '10:15:30', not null
+     * @return the parsed local time, never null
+     * @throws CalendricalParseException if the text cannot be parsed to YearMonth
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    public static LocalTime parse(String time) {
+        ISOChronology.checkNotNull(time, "Text to parse must not be null");
+        return PARSER.parse(time).mergeStrict().toLocalTime();
     }
 
     //-----------------------------------------------------------------------
