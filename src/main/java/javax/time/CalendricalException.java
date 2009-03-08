@@ -50,4 +50,14 @@ public class CalendricalException extends RuntimeException {
         super(message);
     }
 
+    /**
+     * Constructs a new conversion exception with the specified message and cause.
+     *
+     * @param message  the message to use for this exception, may be null
+     * @param cause  the cause of the exception, may be null
+     */
+    public CalendricalException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
