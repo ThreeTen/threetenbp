@@ -41,12 +41,13 @@ import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
  * A year-month without a time zone in the ISO-8601 calendar system,
- * such as 'December 2007'.
+ * such as '2007-12'.
  * <p>
  * YearMonth is an immutable calendrical that represents a year-month combination.
  * This class does not store or represent a day, time or time zone.
@@ -66,6 +67,14 @@ public final class YearMonth
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 1507289123L;
+    /**
+     * Parser.
+     */
+    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
+        .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
+        .appendLiteral('-')
+        .appendValue(ISOChronology.monthOfYearRule(), 2)
+        .toFormatter();
 
     /**
      * The year.
@@ -75,14 +84,6 @@ public final class YearMonth
      * The month of year, not null.
      */
     private final MonthOfYear month;
-    /**
-     * Parser.
-     */
-    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-        .appendValue(ISOChronology.yearRule(), 4)
-        .appendLiteral('-')
-        .appendValue(ISOChronology.monthOfYearRule(), 2)
-        .toFormatter();
 
     //-----------------------------------------------------------------------
     /**
@@ -155,35 +156,28 @@ public final class YearMonth
         int month = calendrical.deriveValue(ISOChronology.monthOfYearRule());
         return yearMonth(year, month);
     }
-    
+
     /**
      * Obtains an instance of <code>YearMonth</code> from a text string.
      * <p>
+     * The following formats are accepted in ASCII:
+     * <ul>
+     * <li>{year}-{monthOfYear}
+     * </ul>
+     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
+     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
+     * Negative years are allowed, but not negative zero.
+     * <p>
+     * The month has 2 digits and has values from 1 to 12.
      *
-     * @param text the ISO8601 compatible input string
-     * @return the YearMonth, never null
+     * @param text  the text to parse such as '2007-12', not null
+     * @return the parsed year-month, never null
      * @throws CalendricalParseException if the text cannot be parsed to YearMonth
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static YearMonth parse(String text) {
         ISOChronology.checkNotNull(text, "Text to parse must not be null");
-
-        try {
-            Calendrical cal = PARSER.parse(text).mergeStrict();
-            
-            int year = cal.deriveValue(ISOChronology.yearRule());
-            int month = cal.deriveValue(ISOChronology.monthOfYearRule());
-            
-            return YearMonth.yearMonth(year, month);
-        } catch (IllegalCalendarFieldValueException ex) {
-            int idx = 0;
-            // try to identify if this was a month or day problem
-            if ("Year".equals(ex.getFieldRule().getName())) {
-                idx = 0;
-            } else if ("MonthOfYear".equals(ex.getFieldRule().getName())) {
-                idx = 5;
-            }
-            throw new CalendricalParseException("YearMonth could not be parsed", text, idx, ex);
-        }
+        return yearMonth((CalendricalProvider) PARSER.parse(text));
     }
 
     //-----------------------------------------------------------------------
