@@ -31,34 +31,62 @@
  */
 package javax.time.calendar.zone;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.calendar.TimeZone;
+import javax.time.CalendricalException;
+import javax.time.calendar.ZoneOffset;
 
 /**
- * Provides access to a set of time zone data.
+ * Provides rules based on the Fixed time zone data.
  * <p>
- * TimeZoneDataProvider is a service provider interface that can be called
- * by multiple threads.
+ * FixedZoneRulesDataProvider is thread-safe.
  *
  * @author Stephen Colebourne
  */
-public interface TimeZoneDataProvider {
+public class FixedZoneRulesDataProvider implements ZoneRulesDataProvider {
 
     /**
-     * Gets the time zone implementation for the specified id.
-     *
-     * @param zoneId  the time zone id, not null
-     * @return the matched time zone, null if not found
+     * Singleton instance.
      */
-    TimeZone getTimeZone(String zoneId);
+    public static final ZoneRulesDataProvider INSTANCE = new FixedZoneRulesDataProvider();
 
     /**
-     * Gets the set of available time zone ids.
-     * The list will always contain the zone 'UTC'.
-     *
-     * @return the available IDs, never null
+     * Constructor.
      */
-    Set<String> getAvailableIDs();
+    private FixedZoneRulesDataProvider() {
+    }
+
+    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public String getGroupID() {
+        return "Fixed";
+    }
+
+    /** {@inheritDoc} */
+    public String getVersion() {
+        return "";
+    }
+
+    /** {@inheritDoc} */
+    public ZoneRules getZoneRules(String timeZoneID) {
+        if ("UTC".equals(timeZoneID)) {
+            return new FixedZoneRules(ZoneOffset.UTC);
+        }
+        if ("UTCZ".equals(timeZoneID)) {
+            throw new CalendricalException("Unknown time zone: " + timeZoneID);
+        }
+        try {
+            ZoneOffset offset = ZoneOffset.zoneOffset(timeZoneID);
+            return new FixedZoneRules(offset);
+        } catch (IllegalArgumentException ex) {
+            throw new CalendricalException("Unknown time zone: " + timeZoneID);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public Set<String> getAvailableTimeZoneIDs() {
+        return new HashSet<String>();
+    }
 
 }

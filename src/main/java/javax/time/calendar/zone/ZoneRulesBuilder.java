@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.time.InstantProvider;
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -45,7 +44,6 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
@@ -91,18 +89,18 @@ public class ZoneRulesBuilder {
      */
     private Map<Object, Object> deduplicateMap;
 
-    /**
-     * Creates an alias zone that wraps a zone with a different one id.
-     *
-     * @param zoneId  the new zone id, not null
-     * @param baseZoneId  the base zone id, not null
-     * @return the created zone, never null
-     */
-    public static TimeZone createAlias(String zoneId, String baseZoneId) {
-        checkNotNull(zoneId, "Zone id must not be null");
-        checkNotNull(baseZoneId, "Base zone id must not be null");
-        return new AliasZone(zoneId, baseZoneId);
-    }
+//    /**
+//     * Creates an alias zone that wraps a zone with a different one id.
+//     *
+//     * @param zoneId  the new zone id, not null
+//     * @param baseZoneId  the base zone id, not null
+//     * @return the created zone, never null
+//     */
+//    public static ZoneRules createAlias(String zoneId, String baseZoneId) {
+//        checkNotNull(zoneId, "Zone id must not be null");
+//        checkNotNull(baseZoneId, "Base zone id must not be null");
+//        return new AliasZone(zoneId, baseZoneId);
+//    }
 
     /**
      * Validates that the input value is not null.
@@ -323,7 +321,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
-    public TimeZone toRules(String id) {
+    public ZoneRules toRules(String id) {
         return toRules(id, new HashMap<Object, Object>());
     }
 
@@ -336,7 +334,7 @@ public class ZoneRulesBuilder {
      * @throws IllegalStateException if no windows have been added
      * @throws IllegalStateException if there is only one rule defined as being forever for any given window
      */
-    TimeZone toRules(String id, Map<Object, Object> deduplicateMap) {
+    ZoneRules toRules(String id, Map<Object, Object> deduplicateMap) {
         checkNotNull(id, "Time zone id must not be null");
         if (windowList.isEmpty()) {
             throw new IllegalStateException("No windows have been added to the builder");
@@ -344,10 +342,10 @@ public class ZoneRulesBuilder {
         this.deduplicateMap = deduplicateMap;
         
         List<OffsetDateTime> standardOffsetList = new ArrayList<OffsetDateTime>(4);
-        List<Transition> transitionList = new ArrayList<Transition>(256);
-        List<TransitionRule> lastTransitionRuleList = new ArrayList<TransitionRule>(2);
+        List<ZoneOffsetTransition> transitionList = new ArrayList<ZoneOffsetTransition>(256);
+        List<ZoneOffsetTransitionRule> lastTransitionRuleList = new ArrayList<ZoneOffsetTransitionRule>(2);
         
-        // initialise the standard offset calculation
+        // initialize the standard offset calculation
         TZWindow firstWindow = windowList.get(0);
         ZoneOffset standardOffset = firstWindow.standardOffset;
         Period savings = Period.ZERO;
@@ -370,7 +368,7 @@ public class ZoneRulesBuilder {
                 // at start of this window
                 effectiveSavings = Period.ZERO;
                 for (TZRule rule : window.ruleList) {
-                    Transition trans = rule.toTransition(standardOffset, savings);
+                    ZoneOffsetTransition trans = rule.toTransition(standardOffset, savings);
                     if (trans.getDateTime().isAfter(windowStart)) {
                         // previous savings amount found, which could be the savings amount at
                         // the instant that the window starts (hence isAfter)
@@ -389,14 +387,14 @@ public class ZoneRulesBuilder {
             // check if the start of the window represents a transition
             ZoneOffset effectiveWallOffset = deduplicate(standardOffset.plus(effectiveSavings));
             if (windowStart.getOffset().equals(effectiveWallOffset) == false) {
-                Transition trans = new Transition(windowStart, effectiveWallOffset);
+                ZoneOffsetTransition trans = new ZoneOffsetTransition(windowStart, effectiveWallOffset);
                 transitionList.add(trans);
             }
             savings = effectiveSavings;
             
             // apply rules within the window
             for (TZRule rule : window.ruleList) {
-                Transition trans = rule.toTransition(standardOffset, savings);
+                ZoneOffsetTransition trans = rule.toTransition(standardOffset, savings);
                 if (trans.getDateTime().isBefore(windowStart) == false &&
                         trans.getDateTime().isBefore(window.createDateTime(savings)) &&
                         trans.getOffsetBefore().equals(trans.getOffsetAfter()) == false) {
@@ -407,7 +405,7 @@ public class ZoneRulesBuilder {
             
             // calculate last rules
             for (TZRule lastRule : window.lastRuleList) {
-                TransitionRule transitionRule = lastRule.toTransitionRule(standardOffset, savings);
+                ZoneOffsetTransitionRule transitionRule = lastRule.toTransitionRule(standardOffset, savings);
                 lastTransitionRuleList.add(transitionRule);
                 savings = lastRule.savingAmount;
             }
@@ -415,8 +413,8 @@ public class ZoneRulesBuilder {
             // finally we can calculate the true end of the window, passing it to the next window
             windowStart = deduplicate(window.createDateTime(savings));
         }
-        return new ZoneRules(
-                id, firstWindow.standardOffset, firstWallOffset, standardOffsetList,
+        return new StandardZoneRules(
+                firstWindow.standardOffset, firstWallOffset, standardOffsetList,
                 transitionList, lastTransitionRuleList);
     }
 
@@ -706,7 +704,7 @@ public class ZoneRulesBuilder {
          * @param savingsBefore  the active savings, not null
          * @return the transition, never null
          */
-        Transition toTransition(ZoneOffset standardOffset, Period savingsBefore) {
+        ZoneOffsetTransition toTransition(ZoneOffset standardOffset, Period savingsBefore) {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
             if (dayOfMonth == -1) {
@@ -725,7 +723,7 @@ public class ZoneRulesBuilder {
             LocalDateTime ldt = deduplicate(LocalDateTime.dateTime(date, time));
             ZoneOffset wallOffset = deduplicate(standardOffset.plus(savingsBefore));
             OffsetDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
-            return new Transition(dt, offsetAfter);
+            return new ZoneOffsetTransition(dt, offsetAfter);
         }
 
         /**
@@ -735,7 +733,7 @@ public class ZoneRulesBuilder {
          * @param savingsBefore  the active savings before the transition, not null
          * @return the transition, never null
          */
-        TransitionRule toTransitionRule(ZoneOffset standardOffset, Period savingsBefore) {
+        ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, Period savingsBefore) {
             // optimise stored format
             DayOfMonth dom;
             if (dayOfMonth == -1) {
@@ -749,8 +747,8 @@ public class ZoneRulesBuilder {
             }
             
             // build rule
-            Transition trans = toTransition(standardOffset, savingsBefore);
-            return new TransitionRule(
+            ZoneOffsetTransition trans = toTransition(standardOffset, savingsBefore);
+            return new ZoneOffsetTransitionRule(
                     month, dom, dayOfWeek, time, timeDefinition,
                     standardOffset, trans.getOffsetBefore(), trans.getOffsetAfter());
         }
@@ -765,48 +763,48 @@ public class ZoneRulesBuilder {
         }
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * A definition of the way a local time can be converted to an offset time.
-     */
-    static class AliasZone extends TimeZone {
-        /**
-         * A serialization identifier for this class.
-         */
-        private static final long serialVersionUID = 93618758758127L;
-        /**
-         * The time zone being aliased.
-         */
-        private final String baseZoneId;
-
-        /**
-         * Constructor.
-         *
-         * @param id  the time zone id, not null
-         * @param baseZoneId  the id of the base zone, not null
-         */
-        AliasZone(String id, String baseZoneId) {
-            super(id);
-            this.baseZoneId = baseZoneId;
-        }
-
-        /** {@inheritDoc}. */
-        @Override
-        public ZoneOffset getOffset(InstantProvider instantProvider) {
-            return TimeZone.timeZone(baseZoneId).getOffset(instantProvider);
-        }
-
-        /** {@inheritDoc}. */
-        @Override
-        public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-            return TimeZone.timeZone(baseZoneId).getOffsetInfo(dateTime);
-        }
-
-        /** {@inheritDoc}. */
-        @Override
-        public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
-            return TimeZone.timeZone(baseZoneId).getStandardOffset(instantProvider);
-        }
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * An alias for a time zone, allowing it to be referred to using a different ID.
+//     */
+//    static class AliasZone extends ZoneRules {
+//        /**
+//         * A serialization identifier for this class.
+//         */
+//        private static final long serialVersionUID = 93618758758127L;
+//        /**
+//         * The time zone being aliased.
+//         */
+//        private final String baseZoneId;
+//
+//        /**
+//         * Constructor.
+//         *
+//         * @param id  the time zone id, not null
+//         * @param baseZoneId  the id of the base zone, not null
+//         */
+//        AliasZone(String id, String baseZoneId) {
+//            super(id);
+//            this.baseZoneId = baseZoneId;
+//        }
+//
+//        /** {@inheritDoc}. */
+//        @Override
+//        public ZoneOffset getOffset(InstantProvider instantProvider) {
+//            return TimeZone.timeZone(baseZoneId).getOffset(instantProvider);
+//        }
+//
+//        /** {@inheritDoc}. */
+//        @Override
+//        public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+//            return TimeZone.timeZone(baseZoneId).getOffsetInfo(dateTime);
+//        }
+//
+//        /** {@inheritDoc}. */
+//        @Override
+//        public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
+//            return TimeZone.timeZone(baseZoneId).getStandardOffset(instantProvider);
+//        }
+//    }
 
 }

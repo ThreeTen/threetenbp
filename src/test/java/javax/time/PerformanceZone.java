@@ -81,7 +81,7 @@ public class PerformanceZone {
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            list[i] = tz.getOffsetInfo(dt).getOffset();
+            list[i] = tz.getRules().getOffsetInfo(dt).getOffset();
         }
         long end = System.nanoTime();
         System.out.println("JSR-Loc: Setup:  " + NF.format(end - start) + " ns" + list[0]);
@@ -95,7 +95,7 @@ public class PerformanceZone {
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            list[i] = tz.getOffset(instant);
+            list[i] = tz.getRules().getOffset(instant);
         }
         long end = System.nanoTime();
         System.out.println("JSR-Ins: Setup:  " + NF.format(end - start) + " ns" + list[0]);

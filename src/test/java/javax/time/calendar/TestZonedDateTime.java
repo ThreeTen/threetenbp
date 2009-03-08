@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -535,7 +537,7 @@ public class TestZonedDateTime {
         LocalDate localDate = LocalDate.date(y, o, d);
         LocalTime localTime = LocalTime.time(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.dateTime(localDate, localTime);
-        ZoneOffset offset = zone.getOffset(Instant.instant(0L));
+        ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getEstimatedOffset();
         ZonedDateTime a = ZonedDateTime.dateTime(localDateTime, zone);
         assertSame(a.getDateTime(), localDateTime);
         assertSame(a.getOffset(), offset);
@@ -1619,6 +1621,8 @@ public class TestZonedDateTime {
             {2008, 6, 30, 11, 30, 59, 999000, "UTC+01:00", "2008-06-30T11:30:59.000999+01:00 UTC+01:00"},
             {2008, 6, 30, 11, 30, 59, 999, "UTC", "2008-06-30T11:30:59.000000999Z UTC"},
             {2008, 6, 30, 11, 30, 59, 999, "UTC+01:00", "2008-06-30T11:30:59.000000999+01:00 UTC+01:00"},
+            
+            {2008, 6, 30, 11, 30, 59, 999, "Europe/London", "2008-06-30T11:30:59.000000999+01:00 TZDB/2008i:Europe/London"},
         };
     }
 

@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -46,6 +45,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -255,7 +255,7 @@ public final class ZonedDateTime
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
-        OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
+        OffsetInfo info = zone.getRules().getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
             if (info.isDiscontinuity() && info.getDiscontinuity().isGap()) {
                 throw new CalendarConversionException("The local time " + dateTime.toLocalDateTime() +
@@ -283,7 +283,7 @@ public final class ZonedDateTime
     public static ZonedDateTime fromInstant(InstantProvider instantProvider, TimeZone zone) {
         Instant instant = Instant.instant(instantProvider);
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
-        ZoneOffset offset = zone.getOffset(instant);
+        ZoneOffset offset = zone.getRules().getOffset(instant);
         OffsetDateTime offsetDT = OffsetDateTime.fromInstant(instant, offset);
         return new ZonedDateTime(offsetDT, zone);
     }
@@ -313,9 +313,9 @@ public final class ZonedDateTime
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
-        OffsetInfo info = zone.getOffsetInfo(dateTime.toLocalDateTime());
+        OffsetInfo info = zone.getRules().getOffsetInfo(dateTime.toLocalDateTime());
         if (info.isValidOffset(inputOffset) == false) {
-            ZoneOffset offsetForInstant = zone.getOffset(dateTime);
+            ZoneOffset offsetForInstant = zone.getRules().getOffset(dateTime);
             dateTime = dateTime.withOffsetSameInstant(offsetForInstant);
         }
         return new ZonedDateTime(dateTime, zone);
@@ -392,7 +392,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the local date-time.
+     * Gets the local date-time, such as '2007-12-03T10:15:30'.
      * <p>
      * This returns the date-time without any zone or offset information.
      *
@@ -420,7 +420,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the zone offset.
+     * Gets the zone offset, such as '+01:00'.
      *
      * @return the zone offset, never null
      */
@@ -445,7 +445,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
+        OffsetInfo info = zone.getRules().getOffsetInfo(toLocalDateTime());
         if (info.isDiscontinuity()) {
             ZoneOffset offset = info.getDiscontinuity().getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -473,7 +473,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
+        OffsetInfo info = zone.getRules().getOffsetInfo(toLocalDateTime());
         if (info.isDiscontinuity()) {
             ZoneOffset offset = info.getDiscontinuity().getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
@@ -500,7 +500,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time zone.
+     * Gets the time zone, such as 'Europe/Paris'.
      *
      * @return the time zone, never null
      */
@@ -1670,7 +1670,7 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time based on the UTC
-     * equivalent date-times then time zone id.
+     * equivalent date-times then time zone unique key.
      * <p>
      * The ordering is consistent with equals as it takes into account
      * the date-time, offset and zone.
@@ -1695,7 +1695,7 @@ public final class ZonedDateTime
      * @throws NullPointerException if <code>other</code> is null
      */
     public boolean isAfter(ZonedDateTime other) {
-        return compareTo(other) > 0;
+        return compareTo(other) > 0;  // TODO: make ignore zone
     }
 
     /**
@@ -1706,7 +1706,7 @@ public final class ZonedDateTime
      * @throws NullPointerException if <code>other</code> is null
      */
     public boolean isBefore(ZonedDateTime other) {
-        return compareTo(other) < 0;
+        return compareTo(other) < 0;  // TODO: make ignore zone
     }
 
     //-----------------------------------------------------------------------

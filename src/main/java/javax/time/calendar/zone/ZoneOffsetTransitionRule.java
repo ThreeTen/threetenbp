@@ -52,7 +52,7 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
  *
  * @author Stephen Colebourne
  */
-class TransitionRule implements Serializable {
+class ZoneOffsetTransitionRule implements Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -79,7 +79,7 @@ class TransitionRule implements Serializable {
      */
     private final LocalTime cutoverTime;
     /**
-     * The definition of how the local time should be interpretted.
+     * The definition of how the local time should be interpreted.
      */
     private final TimeDefinition timeDefinition;
     /**
@@ -107,7 +107,7 @@ class TransitionRule implements Serializable {
      * @param offsetBefore  the offset before the cutover, not null
      * @param offsetAfter  the offset after the cutover, not null
      */
-    public TransitionRule(
+    public ZoneOffsetTransitionRule(
             MonthOfYear cutoverMonth,
             DayOfMonth cutoverWeekStart,
             DayOfWeek dowChange,
@@ -133,7 +133,7 @@ class TransitionRule implements Serializable {
      * @param year  the year to create a transition for, not null
      * @return the transition instance, never null
      */
-    public Transition createTransition(Year year) {
+    public ZoneOffsetTransition createTransition(Year year) {
         LocalDate date;
         if (cutoverWeekStart == null) {
             date = LocalDate.date(year, cutoverMonth, cutoverMonth.getLastDayOfMonth(year));
@@ -148,7 +148,7 @@ class TransitionRule implements Serializable {
         }
         LocalDateTime localDT = LocalDateTime.dateTime(date, cutoverTime);
         OffsetDateTime cutover = timeDefinition.createDateTime(localDT, standardOffset, offsetBefore);
-        return new Transition(cutover, offsetAfter);
+        return new ZoneOffsetTransition(cutover, offsetAfter);
     }
 
 }

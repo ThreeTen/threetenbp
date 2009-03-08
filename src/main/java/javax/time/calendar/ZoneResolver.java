@@ -32,8 +32,8 @@
 package javax.time.calendar;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.TimeZone.Discontinuity;
-import javax.time.calendar.TimeZone.OffsetInfo;
+import javax.time.calendar.zone.ZoneOffsetTransition;
+import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 
 /**
  * Strategy for resolving a local date-time to an offset date-time using the
@@ -102,11 +102,11 @@ public abstract class ZoneResolver {
             LocalDateTime newDateTime,
             OffsetDateTime oldDateTime) {
         
-        OffsetInfo info = zone.getOffsetInfo(newDateTime);
+        OffsetInfo info = zone.getRules().getOffsetInfo(newDateTime);
         if (info.isDiscontinuity() == false) {
             return OffsetDateTime.dateTime(newDateTime, info.getOffset());
         }
-        Discontinuity discontinuity = info.getDiscontinuity();
+        ZoneOffsetTransition discontinuity = info.getDiscontinuity();
         OffsetDateTime result = discontinuity.isGap() ?
             handleGap(zone, discontinuity, newDateTime, oldDateTime) :
             handleOverlap(zone, discontinuity, newDateTime, oldDateTime);
@@ -117,7 +117,7 @@ public abstract class ZoneResolver {
                     "ZoneResolver implementation must not return null: " + getClass().getName());
         }
         if (result.toLocalDateTime().equals(newDateTime) == false) {
-            info = zone.getOffsetInfo(result.toLocalDateTime());
+            info = zone.getRules().getOffsetInfo(result.toLocalDateTime());
         }
         if (info.isValidOffset(result.getOffset()) == false) {
             throw new CalendricalException(
@@ -162,7 +162,7 @@ public abstract class ZoneResolver {
      */
     protected abstract OffsetDateTime handleGap(
             TimeZone zone,
-            Discontinuity discontinuity,
+            ZoneOffsetTransition discontinuity,
             LocalDateTime newDateTime,
             OffsetDateTime oldDateTime);
 
@@ -206,7 +206,7 @@ public abstract class ZoneResolver {
      */
     protected abstract OffsetDateTime handleOverlap(
             TimeZone zone,
-            Discontinuity discontinuity,
+            ZoneOffsetTransition discontinuity,
             LocalDateTime newDateTime,
             OffsetDateTime oldDateTime);
 

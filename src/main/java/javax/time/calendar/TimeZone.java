@@ -32,53 +32,76 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-import javax.time.Instant;
-import javax.time.InstantProvider;
-import javax.time.calendar.zone.OlsonTimeZoneDataProvider;
-import javax.time.calendar.zone.TimeZoneDataProvider;
-import javax.time.period.Period;
+import javax.time.CalendricalException;
+import javax.time.calendar.zone.ZoneRules;
+import javax.time.calendar.zone.ZoneRulesGroup;
+import javax.time.calendar.zone.ZoneRulesGroupVersion;
 
 /**
  * A time zone representing the set of rules by which the zone offset
  * varies through the year and historically.
  * <p>
- * TimeZone is an abstract class and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable implementations must be final, immutable and thread-safe.
- * It is only intended that the abstract methods are overridden.
+ * Time zones are geographical regions where the same rules for time apply.
+ * The rules are defined by governments and change frequently.
+ * <p>
+ * There are a number of sources of time zone information available,
+ * each represented by an instance of {@link ZoneRulesGroup}.
+ * Two IDs are provided as standard - 'Fixed' and 'TZDB' - and more can be added.
+ * <p>
+ * Each group typically produces multiple versions of their data, which
+ * is represented by {@link ZoneRulesGroupVersion}.
+ * The format of the version is specific to the group.
+ * For example, the 'TZDB' group use the format {year}{letter}, such as '2009b'.
+ * <p>
+ * Each group also has its own naming scheme for the time zone themselves.
+ * This is expressed as the time zone ID. For example, the 'TZDB' group
+ * typically use the format {area}/{city}, such as 'Europe/London'.
+ * <p>
+ * In combination, a unique key is created expressing the time-zone, formed from
+ * {groupID}/{versionID}:{locationID}. The version and preceding slash are optional.
+ * <p>
+ * The purpose of capturing all this information is to handle issues when
+ * manipulating and persisting time zones. For example, consider what happens if the
+ * government of a country changed the start or end of daylight savings time.
+ * If you created and stored a date using the old rules, and then load it up
+ * when the new rules are in force, what should happen? The date might now be
+ * invalid (due to a gap in the local time-line). By storing the version of the
+ * time zone rules data together with the date, it is possible to tell that the
+ * rules have changed and to process accordingly.
+ * <p>
+ * TimeZone is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public abstract class TimeZone implements Serializable {
+public final class TimeZone implements Serializable {
 
     /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 93618758758127L;
     /**
-     * Cache of time zone data providers.
-     */
-    private static final ConcurrentMap<String, TimeZoneDataProvider> DATA_PROVIDERS =
-            new ConcurrentHashMap<String, TimeZoneDataProvider>();
-    /**
-     * Cache of time zones by id.
-     */
-    private static final ConcurrentMap<String, TimeZone> CACHE = new ConcurrentHashMap<String, TimeZone>();
-    /**
      * The time zone offset for UTC, with an id of 'UTC'.
      */
-    public static final TimeZone UTC = timeZone(ZoneOffset.UTC);
+    public static final TimeZone UTC = new TimeZone("Fixed", "", "UTC", ZoneRules.fixed(ZoneOffset.UTC));
 
+    /**
+     * The zone rules group ID.
+     */
+    private final String groupID;
+    /**
+     * The zone rules version.
+     */
+    private final String versionID;
     /**
      * The time zone ID.
      */
-    private final String timeZoneID;
+    private final String locationID;
+    /**
+     * The time zone rules.
+     */
+    private transient volatile ZoneRules rules;
 
     //-----------------------------------------------------------------------
     /**
@@ -91,49 +114,73 @@ public abstract class TimeZone implements Serializable {
      * This method allows a map of string to time zone to be setup and reused
      * within an application.
      *
-     * @param timeZoneID  the time zone id, not null
-     * @param aliasMap  a map of time zone ids (typically abbreviations) to time zones, not null
+     * @param timeZoneIdentifier  the time zone id, not null
+     * @param aliasMap  a map of time zone IDs (typically abbreviations) to time zones, not null
      * @return the TimeZone, never null
      * @throws IllegalArgumentException if the time zone cannot be found
      */
-    public static TimeZone timeZone(String timeZoneID, Map<String, TimeZone> aliasMap) {
-        if (timeZoneID == null) {
-            throw new NullPointerException("Time Zone ID must not be null");
-        }
-        if (aliasMap == null) {
-            throw new NullPointerException("Alias map must not be null");
-        }
-        TimeZone zone = aliasMap.get(timeZoneID);
-        return zone == null ? timeZone(timeZoneID) : zone;
+    public static TimeZone timeZone(String timeZoneIdentifier, Map<String, TimeZone> aliasMap) {
+        // TODO: review
+        ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
+        ISOChronology.checkNotNull(aliasMap, "Alias map must not be null");
+        TimeZone zone = aliasMap.get(timeZoneIdentifier);
+        return zone == null ? timeZone(timeZoneIdentifier) : zone;
     }
 
     /**
-     * Obtains an instance of <code>TimeZone</code> using its ID.
+     * Obtains an instance of <code>TimeZone</code> from an identifier.
+     * <p>
+     * Four forms of identifier are recognized:
+     * <ul>
+     * <li><code>{groupID}/{version}:{locationID}</code> - full
+     * <li><code>{groupID}:{locationID}</code> - implies latest available version
+     * <li><code>{locationID} - implies 'TZDB' group and latest available version
+     * <li><code>UTC{offset} - implies 'Fixed' group
+     * </ul>
+     * <p>
+     * Most of the formats are based around the group, version and location IDs.
+     * The version and location ID formats are specific to the group.
+     * If a group does not support versioning, then the version must be an empty string.
+     * <p>
+     * The default group is 'TZDB' which has versions of the form {year}{letter}, such as '2009b'.
+     * The location ID for the 'TZDB' group is generally of the form '{area}/{city}', such as 'Europe/Paris'.
+     * This is compatible with most IDs from {@link java.util.TimeZone}.
+     * <p>
+     * For example, if a provider is loaded with the ID 'MyProvider' containing a zone ID of
+     * 'France', then the unique key for version 2.1 would be 'MyProvider/2.1:France'.
+     * A specific version of the TZDB provider can be specified using this format,
+     * for example 'TZDB/2008g:Asia/Tokyo'.
+     * <p>
+     * The alternate format are fixed zones, where the offset never changes over time.
+     * It is intended that {@link ZoneOffset} and {@link OffsetDateTime} are used in preference,
+     * however sometimes it is necessary to have a fixed time zone.
+     * The 'Fixed' group is used if the first three characters are 'UTC'.
+     * The remainder of the ID must be a valid format for {@link ZoneOffset#zoneOffset(String)}.
+     * Using 'UTCZ' is valid, but discouraged in favor of 'UTC'.
+     * The full unique key is 'Fixed:UTC&plusmn;hh:mm:ss'.
      *
-     * @param timeZoneID  the time zone id, not null
+     * @param timeZoneIdentifier  the time zone identifier, not null
      * @return the TimeZone, never null
      * @throws IllegalArgumentException if the time zone cannot be found
      */
-    public static TimeZone timeZone(String timeZoneID) {
-        if (timeZoneID == null) {
-            throw new NullPointerException("Time Zone ID must not be null");
-        }
-        if (timeZoneID.equals("UTC")) {
+    public static TimeZone timeZone(String timeZoneIdentifier) {
+        ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
+        if (timeZoneIdentifier.equals("UTC")) {
             return UTC;
-        } else if (timeZoneID.startsWith("UTC") || timeZoneID.startsWith("GMT")) {  // not sure about GMT
-            return timeZone(ZoneOffset.zoneOffset(timeZoneID.substring(3)));
+        } else if (timeZoneIdentifier.startsWith("UTC") || timeZoneIdentifier.startsWith("GMT")) {  // not sure about GMT
+            return timeZone(ZoneOffset.zoneOffset(timeZoneIdentifier.substring(3)));
         } else {
-            if (DATA_PROVIDERS.isEmpty()) {
-                DATA_PROVIDERS.putIfAbsent("Olson", new OlsonTimeZoneDataProvider("2008i"));
+            int pos = timeZoneIdentifier.indexOf(':');
+            ZoneRulesGroupVersion gv;
+            if (pos >= 0) {
+                gv = ZoneRulesGroup.getGroupVersion(timeZoneIdentifier.substring(0, pos));
+            } else {
+                gv = ZoneRulesGroup.getGroupVersion("TZDB");
             }
-            for (TimeZoneDataProvider provider : DATA_PROVIDERS.values()) {
-                TimeZone zone = provider.getTimeZone(timeZoneID);
-                if (zone != null) {
-                    return zone;
-                }
-            }
+            String tzid = timeZoneIdentifier.substring(pos + 1);
+            ZoneRules zoneRules = gv.getZoneRules(tzid);
+            return new TimeZone(gv.getGroup().getID(), gv.getID(), tzid, zoneRules);
         }
-        throw new IllegalArgumentException("Unknown time zone: " + timeZoneID);
     }
 
     /**
@@ -143,65 +190,131 @@ public abstract class TimeZone implements Serializable {
      * @return the TimeZone for the offset, never null
      */
     public static TimeZone timeZone(ZoneOffset offset) {
-        if (offset == null) {
-            throw new NullPointerException("ZoneOffset must not be null");
+        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        if (offset == ZoneOffset.UTC) {
+            return UTC;
         }
-        String timeZoneID = (offset == ZoneOffset.UTC ? "UTC" : "UTC" + offset.getID());
-        TimeZone zone = CACHE.get(timeZoneID);
-        if (zone == null) {
-            zone = new Fixed(timeZoneID, offset);
-            TimeZone cached = CACHE.putIfAbsent(timeZoneID, zone);
-            zone = (cached != null ? cached : zone);
-        }
-        return zone;
+        String timeZoneID = "UTC" + offset.getID();
+        ZoneRules zoneRules = ZoneRules.fixed(offset);  //ZoneRulesGroup.getGroupVersion("Fixed").getZoneRules(timeZoneID);
+        return new TimeZone("Fixed", "", timeZoneID, zoneRules);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets a list of all the available zone IDs.
-     * The list will always contain the zone 'UTC'.
+     * Constructor.
      *
-     * @return a list of available time zone IDs
+     * @param groupID  the time zone rules group ID, not null
+     * @param groupVersionID  the time zone rules group version ID, not null
+     * @param locationID  the time zone location ID, not null
      */
-    public static Set<String> getAvailableIDs() {
-        if (DATA_PROVIDERS.isEmpty()) {
-            DATA_PROVIDERS.putIfAbsent("Olson", new OlsonTimeZoneDataProvider("2008i"));
-        }
-        return Collections.unmodifiableSet(DATA_PROVIDERS.get("Olson").getAvailableIDs());  // TODO
-    }
-
-//    /**
-//     * Gets a list of all the available zone IDs matching the standard zone offset.
-//     * <p>
-//     * This method is useful for finding all those zones that have the same offset
-//     * (standard/winter) but different daylight savings behaviour.
-//     *
-//     * @param standardOffset  the offset to find
-//     * @return a list of available time zone IDs
-//     */
-//    public static List<String> getAvailableIDs(ZoneOffset standardOffset) {
-//        return new ArrayList<String>();  // TODO
-//    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Constructs an instance using the time zone ID.
-     *
-     * @param timeZoneID  the time zone id, not null
-     */
-    protected TimeZone(String timeZoneID) {
+    private TimeZone(String groupID, String groupVersionID, String locationID, ZoneRules rules) {
         super();
-        this.timeZoneID = timeZoneID;
+        this.groupID = groupID;
+        this.versionID = groupVersionID;
+        this.locationID = locationID;
+        this.rules = rules;
+    }
+
+    /**
+     * Handle UTC on deserialization.
+     *
+     * @return the resolved instance, never null
+     */
+    private Object readResolve() {
+        return (this.equals(UTC) ? UTC : this);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time zone ID.
+     * Gets the unique time zone ID.
+     * <p>
+     * The unique key is created from the group ID, version ID and location ID.
+     * The format is {groupID}/{versionID}:{locationID}.
+     * If the group does not provide versioned data then the format is {groupID}:{locationID}.
+     * If the group is 'Fixed', then the format is {locationID}.
      *
-     * @return the time zone ID, never null
+     * @return the time zone unique ID, never null
      */
-    public final String getID() {
-        return timeZoneID;
+    public String getID() {
+        if (groupID.equals("Fixed")) {
+            return locationID;
+        }
+        return groupID + (versionID.length() == 0 ? "" : "/" + versionID) + ":" + locationID;
+    }
+
+    /**
+     * Gets the time zone rules group ID, such as 'TZDB'.
+     * <p>
+     * Time zone rules are provided by groups referenced by an ID.
+     *
+     * @return the time zone rules group ID, never null
+     */
+    public String getGroupID() {
+        return groupID;
+    }
+
+    /**
+     * Gets the time zone rules group version, such as '2009b'.
+     * <p>
+     * Time zone rules change over time as governments change the associated laws.
+     * The time zone groups capture these changes by issuing multiple versions
+     * of the data. An application can reference the exact set of rules used
+     * by using the group ID and version.
+     *
+     * @return the time zone rules version ID, never null
+     */
+    public String getVersionID() {
+        return versionID;
+    }
+
+    /**
+     * Gets the time zone location identifier, such as 'Europe/London'.
+     * <p>
+     * The time zone location identifier is of a format specific to the group.
+     * The default 'TZDB' group generally uses the format {area}/{city}, such as 'Europe/Paris'.
+     *
+     * @return the time zone rules location ID, never null
+     */
+    public String getLocationID() {
+        return locationID;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the time zone rules allowing calculations to be performed.
+     * <p>
+     * The rules provide the functionality associated with a time zone,
+     * such as finding the offset for a given instant or local date-time.
+     * Different rules may be returned depending on the group, version and zone.
+     * <p>
+     * Callers of this method need to be aware of an unusual scenario.
+     * It is possible to create a <code>TimeZone</code> instance even when the
+     * rules are not available. This typically occurs when a <code>TimeZone</code>
+     * is loaded from a previously stored version but the rules are not available.
+     * In this case, the <code>TimeZone</code> instance is still valid, as is
+     * any associated object, such as {@link ZonedDateTime}. It is impossible to
+     * perform any calculations that require the rules however, and this method
+     * will throw an exception.
+     * <p>
+     * A related aspect of serialization is that this class just stores the
+     * unique identifier of a time zone, while serializing <code>ZoneRules</code>
+     * will actually store the entire set of rules.
+     *
+     * @return the rules, never null
+     * @throws CalendricalException if the zone is unknown or cannot be loaded
+     */
+    public ZoneRules getRules() {
+        ZoneRules r = rules;
+        if (r == null) {
+            try {
+                r = ZoneRulesGroup.getGroup(groupID).getVersion(versionID).getZoneRules(locationID);
+            } catch (IllegalArgumentException ex) {
+                // TODO: separate exception, as recoverable
+                throw new CalendricalException("Unable to load zone rules: " + getID(), ex);
+            }
+            rules = r;
+        }
+        return r;
     }
 
     //-----------------------------------------------------------------------
@@ -211,7 +324,7 @@ public abstract class TimeZone implements Serializable {
      * @return the time zone name, never null
      */
     public String getName() {
-        return timeZoneID;  // TODO
+        return locationID;  // TODO
     }
 
     /**
@@ -220,173 +333,138 @@ public abstract class TimeZone implements Serializable {
      * @return the time zone short name, never null
      */
     public String getShortName() {
-        return timeZoneID;  // TODO
+        return locationID;  // TODO
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the offset applicable at the specified instant in this zone.
-     * <p>
-     * For any given instant there can only ever be one valid offset, which
-     * is returned by this method. To access more detailed information about
-     * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
-     *
-     * @param instant  the instant to find the offset for, not null
-     * @return the offset, never null
-     */
-    public abstract ZoneOffset getOffset(InstantProvider instant);
-
-    /**
-     * Gets the offset information for the specified instant in this zone.
-     * <p>
-     * This provides access to full details as to the offset or offsets applicable
-     * for the local date-time. The mapping from an instant to an offset
-     * is not straightfoward. There are two cases:
-     * <ul>
-     * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-     * </ul>
-     * The third case, a gap in the local time-line, cannot be returned by this
-     * method as an instant will always represent a valid point and cannot be in a gap.
-     * The returned object provides information about the offset or overlap and it
-     * is vital to check {@link OffsetInfo#isDiscontinuity()} to handle the overlap.
-     *
-     * @param instant  the instant to find the offset information for, not null
-     * @return the offset information, never null
-     */
-    public OffsetInfo getOffsetInfo(Instant instant) {
-        ZoneOffset offset = getOffset(instant);
-        OffsetDateTime odt = OffsetDateTime.fromInstant(instant, offset);
-        return getOffsetInfo(odt.toLocalDateTime());
-    }
-
-    /**
-     * Gets the offset information for a local date-time in this zone.
-     * <p>
-     * This provides access to full details as to the offset or offsets applicable
-     * for the local date-time. The mapping from a local date-time to an offset
-     * is not straightfoward. There are three cases:
-     * <ul>
-     * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Gap. Where there is a gap in the local time-line normally caused by the
-     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
-     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-     * </ul>
-     * The returned object provides this information and it is vital to check
-     * {@link OffsetInfo#isDiscontinuity()} to handle the gap or overlap.
-     *
-     * @param dateTime  the date-time to find the offset information for, not null
-     * @return the offset information, never null
-     */
-    public abstract OffsetInfo getOffsetInfo(LocalDateTime dateTime);
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the standard offset for the specified instant in this zone.
-     * <p>
-     * This provides access to historic information on how the standard offset
-     * has changed over time.
-     * The standard offset is the offset before any daylight savings time is applied.
-     * This is typically the offset applicable during winter.
-     *
-     * @param instantProvider  the instant to find the offset information for, not null
-     * @return the standard offset, never null
-     */
-    public abstract ZoneOffset getStandardOffset(InstantProvider instantProvider);
-
-    /**
-     * Gets the amount of daylight savings in use for the specified instant in this zone.
-     * <p>
-     * This provides access to historic information on how the amount of daylight
-     * savings has changed over time.
-     * This is the difference between the standard offset and the actual offset.
-     * It is expressed in hours, minutes and seconds.
-     * Typically the amount is zero during winter and one hour during summer.
-     *
-     * @param instantProvider  the instant to find the offset information for, not null
-     * @return the standard offset, never null
-     */
-    public Period getDaylightSavings(InstantProvider instantProvider) {
-        Instant instant = Instant.instant(instantProvider);
-        ZoneOffset standardOffset = getStandardOffset(instant);
-        ZoneOffset actualOffset = getOffset(instant);
-        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
-    }
-
-    /**
-     * Gets the standard offset for the specified instant in this zone.
-     * <p>
-     * This provides access to historic information on how the standard offset
-     * has changed over time.
-     * The standard offset is the offset before any daylight savings time is applied.
-     * This is typically the offset applicable during winter.
-     *
-     * @param instant  the instant to find the offset information for, not null
-     * @return the standard offset, never null
-     */
-    public boolean isDaylightSavings(InstantProvider instant) {
-        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Is this time zone fixed, such that the offset never varies.
-     * <p>
-     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-     * {@link OffsetTime} are used in preference to fixed offset time zones
-     * in {@link ZonedDateTime}.
-     * <p>
-     * The default implementation returns false and it is not intended that
-     * user-supplied subclasses override this.
-     *
-     * @return true if the time zone is fixed and the offset never changes
-     */
-    public boolean isFixed() {
-        return false;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Creates an offset info for the normal case where only one offset is valid.
-     *
-     * @param dateTime  the date-time that this info applies to, not null
-     * @param offset  the zone offset, not null
-     * @return the created offset info, never null
-     */
-    protected OffsetInfo createOffsetInfo(LocalDateTime dateTime, ZoneOffset offset) {
-        if (dateTime == null) {
-            throw new NullPointerException("LocalDateTime must not be null");
-        }
-        if (offset == null) {
-            throw new NullPointerException("ZoneOffset must not be null");
-        }
-        return new OffsetInfo(dateTime, offset);
-    }
-
-    /**
-     * Creates an offset info for a gap, where there are no valid offsets,
-     * or an overlap, where there are two valid offsets.
-     *
-     * @param dateTime  the date-time that this info applies to, not null
-     * @param cutoverDateTime  the date-time of the discontinuity using the offset before, not null
-     * @param offsetAfter  the offset after the discontinuity, not null
-     * @return the created offset info, never null
-     */
-    protected OffsetInfo createOffsetInfo(
-            LocalDateTime dateTime, OffsetDateTime cutoverDateTime, ZoneOffset offsetAfter) {
-        if (dateTime == null) {
-            throw new NullPointerException("LocalDateTime must not be null");
-        }
-        if (cutoverDateTime == null) {
-            throw new NullPointerException("OffsetDateTime must not be null");
-        }
-        if (offsetAfter == null) {
-            throw new NullPointerException("ZoneOffset must not be null");
-        }
-        return new OffsetInfo(dateTime, cutoverDateTime, offsetAfter);
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the offset applicable at the specified instant in this zone.
+//     * <p>
+//     * For any given instant there can only ever be one valid offset, which
+//     * is returned by this method. To access more detailed information about
+//     * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
+//     *
+//     * @param instantProvider  the instant provider to find the offset for, not null
+//     * @return the offset, never null
+//     */
+//    public ZoneOffset getOffset(InstantProvider instantProvider) {
+//        return getRules().getOffset(instantProvider);
+//    }
+//
+//    /**
+//     * Gets the offset information for the specified instant in this zone.
+//     * <p>
+//     * This provides access to full details as to the offset or offsets applicable
+//     * for the local date-time. The mapping from an instant to an offset
+//     * is not straightforward. There are two cases:
+//     * <ul>
+//     * <li>Normal. Where there is a single offset for the local date-time.</li>
+//     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
+//     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
+//     * </ul>
+//     * The third case, a gap in the local time-line, cannot be returned by this
+//     * method as an instant will always represent a valid point and cannot be in a gap.
+//     * The returned object provides information about the offset or overlap and it
+//     * is vital to check {@link OffsetInfo#isDiscontinuity()} to handle the overlap.
+//     *
+//     * @param instant  the instant to find the offset information for, not null
+//     * @return the offset information, never null
+//     */
+//    public OffsetInfo getOffsetInfo(Instant instant) {
+//        ZoneOffset offset = getOffset(instant);
+//        OffsetDateTime odt = OffsetDateTime.fromInstant(instant, offset);
+//        return getOffsetInfo(odt.toLocalDateTime());
+//    }
+//
+//    /**
+//     * Gets the offset information for a local date-time in this zone.
+//     * <p>
+//     * This provides access to full details as to the offset or offsets applicable
+//     * for the local date-time. The mapping from a local date-time to an offset
+//     * is not straightforward. There are three cases:
+//     * <ul>
+//     * <li>Normal. Where there is a single offset for the local date-time.</li>
+//     * <li>Gap. Where there is a gap in the local time-line normally caused by the
+//     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
+//     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
+//     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
+//     * </ul>
+//     * The returned object provides this information and it is vital to check
+//     * {@link OffsetInfo#isDiscontinuity()} to handle the gap or overlap.
+//     *
+//     * @param dateTime  the date-time to find the offset information for, not null
+//     * @return the offset information, never null
+//     */
+//    public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
+//        return getRules().getOffsetInfo(dateTime);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the standard offset for the specified instant in this zone.
+//     * <p>
+//     * This provides access to historic information on how the standard offset
+//     * has changed over time.
+//     * The standard offset is the offset before any daylight savings time is applied.
+//     * This is typically the offset applicable during winter.
+//     *
+//     * @param instantProvider  the instant to find the offset information for, not null
+//     * @return the standard offset, never null
+//     */
+//    public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
+//        return getRules().getStandardOffset(instantProvider);
+//    }
+//
+//    /**
+//     * Gets the amount of daylight savings in use for the specified instant in this zone.
+//     * <p>
+//     * This provides access to historic information on how the amount of daylight
+//     * savings has changed over time.
+//     * This is the difference between the standard offset and the actual offset.
+//     * It is expressed in hours, minutes and seconds.
+//     * Typically the amount is zero during winter and one hour during summer.
+//     *
+//     * @param instantProvider  the instant to find the offset information for, not null
+//     * @return the standard offset, never null
+//     */
+//    public Period getDaylightSavings(InstantProvider instantProvider) {
+//        Instant instant = Instant.instant(instantProvider);
+//        ZoneOffset standardOffset = getStandardOffset(instant);
+//        ZoneOffset actualOffset = getOffset(instant);
+//        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
+//    }
+//
+//    /**
+//     * Gets the standard offset for the specified instant in this zone.
+//     * <p>
+//     * This provides access to historic information on how the standard offset
+//     * has changed over time.
+//     * The standard offset is the offset before any daylight savings time is applied.
+//     * This is typically the offset applicable during winter.
+//     *
+//     * @param instant  the instant to find the offset information for, not null
+//     * @return the standard offset, never null
+//     */
+//    public boolean isDaylightSavings(InstantProvider instant) {
+//        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Is this time zone fixed, such that the offset never varies.
+//     * <p>
+//     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
+//     * {@link OffsetTime} are used in preference to fixed offset time zones
+//     * in {@link ZonedDateTime}.
+//     * <p>
+//     * The default implementation returns false and it is not intended that
+//     * user-supplied subclasses override this.
+//     *
+//     * @return true if the time zone is fixed and the offset never changes
+//     */
+//    public boolean isFixed() {
+//        return false;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -401,402 +479,33 @@ public abstract class TimeZone implements Serializable {
            return true;
         }
         if (otherZone instanceof TimeZone) {
-            return timeZoneID.equals(((TimeZone) otherZone).timeZoneID);
+            TimeZone zone = (TimeZone) otherZone;
+            return locationID.equals(zone.locationID) &&
+                    versionID.equals(zone.versionID) &&
+                    groupID.equals(zone.groupID);
         }
         return false;
     }
 
     /**
-     * A hashcode for the time zone object.
+     * A hash code for the time zone object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return timeZoneID.hashCode();
+        return locationID.hashCode() ^ versionID.hashCode() ^ groupID.hashCode();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the time zone using the ID.
+     * Returns a string representation of the time zone using the unique time zone key.
      *
-     * @return the time zone ID, never null
+     * @return the unique time zone key, never null
      */
     @Override
     public String toString() {
-        return timeZoneID;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Information about a discontinuity in the local time-line.
-     * <p>
-     * A discontinuity is normally the result of daylight savings cutovers,
-     * where a gap occurs in spring and an overlap occurs in autumn.
-     * <p>
-     * Discontinuity is immutable and thread-safe.
-     *
-     * @author Stephen Colebourne
-     */
-    public static final class Discontinuity {
-        /** The transition date-time with the offset before the discontinuity. */
-        private final OffsetDateTime transition;
-        /** The offset at and after the discontinuity. */
-        private final ZoneOffset offsetAfter;
-        
-        /**
-         * Constructor.
-         *
-         * @param transition  the transition date-time with the offset before the discontinuity, not null
-         * @param offsetAfter  the offset at and after the discontinuity, not null
-         */
-        private Discontinuity(OffsetDateTime transition, ZoneOffset offsetAfter) {
-            this.transition = transition;
-            this.offsetAfter = offsetAfter;
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets the transition instant.
-         * This is the first instant after the discontinuity, when the new offset applies.
-         *
-         * @return the transition instant, not null
-         */
-        public Instant getTransitionInstant() {
-            return transition.toInstant();
-        }
-        
-        /**
-         * Gets the transition date-time expressed with the before offset.
-         * This is the date-time where the discontinuity begins, and as such it never
-         * actually occurs.
-         *
-         * @return the transition date-time expressed with the before offset, not null
-         */
-        public OffsetDateTime getTransitionDateTime() {
-            return transition;
-        }
-        
-        /**
-         * Gets the transition date-time expressed with the after offset.
-         * This is the first date-time after the discontinuity, when the new offset applies.
-         *
-         * @return the transition date-time expressed with the after offset, not null
-         */
-        public OffsetDateTime getTransitionDateTimeAfter() {
-            return transition.withOffsetSameInstant(offsetAfter);
-        }
-        
-        /**
-         * Gets the offset before the gap.
-         *
-         * @return the offset before the gap, not null
-         */
-        public ZoneOffset getOffsetBefore() {
-            return transition.getOffset();
-        }
-        
-        /**
-         * Gets the offset after the gap.
-         *
-         * @return the offset after the gap, not null
-         */
-        public ZoneOffset getOffsetAfter() {
-            return offsetAfter;
-        }
-        
-        /**
-         * Gets the size of the discontinuity in seconds.
-         *
-         * @return the size of the discontinuity in seconds, positive for gaps, negative for overlaps
-         */
-        public Period getDiscontinuitySize() {
-            int secs = getOffsetAfter().getAmountSeconds() - getOffsetBefore().getAmountSeconds();
-            return Period.seconds(secs).normalized();
-        }
-        
-        /**
-         * Does this discontinuity represent a gap in the local time-line.
-         *
-         * @return true if this discontinuity is a gap
-         */
-        public boolean isGap() {
-            return getOffsetAfter().getAmountSeconds() > getOffsetBefore().getAmountSeconds();
-        }
-        
-        /**
-         * Does this discontinuity represent a gap in the local time-line.
-         *
-         * @return true if this discontinuity is an overlap
-         */
-        public boolean isOverlap() {
-            return getOffsetAfter().getAmountSeconds() < getOffsetBefore().getAmountSeconds();
-        }
-        
-//        /**
-//         * Checks if the specified offset is one of those described by this discontinuity.
-//         *
-//         * @param offset  the offset to check, null returns false
-//         * @return true if the offset is one of those described by this discontinuity
-//         */
-//        public boolean containsOffset(ZoneOffset offset) {
-//            return offsetBefore.equals(offset) || offsetAfter.equals(offset);
-//        }
-        
-        /**
-         * Checks if the specified offset is valid during this discontinuity.
-         * A gap will always return false.
-         * An overlap will return true if the offset is either the before or after offset.
-         *
-         * @param offset  the offset to check, null returns false
-         * @return true if the offset is valid during the discontinuity
-         */
-        public boolean isValidOffset(ZoneOffset offset) {
-            return isGap() ? false : (getOffsetBefore().equals(offset) || getOffsetAfter().equals(offset));
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Checks if this instance equals another.
-         *
-         * @param other  the other object to compare to, null returns false
-         * @return true if equal
-         */
-        @Override
-        public boolean equals(Object other) {
-            if (other == this) {
-                return true;
-            }
-            if (other instanceof Discontinuity) {
-                Discontinuity d = (Discontinuity) other;
-                return transition.equals(d.transition) &&
-                    offsetAfter.equals(d.offsetAfter);
-            }
-            return false;
-        }
-        
-        /**
-         * Gets the hash code.
-         *
-         * @return the hash code
-         */
-        @Override
-        public int hashCode() {
-            return transition.hashCode() ^ offsetAfter.hashCode();
-        }
-        
-        /**
-         * Gets a string describing this object.
-         *
-         * @return a string for debugging, never null
-         */
-        @Override
-        public String toString() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("Discontinuity[")
-                .append(isGap() ? "Gap" : "Overlap")
-                .append(" at ")
-                .append(transition)
-                .append(" to ")
-                .append(offsetAfter)
-                .append(']');
-            return buf.toString();
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Information about the valid offsets applicable for a local date-time.
-     * <p>
-     * The mapping from a local date-time to an offset is not straightfoward.
-     * There are three cases:
-     * <ul>
-     * <li>Normal. Where there is a single offset for the local date-time.</li>
-     * <li>Gap. Where there is a gap in the local time-line normally caused by the
-     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
-     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-     * </ul>
-     * When using this class, it is vital to check the {@link #isDiscontinuity()}
-     * method to handle the gap and overlap. Alternatively use one of the general
-     * methods {@link #getEstimatedOffset()} or {@link #isValidOffset(ZoneOffset)}.
-     * <p>
-     * OffsetInfo is immutable and thread-safe.
-     *
-     * @author Stephen Colebourne
-     */
-    public static class OffsetInfo {
-        /** The date-time that this info applies to. */
-        private final LocalDateTime dateTime;
-        /** The offset for the local time-line. */
-        private final ZoneOffset offset;
-        /** The discontinuity in the local time-line. */
-        private final Discontinuity discontinuity;
-        
-        /**
-         * Constructor for handling a simple single offset.
-         *
-         * @param dateTime  the date-time that this info applies to, not null
-         * @param offset  the offset applicable at the date-time, not null
-         */
-        private OffsetInfo(
-                LocalDateTime dateTime,
-                ZoneOffset offset) {
-            this.dateTime = dateTime;
-            this.offset = offset;
-            this.discontinuity = null;
-        }
-        
-        /**
-         * Constructor for handling a discontinuity.
-         *
-         * @param dateTime  the date-time that this info applies to, not null
-         * @param cutoverDateTime  the date-time of the cutover with the offset before, not null
-         * @param offsetAfter  the offset applicable after the cutover gap/overlap, not null
-         */
-        private OffsetInfo(
-                LocalDateTime dateTime,
-                OffsetDateTime cutoverDateTime,
-                ZoneOffset offsetAfter) {
-            this.dateTime = dateTime;
-            this.offset = null;
-            this.discontinuity = new Discontinuity(cutoverDateTime, offsetAfter);
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets the local date-time that this info is applicable to.
-         *
-         * @return true if there is no valid offset
-         */
-        public LocalDateTime getLocalDateTime() {
-            return dateTime;
-        }
-        
-        /**
-         * Is the offset information for the local date-time a discontinuity.
-         * A discontinuity may be a gap or overlap and is normally caused by
-         * daylight savings cutover.
-         *
-         * @return true if there is a discontinuity in the local time-line
-         */
-        public boolean isDiscontinuity() {
-            return discontinuity != null;
-        }
-        
-        /**
-         * Gets information about the offset for the local time-line.
-         * This method should only be called after calling {@link #isDiscontinuity()}.
-         *
-         * @return true if there is a single valid offset
-         */
-        public ZoneOffset getOffset() {
-            return offset;
-        }
-        
-        /**
-         * Gets information about any discontinuity in the local time-line.
-         * This method should only be called after calling {@link #isDiscontinuity()}.
-         *
-         * @return the discontinuity in the local-time line, null if not a discontinuity
-         */
-        public Discontinuity getDiscontinuity() {
-            return discontinuity;
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets an estimated offset for the local date-time.
-         * <p>
-         * The result will be the same as {@link #getOffset()} except during a discontinuity.
-         * During a discontinuity, the value of {@link Discontinuity#getOffsetAfter()} will
-         * be returned. How meaningful that offset is depends on your application.
-         *
-         * @return a suitable estimated offset, never null
-         */
-        public ZoneOffset getEstimatedOffset() {
-            return isDiscontinuity() ? getDiscontinuity().getOffsetAfter() : offset;
-        }
-        
-//        /**
-//         * Checks if the zone offset is valid for this local date-time.
-//         *
-//         * @param offset  the zone offset to check, not null
-//         * @return the list of offsets from earliest to latest, never null
-//         */
-//        public boolean containsOffset(ZoneOffset offset) {
-//            return isDiscontinuity() ? discontinuity.containsOffset(offset) : this.offset.equals(offset);
-//        }
-        
-        /**
-         * Checks if the specified offset is valid for this discontinuity.
-         *
-         * @param offset  the offset to check, null returns false
-         * @return true if the offset is one of those described by this discontinuity
-         */
-        public boolean isValidOffset(ZoneOffset offset) {
-            return isDiscontinuity() ? discontinuity.isValidOffset(offset) : this.offset.equals(offset);
-        }
-        
-        //-----------------------------------------------------------------------
-        /**
-         * Gets a string describing this object.
-         *
-         * @return a string for debugging, never null
-         */
-        @Override
-        public String toString() {
-            StringBuilder buf = new StringBuilder();
-            buf.append("OffsetInfo[")
-                .append(isDiscontinuity() ? discontinuity : offset)
-                .append(']');
-            return buf.toString();
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Implementation of time zone for fixed offsets.
-     */
-    private static final class Fixed extends TimeZone {
-        /** The fixed offset. */
-        private final ZoneOffset offset;
-        /**
-         * Constructor.
-         * @param id  the time zone id, not null
-         * @param offset  the zone offset, not null
-         */
-        private Fixed(String id, ZoneOffset offset) {
-            super(id);
-            this.offset = offset;
-        }
-        /**
-         * Resolves singletons.
-         * @return the singleton instance
-         */
-        private Object readResolve() {
-            return TimeZone.timeZone(getID());
-        }
-        /** {@inheritDoc} */
-        @Override
-        public ZoneOffset getOffset(InstantProvider instant) {
-            return offset;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-            return new OffsetInfo(dateTime, offset);
-        }
-        /** {@inheritDoc} */
-        @Override
-        public ZoneOffset getStandardOffset(InstantProvider instant) {
-            return offset;
-        }
-        /** {@inheritDoc} */
-        @Override
-        public boolean isFixed() {
-            return true;
-        }
+        return getID();
     }
 
 }

@@ -36,60 +36,64 @@ import java.io.ObjectInputStream;
 import java.util.Map;
 import java.util.Set;
 
-import javax.time.calendar.TimeZone;
 
 /**
- * Provides rules based on the Olson time zone data.
+ * Provides rules based on the TZDB time zone data.
  * <p>
- * OlsonTimeZoneDataProvider is thread-safe.
+ * TZDBTimeZoneDataProvider is thread-safe.
  *
  * @author Stephen Colebourne
  */
-public class OlsonTimeZoneDataProvider implements TimeZoneDataProvider {
+public class TZDBZoneRulesDataProvider implements ZoneRulesDataProvider {
 
+    /**
+     * Version.
+     */
+    private final String version;
     /**
      * Cache of time zone data providers.
      */
-    private final Map<String, TimeZone> zones;
+    private final Map<String, ZoneRules> zones;
 
     /**
      * Loads the time zone data.
      *
-     * @param version  the version of the Olson rules to load, not null
+     * @param version  the version of the TZDB rules to load, not null
      */
     @SuppressWarnings("unchecked")
-    public OlsonTimeZoneDataProvider(String version) {
-        String fileName = "javax/time/calendar/zone/ZoneRuleInfo-Olson-" + version + ".dat";
+    public TZDBZoneRulesDataProvider(String version) {
+        String fileName = "javax/time/calendar/zone/ZoneRuleInfo-TZDB-" + version + ".dat";
         InputStream resorceStream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (resorceStream == null) {
             throw new IllegalArgumentException("Unable to load time zone rules, file not found: " + fileName);
         }
         try {
             ObjectInputStream in = new ObjectInputStream(resorceStream);
-            zones = (Map<String, TimeZone>) in.readObject();
+            zones = (Map<String, ZoneRules>) in.readObject();
         } catch (Exception ex) {
             throw new IllegalArgumentException("Unable to load time zone rules: " + fileName, ex);
         }
+        this.version = version;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the time zone implementation for the specified id and version.
-     *
-     * @param zoneId  the time zone id, not null
-     * @return the matched time zone, null if not found
-     */
-    public TimeZone getTimeZone(String zoneId) {
-        return zones.get(zoneId);
+    /** {@inheritDoc} */
+    public String getGroupID() {
+        return "TZDB";
     }
 
-    /**
-     * Gets the set of available time zone ids.
-     * The list will always contain the zone 'UTC'.
-     *
-     * @return the available IDs, never null
-     */
-    public Set<String> getAvailableIDs() {
+    /** {@inheritDoc} */
+    public String getVersion() {
+        return version;
+    }
+
+    /** {@inheritDoc} */
+    public ZoneRules getZoneRules(String timeZoneID) {
+        return zones.get(timeZoneID);
+    }
+
+    /** {@inheritDoc} */
+    public Set<String> getAvailableTimeZoneIDs() {
         return zones.keySet();
     }
 

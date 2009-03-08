@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,29 +29,47 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.zone;
 
-import javax.time.calendar.zone.ZoneOffsetTransition;
+import java.util.Set;
 
 /**
- * Mock ZoneResolver that returns null.
+ * Provides access to a versioned set of time zone rules.
+ * <p>
+ * ZoneRulesDataProvider is a service provider interface that can be called
+ * by multiple threads.
  *
  * @author Stephen Colebourne
  */
-public class MockZoneResolverReturnsNull extends ZoneResolver {
+public interface ZoneRulesDataProvider {
 
-    /** {@inheritDoc} */
-    @Override
-    protected OffsetDateTime handleGap(TimeZone zone,
-            ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-        return null;
-    }
+    /**
+     * Gets the group ID of the data available via this provider, such as 'TZDB'.
+     *
+     * @return the ID of the group, never null
+     */
+    String getGroupID();
 
-    /** {@inheritDoc} */
-    @Override
-    protected OffsetDateTime handleOverlap(TimeZone zone,
-            ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-        return null;
-    }
+    /**
+     * Gets the version of the data available via this provider, such as '2009b'.
+     *
+     * @return the version of the provider, never null
+     */
+    String getVersion();
+
+    /**
+     * Gets the zone rules for the specified time zone ID.
+     *
+     * @param timeZoneID  the time zone ID, not null
+     * @return the matched zone rules, null if not found
+     */
+    ZoneRules getZoneRules(String timeZoneID);
+
+    /**
+     * Gets the set of available time zone IDs.
+     *
+     * @return the available IDs, never null
+     */
+    Set<String> getAvailableTimeZoneIDs();
 
 }

@@ -39,13 +39,23 @@ import javax.time.calendar.ZoneOffset;
 import javax.time.period.Period;
 
 /**
- * A transition between two offsets caused by a a time zone rule.
+ * A transition between two offsets caused by a discontinuity in the local time-line.
+ * <p>
+ * A discontinuity in the local time-line is normally the result of a daylight
+ * savings cutover, where a gap occurs in spring and an overlap occurs in autumn.
+ * <code>ZoneOffsetTransition</code> models the transition between the two offsets.
+ * <p>
+ * There are two types of transition - a gap and an overlap.
+ * Gaps occur where there are local date-times that simply do not not exist.
+ * An example would be when the offset changes from +01:00 to +02:00.
+ * Overlaps occur where there are local date-times that exist twice.
+ * An example would be when the offset changes from +02:00 to +01:00.
  * <p>
  * Transition is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-class Transition implements Comparable<Transition>, Serializable {
+public final class ZoneOffsetTransition implements Comparable<ZoneOffsetTransition>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -60,13 +70,29 @@ class Transition implements Comparable<Transition>, Serializable {
      */
     private final OffsetDateTime transitionAfter;
 
+//    /**
+//     * Obtains an instance of <code>ZoneOffsetTransition</code>.
+//     *
+//     * @param transition  the transition date-time with the offset before the discontinuity, not null
+//     * @param offsetAfter  the offset at and after the discontinuity, not null
+//     * @return the transition, never null
+//     */
+//    public static ZoneOffsetTransition getInstance(OffsetDateTime transition, ZoneOffset offsetAfter) {
+//        ZoneRules.checkNotNull(transition, "OffsetDateTime must not be null");
+//        ZoneRules.checkNotNull(transition, "ZoneOffset must not be null");
+//        return new ZoneOffsetTransition(transition, transition.withOffsetSameInstant(offsetAfter));
+//    }
+
+    //-----------------------------------------------------------------------
     /**
      * Constructor.
      *
      * @param transition  the transition date-time with the offset before the discontinuity, not null
      * @param offsetAfter  the offset at and after the discontinuity, not null
      */
-    public Transition(OffsetDateTime transition, ZoneOffset offsetAfter) {
+    ZoneOffsetTransition(OffsetDateTime transition, ZoneOffset offsetAfter) {
+        ZoneRules.checkNotNull(transition, "OffsetDateTime must not be null");
+        ZoneRules.checkNotNull(transition, "ZoneOffset must not be null");
         this.transition = transition;
         this.transitionAfter = transition.withOffsetSameInstant(offsetAfter);  // cached for performance
     }
@@ -191,12 +217,13 @@ class Transition implements Comparable<Transition>, Serializable {
      * The offsets are ignored, making this order inconsistent with equals.
      *
      * @param transition  the transition to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      */
-    public int compareTo(Transition transition) {
+    public int compareTo(ZoneOffsetTransition transition) {
         return this.getInstant().compareTo(transition.getInstant());
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Checks if this instance equals another.
      *
@@ -208,8 +235,8 @@ class Transition implements Comparable<Transition>, Serializable {
         if (other == this) {
             return true;
         }
-        if (other instanceof Transition) {
-            Transition d = (Transition) other;
+        if (other instanceof ZoneOffsetTransition) {
+            ZoneOffsetTransition d = (ZoneOffsetTransition) other;
             return transition.equals(d.transition) &&
                 transitionAfter.getOffset().equals(d.transitionAfter.getOffset());
         }

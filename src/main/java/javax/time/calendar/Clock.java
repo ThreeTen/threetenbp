@@ -429,7 +429,7 @@ public abstract class Clock {
      */
     public OffsetDate offsetDate() {
         Instant instant = instant();
-        return OffsetDate.fromInstant(instant, getZone().getOffset(instant));
+        return OffsetDate.fromInstant(instant, getZone().getRules().getOffset(instant));
     }
 
     //-----------------------------------------------------------------------
@@ -447,7 +447,7 @@ public abstract class Clock {
      */
     public OffsetTime offsetTime() {
         Instant instant = instant();
-        return OffsetTime.fromInstant(instant, getZone().getOffset(instant));
+        return OffsetTime.fromInstant(instant, getZone().getRules().getOffset(instant));
     }
 
     /**
@@ -491,7 +491,7 @@ public abstract class Clock {
      */
     public OffsetDateTime offsetDateTime() {
         Instant instant = instant();
-        return OffsetDateTime.fromInstant(instant, getZone().getOffset(instant));
+        return OffsetDateTime.fromInstant(instant, getZone().getRules().getOffset(instant));
     }
 
     /**

@@ -49,7 +49,6 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -60,13 +59,13 @@ import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
 /**
- * A builder that can read the Olson TimeZone files and build ZoneRules instances.
+ * A builder that can read the TZDB TimeZone files and build ZoneRules instances.
  * <p>
- * OlsonZoneRulesCompiler is thread-safe.
+ * TZDBZoneRulesCompiler is thread-safe.
  *
  * @author Stephen Colebourne
  */
-public final class OlsonZoneRulesCompiler {
+public final class TZDBZoneRulesCompiler {
 
     /**
      * A map to deduplicate object instances.
@@ -74,24 +73,24 @@ public final class OlsonZoneRulesCompiler {
     private final Map<Object, Object> deduplicateMap = new HashMap<Object, Object>();
 
     /**
-     * The olson rules.
+     * The TZDB rules.
      */
-    private final Map<String, List<OlsonRule>> rules = new HashMap<String, List<OlsonRule>>();
+    private final Map<String, List<TZDBRule>> rules = new HashMap<String, List<TZDBRule>>();
     /**
-     * The olson zones.
+     * The TZDB zones.
      */
-    private final Map<String, List<OlsonZone>> zones = new HashMap<String, List<OlsonZone>>();
+    private final Map<String, List<TZDBZone>> zones = new HashMap<String, List<TZDBZone>>();
     /**
-     * The olson links.
+     * The TZDB links.
      */
     private final Map<String, String> links = new HashMap<String, String>();
     /**
      * The built zones.
      */
-    private final Map<String, TimeZone> builtZones = new HashMap<String, TimeZone>();
+    private final Map<String, ZoneRules> builtZones = new HashMap<String, ZoneRules>();
 
     /**
-     * Reads a set of Olson files and builds a single combined data file.
+     * Reads a set of TZDB files and builds a single combined data file.
      *
      * @param args  the arguments
      */
@@ -175,7 +174,7 @@ public final class OlsonZoneRulesCompiler {
         }
         
         // compile
-        OlsonZoneRulesCompiler compiler = new OlsonZoneRulesCompiler(version, sourceFiles, dstDir, verbose);
+        TZDBZoneRulesCompiler compiler = new TZDBZoneRulesCompiler(version, sourceFiles, dstDir, verbose);
         try {
             compiler.compile();
             System.exit(0);
@@ -190,10 +189,10 @@ public final class OlsonZoneRulesCompiler {
      * Output usage text for the command line.
      */
     private static void outputHelp() {
-        System.out.println("Usage: OlsonZoneRulesCompiler <options> <source files>");
+        System.out.println("Usage: TZDBZoneRulesCompiler <options> <source files>");
         System.out.println("where options include:");
         System.out.println("   -version <version>      Specify the version name, such as 2009a (required)");
-        System.out.println("   -srcdir <directory>     Specify where to find Olson source files");
+        System.out.println("   -srcdir <directory>     Specify where to find TZDB source files");
         System.out.println("   -dstdir <directory>     Specify where to output the generated file");
         System.out.println("   -help                   Print this usage message");
         System.out.println("   -verbose                Output verbose information during compilation");
@@ -217,7 +216,7 @@ public final class OlsonZoneRulesCompiler {
      * @param destinationDir  the destination directory, not null
      * @param verbose  whether to output verbose messages
      */
-    public OlsonZoneRulesCompiler(String version, List<File> sourceFiles, File destinationDir, boolean verbose) {
+    public TZDBZoneRulesCompiler(String version, List<File> sourceFiles, File destinationDir, boolean verbose) {
         this.version = version;
         this.sourceFiles = sourceFiles;
         this.destinationDir = destinationDir;
@@ -229,11 +228,11 @@ public final class OlsonZoneRulesCompiler {
      * @throws Exception if an error occurs
      */
     public void compile() throws Exception {
-        printVerbose("Compiling Olson version " + version + " to directory " + destinationDir);
+        printVerbose("Compiling TZDB version " + version + " to directory " + destinationDir);
         parseFiles();
         buildZoneRules();
         outputFile();
-        printVerbose("Compiled Olson version " + version + " to directory " + destinationDir);
+        printVerbose("Compiled TZDB version " + version + " to directory " + destinationDir);
     }
 
     //-----------------------------------------------------------------------
@@ -255,7 +254,7 @@ public final class OlsonZoneRulesCompiler {
      */
     private void parseFile(File file) throws Exception {
         BufferedReader in = new BufferedReader(new FileReader(file));
-        List<OlsonZone> openZone = null;
+        List<TZDBZone> openZone = null;
         String line;
         while ((line = in.readLine()) != null) {
             int index = line.indexOf('#');
@@ -278,7 +277,7 @@ public final class OlsonZoneRulesCompiler {
                             printVerbose("Invalid Zone line in file: " + file + ", line: " + line);
                             throw new IllegalArgumentException("Invalid Zone line in file: " + file);
                         }
-                        openZone = new ArrayList<OlsonZone>();
+                        openZone = new ArrayList<TZDBZone>();
                         zones.put(st.nextToken(), openZone);
                         if (parseZoneLine(st, openZone)) {
                             openZone = null;
@@ -311,13 +310,13 @@ public final class OlsonZoneRulesCompiler {
 
     /**
      * Parses a Rule line.
-     * @param st  the tokerizer, not null
+     * @param st  the tokenizer, not null
      */
     private void parseRuleLine(StringTokenizer st) {
-        OlsonRule rule = new OlsonRule();
+        TZDBRule rule = new TZDBRule();
         String name = st.nextToken();
         if (rules.containsKey(name) == false) {
-            rules.put(name, new ArrayList<OlsonRule>());
+            rules.put(name, new ArrayList<TZDBRule>());
         }
         rules.get(name).add(rule);
         rule.startYear = parseYear(st.nextToken(), 0);
@@ -336,8 +335,8 @@ public final class OlsonZoneRulesCompiler {
      * @param st  the tokerizer, not null
      * @return true if the zone is complete
      */
-    private boolean parseZoneLine(StringTokenizer st, List<OlsonZone> zoneList) {
-        OlsonZone zone = new OlsonZone();
+    private boolean parseZoneLine(StringTokenizer st, List<TZDBZone> zoneList) {
+        TZDBZone zone = new TZDBZone();
         zoneList.add(zone);
         zone.standardOffset = parseOffset(st.nextToken());
         String savingsRule = parseOptional(st.nextToken());
@@ -367,10 +366,10 @@ public final class OlsonZoneRulesCompiler {
 
     /**
      * Parses a Rule line.
-     * @param st  the tokerizer, not null
+     * @param st  the tokenizer, not null
      * @param mdt  the object to parse into, not null
      */
-    private void parseMonthDayTime(StringTokenizer st, OlsonMonthDayTime mdt) {
+    private void parseMonthDayTime(StringTokenizer st, TZDBMonthDayTime mdt) {
         mdt.month = parseMonth(st.nextToken());
         if (st.hasMoreTokens()) {
             String dayRule = st.nextToken();
@@ -514,24 +513,24 @@ public final class OlsonZoneRulesCompiler {
         // build zones
         for (String zoneId : zones.keySet()) {
             printVerbose("Building zone " + zoneId);
-            List<OlsonZone> olsonZones = zones.get(zoneId);
+            List<TZDBZone> tzdbZones = zones.get(zoneId);
             ZoneRulesBuilder bld = new ZoneRulesBuilder();
-            for (OlsonZone olsonZone : olsonZones) {
-                bld = olsonZone.addToBuilder(bld, rules);
+            for (TZDBZone tzdbZone : tzdbZones) {
+                bld = tzdbZone.addToBuilder(bld, rules);
             }
             builtZones.put(zoneId, bld.toRules(zoneId, deduplicateMap));
         }
         
-        // build aliases
-        for (String realId : links.keySet()) {
-            String aliasId = links.get(realId);
-            printVerbose("Linking alias " + aliasId + " to " + realId);
-            builtZones.put(aliasId, ZoneRulesBuilder.createAlias(aliasId, realId));
-        }
+//        // build aliases  // TODO
+//        for (String realId : links.keySet()) {
+//            String aliasId = links.get(realId);
+//            printVerbose("Linking alias " + aliasId + " to " + realId);
+//            builtZones.put(aliasId, ZoneRulesBuilder.createAlias(aliasId, realId));
+//        }
     }
 
     private void outputFile() throws Exception {
-        File outputFile = new File(destinationDir, "ZoneRuleInfo-Olson-" + version + ".dat");
+        File outputFile = new File(destinationDir, "ZoneRuleInfo-TZDB-" + version + ".dat");
         printVerbose("Outputting file: " + outputFile);
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(outputFile));
         out.writeObject(builtZones);
@@ -573,9 +572,9 @@ public final class OlsonZoneRulesCompiler {
 
     //-----------------------------------------------------------------------
     /**
-     * Class representing a month-day-time in the Olson file.
+     * Class representing a month-day-time in the TZDB file.
      */
-    private abstract class OlsonMonthDayTime {
+    private abstract class TZDBMonthDayTime {
         /** The month of the cutover. */
         MonthOfYear month = MonthOfYear.JANUARY;
         /** The day of month of the cutover. */
@@ -620,9 +619,9 @@ public final class OlsonZoneRulesCompiler {
 
     //-----------------------------------------------------------------------
     /**
-     * Class representing a rule line in the Olson file.
+     * Class representing a rule line in the TZDB file.
      */
-    private final class OlsonRule extends OlsonMonthDayTime {
+    private final class TZDBRule extends TZDBMonthDayTime {
         /** The start year. */
         int startYear;
         /** The end year. */
@@ -640,9 +639,9 @@ public final class OlsonZoneRulesCompiler {
 
     //-----------------------------------------------------------------------
     /**
-     * Class representing a linked set of zone lines in the Olson file.
+     * Class representing a linked set of zone lines in the TZDB file.
      */
-    private final class OlsonZone extends OlsonMonthDayTime {
+    private final class TZDBZone extends TZDBMonthDayTime {
         /** The standard offset. */
         ZoneOffset standardOffset;
         /** The fixed savings amount. */
@@ -654,7 +653,7 @@ public final class OlsonZoneRulesCompiler {
         /** The year of the cutover. */
         Year year;
 
-        ZoneRulesBuilder addToBuilder(ZoneRulesBuilder bld, Map<String, List<OlsonRule>> rules) {
+        ZoneRulesBuilder addToBuilder(ZoneRulesBuilder bld, Map<String, List<TZDBRule>> rules) {
             if (year != null) {
                 bld.addWindow(standardOffset, toDateTime(year.getValue()), timeDefinition);
             } else {
@@ -664,12 +663,12 @@ public final class OlsonZoneRulesCompiler {
             if (fixedSavings != null) {
                 bld.setFixedSavingsToWindow(fixedSavings);
             } else {
-                List<OlsonRule> olsonRules = rules.get(savingsRule);
-                if (olsonRules == null) {
+                List<TZDBRule> tzdbRules = rules.get(savingsRule);
+                if (tzdbRules == null) {
                     throw new IllegalArgumentException("Rule not found: " + savingsRule);
                 }
-                for (OlsonRule olsonRule : olsonRules) {
-                    olsonRule.addToBuilder(bld);
+                for (TZDBRule tzdbRule : tzdbRules) {
+                    tzdbRule.addToBuilder(bld);
                 }
             }
             

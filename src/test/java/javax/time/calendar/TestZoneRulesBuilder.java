@@ -38,10 +38,11 @@ import static javax.time.calendar.field.MonthOfYear.*;
 import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.*;
 import static org.testng.Assert.*;
 
-import javax.time.calendar.TimeZone.OffsetInfo;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesBuilder;
+import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
@@ -90,8 +91,7 @@ public class TestZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1950, 1, 1, 1, 0), STANDARD);
         b.addWindowForever(OFFSET_2);
-        TimeZone test = b.toRules("Europe/London");
-        assertEquals(test.getID(), "Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertGap(test, 1950, 1, 1, 1, 30, OFFSET_1, OFFSET_2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2);
@@ -104,7 +104,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1_15);
         assertOverlap(test, 1920, 1, 1, 0, 55, OFFSET_1_15, OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
@@ -124,7 +124,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/Dublin");
+        ZoneRules test = b.toRules("Europe/Dublin");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         
@@ -143,7 +143,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
         b.addWindowForever(OFFSET_1);
-        TimeZone test = b.toRules("Europe/Dublin");
+        ZoneRules test = b.toRules("Europe/Dublin");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         
@@ -161,7 +161,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
-        TimeZone test = b.toRules("Pacific/Auckland");
+        ZoneRules test = b.toRules("Pacific/Auckland");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1_15);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2);
         assertOverlap(test, 1920, 1, 1, 0, 55, OFFSET_1_15, OFFSET_1);
@@ -178,7 +178,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 20, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, MARCH, 20, time(4, 2), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 20, 1, 59)).getOffset(), OFFSET_1);
@@ -197,7 +197,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 20, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, MARCH, 20, time(4, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(dateTime(2000, 3, 20, 1, 59)).getOffset(), OFFSET_1);
@@ -214,7 +214,7 @@ public class TestZoneRulesBuilder {
 //        b.addWindowForever(OFFSET_1);
 //        b.addRuleToWindow(2000, MARCH, 20, time(2, 0), WALL, PERIOD_1HOUR);
 //        b.addRuleToWindow(2000, MARCH, 20, time(3, 30), WALL, PERIOD_0);
-//        TimeZone test = b.toRules("Europe/London");
+//        ZoneRules test = b.toRules("Europe/London");
 //        assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
 //        assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
 //        assertEquals(test.getOffsetInfo(dateTime(2000, 3, 20, 1, 59)).getOffset(), OFFSET_1);
@@ -234,7 +234,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(1998, MARCH, 20, time(2, 0), WALL, PERIOD_1HOUR30MIN);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, 20, null, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, 20, null, time(2, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
@@ -256,7 +256,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, MARCH, 22, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2001, MARCH, 23, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2002, Year.MAX_YEAR, MARCH, 24, null, time(2, 0), WALL, PERIOD_1HOUR);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
@@ -289,7 +289,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(2000, OCTOBER, 22, time(2, 0), WALL, PERIOD_0);
         b.addRuleToWindow(2001, OCTOBER, 23, time(2, 0), WALL, PERIOD_0);
         b.addRuleToWindow(2002, Year.MAX_YEAR, OCTOBER, 24, null, time(2, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
@@ -337,7 +337,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(1999, OCTOBER, 3, time(0, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2000, MARCH, 3, time(0, 0), WALL, PERIOD_0);
         b.addWindowForever(minus3);
-        TimeZone test = b.toRules("America/Argentina/Tucuman");
+        ZoneRules test = b.toRules("America/Argentina/Tucuman");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), minus3);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), minus3);
@@ -364,7 +364,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(plus2);
         b.addRuleToWindow(2008, Year.MAX_YEAR, APRIL, -1, FRIDAY, time(0, 0), STANDARD, PERIOD_1HOUR);
         b.addRuleToWindow(2008, Year.MAX_YEAR, AUGUST, -1, THURSDAY, time(23, 0), STANDARD, PERIOD_0);
-        TimeZone test = b.toRules("Africa/Cairo");
+        ZoneRules test = b.toRules("Africa/Cairo");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
@@ -392,7 +392,7 @@ public class TestZoneRulesBuilder {
           b.addWindowForever(plus2);
           b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
           b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), UTC, PERIOD_0);
-          TimeZone test = b.toRules("Europe/Sofia");
+          ZoneRules test = b.toRules("Europe/Sofia");
           
           assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus2);
           assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus2);
@@ -429,7 +429,7 @@ public class TestZoneRulesBuilder {
         b.addRuleToWindow(1945, APRIL, 8, time(2, 0), STANDARD, PERIOD_1HOUR);
         b.addRuleToWindow(1945, NOVEMBER, 18, time(2, 0), STANDARD, PERIOD_0);
         b.addWindowForever(plus1);
-        TimeZone test = b.toRules("Europe/Sofia");
+        ZoneRules test = b.toRules("Europe/Sofia");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus1);
@@ -467,7 +467,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(plus4);
         b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(1996, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(0, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/Sofia");
+        ZoneRules test = b.toRules("Europe/Sofia");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), plus4);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), plus4);
@@ -502,7 +502,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(minus5);
         b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(2007, Year.MAX_YEAR, NOVEMBER, 1, SUNDAY, time(2, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("America/Indiana/Vincennes");
+        ZoneRules test = b.toRules("America/Indiana/Vincennes");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), minus6);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), minus5);
@@ -533,7 +533,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(minus6);
         b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
         b.addRuleToWindow(1987, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(2, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("America/Iqaluit");
+        ZoneRules test = b.toRules("America/Iqaluit");
         
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), minus5);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), minus6);
@@ -555,7 +555,7 @@ public class TestZoneRulesBuilder {
         b.addWindow(OFFSET_1, dateTime(2008, 6, 30, 0, 0), STANDARD);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2_30);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
@@ -570,7 +570,7 @@ public class TestZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
         b.addWindow(OFFSET_1, dateTime(2008, 6, 30, 0, 0), STANDARD);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
@@ -601,7 +601,7 @@ public class TestZoneRulesBuilder {
     public void test_addWindowForever_noRules() {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
@@ -613,7 +613,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR30MIN);
         b.addRuleToWindow(2000, Year.MAX_YEAR, OCTOBER, -1, SUNDAY, time(1, 0), WALL, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_1);
@@ -636,7 +636,7 @@ public class TestZoneRulesBuilder {
         b.addWindow(OFFSET_1, dateTime(1800, 7, 1, 0, 0), WALL);
         b.addWindowForever(OFFSET_1);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_1);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2_30);
         assertEquals(test.getOffsetInfo(DATE_TIME_2008_01_01).getOffset(), OFFSET_2_30);
@@ -648,7 +648,7 @@ public class TestZoneRulesBuilder {
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(OFFSET_1);
         b.setFixedSavingsToWindow(PERIOD_1HOUR30MIN);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(DATE_TIME_FIRST).getOffset(), OFFSET_2_30);
         assertEquals(test.getOffsetInfo(DATE_TIME_LAST).getOffset(), OFFSET_2_30);
     }
@@ -690,7 +690,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, 2001, MARCH, -1, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
         b.addRuleToWindow(2000, 2001, OCTOBER, -1, SUNDAY, time(1, 0), UTC, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)).getOffset(), OFFSET_1);
         
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
@@ -711,7 +711,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2004, 2005, FEBRUARY, -1, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
         b.addRuleToWindow(2004, 2005, OCTOBER, -1, SUNDAY, time(1, 0), UTC, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(2003, 7, 1, 0, 0)).getOffset(), OFFSET_1);
         
         assertEquals(test.getOffsetInfo(dateTime(2004, 1, 1, 0, 0)).getOffset(), OFFSET_1);
@@ -732,7 +732,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, 2001, MARCH, 10, SUNDAY, time(1, 0), UTC, PERIOD_1HOUR);
         b.addRuleToWindow(2000, 2001, OCTOBER, 10, SUNDAY, time(1, 0), UTC, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)).getOffset(), OFFSET_1);
         
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
@@ -819,7 +819,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(dateTime(2000, MARCH, 26, 1, 0), UTC, PERIOD_1HOUR);
         b.addRuleToWindow(dateTime(2000, OCTOBER, 29, 1, 0), UTC, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)).getOffset(), OFFSET_1);
         
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
@@ -859,7 +859,7 @@ public class TestZoneRulesBuilder {
         b.addWindowForever(OFFSET_1);
         b.addRuleToWindow(2000, MARCH, 26, time(1, 0), UTC, PERIOD_1HOUR);
         b.addRuleToWindow(2000, OCTOBER, 29, time(1, 0), UTC, PERIOD_0);
-        TimeZone test = b.toRules("Europe/London");
+        ZoneRules test = b.toRules("Europe/London");
         assertEquals(test.getOffsetInfo(dateTime(1999, 7, 1, 0, 0)).getOffset(), OFFSET_1);
         
         assertEquals(test.getOffsetInfo(dateTime(2000, 1, 1, 0, 0)).getOffset(), OFFSET_1);
@@ -927,7 +927,7 @@ public class TestZoneRulesBuilder {
     }
 
     //-----------------------------------------------------------------------
-    private static void assertGap(TimeZone test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
+    private static void assertGap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         OffsetInfo offsetInfo = test.getOffsetInfo(dt);
         assertEquals(offsetInfo.getLocalDateTime(), dt);
@@ -937,7 +937,7 @@ public class TestZoneRulesBuilder {
         assertEquals(offsetInfo.getDiscontinuity().getOffsetAfter(), after);
     }
 
-    private static void assertOverlap(TimeZone test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
+    private static void assertOverlap(ZoneRules test, int y, int m, int d, int hr, int min, ZoneOffset before, ZoneOffset after) {
         LocalDateTime dt = dateTime(y, m, d, hr, min);
         OffsetInfo offsetInfo = test.getOffsetInfo(dt);
         assertEquals(offsetInfo.getLocalDateTime(), dt);
