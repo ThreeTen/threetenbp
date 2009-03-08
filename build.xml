@@ -66,8 +66,8 @@
     <target name="compile" depends="init" description="compile the source">
         <mkdir dir="${build.main}" />
         <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
-        <copy file="${src.main}/javax/time/calendar/zone/ZoneRuleInfo-Olson-2008i.dat" 
-                            todir="${build.main}/javax/time/calendar/zone/" />
+        <copy file="${src.main}/javax/time/calendar/zone/ZoneRuleInfo-TZDB-2008i.dat"
+                            todir="${build.main}/javax/time/calendar/zone/" /> 
     </target>
    
     <target name="javadoc" depends="init" description="generates javadoc for the api">
