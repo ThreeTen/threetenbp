@@ -31,7 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 import java.util.Locale;
 
@@ -323,7 +323,7 @@ public class TestNumberParser {
             {"-50", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
             {"-500", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
             {"-AAA", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},
-            {"+5", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},
+            {"+5", 1, 2, SignStyle.EXCEEDS_PAD, ~0, null},
             {"+50", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
             {"+500", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
             {"+AAA", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},

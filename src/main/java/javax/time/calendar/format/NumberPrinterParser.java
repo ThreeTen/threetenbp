@@ -145,7 +145,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         }
         char sign = parseText.charAt(position);  // IOOBE if invalid position
         boolean negative = false;
+        boolean positive = false;
         if (sign == context.getSymbols().getPositiveSignChar()) {
+            positive = true;
             switch (signStyle) {
                 case ALWAYS:
                 case EXCEEDS_PAD:
@@ -194,9 +196,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             total = -total;
         } else if (signStyle == SignStyle.EXCEEDS_PAD) {
             int parseLen = pos - position;
-            if (sign == '+') {
+            if (positive) {
                 if (parseLen <= minWidth) {
-                    return ~position;  // '+' only parsed if minWidth exceeded
+                    return ~(position - 1);  // '+' only parsed if minWidth exceeded
                 }
             } else {
                 if (parseLen > minWidth) {
