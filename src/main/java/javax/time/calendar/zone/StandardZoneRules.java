@@ -299,7 +299,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         ZoneOffsetTransitionRule[] ruleArray = lastRules;
         transArray  = new ZoneOffsetTransition[ruleArray.length];
         for (int i = 0; i < ruleArray.length; i++) {
-            transArray[i] = ruleArray[i].createTransition(year);
+            transArray[i] = ruleArray[i].createTransition(year.getValue());
         }
         if (year.isBefore(LAST_CACHED_YEAR)) {
             lastRulesCache.putIfAbsent(year, transArray);
@@ -319,6 +319,42 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
             index = -index - 2;
         }
         return standardOffsets[index + 1];
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the complete list of transitions.
+     * <p>
+     * This list normally contains a complete historical set of transitions
+     * that have occurred. Some transitions may be in the future, although
+     * generally the transition rules handle future years.
+     *
+     * @return independent, modifiable copy of the list of transitions, never null
+     */
+    @Override
+    public List<ZoneOffsetTransition> getTransitions() {
+        List<ZoneOffsetTransition> list = new ArrayList<ZoneOffsetTransition>();
+        for (int i = 0; i < savingsInstantTransitions.length; i++) {
+            Instant instant = Instant.instant(savingsInstantTransitions[i]);
+            OffsetDateTime trans = OffsetDateTime.fromInstant(instant, wallOffsets[i]);
+            list.add(new ZoneOffsetTransition(trans, wallOffsets[i + 1]));
+        }
+        return list;
+    }
+
+    /**
+     * Gets the list of transition rules for years beyond those defined in the transition list.
+     * <p>
+     * The list represents all the transitions that are expected in each year
+     * beyond those in the transition list. Normally, there are two transitions
+     * per year - into and out of daylight savings time. If daylight savings
+     * time does not occur then the list will be empty.
+     *
+     * @return independent, modifiable copy of the list of transition rules, never null
+     */
+    @Override
+    public List<ZoneOffsetTransitionRule> getTransitionRules() {
+        return new ArrayList<ZoneOffsetTransitionRule>(Arrays.asList(lastRules));
     }
 
     //-----------------------------------------------------------------------

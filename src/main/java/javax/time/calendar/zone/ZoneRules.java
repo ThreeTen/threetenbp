@@ -31,6 +31,8 @@
  */
 package javax.time.calendar.zone;
 
+import java.util.List;
+
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.LocalDateTime;
@@ -216,6 +218,38 @@ public abstract class ZoneRules {
     public boolean isFixed() {
         return false;
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the complete list of transitions.
+     * <p>
+     * This list normally contains a complete historical set of transitions
+     * that have occurred. Some transitions may be in the future, although
+     * generally the transition rules handle future years.
+     *
+     * @return true if the time zone is fixed and the offset never changes
+     * @throws UnsupportedOperationException if the implementation cannot return this information -
+     *  the default 'TZDB' can return this information
+     */
+    public abstract List<ZoneOffsetTransition> getTransitions();
+
+    /**
+     * Gets the list of transition rules for years beyond those defined in the transition list.
+     * <p>
+     * The list represents all the transitions that are expected in each year
+     * beyond those in the transition list. The list size will normally be zero or two.
+     * It will never be size one however it could theoretically be greater than two.
+     * <p>
+     * If the zone defines daylight savings into the future, then the list will normally
+     * be of size two and hold information about entering and exiting daylight savings.
+     * If the zone does not have daylight savings, or information about future changes
+     * is uncertain, then the list will be empty.
+     *
+     * @return independent, modifiable copy of the list of transition rules, never null
+     * @throws UnsupportedOperationException if the implementation cannot return this information -
+     *  the default 'TZDB' can return this information
+     */
+    public abstract List<ZoneOffsetTransitionRule> getTransitionRules();
 
     //-----------------------------------------------------------------------
     /**

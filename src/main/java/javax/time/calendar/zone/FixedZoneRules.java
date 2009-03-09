@@ -32,6 +32,8 @@
 package javax.time.calendar.zone;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.time.InstantProvider;
 import javax.time.calendar.LocalDateTime;
@@ -85,6 +87,27 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     @Override
     public boolean isFixed() {
         return true;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the complete list of transitions, which is an empty list.
+     *
+     * @return the empty list of transitions, never null
+     */
+    @Override
+    public List<ZoneOffsetTransition> getTransitions() {
+        return new ArrayList<ZoneOffsetTransition>();
+    }
+
+    /**
+     * Gets the complete list of transition rules, which is an empty list.
+     *
+     * @return the empty list of transitions, never null
+     */
+    @Override
+    public List<ZoneOffsetTransitionRule> getTransitionRules() {
+        return new ArrayList<ZoneOffsetTransitionRule>();
     }
 
     //-----------------------------------------------------------------------

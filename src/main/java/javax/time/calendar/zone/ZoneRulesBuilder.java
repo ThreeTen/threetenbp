@@ -45,7 +45,6 @@ import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
@@ -734,16 +733,16 @@ public class ZoneRulesBuilder {
          * @return the transition, never null
          */
         ZoneOffsetTransitionRule toTransitionRule(ZoneOffset standardOffset, Period savingsBefore) {
-            // optimise stored format
-            DayOfMonth dom;
+            // optimize stored format
+            int dom;
             if (dayOfMonth == -1) {
                 if (month == MonthOfYear.FEBRUARY) {
-                    dom = null;
+                    dom = -1;
                 } else {
-                    dom = DayOfMonth.dayOfMonth(month.maxLengthInDays() - 6);
+                    dom = month.maxLengthInDays() - 6;
                 }
             } else {
-                dom = DayOfMonth.dayOfMonth(dayOfMonth);
+                dom = dayOfMonth;
             }
             
             // build rule

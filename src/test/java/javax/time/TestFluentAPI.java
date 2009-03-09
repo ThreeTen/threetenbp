@@ -55,6 +55,7 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.period.Period;
 
 /**
@@ -189,6 +190,12 @@ public class TestFluentAPI {
         
         ZoneOffset offset = ZoneOffset.zoneOffset(1);
         TimeZone paris = TimeZone.timeZone("Europe/Paris");
+        
+        for (ZoneOffsetTransition trans : paris.getRules().getTransitions()) {
+            System.out.println("Paris transition: " + trans);
+        }
+        System.out.println("Summer time Paris starts: " + paris.getRules().getTransitionRules().get(0));
+        System.out.println("Summer time Paris ends: " + paris.getRules().getTransitionRules().get(1));
         
         LocalDateTime ldt = date.atTime(tod);
         OffsetDateTime odt = date.atTime(tod).atOffset(offset);
