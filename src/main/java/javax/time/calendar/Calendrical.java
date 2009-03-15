@@ -173,7 +173,7 @@ public final class Calendrical
      * @param date  the optional local date, such as '2007-12-03', may be null
      * @param time  the optional local time, such as '10:15:30', may be null
      * @param offset  the optional time zone offset, such as '+01:00', may be null
-     * @param zone  the optional time zone rules, such as 'Europe/Paris', may be null
+     * @param zone  the optional time zone, such as 'Europe/Paris', may be null
      */
     public Calendrical(LocalDate date, LocalTime time, ZoneOffset offset, TimeZone zone) {
         this();
@@ -289,7 +289,7 @@ public final class Calendrical
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the time zone rules, such as 'Europe/Paris'.
+     * Gets the time zone, such as 'Europe/Paris'.
      * <p>
      * The zone is part of the state of this calendrical.
      * The time zone and zone offset may have conflicting values.
@@ -301,7 +301,7 @@ public final class Calendrical
     }
 
     /**
-     * Sets the time zone rules, such as 'Europe/Paris'.
+     * Sets the time zone, such as 'Europe/Paris'.
      * <p>
      * The zone is part of the state of this calendrical.
      * Changing the zone does not affect any other part of the state.
