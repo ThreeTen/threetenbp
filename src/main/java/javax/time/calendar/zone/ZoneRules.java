@@ -119,8 +119,7 @@ public abstract class ZoneRules {
      * {@link OffsetTime} are used in preference to fixed offset time zones
      * in {@link ZonedDateTime}.
      * <p>
-     * The default implementation returns false and it is not intended that
-     * user-supplied subclasses override this.
+     * The default implementation returns false.
      *
      * @return true if the time zone is fixed and the offset never changes
      */
