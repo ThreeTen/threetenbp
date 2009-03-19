@@ -152,7 +152,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "UTC");
         assertEquals(test.getShortName(), "UTC");
-        assertEquals(test.isFixedOffset(), true);
+        assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.instant(0L)), ZoneOffset.UTC);
         OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
@@ -205,7 +205,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), id);
         assertEquals(test.getShortName(), id);
-        assertEquals(test.isFixedOffset(), true);
+        assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.instant(0L)), ZoneOffset.zoneOffset(id.substring(3)));
         OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
@@ -249,7 +249,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "Europe/London");
         assertEquals(test.getShortName(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     public void test_factory_string_versionedLondon() {
@@ -260,7 +260,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "2008i");
         assertEquals(test.getName(), "Europe/London");
         assertEquals(test.getShortName(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     public void test_factory_string_groupLondon() {
@@ -271,7 +271,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "Europe/London");
         assertEquals(test.getShortName(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     public void test_factory_string_groupVersionedLondon() {
@@ -282,7 +282,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "2008i");
         assertEquals(test.getName(), "Europe/London");
         assertEquals(test.getShortName(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -329,7 +329,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "Europe/London");
         assertEquals(test.getShortName(), "Europe/London");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     public void test_London_getOffset() {
@@ -503,7 +503,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "Europe/Paris");
         assertEquals(test.getShortName(), "Europe/Paris");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     public void test_Paris_getOffset() {
@@ -673,7 +673,7 @@ public class TestTimeZone {
         assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "America/New_York");
         assertEquals(test.getShortName(), "America/New_York");
-        assertEquals(test.isFixedOffset(), false);
+        assertEquals(test.isFixed(), false);
     }
 
     public void test_NewYork_getOffset() {

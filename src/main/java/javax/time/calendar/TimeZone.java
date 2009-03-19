@@ -262,7 +262,7 @@ public final class TimeZone implements Serializable {
      */
     private Object readResolve() {
         // fixed time zone must always be valid
-        if (isFixedOffset()) {
+        if (isFixed()) {
             if ("UTC".equals(regionID)) {
                 return UTC;
             } else {
@@ -285,7 +285,7 @@ public final class TimeZone implements Serializable {
      * @return the time zone unique ID, never null
      */
     public String getID() {
-        if (isFixedOffset()) {
+        if (isFixed()) {
             return regionID;
         }
         if (groupID.equals("TZDB")) {
@@ -348,7 +348,7 @@ public final class TimeZone implements Serializable {
      *
      * @return true if the time zone is fixed and the offset never changes
      */
-    public boolean isFixedOffset() {
+    public boolean isFixed() {
         return groupID.length() == 0;
     }
 
@@ -375,7 +375,7 @@ public final class TimeZone implements Serializable {
      * @throws CalendricalException if the group ID cannot be found
      */
     public ZoneRulesGroup getGroup() {
-        if (isFixedOffset()) {
+        if (isFixed()) {
             throw new CalendricalException("Fixed time zone is not provided by a group");
         }
         return ZoneRulesGroup.getGroup(groupID);
@@ -402,7 +402,7 @@ public final class TimeZone implements Serializable {
      * @return true if this time zone is valid and rules are available
      */
     public boolean isValid() {
-        if (isFixedOffset()) {
+        if (isFixed()) {
             return true;
         }
         if (ZoneRulesGroup.isValidGroup(groupID) == false) {
@@ -473,7 +473,7 @@ public final class TimeZone implements Serializable {
      */
     public boolean isValid(OffsetDateTime validDateTime) {
         ISOChronology.checkNotNull(validDateTime, "Valid date-time must not be null");
-        if (isFixedOffset()) {
+        if (isFixed()) {
             return getRules().getOffset(validDateTime).equals(validDateTime.getOffset());
         }
         if (ZoneRulesGroup.isValidGroup(groupID) == false) {
@@ -512,7 +512,7 @@ public final class TimeZone implements Serializable {
      */
     public ZoneRules getRules(OffsetDateTime validDateTime) {
         ISOChronology.checkNotNull(validDateTime, "Valid date-time must not be null");
-        if (isFixedOffset()) {
+        if (isFixed()) {
             if (getRules().getOffset(validDateTime).equals(validDateTime.getOffset()) == false) {
                 throw new CalendricalException("Fixed time zone '" + regionID + "' is invalid for date-time: " + validDateTime);
             }
