@@ -31,12 +31,11 @@
  */
 package javax.time.calendar.zone;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -45,28 +44,35 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.OffsetDateTime;
+import javax.time.calendar.ZoneOffset;
 
 /**
  * A group of time zone rules wrapping a provider of multiple versions of the data.
  * <p>
  * Zone rule data is provided by organizations or groups.
  * To manage this data each group is given a unique ID.
- * One group is provided as standard - 'TZDB' - and more may be added.
+ * Two IDs are provided as standard - 'TZDB' and 'Fixed'.
  * <p>
  * The 'TZDB' group represents that data provided by the
  * <a href="http://www.twinsun.com/tz/tz-link.htm">time zone database</a>
  * as used in older versions of Java and many operating systems.
  * <p>
+ * The 'Fixed' group provides simple time zones that have no rules.
+ * Each set of rules has a zone offset that is fixed for all time.
+ * As there are no versions of the 'Fixed' group data, a blank string should be used instead.
+ * <p>
  * Other groups of zone rules can be developed and registered.
  * Group IDs should be reverse domain names as with package names unless explicitly
  * approved by the JSR-310 expert group.
  * <p>
- * ZoneRulesGroup is a thread-safe map of provider versions.
- * New version providers may safely be added during the lifetime of the application.
+ * ZoneRulesGroup is thread-safe and immutable.
+ * <p>
+ * The static methods of ZoneRulesGroup wrap a thread-safe map of groups.
+ * New groups and providers may safely be added during the lifetime of the application.
  *
  * @author Stephen Colebourne
  */
-public final class ZoneRulesGroup {
+public class ZoneRulesGroup {
 
     /**
      * The zone rule groups.
@@ -76,8 +82,9 @@ public final class ZoneRulesGroup {
             new ConcurrentHashMap<String, ZoneRulesGroup>(16, 0.75f, 2);
 
     static {
+        GROUPS.put("Fixed", new Fixed());
         // TODO: better
-       ZoneRulesGroup.registerProvider(new TZDBZoneRulesDataProvider("2008i"));
+        ZoneRulesGroup.registerProvider(new TZDBZoneRulesDataProvider("2008i"));
     }
 
     /**
@@ -157,6 +164,9 @@ public final class ZoneRulesGroup {
         if (group == null) {
             group = new ZoneRulesGroup(provider.getGroupID());
             GROUPS.put(provider.getGroupID(), group);
+        }
+        if (group.isFixed()) {
+            throw new CalendricalException("Cannot add provider to 'Fixed' group");
         }
         group.registerProvider0(provider);
     }
@@ -244,6 +254,15 @@ public final class ZoneRulesGroup {
         return groupID;
     }
 
+    /**
+     * Checks whether this is the fixed group.
+     *
+     * @return true if this is the 'Fixed' group
+     */
+    public boolean isFixed() {
+        return false;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if the time zone version ID is valid.
@@ -309,6 +328,7 @@ public final class ZoneRulesGroup {
     public boolean isValidRules(String regionID, String versionID, OffsetDateTime validDateTime) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
         ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+        ZoneRules.checkNotNull(validDateTime, "Valid date-time must not be null");
         try {
             getRules(regionID, versionID, validDateTime);
             return true;
@@ -458,4 +478,132 @@ public final class ZoneRulesGroup {
         return groupID;
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Specialized group implementation for 'Fixed'.
+     */
+    private static class Fixed extends ZoneRulesGroup {
+        /**
+         * Constructor.
+         */
+        private Fixed() {
+            super("Fixed");
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isFixed() {
+            return true;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isValidRules(String regionID, String versionID) {
+            ZoneRules.checkNotNull(regionID, "Region ID must not be null");
+            ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+            if (versionID.length() > 0) {
+                return false;
+            }
+            if (regionID.equals("UTC")) {
+                return true;
+            }
+            if (regionID.startsWith("UTC") && regionID.equals("UTCZ") == false) {
+                try {
+                    regionID = regionID.substring(3);
+                    ZoneOffset offset = ZoneOffset.zoneOffset(regionID);
+                    if (offset.toString().equals(regionID)) {
+                        return true;
+                    }
+                } catch (IllegalArgumentException ex) {
+                    return false;
+                }
+            }
+            return false;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneRules getRules(String regionID, String versionID) {
+            ZoneRules.checkNotNull(regionID, "Region ID must not be null");
+            ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+            if (versionID.length() > 0) {
+                throw new CalendricalException("Fixed time zone does not have a version: " + regionID + "#" + versionID);
+            }
+            if (regionID.equals("UTC")) {
+                return ZoneRules.fixed(ZoneOffset.UTC);
+            }
+            if (regionID.startsWith("UTC") && regionID.equals("UTCZ") == false) {
+                try {
+                    regionID = regionID.substring(3);
+                    ZoneOffset offset = ZoneOffset.zoneOffset(regionID);
+                    if (offset.toString().equals(regionID)) {
+                        return ZoneRules.fixed(offset);
+                    }
+                } catch (IllegalArgumentException ex) {
+                    // ignore
+                }
+            }
+            throw new CalendricalException("Invalid fixed time zone ID: " + regionID);
+        }
+        /** {@inheritDoc} */
+        @Override
+        public boolean isValidRules(String regionID, String versionID, OffsetDateTime validDateTime) {
+            ZoneRules.checkNotNull(regionID, "Region ID must not be null");
+            ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+            ZoneRules.checkNotNull(validDateTime, "Valid date-time must not be null");
+            ZoneRules rules = getRules(regionID, versionID);
+            return rules.getOffset(validDateTime).equals(validDateTime.getOffset());
+        }
+        /** {@inheritDoc} */
+        @Override
+        public ZoneRules getRules(String regionID, String versionID, OffsetDateTime validDateTime) {
+            ZoneRules.checkNotNull(regionID, "Region ID must not be null");
+            ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+            ZoneRules.checkNotNull(validDateTime, "Valid date-time must not be null");
+            ZoneRules rules = getRules(regionID, versionID);
+            if (rules.getOffset(validDateTime).equals(validDateTime.getOffset()) == false) {
+                throw new CalendricalException("Fixed time zone '" + regionID + "' is invalid for date-time: " + validDateTime);
+            }
+            return rules;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public List<String> getAvailableRegionIDs(String versionID) {
+            ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+            if (versionID.length() > 0) {
+                throw new CalendricalException("Fixed time zones do not have a version: #" + versionID);
+            }
+            return new FixedList();
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public String getLatestVersionID(String regionID) {
+            getRules(regionID, "");
+            return "";
+        }
+        /** {@inheritDoc} */
+        @Override
+        public List<String> getAvailableVersionIDs(String regionID) {
+            getRules(regionID, "");
+            List<String> list = new ArrayList<String>();
+            list.add("");
+            return list;
+        }
+    }
+
+    /**
+     * Provides the list of available fixed IDs.
+     */
+    private static class FixedList extends AbstractList<String> implements List<String> {
+        /** {@inheritDoc} */
+        @Override
+        public String get(int index) {
+            ZoneOffset offset = ZoneOffset.forTotalSeconds(64800 - index);
+            return offset.getID();
+        }
+        /** {@inheritDoc} */
+        @Override
+        public int size() {
+            return 64800 * 2 + 1;
+        }
+    }
 }
