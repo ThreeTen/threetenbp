@@ -36,18 +36,31 @@ import java.util.List;
 import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.OffsetTime;
+import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
 /**
- * A time zone representing the set of rules by which the zone offset
- * varies through the year and historically.
+ * The rules defining how the zone offset varies for a single time zone.
  * <p>
- * TimeZone is an abstract class and must be implemented with care
+ * The rules model all the historic and future transitions for a time zone.
+ * The rules are loaded via {@link TimeZone} and {@link ZoneRulesGroup} and
+ * are specific to a group, region and version. The same rules may be shared
+ * between multiple versions, regions or even groups.
+ * <p>
+ * Serializing an instance of <code>ZoneRules</code> will store the entire set
+ * of rules. It does not store the group, region or version as they are not
+ * part of the state of this object.
+ * <p>
+ * ZoneRules is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  * It is only intended that the abstract methods are overridden.
@@ -64,7 +77,10 @@ public abstract class ZoneRules {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rules for a specific offset.
+     * Obtains a rules instance for a specific offset.
+     * <p>
+     * The returned rules object will have no transitions and will use the
+     * specified offset for all points on the time-line.
      *
      * @param offset  the offset to get the fixed rules for, not null
      * @return the rules, never null
@@ -93,6 +109,23 @@ public abstract class ZoneRules {
      */
     protected ZoneRules() {
         super();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks of the zone rules are fixed, such that the offset never varies.
+     * <p>
+     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
+     * {@link OffsetTime} are used in preference to fixed offset time zones
+     * in {@link ZonedDateTime}.
+     * <p>
+     * The default implementation returns false and it is not intended that
+     * user-supplied subclasses override this.
+     *
+     * @return true if the time zone is fixed and the offset never changes
+     */
+    public boolean isFixedOffset() {
+        return false;
     }
 
     //-----------------------------------------------------------------------
@@ -204,28 +237,15 @@ public abstract class ZoneRules {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this time zone fixed, such that the offset never varies.
-     * <p>
-     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-     * {@link OffsetTime} are used in preference to fixed offset time zones
-     * in {@link ZonedDateTime}.
-     * <p>
-     * The default implementation returns false and it is not intended that
-     * user-supplied subclasses override this.
-     *
-     * @return true if the time zone is fixed and the offset never changes
-     */
-    public boolean isFixed() {
-        return false;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the complete list of transitions.
      * <p>
-     * This list normally contains a complete historical set of transitions
-     * that have occurred. Some transitions may be in the future, although
-     * generally the transition rules handle future years.
+     * This list contains a complete historical set of transitions that have occurred.
+     * Some transitions may be in the future, although generally the transition
+     * rules handle future years.
+     * <p>
+     * Some providers of rules may not be able to return this information, thus
+     * the method is defined to throw UnsupportedOperationException. The supplied
+     * rules implementations do supply this information and don't throw the exception
      *
      * @return true if the time zone is fixed and the offset never changes
      * @throws UnsupportedOperationException if the implementation cannot return this information -
@@ -244,12 +264,31 @@ public abstract class ZoneRules {
      * be of size two and hold information about entering and exiting daylight savings.
      * If the zone does not have daylight savings, or information about future changes
      * is uncertain, then the list will be empty.
+     * <p>
+     * Some providers of rules may not be able to return this information, thus
+     * the method is defined to throw UnsupportedOperationException. The supplied
+     * rules implementations do supply this information and don't throw the exception
      *
      * @return independent, modifiable copy of the list of transition rules, never null
      * @throws UnsupportedOperationException if the implementation cannot return this information -
      *  the default 'TZDB' can return this information
      */
     public abstract List<ZoneOffsetTransitionRule> getTransitionRules();
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the offset date-time is valid for these rules.
+     * <p>
+     * To be valid, the local date-time must not be in a gap and the offset
+     * must match the valid offsets.
+     *
+     * @param dateTime  the date-time to check, not null
+     * @return true if the offset date-time is valid for these rules
+     */
+    public boolean isValidDateTime(OffsetDateTime dateTime) {
+        OffsetInfo info = getOffsetInfo(dateTime.getDateTime());
+        return info.isValidOffset(dateTime.getOffset());
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -288,6 +327,44 @@ public abstract class ZoneRules {
         return new OffsetInfo(dateTime, cutoverDateTime, offsetAfter);
     }
 
+    /**
+     * Creates a zone offset transition.
+     *
+     * @param transition  the transition date-time with the offset before the discontinuity, not null
+     * @param offsetAfter  the offset at and after the discontinuity, not null
+     * @return the created transition, never null
+     */
+    protected ZoneOffsetTransition createTransition(OffsetDateTime transition, ZoneOffset offsetAfter) {
+        return new ZoneOffsetTransition(transition, offsetAfter);
+    }
+
+    /**
+     * Creates a zone offset transition rule.
+     *
+     * @param month  the month of the month-day of the first day of the cutover week, not null
+     * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
+     *  day or later, negative if the week is that day or earlier, counting from the last day of the month
+     * @param dayOfWeek  the required day of week, null if the month-day should not be changed
+     * @param time  the cutover time in the 'before' offset, not null
+     * @param timeDefnition  how to interpret the cutover
+     * @param standardOffset  the standard offset in force at the cutover, not null
+     * @param offsetBefore  the offset before the cutover, not null
+     * @param offsetAfter  the offset after the cutover, not null
+     * @return the created transition rule, never null
+     */
+    protected ZoneOffsetTransitionRule createTransitionRule(
+            MonthOfYear month,
+            int dayOfMonthIndicator,
+            DayOfWeek dayOfWeek,
+            LocalTime time,
+            TimeDefinition timeDefnition,
+            ZoneOffset standardOffset,
+            ZoneOffset offsetBefore,
+            ZoneOffset offsetAfter) {
+        return new ZoneOffsetTransitionRule(month, dayOfMonthIndicator, dayOfWeek, time, timeDefnition,
+                standardOffset, offsetBefore, offsetAfter);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this set of rules equals another.
@@ -310,183 +387,6 @@ public abstract class ZoneRules {
     @Override
     public abstract int hashCode();
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Information about a discontinuity in the local time-line.
-//     * <p>
-//     * A discontinuity is normally the result of a daylight savings cutover,
-//     * where a gap occurs in spring and an overlap occurs in autumn.
-//     * <p>
-//     * Discontinuity is immutable and thread-safe.
-//     *
-//     * @author Stephen Colebourne
-//     */
-//    public static final class Discontinuity {
-//        /** The transition date-time with the offset before the discontinuity. */
-//        private final OffsetDateTime transition;
-//        /** The offset at and after the discontinuity. */
-//        private final ZoneOffset offsetAfter;
-//        
-//        /**
-//         * Constructor.
-//         *
-//         * @param transition  the transition date-time with the offset before the discontinuity, not null
-//         * @param offsetAfter  the offset at and after the discontinuity, not null
-//         */
-//        private Discontinuity(OffsetDateTime transition, ZoneOffset offsetAfter) {
-//            this.transition = transition;
-//            this.offsetAfter = offsetAfter;
-//        }
-//        
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Gets the transition instant.
-//         * This is the first instant after the discontinuity, when the new offset applies.
-//         *
-//         * @return the transition instant, not null
-//         */
-//        public Instant getTransitionInstant() {
-//            return transition.toInstant();
-//        }
-//        
-//        /**
-//         * Gets the transition date-time expressed with the before offset.
-//         * This is the date-time where the discontinuity begins, and as such it never
-//         * actually occurs.
-//         *
-//         * @return the transition date-time expressed with the before offset, not null
-//         */
-//        public OffsetDateTime getTransitionDateTime() {
-//            return transition;
-//        }
-//        
-//        /**
-//         * Gets the transition date-time expressed with the after offset.
-//         * This is the first date-time after the discontinuity, when the new offset applies.
-//         *
-//         * @return the transition date-time expressed with the after offset, not null
-//         */
-//        public OffsetDateTime getTransitionDateTimeAfter() {
-//            return transition.withOffsetSameInstant(offsetAfter);
-//        }
-//        
-//        /**
-//         * Gets the offset before the gap.
-//         *
-//         * @return the offset before the gap, not null
-//         */
-//        public ZoneOffset getOffsetBefore() {
-//            return transition.getOffset();
-//        }
-//        
-//        /**
-//         * Gets the offset after the gap.
-//         *
-//         * @return the offset after the gap, not null
-//         */
-//        public ZoneOffset getOffsetAfter() {
-//            return offsetAfter;
-//        }
-//        
-//        /**
-//         * Gets the size of the discontinuity in seconds.
-//         *
-//         * @return the size of the discontinuity in seconds, positive for gaps, negative for overlaps
-//         */
-//        public Period getDiscontinuitySize() {
-//            int secs = getOffsetAfter().getAmountSeconds() - getOffsetBefore().getAmountSeconds();
-//            return Period.seconds(secs).normalized();
-//        }
-//        
-//        /**
-//         * Does this discontinuity represent a gap in the local time-line.
-//         *
-//         * @return true if this discontinuity is a gap
-//         */
-//        public boolean isGap() {
-//            return getOffsetAfter().getAmountSeconds() > getOffsetBefore().getAmountSeconds();
-//        }
-//        
-//        /**
-//         * Does this discontinuity represent a gap in the local time-line.
-//         *
-//         * @return true if this discontinuity is an overlap
-//         */
-//        public boolean isOverlap() {
-//            return getOffsetAfter().getAmountSeconds() < getOffsetBefore().getAmountSeconds();
-//        }
-//        
-////        /**
-////         * Checks if the specified offset is one of those described by this discontinuity.
-////         *
-////         * @param offset  the offset to check, null returns false
-////         * @return true if the offset is one of those described by this discontinuity
-////         */
-////        public boolean containsOffset(ZoneOffset offset) {
-////            return offsetBefore.equals(offset) || offsetAfter.equals(offset);
-////        }
-//        
-//        /**
-//         * Checks if the specified offset is valid during this discontinuity.
-//         * A gap will always return false.
-//         * An overlap will return true if the offset is either the before or after offset.
-//         *
-//         * @param offset  the offset to check, null returns false
-//         * @return true if the offset is valid during the discontinuity
-//         */
-//        public boolean isValidOffset(ZoneOffset offset) {
-//            return isGap() ? false : (getOffsetBefore().equals(offset) || getOffsetAfter().equals(offset));
-//        }
-//        
-//        //-----------------------------------------------------------------------
-//        /**
-//         * Checks if this instance equals another.
-//         *
-//         * @param other  the other object to compare to, null returns false
-//         * @return true if equal
-//         */
-//        @Override
-//        public boolean equals(Object other) {
-//            if (other == this) {
-//                return true;
-//            }
-//            if (other instanceof Discontinuity) {
-//                Discontinuity d = (Discontinuity) other;
-//                return transition.equals(d.transition) &&
-//                    offsetAfter.equals(d.offsetAfter);
-//            }
-//            return false;
-//        }
-//        
-//        /**
-//         * Gets the hash code.
-//         *
-//         * @return the hash code
-//         */
-//        @Override
-//        public int hashCode() {
-//            return transition.hashCode() ^ offsetAfter.hashCode();
-//        }
-//        
-//        /**
-//         * Gets a string describing this object.
-//         *
-//         * @return a string for debugging, never null
-//         */
-//        @Override
-//        public String toString() {
-//            StringBuilder buf = new StringBuilder();
-//            buf.append("Discontinuity[")
-//                .append(isGap() ? "Gap" : "Overlap")
-//                .append(" at ")
-//                .append(transition)
-//                .append(" to ")
-//                .append(offsetAfter)
-//                .append(']');
-//            return buf.toString();
-//        }
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Information about the valid offsets applicable for a local date-time.
@@ -508,7 +408,7 @@ public abstract class ZoneRules {
      *
      * @author Stephen Colebourne
      */
-    public static class OffsetInfo {
+    public static final class OffsetInfo {
         /** The date-time that this info applies to. */
         private final LocalDateTime dateTime;
         /** The offset for the local time-line. */

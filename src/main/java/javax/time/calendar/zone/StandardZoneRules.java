@@ -337,7 +337,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
         for (int i = 0; i < savingsInstantTransitions.length; i++) {
             Instant instant = Instant.instant(savingsInstantTransitions[i]);
             OffsetDateTime trans = OffsetDateTime.fromInstant(instant, wallOffsets[i]);
-            list.add(new ZoneOffsetTransition(trans, wallOffsets[i + 1]));
+            list.add(createTransition(trans, wallOffsets[i + 1]));
         }
         return list;
     }

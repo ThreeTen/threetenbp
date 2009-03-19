@@ -41,6 +41,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
@@ -146,9 +147,13 @@ public class TestTimeZone {
     public void test_constant_UTC() {
         TimeZone test = TimeZone.UTC;
         assertEquals(test.getID(), "UTC");
+        assertEquals(test.getGroupID(), "");
+        assertEquals(test.getRegionID(), "UTC");
+        assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "UTC");
         assertEquals(test.getShortName(), "UTC");
-        assertEquals(test.getRules().isFixed(), true);
+        assertEquals(test.isFixedOffset(), true);
+        assertEquals(test.getRules().isFixedOffset(), true);
         assertEquals(test.getRules().getOffset(Instant.instant(0L)), ZoneOffset.UTC);
         OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
         assertEquals(info.isDiscontinuity(), false);
@@ -175,30 +180,109 @@ public class TestTimeZone {
         assertSame(test, TimeZone.UTC);
     }
 
-    public void test_factory_string_invalid() {
-        String[] values = new String[] {
-            "A","B","C","D","E","F","G","H","I","J","K","L","M",
-            "N","O","P","Q","R","S","T","U","V","W","X","Y","ZZ",
-            "+0","+0:00","+00:0","+0:0",
-            "+000","+00000",
-            "+0:00:00","+00:0:00","+00:00:0","+0:0:0","+0:0:00","+00:0:0","+0:00:0",
-            "+01_00","+01;00","+01@00","+01:AA",
-            "+19","+19:00","+18:01","+18:00:01","+1801","+180001",
-            "-0","-0:00","-00:0","-0:0",
-            "-000","-00000",
-            "-0:00:00","-00:0:00","-00:00:0","-0:0:0","-0:0:00","-00:0:0","-0:00:0",
-            "-19","-19:00","-18:01","-18:00:01","-1801","-180001",
-            "-01_00","-01;00","-01@00","-01:AA",
-            "@01:00",
+    //-----------------------------------------------------------------------
+    @DataProvider(name="String_Fixed")
+    Object[][] data_factory_string_Fixed() {
+        return new Object[][] {
+            {"+01", "UTC+01:00"},
+            {"+0100", "UTC+01:00"},{"+01:00", "UTC+01:00"},
+            {"+010000", "UTC+01:00"},{"+01:00:00", "UTC+01:00"},
+            {"+12", "UTC+12:00"},
+            {"+1234", "UTC+12:34"},{"+12:34", "UTC+12:34"},
+            {"+123456", "UTC+12:34:56"},{"+12:34:56", "UTC+12:34:56"},
+            {"-02", "UTC-02:00"},
+            {"-0200", "UTC-02:00"},{"-02:00", "UTC-02:00"},
+            {"-020000", "UTC-02:00"},{"-02:00:00", "UTC-02:00"},
         };
-        for (int i = 0; i < values.length; i++) {
-            try {
-                TimeZone.timeZone("UTC" + values[i]);
-                fail("Should have failed:" + values[i]);
-            } catch (IllegalArgumentException ex) {
-                // expected
-            }
-        }
+    }
+
+    @Test(dataProvider="String_Fixed")
+    public void test_factory_string_Fixed(String input, String id) {
+        TimeZone test = TimeZone.timeZone("UTC" + input);
+        assertEquals(test.getID(), id);
+        assertEquals(test.getGroupID(), "");
+        assertEquals(test.getRegionID(), id);
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getName(), id);
+        assertEquals(test.getShortName(), id);
+        assertEquals(test.isFixedOffset(), true);
+        assertEquals(test.getRules().isFixedOffset(), true);
+        assertEquals(test.getRules().getOffset(Instant.instant(0L)), ZoneOffset.zoneOffset(id.substring(3)));
+        OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
+        assertEquals(info.isDiscontinuity(), false);
+        assertEquals(info.getDiscontinuity(), null);
+        assertEquals(info.getOffset(), ZoneOffset.zoneOffset(id.substring(3)));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(id.substring(3)));
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name="String_UTC_Invalid")
+    Object[][] data_factory_string_UTC_invalid() {
+        return new Object[][] {
+                {"A"}, {"B"}, {"C"}, {"D"}, {"E"}, {"F"}, {"G"}, {"H"}, {"I"}, {"J"}, {"K"}, {"L"}, {"M"},
+                {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"}, {"ZZ"},
+                {"+0"}, {"+0:00"}, {"+00:0"}, {"+0:0"},
+                {"+000"}, {"+00000"},
+                {"+0:00:00"}, {"+00:0:00"}, {"+00:00:0"}, {"+0:0:0"}, {"+0:0:00"}, {"+00:0:0"}, {"+0:00:0"},
+                {"+01_00"}, {"+01;00"}, {"+01@00"}, {"+01:AA"},
+                {"+19"}, {"+19:00"}, {"+18:01"}, {"+18:00:01"}, {"+1801"}, {"+180001"},
+                {"-0"}, {"-0:00"}, {"-00:0"}, {"-0:0"},
+                {"-000"}, {"-00000"},
+                {"-0:00:00"}, {"-00:0:00"}, {"-00:00:0"}, {"-0:0:0"}, {"-0:0:00"}, {"-00:0:0"}, {"-0:00:0"},
+                {"-19"}, {"-19:00"}, {"-18:01"}, {"-18:00:01"}, {"-1801"}, {"-180001"},
+                {"-01_00"}, {"-01;00"}, {"-01@00"}, {"-01:AA"},
+                {"@01:00"},
+        };
+    }
+
+    @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
+    public void test_factory_string_invalid(String id) {
+        TimeZone.timeZone("UTC" + id);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_factory_string_floatingLondon() {
+        TimeZone test = TimeZone.timeZone("Europe/London");
+        assertEquals(test.getID(), "Europe/London");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getName(), "Europe/London");
+        assertEquals(test.getShortName(), "Europe/London");
+        assertEquals(test.isFixedOffset(), false);
+    }
+
+    public void test_factory_string_versionedLondon() {
+        TimeZone test = TimeZone.timeZone("Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London#2008i");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "2008i");
+        assertEquals(test.getName(), "Europe/London");
+        assertEquals(test.getShortName(), "Europe/London");
+        assertEquals(test.isFixedOffset(), false);
+    }
+
+    public void test_factory_string_groupLondon() {
+        TimeZone test = TimeZone.timeZone("TZDB:Europe/London");
+        assertEquals(test.getID(), "Europe/London");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "");
+        assertEquals(test.getName(), "Europe/London");
+        assertEquals(test.getShortName(), "Europe/London");
+        assertEquals(test.isFixedOffset(), false);
+    }
+
+    public void test_factory_string_groupVersionedLondon() {
+        TimeZone test = TimeZone.timeZone("TZDB:Europe/London#2008i");
+        assertEquals(test.getID(), "Europe/London#2008i");
+        assertEquals(test.getGroupID(), "TZDB");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "2008i");
+        assertEquals(test.getName(), "Europe/London");
+        assertEquals(test.getShortName(), "Europe/London");
+        assertEquals(test.isFixedOffset(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -207,35 +291,24 @@ public class TestTimeZone {
         TimeZone.timeZone((String) null);
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_simple() {
         TimeZone.timeZone("Unknown");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_group() {
         TimeZone.timeZone("Unknown:Europe/London");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
+    @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_version() {
-        TimeZone.timeZone("TZDB/Unknown:Europe/London");
+        TimeZone.timeZone("TZDB:Europe/London#Unknown");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_factory_string_unknown_location() {
-        TimeZone.timeZone("TZDB/2008i:Unknown");
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_factory_string_London() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        assertEquals(test.getID(), "TZDB/" + LATEST_TZDB + ":Europe/London");
-        assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getVersionID(), LATEST_TZDB);
-        assertEquals(test.getLocationID(), "Europe/London");
-        assertEquals(test.getName(), "Europe/London");
-        assertEquals(test.getShortName(), "Europe/London");
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_factory_string_unknown_region() {
+        TimeZone.timeZone("TZDB:Unknown#2008i");
     }
 
     //-----------------------------------------------------------------------
@@ -250,13 +323,13 @@ public class TestTimeZone {
     //-----------------------------------------------------------------------
     public void test_London() {
         TimeZone test = TimeZone.timeZone("Europe/London");
-        assertEquals(test.getID(), "TZDB/" + LATEST_TZDB + ":Europe/London");
+        assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getVersionID(), LATEST_TZDB);
-        assertEquals(test.getLocationID(), "Europe/London");
+        assertEquals(test.getRegionID(), "Europe/London");
+        assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "Europe/London");
         assertEquals(test.getShortName(), "Europe/London");
-        assertEquals(test.getRules().isFixed(), false);
+        assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_London_getOffset() {
@@ -424,13 +497,13 @@ public class TestTimeZone {
     //-----------------------------------------------------------------------
     public void test_Paris() {
         TimeZone test = TimeZone.timeZone("Europe/Paris");
-        assertEquals(test.getID(), "TZDB/" + LATEST_TZDB + ":Europe/Paris");
+        assertEquals(test.getID(), "Europe/Paris");
         assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getVersionID(), LATEST_TZDB);
-        assertEquals(test.getLocationID(), "Europe/Paris");
+        assertEquals(test.getRegionID(), "Europe/Paris");
+        assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "Europe/Paris");
         assertEquals(test.getShortName(), "Europe/Paris");
-        assertEquals(test.getRules().isFixed(), false);
+        assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_Paris_getOffset() {
@@ -594,13 +667,13 @@ public class TestTimeZone {
     //-----------------------------------------------------------------------
     public void test_NewYork() {
         TimeZone test = TimeZone.timeZone("America/New_York");
-        assertEquals(test.getID(), "TZDB/" + LATEST_TZDB + ":America/New_York");
+        assertEquals(test.getID(), "America/New_York");
         assertEquals(test.getGroupID(), "TZDB");
-        assertEquals(test.getVersionID(), LATEST_TZDB);
-        assertEquals(test.getLocationID(), "America/New_York");
+        assertEquals(test.getRegionID(), "America/New_York");
+        assertEquals(test.getVersionID(), "");
         assertEquals(test.getName(), "America/New_York");
         assertEquals(test.getShortName(), "America/New_York");
-        assertEquals(test.getRules().isFixed(), false);
+        assertEquals(test.isFixedOffset(), false);
     }
 
     public void test_NewYork_getOffset() {
@@ -835,9 +908,12 @@ public class TestTimeZone {
     @DataProvider(name="ToString")
     Object[][] data_toString() {
         return new Object[][] {
-            {"Europe/London", "TZDB/" + LATEST_TZDB + ":Europe/London"},
-            {"TZDB:Europe/Paris", "TZDB/" + LATEST_TZDB + ":Europe/Paris"},
-            {"TZDB/" + LATEST_TZDB + ":Europe/Berlin", "TZDB/" + LATEST_TZDB + ":Europe/Berlin"},
+            {"Europe/London", "Europe/London"},
+            {"TZDB:Europe/Paris", "Europe/Paris"},
+            {"TZDB:Europe/Berlin", "Europe/Berlin"},
+            {"Europe/London#2008i", "Europe/London#2008i"},
+            {"TZDB:Europe/Paris#2008i", "Europe/Paris#2008i"},
+            {"TZDB:Europe/Berlin#2008i", "Europe/Berlin#2008i"},
             {"UTC", "UTC"},
             {"UTC+01:00", "UTC+01:00"},
         };

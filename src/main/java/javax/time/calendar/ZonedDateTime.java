@@ -45,6 +45,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.period.PeriodProvider;
 
@@ -445,7 +446,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withEarlierOffsetAtOverlap() {
-        OffsetInfo info = zone.getRules().getOffsetInfo(toLocalDateTime());
+        OffsetInfo info = getRules().getOffsetInfo(toLocalDateTime());
         if (info.isDiscontinuity()) {
             ZoneOffset offset = info.getDiscontinuity().getOffsetBefore();
             if (offset.equals(getOffset()) == false) {
@@ -473,7 +474,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withLaterOffsetAtOverlap() {
-        OffsetInfo info = zone.getRules().getOffsetInfo(toLocalDateTime());
+        OffsetInfo info = getRules().getOffsetInfo(toLocalDateTime());
         if (info.isDiscontinuity()) {
             ZoneOffset offset = info.getDiscontinuity().getOffsetAfter();
             if (offset.equals(getOffset()) == false) {
@@ -483,20 +484,6 @@ public final class ZonedDateTime
         }
         return this;
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Checks if this is an overlap on the local time-line.
-//     * <p>
-//     * When the time zone changes there can be an overlap on the local time-line.
-//     * During the overlap, there are two valid offsets for a single local date-time.
-//     *
-//     * @return true if this is a local time-line overlap
-//     */
-//    public boolean isOverlap() {
-//        OffsetInfo info = zone.getOffsetInfo(toLocalDateTime());
-//        return info.isDiscontinuity();  // cannot be a gap, so must be an overlap
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -571,6 +558,21 @@ public final class ZonedDateTime
      */
     public ZonedDateTime withZoneSameInstant(TimeZone zone) {
         return zone == this.zone ? this : fromInstant(dateTime, zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the zone rules applicable for this date-time.
+     * <p>
+     * The rules provide the information on how the zone offset changes over time.
+     * This usually includes historical and future information.
+     * The rules are determined using {@link TimeZone#getRules(OffsetDateTime)}
+     * which finds the best matching set of rules for this date-time.
+     *
+     * @return the time zone rules, never null
+     */
+    private ZoneRules getRules() {
+        return zone.getRules(dateTime);
     }
 
     //-----------------------------------------------------------------------

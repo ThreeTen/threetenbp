@@ -36,6 +36,13 @@ import java.util.Set;
 /**
  * Provides access to a versioned set of time zone rules.
  * <p>
+ * Multiple providers of time zone rules may be registered.
+ * Each provider will supply one to many zone IDs.
+ * No two providers may overlap in the set of zone IDs that they provide.
+ * <p>
+ * A typical approach is for each provider to supply all the data for a single version.
+ * This approach removes the possibility of two providers supplying the same zone ID.
+ * <p>
  * ZoneRulesDataProvider is a service provider interface that can be called
  * by multiple threads.
  *
@@ -44,32 +51,38 @@ import java.util.Set;
 public interface ZoneRulesDataProvider {
 
     /**
-     * Gets the group ID of the data available via this provider, such as 'TZDB'.
+     * Gets the time zone group ID of the data available via this provider, such as 'TZDB'.
+     * <p>
+     * Group IDs may consist of alphanumeric characters, the dot, underscore and dash.
+     * Group IDs should use reverse domain name notation, like packages.
+     * Group IDs without a dot are reserved.
      *
      * @return the ID of the group, never null
      */
     String getGroupID();
 
     /**
-     * Gets the version of the data available via this provider, such as '2009b'.
+     * Gets the complete set of provided time zone IDs.
+     * <p>
+     * The returned IDs specify the region ID, optionally followed by the version ID.
+     * If the provider supports versions, then versions must be included.
+     * <p>
+     * For example, if this provider supports versions '1.1' and '1.2' of 'France'
+     * then the IDs returned might be 'France:1.1' and 'France:1.2'.
      *
-     * @return the version of the provider, never null
+     * @return the provided IDs, unmodifiable, never null
      */
-    String getVersion();
+    Set<String> getIDs();
 
     /**
      * Gets the zone rules for the specified time zone ID.
+     * <p>
+     * The combined time zone ID must be one of those returned by {@link #getZoneIDs()}.
      *
-     * @param timeZoneID  the time zone ID, not null
+     * @param regionID  the time zone region ID, not null
+     * @param versionID  the time zone version ID, not null
      * @return the matched zone rules, null if not found
      */
-    ZoneRules getZoneRules(String timeZoneID);
-
-    /**
-     * Gets the set of available time zone IDs.
-     *
-     * @return the available IDs, never null
-     */
-    Set<String> getAvailableTimeZoneIDs();
+    ZoneRules getZoneRules(String regionID, String versionID);
 
 }

@@ -37,7 +37,6 @@ import java.util.Map;
 import javax.time.CalendricalException;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesGroup;
-import javax.time.calendar.zone.ZoneRulesGroupVersion;
 
 /**
  * A time zone representing the set of rules by which the zone offset
@@ -48,28 +47,49 @@ import javax.time.calendar.zone.ZoneRulesGroupVersion;
  * <p>
  * There are a number of sources of time zone information available,
  * each represented by an instance of {@link ZoneRulesGroup}.
- * Two IDs are provided as standard - 'Fixed' and 'TZDB' - and more can be added.
+ * One group is provided as standard - 'TZDB' - and more can be added.
  * <p>
- * Each group typically produces multiple versions of their data, which
- * is represented by {@link ZoneRulesGroupVersion}.
+ * Each group defines a naming scheme for the regions of the time zone.
+ * The format of the region is specific to the group.
+ * For example, the 'TZDB' group typically use the format {area}/{city},
+ * such as 'Europe/London'.
+ * <p>
+ * Each group typically produces multiple versions of their data.
  * The format of the version is specific to the group.
  * For example, the 'TZDB' group use the format {year}{letter}, such as '2009b'.
  * <p>
- * Each group also has its own naming scheme for the time zone themselves.
- * This is expressed as the time zone ID. For example, the 'TZDB' group
- * typically use the format {area}/{city}, such as 'Europe/London'.
+ * In combination, a unique ID is created expressing the time-zone, formed from
+ * {groupID}:{regionID}:{versionID}.
  * <p>
- * In combination, a unique key is created expressing the time-zone, formed from
- * {groupID}/{versionID}:{locationID}. The version and preceding slash are optional.
+ * The version can be set to an empty string. This represents the "floating version".
+ * The floating version will always choose the latest applicable set of rules.
+ * Applications will probably choose to use the floating version, as it guarantees
+ * usage of the latest rules.
+ * <p>
+ * In addition to the group/region/version combinations, <code>TimeZone</code>
+ * can represent a fixed offset. This has an empty group and version ID.
+ * It is not possible to have an invalid instance of a fixed time zone.
  * <p>
  * The purpose of capturing all this information is to handle issues when
  * manipulating and persisting time zones. For example, consider what happens if the
  * government of a country changed the start or end of daylight savings time.
- * If you created and stored a date using the old rules, and then load it up
- * when the new rules are in force, what should happen? The date might now be
- * invalid (due to a gap in the local time-line). By storing the version of the
- * time zone rules data together with the date, it is possible to tell that the
- * rules have changed and to process accordingly.
+ * If you created and stored a date using one version of the rules, and then load it
+ * up when a new version of the rules are in force, what should happen?
+ * The date might now be invalid (due to a gap in the local time-line).
+ * By storing the version of the time zone rules data together with the date, it is
+ * possible to tell that the rules have changed and to process accordingly.
+ * <p>
+ * <code>TimeZone</code> merely represents the identifier of the zone.
+ * The actual rules are provided by {@link ZoneRules}.
+ * One difference is that serializing this class only stores the reference to the zone,
+ * whereas serializing <code>ZoneRules</code> stores the entire set of rules.
+ * <p>
+ * After deserialization, or by using the special constructor, it is possible for the
+ * time zone to represent a group/region/version combination that is unavailable.
+ * Since this class can still be loaded even when the rules cannot, the application can
+ * continue. For example, a {@link ZonedDateTime} instance could still be queried.
+ * The application might also take appropriate corrective action.
+ * For example, an application might choose to download missing rules from a central server.
  * <p>
  * TimeZone is immutable and thread-safe.
  *
@@ -84,20 +104,20 @@ public final class TimeZone implements Serializable {
     /**
      * The time zone offset for UTC, with an id of 'UTC'.
      */
-    public static final TimeZone UTC = new TimeZone("Fixed", "", "UTC", ZoneRules.fixed(ZoneOffset.UTC));
+    public static final TimeZone UTC = new TimeZone("", "UTC", "", ZoneRules.fixed(ZoneOffset.UTC));
 
     /**
-     * The zone rules group ID.
+     * The time zone group ID.
      */
     private final String groupID;
     /**
-     * The zone rules version.
+     * The time zone region ID.
+     */
+    private final String regionID;
+    /**
+     * The time zone version ID.
      */
     private final String versionID;
-    /**
-     * The time zone ID.
-     */
-    private final String locationID;
     /**
      * The time zone rules.
      */
@@ -130,63 +150,83 @@ public final class TimeZone implements Serializable {
     /**
      * Obtains an instance of <code>TimeZone</code> from an identifier.
      * <p>
-     * Four forms of identifier are recognized:
+     * Six forms of identifier are recognized:
      * <ul>
-     * <li><code>{groupID}/{version}:{locationID}</code> - full
-     * <li><code>{groupID}:{locationID}</code> - implies latest available version
-     * <li><code>{locationID} - implies 'TZDB' group and latest available version
-     * <li><code>UTC{offset} - implies 'Fixed' group
+     * <li><code>{groupID}:{regionID}#{versionID}</code> - full
+     * <li><code>{groupID}:{regionID}</code> - implies the floating version
+     * <li><code>{regionID}#{versionID} - implies 'TZDB' group and specific version
+     * <li><code>{regionID} - implies 'TZDB' group and the floating version
+     * <li><code>UTC{offset} - fixed time zone
+     * <li><code>GMT{offset} - fixed time zone
      * </ul>
      * <p>
-     * Most of the formats are based around the group, version and location IDs.
-     * The version and location ID formats are specific to the group.
+     * Most of the formats are based around the group, version and region IDs.
+     * The version and region ID formats are specific to the group.
      * If a group does not support versioning, then the version must be an empty string.
      * <p>
      * The default group is 'TZDB' which has versions of the form {year}{letter}, such as '2009b'.
-     * The location ID for the 'TZDB' group is generally of the form '{area}/{city}', such as 'Europe/Paris'.
+     * The region ID for the 'TZDB' group is generally of the form '{area}/{city}', such as 'Europe/Paris'.
      * This is compatible with most IDs from {@link java.util.TimeZone}.
      * <p>
      * For example, if a provider is loaded with the ID 'MyProvider' containing a zone ID of
-     * 'France', then the unique key for version 2.1 would be 'MyProvider/2.1:France'.
+     * 'France', then the unique key for version 2.1 would be 'MyProvider:France#2.1'.
      * A specific version of the TZDB provider can be specified using this format,
-     * for example 'TZDB/2008g:Asia/Tokyo'.
+     * for example 'TZDB:Asia/Tokyo#2008g'.
      * <p>
-     * The alternate format are fixed zones, where the offset never changes over time.
+     * The alternate format is for fixed time zones, where the offset never changes over time.
      * It is intended that {@link ZoneOffset} and {@link OffsetDateTime} are used in preference,
      * however sometimes it is necessary to have a fixed time zone.
-     * The 'Fixed' group is used if the first three characters are 'UTC'.
+     * A fixed time zone is returned if the first three characters are 'UTC' or 'GMT'.
      * The remainder of the ID must be a valid format for {@link ZoneOffset#zoneOffset(String)}.
-     * Using 'UTCZ' is valid, but discouraged in favor of 'UTC'.
-     * The full unique key is 'Fixed:UTC&plusmn;hh:mm:ss'.
+     * Using 'UTCZ' or 'GMTZ' is valid, but discouraged in favor of 'UTC'.
+     * The normalized time zone ID is 'UTC&plusmn;hh:mm:ss'.
      *
-     * @param timeZoneIdentifier  the time zone identifier, not null
+     * @param zoneID  the time zone identifier, not null
      * @return the TimeZone, never null
-     * @throws IllegalArgumentException if the time zone cannot be found
+     * @throws CalendricalException if the time zone cannot be found
      */
-    public static TimeZone timeZone(String timeZoneIdentifier) {
-        ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
-        if (timeZoneIdentifier.equals("UTC")) {
+    public static TimeZone timeZone(String zoneID) {
+        ISOChronology.checkNotNull(zoneID, "Time zone ID must not be null");
+        if (zoneID.equals("UTC")) {
             return UTC;
-        } else if (timeZoneIdentifier.startsWith("UTC") || timeZoneIdentifier.startsWith("GMT")) {  // not sure about GMT
-            return timeZone(ZoneOffset.zoneOffset(timeZoneIdentifier.substring(3)));
-        } else {
-            int pos = timeZoneIdentifier.indexOf(':');
-            ZoneRulesGroupVersion gv;
-            if (pos >= 0) {
-                gv = ZoneRulesGroup.getGroupVersion(timeZoneIdentifier.substring(0, pos));
-            } else {
-                gv = ZoneRulesGroup.getGroupVersion("TZDB");
+            
+        } else if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {  // not sure about GMT
+            try {
+                return timeZone(ZoneOffset.zoneOffset(zoneID.substring(3)));
+            } catch (IllegalArgumentException ex) {
+                throw new CalendricalException(ex.toString(), ex);
             }
-            String tzid = timeZoneIdentifier.substring(pos + 1);
-            ZoneRules zoneRules = gv.getZoneRules(tzid);
-            return new TimeZone(gv.getGroup().getID(), gv.getID(), tzid, zoneRules);
+            
+        } else {
+            int pos = zoneID.indexOf(':');
+            ZoneRulesGroup group;
+            if (pos >= 0) {
+                group = ZoneRulesGroup.getGroup(zoneID.substring(0, pos));  // validates ID
+                zoneID = zoneID.substring(pos + 1);
+            } else {
+                group = ZoneRulesGroup.getGroup("TZDB");  // validates ID
+            }
+            pos = zoneID.indexOf('#');
+            String versionID = "";
+            if (pos >= 0) {
+                versionID = zoneID.substring(pos + 1);
+                zoneID = zoneID.substring(0, pos);
+            }
+            ZoneRules rules = group.getRules(zoneID, versionID);  // validates IDs
+            return new TimeZone(group.getID(), zoneID, versionID, rules);
         }
     }
 
     /**
-     * Obtains an instance of <code>TimeZone</code> using an offset.
+     * Obtains an instance of <code>TimeZone</code> representing a fixed time zone.
+     * <p>
+     * The time zone returned from this factory has a fixed offset for all time.
+     * The region ID will return an identifier formed from 'UTC' and the offset.
+     * The group and version IDs will both return an empty string.
+     * <p>
+     * Fixed time zones are {@link #isValid() always valid}.
      *
-     * @param offset  the zone offset, not null
+     * @param offset  the zone offset to create a fixed zone for, not null
      * @return the TimeZone for the offset, never null
      */
     public static TimeZone timeZone(ZoneOffset offset) {
@@ -194,9 +234,9 @@ public final class TimeZone implements Serializable {
         if (offset == ZoneOffset.UTC) {
             return UTC;
         }
-        String timeZoneID = "UTC" + offset.getID();
-        ZoneRules zoneRules = ZoneRules.fixed(offset);  //ZoneRulesGroup.getGroupVersion("Fixed").getZoneRules(timeZoneID);
-        return new TimeZone("Fixed", "", timeZoneID, zoneRules);
+        String id = "UTC" + offset.getID();
+        ZoneRules zoneRules = ZoneRules.fixed(offset);
+        return new TimeZone("", id, "", zoneRules);
     }
 
     //-----------------------------------------------------------------------
@@ -204,14 +244,14 @@ public final class TimeZone implements Serializable {
      * Constructor.
      *
      * @param groupID  the time zone rules group ID, not null
-     * @param groupVersionID  the time zone rules group version ID, not null
-     * @param locationID  the time zone location ID, not null
+     * @param regionID  the time zone region ID, not null
+     * @param versionID  the time zone rules version ID, not null
      */
-    private TimeZone(String groupID, String groupVersionID, String locationID, ZoneRules rules) {
+    private TimeZone(String groupID, String regionID, String versionID, ZoneRules rules) {
         super();
         this.groupID = groupID;
-        this.versionID = groupVersionID;
-        this.locationID = locationID;
+        this.regionID = regionID;
+        this.versionID = versionID;
         this.rules = rules;
     }
 
@@ -221,36 +261,62 @@ public final class TimeZone implements Serializable {
      * @return the resolved instance, never null
      */
     private Object readResolve() {
-        return (this.equals(UTC) ? UTC : this);
+        // fixed time zone must always be valid
+        if (isFixedOffset()) {
+            if ("UTC".equals(regionID)) {
+                return UTC;
+            } else {
+                return TimeZone.timeZone(getID());
+            }
+        }
+        return this;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Gets the unique time zone ID.
      * <p>
-     * The unique key is created from the group ID, version ID and location ID.
-     * The format is {groupID}/{versionID}:{locationID}.
-     * If the group does not provide versioned data then the format is {groupID}:{locationID}.
-     * If the group is 'Fixed', then the format is {locationID}.
+     * The unique key is created from the group ID, version ID and region ID.
+     * The format is {groupID}:{regionID}#{versionID}.
+     * If the group is 'TZDB' then the {groupID}: is omitted.
+     * If the version is floating, then the #{versionID} is omitted.
+     * Fixed time zones will only output the region ID.
      *
      * @return the time zone unique ID, never null
      */
     public String getID() {
-        if (groupID.equals("Fixed")) {
-            return locationID;
+        if (isFixedOffset()) {
+            return regionID;
         }
-        return groupID + (versionID.length() == 0 ? "" : "/" + versionID) + ":" + locationID;
+        if (groupID.equals("TZDB")) {
+            return regionID + (versionID.length() == 0 ? "" : "#" + versionID);
+        }
+        return groupID + ":" + regionID + (versionID.length() == 0 ? "" : "#" + versionID);
     }
 
     /**
      * Gets the time zone rules group ID, such as 'TZDB'.
      * <p>
      * Time zone rules are provided by groups referenced by an ID.
+     * <p>
+     * If this is a fixed time zone, the group ID will be an empty string.
      *
      * @return the time zone rules group ID, never null
      */
     public String getGroupID() {
         return groupID;
+    }
+
+    /**
+     * Gets the time zone region identifier, such as 'Europe/London'.
+     * <p>
+     * The time zone region identifier is of a format specific to the group.
+     * The default 'TZDB' group generally uses the format {area}/{city}, such as 'Europe/Paris'.
+     *
+     * @return the time zone rules region ID, never null
+     */
+    public String getRegionID() {
+        return regionID;
     }
 
     /**
@@ -260,26 +326,92 @@ public final class TimeZone implements Serializable {
      * The time zone groups capture these changes by issuing multiple versions
      * of the data. An application can reference the exact set of rules used
      * by using the group ID and version.
+     * <p>
+     * A floating version is used to ensure that the time zone always uses the
+     * latest version of the rules available.
+     * <p>
+     * If this is a fixed time zone, the version ID will be an empty string.
      *
-     * @return the time zone rules version ID, never null
+     * @return the time zone rules version ID, never null, empty if the version is floating
      */
     public String getVersionID() {
         return versionID;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Gets the time zone location identifier, such as 'Europe/London'.
+     * Checks of the time zone is fixed, such that the offset never varies.
      * <p>
-     * The time zone location identifier is of a format specific to the group.
-     * The default 'TZDB' group generally uses the format {area}/{city}, such as 'Europe/Paris'.
+     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
+     * {@link OffsetTime} are used in preference to fixed offset time zones
+     * in {@link ZonedDateTime}.
      *
-     * @return the time zone rules location ID, never null
+     * @return true if the time zone is fixed and the offset never changes
      */
-    public String getLocationID() {
-        return locationID;
+    public boolean isFixedOffset() {
+        return groupID.length() == 0;
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the zone rules group for the stored group ID, such as 'TZDB'.
+     * <p>
+     * Time zone rules are provided by groups referenced by an ID.
+     * <p>
+     * Fixed time zones are not provided by a group, thus this method throws
+     * an exception if the time zone is fixed.
+     * <p>
+     * Callers of this method need to be aware of an unusual scenario.
+     * It is possible to obtain a <code>TimeZone</code> instance even when the
+     * rules are not available. This typically occurs when a <code>TimeZone</code>
+     * is loaded from a previously stored version but the rules are not available.
+     * In this case, the <code>TimeZone</code> instance is still valid, as is
+     * any associated object, such as {@link ZonedDateTime}. It is impossible to
+     * perform any calculations that require the rules however, and this method
+     * will throw an exception.
+     *
+     * @return the time zone rules group ID, never null
+     * @throws CalendricalException if the time zone is fixed
+     * @throws CalendricalException if the group ID cannot be found
+     */
+    public ZoneRulesGroup getGroup() {
+        if (isFixedOffset()) {
+            throw new CalendricalException("Fixed time zone is not provided by a group");
+        }
+        return ZoneRulesGroup.getGroup(groupID);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this time zone is valid such that rules can be obtained for it.
+     * <p>
+     * This will return true if the rules are available for the group, region
+     * and version ID combination. If this method returns true, then
+     * {@link #getRules()} will return a valid rules instance.
+     * <p>
+     * A time zone can be invalid if it is deserialized in a JVM which does not
+     * have the same rules loaded as the JVM that stored it.
+     * <p>
+     * If this object declares a floating version of the rules and a background
+     * thread is used to update the available rules, then the result of calling
+     * this method may vary over time.
+     * Each individual call will be still remain thread-safe.
+     * <p>
+     * If this is a fixed time zone, then it is always valid.
+     *
+     * @return true if this time zone is valid and rules are available
+     */
+    public boolean isValid() {
+        if (isFixedOffset()) {
+            return true;
+        }
+        if (ZoneRulesGroup.isValidGroup(groupID) == false) {
+            return false;
+        }
+        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
+        return group.isValidRules(regionID, versionID);
+    }
+
     /**
      * Gets the time zone rules allowing calculations to be performed.
      * <p>
@@ -287,34 +419,107 @@ public final class TimeZone implements Serializable {
      * such as finding the offset for a given instant or local date-time.
      * Different rules may be returned depending on the group, version and zone.
      * <p>
-     * Callers of this method need to be aware of an unusual scenario.
-     * It is possible to create a <code>TimeZone</code> instance even when the
-     * rules are not available. This typically occurs when a <code>TimeZone</code>
-     * is loaded from a previously stored version but the rules are not available.
-     * In this case, the <code>TimeZone</code> instance is still valid, as is
-     * any associated object, such as {@link ZonedDateTime}. It is impossible to
-     * perform any calculations that require the rules however, and this method
-     * will throw an exception.
+     * If this object declares a specific version of the rules, then the result will
+     * be of that version. If this object declares a floating version of the rules,
+     * then the latest version available will be returned.
      * <p>
-     * A related aspect of serialization is that this class just stores the
-     * unique identifier of a time zone, while serializing <code>ZoneRules</code>
-     * will actually store the entire set of rules.
+     * A time zone can be invalid if it is deserialized in a JVM which does not
+     * have the same rules loaded as the JVM that stored it. In this case, calling
+     * this method will throw an exception.
+     * <p>
+     * If this object declares a floating version of the rules and a background
+     * thread is used to update the available rules, then the result of calling
+     * this method may vary over time.
+     * Each individual call will be still remain thread-safe.
      *
      * @return the rules, never null
-     * @throws CalendricalException if the zone is unknown or cannot be loaded
+     * @throws CalendricalException if the zone ID cannot be found
      */
     public ZoneRules getRules() {
-        ZoneRules r = rules;
-        if (r == null) {
-            try {
-                r = ZoneRulesGroup.getGroup(groupID).getVersion(versionID).getZoneRules(locationID);
-            } catch (IllegalArgumentException ex) {
-                // TODO: separate exception, as recoverable
-                throw new CalendricalException("Unable to load zone rules: " + getID(), ex);
-            }
+        // fixed rules always in transient field
+        if (rules != null) {
+            return rules;
+        }
+        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
+        ZoneRules r = group.getRules(regionID, versionID);
+        if (versionID.length() > 0) {
             rules = r;
         }
         return r;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this time zone is valid such that rules can be obtained for it
+     * which are valid for the specified date-time.
+     * <p>
+     * This will return true if the rules are available for the group, region
+     * and version ID combination that are valid for the specified date-time.
+     * If this method returns true, then {@link #getRules(OffsetDateTime)} will
+     * return a valid rules instance.
+     * <p>
+     * A time zone can be invalid if it is deserialized in a JVM which does not
+     * have the same rules loaded as the JVM that stored it.
+     * <p>
+     * If this object declares a floating version of the rules and a background
+     * thread is used to update the available rules, then the result of calling
+     * this method may vary over time.
+     * Each individual call will be still remain thread-safe.
+     * <p>
+     * If this is a fixed time zone, then it is valid if the offset matches the date-time.
+     *
+     * @param validDateTime  a date-time for which the rules must be valid, not null
+     * @return true if this time zone is valid and rules are available
+     */
+    public boolean isValid(OffsetDateTime validDateTime) {
+        ISOChronology.checkNotNull(validDateTime, "Valid date-time must not be null");
+        if (isFixedOffset()) {
+            return getRules().getOffset(validDateTime).equals(validDateTime.getOffset());
+        }
+        if (ZoneRulesGroup.isValidGroup(groupID) == false) {
+            return false;
+        }
+        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
+        return group.isValidRules(regionID, versionID, validDateTime);
+    }
+
+    /**
+     * Gets the time zone rules allowing calculations to be performed, ensuring that
+     * the date-time specified is valid for the returned rules.
+     * <p>
+     * The rules provide the functionality associated with a time zone,
+     * such as finding the offset for a given instant or local date-time.
+     * Different rules may be returned depending on the group, version and zone.
+     * <p>
+     * If this object declares a specific version of the rules, then the result will
+     * be of that version providing that the specified date-time is valid for those rules.
+     * If this object declares a floating version of the rules, then the latest
+     * version of the rules where the date-time is valid will be returned.
+     * <p>
+     * A time zone can be invalid if it is deserialized in a JVM which does not
+     * have the same rules loaded as the JVM that stored it. In this case, calling
+     * this method will throw an exception.
+     * <p>
+     * If this object declares a floating version of the rules and a background
+     * thread is used to update the available rules, then the result of calling
+     * this method may vary over time.
+     * Each individual call will be still remain thread-safe.
+     *
+     * @param validDateTime  a date-time for which the rules must be valid, not null
+     * @return the latest rules for this zone where the date-time is valid, never null
+     * @throws CalendricalException if the zone ID cannot be found
+     * @throws CalendricalException if no rules match the zone ID and date-time
+     */
+    public ZoneRules getRules(OffsetDateTime validDateTime) {
+        ISOChronology.checkNotNull(validDateTime, "Valid date-time must not be null");
+        if (isFixedOffset()) {
+            if (getRules().getOffset(validDateTime).equals(validDateTime.getOffset()) == false) {
+                throw new CalendricalException("Fixed time zone '" + regionID + "' is invalid for date-time: " + validDateTime);
+            }
+            return ZoneRules.fixed(getRules().getOffset(validDateTime));
+        }
+        ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
+        return group.getRules(regionID, versionID, validDateTime);
     }
 
     //-----------------------------------------------------------------------
@@ -324,7 +529,7 @@ public final class TimeZone implements Serializable {
      * @return the time zone name, never null
      */
     public String getName() {
-        return locationID;  // TODO
+        return regionID;  // TODO
     }
 
     /**
@@ -333,138 +538,8 @@ public final class TimeZone implements Serializable {
      * @return the time zone short name, never null
      */
     public String getShortName() {
-        return locationID;  // TODO
+        return regionID;  // TODO
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the offset applicable at the specified instant in this zone.
-//     * <p>
-//     * For any given instant there can only ever be one valid offset, which
-//     * is returned by this method. To access more detailed information about
-//     * the offset at and around the instant use {@link #getOffsetInfo(Instant)}.
-//     *
-//     * @param instantProvider  the instant provider to find the offset for, not null
-//     * @return the offset, never null
-//     */
-//    public ZoneOffset getOffset(InstantProvider instantProvider) {
-//        return getRules().getOffset(instantProvider);
-//    }
-//
-//    /**
-//     * Gets the offset information for the specified instant in this zone.
-//     * <p>
-//     * This provides access to full details as to the offset or offsets applicable
-//     * for the local date-time. The mapping from an instant to an offset
-//     * is not straightforward. There are two cases:
-//     * <ul>
-//     * <li>Normal. Where there is a single offset for the local date-time.</li>
-//     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-//     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-//     * </ul>
-//     * The third case, a gap in the local time-line, cannot be returned by this
-//     * method as an instant will always represent a valid point and cannot be in a gap.
-//     * The returned object provides information about the offset or overlap and it
-//     * is vital to check {@link OffsetInfo#isDiscontinuity()} to handle the overlap.
-//     *
-//     * @param instant  the instant to find the offset information for, not null
-//     * @return the offset information, never null
-//     */
-//    public OffsetInfo getOffsetInfo(Instant instant) {
-//        ZoneOffset offset = getOffset(instant);
-//        OffsetDateTime odt = OffsetDateTime.fromInstant(instant, offset);
-//        return getOffsetInfo(odt.toLocalDateTime());
-//    }
-//
-//    /**
-//     * Gets the offset information for a local date-time in this zone.
-//     * <p>
-//     * This provides access to full details as to the offset or offsets applicable
-//     * for the local date-time. The mapping from a local date-time to an offset
-//     * is not straightforward. There are three cases:
-//     * <ul>
-//     * <li>Normal. Where there is a single offset for the local date-time.</li>
-//     * <li>Gap. Where there is a gap in the local time-line normally caused by the
-//     * spring cutover to daylight savings. There are no valid offsets within the gap</li>
-//     * <li>Overlap. Where there is a gap in the local time-line normally caused by the
-//     * autumn cutover from daylight savings. There are two valid offsets during the overlap.</li>
-//     * </ul>
-//     * The returned object provides this information and it is vital to check
-//     * {@link OffsetInfo#isDiscontinuity()} to handle the gap or overlap.
-//     *
-//     * @param dateTime  the date-time to find the offset information for, not null
-//     * @return the offset information, never null
-//     */
-//    public OffsetInfo getOffsetInfo(LocalDateTime dateTime) {
-//        return getRules().getOffsetInfo(dateTime);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the standard offset for the specified instant in this zone.
-//     * <p>
-//     * This provides access to historic information on how the standard offset
-//     * has changed over time.
-//     * The standard offset is the offset before any daylight savings time is applied.
-//     * This is typically the offset applicable during winter.
-//     *
-//     * @param instantProvider  the instant to find the offset information for, not null
-//     * @return the standard offset, never null
-//     */
-//    public ZoneOffset getStandardOffset(InstantProvider instantProvider) {
-//        return getRules().getStandardOffset(instantProvider);
-//    }
-//
-//    /**
-//     * Gets the amount of daylight savings in use for the specified instant in this zone.
-//     * <p>
-//     * This provides access to historic information on how the amount of daylight
-//     * savings has changed over time.
-//     * This is the difference between the standard offset and the actual offset.
-//     * It is expressed in hours, minutes and seconds.
-//     * Typically the amount is zero during winter and one hour during summer.
-//     *
-//     * @param instantProvider  the instant to find the offset information for, not null
-//     * @return the standard offset, never null
-//     */
-//    public Period getDaylightSavings(InstantProvider instantProvider) {
-//        Instant instant = Instant.instant(instantProvider);
-//        ZoneOffset standardOffset = getStandardOffset(instant);
-//        ZoneOffset actualOffset = getOffset(instant);
-//        return actualOffset.toPeriod().minus(standardOffset.toPeriod()).normalized();
-//    }
-//
-//    /**
-//     * Gets the standard offset for the specified instant in this zone.
-//     * <p>
-//     * This provides access to historic information on how the standard offset
-//     * has changed over time.
-//     * The standard offset is the offset before any daylight savings time is applied.
-//     * This is typically the offset applicable during winter.
-//     *
-//     * @param instant  the instant to find the offset information for, not null
-//     * @return the standard offset, never null
-//     */
-//    public boolean isDaylightSavings(InstantProvider instant) {
-//        return (getStandardOffset(instant).equals(getOffset(instant)) == false);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Is this time zone fixed, such that the offset never varies.
-//     * <p>
-//     * It is intended that {@link OffsetDateTime}, {@link OffsetDate} and
-//     * {@link OffsetTime} are used in preference to fixed offset time zones
-//     * in {@link ZonedDateTime}.
-//     * <p>
-//     * The default implementation returns false and it is not intended that
-//     * user-supplied subclasses override this.
-//     *
-//     * @return true if the time zone is fixed and the offset never changes
-//     */
-//    public boolean isFixed() {
-//        return false;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -480,7 +555,7 @@ public final class TimeZone implements Serializable {
         }
         if (otherZone instanceof TimeZone) {
             TimeZone zone = (TimeZone) otherZone;
-            return locationID.equals(zone.locationID) &&
+            return regionID.equals(zone.regionID) &&
                     versionID.equals(zone.versionID) &&
                     groupID.equals(zone.groupID);
         }
@@ -488,20 +563,22 @@ public final class TimeZone implements Serializable {
     }
 
     /**
-     * A hash code for the time zone object.
+     * A hash code for this time zone ID.
      *
      * @return a suitable hash code
      */
     @Override
     public int hashCode() {
-        return locationID.hashCode() ^ versionID.hashCode() ^ groupID.hashCode();
+        return groupID.hashCode() ^ regionID.hashCode() ^ versionID.hashCode();
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the time zone using the unique time zone key.
+     * Returns a string representation of the time zone.
+     * <p>
+     * This returns {@link #getID()}.
      *
-     * @return the unique time zone key, never null
+     * @return the time zone ID, never null
      */
     @Override
     public String toString() {

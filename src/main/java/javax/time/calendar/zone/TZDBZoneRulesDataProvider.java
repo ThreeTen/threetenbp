@@ -33,9 +33,10 @@ package javax.time.calendar.zone;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 
 /**
  * Provides rules based on the TZDB time zone data.
@@ -83,18 +84,20 @@ public class TZDBZoneRulesDataProvider implements ZoneRulesDataProvider {
     }
 
     /** {@inheritDoc} */
-    public String getVersion() {
-        return version;
+    public Set<String> getIDs() {
+        Set<String> ids = new HashSet<String>(zones.size());
+        for (String id : zones.keySet()) {
+            ids.add(id + ':' + version);
+        }
+        return Collections.unmodifiableSet(ids);
     }
 
     /** {@inheritDoc} */
-    public ZoneRules getZoneRules(String timeZoneID) {
-        return zones.get(timeZoneID);
-    }
-
-    /** {@inheritDoc} */
-    public Set<String> getAvailableTimeZoneIDs() {
-        return zones.keySet();
+    public ZoneRules getZoneRules(String regionID, String versionID) {
+        if (regionID == null || versionID == null || versionID.equals(version) == false) {
+            return null;
+        }
+        return zones.get(regionID);
     }
 
 }

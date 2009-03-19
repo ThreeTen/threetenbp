@@ -128,7 +128,7 @@ public class TestClock_TimeSourceClock {
     //-----------------------------------------------------------------------
     public void test_toString() {
         Clock test = Clock.clock(TIME_SOURCE, ZONE);
-        assertEquals(test.toString(), "TimeSourceClock[FixedTimeSource[2008-06-30T09:30:10.000000500Z], TZDB/" + TestTimeZone.LATEST_TZDB + ":Europe/Paris]");
+        assertEquals(test.toString(), "TimeSourceClock[FixedTimeSource[2008-06-30T09:30:10.000000500Z], Europe/Paris]");
     }
 
 }

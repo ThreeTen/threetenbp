@@ -85,7 +85,7 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isFixed() {
+    public boolean isFixedOffset() {
         return true;
     }
 
