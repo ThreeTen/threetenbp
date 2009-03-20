@@ -36,6 +36,9 @@
         <fileset dir="lib/test">
             <include name="**/*.jar" />
         </fileset>
+        <fileset dir="src/main/tzdata">
+            <include name="**/*.jar" />
+        </fileset>
     </path>
 
     <path id="emma.lib" >
@@ -66,8 +69,6 @@
     <target name="compile" depends="init" description="compile the source">
         <mkdir dir="${build.main}" />
         <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
-        <copy file="${src.main}/javax/time/calendar/zone/ZoneRuleInfo-TZDB-2008i.dat"
-                            todir="${build.main}/javax/time/calendar/zone/" /> 
     </target>
    
     <target name="javadoc" depends="init" description="generates javadoc for the api">
