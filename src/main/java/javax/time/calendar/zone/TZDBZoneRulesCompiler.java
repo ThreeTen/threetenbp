@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjusters;
@@ -530,10 +532,15 @@ public final class TZDBZoneRulesCompiler {
     }
 
     private void outputFile() throws Exception {
-        File outputFile = new File(destinationDir, "ZoneRuleInfo-TZDB-" + version + ".dat");
-        printVerbose("Outputting file: " + outputFile);
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(outputFile));
-        out.writeObject(builtZones);
+//        File outputFile = new File(destinationDir, "ZoneRuleInfo.dat");
+//        printVerbose("Outputting file: " + outputFile);
+//        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(outputFile));
+//        out.writeInt(1);
+//        out.writeUTF("TZDB");
+//        out.writeUTF(version);
+//        out.writeObject(builtZones);
+//        out.close();
+        
 //        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 512);
 //        DataOutputStream out = new DataOutputStream(baos);
 //        Map<String, byte[]> data = new HashMap<String, byte[]>();
@@ -541,6 +548,21 @@ public final class TZDBZoneRulesCompiler {
 //            printVerbose("Outputting zone: " + zoneId);
 //            out.
 //        }
+//        out.close();
+        
+        File outputJar = new File(destinationDir, "ZoneRuleInfo-TZDB-" + version + ".jar");
+        printVerbose("Outputting file: " + outputJar);
+        
+        JarOutputStream jos = new JarOutputStream(new FileOutputStream(outputJar));
+        jos.putNextEntry(new ZipEntry("javax/time/calendar/zone/ZoneRuleInfo.dat"));
+        
+        ObjectOutputStream out = new ObjectOutputStream(jos);
+        out.writeInt(1);
+        out.writeUTF("TZDB");
+        out.writeUTF(version);
+        out.writeObject(builtZones);
+        
+        jos.closeEntry();
         out.close();
     }
 

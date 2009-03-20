@@ -76,8 +76,7 @@ public final class ZoneRulesGroup {
             new ConcurrentHashMap<String, ZoneRulesGroup>(16, 0.75f, 2);
 
     static {
-        // TODO: better
-       ZoneRulesGroup.registerProvider(new TZDBZoneRulesDataProvider("2008i"));
+        JarZoneRulesDataProvider.load();
     }
 
     /**
