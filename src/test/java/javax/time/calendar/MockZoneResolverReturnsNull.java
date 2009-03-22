@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import javax.time.calendar.zone.ZoneOffsetTransition;
+import javax.time.calendar.zone.ZoneRules;
 
 /**
  * Mock ZoneResolver that returns null.
@@ -42,14 +43,14 @@ public class MockZoneResolverReturnsNull extends ZoneResolver {
 
     /** {@inheritDoc} */
     @Override
-    protected OffsetDateTime handleGap(TimeZone zone,
+    protected OffsetDateTime handleGap(TimeZone zone, ZoneRules rules,
             ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
         return null;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected OffsetDateTime handleOverlap(TimeZone zone,
+    protected OffsetDateTime handleOverlap(TimeZone zone, ZoneRules rules,
             ZoneOffsetTransition discontinuity, LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
         return null;
     }

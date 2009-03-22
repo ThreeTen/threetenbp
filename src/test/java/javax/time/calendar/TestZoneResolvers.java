@@ -235,25 +235,25 @@ public class TestZoneResolvers {
     }
 
     public void retainOffset_gap_oldEarlierOffset() {
-        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_GAP, OFFSET_0200);
+        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 1, 1, 0, 0, OFFSET_0100), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
         assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
     }
 
     public void retainOffset_gap_oldLaterOffset() {
-        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_GAP, OFFSET_0100);
+        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 6, 1, 0, 0, OFFSET_0200), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
         assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
     }
 
-    public void retainOffset_gap_oldNotValidOffset() {
-        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_GAP, OFFSET_UTC);
-        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
-        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
-        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
-    }
+//    public void retainOffset_gap_oldNotValidOffset() {
+//        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_GAP, OFFSET_UTC);
+//        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
+//        assertEquals(resolved.getDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
+//        assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
+//    }
 
     public void retainOffset_overlap_noOld() {
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null);
@@ -262,25 +262,25 @@ public class TestZoneResolvers {
     }
 
     public void retainOffset_overlap_oldEarlierOffset() {
-        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_OVERLAP, OFFSET_0200);
+        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 6, 1, 0, 0, OFFSET_0200), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
         assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses same as input
     }
 
     public void retainOffset_overlap_oldLaterOffset() {
-        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_OVERLAP, OFFSET_0100);
+        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 11, 1, 0, 0, OFFSET_0100), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
         assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses same as input
     }
 
-    public void retainOffset_overlap_oldNotValidOffset() {
-        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_OVERLAP, OFFSET_UTC);
-        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
-        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
-        assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later
-    }
+//    public void retainOffset_overlap_oldNotValidOffset() {
+//        OffsetDateTime old = OffsetDateTime.dateTime(DT_PARIS_OVERLAP, OFFSET_UTC);
+//        OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
+//        assertEquals(resolved.getDateTime(), DT_PARIS_OVERLAP);
+//        assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses later
+//    }
 
     //-----------------------------------------------------------------------
     // pushForward()

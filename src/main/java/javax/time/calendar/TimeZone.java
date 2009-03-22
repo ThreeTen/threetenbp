@@ -75,7 +75,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * government of a country changed the start or end of daylight savings time.
  * If you created and stored a date using one version of the rules, and then load it
  * up when a new version of the rules are in force, what should happen?
- * The date might now be invalid (due to a gap in the local time-line).
+ * The date might now be invalid, for example due to a gap in the local time-line.
  * By storing the version of the time zone rules data together with the date, it is
  * possible to tell that the rules have changed and to process accordingly.
  * <p>
@@ -299,7 +299,7 @@ public final class TimeZone implements Serializable {
      * <p>
      * Time zone rules are provided by groups referenced by an ID.
      * <p>
-     * If this is a fixed time zone, the group ID will be an empty string.
+     * For fixed time zones, the group ID will be an empty string.
      *
      * @return the time zone rules group ID, never null
      */
@@ -327,12 +327,12 @@ public final class TimeZone implements Serializable {
      * of the data. An application can reference the exact set of rules used
      * by using the group ID and version.
      * <p>
-     * A floating version is used to ensure that the time zone always uses the
-     * latest version of the rules available.
+     * The version can be an empty string which represents the floating version.
+     * This always uses the latest version of the rules available.
      * <p>
-     * If this is a fixed time zone, the version ID will be an empty string.
+     * For fixed time zones, the version ID will be an empty string.
      *
-     * @return the time zone rules version ID, never null, empty if the version is floating
+     * @return the time zone rules version ID, empty if the version is floating, never null
      */
     public String getVersionID() {
         return versionID;
@@ -354,7 +354,141 @@ public final class TimeZone implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the zone rules group for the stored group ID, such as 'TZDB'.
+     * Checks if the version is floating.
+     * <p>
+     * A floating version will track the latest available version of the rules.
+     * <p>
+     * For group based time zones, this returns true if the version ID is empty,
+     * which is the definition of a floating zone.
+     * <p>
+     * For fixed time zones, true is returned.
+     *
+     * @return true if the version is floating
+     */
+    public boolean isFloatingVersion() {
+        return isFixed() || versionID.length() == 0;
+    }
+
+    /**
+     * Returns a copy of this time zone with the specified version ID.
+     * <p>
+     * For group based time zones, this returns a <code>TimeZone</code> with the
+     * same group and region, but a floating version.
+     * The group and region IDs are not validated.
+     * <p>
+     * For fixed time zones, <code>this</code> is returned.
+     *
+     * @return the new updated time zone, never null
+     * @throws CalendricalException if the time zone is fixed
+     */
+    public TimeZone withFloatingVersion() {
+        if (isFloatingVersion()) {
+            return this;
+        }
+        return new TimeZone(groupID, regionID, "", null);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the version is the latest version.
+     * <p>
+     * For floating group based time zones, true is returned.
+     * <p>
+     * For non-floating group based time zones, this returns true if the version
+     * stored is the same as the latest version available for the group and region.
+     * The group and region IDs are validated in order to calculate the latest version.
+     * <p>
+     * For fixed time zones, true is returned.
+     *
+     * @return true if the version is the latest available
+     * @throws CalendricalException if the version is non-floating and the group or region ID is not found
+     */
+    public boolean isLatestVersion() {
+        return isFloatingVersion() ||
+                versionID.equals(getGroup().getLatestVersionID(regionID));  // validates IDs
+    }
+
+    /**
+     * Returns a copy of this time zone with the latest available version ID.
+     * <p>
+     * For floating group based time zones, <code>this</code> is returned.
+     * <p>
+     * For non-floating group based time zones, this returns a <code>TimeZone</code>
+     * with the same group and region, but the latest version.
+     * The group and region IDs are validated in order to calculate the latest version.
+     * <p>
+     * For fixed time zones, <code>this</code> is returned.
+     *
+     * @return the new updated time zone, never null
+     * @throws CalendricalException if the version is non-floating and the group or region ID is not found
+     */
+    public TimeZone withLatestVersion() {
+        if (isFloatingVersion()) {
+            return this;
+        }
+        String versionID = getGroup().getLatestVersionID(regionID);  // validates IDs
+        if (versionID.equals(this.versionID)) {
+            return this;
+        }
+        return new TimeZone(groupID, regionID, versionID, rules);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this time zone with the specified version ID.
+     * <p>
+     * For group based time zones, this returns a <code>TimeZone</code>
+     * with the same group and region, but the specified version.
+     * The group and region IDs are validated to ensure that the version is valid.
+     * <p>
+     * For fixed time zones, the version must be an empty string, otherwise an
+     * exception is thrown.
+     *
+     * @param versionID  the version ID to use, empty means floating version, not null
+     * @return the new updated time zone, never null
+     * @throws CalendricalException if the time zone is fixed and the version is not empty
+     * @throws CalendricalException if the group, region or version ID is not found
+     */
+    public TimeZone withVersion(String versionID) {
+        ISOChronology.checkNotNull(versionID, "Version ID must not be null");
+        if (isFixed()) {
+            if (versionID.length() > 0) {
+                throw new CalendricalException("Fixed time zone does not provide versions");
+            }
+            return this;
+        }
+        ZoneRules rules = getGroup().getRules(regionID, versionID);  // validates IDs
+        if (versionID.equals(this.versionID)) {
+            return this;
+        }
+        return new TimeZone(groupID, regionID, versionID, rules);
+    }
+
+    /**
+     * Returns a copy of this time zone with the latest version that is valid
+     * for the specified date-time and offset.
+     * <p>
+     * This method validates the group and region IDs.
+     *
+     * @param dateTime  the date-time to get the latest version for
+     * @return the new updated time zone, never null
+     * @throws CalendricalException if the group or region ID is not found
+     * @throws CalendricalException if there are no valid rules for the date-time
+     */
+    public TimeZone withLatestVersionValidFor(OffsetDateTime dateTime) {
+        ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
+        if (isFixed()) {
+            if (getRules().getOffset(dateTime).equals(dateTime.getOffset()) == false) {
+                throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
+            }
+            return this;
+        }
+        return withVersion(getGroup().getLatestVersionIDValidFor(regionID, dateTime));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Finds the zone rules group for the stored group ID, such as 'TZDB'.
      * <p>
      * Time zone rules are provided by groups referenced by an ID.
      * <p>
@@ -433,7 +567,7 @@ public final class TimeZone implements Serializable {
      * Each individual call will be still remain thread-safe.
      *
      * @return the rules, never null
-     * @throws CalendricalException if the zone ID cannot be found
+     * @throws CalendricalException if the group, region or version ID cannot be found
      */
     public ZoneRules getRules() {
         // fixed rules always in transient field
@@ -451,7 +585,7 @@ public final class TimeZone implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Checks if this time zone is valid such that rules can be obtained for it
-     * which are valid for the specified date-time.
+     * which are valid for the specified date-time and offset.
      * <p>
      * This will return true if the rules are available for the group, region
      * and version ID combination that are valid for the specified date-time.
@@ -468,24 +602,26 @@ public final class TimeZone implements Serializable {
      * <p>
      * If this is a fixed time zone, then it is valid if the offset matches the date-time.
      *
-     * @param validDateTime  a date-time for which the rules must be valid, not null
+     * @param dateTime  a date-time for which the rules must be valid, null returns false
      * @return true if this time zone is valid and rules are available
      */
-    public boolean isValid(OffsetDateTime validDateTime) {
-        ISOChronology.checkNotNull(validDateTime, "Valid date-time must not be null");
+    public boolean isValidFor(OffsetDateTime dateTime) {
+        if (dateTime == null) {
+            return false;
+        }
         if (isFixed()) {
-            return getRules().getOffset(validDateTime).equals(validDateTime.getOffset());
+            return getRules().getOffset(dateTime).equals(dateTime.getOffset());
         }
         if (ZoneRulesGroup.isValidGroup(groupID) == false) {
             return false;
         }
         ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-        return group.isValidRules(regionID, versionID, validDateTime);
+        return group.isValidRulesFor(regionID, versionID, dateTime);
     }
 
     /**
      * Gets the time zone rules allowing calculations to be performed, ensuring that
-     * the date-time specified is valid for the returned rules.
+     * the date-time and offset specified is valid for the returned rules.
      * <p>
      * The rules provide the functionality associated with a time zone,
      * such as finding the offset for a given instant or local date-time.
@@ -505,21 +641,21 @@ public final class TimeZone implements Serializable {
      * this method may vary over time.
      * Each individual call will be still remain thread-safe.
      *
-     * @param validDateTime  a date-time for which the rules must be valid, not null
+     * @param dateTime  a date-time for which the rules must be valid, not null
      * @return the latest rules for this zone where the date-time is valid, never null
      * @throws CalendricalException if the zone ID cannot be found
      * @throws CalendricalException if no rules match the zone ID and date-time
      */
-    public ZoneRules getRules(OffsetDateTime validDateTime) {
-        ISOChronology.checkNotNull(validDateTime, "Valid date-time must not be null");
+    public ZoneRules getRulesValidFor(OffsetDateTime dateTime) {
+        ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
         if (isFixed()) {
-            if (getRules().getOffset(validDateTime).equals(validDateTime.getOffset()) == false) {
-                throw new CalendricalException("Fixed time zone '" + regionID + "' is invalid for date-time: " + validDateTime);
+            if (getRules().getOffset(dateTime).equals(dateTime.getOffset()) == false) {
+                throw new CalendricalException("Fixed time zone " + getID() + " is invalid for date-time " + dateTime);
             }
-            return ZoneRules.fixed(getRules().getOffset(validDateTime));
+            return ZoneRules.fixed(getRules().getOffset(dateTime));
         }
         ZoneRulesGroup group = ZoneRulesGroup.getGroup(groupID);
-        return group.getRules(regionID, versionID, validDateTime);
+        return group.getRulesValidFor(regionID, versionID, dateTime);
     }
 
     //-----------------------------------------------------------------------

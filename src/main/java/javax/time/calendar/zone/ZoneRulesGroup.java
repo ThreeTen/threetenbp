@@ -97,11 +97,13 @@ public final class ZoneRulesGroup {
      * The 'TZDB' group will be always be available.
      * Any other groups are dependent on what has been installed.
      *
-     * @param groupID  the group ID, not null
+     * @param groupID  the group ID, null returns false
      * @return true if the group ID is valid
      */
     public static boolean isValidGroup(String groupID) {
-        ZoneRules.checkNotNull(groupID, "Group ID must not be null");
+        if (groupID == null) {
+            return false;
+        }
         return GROUPS.containsKey(groupID);
     }
 
@@ -247,13 +249,14 @@ public final class ZoneRulesGroup {
     /**
      * Checks if the time zone version ID is valid.
      *
-     * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, not null, empty means latest version
+     * @param regionID  the time zone region ID, null returns false
+     * @param versionID  the time zone version ID, empty means floating version, null returns false
      * @return true if the version ID is valid
      */
     public boolean isValidRules(String regionID, String versionID) {
-        ZoneRules.checkNotNull(regionID, "Region ID must not be null");
-        ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+        if (regionID == null || versionID == null) {
+            return false;
+        }
         TreeMap<String, ZoneRulesDataProvider> versions = regions.get(regionID);
         return versions != null &&
             (versionID.length() == 0 || versions.containsKey(versionID));
@@ -266,7 +269,7 @@ public final class ZoneRulesGroup {
      * will be returned for the region.
      *
      * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, not null, empty means latest version
+     * @param versionID  the time zone version ID, empty means floating version, not null
      * @return the matched zone rules, never null
      * @throws CalendricalException if the rules cannot be found
      */
@@ -298,14 +301,17 @@ public final class ZoneRulesGroup {
      * If the version is an empty string, which represents a floating version,
      * then the search will check if any rules are valid for the specified date-time.
      *
-     * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, not null, empty means latest version
-     * @param validDateTime  the date-time that must be valid, not null
+     * @param regionID  the time zone region ID, null returns false
+     * @param versionID  the time zone version ID, empty means floating version, null returns false
+     * @param dateTime  the date-time that must be valid, null returns false
      * @return true if the version ID is valid
      */
-    public boolean isValidRules(String regionID, String versionID, OffsetDateTime validDateTime) {
+    public boolean isValidRulesFor(String regionID, String versionID, OffsetDateTime dateTime) {
+        if (regionID == null || versionID == null || dateTime == null) {
+            return false;
+        }
         try {
-            getRules(regionID, versionID, validDateTime);
+            getRulesValidFor(regionID, versionID, dateTime);
             return true;
         } catch (CalendricalException ex) {
             return false;
@@ -322,53 +328,84 @@ public final class ZoneRulesGroup {
      * specified date-time will be returned.
      *
      * @param regionID  the time zone region ID, not null
-     * @param versionID  the time zone version ID, not null, empty means latest version
-     * @param validDateTime  the date-time that must be valid, not null
+     * @param versionID  the time zone version ID, empty means floating version, not null
+     * @param dateTime  the date-time that must be valid, not null
      * @return the matched zone rules, never null
      * @throws CalendricalException if the rules cannot be found
      */
-    public ZoneRules getRules(String regionID, String versionID, OffsetDateTime validDateTime) {
+    public ZoneRules getRulesValidFor(String regionID, String versionID, OffsetDateTime dateTime) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
         ZoneRules.checkNotNull(versionID, "Version ID must not be null");
-        ZoneRules.checkNotNull(validDateTime, "Valid date-time must not be null");
+        ZoneRules.checkNotNull(dateTime, "Valid date-time must not be null");
         if (versionID.length() > 0) {
             // specific version
             ZoneRules rules = getRules(regionID, versionID);
-            if (rules.isValidDateTime(validDateTime) == false) {
-                throw new CalendricalException("Rules in time zone '" + groupID + ":" + regionID +
-                        "#" + versionID + "' are invalid for date-time: " + validDateTime);
+            if (rules.isValidDateTime(dateTime) == false) {
+                throw new CalendricalException("Rules in time zone " + groupID + ":" + regionID +
+                        "#" + versionID + " are invalid for date-time " + dateTime);
             }
             return rules;
         }
         
         // floating version - pick latest version that matches date-time
+        versionID = getLatestVersionIDValidFor(regionID, dateTime);
+        return getRules(regionID, versionID);
+    }
+
+    /**
+     * Finds the latest version ID that is valid for
+     *
+     * @param regionID  the time zone region ID, not null
+     * @param dateTime  the date-time that must be valid, not null
+     * @return the matched zone rules, never null
+     * @throws CalendricalException if the rules cannot be found
+     */
+    public String getLatestVersionIDValidFor(String regionID, OffsetDateTime dateTime) {
+        ZoneRules.checkNotNull(regionID, "Region ID must not be null");
+        ZoneRules.checkNotNull(dateTime, "OffsetDateTime must not be null");
         TreeMap<String, ZoneRulesDataProvider> versions = new TreeMap<String, ZoneRulesDataProvider>(Collections.reverseOrder());
         versions.putAll(getVersions(regionID));
         for (Entry<String, ZoneRulesDataProvider> entry : versions.entrySet()) {
             ZoneRulesDataProvider provider = entry.getValue();
             ZoneRules rules = provider.getZoneRules(regionID, entry.getKey());  // not null if registered properly
-            if (rules.isValidDateTime(validDateTime)) {
-                return rules;
+            if (rules.isValidDateTime(dateTime)) {
+                return entry.getKey();
             }
         }
-        throw new CalendricalException("Rules in time zone '" + groupID + ":" + regionID +
-                "' are invalid for date-time: " + validDateTime);
+        throw new CalendricalException("No rules could be found in time zone " + groupID + ":" + regionID +
+                " that are valid for date-time " + dateTime);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the set of available zone rule versions for this group.
+     * Gets the set of available region IDs for this group.
+     * <p>
+     * Each returned region will have at least one associated version.
+     *
+     * @return an independent, modifiable list of available regions sorted alphabetically, never null
+     */
+    public List<String> getAvailableRegionIDs() {
+        List<String> list = new ArrayList<String>(regions.keySet());
+        Collections.sort(list);
+        return list;
+    }
+
+    /**
+     * Gets the set of available region IDs for this group that are valid for the specified version.
      * <p>
      * The available versions are returned sorted from oldest to newest using
      * an ordering determined by a <code>String</code> based sort.
      * <p>
      * If the version is not found, an empty list is returned.
      *
-     * @param versionID  the time zone version ID, not null
+     * @param versionID  the time zone version ID, empty means any version, not null
      * @return an independent, modifiable list of available regions sorted alphabetically, never null
      */
     public List<String> getAvailableRegionIDs(String versionID) {
         ZoneRules.checkNotNull(versionID, "Version ID must not be null");
+        if (versionID.length() == 0) {
+            return getAvailableRegionIDs();
+        }
         Set<String> set = new HashSet<String>();
         for (Entry<String, TreeMap<String, ZoneRulesDataProvider>> entry : regions.entrySet()) {
             if (entry.getValue().containsKey(versionID)) {
@@ -389,7 +426,7 @@ public final class ZoneRulesGroup {
      *
      * @param regionID  the time zone region ID, not null
      * @return the latest version ID for the region, never null
-     * @throws CalendricalException if there are no versions for this group
+     * @throws CalendricalException if the region ID is not found
      */
     public String getLatestVersionID(String regionID) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");
@@ -402,11 +439,10 @@ public final class ZoneRulesGroup {
      * <p>
      * The available versions are returned sorted from oldest to newest using
      * an ordering determined by a <code>String</code> based sort.
-     * <p>
-     * If the region is not found, an empty list is returned.
      *
      * @param regionID  the time zone region ID, not null
      * @return an independent, modifiable list of available versions from oldest to newest, never null
+     * @throws CalendricalException if the region ID is not found
      */
     public List<String> getAvailableVersionIDs(String regionID) {
         ZoneRules.checkNotNull(regionID, "Region ID must not be null");

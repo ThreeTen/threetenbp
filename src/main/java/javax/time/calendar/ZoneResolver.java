@@ -33,6 +33,7 @@ package javax.time.calendar;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.zone.ZoneOffsetTransition;
+import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 
 /**
@@ -80,46 +81,26 @@ public abstract class ZoneResolver {
     public final OffsetDateTime resolve(
             TimeZone zone,
             LocalDateTime newDateTime,
-            OffsetDateTime oldDateTime) {
-        return doResolveDate(zone, newDateTime, oldDateTime);
-    }
-
-    /**
-     * Validates the result of {@link #handleResolve}.
-     * <p>
-     * This method forwards to the {@link #handleResolve} method after calculating
-     * the offset info for the local date-time. Once <code>handleResolve()</code> is
-     * complete, the result is validated.
-     *
-     * @param zone  the time zone, not null
-     * @param newDateTime  the new date-time, not null
-     * @param oldDateTime  the old date-time before the adjustment, may be null
-     * @return the resolved values, returned as a (year,month,day) tuple, never null
-     * @throws CalendricalException if a field cannot be resolved
-     */
-    OffsetDateTime doResolveDate(
-            TimeZone zone,
-            LocalDateTime newDateTime,
-            OffsetDateTime oldDateTime) {
+            ZonedDateTime oldDateTime) {
         
-        OffsetInfo info = zone.getRules().getOffsetInfo(newDateTime);
+        // ensure rules used are appropriate if zone has a floating version
+        ZoneRules rules = (oldDateTime != null ? oldDateTime.getApplicableRules() : zone.getRules());
+        
+        OffsetInfo info = rules.getOffsetInfo(newDateTime);
         if (info.isDiscontinuity() == false) {
             return OffsetDateTime.dateTime(newDateTime, info.getOffset());
         }
         ZoneOffsetTransition discontinuity = info.getDiscontinuity();
         OffsetDateTime result = discontinuity.isGap() ?
-            handleGap(zone, discontinuity, newDateTime, oldDateTime) :
-            handleOverlap(zone, discontinuity, newDateTime, oldDateTime);
+            handleGap(zone, rules, discontinuity, newDateTime, oldDateTime != null ? oldDateTime.toOffsetDateTime() : null) :
+            handleOverlap(zone, rules, discontinuity, newDateTime, oldDateTime != null ? oldDateTime.toOffsetDateTime() : null);
         
         // validate the result
         if (result == null) {
             throw new CalendricalException(
                     "ZoneResolver implementation must not return null: " + getClass().getName());
         }
-        if (result.toLocalDateTime().equals(newDateTime) == false) {
-            info = zone.getRules().getOffsetInfo(result.toLocalDateTime());
-        }
-        if (info.isValidOffset(result.getOffset()) == false) {
+        if (zone.isValidFor(result) == false) {
             throw new CalendricalException(
                     "ZoneResolver implementation must return a valid date-time and offset for the zone: " + getClass().getName());
         }
@@ -128,33 +109,31 @@ public abstract class ZoneResolver {
 
     //-----------------------------------------------------------------------
     /**
-     * Overridable method to allow the implementation of a strategy for
-     * selecting an offset to use for a local date-time when a gap occurs.
+     * Defines the strategy for selecting an offset to use for a local date-time
+     * when the local date-time is in a local time-line gap.
      * <p>
      * Implementations of method handles missing date-times by either throwing an
      * exception or changing the local date-time.
-     * Two additional parameters are available to help with the logic.
      * <p>
-     * Firstly, the discontinuity, which represents the discontinuity in the local
-     * time-line that needs to be resolved. This is the result from
-     * <code>zone.getOffsetInfo(newDateTime)</code> and is provided to improve
-     * performance.
+     * Information is provided to assist with the strategy.
+     * This includes the zone rules, information about the gap and the old date-time.
      * <p>
-     * Secondly, the old date-time, which is the original offset date-time that
-     * any adjustment started from. Example adjustments are changing a field,
-     * addition or subtraction. This parameter will be null if there is no
-     * original date-time, such as during construction.
+     * The old date-time is provided if this strategy is called as a result of an
+     * adjustment, such as changing a field, addition or subtraction.
+     * This parameter will be null if there is no original date-time, such as
+     * during construction of a <code>ZonedDateTime</code>.
      * <p>
      * After the completion of this method, the result will be validated.
      * <p>
      * A typical implementation might be:
      * <pre>
-     *  return OffsetDateTime.dateTime(discontinuity.getTransition(), discontinuity.getOffsetAfter());
+     *  return gapInfo.getDateTimeAfter();
      * </pre>
-     * This implementation handles the gap by returning the transition instant.
+     * This implementation works by returning the first valid date-time after the gap.
      *
      * @param zone  the time zone, not null
-     * @param discontinuity  the discontinuity for the newDateTime, not null
+     * @param rules  the applicable zone rules, not null
+     * @param gapInfo  the information about the gap for the newDateTime, not null
      * @param newDateTime  the new local date-time, not null
      * @param oldDateTime  the old offset date-time before the adjustment, may be null
      * @return the resolved offset date-time, never null
@@ -162,13 +141,14 @@ public abstract class ZoneResolver {
      */
     protected abstract OffsetDateTime handleGap(
             TimeZone zone,
-            ZoneOffsetTransition discontinuity,
+            ZoneRules rules,
+            ZoneOffsetTransition gapInfo,
             LocalDateTime newDateTime,
             OffsetDateTime oldDateTime);
 
     /**
-     * Overridable method to allow the implementation of a strategy for
-     * selecting an offset to use for a local date-time when an overlap occurs.
+     * Defines the strategy for selecting an offset to use for a local date-time
+     * when the local date-time is in a local time-line overlap.
      * <p>
      * Implementations of method handle overlapping date-times by throwing an
      * exception, selecting the appropriate offset or changing the local date-time.
@@ -198,7 +178,8 @@ public abstract class ZoneResolver {
      * earlier of the two offsets.
      *
      * @param zone  the time zone, not null
-     * @param discontinuity  the discontinuity for the newDateTime, not null
+     * @param rules  the applicable zone rules, not null
+     * @param overlapInfo  the information about the overlap for the newDateTime, not null
      * @param newDateTime  the new local date-time, not null
      * @param oldDateTime  the old offset date-time before the adjustment, may be null
      * @return the resolved offset date-time, never null
@@ -206,7 +187,8 @@ public abstract class ZoneResolver {
      */
     protected abstract OffsetDateTime handleOverlap(
             TimeZone zone,
-            ZoneOffsetTransition discontinuity,
+            ZoneRules rules,
+            ZoneOffsetTransition overlapInfo,
             LocalDateTime newDateTime,
             OffsetDateTime oldDateTime);
 
