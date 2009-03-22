@@ -383,12 +383,13 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * outer minimum and maximum range for the field is validated.
      * <p>
      * This method performs the same check as {@link #checkValue(long)}.
+     * The implementation uses {@link #isValidValue(int)}.
      *
      * @param value  the value to check
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public void checkValue(int value) {
-        if (value < getMinimumValue() || value > getMaximumValue()) {
+        if (isValidValue(value) == false) {
             throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
         }
     }
@@ -400,13 +401,14 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * outer minimum and maximum range for the field is validated.
      * <p>
      * This method performs the same check as {@link #checkValue(int)}.
+     * The implementation uses {@link #isValidValue(long)}.
      *
      * @param value  the value to check
      * @return the value cast to an int
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public int checkValue(long value) {
-        if (value < getMinimumValue() || value > getMaximumValue()) {
+        if (isValidValue(value) == false) {
             throw new IllegalCalendarFieldValueException(this, value, getMinimumValue(), getMaximumValue());
         }
         return (int) value;
