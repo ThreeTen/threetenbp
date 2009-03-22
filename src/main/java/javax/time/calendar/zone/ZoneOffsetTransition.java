@@ -41,8 +41,8 @@ import javax.time.period.Period;
 /**
  * A transition between two offsets caused by a discontinuity in the local time-line.
  * <p>
- * A discontinuity in the local time-line is normally the result of a daylight
- * savings cutover, where a gap occurs in spring and an overlap occurs in autumn.
+ * A transition between two offsets is normally the result of a daylight savings cutover.
+ * The discontinuity is normally a gap in spring and an overlap in autumn.
  * <code>ZoneOffsetTransition</code> models the transition between the two offsets.
  * <p>
  * There are two types of transition - a gap and an overlap.
