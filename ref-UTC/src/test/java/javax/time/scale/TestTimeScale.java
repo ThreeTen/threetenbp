@@ -15,18 +15,18 @@ public class TestTimeScale {
 
     public static void main(String[] args) {
         time(TAI.SCALE, 0);
-        time(UTC.SCALE, 0);
+        time(TrueUTC.SCALE, 0);
         time(UTC_NoEpochLeaps.SCALE, 0);
         time(TAI.SCALE, TestScale.date(2009, 1, 1));
-        time(UTC.SCALE, TestScale.date(2009, 1, 1));
+        time(TrueUTC.SCALE, TestScale.date(2009, 1, 1));
         time(UTC_NoEpochLeaps.SCALE, TestScale.date(2009, 1, 1));
         time(UTC_NoEpochLeaps.SCALE, TestScale.date(2008, 12, 31)+ TestScale.time(23,59,59));
         time(UTC_NoEpochLeaps.SCALE, TestScale.date(1971, 12, 31)+ TestScale.time(23,59,59));
         time(UTC_NoEpochLeaps.SCALE, TestScale.date(1972, 1, 1));
 
-        convertToInstant(UTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
-        convertToInstant(UTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
-        convertToInstant(UTC.SCALE.instant(date(2009, 1, 1), 0));
+        convertToInstant(TrueUTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
+        convertToInstant(TrueUTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
+        convertToInstant(TrueUTC.SCALE.instant(date(2009, 1, 1), 0));
         convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
         convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
         convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2009, 1, 1), 0));
@@ -40,8 +40,8 @@ public class TestTimeScale {
     private static void time(TimeScale scale, long epochSeconds) {
         Instant t = Instant.instant(scale.instant(epochSeconds, 0));
         System.out.print(scale.getName()+" "+epochSeconds+" ==> "+t);
-        if (scale != UTC.SCALE) {
-            Instant utc = UTC.SCALE.instant(t);
+        if (scale != TrueUTC.SCALE) {
+            Instant utc = TrueUTC.SCALE.instant(t);
             System.out.print("; UTC: "+utc.getEpochSeconds());
             int nanos = utc.getNanoOfSecond();
             if (nanos != 0) {

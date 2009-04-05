@@ -15,11 +15,11 @@ total number of leap seconds.
      * TAI-10s (10 seconds was the initial offset) for times after 1972-01-01T00:00.
  * @author Mark Thornton
  */
-public class UTC extends AbstractUTC implements Serializable {
-    public static final UTC SCALE = new UTC();
+public class TrueUTC extends AbstractUTC implements Serializable {
+    public static final TrueUTC SCALE = new TrueUTC();
     public static final Instant EPOCH = new Instant(0, 0, 0);
 
-    private UTC() {}
+    private TrueUTC() {}
 
     protected Object readResolve() {
         return SCALE;
@@ -27,7 +27,7 @@ public class UTC extends AbstractUTC implements Serializable {
 
     @Override
     public String getName() {
-        return "UTC";
+        return "TrueUTC";
     }
 
     public Instant getEpoch() {
@@ -139,7 +139,7 @@ public class UTC extends AbstractUTC implements Serializable {
             return super.getEpochSeconds()-includedLeapSeconds-getLeapSecond();
         }
 
-        public UTC getScale() {
+        public TrueUTC getScale() {
             return SCALE;
         }
 

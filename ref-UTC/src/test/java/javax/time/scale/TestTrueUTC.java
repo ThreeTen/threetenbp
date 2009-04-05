@@ -30,15 +30,15 @@ public class TestTrueUTC {
     }
 
     public void testConvertUTC() {
-        testScaleConversion(UTC.SCALE, date(1961, 1, 1), TAI.SCALE, 1, 422818000);
-        testScaleConversion(UTC.SCALE, date(1970, 1, 1), TAI.SCALE, 8, 82000);
-        testScaleConversion(UTC.SCALE, date(1972, 1, 1)-1, TAI.SCALE, 9, 892241970);    // last irregular jump 0.107758 TAI, + 30ns for the second
-        testScaleConversion(UTC.SCALE, date(1972, 1, 1), TAI.SCALE, 10, 0);
-        testScaleConversion(UTC.SCALE, date(1972, 7, 1)-1, TAI.SCALE, 10, 0);
-        testScaleConversion(UTC.SCALE, date(1972, 7, 1), TAI.SCALE, 11, 0);
-        testScaleConversion(UTC.SCALE, date(2009, 1, 1)-1, TAI.SCALE, 33, 0);
-        testScaleConversion(UTC.SCALE, date(2009, 1, 1), TAI.SCALE, 34, 0);
-        testScaleConversion(TAI.SCALE, date(1970, 1, 1), UTC.SCALE, -9, 999918240); // (-8.000081760)
+        testScaleConversion(TrueUTC.SCALE, date(1961, 1, 1), TAI.SCALE, 1, 422818000);
+        testScaleConversion(TrueUTC.SCALE, date(1970, 1, 1), TAI.SCALE, 8, 82000);
+        testScaleConversion(TrueUTC.SCALE, date(1972, 1, 1)-1, TAI.SCALE, 9, 892241970);    // last irregular jump 0.107758 TAI, + 30ns for the second
+        testScaleConversion(TrueUTC.SCALE, date(1972, 1, 1), TAI.SCALE, 10, 0);
+        testScaleConversion(TrueUTC.SCALE, date(1972, 7, 1)-1, TAI.SCALE, 10, 0);
+        testScaleConversion(TrueUTC.SCALE, date(1972, 7, 1), TAI.SCALE, 11, 0);
+        testScaleConversion(TrueUTC.SCALE, date(2009, 1, 1)-1, TAI.SCALE, 33, 0);
+        testScaleConversion(TrueUTC.SCALE, date(2009, 1, 1), TAI.SCALE, 34, 0);
+        testScaleConversion(TAI.SCALE, date(1970, 1, 1), TrueUTC.SCALE, -9, 999918240); // (-8.000081760)
     }
 
     private void testHistory(TimeScale scale, int year, int month, int day, double baseDelta, int baseMJD, double rate)
@@ -75,7 +75,7 @@ public class TestTrueUTC {
 
     public void testHistory()
     {
-        testHistoryUTC(UTC.SCALE);
+        testHistoryUTC(TrueUTC.SCALE);
         testHistoryUTC(UTC_NoLeaps.SCALE);
     }
 
@@ -118,39 +118,39 @@ public class TestTrueUTC {
 
     public void testOldDiscontinuities()
     {
-        testOldDiscontinuities(UTC.SCALE);
+        testOldDiscontinuities(TrueUTC.SCALE);
         testOldDiscontinuities(UTC_NoLeaps.SCALE);
     }
 
     public void testLeapSeconds() {
-        testDiscontinuity(UTC.SCALE, 1972, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1973, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1974, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1975, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1976, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1977, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1978, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1979, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1980, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1981, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1982, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1983, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1985, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1988, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1990, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1991, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1992, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1993, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1994, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1996, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1997, 7, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 1999, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 2006, 1, 1, NANOS_PER_SECOND);
-        testDiscontinuity(UTC.SCALE, 2009, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1972, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1973, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1974, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1975, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1976, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1977, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1978, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1979, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1980, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1981, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1982, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1983, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1985, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1988, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1990, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1991, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1992, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1993, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1994, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1996, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1997, 7, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 1999, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 2006, 1, 1, NANOS_PER_SECOND);
+        testDiscontinuity(TrueUTC.SCALE, 2009, 1, 1, NANOS_PER_SECOND);
     }
 
     public void testArithmetic() {
-        TimeScale scale = UTC.SCALE;
+        TimeScale scale = TrueUTC.SCALE;
         long epochSeconds = date(2009, 1, 1);  // immediately after a leap second
         Instant a = scale.instant(epochSeconds);
         assertEquals(a.getEpochSeconds(), epochSeconds);
