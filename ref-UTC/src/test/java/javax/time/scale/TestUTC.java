@@ -14,7 +14,7 @@ import static javax.time.scale.TestScale.*;
 public class TestUTC {
     public static void main(String[] args) {
         long epochSeconds = date(2008, 12, 31)+time(23,59,59)+33;
-        TimeScale[] scales = {TAI.SCALE, TrueUTC.SCALE, UTC_NoEpochLeaps.SCALE, UTC_NoLeaps.SCALE};
+        TimeScale[] scales = {TAI.SCALE, TrueUTC.SCALE, UTC_NoEpochLeaps.SCALE, UTC.SCALE};
         for (int i=0; i<13; i++) {
             Instant tai = TAI.SCALE.instant(epochSeconds + i / 4, (i % 4) * 250000000);
             Instant t = Instant.instant(tai);

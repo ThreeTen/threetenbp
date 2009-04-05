@@ -11,7 +11,7 @@ public class TestScaleArithmetic {
 
     public static void main(String[] args) {
         Duration step = Duration.millisDuration(1000);
-        TimeScale[] scales = {TrueUTC.SCALE, TAI.SCALE, UTC_NoLeaps.SCALE, UTC_NoEpochLeaps.SCALE};
+        TimeScale[] scales = {TrueUTC.SCALE, TAI.SCALE, UTC.SCALE, UTC_NoEpochLeaps.SCALE};
         Instant a = TrueUTC.SCALE.instant(date(2008, 12, 31) + time(23, 59, 59), 0); // 2008-12-31T23:59:59Z
         Instant b = TrueUTC.SCALE.instant(date(1971, 12, 31) + time(23, 59, 58), 0); // 1971-12-31T23:59:58Z
         for (TimeScale ts: scales) {

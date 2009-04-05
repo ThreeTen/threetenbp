@@ -1,7 +1,7 @@
 package javax.time;
 
 import javax.time.calendar.CalendarConversionException;
-import javax.time.scale.UTC_NoLeaps;
+import javax.time.scale.UTC;
 import javax.time.scale.InstantFormat;
 import java.io.Serializable;
 
@@ -28,7 +28,7 @@ public abstract class Instant implements InstantProvider, Comparable<Instant>, S
     private final int nanoOfSecond;
 
     public static TimeScale getDefaultScale() {
-        return UTC_NoLeaps.SCALE;
+        return UTC.SCALE;
     }
 
     public static Instant getDefaultEpoch() {

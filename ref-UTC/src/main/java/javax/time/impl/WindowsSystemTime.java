@@ -3,7 +3,7 @@ package javax.time.impl;
 import javax.time.TimeSource;
 import javax.time.Instant;
 import javax.time.TimeScale;
-import javax.time.scale.UTC_NoLeaps;
+import javax.time.scale.UTC;
 
 /** TimeSource based on Windows System Time 
  */
@@ -47,7 +47,7 @@ public class WindowsSystemTime extends TimeSource {
             }
         }
         nanoOfSecond *= NANOS_PER_FILETIME;
-        return UTC_NoLeaps.SCALE.instant(seconds-SECONDS_EPOCH_FROM_FILETIME, nanoOfSecond);
+        return UTC.SCALE.instant(seconds-SECONDS_EPOCH_FROM_FILETIME, nanoOfSecond);
     }
     
     static {
@@ -55,7 +55,7 @@ public class WindowsSystemTime extends TimeSource {
     }
 
     public TimeScale getScale() {
-        return UTC_NoLeaps.SCALE;
+        return UTC.SCALE;
     }
 
     public Instant instant() {

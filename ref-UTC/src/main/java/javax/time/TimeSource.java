@@ -2,7 +2,7 @@ package javax.time;
 
 import javax.time.TimeScale;
 import javax.time.Instant;
-import javax.time.scale.UTC_NoLeaps;
+import javax.time.scale.UTC;
 import javax.time.impl.WindowsSystemTime;
 
 /**
@@ -31,7 +31,7 @@ public abstract class TimeSource {
     private static class JavaTimeSource extends TimeSource {
         static final JavaTimeSource SOURCE = new JavaTimeSource();
         public TimeScale getScale() {
-            return UTC_NoLeaps.SCALE;
+            return UTC.SCALE;
         }
 
         public Instant instant() {
@@ -42,7 +42,7 @@ public abstract class TimeSource {
                 nanos += 1000;
                 seconds--;
             }
-            return UTC_NoLeaps.SCALE.instant(seconds, nanos*1000000);
+            return UTC.SCALE.instant(seconds, nanos*1000000);
         }
     }
 

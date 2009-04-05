@@ -76,7 +76,7 @@ public class TestTrueUTC {
     public void testHistory()
     {
         testHistoryUTC(TrueUTC.SCALE);
-        testHistoryUTC(UTC_NoLeaps.SCALE);
+        testHistoryUTC(UTC.SCALE);
     }
 
     private void testDiscontinuity(TimeScale scale, int year, int month, int day, long stepNanoseconds)
@@ -119,7 +119,7 @@ public class TestTrueUTC {
     public void testOldDiscontinuities()
     {
         testOldDiscontinuities(TrueUTC.SCALE);
-        testOldDiscontinuities(UTC_NoLeaps.SCALE);
+        testOldDiscontinuities(UTC.SCALE);
     }
 
     public void testLeapSeconds() {
