@@ -55,7 +55,7 @@ public class UTC extends AbstractUTC implements Serializable {
 
     @Override
     public String getName() {
-        return "UTC_NoLeaps";
+        return "UTC";
     }
 
     public static class Instant extends javax.time.Instant {
