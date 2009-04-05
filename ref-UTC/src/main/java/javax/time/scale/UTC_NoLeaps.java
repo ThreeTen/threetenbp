@@ -1,6 +1,7 @@
 package javax.time.scale;
 
 import javax.time.MathUtils;
+import javax.time.Instant;
 import java.io.Serializable;
 
 /** UTC with no accounting for leap seconds at all.
@@ -9,13 +10,13 @@ import java.io.Serializable;
  * two seconds before midnight run at half speed.
  * @author Mark Thornton
  */
-public class UTC_NoLeaps extends AbstractUTC<UTC_NoLeaps.Instant> implements Serializable {
+public class UTC_NoLeaps extends AbstractUTC implements Serializable {
     public static final UTC_NoLeaps SCALE = new UTC_NoLeaps();
     public static final Instant EPOCH = new Instant(0, 0);
 
     private UTC_NoLeaps() {}
 
-    private Object readResolve() {
+    protected Object readResolve() {
         return SCALE;
     }
 
@@ -23,10 +24,18 @@ public class UTC_NoLeaps extends AbstractUTC<UTC_NoLeaps.Instant> implements Ser
         return EPOCH;
     }
 
+    protected javax.time.Instant uncheckedInstant(long simpleEpochSeconds, int nanoOfSecond) {
+        return new Instant(simpleEpochSeconds, nanoOfSecond);
+    }
+
+    protected Instant newInstant(long epochSeconds, int nanoOfSecond) {
+        return new Instant(epochSeconds, nanoOfSecond);
+    }
+
     @Override
     protected Instant fromTAI(TAI.Instant tsiTAI) {
         if (InstantComparator.INSTANCE.compare(tsiTAI, getLeapEraInstant()) < 0) {
-            return super.fromTAI(tsiTAI);
+            return (Instant)super.fromTAI(tsiTAI);
         }
         Entry entry = findEntry(tsiTAI);
         long s = tsiTAI.getEpochSeconds() - entry.getDeltaSeconds();
@@ -37,14 +46,12 @@ public class UTC_NoLeaps extends AbstractUTC<UTC_NoLeaps.Instant> implements Ser
     }
 
     @Override
-    protected TAI.Instant toTAI(Instant tsi) {
-        if (tsi.getEpochSeconds() != tsi.getSimpleEpochSeconds() || tsi.getLeapSecond() != 0)
-            throw new IllegalArgumentException("Time scale does not include leap seconds");
+    protected TAI.Instant toTAI(javax.time.Instant tsi) {
         if (tsi.getEpochSeconds() < leapEraSeconds)
             return super.toTAI(tsi);
         long s = tsi.getEpochSeconds();
         Entry entry = findEntry(s);
-        return TAI.SCALE.instant(MathUtils.safeAdd(s, entry.getDeltaSeconds()), tsi.getNanoOfSecond());
+        return new TAI.Instant(MathUtils.safeAdd(s, entry.getDeltaSeconds()), tsi.getNanoOfSecond());
     }
 
     @Override
@@ -52,7 +59,7 @@ public class UTC_NoLeaps extends AbstractUTC<UTC_NoLeaps.Instant> implements Ser
         return "UTC_NoLeaps";
     }
 
-    public static class Instant extends AbstractInstant<Instant> {
+    public static class Instant extends javax.time.Instant {
         Instant(long epochSeconds, int nanoOfSecond) {
             super(epochSeconds, nanoOfSecond);
         }
@@ -61,8 +68,5 @@ public class UTC_NoLeaps extends AbstractUTC<UTC_NoLeaps.Instant> implements Ser
             return SCALE;
         }
 
-        protected Instant factory(long epochSeconds, int nanoOfSecond, int leapSecond) {
-            return new Instant(epochSeconds, nanoOfSecond);
-        }
     }
 }

@@ -1,8 +1,8 @@
 package javax.time.impl;
 
 import javax.time.TimeSource;
-import javax.time.scale.TimeScale;
-import javax.time.scale.AbstractInstant;
+import javax.time.Instant;
+import javax.time.TimeScale;
 import javax.time.scale.UTC_NoLeaps;
 
 /** TimeSource based on Windows System Time 
@@ -30,7 +30,7 @@ public class WindowsSystemTime extends TimeSource {
     static native long get();
     static native long getAdjustment();
 
-    static UTC_NoLeaps.Instant instantFromFileTime(long filetime) {
+    static Instant instantFromFileTime(long filetime) {
         long seconds;
         int nanoOfSecond;
         if (filetime >= 0) {
@@ -54,11 +54,11 @@ public class WindowsSystemTime extends TimeSource {
         System.loadLibrary("lib/win32/jsr-310");
     }
 
-    public TimeScale<?> getScale() {
+    public TimeScale getScale() {
         return UTC_NoLeaps.SCALE;
     }
 
-    public UTC_NoLeaps.Instant instant() {
+    public Instant instant() {
         return instantFromFileTime(get());
     }
 }

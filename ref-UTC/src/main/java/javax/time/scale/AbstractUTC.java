@@ -1,7 +1,8 @@
 package javax.time.scale;
 
-import javax.time.scale.TimeScale;
+import javax.time.TimeScale;
 import javax.time.MathUtils;
+import javax.time.Instant;
 import java.util.List;
 import java.util.Collections;
 import java.util.Arrays;
@@ -11,13 +12,13 @@ import java.util.Arrays;
  * parity in 1958-01-01 (when TAI matched UT2).
  * @author Mark Thornton
  */
-public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScale<T> {
+public abstract class AbstractUTC extends TimeScale {
     private static final int MJD19700101 = Scale.modifiedJulianDay(1970, 1, 1);
     private static final long SECONDS_PER_DAY = 86400L;
     protected static final int leapEraDelta = 10;
     private static final Entry[] entries;
-    private static final AbstractInstant[] startInstants;
-    private static final AbstractInstant leapEraInstant;
+    private static final Instant[] startInstants;
+    private static final Instant leapEraInstant;
     public static final List<Entry> UTC_ENTRIES;
 
     protected static final long leapEraSeconds;
@@ -32,9 +33,9 @@ public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScal
             entries[i-1].next = entries[i];
             entries[i].previous = entries[i-1];
         }
-        startInstants = new AbstractInstant[entries.length];
+        startInstants = new Instant[entries.length];
         Entry leapEraEntry = null;
-        AbstractInstant startLeapEra = null;
+        Instant startLeapEra = null;
         for (int i=0; i<entries.length; i++) {
             AbstractUTC.Entry e = entries[i];
             e.computeTerms();
@@ -57,7 +58,7 @@ public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScal
      *
      * @return Instant after which UTC is adjusted by whole seconds.
      */
-    public static AbstractInstant getLeapEraInstant() {return leapEraInstant;}
+    public static Instant getLeapEraInstant() {return leapEraInstant;}
 
     /** find entry containing t.
      *
@@ -65,7 +66,7 @@ public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScal
      * @return null if t is before all defined entries, otherwise latest entry where the start second
      * is equal to or precedes t.
      */
-    public static AbstractUTC.Entry findEntry(AbstractInstant t) {
+    public static AbstractUTC.Entry findEntry(Instant t) {
         for (int i=startInstants.length; --i >= 0;) {
             if (InstantComparator.INSTANCE.compare(startInstants[i], t) <= 0)
                 return entries[i];
@@ -81,34 +82,40 @@ public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScal
         return null;
     }
 
-    protected T fromTAI(TAI.Instant tsiTAI) {
+    protected abstract Instant newInstant(long epochSeconds, int nanoOfSecond);
+
+    protected Instant fromTAI(TAI.Instant tsiTAI) {
         // if before 1961 simply return input
         Entry entry = findEntry(tsiTAI);
         if (entry == null) {
-            return getEpoch().factory(tsiTAI.getEpochSeconds(), tsiTAI.getNanoOfSecond(), 0);
+            return newInstant(tsiTAI.getEpochSeconds(), tsiTAI.getNanoOfSecond());
         }
         long s = tsiTAI.getEpochSeconds();
         int nanos = tsiTAI.getNanoOfSecond();
         long delta = entry.getDeltaTAI(s, nanos) - nanos;
         assert delta > 0;   // true for 1961 - 1972
         nanos = (int)(delta%NANOS_PER_SECOND);
-        if (nanos < 0)
-            nanos += NANOS_PER_SECOND;
-        return getEpoch().factory(s-(delta-nanos)/NANOS_PER_SECOND, nanos, 0);
+        s -= (delta-nanos)/NANOS_PER_SECOND;
+        if (nanos > 0)
+        {
+            nanos = NANOS_PER_SECOND - nanos;
+            s--;
+        }
+        return newInstant(s, nanos);
     }
 
-    protected TAI.Instant toTAI(T tsi) {
+    protected TAI.Instant toTAI(Instant tsi) {
         if (tsi.getLeapSecond() != 0)
             throw new IllegalArgumentException("Invalid leap second");
         // if before 1961 simply return input
         assert tsi.getEpochSeconds() < leapEraSeconds;
         if (tsi.getEpochSeconds() < oldEraSeconds) {
-            return TAI.SCALE.instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
+            return new TAI.Instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
         }
         Entry entry = findEntry(tsi.getEpochSeconds());
         long delta = entry.getDelta(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
         delta += tsi.getNanoOfSecond();
-        return TAI.SCALE.instant(MathUtils.safeAdd(tsi.getEpochSeconds(), delta/NANOS_PER_SECOND), (int)(delta % NANOS_PER_SECOND));
+        return new TAI.Instant(MathUtils.safeAdd(tsi.getEpochSeconds(), delta/NANOS_PER_SECOND), (int)(delta % NANOS_PER_SECOND));
     }
 
     protected Entry findEntryUTC(long utcEpochSeconds) {
@@ -217,7 +224,7 @@ public abstract class AbstractUTC<T extends AbstractInstant<T>> extends TimeScal
         public long getDelta(long epochSeconds, int nanoOfSecond) {
             // This requires input resolution of 0.01s to achieve nanosecond accuracy in the output
             if (hasRate)
-                return t0+Math.round(t1*(epochSeconds-x0)+1e-9*nanoOfSecond);
+                return t0+Math.round(t1*((epochSeconds-x0)+1e-9*nanoOfSecond));
             else
                 return t0;
         }

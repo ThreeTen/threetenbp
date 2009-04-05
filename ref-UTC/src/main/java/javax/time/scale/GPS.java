@@ -1,13 +1,14 @@
 package javax.time.scale;
 
-import javax.time.scale.TimeScale;
+import javax.time.TimeScale;
 import javax.time.MathUtils;
+import javax.time.Instant;
 import java.io.Serializable;
 
 /** TimeScale used by GPS navigation system.
  * @author Mark Thornton
  */
-public class GPS extends TimeScale<GPS.Instant> implements Serializable {
+public class GPS extends TimeScale implements Serializable {
     public static final GPS SCALE = new GPS();
     public static final Instant EPOCH = new Instant(0, 0);
 
@@ -15,7 +16,7 @@ public class GPS extends TimeScale<GPS.Instant> implements Serializable {
 
     private GPS() {}
 
-    private Object readResolve() {
+    protected Object readResolve() {
         return SCALE;
     }
 
@@ -27,25 +28,25 @@ public class GPS extends TimeScale<GPS.Instant> implements Serializable {
         return EPOCH;
     }
 
-    protected Instant fromTAI(TAI.Instant tsiTAI) {
+    protected javax.time.Instant uncheckedInstant(long simpleEpochSeconds, int nanoOfSecond) {
+        return new Instant(simpleEpochSeconds, nanoOfSecond);
+    }
+
+    protected javax.time.Instant fromTAI(TAI.Instant tsiTAI) {
         return new Instant(MathUtils.safeSubtract(tsiTAI.getEpochSeconds(), TAI_GPS), tsiTAI.getNanoOfSecond());
     }
 
-    protected TAI.Instant toTAI(Instant t) {
-        return TAI.SCALE.instant(MathUtils.safeAdd(t.getEpochSeconds(), TAI_GPS), t.getNanoOfSecond());
+    protected TAI.Instant toTAI(javax.time.Instant t) {
+        return TAI.SCALE.uncheckedInstant(MathUtils.safeAdd(t.getEpochSeconds(), TAI_GPS), t.getNanoOfSecond());
     }
 
-    public static class Instant extends AbstractInstant<Instant> {
+    public static class Instant extends javax.time.Instant {
         Instant(long epochSeconds, int nanoOfSecond) {
             super(epochSeconds, nanoOfSecond);
         }
 
         public GPS getScale() {
             return SCALE;
-        }
-
-        protected Instant factory(long epochSeconds, int nanoOfSecond, int leapSecond) {
-            return new Instant(epochSeconds, nanoOfSecond);
         }
     }
 }

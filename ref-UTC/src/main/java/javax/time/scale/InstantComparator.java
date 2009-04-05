@@ -1,13 +1,14 @@
 package javax.time.scale;
 
+import javax.time.Instant;
 import java.util.Comparator;
 
 /** Compare AbstractInstant's
  */
-class InstantComparator implements Comparator<AbstractInstant> {
+class InstantComparator implements Comparator<Instant> {
     public static final InstantComparator INSTANCE = new InstantComparator();
 
-    public int compare(AbstractInstant a, AbstractInstant b) {
+    public int compare(Instant a, Instant b) {
         if (a.getEpochSeconds() != b.getEpochSeconds()) {
             return a.getEpochSeconds() < b.getEpochSeconds() ? -1 : 1;
         }

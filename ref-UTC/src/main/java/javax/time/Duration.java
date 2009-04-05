@@ -31,7 +31,6 @@
  */
 package javax.time;
 
-import javax.time.scale.TimeScale;
 import java.io.Serializable;
 
 /**

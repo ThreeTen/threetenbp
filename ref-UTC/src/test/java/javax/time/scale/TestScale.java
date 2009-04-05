@@ -19,6 +19,10 @@ class TestScale {
         return (hours*60+minutes)*60+seconds;
     }
 
+    static Instant TAI(int year, int month, int day) {
+        return TAI.SCALE.instant(date(year, month, day));
+    }
+
     public static void main(String[] args) {
         System.out.println(Instant.instant(Long.MAX_VALUE));
         System.out.println(TAI.SCALE.instant(Long.MIN_VALUE, 0));
@@ -33,7 +37,7 @@ class TestScale {
         System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(2000, 2, 29), 0));
         System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(970, 2, 29), 0));
         long epochSeconds = date(-1,2,2);
-        AbstractInstant t = UTC_NoEpochLeaps.SCALE.instant(epochSeconds, 0);
+        Instant t = UTC_NoEpochLeaps.SCALE.instant(epochSeconds, 0);
         System.out.println(t.toString());
         System.out.println(Instant.instant(date(-1, 2, 2)));
     }

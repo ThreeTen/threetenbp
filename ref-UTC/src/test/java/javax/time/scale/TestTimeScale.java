@@ -1,6 +1,6 @@
 package javax.time.scale;
 
-import javax.time.scale.TimeScale;
+import javax.time.TimeScale;
 import javax.time.Instant;
 import static javax.time.scale.TestScale.*;
 
@@ -32,16 +32,16 @@ public class TestTimeScale {
         convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2009, 1, 1), 0));
     }
 
-    private static void convertToInstant(AbstractInstant tsi) {
+    private static void convertToInstant(Instant tsi) {
         Instant t = Instant.instant(tsi);
-        System.out.println(tsi.getSimpleEpochSeconds()+"s, "+tsi.getNanoOfSecond()+"ns, leap="+tsi.getLeapSecond()+" ==> "+t);
+        System.out.println(tsi.getEpochSeconds()+"s, "+tsi.getNanoOfSecond()+"ns, leap="+tsi.getLeapSecond()+" ==> "+t);
     }
 
     private static void time(TimeScale scale, long epochSeconds) {
         Instant t = Instant.instant(scale.instant(epochSeconds, 0));
         System.out.print(scale.getName()+" "+epochSeconds+" ==> "+t);
         if (scale != UTC.SCALE) {
-            AbstractInstant utc = UTC.SCALE.instant(t);
+            Instant utc = UTC.SCALE.instant(t);
             System.out.print("; UTC: "+utc.getEpochSeconds());
             int nanos = utc.getNanoOfSecond();
             if (nanos != 0) {

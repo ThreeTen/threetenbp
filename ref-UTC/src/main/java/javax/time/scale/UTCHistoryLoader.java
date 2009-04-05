@@ -153,12 +153,12 @@ class UTCHistoryLoader {
         leapSecond(1988, 1, 1);
         leapSecond(1990, 1, 1);
         leapSecond(1991, 1, 1);
-        leapSecond(1991, 1, 1);
         leapSecond(1992, 7, 1);
         leapSecond(1993, 7, 1);
         leapSecond(1994, 7, 1);
         leapSecond(1996, 1, 1);
         leapSecond(1997, 7, 1);
+        leapSecond(1999, 1, 1);
         leapSecond(2006, 1, 1);
         leapSecond(2009, 1, 1).endExclusive(Long.MAX_VALUE);
     }

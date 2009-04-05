@@ -1,100 +1,38 @@
-/*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
- *
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- *  * Neither the name of JSR-310 nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package javax.time;
 
+import javax.time.calendar.CalendarConversionException;
+import javax.time.scale.UTC_NoLeaps;
+import javax.time.scale.InstantFormat;
 import java.io.Serializable;
 
-import javax.time.calendar.CalendarConversionException;
-import javax.time.scale.AbstractInstant;
-import javax.time.scale.UTC_NoEpochLeaps;
-import javax.time.scale.TimeScale;
-
-/**
- * An instantaneous point on the time-line of the default TimeScale.
- * <p>
- * The Java Time Framework models time as a series of instantaneous events,
- * known as instants, along a single time-line. This class represents one
- * of those instants.
- * <p>
- * Each instant is theoretically an instantaneous event, however for practicality
- * a precision of nanoseconds has been chosen.
- * <p>
- * An instant is always defined with respect to a well-defined fixed point in time,
- * known as the epoch. The Java Time Framework uses the standard Java epoch of
- * 1970-01-01T00:00:00Z.
- * <p>
- * Instant is thread-safe and immutable.
- *
+/** An instant in time on a time scale.
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
+ * @author Mark Thornton
  */
-public final class Instant extends AbstractInstant<Instant>
-        implements InstantProvider, Comparable<Instant>, Serializable {
-    // TODO: Serialized format
-    // TODO: Evaluate hashcode
-    // TODO: Optimise to 2 private subclasses (second/nano & millis)
-    // TODO: Consider BigDecimal
-    // TODO: Check for potential overflows
-
-    /** Coordinated Universal Time without leap seconds.
-     * Epoch seconds do not include leap seconds, however the leapSecond field is used
-     * to distinguish leapSeconds. */
-    public static final TimeScale SCALE = UTC_NoEpochLeaps.SCALE;
-
-    /**
-     * Constant for the 1970-01-01T00:00:00Z epoch instant.
-     */
-    public static final Instant EPOCH = new Instant(0, 0);
+public abstract class Instant implements InstantProvider, Comparable<Instant>, Serializable {
 
     /**
      * Constant for nanos per second.
      */
     private static final int NANOS_PER_SECOND = 1000000000;
+
     /**
-     * Serialization version id.
+     * The number of seconds from the epoch of 1970-01-01T00:00:00Z.
      */
-    private static final long serialVersionUID = -9114640809030911667L;
-
-    /** Leap second indicator.
-     *
+    private final long epochSeconds;
+    /**
+     * The number of nanoseconds, later along the time-line, from the seconds field.
+     * This is always positive, and never exceeds 999,999,999.
      */
-    private final int leapSecond;
+    private final int nanoOfSecond;
 
+    public static TimeScale getDefaultScale() {
+        return UTC_NoLeaps.SCALE;
+    }
 
-    protected Instant factory(long epochSeconds, int nanoOfSecond, int leapSecond) {
-        if (epochSeconds == 0 && nanoOfSecond == 0 && leapSecond == 0)
-            return EPOCH;
-        else
-            return new Instant(epochSeconds, nanoOfSecond, leapSecond);
+    public static Instant getDefaultEpoch() {
+        return getDefaultScale().getEpoch();
     }
 
     //-----------------------------------------------------------------------
@@ -118,33 +56,19 @@ public final class Instant extends AbstractInstant<Instant>
         return provided;
     }
 
-    public static Instant instant(AbstractInstant tsi) {
-        if (tsi instanceof Instant) {
-            return (Instant)tsi;
-        }
-        else if (!SCALE.equals(tsi.getScale())) {
-            tsi = SCALE.instant(tsi);
-        }
-        return new Instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond(), tsi.getLeapSecond());
-    }
-
     /**
-     * Factory method to create an instance of Instant using seconds from the
+     * Factory method to create an instance of Instant, on the default time scale, using seconds from the
      * epoch of 1970-01-01T00:00:00Z with a zero nanosecond fraction.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @return the created Instant, never null
      */
     public static Instant instant(long epochSeconds) {
-        if (epochSeconds == 0) {
-            return EPOCH;
-        }
-
-        return new Instant(epochSeconds, 0);
+        return getDefaultScale().instant(epochSeconds);
     }
 
     /**
-     * Factory method to create an instance of Instant using seconds from the
+     * Factory method to create an instance of Instant, on the default time scale, using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
      * <p>
      * Primitive fractions of seconds can be unintuitive.
@@ -165,24 +89,11 @@ public final class Instant extends AbstractInstant<Instant>
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, int nanoOfSecond) {
-        if (nanoOfSecond >= NANOS_PER_SECOND) {
-            throw new IllegalArgumentException("Nanosecond fraction must not be more than 999,999,999 but was " + nanoOfSecond);
-        }
-        if (nanoOfSecond < 0) {
-            nanoOfSecond += NANOS_PER_SECOND;
-            if (nanoOfSecond <= 0) {
-                throw new IllegalArgumentException("Nanosecond fraction must not be less than -999,999,999 but was " + nanoOfSecond);
-            }
-            epochSeconds = MathUtils.safeDecrement(epochSeconds);
-        }
-        if (epochSeconds == 0 && nanoOfSecond == 0) {
-           return EPOCH;
-        }
-        return new Instant(epochSeconds, nanoOfSecond);
+        return getDefaultScale().instant(epochSeconds, nanoOfSecond);
     }
 
     /**
-     * Factory method to create an instance of Instant using seconds from the
+     * Factory method to create an instance of Instant, on the default time scale, using seconds from the
      * epoch of 1970-01-01T00:00:00Z and fraction of second.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
@@ -191,47 +102,23 @@ public final class Instant extends AbstractInstant<Instant>
      * @throws IllegalArgumentException if fractionOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, double fractionOfSecond) {
-        if (fractionOfSecond <= -1 || fractionOfSecond >= 1) {
-            throw new IllegalArgumentException("Fraction of second must be between -1 and 1 exclusive but was " + fractionOfSecond);
-        }
-        if (epochSeconds == 0 && fractionOfSecond == 0d) {
-            return EPOCH;
-        }
-        int nanos = (int) Math.round(fractionOfSecond * NANOS_PER_SECOND);
-        if (nanos < 0) {
-            nanos += NANOS_PER_SECOND;
-            epochSeconds = MathUtils.safeDecrement(epochSeconds);
-        } else if (nanos == NANOS_PER_SECOND) {
-			nanos = 0;
-			epochSeconds = MathUtils.safeIncrement(epochSeconds);
-		}
-        return new Instant(epochSeconds, nanos);
+        return getDefaultScale().instant(epochSeconds, fractionOfSecond);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Factory method to create an instance of Instant using milliseconds from the
+     * Factory method to create an instance of Instant, on the default time scale, using milliseconds from the
      * epoch of 1970-01-01T00:00:00Z with no further fraction of a second.
      *
      * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
      * @return the created Instant, never null
      */
     public static Instant millisInstant(long epochMillis) {
-        if (epochMillis < 0) {
-            epochMillis++;
-            long epochSeconds = epochMillis / 1000;
-            int millis = ((int) (epochMillis % 1000));  // 0 to -999
-            millis = 999 + millis;  // 0 to 999
-            return new Instant(epochSeconds - 1, millis * 1000000);
-        }
-        if (epochMillis == 0) {
-            return EPOCH;
-        }
-        return new Instant(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000);
+        return getDefaultScale().millisInstant(epochMillis);
     }
 
     /**
-     * Factory method to create an instance of Instant using milliseconds from the
+     * Factory method to create an instance of Instant, on the default time scale, using milliseconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of millisecond.
      *
      * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
@@ -240,51 +127,53 @@ public final class Instant extends AbstractInstant<Instant>
      * @throws IllegalArgumentException if nanoOfMillisecond is not in the range 0 to 999,999
      */
     public static Instant millisInstant(long epochMillis, int nanoOfMillisecond) {
-        if (nanoOfMillisecond < 0) {
-            throw new IllegalArgumentException("NanoOfMillisecond must be positive but was " + nanoOfMillisecond);
-        }
-        if (nanoOfMillisecond > 999999) {
-            throw new IllegalArgumentException("NanoOfMillisecond must not be more than 999,999 but was " + nanoOfMillisecond);
-        }
-        if (epochMillis < 0) {
-            epochMillis++;
-            long epochSeconds = epochMillis / 1000;
-            int millis = ((int) (epochMillis % 1000));  // 0 to -999
-            millis = 999 + millis;  // 0 to 999
-            return new Instant(epochSeconds - 1, millis * 1000000 + nanoOfMillisecond);
-        }
-        if (epochMillis == 0 && nanoOfMillisecond == 0) {
-            return EPOCH;
-        }
-        return new Instant(epochMillis / 1000, ((int) (epochMillis % 1000)) * 1000000 + nanoOfMillisecond);
+        return getDefaultScale().millisInstant(epochMillis, nanoOfMillisecond);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Constructs an instance of Instant using seconds from the epoch of
-     * 1970-01-01T00:00:00Z and nanosecond fraction of second.
+    protected Instant(long epochSeconds, int nanoOfSecond) {
+        this.epochSeconds = epochSeconds;
+        this.nanoOfSecond = nanoOfSecond;
+    }
+
+    /** TimeScale for this instant.
      *
-     * @param epochSeconds  the number of seconds from the epoch
-     * @param nanoOfSecond  the nanoseconds within the second, must be positive
+     * @return associated time scale.
      */
-    private Instant(long epochSeconds, int nanoOfSecond) {
-        super(epochSeconds, nanoOfSecond);
-        this.leapSecond = 0;
+    public abstract TimeScale getScale();
+
+    /**
+     * Gets the number of non leap seconds from the epoch of 1970-01-01T00:00:00Z.
+     * <p>
+     * Instants on the time-line after the epoch are positive, earlier are negative.
+     *
+     * @return the seconds from the epoch
+     */
+    public long getEpochSeconds() {
+        return epochSeconds;
     }
 
-    Instant(long epochSeconds, int nanoOfSecond, int leapSecond) {
-        super(epochSeconds, nanoOfSecond);
-        this.leapSecond = leapSecond;
+    /**
+     * Gets the number of nanoseconds, later along the time-line, from the start
+     * of the second returned by {@link #getEpochSeconds()}.
+     *
+     * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
+     */
+    public int getNanoOfSecond() {
+        return nanoOfSecond;
     }
 
-    public TimeScale getScale() {
-        return SCALE;
-    }
-
+    /** leap second after simple epoch instant.
+     * This is never negative. It is used to disambiguate seconds which share the same epoch seconds value.
+     * @return 1 during a positive leap second.
+     */
     public int getLeapSecond() {
-        return leapSecond;
+        return 0;
     }
 
+    public Instant toInstant() {
+        return this;
+    }
+    
     //-----------------------------------------------------------------------
     /**
      * Converts this instant to the number of milliseconds from the epoch
@@ -299,7 +188,7 @@ public final class Instant extends AbstractInstant<Instant>
      * value. In this scenario, this constructor will throw an exception.
      *
      * @return the number of milliseconds since the epoch of 1970-01-01T00:00:00Z
-     * @throws CalendarConversionException if the instant is too large or too
+     * @throws javax.time.calendar.CalendarConversionException if the instant is too large or too
      *  small to represent as epoch milliseconds
      */
     public long toEpochMillis() {
@@ -311,34 +200,19 @@ public final class Instant extends AbstractInstant<Instant>
         }
     }
 
-    /**
-     * Converts this instant to an <code>Instant</code>, trivially
-     * returning <code>this</code>.
-     *
-     * @return <code>this</code>, never null
-     */
-    public Instant toInstant() {
-        return this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this Instant to another.
-     *
-     * @param otherInstant  the other instant to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if otherInstant is null
-     */
     public int compareTo(Instant otherInstant) {
-        int cmp = MathUtils.safeCompare(getEpochSeconds(), otherInstant.getEpochSeconds());
-        if (cmp != 0) {
-            return cmp;
+        if (getScale().equals(otherInstant.getScale())) {
+            int cmp = MathUtils.safeCompare(getEpochSeconds(), otherInstant.getEpochSeconds());
+            if (cmp != 0) {
+                return cmp;
+            }
+            cmp = MathUtils.safeCompare(getLeapSecond(), otherInstant.getLeapSecond());
+            if (cmp != 0) {
+                return cmp;
+            }
+            return MathUtils.safeCompare(getNanoOfSecond(), otherInstant.getNanoOfSecond());
         }
-        cmp = MathUtils.safeCompare(leapSecond, otherInstant.leapSecond);
-        if (cmp != 0) {
-            return cmp;
-        }
-        return MathUtils.safeCompare(getNanoOfSecond(), otherInstant.getNanoOfSecond());
+        throw new IllegalArgumentException("Can't compare Instants from different time scales");
     }
 
     /**
@@ -363,7 +237,6 @@ public final class Instant extends AbstractInstant<Instant>
         return compareTo(otherInstant) < 0;
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Is this Instant equal to that specified.
      *
@@ -377,9 +250,10 @@ public final class Instant extends AbstractInstant<Instant>
         }
         if (otherInstant instanceof Instant) {
             Instant other = (Instant) otherInstant;
-            return this.getEpochSeconds() == other.getEpochSeconds() &&
+            return this.getScale().equals(other.getScale()) &&
+                   this.getEpochSeconds() == other.getEpochSeconds() &&
                    this.getNanoOfSecond() == other.getNanoOfSecond() &&
-                    this.leapSecond == other.leapSecond;
+                   this.getLeapSecond() == other.getLeapSecond();
         }
         return false;
     }
@@ -392,5 +266,208 @@ public final class Instant extends AbstractInstant<Instant>
     @Override
     public int hashCode() {
         return ((int) (getEpochSeconds() ^ (getEpochSeconds() >>> 32))) + 51 * getNanoOfSecond();
+    }
+
+    /** Calculate duration from another instant.
+     * To compute durations between instants which may be on different time scales, use the TimeScale.durationBetween
+     * method. This is required because the result can depend on the TimeScale used to evaluate the difference. For
+     * example the difference between 2008-12-31T23:59:59Z and 2009-01-01T:00:00Z is two seconds in most time scales
+     * (and in reality), but only one second on time scales which ignore the leap second.
+     * @param other another instant on the same time scale.
+     * @return duration from other to this measured on the common time scale.
+     */
+    public Duration durationFrom(Instant other) {
+        if (getScale().equals(other.getScale())) {
+            return difference(other);
+        }
+        throw new IllegalArgumentException("Other duration on different time scale");
+    }
+
+    /** Compute duration to another instant on this TimeScale.
+     * The default implementation assumes there are no leap seconds
+     * @param b second instant on the same TimeScale
+     * @return difference
+     */
+    protected Duration difference(Instant b) {
+        assert getScale().equals(b.getScale());
+        long seconds = MathUtils.safeSubtract(getEpochSeconds(), b.getEpochSeconds());
+        int nanos = getNanoOfSecond() - b.getNanoOfSecond();
+        if (nanos < 0) {
+            nanos += NANOS_PER_SECOND;
+            seconds = MathUtils.safeDecrement(seconds);
+        }
+        return Duration.duration(seconds, nanos);
+    }
+
+    protected Instant plus(long addSeconds, int addNanoOfSecond) {
+        if (addSeconds == 0 && addNanoOfSecond == 0)
+            return this;
+        long seconds = MathUtils.safeAdd(getEpochSeconds(), addSeconds);
+        int nanos = getNanoOfSecond() + addNanoOfSecond;
+        if (nanos >= NANOS_PER_SECOND) {
+            seconds = MathUtils.safeIncrement(seconds);
+            nanos -= NANOS_PER_SECOND;
+        }
+        return getScale().uncheckedInstant(seconds, nanos);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified duration added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to add, not null
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant plus(Duration duration) {
+        return plus(duration.getSeconds(), duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of seconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to add
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant plusSeconds(long seconds) {
+        return plus(seconds, 0);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of milliseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param millis  the milliseconds to add
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant plusMillis(long millis) {
+        if (millis == 0)
+            return this;
+        long seconds = millis/1000;
+        int m = (int)(millis%1000);
+        if (m < 0) {
+            m += 1000;
+            seconds--;
+        }
+        return plus(seconds, m*1000000);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of nanoseconds added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to add
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant plusNanos(long nanos) {
+        if (nanos == 0)
+            return this;
+        long seconds = nanos/NANOS_PER_SECOND;
+        int n = (int)(nanos%NANOS_PER_SECOND);
+        if (n < 0) {
+            n += NANOS_PER_SECOND;
+            seconds--;
+        }
+        return plus(seconds, n);
+    }
+
+    protected Instant minus(long subSeconds, int subNanoOfSecond) {
+        if (subSeconds == 0 && subNanoOfSecond == 0)
+            return this;
+        long seconds = MathUtils.safeSubtract(getEpochSeconds(), subSeconds);
+        int nanos = getNanoOfSecond() - subNanoOfSecond;
+        if (nanos < 0) {
+            seconds = MathUtils.safeDecrement(seconds);
+            nanos += NANOS_PER_SECOND;
+        }
+        return getScale().uncheckedInstant(seconds, nanos);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified duration subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param duration  the duration to subtract, not null
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant minus(Duration duration) {
+        return minus(duration.getSeconds(), duration.getNanoOfSecond());
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of seconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param seconds  the seconds to subtract
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant minusSeconds(long seconds) {
+        return minus(seconds, 0);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of milliseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param millis  the milliseconds to subtract
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant minusMillis(long millis) {
+        if (millis == 0)
+            return this;
+        long seconds = millis/1000;
+        int m = (int)(millis%1000);
+        if (m < 0) {
+            m += 1000;
+            seconds--;
+        }
+        return minus(seconds, m*1000000);
+    }
+
+    /**
+     * Returns a copy of this Instant with the specified number of nanoseconds subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param nanos  the nanoseconds to subtract
+     * @return a new updated Instant, never null
+     * @throws ArithmeticException if the result exceeds the storage capacity
+     */
+    public Instant minusNanos(long nanos) {
+        if (nanos == 0)
+            return this;
+        long seconds = nanos/NANOS_PER_SECOND;
+        int n = (int)(nanos%NANOS_PER_SECOND);
+        if (n < 0) {
+            n += NANOS_PER_SECOND;
+            seconds--;
+        }
+        return minus(seconds, n);
+    }
+
+    /**
+     * A string representation of this Instant using ISO-8601 representation.
+     * <p>
+     * The format of the returned string will be <code>yyyy-MM-ddTHH:mm:ss.SSSSSSSSSZ</code>.
+     * If the TimeScale is not the default, then <code>[scale]</code> will be appended in place of 'Z'.
+     *
+     * @return an ISO-8601 representation of this Instant
+     */
+    public String toString() {
+        return InstantFormat.getInstance().format(this);
     }
 }
