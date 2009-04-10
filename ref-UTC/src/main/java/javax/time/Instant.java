@@ -27,12 +27,12 @@ public abstract class Instant implements InstantProvider, Comparable<Instant>, S
      */
     private final int nanoOfSecond;
 
+    /** UTC.SCALE.
+     * UTC without leap seconds --- the most common variant in computer systems.
+     * @return UTC.SCALE
+     */
     public static TimeScale getDefaultScale() {
         return UTC.SCALE;
-    }
-
-    public static Instant getDefaultEpoch() {
-        return getDefaultScale().getEpoch();
     }
 
     //-----------------------------------------------------------------------
@@ -206,11 +206,12 @@ public abstract class Instant implements InstantProvider, Comparable<Instant>, S
             if (cmp != 0) {
                 return cmp;
             }
-            cmp = MathUtils.safeCompare(getLeapSecond(), otherInstant.getLeapSecond());
+            cmp = getLeapSecond() - otherInstant.getLeapSecond();
             if (cmp != 0) {
                 return cmp;
             }
-            return MathUtils.safeCompare(getNanoOfSecond(), otherInstant.getNanoOfSecond());
+            // The following can't overflow unless nanoOfSecond is outside its permitted range
+            return getNanoOfSecond() - otherInstant.getNanoOfSecond();
         }
         throw new IllegalArgumentException("Can't compare Instants from different time scales");
     }

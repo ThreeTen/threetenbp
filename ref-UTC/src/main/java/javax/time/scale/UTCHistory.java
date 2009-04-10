@@ -14,10 +14,14 @@ import java.util.logging.Level;
  * @author  Mark Thornton
  */
 public class UTCHistory implements Serializable {
-    /** Time when leap seconds started.
+    /** UTC Instant when leap seconds started.
      * 1972-01-01
      */
-    public static final Instant START_LEAP_SECONDS = new UTC.Instant(2*365*86400L, 0);
+    public static final Instant UTC_START_LEAP_SECONDS = new UTC.Instant(2*365*86400L, 0);
+    /** TAI Instant after which leap seconds are used.
+     * 1972-01-01T00:00:10 TAI
+     */
+    public static final Instant TAI_START_LEAP_SECONDS = new TAI.Instant(2*365*86400L+10, 0);
 
     private static UTCHistory current;
     private final int version;
@@ -26,6 +30,7 @@ public class UTCHistory implements Serializable {
     private transient long[] simpleStartEpochSeconds;
     private transient long[] trueStartEpochSeconds;
     private transient TAI.Instant[] taiStart;
+    public static final int LEAP_ERA_DELTA = 10;
 
     static {
         /*

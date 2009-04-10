@@ -5,7 +5,7 @@ TimeScale implementations.
 <h2>Converting between AbstractInstant and DateTime</h2>
 <p>To convert any AbstractInstant to a DateTime, use the getSimpleEpochSeconds(), and getNanoOfSecond(). Adjust the
     seconds value for TimeZone and daylight saving. Convert to the required calendar. Finally adjust the seconds field
-    by getLeapSecond() (always >= 0). The AbstractInstant.toString method illustrates this process for the proleptic
+    by getLeapSecond() (always >= 0). The InstantFormat class illustrates this process for the proleptic
     Gregorian calendar and zero time zone offset.
 </p>
 <p>The reverse conversion starts by taking any excess seconds over 59 as 'leapSecond'. Convert the remainder

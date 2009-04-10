@@ -27,17 +27,17 @@ class TestScale {
         System.out.println(Instant.instant(Long.MAX_VALUE));
         System.out.println(TAI.SCALE.instant(Long.MIN_VALUE, 0));
         System.out.println(TAI.SCALE.instant(Long.MAX_VALUE, 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + time(23, 59, 59), 500000000, 1).toString());
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(1600, 1, 1), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(1599, 11, 7), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(1600, 2, 28), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(2008, 2, 28), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(1600, 2, 29), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(2008, 2, 29), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(2000, 2, 29), 0));
-        System.out.println(UTC_NoEpochLeaps.SCALE.instant(date(970, 2, 29), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(2008, 12, 31) + time(23, 59, 59), 500000000, 1).toString());
+        System.out.println(TrueUTC.SCALE.instant(date(1600, 1, 1), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(1599, 11, 7), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(1600, 2, 28), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(2008, 2, 28), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(1600, 2, 29), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(2008, 2, 29), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(2000, 2, 29), 0));
+        System.out.println(TrueUTC.SCALE.instant(date(970, 2, 29), 0));
         long epochSeconds = date(-1,2,2);
-        Instant t = UTC_NoEpochLeaps.SCALE.instant(epochSeconds, 0);
+        Instant t = TrueUTC.SCALE.instant(epochSeconds, 0);
         System.out.println(t.toString());
         System.out.println(Instant.instant(date(-1, 2, 2)));
     }

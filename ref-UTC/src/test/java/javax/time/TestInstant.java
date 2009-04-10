@@ -65,8 +65,8 @@ public class TestInstant {
     }
 
     public void test_epoch() {
-        assertEquals(Instant.getDefaultEpoch().getEpochSeconds(), 0L);
-        assertEquals(Instant.getDefaultEpoch().getNanoOfSecond(), 0);
+        assertEquals(Instant.getDefaultScale().getEpoch().getEpochSeconds(), 0L);
+        assertEquals(Instant.getDefaultScale().getEpoch().getNanoOfSecond(), 0);
     }
 
     //-----------------------------------------------------------------------

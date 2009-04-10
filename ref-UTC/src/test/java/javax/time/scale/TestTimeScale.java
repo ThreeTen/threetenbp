@@ -16,20 +16,16 @@ public class TestTimeScale {
     public static void main(String[] args) {
         time(TAI.SCALE, 0);
         time(TrueUTC.SCALE, 0);
-        time(UTC_NoEpochLeaps.SCALE, 0);
         time(TAI.SCALE, TestScale.date(2009, 1, 1));
         time(TrueUTC.SCALE, TestScale.date(2009, 1, 1));
-        time(UTC_NoEpochLeaps.SCALE, TestScale.date(2009, 1, 1));
-        time(UTC_NoEpochLeaps.SCALE, TestScale.date(2008, 12, 31)+ TestScale.time(23,59,59));
-        time(UTC_NoEpochLeaps.SCALE, TestScale.date(1971, 12, 31)+ TestScale.time(23,59,59));
-        time(UTC_NoEpochLeaps.SCALE, TestScale.date(1972, 1, 1));
+        time(TrueUTC.SCALE, TestScale.date(2009, 1, 1));
+        time(TrueUTC.SCALE, TestScale.date(2008, 12, 31)+ TestScale.time(23,59,59));
+        time(TrueUTC.SCALE, TestScale.date(1971, 12, 31)+ TestScale.time(23,59,59));
+        time(TrueUTC.SCALE, TestScale.date(1972, 1, 1));
 
         convertToInstant(TrueUTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
         convertToInstant(TrueUTC.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
         convertToInstant(TrueUTC.SCALE.instant(date(2009, 1, 1), 0));
-        convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0));
-        convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2008, 12, 31) + TestScale.time(23, 59, 59), 0, 1));
-        convertToInstant(UTC_NoEpochLeaps.SCALE.instant(date(2009, 1, 1), 0));
     }
 
     private static void convertToInstant(Instant tsi) {

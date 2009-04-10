@@ -1,10 +1,11 @@
 package javax.time.scale;
 
 import javax.time.MathUtils;
+import javax.time.Instant;
 import java.io.Serializable;
 
 /** UTC with no accounting for leap seconds at all.
- * The AbstractInstant does not report leapSecond. In this implementation the leap second will
+ * In this implementation the leap second will
  * appear as a second occurrence of 23:59:59. Alternative implementations might make the last 
  * two seconds before midnight run at half speed.
  * @author Mark Thornton
@@ -33,24 +34,31 @@ public class UTC extends AbstractUTC implements Serializable {
 
     @Override
     protected Instant fromTAI(TAI.Instant tsiTAI) {
-        if (InstantComparator.INSTANCE.compare(tsiTAI, getLeapEraInstant()) < 0) {
+        if (tsiTAI.compareTo(UTCHistory.TAI_START_LEAP_SECONDS) < 0) {
             return (Instant)super.fromTAI(tsiTAI);
         }
-        Entry entry = findEntry(tsiTAI);
-        long s = tsiTAI.getEpochSeconds() - entry.getDeltaSeconds();
-        if (s >= entry.getEndExclusiveSeconds() && entry.getNext() != null)
-            return new Instant(entry.getEndExclusiveSeconds()-1, tsiTAI.getNanoOfSecond());
-        else
-            return new Instant(s, tsiTAI.getNanoOfSecond());
+        UTCHistoryEntry entry = UTCHistory.current().findEntry(tsiTAI);
+        long s = tsiTAI.getEpochSeconds() - (entry.getLeapSecondCount()+UTCHistory.LEAP_ERA_DELTA);
+        if (entry.getNext() != null && s >= entry.getNext().getStartUTC().getEpochSeconds())
+            s--;
+        return new Instant(s, tsiTAI.getNanoOfSecond());
     }
 
     @Override
     protected TAI.Instant toTAI(javax.time.Instant tsi) {
-        if (tsi.getEpochSeconds() < leapEraSeconds)
+        if (tsi.getEpochSeconds() < UTCHistory.UTC_START_LEAP_SECONDS.getEpochSeconds())
             return super.toTAI(tsi);
         long s = tsi.getEpochSeconds();
-        Entry entry = findEntry(s);
-        return new TAI.Instant(MathUtils.safeAdd(s, entry.getDeltaSeconds()), tsi.getNanoOfSecond());
+        UTCHistoryEntry entry = UTCHistory.current().findEntrySimple(s);
+        return new TAI.Instant(MathUtils.safeAdd(s, entry.getLeapSecondCount()+UTCHistory.LEAP_ERA_DELTA), tsi.getNanoOfSecond());
+    }
+
+    @Override
+    public javax.time.Instant instant(javax.time.Instant tsi) {
+        if (tsi.getScale().equals(TrueUTC.SCALE)) {
+            return new Instant(tsi.getEpochSeconds(), tsi.getNanoOfSecond());
+        }
+        return super.instant(tsi);
     }
 
     @Override
@@ -66,6 +74,5 @@ public class UTC extends AbstractUTC implements Serializable {
         public UTC getScale() {
             return SCALE;
         }
-
     }
 }

@@ -1,7 +1,8 @@
 package javax.time.scale;
 
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+
 import static javax.time.scale.TestScale.*;
 import javax.time.TimeScale;
 import javax.time.Instant;
@@ -26,7 +27,8 @@ public class TestTrueUTC {
         assertEquals(tDst.getEpochSeconds(), epochSeconds+deltaEpochSeconds);
         assertEquals(tDst.getNanoOfSecond(), nanoOfSecond);
         assertEquals(tDst.getLeapSecond(), leapSecond);
-        assertEquals(src.instant(tDst), tSrc);  // check round trip
+        Instant reverse = src.instant(tDst);
+        assertEquals(reverse, tSrc);  // check round trip
     }
 
     public void testConvertUTC() {
@@ -174,4 +176,29 @@ public class TestTrueUTC {
         assertEquals(e, f);
     }
 
+    public void testArithmetic2() {
+        TrueUTC scale = TrueUTC.SCALE;
+        long epochSeconds = date(2009, 1, 1);  // immediately after a leap second
+        Instant a = scale.instant(epochSeconds);
+        a = scale.scaleInstant(a);
+        assertEquals(a.getEpochSeconds(), epochSeconds);
+        Instant b = scale.scaleInstant(scale.instant(epochSeconds-1));
+        assertEquals(b.getEpochSeconds(), epochSeconds-1);
+        Duration diff = a.durationFrom(b);
+        assertEquals(diff.getSeconds(), 2, "leap second");
+        assertEquals(diff.getNanoOfSecond(), 0);
+        Instant c = scale.scaleInstant(scale.instant(epochSeconds-2));
+        diff = b.durationFrom(c);
+        assertEquals(diff.getSeconds(), 1);
+        assertEquals(diff.getNanoOfSecond(), 0);
+        Instant d = b.plusSeconds(1);
+        assertEquals(d.getEpochSeconds(), b.getEpochSeconds());
+        assertEquals(d.getNanoOfSecond(), 0);
+        assertEquals(d.getLeapSecond(), 1);
+        Instant e = a.minusSeconds(1);
+        assertEquals(e, d);
+        Instant f = scale.instant(epochSeconds-1, 0, 1);
+        assertEquals(f, e);
+        assertEquals(e, f);
+    }
 }
