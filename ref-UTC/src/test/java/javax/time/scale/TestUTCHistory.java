@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 
 import javax.time.Instant;
 import javax.time.Duration;
+import static javax.time.scale.TestScale.*;
 
 /** Test history of TAI-UTC.
  */
@@ -106,5 +107,44 @@ public class TestUTCHistory {
                         new TAI.Instant(entry.getStartTAI().getEpochSeconds()+1, 0));
             }
         }
+    }
+
+    public void testRounding() {
+        // Test value 1971-12-31T23:59:59.75 is carefully chosen to be worst case (or near to).
+        long epochSeconds = date(1971, 12, 31)+time(23, 59, 59);
+        UTCHistoryEntry entry = UTCHistory.current().findEntrySimple(epochSeconds);
+        long delta0 = entry.getUTCDeltaNanoseconds(epochSeconds, 0);
+        // adjust, 1968-02-01, 4.213170, 39126, 0.002592
+        long deltaRef = Math.round(NANOS_PER_SECOND*(4.213170+(Scale.modifiedJulianDay(1972, 1, 1)-39126-1.0/86400)*0.002592));
+        assertEquals(delta0, deltaRef);
+        // compute deltaRef without floating point:
+        // note that 0.002592/NANOS_PER_SECOND = 30ns
+        deltaRef = 4213170000L + ((Scale.modifiedJulianDay(1972, 1, 1)-39126)*86400L-1)*30;
+        assertEquals(delta0, deltaRef);
+        int nanoOfSecond = 750000000;   // 0.75
+        // The delta changes at a rate of 30ns/s, so 0.75s should result in the exact delta including 0.5ns and
+        // thus being rounded up. Any time before this ought to be rounded down.
+        long delta = entry.getUTCDeltaNanoseconds(epochSeconds, nanoOfSecond);
+        assertEquals(delta, delta0+23); // 23 == Math.round(0.75*30)
+        int i;
+        for (i=1; entry.getUTCDeltaNanoseconds(epochSeconds, nanoOfSecond-i) == delta; i++) {}
+        // if the delta was correctly rounded, i==1. In fact double doesn't have enough bits
+        // to avoid a small error.
+        // We report here the deviation from correct rounding
+        System.out.println("rounding error: "+(i-1)*30e-18+"s, relative error: "+((i-1)*30e-9/delta));
+        // assert if result is not as good as obtained using double
+        assertTrue(i> 0 && i<=15, "Error too large: "+i);
+
+        // now try reverse conversion
+        long taiEpochSeconds = epochSeconds + (delta/NANOS_PER_SECOND);
+        int taiNanoOfSecond = nanoOfSecond + (int)(delta%NANOS_PER_SECOND);
+        if (taiNanoOfSecond > NANOS_PER_SECOND) {
+            taiNanoOfSecond -= NANOS_PER_SECOND;
+            taiEpochSeconds++;
+        }
+        long taiDelta = entry.getTAIDeltaNanoseconds(taiEpochSeconds, taiNanoOfSecond);
+        System.out.println("taiDelta-delta="+(taiDelta-delta));
+        for (i=1; entry.getTAIDeltaNanoseconds(taiEpochSeconds, taiNanoOfSecond-i) == delta; i++) {}
+        assertTrue(i> 0 && i<=16, "Error too large: "+i);
     }
 }
