@@ -1,11 +1,10 @@
 package javax.time;
 
-import javax.time.Duration;
-import javax.time.MathUtils;
-import javax.time.Instant;
 import javax.time.scale.TAI;
+import javax.time.scale.TimeScaleFactory;
 import java.io.Serializable;
 import java.io.ObjectStreamException;
+import java.util.*;
 
 /**  Describe time scales such as TAI, UTC, GPS.
  * In particular account for the effects of leap seconds.
@@ -21,7 +20,7 @@ public abstract class TimeScale implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        // TimeScale's should not have any state so just compare the classes
+        // Most TimeScale's don't have any state, so just compare the class.
         // Object identity (==) suffices for classes
         return obj == this ||
                 (obj != null && getClass() == obj.getClass());
@@ -231,12 +230,29 @@ public abstract class TimeScale implements Serializable {
     }
 
     /** TimeScale of given name.
-     * TODO: Not yet implemented
      * @param name name of TimeScale required.
      * @return an instance of required time scale (if it exists).
      */
     public static TimeScale forName(String name) {
-        throw new UnsupportedOperationException("TODO");
+        /*
+        This implementation isn't very efficient. Needs thought on how to handle situations where the set
+        of available TimeScale's changes due to ClassLoader changes.
+         */
+        ServiceLoader<TimeScaleFactory> loader = ServiceLoader.load(TimeScaleFactory.class);
+        for (TimeScaleFactory factory: loader) {
+            TimeScale ts = factory.getTimeScale(name);
+            if (ts != null)
+                return ts;
+        }
+        throw new IllegalArgumentException("No TimeScale \""+name+"\"");
+    }
+
+    public static Set<String> getAvailableNames() {
+        Set<String> available = new TreeSet<String>();
+        for (TimeScaleFactory factory: ServiceLoader.load(TimeScaleFactory.class)) {
+            available.addAll(factory.getNames());
+        }
+        return available;
     }
 
     public abstract String getName();

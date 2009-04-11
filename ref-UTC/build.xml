@@ -66,6 +66,9 @@
     <target name="compile" depends="init" description="compile the source">
         <mkdir dir="${build.main}" />
         <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
+        <copy todir="${build.main}">
+            <fileset dir="${resources.main}"/>
+        </copy>
     </target>
    
    <target name="javadoc" depends="init" description="generates javadoc for the api">

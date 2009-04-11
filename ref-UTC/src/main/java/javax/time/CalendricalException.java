@@ -50,4 +50,8 @@ public class CalendricalException extends RuntimeException {
         super(message);
     }
 
+    public CalendricalException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
