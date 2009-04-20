@@ -525,7 +525,7 @@ public class TestLocalTime {
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider = "sampleToString")
-    public void factory_parse_happyScenarios(int h, int m, int s, int n, String parsable) {
+    public void factory_parse_validText(int h, int m, int s, int n, String parsable) {
         LocalTime t = LocalTime.parse(parsable);
         assertNotNull(t, parsable);
         assertEquals(t.getHourOfDay(), h);
@@ -542,12 +542,15 @@ public class TestLocalTime {
                 {"-01:00"},
                 {"00:00:00-09"},
                 {"00:00:00,09"},
-                {"00:00:abs"}
+                {"00:00:abs"},
+                {"11"},
+                {"11:30+01:00"},
+                {"11:30+01:00[Europe/Paris]"},
         };
     }
 
     @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class})
-    public void factory_parse_unhappyScenarios(String unparsable) {
+    public void factory_parse_invalidText(String unparsable) {
         LocalTime.parse(unparsable);
     }
 

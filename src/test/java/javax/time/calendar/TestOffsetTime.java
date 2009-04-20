@@ -49,6 +49,7 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -302,6 +303,58 @@ public class TestOffsetTime {
         assertEquals(test.getNanoOfSecond(), 0);
     }
 
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider = "sampleToString")
+    public void factory_parse_validText(int h, int m, int s, int n, String offsetId, String parsable) {
+        OffsetTime t = OffsetTime.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getHourOfDay(), h);
+        assertEquals(t.getMinuteOfHour(), m);
+        assertEquals(t.getSecondOfMinute(), s);
+        assertEquals(t.getNanoOfSecond(), n);
+        assertEquals(t.getOffset(), ZoneOffset.zoneOffset(offsetId));
+    }
+
+    @DataProvider(name="sampleBadParse")
+    Object[][] provider_sampleBadParse() {
+        return new Object[][]{
+                {"00;00"},
+                {"12-00"},
+                {"-01:00"},
+                {"00:00:00-09"},
+                {"00:00:00,09"},
+                {"00:00:abs"},
+                {"11"},
+                {"11:30"},
+                {"11:30+01:00[Europe/Paris]"},
+        };
+    }
+
+    @Test(dataProvider = "sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    public void factory_parse_invalidText(String unparsable) {
+        OffsetTime.parse(unparsable);
+    }
+
+    //-----------------------------------------------------------------------s
+    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    public void factory_parse_illegalHour() {
+        OffsetTime.parse("25:00+01:00");
+    }
+
+    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    public void factory_parse_illegalMinute() {
+        OffsetTime.parse("12:60+01:00");
+    }
+
+    @Test(expectedExceptions={IllegalCalendarFieldValueException.class})
+    public void factory_parse_illegalSecond() {
+        OffsetTime.parse("12:12:60+01:00");
+    }
+
+    //-----------------------------------------------------------------------
+    // constructor
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void constructor_nullTime() throws Throwable  {
@@ -916,19 +969,7 @@ public class TestOffsetTime {
         String str = t.toString();
         assertEquals(str, expected);
     }
-    
-    //-----------------------------------------------------------------------
-    // parse()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleToString")
-    public void test_parse(int h, int m, int s, int n, String offsetId, String text) {
-        OffsetTime t = OffsetTime.parse(text);
-        assertEquals(t.getHourOfDay(), h);
-        assertEquals(t.getMinuteOfHour(), m);
-        assertEquals(t.getSecondOfMinute(), s);
-        assertEquals(t.getNanoOfSecond(), n);
-        assertEquals(t.getOffset().toString(), offsetId);
-    }
+
     //-----------------------------------------------------------------------
     // matchesTime()
     //-----------------------------------------------------------------------

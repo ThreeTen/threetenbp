@@ -31,8 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.ISOChronology.*;
-
 import java.io.Serializable;
 
 import javax.time.Instant;
@@ -41,8 +39,8 @@ import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.format.DateTimeFormatter;
-import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -68,11 +66,7 @@ public final class OffsetTime
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -1751032571L;
-    /**
-     * Used to parse a text string.
-     */
-    private static final DateTimeFormatter parserFormatter = buildFormatter();
-    
+
     /**
      * The local time, never null.
      */
@@ -217,6 +211,34 @@ public final class OffsetTime
         }
         LocalTime time = LocalTime.fromSecondOfDay(secsOfDay, instant.getNanoOfSecond());
         return new OffsetTime(time, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetTime</code> from a text string.
+     * <p>
+     * The following formats are accepted in ASCII:
+     * <ul>
+     * <li><code>{Hour}:{Minute}{OffsetID}</code>
+     * <li><code>{Hour}:{Minute}:{Second}{OffsetID}</code>
+     * <li><code>{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}</code>
+     * </ul>
+     * <p>
+     * The hour has 2 digits with values from 0 to 23.
+     * The minute has 2 digits with values from 0 to 59.
+     * The second has 2 digits with values from 0 to 59.
+     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
+     * <p>
+     * The offset ID is the normalized form as defined in {@link ZoneOffset}.
+     *
+     * @param text  the text to parse such as '10:15:30+01:00', not null
+     * @return the parsed local time, never null
+     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     */
+    public static OffsetTime parse(String text) {
+        ISOChronology.checkNotNull(text, "Text to parse must not be null");
+        return DateTimeFormatters.isoOffsetTime().parse(text).mergeStrict().toOffsetTime();
     }
 
     //-----------------------------------------------------------------------
@@ -824,46 +846,6 @@ public final class OffsetTime
     @Override
     public String toString() {
         return time.toString() + offset.toString();
-    }
-    /**
-     * Parses the time of a {@link String}, such as '10:15:30+01:00'.
-     * <p>
-     * The input will be one of the following formats:
-     * <ul>
-     * <li>'hh:mmZ'</li>
-     * <li>'hh:mm:ssZ'</li>
-     * <li>'hh:mm:ss.SSSZ'</li>
-     * <li>'hh:mm:ss.SSSSSSZ'</li>
-     * <li>'hh:mm:ss.SSSSSSSSSZ'</li>
-     * </ul>
-     * where 'Z' is the id of the zone offset, such as '+02:30' or 'Z'.
-     * The format used will be the shortest that outputs the full value of
-     * the time where the omitted parts are implied to be zero.
-     *
-     */
-    public static OffsetTime parse(String text) {
-        if (text == null) {
-            throw new NullPointerException("The text to parse must not be null");
-        }
-        Calendrical calendrical = parserFormatter.parse(text).mergeStrict();
-        return calendrical.toOffsetTime();
-    }
-    /**
-     * Create the formatter that is used to parse text.
-     * @return the formatter used in parsing
-     * @see #parse(String)
-     */
-    private static DateTimeFormatter buildFormatter() {
-        DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
-        formatterBuilder.appendValue(hourOfDayRule(),2)
-        .appendLiteral(':')
-        .appendValue(minuteOfHourRule(), 2)
-        .appendOptional(new DateTimeFormatterBuilder().appendLiteral(":").appendValue(secondOfMinuteRule()).toFormatter())
-        .appendOptional(new DateTimeFormatterBuilder().appendFraction(nanoOfSecondRule(), 0, 9).toFormatter())
-        .appendOffsetId();
-
-        DateTimeFormatter formatter = formatterBuilder.toFormatter();
-        return formatter;
     }
 
 }
