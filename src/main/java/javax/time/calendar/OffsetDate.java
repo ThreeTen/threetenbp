@@ -170,7 +170,7 @@ public final class OffsetDate
      * <p>
      * The following format is accepted in ASCII:
      * <ul>
-     * <li>{Year}-{MonthOfYear}-{DayOfMonth}{OffsetID}
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}{OffsetID}</code>
      * </ul>
      * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
      * If there are more than 4 digits then the year must be prefixed with the plus symbol.
