@@ -51,6 +51,7 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -354,6 +355,61 @@ public class TestOffsetDate {
             assertEquals(ex.getFieldRule(), ISOChronology.yearRule());
             throw ex;
         }
+    }
+
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleToString")
+    public void factory_parse_validText(int y, int m, int d, String offsetId, String parsable) {
+        OffsetDate t = OffsetDate.parse(parsable);
+        assertNotNull(t, parsable);
+        assertEquals(t.getYear(), y, parsable);
+        assertEquals(t.getMonthOfYear().getValue(), m, parsable);
+        assertEquals(t.getDayOfMonth(), d, parsable);
+        assertEquals(t.getOffset(), ZoneOffset.zoneOffset(offsetId));
+    }
+
+    @DataProvider(name="sampleBadParse")
+    Object[][] provider_sampleBadParse() {
+        return new Object[][]{
+                {"2008/07/05"},
+                {"10000-01-01"},
+                {"2008-1-1"},
+                {"2008--01"},
+                {"ABCD-02-01"},
+                {"2008-AB-01"},
+                {"2008-02-AB"},
+                {"-0000-02-01"},
+                {"2008-02-01Y"},
+                {"2008-02-01+19:00"},
+                {"2008-02-01+01/00"},
+                {"2008-02-01+1900"},
+                {"2008-02-01+01:60"},
+                {"2008-02-01+01:30:123"},
+                {"2008-02-01"},
+                {"2008-02-01+01:00[Europe/Paris]"},
+        };
+    }
+
+    @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
+    public void factory_parse_invalidText(String unparsable) {
+        OffsetDate.parse(unparsable);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue() {
+        OffsetDate.parse("2008-06-32+01:00");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue() {
+        OffsetDate.parse("2008-06-31+01:00");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        OffsetDate.parse((String) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1811,40 +1867,7 @@ public class TestOffsetDate {
         String str = t.toString();
         assertEquals(str, expected);
     }
-    //-----------------------------------------------------------------------
-    // parse()
-    //-----------------------------------------------------------------------
-    @DataProvider(name="sampleParse")
-    Object[][] provider_sampleParse() {
-        return new Object[][] {
-            {2008, 7, 1, "Z", "2008-07-01Z"},
-            {2008, 7, 2, "Z", "2008-07-02+00:00"},
-            {2008, 7, 3, "Z", "2008-07-03-00:00"},
-            {2008, 7, 4, "Z", "2008-07-04+00:00:00"},
-            {2008, 7, 5, "Z", "2008-07-05-00:00:00"},
-            {2008, 7, 6, "+01:00", "2008-07-06+01:00"},
-            {2008, 7, 7, "+01:00", "2008-07-07+01:00:00"},
-            {2008, 7, 8, "+01:30", "2008-07-08+01:30"},
-            {2008, 7, 9, "+01:30", "2008-07-09+01:30:00"},
-            {2008, 7, 10, "+01:30:40", "2008-07-10+01:30:40"},
-            {2008, 7, 16, "-01:00", "2008-07-16-01:00"},
-            {2008, 7, 17, "-01:00", "2008-07-17-01:00:00"},
-            {2008, 7, 18, "-01:30", "2008-07-18-01:30"},
-            {2008, 7, 19, "-01:30", "2008-07-19-01:30:00"},
-            {2008, 7, 20, "-01:30:40", "2008-07-20-01:30:40"},
-        };
-    }
 
-    @Test(dataProvider="sampleParse")
-    public void test_parse(int y, int m, int d, String offsetId, String text){
-        OffsetDate date = OffsetDate.parse(text);
-        assertEquals(date.getYear(), y);
-        assertEquals(date.getMonthOfYear().getValue(), m);
-        assertEquals(date.getDayOfMonth(), d);
-        assertEquals(date.getOffset().toString(), offsetId );
-    }
-    
-    
     //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------

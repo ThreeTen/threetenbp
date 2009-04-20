@@ -339,7 +339,7 @@ public class TestLocalDate {
     // parse()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleToString")
-    public void factory_parse_happyScenarios(int y, int m, int d, String parsable) {
+    public void factory_parse_validText(int y, int m, int d, String parsable) {
         LocalDate t = LocalDate.parse(parsable);
         assertNotNull(t, parsable);
         assertEquals(t.getYear(), y, parsable);
@@ -358,11 +358,14 @@ public class TestLocalDate {
                 {"2008-AB-01"},
                 {"2008-02-AB"},
                 {"-0000-02-01"},
+                {"2008-02-01Z"},
+                {"2008-02-01+01:00"},
+                {"2008-02-01+01:00[Europe/Paris]"},
         };
     }
 
     @Test(dataProvider="sampleBadParse", expectedExceptions={CalendricalParseException.class})
-    public void factory_parse_unhappyScenarios(String unparsable) {
+    public void factory_parse_invalidText(String unparsable) {
         LocalDate.parse(unparsable);
     }
 

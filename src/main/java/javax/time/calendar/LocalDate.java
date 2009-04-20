@@ -43,8 +43,7 @@ import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
-import javax.time.calendar.format.DateTimeFormatter;
-import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
@@ -94,16 +93,6 @@ public final class LocalDate
      * The day of month.
      */
     private final int day;
-    /**
-     * Parser.
-     */
-    private static final DateTimeFormatter PARSER = new DateTimeFormatterBuilder()
-                .appendValue(ISOChronology.yearRule(), 4, 10, DateTimeFormatterBuilder.SignStyle.EXCEEDS_PAD)
-                .appendLiteral('-')
-                .appendValue(ISOChronology.monthOfYearRule(), 2)
-                .appendLiteral('-')
-                .appendValue(ISOChronology.dayOfMonthRule())
-                .toFormatter();
 
     //-----------------------------------------------------------------------
     /**
@@ -249,9 +238,9 @@ public final class LocalDate
     /**
      * Obtains an instance of <code>LocalDate</code> from a text string.
      * <p>
-     * The following formats are accepted in ASCII:
+     * The following format is accepted in ASCII:
      * <ul>
-     * <li>{year}-{monthOfYear}-{dayOfMonth}
+     * <li>{Year}-{MonthOfYear}-{DayOfMonth}
      * </ul>
      * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
      * If there are more than 4 digits then the year must be prefixed with the plus symbol.
@@ -263,13 +252,13 @@ public final class LocalDate
      *
      * @param text  the text to parse such as '2007-12-03', not null
      * @return the parsed local date, never null
-     * @throws CalendricalParseException if the text cannot be parsed to YearMonth
+     * @throws CalendricalParseException if the text cannot be parsed
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDate parse(String text) {
         ISOChronology.checkNotNull(text, "Text to parse must not be null");
-        return PARSER.parse(text).mergeStrict().toLocalDate();
+        return DateTimeFormatters.isoLocalDate().parse(text).mergeStrict().toLocalDate();
     }
 
     //-----------------------------------------------------------------------

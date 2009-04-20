@@ -42,10 +42,8 @@ import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
-import javax.time.calendar.format.DateTimeFormatter;
-import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodProvider;
-import static javax.time.calendar.ISOChronology.*;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -71,10 +69,6 @@ public final class OffsetDate
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -3618963189L;
-    /**
-     * The formatter for the parser.
-     */
-    private static final DateTimeFormatter formatter = buildFormatter();
 
     /**
      * The date.
@@ -168,6 +162,35 @@ public final class OffsetDate
         }
         LocalDate date = LocalDate.fromYearZeroDays(yearZeroDays);
         return new OffsetDate(date, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>OffsetDate</code> from a text string.
+     * <p>
+     * The following format is accepted in ASCII:
+     * <ul>
+     * <li>{Year}-{MonthOfYear}-{DayOfMonth}{OffsetID}
+     * </ul>
+     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
+     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
+     * Negative years are allowed, but not negative zero.
+     * <p>
+     * The month of year has 2 digits with values from 1 to 12.
+     * <p>
+     * The day of month has 2 digits with values from 1 to 31 appropriate to the month.
+     * <p>
+     * The offset ID is the normalized form as defined in {@link ZoneOffset}.
+     *
+     * @param text  the text to parse such as '2007-12-03+01:00', not null
+     * @return the parsed offset date, never null
+     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    public static OffsetDate parse(String text) {
+        ISOChronology.checkNotNull(text, "Text to parse must not be null");
+        return DateTimeFormatters.isoOffsetDate().parse(text).mergeStrict().toOffsetDate();
     }
 
     //-----------------------------------------------------------------------
@@ -1066,40 +1089,4 @@ public final class OffsetDate
         return date.toString() + offset.toString();
     }
 
-    /**
-     * Parser a string in the format 'yyyy-MM-ddZ' where 'Z' is the id of the
-     * zone offset, such as '+02:30' or 'Z'.
-     * 
-     * @param text
-     *            the text to parse, not null
-     * @return the parsed date
-     * @throws NullPointerException
-     *             if the text is null
-     * @throws CalendricalParseException
-     *             if the parse fails
-     */
-    public static OffsetDate parse(String text) {
-        if (text == null) {
-            throw new NullPointerException("The text to parse must not be null");
-        }
-        Calendrical calendrical = formatter.parse(text).mergeStrict();
-        return calendrical.toOffsetDate();
-    }
-    /**
-     * Create the formatter that is used to parse text.
-     * @return the formatter used in parsing
-     * @see #parse(String)
-     */
-    private static DateTimeFormatter buildFormatter() {
-        DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
-        formatterBuilder.appendValue(yearRule())
-        .appendLiteral('-')
-        .appendValue(monthOfYearRule(), 2)
-        .appendLiteral('-')
-        .appendValue(dayOfMonthRule(), 2)
-        .appendOffsetId();
-
-        DateTimeFormatter formatter = formatterBuilder.toFormatter();
-        return formatter;
-    }
 }
