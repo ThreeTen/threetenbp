@@ -1409,7 +1409,21 @@ public class TestOffsetDateTime {
         String str = t.toString();
         assertEquals(str, expected);
     }
-
+    //-----------------------------------------------------------------------
+    // parser()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleToString")
+    public void test_parser(int y, int month, int d, int h, int m, int s, int n, String offsetId, String text) {
+        OffsetDateTime t = OffsetDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonthOfYear().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHourOfDay(), h);
+        assertEquals(t.getMinuteOfHour(), m);
+        assertEquals(t.getSecondOfMinute(), s);
+        assertEquals(t.getNanoOfSecond(), n);
+        assertEquals(t.getOffset().toString(), offsetId);
+    }
     //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------

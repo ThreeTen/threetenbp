@@ -31,6 +31,14 @@
  */
 package javax.time.calendar;
 
+import static javax.time.calendar.ISOChronology.dayOfMonthRule;
+import static javax.time.calendar.ISOChronology.hourOfDayRule;
+import static javax.time.calendar.ISOChronology.minuteOfHourRule;
+import static javax.time.calendar.ISOChronology.monthOfYearRule;
+import static javax.time.calendar.ISOChronology.nanoOfSecondRule;
+import static javax.time.calendar.ISOChronology.secondOfMinuteRule;
+import static javax.time.calendar.ISOChronology.yearRule;
+
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
@@ -46,6 +54,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -71,7 +81,10 @@ public final class OffsetDateTime
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -456761901L;
-
+    /**
+     * Used to parse a text string.
+     */
+    private static final DateTimeFormatter parserFormatter = buildFormatter();
     /**
      * The local date-time.
      */
@@ -1871,5 +1884,53 @@ public final class OffsetDateTime
     public String toString() {
         return dateTime.toString() + offset.toString();
     }
+    /**
+     * Outputs the date-time as a <code>String</code>, such as
+     * '2007-12-03T10:15:30+01:00'.
+     * <p>
+     * The output will be one of the following formats:
+     * <ul>
+     * <li>'yyyy-MM-ddThh:mmZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ssZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSZ'</li>
+     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSSSSZ'</li>
+     * </ul>
+     * where 'Z' is the id of the zone offset, such as '+02:30' or 'Z'.
+     * The format used will be the shortest that outputs the full value of
+     * the time where the omitted parts are implied to be zero.
+     *
+     * @return the formatted date-time string, never null
+     */
+    public static OffsetDateTime parse(String text) {
+        if (text == null) {
+            throw new NullPointerException("The text to parse must not be null");
+        }
+        Calendrical calendrical = parserFormatter.parse(text).mergeStrict();
+        return calendrical.toOffsetDateTime();
+    }
+    
+    /**
+     * Create the formatter that is used to parse text.
+     * @return the formatter used in parsing
+     * @see #parse(String)
+     */
+    private static DateTimeFormatter buildFormatter() {
+        DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
+        formatterBuilder.appendValue(yearRule())
+        .appendLiteral('-')
+        .appendValue(monthOfYearRule(), 2)
+        .appendLiteral('-')
+        .appendValue(dayOfMonthRule(), 2)
+        .appendLiteral('T')
+        .appendValue(hourOfDayRule(),2)
+        .appendLiteral(':')
+        .appendValue(minuteOfHourRule(), 2)
+        .appendOptional(new DateTimeFormatterBuilder().appendLiteral(":").appendValue(secondOfMinuteRule()).toFormatter())
+        .appendOptional(new DateTimeFormatterBuilder().appendFraction(nanoOfSecondRule(), 0, 9).toFormatter())
+        .appendOffsetId();
 
+        DateTimeFormatter formatter = formatterBuilder.toFormatter();
+        return formatter;
+    }
 }

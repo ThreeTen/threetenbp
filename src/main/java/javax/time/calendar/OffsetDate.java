@@ -41,7 +41,11 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatter;
+import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.period.PeriodProvider;
+import static javax.time.calendar.ISOChronology.*;
 
 /**
  * A date with a zone offset from UTC in the ISO-8601 calendar system,
@@ -67,6 +71,10 @@ public final class OffsetDate
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = -3618963189L;
+    /**
+     * The formatter for the parser.
+     */
+    private static final DateTimeFormatter formatter = buildFormatter();
 
     /**
      * The date.
@@ -1058,4 +1066,40 @@ public final class OffsetDate
         return date.toString() + offset.toString();
     }
 
+    /**
+     * Parser a string in the format 'yyyy-MM-ddZ' where 'Z' is the id of the
+     * zone offset, such as '+02:30' or 'Z'.
+     * 
+     * @param text
+     *            the text to parse, not null
+     * @return the parsed date
+     * @throws NullPointerException
+     *             if the text is null
+     * @throws CalendricalParseException
+     *             if the parse fails
+     */
+    public static OffsetDate parse(String text) {
+        if (text == null) {
+            throw new NullPointerException("The text to parse must not be null");
+        }
+        Calendrical calendrical = formatter.parse(text).mergeStrict();
+        return calendrical.toOffsetDate();
+    }
+    /**
+     * Create the formatter that is used to parse text.
+     * @return the formatter used in parsing
+     * @see #parse(String)
+     */
+    private static DateTimeFormatter buildFormatter() {
+        DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder();
+        formatterBuilder.appendValue(yearRule())
+        .appendLiteral('-')
+        .appendValue(monthOfYearRule(), 2)
+        .appendLiteral('-')
+        .appendValue(dayOfMonthRule(), 2)
+        .appendOffsetId();
+
+        DateTimeFormatter formatter = formatterBuilder.toFormatter();
+        return formatter;
+    }
 }
