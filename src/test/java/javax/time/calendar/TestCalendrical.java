@@ -1010,6 +1010,16 @@ public class TestCalendrical {
     }
 
     //-----------------------------------------------------------------------
+    // clone()
+    //-----------------------------------------------------------------------
+    public void test_clone() {
+        Calendrical base = new Calendrical();
+        Calendrical test = base.clone();
+        assertEquals(test, base);
+        assertNotSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals0() {

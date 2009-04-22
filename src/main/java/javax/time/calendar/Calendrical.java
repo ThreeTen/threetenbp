@@ -84,7 +84,7 @@ import javax.time.CalendricalException;
  * @author Stephen Colebourne
  */
 public final class Calendrical
-        implements CalendricalProvider, Serializable {
+        implements CalendricalProvider, Cloneable, Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 273575873876986L;
@@ -816,6 +816,19 @@ public final class Calendrical
      * @return a clone of this instance, never null
      */
     public Calendrical toCalendrical() {
+        return clone();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Clones this Calendrical.
+     * <p>
+     * The returned instance is a clone of this object, with the same state.
+     *
+     * @return a clone of this instance, never null
+     */
+    @Override
+    public Calendrical clone() {
         Calendrical cloned = new Calendrical(date, time, offset, zone);
         cloned.getFieldMap().putAll(fieldMap.fieldValueMap);
         return cloned;
