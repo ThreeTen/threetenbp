@@ -107,16 +107,14 @@ class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             if (minWidth > 0) {
                 return ~position;  // invalid, as minimum width not met
             }
-            context.setFieldValue(fieldRule, 0);
-            return position;  // valid, as whole field is optional
+            return position;  // valid, as whole field is optional, but no data in calendrical
         }
         char point = parseText.charAt(position);  // IOOBE if invalid position
         if (point != context.getSymbols().getDecimalPointChar()) {
             if (minWidth > 0) {
                 return ~position;  // invalid, as minimum width not met
             }
-            context.setFieldValue(fieldRule, 0);
-            return position;  // valid, as whole field is optional
+            return position;  // valid, as whole field is optional, but no data in calendrical
         }
         position++;
         int minEndPos = position + minWidth;

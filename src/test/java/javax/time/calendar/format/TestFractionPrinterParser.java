@@ -247,7 +247,11 @@ public class TestFractionPrinterParser {
         int newPos = pp.parse(context, result, 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
-        assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+        if (value == 0 && minWidth == 0) {
+            assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        } else {
+            assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+        }
     }
 
     @Test(dataProvider="Nanos")
@@ -257,7 +261,11 @@ public class TestFractionPrinterParser {
         int newPos = pp.parse(context, result + " ", 0);
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
-        assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+        if (value == 0 && minWidth == 0) {
+            assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        } else {
+            assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+        }
     }
 
     @Test(dataProvider="Nanos")
@@ -267,7 +275,11 @@ public class TestFractionPrinterParser {
         int newPos = pp.parse(context, " " + result, 1);
         assertEquals(newPos, result.length() + 1);
         int expectedValue = fixParsedValue(maxWidth, value);
-        assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+        if (value == 0 && minWidth == 0) {
+            assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        } else {
+            assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+        }
     }
 
     private int fixParsedValue(int maxWidth, int value) {
@@ -284,7 +296,11 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_RULE, minWidth, maxWidth);
         int newPos = pp.parse(context, result, 0);
         assertEquals(newPos, result.length());
-        assertEquals(context.getFieldValueMapValue(SECOND_RULE), value);
+        if (value == 0 && minWidth == 0) {
+            assertEquals(context.toCalendrical().getFieldMap().contains(SECOND_RULE), false);
+        } else {
+            assertEquals(context.getFieldValueMapValue(SECOND_RULE), value);
+        }
     }
 
     //-----------------------------------------------------------------------
