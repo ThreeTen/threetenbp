@@ -816,9 +816,9 @@ public final class OffsetTime
     }
 
     /**
-     * A hashcode for this time.
+     * A hash code for this time.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
