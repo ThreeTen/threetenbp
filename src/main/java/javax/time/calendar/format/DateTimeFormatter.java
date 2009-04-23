@@ -265,7 +265,7 @@ public class DateTimeFormatter {
             return null;
         }
         position.setIndex(pos);
-        return context.toCalendrical();
+        return context.asCalendrical();
     }
 
     //-----------------------------------------------------------------------
@@ -282,8 +282,8 @@ public class DateTimeFormatter {
     /**
      * Returns this formatter as a <code>java.text.Format</code> instance.
      * <p>
-     * The format instance will print any {@link CalendricalProvider} and parses to
-     * a {@link Calendrical}.
+     * The {@link Format} instance will print any {@link CalendricalProvider}
+     * and parses to a {@link Calendrical}.
      * <p>
      * The format will throw <code>UnsupportedOperationException</code> and
      * <code>IndexOutOfBoundsException</code> in line with those thrown by the
