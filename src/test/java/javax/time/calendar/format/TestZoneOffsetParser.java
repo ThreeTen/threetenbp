@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -120,6 +120,39 @@ public class TestZoneOffsetParser {
     }
 
     //-----------------------------------------------------------------------
+    public void test_parse_exactMatch_UTC_EmptyUTC() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, "", 0);
+        assertEquals(result, 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
+    public void test_parse_startStringMatch_UTC_EmptyUTC() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, "OTHER", 0);
+        assertEquals(result, 0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
+    public void test_parse_midStringMatch_UTC_EmptyUTC() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, "OTHEROTHER", 5);
+        assertEquals(result, 5);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
+    public void test_parse_endStringMatch_UTC_EmptyUTC() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, "OTHER", 5);
+        assertEquals(result, 5);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
+    //-----------------------------------------------------------------------
     @DataProvider(name="offsets")
     Object[][] provider_offsets() {
         return new Object[][] {
@@ -177,6 +210,42 @@ public class TestZoneOffsetParser {
     @Test(dataProvider="offsets")
     public void test_parse_endStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        int result = pp.parse(context, "OTHER" + parse, 5);
+        assertEquals(result, parse.length() + 5);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsets")
+    public void test_parse_exactMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, parse, 0);
+        assertEquals(result, parse.length());
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsets")
+    public void test_parse_startStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, parse + ":OTHER", 0);
+        assertEquals(result, parse.length());
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsets")
+    public void test_parse_midStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
+        int result = pp.parse(context, "OTHER" + parse + ":OTHER", 5);
+        assertEquals(result, parse.length() + 5);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsets")
+    public void test_parse_endStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", true, true);
         int result = pp.parse(context, "OTHER" + parse, 5);
         assertEquals(result, parse.length() + 5);
         assertEquals(context.toCalendrical().getFieldMap().size(), 0);
@@ -241,6 +310,42 @@ public class TestZoneOffsetParser {
     @Test(dataProvider="offsetsNoColon")
     public void test_parse_noColon_endStringMatch(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, true);
+        int result = pp.parse(context, "OTHER" + parse, 5);
+        assertEquals(result, parse.length() + 5);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsetsNoColon")
+    public void test_parse_noColon_exactMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
+        int result = pp.parse(context, parse, 0);
+        assertEquals(result, parse.length());
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsetsNoColon")
+    public void test_parse_noColon_startStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
+        int result = pp.parse(context, parse + ":OTHER", 0);
+        assertEquals(result, parse.length());
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsetsNoColon")
+    public void test_parse_noColon_midStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
+        int result = pp.parse(context, "OTHER" + parse + ":OTHER", 5);
+        assertEquals(result, parse.length() + 5);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), expected);
+    }
+
+    @Test(dataProvider="offsetsNoColon")
+    public void test_parse_noColon_endStringMatch_EmptyUTC(boolean colon, boolean seconds, String parse, ZoneOffset expected) throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("", false, true);
         int result = pp.parse(context, "OTHER" + parse, 5);
         assertEquals(result, parse.length() + 5);
         assertEquals(context.toCalendrical().getFieldMap().size(), 0);

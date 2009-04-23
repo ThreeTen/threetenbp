@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -107,14 +107,22 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public int parse(DateTimeParseContext context, String parseText, int position) {
-        int length = parseText.length();
-        if (position == length) {
-            return ~position;
-        }
         ZoneOffset offset = null;
-        if (parseText.regionMatches(false, position, utcText, 0, utcText.length())) {
-            context.setOffset(ZoneOffset.UTC);
-            return position + utcText.length();
+        int length = parseText.length();
+        int utcLen = utcText.length();
+        if (utcLen == 0) {
+            if (position == length) {
+                context.setOffset(ZoneOffset.UTC);
+                return position;
+            }
+        } else {
+            if (position == length) {
+                return ~position;
+            }
+            if (parseText.regionMatches(false, position, utcText, 0, utcLen)) {
+                context.setOffset(ZoneOffset.UTC);
+                return position + utcLen;
+            }
         }
         
         char sign = parseText.charAt(position);  // IOOBE if invalid position
@@ -135,6 +143,10 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             context.setOffset(offset);
             return array[0];
         } else {
+            if (utcLen == 0) {
+                context.setOffset(ZoneOffset.UTC);
+                return position + utcLen;
+            }
             return ~position;
         }
     }
