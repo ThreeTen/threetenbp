@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.format;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
@@ -42,6 +43,9 @@ import javax.time.calendar.ZoneOffset;
 
 /**
  * Context object used during date and time parsing.
+ * <p>
+ * This context is essentially a wrapper around a {@link Calendrical} providing
+ * methods and functionality to support parsing.
  * <p>
  * This class is mutable and thus not thread-safe.
  * Usage of the class is thread-safe within the Java Time Framework as the
@@ -59,7 +63,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
     /**
      * The calendrical collecting the results.
      */
-    private final Calendrical calendrical = new Calendrical();
+    private final ArrayList<Calendrical> calendricals = new ArrayList<Calendrical>();
 
     /**
      * Constructor.
@@ -70,6 +74,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
         super();
         FormatUtil.checkNotNull(symbols, "symbols");
         this.symbols = symbols;
+        calendricals.add(new Calendrical());
     }
 
     //-----------------------------------------------------------------------
@@ -92,20 +97,14 @@ public final class DateTimeParseContext implements CalendricalProvider {
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Gets the map of fields and their values.
-//     * <p>
-//     * The map will never be null, however it may be empty.
-//     * The values contained in the map might contradict the date or time, or
-//     * be out of range for the rule.
-//     * <p>
-//     * For example, the day of month might be set to 50, or the hour to 1000.
-//     *
-//     * @return a modifiable copy of the field-value map, never null
-//     */
-//    public Map<DateTimeFieldRule, Integer> getFieldValueMap() {
-//        return new HashMap<DateTimeFieldRule, Integer>(fieldValueMap);
-//    }
+    /**
+     * Gets the currently active calendrical.
+     *
+     * @return the current calendrical, never null
+     */
+    private Calendrical currentCalendrical() {
+        return calendricals.get(calendricals.size() - 1);
+    }
 
     /**
      * Gets the value for the specified field throwing an exception if the
@@ -121,7 +120,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
     public int getFieldValueMapValue(DateTimeFieldRule fieldRule) {
-        return calendrical.deriveValue(fieldRule);
+        return currentCalendrical().deriveValue(fieldRule);
     }
 
     /**
@@ -131,7 +130,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param value  the value to set in the field-value map
      */
     public void setFieldValue(DateTimeFieldRule fieldRule, int value) {
-        calendrical.getFieldMap().put(fieldRule, value);
+        currentCalendrical().getFieldMap().put(fieldRule, value);
     }
 
     //-----------------------------------------------------------------------
@@ -142,7 +141,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return the offset, may be null
      */
     public ZoneOffset getOffset() {
-        return calendrical.getOffset();
+        return currentCalendrical().getOffset();
     }
 
     /**
@@ -151,7 +150,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param offset  the zone offset to store, may be null
      */
     public void setOffset(ZoneOffset offset) {
-        calendrical.setOffset(offset);
+        currentCalendrical().setOffset(offset);
     }
 
     //-----------------------------------------------------------------------
@@ -162,7 +161,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return the zone, may be null
      */
     public TimeZone getZone() {
-        return calendrical.getZone();
+        return currentCalendrical().getZone();
     }
 
     /**
@@ -171,17 +170,52 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @param zone  the zone to store, may be null
      */
     public void setZone(TimeZone zone) {
-        calendrical.setZone(zone);
+        currentCalendrical().setZone(zone);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Starts the parsing of an optional segment of the input.
+     */
+    public void startOptional() {
+        calendricals.add(currentCalendrical().clone());
+    }
+
+    /**
+     * Ends the parsing of an optional segment of the input.
+     *
+     * @param successful  whether the optional segment was successfully parsed
+     */
+    public void endOptional(boolean successful) {
+        if (successful) {
+            calendricals.remove(calendricals.size() - 2);
+        } else {
+            calendricals.remove(calendricals.size() - 1);
+        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Converts this object to a Calendrical with the same fields.
+     * <p>
+     * The returned calendrical is part of the internal state of this object.
+     * This design is chosen for performance.
+     *
+     * @return the current Calendrical state with the parsed fields, never null
+     */
+    Calendrical asCalendrical() {
+        return currentCalendrical();
+    }
+
+    /**
+     * Converts this object to a Calendrical with the same fields.
+     * <p>
+     * The returned calendrical is independent of the internal state of this object.
      *
      * @return a new Calendrical with the parsed fields, never null
      */
     public Calendrical toCalendrical() {
-        return calendrical;
+        return currentCalendrical().clone();
     }
 
     //-----------------------------------------------------------------------
@@ -192,7 +226,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     @Override
     public String toString() {
-        return calendrical.toString();
+        return currentCalendrical().toString();
     }
 
 }

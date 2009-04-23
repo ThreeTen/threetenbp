@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -148,14 +148,16 @@ class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
             throw new UnsupportedOperationException("Formatter does not support parsing");
         }
         if (optional) {
+            context.startOptional();
             int pos = position;
             for (DateTimeParser parser : parsers) {
                 pos = parser.parse(context, parseText, pos);
                 if (pos < 0) {
-                    // TODO: reset calendrical
+                    context.endOptional(false);
                     return position;  // return original position
                 }
             }
+            context.endOptional(true);
             return pos;
         } else {
             for (DateTimeParser parser : parsers) {
