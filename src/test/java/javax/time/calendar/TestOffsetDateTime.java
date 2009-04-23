@@ -31,9 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -298,6 +296,37 @@ public class TestOffsetDateTime {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         OffsetDateTime test = OffsetDateTime.dateTime(mmp, OFFSET_PTWO);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PTWO);
+    }
+
+    //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleToString")
+    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String offsetId, String text) {
+        OffsetDateTime t = OffsetDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonthOfYear().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHourOfDay(), h);
+        assertEquals(t.getMinuteOfHour(), m);
+        assertEquals(t.getSecondOfMinute(), s);
+        assertEquals(t.getNanoOfSecond(), n);
+        assertEquals(t.getOffset().getID(), offsetId);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue() {
+        OffsetDateTime.parse("2008-06-32T11:15+01:00");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue() {
+        OffsetDateTime.parse("2008-06-31T11:15+01:00");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        OffsetDateTime.parse((String) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1409,21 +1438,7 @@ public class TestOffsetDateTime {
         String str = t.toString();
         assertEquals(str, expected);
     }
-    //-----------------------------------------------------------------------
-    // parser()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleToString")
-    public void test_parser(int y, int month, int d, int h, int m, int s, int n, String offsetId, String text) {
-        OffsetDateTime t = OffsetDateTime.parse(text);
-        assertEquals(t.getYear(), y);
-        assertEquals(t.getMonthOfYear().getValue(), month);
-        assertEquals(t.getDayOfMonth(), d);
-        assertEquals(t.getHourOfDay(), h);
-        assertEquals(t.getMinuteOfHour(), m);
-        assertEquals(t.getSecondOfMinute(), s);
-        assertEquals(t.getNanoOfSecond(), n);
-        assertEquals(t.getOffset().toString(), offsetId);
-    }
+
     //-----------------------------------------------------------------------
     // matchesDate()
     //-----------------------------------------------------------------------

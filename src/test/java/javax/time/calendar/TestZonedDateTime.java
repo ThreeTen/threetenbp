@@ -518,6 +518,37 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleToString")
+    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String zoneId, String text) {
+        ZonedDateTime t = ZonedDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonthOfYear().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHourOfDay(), h);
+        assertEquals(t.getMinuteOfHour(), m);
+        assertEquals(t.getSecondOfMinute(), s);
+        assertEquals(t.getNanoOfSecond(), n);
+        assertEquals(t.getZone().getID(), zoneId);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue() {
+        ZonedDateTime.parse("2008-06-32T11:15+01:00[Europe/Paris]");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue() {
+        ZonedDateTime.parse("2008-06-31T11:15+01:00[Europe/Paris]");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        ZonedDateTime.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
     // basics
     //-----------------------------------------------------------------------
     @DataProvider(name="sampleTimes")
@@ -565,7 +596,7 @@ public class TestZonedDateTime {
         assertEquals(a.toOffsetTime(), OffsetTime.time(localTime, offset));
         assertEquals(a.toOffsetDateTime(), OffsetDateTime.dateTime(localDateTime, offset));
         assertEquals(a.toCalendrical(), new Calendrical(localDateTime.toLocalDate(), localDateTime.toLocalTime(), offset, zone));
-        assertEquals(a.toString(), a.toOffsetDateTime().toString() + " " + zone.toString());
+        assertEquals(a.toString(), a.toOffsetDateTime().toString() + "[" + zone.toString() + "]");
     }
 
     //-----------------------------------------------------------------------
@@ -1611,23 +1642,23 @@ public class TestZonedDateTime {
     @DataProvider(name="sampleToString")
     Object[][] provider_sampleToString() {
         return new Object[][] {
-            {2008, 6, 30, 11, 30, 59, 0, "UTC", "2008-06-30T11:30:59Z UTC"},
-            {2008, 6, 30, 11, 30, 59, 0, "UTC+01:00", "2008-06-30T11:30:59+01:00 UTC+01:00"},
-            {2008, 6, 30, 11, 30, 59, 999000000, "UTC", "2008-06-30T11:30:59.999Z UTC"},
-            {2008, 6, 30, 11, 30, 59, 999000000, "UTC+01:00", "2008-06-30T11:30:59.999+01:00 UTC+01:00"},
-            {2008, 6, 30, 11, 30, 59, 999000, "UTC", "2008-06-30T11:30:59.000999Z UTC"},
-            {2008, 6, 30, 11, 30, 59, 999000, "UTC+01:00", "2008-06-30T11:30:59.000999+01:00 UTC+01:00"},
-            {2008, 6, 30, 11, 30, 59, 999, "UTC", "2008-06-30T11:30:59.000000999Z UTC"},
-            {2008, 6, 30, 11, 30, 59, 999, "UTC+01:00", "2008-06-30T11:30:59.000000999+01:00 UTC+01:00"},
+            {2008, 6, 30, 11, 30, 59, 0, "UTC", "2008-06-30T11:30:59Z[UTC]"},
+            {2008, 6, 30, 11, 30, 59, 0, "UTC+01:00", "2008-06-30T11:30:59+01:00[UTC+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 999000000, "UTC", "2008-06-30T11:30:59.999Z[UTC]"},
+            {2008, 6, 30, 11, 30, 59, 999000000, "UTC+01:00", "2008-06-30T11:30:59.999+01:00[UTC+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 999000, "UTC", "2008-06-30T11:30:59.000999Z[UTC]"},
+            {2008, 6, 30, 11, 30, 59, 999000, "UTC+01:00", "2008-06-30T11:30:59.000999+01:00[UTC+01:00]"},
+            {2008, 6, 30, 11, 30, 59, 999, "UTC", "2008-06-30T11:30:59.000000999Z[UTC]"},
+            {2008, 6, 30, 11, 30, 59, 999, "UTC+01:00", "2008-06-30T11:30:59.000000999+01:00[UTC+01:00]"},
             
-            {2008, 6, 30, 11, 30, 59, 999, "Europe/London", "2008-06-30T11:30:59.000000999+01:00 Europe/London"},
-            {2008, 6, 30, 11, 30, 59, 999, "Europe/London#2008i", "2008-06-30T11:30:59.000000999+01:00 Europe/London#2008i"},
+            {2008, 6, 30, 11, 30, 59, 999, "Europe/London", "2008-06-30T11:30:59.000000999+01:00[Europe/London]"},
+            {2008, 6, 30, 11, 30, 59, 999, "Europe/London#2008i", "2008-06-30T11:30:59.000000999+01:00[Europe/London#2008i]"},
         };
     }
 
     @Test(dataProvider="sampleToString")
-    public void test_toString(int y, int o, int d, int h, int m, int s, int n, String offsetId, String expected) {
-        ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(y, o, d, h, m, s, n), TimeZone.timeZone(offsetId));
+    public void test_toString(int y, int o, int d, int h, int m, int s, int n, String zoneId, String expected) {
+        ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(y, o, d, h, m, s, n), TimeZone.timeZone(zoneId));
         String str = t.toString();
         assertEquals(str, expected);
     }

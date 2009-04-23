@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -152,7 +152,12 @@ public class DateTimeFormatters {
      * such as '10:15:30'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>HH:mm[:ss[.SSS]]</code>
+     * <code>HH:mm[:ss[.S]]</code>
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus a LocalTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
      *
      * @return the ISO time formatter, never null
      */
@@ -181,7 +186,15 @@ public class DateTimeFormatters {
      * such as '10:15:30+01:00'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>HH:mm[:ss[.SSS]]</code>
+     * <code>HH:mm[:ss[.S]]ZZ</code>
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus an OffsetTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
+     * <p>
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
      *
      * @return the ISO time formatter, never null
      */
@@ -205,7 +218,12 @@ public class DateTimeFormatters {
      * or '10:15:30+01:00[Europe/Paris]'.
      * <p>
      * This is the ISO-8601 extended format:<br />
-     * <code>HH:mm[:ss[.SSS]][ZZ['['{ZoneId}']']]</code>
+     * <code>HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]</code>
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus a LocalTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
      * <p>
      * The offset will print and parse an offset with seconds even though that
      * is not part of the ISO-8601 standard.
@@ -221,6 +239,149 @@ public class DateTimeFormatters {
     static {
         ISO_TIME = new DateTimeFormatterBuilder()
             .append(ISO_LOCAL_TIME)
+            .optionalStart()
+            .appendOffsetId()
+            .optionalStart()
+            .appendLiteral('[')
+            .appendZoneId()
+            .appendLiteral(']')
+            .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the ISO date formatter that prints/parses a local date without an offset,
+     * such as '2007-12-03T10:15:30'.
+     * <p>
+     * This is the ISO-8601 extended format:<br />
+     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]]</code>
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus a LocalDateTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
+     *
+     * @return the ISO date formatter, never null
+     */
+    public static DateTimeFormatter isoLocalDateTime() {
+        return ISO_LOCAL_DATE_TIME;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter ISO_LOCAL_DATE_TIME;
+    static {
+        ISO_LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
+            .append(ISO_LOCAL_DATE)
+            .appendLiteral('T')
+            .append(ISO_LOCAL_TIME)
+            .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the ISO date formatter that prints/parses an offset date with an offset,
+     * such as '2007-12-03T10:15:30+01:00'.
+     * <p>
+     * This is the ISO-8601 extended format:<br />
+     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ</code>
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus an OffsetDateTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
+     * <p>
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
+     *
+     * @return the ISO date formatter, never null
+     */
+    public static DateTimeFormatter isoOffsetDateTime() {
+        return ISO_OFFSET_DATE_TIME;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter ISO_OFFSET_DATE_TIME;
+    static {
+        ISO_OFFSET_DATE_TIME = new DateTimeFormatterBuilder()
+            .append(ISO_LOCAL_DATE_TIME)
+            .appendOffsetId()
+            .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the ISO date formatter that prints/parses an offset date with a zone,
+     * such as '2007-12-03T10:15:30+01:00[Europe/Paris]'.
+     * <p>
+     * This is the ISO-8601 extended format:<br />
+     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]]ZZ[{ZoneId}]</code>
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus an OffsetDateTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
+     * <p>
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
+     *
+     * @return the ISO date formatter, never null
+     */
+    public static DateTimeFormatter isoZonedDateTime() {
+        return ISO_ZONED_DATE_TIME;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter ISO_ZONED_DATE_TIME;
+    static {
+        ISO_ZONED_DATE_TIME = new DateTimeFormatterBuilder()
+            .append(ISO_LOCAL_DATE_TIME)
+            .appendOffsetId()
+            .appendLiteral('[')
+            .appendZoneId()
+            .appendLiteral(']')
+            .toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns the ISO date formatter that prints/parses a date, with the
+     * offset and zone if available, such as '2007-12-03T10:15:30',
+     * '2007-12-03T10:15:30+01:00' or '2007-12-03T10:15:30+01:00[Europe/Paris]'.
+     * <p>
+     * This is the ISO-8601 extended format:<br />
+     * <code>yyyy-MM-dd'T'HH:mm[:ss[.S]][ZZ['['{ZoneId}']']]</code>
+     * <p>
+     * The year will print 4 digits, unless this is insufficient, in which
+     * case the full year will be printed together with a positive/negative sign.
+     * <p>
+     * The seconds will be printed if present in the Calendrical, thus a ZonedDateTime
+     * will always print the seconds.
+     * The nanoseconds will be printed if non-zero.
+     * If non-zero, the minimum number of fractional second digits will printed.
+     * <p>
+     * The offset will print and parse an offset with seconds even though that
+     * is not part of the ISO-8601 standard.
+     *
+     * @return the ISO date formatter, never null
+     */
+    public static DateTimeFormatter isoDateTime() {
+        return ISO_DATE_TIME;
+    }
+
+    /** Singleton date formatter. */
+    private static final DateTimeFormatter ISO_DATE_TIME;
+    static {
+        ISO_DATE_TIME = new DateTimeFormatterBuilder()
+            .append(ISO_LOCAL_DATE_TIME)
             .optionalStart()
             .appendOffsetId()
             .optionalStart()

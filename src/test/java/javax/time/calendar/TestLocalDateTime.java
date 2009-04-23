@@ -777,6 +777,36 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // parse()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleToString")
+    public void test_parse(int y, int month, int d, int h, int m, int s, int n, String text) {
+        LocalDateTime t = LocalDateTime.parse(text);
+        assertEquals(t.getYear(), y);
+        assertEquals(t.getMonthOfYear().getValue(), month);
+        assertEquals(t.getDayOfMonth(), d);
+        assertEquals(t.getHourOfDay(), h);
+        assertEquals(t.getMinuteOfHour(), m);
+        assertEquals(t.getSecondOfMinute(), s);
+        assertEquals(t.getNanoOfSecond(), n);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void factory_parse_illegalValue() {
+        LocalDateTime.parse("2008-06-32T11:15");
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void factory_parse_invalidValue() {
+        LocalDateTime.parse("2008-06-31T11:15");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void factory_parse_nullText() {
+        LocalDateTime.parse((String) null);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertSame(ISOChronology.INSTANCE, TEST_2007_07_15_12_30_40_987654321.getChronology());
     }

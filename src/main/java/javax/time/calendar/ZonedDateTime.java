@@ -45,6 +45,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.period.PeriodProvider;
@@ -330,6 +332,45 @@ public final class ZonedDateTime
         return new ZonedDateTime(dateTime, zone);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>ZonedDateTime</code> from a text string.
+     * <p>
+     * The following formats are accepted in ASCII:
+     * <ul>
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}{OffsetID}[{ZoneId}]</code>
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}{OffsetID}[{ZoneId}]</code>
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}{OffsetID}[{ZoneId}]</code>
+     * </ul>
+     * <p>
+     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
+     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
+     * Negative years are allowed, but not negative zero.
+     * <p>
+     * The month of year has 2 digits with values from 1 to 12.
+     * <p>
+     * The day of month has 2 digits with values from 1 to 31 appropriate to the month.
+     * <p>
+     * The hour has 2 digits with values from 0 to 23.
+     * The minute has 2 digits with values from 0 to 59.
+     * The second has 2 digits with values from 0 to 59.
+     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
+     * <p>
+     * The offset ID is the normalized form as defined in {@link ZoneOffset}.
+     * <p>
+     * The zone ID is the normalized form as defined in {@link TimeZone#getID()}.
+     *
+     * @param text  the text to parse such as '2007-12-03T10:15:30+01:00', not null
+     * @return the parsed zoned date-time, never null
+     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    public static ZonedDateTime parse(String text) {
+        return DateTimeFormatters.isoZonedDateTime().parse(text).mergeStrict().toZonedDateTime();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>ZonedDateTime</code>.
      *
@@ -1785,18 +1826,16 @@ public final class ZonedDateTime
     //-----------------------------------------------------------------------
     /**
      * Outputs the date-time as a <code>String</code>, such as
-     * '2007-12-03T10:15:30+01:00 Europe/Paris'.
+     * '2007-12-03T10:15:30+01:00[Europe/Paris]'.
      * <p>
      * The output will be one of the following formats:
      * <ul>
-     * <li>'yyyy-MM-ddThh:mmZ ZZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ssZ ZZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSZ ZZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSZ ZZ'</li>
-     * <li>'yyyy-MM-ddThh:mm:ss.SSSSSSSSSZ ZZ'</li>
+     * <li><code>yyyy-MM-ddThh:mmZZ'['{ZoneId}']'</code></li>
+     * <li><code>yyyy-MM-ddThh:mm:ssZZ'['{ZoneId}']'</code></li>
+     * <li><code>yyyy-MM-ddThh:mm:ss.SSSZZ'['{ZoneId}']'</code></li>
+     * <li><code>yyyy-MM-ddThh:mm:ss.SSSSSSZZ'['{ZoneId}']'</code></li>
+     * <li><code>yyyy-MM-ddThh:mm:ss.SSSSSSSSSZZ'['{ZoneId}']'</code></li>
      * </ul>
-     * where 'Z' is the id of the zone offset, such as '+02:30' or 'Z' and
-     * 'ZZ' is the time zone id.
      * The format used will be the shortest that outputs the full value of
      * the time where the omitted parts are implied to be zero.
      *
@@ -1804,7 +1843,7 @@ public final class ZonedDateTime
      */
     @Override
     public String toString() {
-        return dateTime.toString() + " " + zone.toString();
+        return dateTime.toString() + '[' + zone.toString() + ']';
     }
 
 }

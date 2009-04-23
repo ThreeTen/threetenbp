@@ -43,6 +43,8 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodProvider;
 
 /**
@@ -385,6 +387,40 @@ public final class LocalDateTime
         LocalDateTime result = dateTimeProvider.toLocalDateTime();
         ISOChronology.checkNotNull(result, "DateTimeProvider implementation must not return null");
         return result;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>LocalDateTime</code> from a text string.
+     * <p>
+     * The following formats are accepted in ASCII:
+     * <ul>
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}</code>
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}</code>
+     * <li><code>{Year}-{MonthOfYear}-{DayOfMonth}T{Hour}:{Minute}:{Second}.{NanosecondFraction}</code>
+     * </ul>
+     * <p>
+     * The year has between 4 and 10 digits with values from MIN_YEAR to MAX_YEAR.
+     * If there are more than 4 digits then the year must be prefixed with the plus symbol.
+     * Negative years are allowed, but not negative zero.
+     * <p>
+     * The month of year has 2 digits with values from 1 to 12.
+     * <p>
+     * The day of month has 2 digits with values from 1 to 31 appropriate to the month.
+     * <p>
+     * The hour has 2 digits with values from 0 to 23.
+     * The minute has 2 digits with values from 0 to 59.
+     * The second has 2 digits with values from 0 to 59.
+     * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
+     *
+     * @param text  the text to parse such as '2007-12-03T10:15:30', not null
+     * @return the parsed local date-time, never null
+     * @throws CalendricalParseException if the text cannot be parsed
+     * @throws IllegalCalendarFieldValueException if the value of any field is out of range
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+    public static LocalDateTime parse(String text) {
+        return DateTimeFormatters.isoLocalDateTime().parse(text).mergeStrict().toLocalDateTime();
     }
 
     //-----------------------------------------------------------------------

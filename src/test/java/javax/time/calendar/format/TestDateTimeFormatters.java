@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,9 +41,7 @@ import java.util.Iterator;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
-import javax.time.calendar.OffsetDate;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.YearMonth;
@@ -92,138 +90,718 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    public void test_print_isoDate() {
-        CalendricalProvider test = LocalDate.date(2008, 6, 3);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03");
+    @DataProvider(name="sample_isoLocalDate")
+    Object[][] provider_sample_isoLocalDate() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, null, null,                   "2008-06-30", null},
+                {2008, 6, 30, "+01:00", null,               "2008-06-30", null},
+                {2008, 6, 30, "+01:00", "Europe/Paris",     "2008-06-30", null},
+                {2008, 6, 30, null, "Europe/Paris",         "2008-06-30", null},
+                
+                {123456, 6, 30, null, null,                 "+123456-06-30", null},
+        };
     }
 
-    public void test_print_isoDate_offset() {
-        CalendricalProvider test = OffsetDate.date(2008, 6, 3, ZoneOffset.UTC);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03Z");
+    @Test(dataProvider="sample_isoLocalDate")
+    public void test_print_isoLocalDate(
+            Integer year, Integer month, Integer day, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDate(year, month, day);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoLocalDate().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoLocalDate().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
     }
 
-    public void test_print_isoDate_zoned() {
-        CalendricalProvider test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-03Z[UTC]");
-    }
-
-    public void test_print_isoDate__zoned_largeYear() {
-        CalendricalProvider test = ZonedDateTime.dateTime(LocalDateTime.dateTime(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "+123456-06-03Z[UTC]");
-    }
-
-    public void test_print_isoDate_fields() {
-        Calendrical test = new Calendrical();
-        test.getFieldMap().put(Year.rule(), 2008);
-        test.getFieldMap().put(MonthOfYear.rule(), 6);
-        test.getFieldMap().put(DayOfMonth.rule(), 30);
-        assertEquals(DateTimeFormatters.isoDate().print(test), "2008-06-30");
-    }
-
-    public void test_print_isoDate_missingField() {
-        try {
-            CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
-            DateTimeFormatters.isoDate().print(test);
-            fail();
-        } catch (CalendricalFormatFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
-            assertEquals(ex.getValue(), null);
+    @Test(dataProvider="sample_isoLocalDate")
+    public void test_parse_isoLocalDate(
+            Integer year, Integer month, Integer day, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDate(year, month, day);
+            assertEquals(DateTimeFormatters.isoLocalDate().parse(input), expected);
         }
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_isoDate() {
-        Calendrical expected = new Calendrical();
-        expected.getFieldMap().put(ISOChronology.INSTANCE.year(), 2008);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.monthOfYear(), 6);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.dayOfMonth(), 3);
-        assertEquals(DateTimeFormatters.isoDate().parse("2008-06-03"), expected);
-    }
-
-    public void test_parse_isoDate_largeYear() {
-        Calendrical expected = new Calendrical();
-        expected.getFieldMap().put(ISOChronology.INSTANCE.year(), 123456);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.monthOfYear(), 6);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.dayOfMonth(), 3);
-        assertEquals(DateTimeFormatters.isoDate().parse("+123456-06-03"), expected);
-    }
-
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    //-----------------------------------------------------------------------
-    public void test_print_isoTime_Local() {
-        CalendricalProvider test = LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30);
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30");
+    @DataProvider(name="sample_isoOffsetDate")
+    Object[][] provider_sample_isoOffsetDate() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, null, null,                   null, CalendricalFormatException.class},
+                {2008, 6, 30, "+01:00", null,               "2008-06-30+01:00", null},
+                {2008, 6, 30, "+01:00", "Europe/Paris",     "2008-06-30+01:00", null},
+                {2008, 6, 30, null, "Europe/Paris",         null, CalendricalFormatException.class},
+                
+                {123456, 6, 30, "+01:00", null,             "+123456-06-30+01:00", null},
+        };
     }
 
-    public void test_print_isoTime_Offset() {
-        CalendricalProvider test = OffsetDateTime.dateTime(2008, 6, 3, 11, 5, 30, ZoneOffset.zoneOffset(1));
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30+01:00");
+    @Test(dataProvider="sample_isoOffsetDate")
+    public void test_print_isoOffsetDate(
+            Integer year, Integer month, Integer day, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDate(year, month, day);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoOffsetDate().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoOffsetDate().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
     }
 
-    public void test_print_isoTime_Zoned() {
-        CalendricalProvider test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30), TimeZone.timeZone("Europe/Paris"));
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30+02:00[Europe/Paris]");
-    }
-
-    public void test_print_isoTime_nanos1_Local() {
-        CalendricalProvider test = LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30, 1);
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.000000001");
-    }
-
-    public void test_print_isoTime_nanos1_Zoned() {
-        CalendricalProvider test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30, 1), TimeZone.UTC);
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.000000001Z[UTC]");
-    }
-
-    public void test_print_isoTime_nanos2_Local() {
-        CalendricalProvider test = LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30, 500000000);
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.5");
-    }
-
-    public void test_print_isoTime_nanos2_Zoned() {
-        CalendricalProvider test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30, 500000000), TimeZone.timeZone("Europe/Paris"));
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.5+02:00[Europe/Paris]");
-    }
-
-    public void test_print_isoTime_nanos3_Local() {
-        CalendricalProvider test = LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30, 123456000);
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.123456");
-    }
-
-    public void test_print_isoTime_nanos3_Zoned() {
-        CalendricalProvider test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30, 123456000), TimeZone.timeZone("Europe/Paris"));
-        assertEquals(DateTimeFormatters.isoTime().print(test), "11:05:30.123456+02:00[Europe/Paris]");
-    }
-
-    public void test_print_isoTime_missingField() {
-        try {
-            CalendricalProvider test = YearMonth.yearMonth(2008, 6).toCalendrical();
-            DateTimeFormatters.isoTime().print(test);
-            fail();
-        } catch (CalendricalFormatFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.hourOfDay());
-            assertEquals(ex.getValue(), null);
+    @Test(dataProvider="sample_isoOffsetDate")
+    public void test_parse_isoOffsetDate(
+            Integer year, Integer month, Integer day, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDate(year, month, day);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+            }
+            assertEquals(DateTimeFormatters.isoOffsetDate().parse(input), expected);
         }
     }
 
     //-----------------------------------------------------------------------
-    public void test_parse_isoTime_nanos() {
-        Calendrical expected = new Calendrical();
-        expected.getFieldMap().put(ISOChronology.INSTANCE.hourOfDay(), 11);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.minuteOfHour(), 5);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.secondOfMinute(), 30);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.nanoOfSecond(), 123456789);
-        assertEquals(DateTimeFormatters.isoTime().parse("11:05:30.123456789"), expected);
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoDate")
+    Object[][] provider_sample_isoDate() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, null, null,                   "2008-06-30", null},
+                {2008, 6, 30, "+01:00", null,               "2008-06-30+01:00", null},
+                {2008, 6, 30, "+01:00", "Europe/Paris",     "2008-06-30+01:00[Europe/Paris]", null},
+                {2008, 6, 30, null, "Europe/Paris",         "2008-06-30", null},
+                
+                {123456, 6, 30, "+01:00", "Europe/Paris",   "+123456-06-30+01:00[Europe/Paris]", null},
+        };
     }
 
-    public void test_parse_isoTime_millis() {
-        Calendrical expected = new Calendrical();
-        expected.getFieldMap().put(ISOChronology.INSTANCE.hourOfDay(), 11);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.minuteOfHour(), 5);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.secondOfMinute(), 30);
-        expected.getFieldMap().put(ISOChronology.INSTANCE.nanoOfSecond(), 123000000);
-        assertEquals(DateTimeFormatters.isoTime().parse("11:05:30.123"), expected);
+    @Test(dataProvider="sample_isoDate")
+    public void test_print_isoDate(
+            Integer year, Integer month, Integer day, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDate(year, month, day);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoDate().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoDate().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoDate")
+    public void test_parse_isoDate(
+            Integer year, Integer month, Integer day, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDate(year, month, day);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+                if (zoneId != null) {
+                    expected.setZone(TimeZone.timeZone(zoneId));
+                }
+            }
+            assertEquals(DateTimeFormatters.isoDate().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoLocalTime")
+    Object[][] provider_sample_isoLocalTime() {
+        return new Object[][]{
+                {11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 1, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                
+                {11, 5, null, null, null, null,     "11:05", null},
+                {11, 5, 30, null, null, null,       "11:05:30", null},
+                {11, 5, 30, 500000000, null, null,  "11:05:30.5", null},
+                {11, 5, 30, 1, null, null,          "11:05:30.000000001", null},
+                
+                {11, 5, null, null, "+01:00", null,     "11:05", null},
+                {11, 5, 30, null, "+01:00", null,       "11:05:30", null},
+                {11, 5, 30, 500000000, "+01:00", null,  "11:05:30.5", null},
+                {11, 5, 30, 1, "+01:00", null,          "11:05:30.000000001", null},
+                
+                {11, 5, null, null, "+01:00", "Europe/Paris",       "11:05", null},
+                {11, 5, 30, null, "+01:00", "Europe/Paris",         "11:05:30", null},
+                {11, 5, 30, 500000000, "+01:00", "Europe/Paris",    "11:05:30.5", null},
+                {11, 5, 30, 1, "+01:00", "Europe/Paris",            "11:05:30.000000001", null},
+                
+                {11, 5, null, null, null, "Europe/Paris",       "11:05", null},
+                {11, 5, 30, null, null, "Europe/Paris",         "11:05:30", null},
+                {11, 5, 30, 500000000, null, "Europe/Paris",    "11:05:30.5", null},
+                {11, 5, 30, 1, null, "Europe/Paris",            "11:05:30.000000001", null},
+        };
+    }
+
+    @Test(dataProvider="sample_isoLocalTime")
+    public void test_print_isoLocalTime(
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createTime(hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoLocalTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoLocalTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoLocalTime")
+    public void test_parse_isoLocalTime(
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createTime(hour, min, sec, nano);
+            assertEquals(DateTimeFormatters.isoLocalTime().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoOffsetTime")
+    Object[][] provider_sample_isoOffsetTime() {
+        return new Object[][]{
+                {11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 1, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                
+                {11, 5, null, null, null, null,     null, CalendricalFormatException.class},
+                {11, 5, 30, null, null, null,       null, CalendricalFormatException.class},
+                {11, 5, 30, 500000000, null, null,  null, CalendricalFormatException.class},
+                {11, 5, 30, 1, null, null,          null, CalendricalFormatException.class},
+                
+                {11, 5, null, null, "+01:00", null,     "11:05+01:00", null},
+                {11, 5, 30, null, "+01:00", null,       "11:05:30+01:00", null},
+                {11, 5, 30, 500000000, "+01:00", null,  "11:05:30.5+01:00", null},
+                {11, 5, 30, 1, "+01:00", null,          "11:05:30.000000001+01:00", null},
+                
+                {11, 5, null, null, "+01:00", "Europe/Paris",       "11:05+01:00", null},
+                {11, 5, 30, null, "+01:00", "Europe/Paris",         "11:05:30+01:00", null},
+                {11, 5, 30, 500000000, "+01:00", "Europe/Paris",    "11:05:30.5+01:00", null},
+                {11, 5, 30, 1, "+01:00", "Europe/Paris",            "11:05:30.000000001+01:00", null},
+                
+                {11, 5, null, null, null, "Europe/Paris",       null, CalendricalFormatException.class},
+                {11, 5, 30, null, null, "Europe/Paris",         null, CalendricalFormatException.class},
+                {11, 5, 30, 500000000, null, "Europe/Paris",    null, CalendricalFormatException.class},
+                {11, 5, 30, 1, null, "Europe/Paris",            null, CalendricalFormatException.class},
+        };
+    }
+
+    @Test(dataProvider="sample_isoOffsetTime")
+    public void test_print_isoOffsetTime(
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createTime(hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoOffsetTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoOffsetTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoOffsetTime")
+    public void test_parse_isoOffsetTime(
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createTime(hour, min, sec, nano);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+            }
+            assertEquals(DateTimeFormatters.isoOffsetTime().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoTime")
+    Object[][] provider_sample_isoTime() {
+        return new Object[][]{
+                {11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 1, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                
+                {11, 5, null, null, null, null,     "11:05", null},
+                {11, 5, 30, null, null, null,       "11:05:30", null},
+                {11, 5, 30, 500000000, null, null,  "11:05:30.5", null},
+                {11, 5, 30, 1, null, null,          "11:05:30.000000001", null},
+                
+                {11, 5, null, null, "+01:00", null,     "11:05+01:00", null},
+                {11, 5, 30, null, "+01:00", null,       "11:05:30+01:00", null},
+                {11, 5, 30, 500000000, "+01:00", null,  "11:05:30.5+01:00", null},
+                {11, 5, 30, 1, "+01:00", null,          "11:05:30.000000001+01:00", null},
+                
+                {11, 5, null, null, "+01:00", "Europe/Paris",       "11:05+01:00[Europe/Paris]", null},
+                {11, 5, 30, null, "+01:00", "Europe/Paris",         "11:05:30+01:00[Europe/Paris]", null},
+                {11, 5, 30, 500000000, "+01:00", "Europe/Paris",    "11:05:30.5+01:00[Europe/Paris]", null},
+                {11, 5, 30, 1, "+01:00", "Europe/Paris",            "11:05:30.000000001+01:00[Europe/Paris]", null},
+                
+                {11, 5, null, null, null, "Europe/Paris",       "11:05", null},
+                {11, 5, 30, null, null, "Europe/Paris",         "11:05:30", null},
+                {11, 5, 30, 500000000, null, "Europe/Paris",    "11:05:30.5", null},
+                {11, 5, 30, 1, null, "Europe/Paris",            "11:05:30.000000001", null},
+        };
+    }
+
+    @Test(dataProvider="sample_isoTime")
+    public void test_print_isoTime(
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createTime(hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoTime")
+    public void test_parse_isoTime(
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createTime(hour, min, sec, nano);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+                if (zoneId != null) {
+                    expected.setZone(TimeZone.timeZone(zoneId));
+                }
+            }
+            assertEquals(DateTimeFormatters.isoTime().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoLocalDateTime")
+    Object[][] provider_sample_isoLocalDateTime() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         "2008-06-30T11:05:30.000000001", null},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     "2008-06-30T11:05:30.000000001", null},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001", null},
+                
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               "2008-06-30T11:05:30.000000001", null},
+                
+                {123456, 6, 30, 11, 5, null, null, null, null,                  "+123456-06-30T11:05", null},
+        };
+    }
+
+    @Test(dataProvider="sample_isoLocalDateTime")
+    public void test_print_isoLocalDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDateTime(year, month, day, hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoLocalDateTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoLocalDateTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoLocalDateTime")
+    public void test_parse_isoLocalDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
+            assertEquals(DateTimeFormatters.isoLocalDateTime().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoOffsetDateTime")
+    Object[][] provider_sample_isoOffsetDateTime() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, null, null,                    null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, CalendricalFormatException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05+01:00", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             "2008-06-30T11:05:30.5+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     "2008-06-30T11:05:30.000000001+01:00", null},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05+01:00", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00", null},
+                
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, CalendricalFormatException.class},
+                
+                {123456, 6, 30, 11, 5, null, null, "+01:00", null,              "+123456-06-30T11:05+01:00", null},
+        };
+    }
+
+    @Test(dataProvider="sample_isoOffsetDateTime")
+    public void test_print_isoOffsetDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDateTime(year, month, day, hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoOffsetDateTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoOffsetDateTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoOffsetDateTime")
+    public void test_parse_isoOffsetDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+            }
+            assertEquals(DateTimeFormatters.isoOffsetDateTime().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoZonedDateTime")
+    Object[][] provider_sample_isoZonedDateTime() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, null, null,                    null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         null, CalendricalFormatException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     null, CalendricalFormatException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05+01:00[Europe/Paris]", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30+01:00[Europe/Paris]", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00[Europe/Paris]", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00[Europe/Paris]", null},
+                
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       null, CalendricalFormatException.class},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               null, CalendricalFormatException.class},
+                
+                {123456, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",    "+123456-06-30T11:05+01:00[Europe/Paris]", null},
+        };
+    }
+
+    @Test(dataProvider="sample_isoZonedDateTime")
+    public void test_print_isoZonedDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDateTime(year, month, day, hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoZonedDateTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoZonedDateTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoZonedDateTime")
+    public void test_parse_isoZonedDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+                if (zoneId != null) {
+                    expected.setZone(TimeZone.timeZone(zoneId));
+                }
+            }
+            assertEquals(DateTimeFormatters.isoZonedDateTime().parse(input), expected);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    @DataProvider(name="sample_isoDateTime")
+    Object[][] provider_sample_isoDateTime() {
+        return new Object[][]{
+                {2008, null, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, null, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, 30, null, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, "+01:00", null, null, CalendricalFormatFieldException.class},
+                {null, null, null, null, null, null, null, null, "Europe/Paris", null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, 11, null, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, 30, null, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, 6, null, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {2008, null, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                {null, 6, 30, 11, 5, null, null, null, null, null, CalendricalFormatFieldException.class},
+                
+                {2008, 6, 30, 11, 5, null, null, null, null,                    "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, null, null,                      "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, null,                 "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, null, null,                         "2008-06-30T11:05:30.000000001", null},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", null,                "2008-06-30T11:05+01:00", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", null,                  "2008-06-30T11:05:30+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", null,             "2008-06-30T11:05:30.5+01:00", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", null,                     "2008-06-30T11:05:30.000000001+01:00", null},
+                
+                {2008, 6, 30, 11, 5, null, null, "+01:00", "Europe/Paris",      "2008-06-30T11:05+01:00[Europe/Paris]", null},
+                {2008, 6, 30, 11, 5, 30, null, "+01:00", "Europe/Paris",        "2008-06-30T11:05:30+01:00[Europe/Paris]", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, "+01:00", "Europe/Paris",   "2008-06-30T11:05:30.5+01:00[Europe/Paris]", null},
+                {2008, 6, 30, 11, 5, 30, 1, "+01:00", "Europe/Paris",           "2008-06-30T11:05:30.000000001+01:00[Europe/Paris]", null},
+                
+                {2008, 6, 30, 11, 5, null, null, null, "Europe/Paris",          "2008-06-30T11:05", null},
+                {2008, 6, 30, 11, 5, 30, null, null, "Europe/Paris",            "2008-06-30T11:05:30", null},
+                {2008, 6, 30, 11, 5, 30, 500000000, null, "Europe/Paris",       "2008-06-30T11:05:30.5", null},
+                {2008, 6, 30, 11, 5, 30, 1, null, "Europe/Paris",               "2008-06-30T11:05:30.000000001", null},
+                
+                {123456, 6, 30, 11, 5, null, null, null, null,                  "+123456-06-30T11:05", null},
+        };
+    }
+
+    @Test(dataProvider="sample_isoDateTime")
+    public void test_print_isoDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String expected, Class<?> expectedEx) {
+        Calendrical test = createDateTime(year, month, day, hour, min, sec, nano);
+        if (offsetId != null) {
+            test.setOffset(ZoneOffset.zoneOffset(offsetId));
+        }
+        if (zoneId != null) {
+            test.setZone(TimeZone.timeZone(zoneId));
+        }
+        if (expectedEx == null) {
+            assertEquals(DateTimeFormatters.isoDateTime().print(test), expected);
+        } else {
+            try {
+                DateTimeFormatters.isoDateTime().print(test);
+                fail();
+            } catch (Exception ex) {
+                assertEquals(ex.getClass(), expectedEx);
+            }
+        }
+    }
+
+    @Test(dataProvider="sample_isoDateTime")
+    public void test_parse_isoDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano, String offsetId, String zoneId,
+            String input, Class<?> invalid) {
+        if (input != null) {
+            Calendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
+            if (offsetId != null) {
+                expected.setOffset(ZoneOffset.zoneOffset(offsetId));
+                if (zoneId != null) {
+                    expected.setZone(TimeZone.timeZone(zoneId));
+                }
+            }
+            assertEquals(DateTimeFormatters.isoDateTime().parse(input), expected);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -452,6 +1030,68 @@ public class TestDateTimeFormatters {
             assertEquals(ex.getFieldRule(), ISOChronology.INSTANCE.dayOfWeek());
             assertEquals(ex.getValue(), null);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    private Calendrical createDate(Integer year, Integer month, Integer day) {
+        Calendrical test = new Calendrical();
+        if (year != null) {
+            test.getFieldMap().put(ISOChronology.yearRule(), year);
+        }
+        if (month != null) {
+            test.getFieldMap().put(ISOChronology.monthOfYearRule(), month);
+        }
+        if (day != null) {
+            test.getFieldMap().put(ISOChronology.dayOfMonthRule(), day);
+        }
+        return test;
+    }
+
+    private Calendrical createTime(Integer hour, Integer min, Integer sec, Integer nano) {
+        Calendrical test = new Calendrical();
+        if (hour != null) {
+            test.getFieldMap().put(ISOChronology.hourOfDayRule(), hour);
+        }
+        if (min != null) {
+            test.getFieldMap().put(ISOChronology.minuteOfHourRule(), min);
+        }
+        if (sec != null) {
+            test.getFieldMap().put(ISOChronology.secondOfMinuteRule(), sec);
+        }
+        if (nano != null) {
+            test.getFieldMap().put(ISOChronology.nanoOfSecondRule(), nano);
+        }
+        return test;
+    }
+
+    private Calendrical createDateTime(
+            Integer year, Integer month, Integer day,
+            Integer hour, Integer min, Integer sec, Integer nano) {
+        Calendrical test = new Calendrical();
+        if (year != null) {
+            test.getFieldMap().put(ISOChronology.yearRule(), year);
+        }
+        if (month != null) {
+            test.getFieldMap().put(ISOChronology.monthOfYearRule(), month);
+        }
+        if (day != null) {
+            test.getFieldMap().put(ISOChronology.dayOfMonthRule(), day);
+        }
+        if (hour != null) {
+            test.getFieldMap().put(ISOChronology.hourOfDayRule(), hour);
+        }
+        if (min != null) {
+            test.getFieldMap().put(ISOChronology.minuteOfHourRule(), min);
+        }
+        if (sec != null) {
+            test.getFieldMap().put(ISOChronology.secondOfMinuteRule(), sec);
+        }
+        if (nano != null) {
+            test.getFieldMap().put(ISOChronology.nanoOfSecondRule(), nano);
+        }
+        return test;
     }
 
 }
