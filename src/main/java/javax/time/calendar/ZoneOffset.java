@@ -585,9 +585,9 @@ public final class ZoneOffset
     }
 
     /**
-     * A hashcode for the zone offset.
+     * A hash code for the zone offset.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
