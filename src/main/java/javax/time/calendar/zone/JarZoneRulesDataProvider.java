@@ -152,14 +152,14 @@ class JarZoneRulesDataProvider implements ZoneRulesDataProvider {
     public Set<String> getIDs() {
         Set<String> ids = new HashSet<String>(zones.size());
         for (String id : zones.keySet()) {
-            ids.add(id + ':' + versionID);
+            ids.add(id + '#' + versionID);
         }
         return Collections.unmodifiableSet(ids);
     }
 
     /** {@inheritDoc} */
     public ZoneRules getZoneRules(String regionID, String versionID) {
-        if (regionID == null || versionID == null || versionID.equals(versionID) == false) {
+        if (regionID == null || versionID == null || versionID.equals(this.versionID) == false) {
             return null;
         }
         return zones.get(regionID);

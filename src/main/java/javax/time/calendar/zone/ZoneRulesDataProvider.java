@@ -68,7 +68,7 @@ public interface ZoneRulesDataProvider {
      * If the provider supports versions, then versions must be included.
      * <p>
      * For example, if this provider supports versions '1.1' and '1.2' of 'France'
-     * then the IDs returned might be 'France:1.1' and 'France:1.2'.
+     * then the IDs returned might be 'France#1.1' and 'France#1.2'.
      *
      * @return the provided IDs, unmodifiable, never null
      */

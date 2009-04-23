@@ -50,7 +50,7 @@ public class TZDBZoneRulesDataProvider implements ZoneRulesDataProvider {
     /**
      * Version.
      */
-    private final String version;
+    private final String versionID;
     /**
      * Cache of time zone data providers.
      */
@@ -59,11 +59,11 @@ public class TZDBZoneRulesDataProvider implements ZoneRulesDataProvider {
     /**
      * Loads the time zone data.
      *
-     * @param version  the version of the TZDB rules to load, not null
+     * @param versionID  the version of the TZDB rules to load, not null
      */
     @SuppressWarnings("unchecked")
-    public TZDBZoneRulesDataProvider(String version) {
-        String fileName = "javax/time/calendar/zone/ZoneRuleInfo-TZDB-" + version + ".dat";
+    public TZDBZoneRulesDataProvider(String versionID) {
+        String fileName = "javax/time/calendar/zone/ZoneRuleInfo-TZDB-" + versionID + ".dat";
         InputStream resorceStream = getClass().getClassLoader().getResourceAsStream(fileName);
         if (resorceStream == null) {
             throw new IllegalArgumentException("Unable to load time zone rules, file not found: " + fileName);
@@ -74,7 +74,7 @@ public class TZDBZoneRulesDataProvider implements ZoneRulesDataProvider {
         } catch (Exception ex) {
             throw new IllegalArgumentException("Unable to load time zone rules: " + fileName, ex);
         }
-        this.version = version;
+        this.versionID = versionID;
     }
 
     //-----------------------------------------------------------------------
@@ -87,14 +87,14 @@ public class TZDBZoneRulesDataProvider implements ZoneRulesDataProvider {
     public Set<String> getIDs() {
         Set<String> ids = new HashSet<String>(zones.size());
         for (String id : zones.keySet()) {
-            ids.add(id + ':' + version);
+            ids.add(id + '#' + versionID);
         }
         return Collections.unmodifiableSet(ids);
     }
 
     /** {@inheritDoc} */
     public ZoneRules getZoneRules(String regionID, String versionID) {
-        if (regionID == null || versionID == null || versionID.equals(version) == false) {
+        if (regionID == null || versionID == null || versionID.equals(this.versionID) == false) {
             return null;
         }
         return zones.get(regionID);
