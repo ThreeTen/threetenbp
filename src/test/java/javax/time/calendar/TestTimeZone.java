@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008,2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -168,7 +168,7 @@ public class TestTimeZone {
     @DataProvider(name="String_UTC")
     Object[][] data_factory_string_UTC() {
         return new Object[][] {
-            {"Z"},
+            {""},
             {"+00"},{"+0000"},{"+00:00"},{"+000000"},{"+00:00:00"},
             {"-00"},{"-0000"},{"-00:00"},{"-000000"},{"-00:00:00"},
         };
@@ -184,6 +184,7 @@ public class TestTimeZone {
     @DataProvider(name="String_Fixed")
     Object[][] data_factory_string_Fixed() {
         return new Object[][] {
+            {"", "UTC"},
             {"+01", "UTC+01:00"},
             {"+0100", "UTC+01:00"},{"+01:00", "UTC+01:00"},
             {"+010000", "UTC+01:00"},{"+01:00:00", "UTC+01:00"},
@@ -207,12 +208,13 @@ public class TestTimeZone {
         assertEquals(test.getShortName(), id);
         assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
-        assertEquals(test.getRules().getOffset(Instant.instant(0L)), ZoneOffset.zoneOffset(id.substring(3)));
+        ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.zoneOffset(id.substring(3));
+        assertEquals(test.getRules().getOffset(Instant.instant(0L)), offset);
         OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
         assertEquals(info.isDiscontinuity(), false);
         assertEquals(info.getDiscontinuity(), null);
-        assertEquals(info.getOffset(), ZoneOffset.zoneOffset(id.substring(3)));
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(id.substring(3)));
+        assertEquals(info.getOffset(), offset);
+        assertEquals(info.getEstimatedOffset(), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -220,7 +222,7 @@ public class TestTimeZone {
     Object[][] data_factory_string_UTC_invalid() {
         return new Object[][] {
                 {"A"}, {"B"}, {"C"}, {"D"}, {"E"}, {"F"}, {"G"}, {"H"}, {"I"}, {"J"}, {"K"}, {"L"}, {"M"},
-                {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"}, {"ZZ"},
+                {"N"}, {"O"}, {"P"}, {"Q"}, {"R"}, {"S"}, {"T"}, {"U"}, {"V"}, {"W"}, {"X"}, {"Y"}, {"Z"},
                 {"+0"}, {"+0:00"}, {"+00:0"}, {"+0:0"},
                 {"+000"}, {"+00000"},
                 {"+0:00:00"}, {"+00:0:00"}, {"+00:00:0"}, {"+0:0:0"}, {"+0:0:00"}, {"+00:0:0"}, {"+0:00:0"},

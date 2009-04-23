@@ -59,7 +59,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  * For example, the 'TZDB' group use the format {year}{letter}, such as '2009b'.
  * <p>
  * In combination, a unique ID is created expressing the time-zone, formed from
- * {groupID}:{regionID}:{versionID}.
+ * {groupID}:{regionID}#{versionID}.
  * <p>
  * The version can be set to an empty string. This represents the "floating version".
  * The floating version will always choose the latest applicable set of rules.
@@ -178,8 +178,8 @@ public final class TimeZone implements Serializable {
      * however sometimes it is necessary to have a fixed time zone.
      * A fixed time zone is returned if the first three characters are 'UTC' or 'GMT'.
      * The remainder of the ID must be a valid format for {@link ZoneOffset#zoneOffset(String)}.
-     * Using 'UTCZ' or 'GMTZ' is valid, but discouraged in favor of 'UTC'.
-     * The normalized time zone ID is 'UTC&plusmn;hh:mm:ss'.
+     * Using 'UTCZ' or 'GMTZ' is invalid.
+     * The normalized time zone ID is 'UTC&plusmn;hh:mm:ss', or just 'UTC' if the offset is zero.
      *
      * @param zoneID  the time zone identifier, not null
      * @return the TimeZone, never null
@@ -187,14 +187,17 @@ public final class TimeZone implements Serializable {
      */
     public static TimeZone timeZone(String zoneID) {
         ISOChronology.checkNotNull(zoneID, "Time zone ID must not be null");
-        if (zoneID.equals("UTC")) {
+        if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
             return UTC;
+            
+        } else if (zoneID.equals("UTCZ") || zoneID.equals("GMTZ")) {
+            throw new CalendricalException("Invalid time zone ID: " + zoneID);
             
         } else if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {  // not sure about GMT
             try {
                 return timeZone(ZoneOffset.zoneOffset(zoneID.substring(3)));
             } catch (IllegalArgumentException ex) {
-                throw new CalendricalException(ex.toString(), ex);
+                throw new CalendricalException("Invalid time zone ID: " + ex.toString(), ex);
             }
             
         } else {
