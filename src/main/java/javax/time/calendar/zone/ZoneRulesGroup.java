@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.OffsetDateTime;
@@ -68,6 +69,11 @@ import javax.time.calendar.OffsetDateTime;
  */
 public final class ZoneRulesGroup {
 
+    /**
+     * The zone IDs.
+     * Should not be empty.
+     */
+    private static final Set<String> IDS = new CopyOnWriteArraySet<String>();
     /**
      * The zone rule groups.
      * Should not be empty.
@@ -132,10 +138,44 @@ public final class ZoneRulesGroup {
      * The 'TZDB' group will be always be available.
      * Any other groups are dependent on what has been installed.
      *
-     * @return an unsorted, independent, modifiable list of available versions, never null
+     * @return an unsorted, independent, modifiable list of available groups, never null
      */
     public static List<ZoneRulesGroup> getAvailableGroups() {
         return new ArrayList<ZoneRulesGroup>(GROUPS.values());
+    }
+
+    /**
+     * Gets a view of the complete set of parsable time zone IDs.
+     * <p>
+     * This returns the complete set of IDs that can be parsed.
+     * For each group and region, all the valid versions and the 'floating'
+     * version IDs will be included. Each 'TZDB' ID will be included twice
+     * as the 'TZDB:' prefix is optional in parsing.
+     * For more detailed control, use the instance methods on this class.
+     * <p>
+     * For example, for the single time zone of 'Europe/London' and two available
+     * versions, the set would contain:
+     * <ul>
+     * <li>Europe/London</li>
+     * <li>Europe/London#2009a</li>
+     * <li>Europe/London#2009b</li>
+     * <li>TZDB:Europe/London</li>
+     * <li>TZDB:Europe/London#2009a</li>
+     * <li>TZDB:Europe/London#2009b</li>
+     * </ul>
+     * <p>
+     * The returned set is a view of underlying state that may be changed by another thread.
+     * The underlying set is thread-safe, thus the view is thread-safe.
+     * However, check-then-act operations are potentially unsafe.
+     * <p>
+     * Since IDs are never deregistered, the set can only get larger.
+     * This means that it the caller can cache the set and its current size to use
+     * as an indication as to whether the contents have changed.
+     *
+     * @return an unmodifiable set of parsable IDs, never null
+     */
+    public static Set<String> getParsableIDs() {
+        return Collections.unmodifiableSet(IDS);
     }
 
     //-----------------------------------------------------------------------
@@ -186,9 +226,10 @@ public final class ZoneRulesGroup {
      */
     private synchronized void registerProvider0(ZoneRulesDataProvider provider) {
         Set<String> ids = provider.getIDs();
-        Set<String[]> splits = new HashSet<String[]>();
+        Set<String> fullIDs = new HashSet<String>(ids.size());
+        Set<String[]> splits = new HashSet<String[]>(ids.size());
         for (String id : ids) {
-            int pos = id.indexOf(':');
+            int pos = id.indexOf('#');
             String regionID = id;
             String versionID = "";
             if (pos >= 0) {
@@ -208,6 +249,12 @@ public final class ZoneRulesGroup {
                 }
             }
             splits.add(new String[] {regionID, versionID});
+            if (groupID.equals("TZDB")) {
+                fullIDs.add(id);
+                fullIDs.add(regionID);
+            }
+            fullIDs.add(groupID + ':' + id);
+            fullIDs.add(groupID + ':' + regionID);
         }
         for (String[] split : splits) {
             // still need to be careful to ensure that regions never holds an empty map
@@ -218,6 +265,7 @@ public final class ZoneRulesGroup {
                 regions.get(split[0]).put(split[1], provider);
             }
         }
+        IDS.addAll(fullIDs);
     }
 
     /**

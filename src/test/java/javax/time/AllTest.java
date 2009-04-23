@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -87,11 +87,12 @@ import javax.time.calendar.format.TestTextParser;
 import javax.time.calendar.format.TestTextPrinter;
 import javax.time.calendar.format.TestZoneOffsetParser;
 import javax.time.calendar.format.TestZoneOffsetPrinter;
+import javax.time.calendar.format.TestZoneParser;
 import javax.time.calendar.i18n.TestCopticChronology;
 import javax.time.calendar.i18n.TestCopticDate;
 import javax.time.period.TestPeriod;
-import javax.time.period.TestPeriodParser;
 import javax.time.period.TestPeriodFields;
+import javax.time.period.TestPeriodParser;
 import javax.time.period.TestPeriodUnits;
 import javax.time.period.field.TestDays;
 import javax.time.period.field.TestHours;
@@ -182,6 +183,7 @@ public class AllTest {
             TestTextParser.class,
             TestZoneOffsetPrinter.class,
             TestZoneOffsetParser.class,
+            TestZoneParser.class,
             // i18n
             TestCopticChronology.class,
             TestCopticDate.class,
