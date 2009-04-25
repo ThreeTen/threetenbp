@@ -37,6 +37,7 @@ import java.util.Set;
 
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
 import org.testng.annotations.BeforeMethod;
@@ -150,6 +151,51 @@ public class TestZoneParser {
         assertEquals(context.toCalendrical().getZone(), expected);
         assertEquals(result, parse.length());
         assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parse_endStringMatch_utc() throws Exception {
+        ZonePrinterParser pp = new ZonePrinterParser();
+        int result = pp.parse(context, "OTHERUTC", 5);
+        assertEquals(result, 8);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getZone(), TimeZone.UTC);
+    }
+
+    public void test_parse_endStringMatch_utc_plus1() throws Exception {
+        ZonePrinterParser pp = new ZonePrinterParser();
+        int result = pp.parse(context, "OTHERUTC+01:00", 5);
+        assertEquals(result, 14);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getZone(), TimeZone.timeZone("UTC+01:00"));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parse_midStringMatch_utc() throws Exception {
+        ZonePrinterParser pp = new ZonePrinterParser();
+        int result = pp.parse(context, "OTHERUTCOTHER", 5);
+        assertEquals(result, 8);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getZone(), TimeZone.UTC);
+    }
+
+    public void test_parse_midStringMatch_utc_plus1() throws Exception {
+        ZonePrinterParser pp = new ZonePrinterParser();
+        int result = pp.parse(context, "OTHERUTC+01:00OTHER", 5);
+        assertEquals(result, 14);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getZone(), TimeZone.timeZone("UTC+01:00"));
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString_id() {
+        ZonePrinterParser pp = new ZonePrinterParser();
+        assertEquals(pp.toString(), "ZoneId()");
+    }
+
+    public void test_toString_text() {
+        ZonePrinterParser pp = new ZonePrinterParser(TextStyle.FULL);
+        assertEquals(pp.toString(), "Zone(FULL)");
     }
 
 }
