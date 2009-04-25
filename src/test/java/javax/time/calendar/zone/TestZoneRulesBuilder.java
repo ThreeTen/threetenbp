@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.zone;
 
 import static javax.time.calendar.LocalDateTime.*;
 import static javax.time.calendar.LocalTime.*;
@@ -38,10 +38,12 @@ import static javax.time.calendar.field.MonthOfYear.*;
 import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.*;
 import static org.testng.Assert.*;
 
+import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDateTime;
+import javax.time.calendar.LocalTime;
+import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
-import javax.time.calendar.zone.ZoneRules;
-import javax.time.calendar.zone.ZoneRulesBuilder;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
