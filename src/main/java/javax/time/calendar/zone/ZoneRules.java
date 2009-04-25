@@ -210,7 +210,7 @@ public abstract class ZoneRules {
      * Typically the amount is zero during winter and one hour during summer.
      *
      * @param instantProvider  the instant to find the offset information for, not null
-     * @return the standard offset, never null
+     * @return the difference between the standard and actual offset, never null
      */
     public Period getDaylightSavings(InstantProvider instantProvider) {
         Instant instant = Instant.instant(instantProvider);
@@ -235,6 +235,38 @@ public abstract class ZoneRules {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the next transition after the specified transition.
+     * <p>
+     * This returns details of the next transition after the specified instant.
+     * <p>
+     * Some providers of rules may not be able to return this information, thus
+     * the method is defined to throw UnsupportedOperationException. The supplied
+     * rules implementations do supply this information and don't throw the exception
+     *
+     * @param instantProvider  the instant to get the next transition after, not null
+     * @return the next transition after the specified instant, null if this is after the last transition
+     * @throws UnsupportedOperationException if the implementation cannot return this information -
+     *  the default 'TZDB' can return this information
+     */
+    public abstract ZoneOffsetTransition nextTransition(InstantProvider instantProvider);
+
+    /**
+     * Gets the previous transition after the specified transition.
+     * <p>
+     * This returns details of the previous transition after the specified instant.
+     * <p>
+     * Some providers of rules may not be able to return this information, thus
+     * the method is defined to throw UnsupportedOperationException. The supplied
+     * rules implementations do supply this information and don't throw the exception
+     *
+     * @param instantProvider  the instant to get the previous transition after, not null
+     * @return the previous transition after the specified instant, null if this is before the first transition
+     * @throws UnsupportedOperationException if the implementation cannot return this information -
+     *  the default 'TZDB' can return this information
+     */
+    public abstract ZoneOffsetTransition previousTransition(InstantProvider instantProvider);
+
     /**
      * Gets the complete list of transitions.
      * <p>

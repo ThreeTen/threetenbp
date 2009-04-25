@@ -90,21 +90,25 @@ final class FixedZoneRules extends ZoneRules implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the complete list of transitions, which is an empty list.
-     *
-     * @return the empty list of transitions, never null
-     */
+    /** {@inheritDoc} */
+    @Override
+    public ZoneOffsetTransition nextTransition(InstantProvider instantProvider) {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ZoneOffsetTransition previousTransition(InstantProvider instantProvider) {
+        return null;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public List<ZoneOffsetTransition> getTransitions() {
         return new ArrayList<ZoneOffsetTransition>();
     }
 
-    /**
-     * Gets the complete list of transition rules, which is an empty list.
-     *
-     * @return the empty list of transitions, never null
-     */
+    /** {@inheritDoc} */
     @Override
     public List<ZoneOffsetTransitionRule> getTransitionRules() {
         return new ArrayList<ZoneOffsetTransitionRule>();

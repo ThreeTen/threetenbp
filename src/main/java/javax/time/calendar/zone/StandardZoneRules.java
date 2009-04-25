@@ -95,7 +95,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
     /**
      * The map of recent transitions.
      */
-    private transient ConcurrentMap<Year, ZoneOffsetTransition[]> lastRulesCache =
+    private transient volatile ConcurrentMap<Year, ZoneOffsetTransition[]> lastRulesCache =
                 new ConcurrentHashMap<Year, ZoneOffsetTransition[]>();
 
     /**
@@ -323,6 +323,91 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the next transition after the specified transition.
+     *
+     * @param instantProvider  the instant to get the next transition after, not null
+     * @return the next transition after the specified instant, null if this is after the last transition
+     */
+    @Override
+    public ZoneOffsetTransition nextTransition(InstantProvider instantProvider) {
+        Instant instant = Instant.instant(instantProvider);
+        long epochSecs = instant.getEpochSeconds();
+        
+        // check if using last rules
+        if (epochSecs >= savingsInstantTransitions[savingsInstantTransitions.length - 1]) {
+            if (lastRules.length == 0) {
+                return null;
+            }
+            OffsetDateTime dt = OffsetDateTime.fromInstant(instant, wallOffsets[wallOffsets.length - 1]);
+            for (Year year = dt.toYear(); true; year = year.next()) {
+                ZoneOffsetTransition[] transArray = findTransitionArray(year);
+                for (ZoneOffsetTransition trans : transArray) {
+                    if (instant.isBefore(trans.getInstant())) {
+                        return trans;
+                    }
+                }
+                if (year.getValue() == Year.MAX_YEAR) {
+                    return null;
+                }
+            }
+        }
+        
+        // using historic rules
+        int index  = Arrays.binarySearch(savingsInstantTransitions, epochSecs);
+        if (index < 0) {
+            index = -index - 1;  // switched value is the next transition
+        } else {
+            index += 1;  // exact match, so need to add one to get the next
+        }
+        Instant transitionInstant = Instant.instant(savingsInstantTransitions[index]);
+        OffsetDateTime trans = OffsetDateTime.fromInstant(transitionInstant, wallOffsets[index]);
+        return createTransition(trans, wallOffsets[index + 1]);
+    }
+
+    /**
+     * Gets the previous transition after the specified transition.
+     *
+     * @param instantProvider  the instant to get the previous transition after, not null
+     * @return the previous transition after the specified instant, null if this is before the first transition
+     */
+    @Override
+    public ZoneOffsetTransition previousTransition(InstantProvider instantProvider) {
+        Instant instant = Instant.instant(instantProvider);
+        long epochSecs = instant.getEpochSeconds();
+        if (instant.getNanoOfSecond() > 0 && epochSecs < Long.MAX_VALUE) {
+            epochSecs += 1;  // allow rest of method to only use seconds
+        }
+        
+        // check if using last rules
+        long lastHistoric = savingsInstantTransitions[savingsInstantTransitions.length - 1];
+        if (lastRules.length > 0 && epochSecs > lastHistoric) {
+            ZoneOffset lastHistoricOffset = wallOffsets[wallOffsets.length - 1];
+            OffsetDateTime dt = OffsetDateTime.fromInstant(instant, lastHistoricOffset);
+            OffsetDateTime lastHistoricDT = OffsetDateTime.fromInstant(Instant.instant(lastHistoric), lastHistoricOffset);
+            for (Year year = dt.toYear(); year.getValue() > lastHistoricDT.getYear(); year = year.previous()) {
+                ZoneOffsetTransition[] transArray = findTransitionArray(year);
+                for (int i = transArray.length - 1; i >= 0; i--) {
+                    if (instant.isAfter(transArray[i].getInstant())) {
+                        return transArray[i];
+                    }
+                }
+            }
+        }
+        
+        // using historic rules
+        int index  = Arrays.binarySearch(savingsInstantTransitions, epochSecs);
+        if (index < 0) {
+            index = -index - 1;
+        }
+        if (index <= 0) {
+            return null;
+        }
+        Instant transitionInstant = Instant.instant(savingsInstantTransitions[index - 1]);
+        OffsetDateTime trans = OffsetDateTime.fromInstant(transitionInstant, wallOffsets[index - 1]);
+        return createTransition(trans, wallOffsets[index]);
+    }
+
+    /**
      * Gets the complete list of transitions.
      * <p>
      * This list normally contains a complete historical set of transitions
@@ -359,7 +444,7 @@ final class StandardZoneRules extends ZoneRules implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified by comparing the offset.
+     * Is this instance equal to that specified by comparing the complete set of rules.
      *
      * @param otherRules  the other rules, null returns false
      * @return true if this rules is the same as that specified
