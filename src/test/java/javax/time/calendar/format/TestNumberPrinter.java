@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -307,6 +307,33 @@ public class TestNumberPrinter {
         NumberPrinterParser pp = new NumberPrinterParser(hourOfAmPmRule(), 2, 2, SignStyle.NOT_NEGATIVE);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "01");   // 1PM
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isPrintDataAvailable_true() throws Exception {
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfAmPmRule(), 2, 2, SignStyle.NOT_NEGATIVE);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical(hourOfAmPmRule(), 4)), true);
+    }
+
+    public void test_isPrintDataAvailable_trueDerived() throws Exception {
+        NumberPrinterParser pp = new NumberPrinterParser(quarterOfYearRule(), 2, 2, SignStyle.NOT_NEGATIVE);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical(monthOfYearRule(), 4)), true);
+    }
+
+    public void test_isPrintDataAvailable_false() throws Exception {
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfAmPmRule(), 2, 2, SignStyle.NOT_NEGATIVE);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical()), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString1() throws Exception {
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfDayRule(), 2, 2, SignStyle.NOT_NEGATIVE);
+        assertEquals(pp.toString(), "Number(ISO.HourOfDay,2)");
+    }
+
+    public void test_toString2() throws Exception {
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfDayRule(), 1, 2, SignStyle.NOT_NEGATIVE);
+        assertEquals(pp.toString(), "Number(ISO.HourOfDay,1,2,NOT_NEGATIVE)");
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -238,6 +238,17 @@ public class TestFractionPrinterParser {
     }
 
     //-----------------------------------------------------------------------
+    public void test_isPrintDataAvailable_true() throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical(NANO_RULE, 4)), true);
+    }
+
+    public void test_isPrintDataAvailable_false() throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical()), false);
+    }
+
+    //-----------------------------------------------------------------------
     // parse
     //-----------------------------------------------------------------------
     @Test(dataProvider="Nanos")
@@ -358,6 +369,12 @@ public class TestFractionPrinterParser {
         int newPos = pp.parse(context, ".1A3456", 0);
         assertEquals(newPos, ~1);
         assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString() throws Exception {
+        FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
+        assertEquals(pp.toString(), "Fraction(ISO.NanoOfSecond,3,6)");
     }
 
 }

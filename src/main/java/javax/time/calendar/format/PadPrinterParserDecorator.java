@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -135,7 +135,8 @@ class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Pad(" + printer + "," + parser + "," + padWidth + "," + padChar + ")";
+        return "Pad(" + (printer == null ? "" : printer) + "," +
+            (parser == null ? "" : parser) + "," + padWidth + ",'" + padChar + "')";
     }
 
 }

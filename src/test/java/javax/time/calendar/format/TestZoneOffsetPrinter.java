@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -171,6 +171,28 @@ public class TestZoneOffsetPrinter {
         Calendrical cal = new Calendrical(null, null, OFFSET_123456, null);
         pp.print(cal, buf, symbols);
         assertEquals(buf.toString(), "EXISTING+1234");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isPrintDataAvailable_true() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, false);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical(null, null, ZoneOffset.UTC, null)), true);
+    }
+
+    public void test_isPrintDataAvailable_false() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, false);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical()), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", false, false);
+        assertEquals(pp.toString(), "Offset('Z',false,false)");
+    }
+
+    public void test_toString_id() throws Exception {
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        assertEquals(pp.toString(), "OffsetId()");
     }
 
 }

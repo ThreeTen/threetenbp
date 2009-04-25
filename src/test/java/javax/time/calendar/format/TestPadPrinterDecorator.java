@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -143,6 +143,23 @@ public class TestPadPrinterDecorator {
     public void test_print_overPad() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 3, '-');
         pp.print(emptyCalendrical, buf, symbols);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isPrintDataAvailable() throws Exception {
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
+        assertEquals(pp.isPrintDataAvailable(emptyCalendrical), true);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString1() throws Exception {
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 5, '-');
+        assertEquals(pp.toString(), "Pad('Z',,5,'-')");
+    }
+
+    public void test_toString2() throws Exception {
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(null, new CharLiteralPrinterParser('Z'), 5, '-');
+        assertEquals(pp.toString(), "Pad(,'Z',5,'-')");
     }
 
 }

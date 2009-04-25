@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -164,6 +164,23 @@ public class TestTextPrinter {
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), expected);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isPrintDataAvailable_true() throws Exception {
+        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical(RULE_MOY, 4)), true);
+    }
+
+    public void test_isPrintDataAvailable_false() throws Exception {
+        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
+        assertEquals(pp.isPrintDataAvailable(new Calendrical()), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString() throws Exception {
+        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
+        assertEquals(pp.toString(), "Text(ISO.MonthOfYear,FULL)");
     }
 
 }

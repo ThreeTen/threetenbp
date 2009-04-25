@@ -215,6 +215,9 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
+        if (utcText.equals("Z") && includeColon && allowSeconds) {
+            return "OffsetId()";
+        }
         return "Offset('" + utcText + "'," + includeColon + "," + allowSeconds + ")";
     }
 

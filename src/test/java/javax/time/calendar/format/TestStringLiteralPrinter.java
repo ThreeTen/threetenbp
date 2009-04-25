@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -112,6 +112,18 @@ public class TestStringLiteralPrinter {
     public void test_print_appendIO() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         pp.print(calendrical, exceptionAppenable, symbols);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_isPrintDataAvailable() throws Exception {
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
+        assertEquals(pp.isPrintDataAvailable(calendrical), true);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString() throws Exception {
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
+        assertEquals(pp.toString(), "'hello'");
     }
 
 }
