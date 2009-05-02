@@ -37,6 +37,8 @@ import javax.time.calendar.Calendrical;
 
 /**
  * Prints or parses a character literal.
+ * <p>
+ * CharLiteralPrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

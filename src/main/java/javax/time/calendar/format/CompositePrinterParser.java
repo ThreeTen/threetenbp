@@ -39,6 +39,8 @@ import javax.time.calendar.Calendrical;
 
 /**
  * Composite printer and parser.
+ * <p>
+ * CompositePrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -85,15 +87,7 @@ class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks whether this formatter can print.
-     * <p>
-     * Depending on how this formatter is initialised, it may not be possible
-     * for it to print at all. This method allows the caller to check whether
-     * the print methods will throw UnsupportedOperationException or not.
-     *
-     * @return true if the formatter supports printing
-     */
+    /** {@inheritDoc} */
     public boolean isPrintSupported() {
         return printers != null;
     }
@@ -129,15 +123,7 @@ class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Checks whether this formatter can parse.
-     * <p>
-     * Depending on how this formatter is initialised, it may not be possible
-     * for it to parse at all. This method allows the caller to check whether
-     * the parse methods will throw UnsupportedOperationException or not.
-     *
-     * @return true if the formatter supports parsing
-     */
+    /** {@inheritDoc} */
     public boolean isParseSupported() {
         return parsers != null;
     }

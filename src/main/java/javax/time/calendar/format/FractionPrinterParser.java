@@ -40,6 +40,8 @@ import javax.time.calendar.DateTimeFieldRule;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
+ * <p>
+ * FractionPrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

@@ -40,6 +40,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * Prints or parses field text.
+ * <p>
+ * TextPrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

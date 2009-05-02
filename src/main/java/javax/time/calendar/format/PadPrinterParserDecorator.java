@@ -37,6 +37,8 @@ import javax.time.calendar.Calendrical;
 
 /**
  * Pads the output to a fixed width.
+ * <p>
+ * PadPrinterParserDecorator is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
@@ -45,19 +47,19 @@ class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
     /**
      * The printer to decorate.
      */
-    private DateTimePrinter printer;
+    private final DateTimePrinter printer;
     /**
      * The parser to decorate.
      */
-    private DateTimeParser parser;
+    private final DateTimeParser parser;
     /**
      * The width to pad the next field to.
      */
-    private int padWidth;
+    private final int padWidth;
     /**
      * The character to pad the next field with.
      */
-    private char padChar;
+    private final char padChar;
 
     /**
      * Constructor.

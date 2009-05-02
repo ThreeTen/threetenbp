@@ -48,6 +48,8 @@ import javax.time.calendar.zone.ZoneRulesGroup;
 
 /**
  * Prints or parses a zone offset.
+ * <p>
+ * ZonePrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

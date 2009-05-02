@@ -38,6 +38,8 @@ import javax.time.calendar.ZoneOffset;
 
 /**
  * Prints or parses a zone offset.
+ * <p>
+ * ZoneOffsetPrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

@@ -39,6 +39,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 /**
  * Prints and parses a numeric date-time field with optional padding.
+ * <p>
+ * NumberPrinterParser is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
