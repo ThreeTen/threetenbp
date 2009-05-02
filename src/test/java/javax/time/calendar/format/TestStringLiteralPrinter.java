@@ -126,4 +126,9 @@ public class TestStringLiteralPrinter {
         assertEquals(pp.toString(), "'hello'");
     }
 
+    public void test_toString_apos() throws Exception {
+        StringLiteralPrinterParser pp = new StringLiteralPrinterParser("o'clock");
+        assertEquals(pp.toString(), "'o''clock'");
+    }
+
 }

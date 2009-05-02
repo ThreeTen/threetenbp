@@ -126,4 +126,10 @@ public class TestCharLiteralPrinter {
         assertEquals(pp.toString(), "'a'");
     }
 
+    //-----------------------------------------------------------------------
+    public void test_toString_apos() throws Exception {
+        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('\'');
+        assertEquals(pp.toString(), "''");
+    }
+
 }

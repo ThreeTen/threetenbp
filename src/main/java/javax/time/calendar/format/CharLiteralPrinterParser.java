@@ -84,6 +84,9 @@ class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
+        if (literal == '\'') {
+            return "''";
+        }
         return "'" + literal + "'";
     }
 

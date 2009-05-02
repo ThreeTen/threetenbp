@@ -365,6 +365,8 @@ public class DateTimeFormatterBuilder {
      * Appends a string literal to the formatter.
      * <p>
      * This string will be output during a print.
+     * <p>
+     * If the literal is empty, nothing is added to the formatter.
      *
      * @param literal  the literal to append, not null
      * @return this, for chaining, never null
@@ -372,8 +374,10 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
         FormatUtil.checkNotNull(literal, "literal");
-        StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
-        appendInternal(pp, pp);
+        if (literal.length() > 0) {
+            StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
+            appendInternal(pp, pp);
+        }
         return this;
     }
 

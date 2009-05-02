@@ -52,7 +52,7 @@ class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param literal  the literal to print or parse, not null
+     * @param literal  the literal to print or parse, not empty, not null
      */
     StringLiteralPrinterParser(String literal) {
         // validated by caller
@@ -91,7 +91,8 @@ class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "'" + literal + "'";
+        String converted = literal.replace("'", "''");
+        return "'" + converted + "'";
     }
 
 }
