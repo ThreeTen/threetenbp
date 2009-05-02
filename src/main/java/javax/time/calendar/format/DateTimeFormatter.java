@@ -124,7 +124,7 @@ public class DateTimeFormatter {
     /**
      * Checks whether this formatter can print.
      * <p>
-     * Depending on how this formatter is initialised, it may not be possible
+     * Depending on how this formatter is initialized, it may not be possible
      * for it to print at all. This method allows the caller to check whether
      * the print methods will throw UnsupportedOperationException or not.
      *
