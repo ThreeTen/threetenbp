@@ -105,6 +105,9 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
+        if (textStyle == TextStyle.FULL) {
+            return "Text(" + fieldRule.getID() + ")";
+        }
         return "Text(" + fieldRule.getID() + "," + textStyle + ")";
     }
 

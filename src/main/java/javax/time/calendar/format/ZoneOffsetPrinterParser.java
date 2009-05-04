@@ -220,7 +220,8 @@ class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         if (utcText.equals("Z") && includeColon && allowSeconds) {
             return "OffsetId()";
         }
-        return "Offset('" + utcText + "'," + includeColon + "," + allowSeconds + ")";
+        String converted = utcText.replace("'", "''");
+        return "Offset('" + converted + "'," + includeColon + "," + allowSeconds + ")";
     }
 
 }

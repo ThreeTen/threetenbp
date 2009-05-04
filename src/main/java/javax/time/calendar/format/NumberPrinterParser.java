@@ -220,12 +220,12 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     @Override
     public String toString() {
         if (minWidth == 1 && maxWidth == 10 && signStyle == SignStyle.NORMAL) {
-            return "Number(" + fieldRule.getID() + ")";
+            return "Value(" + fieldRule.getID() + ")";
         }
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
-            return "Number(" + fieldRule.getID() + "," + minWidth + ")";
+            return "Value(" + fieldRule.getID() + "," + minWidth + ")";
         }
-        return "Number(" + fieldRule.getID() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
+        return "Value(" + fieldRule.getID() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
     }
 
 }

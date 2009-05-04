@@ -274,7 +274,7 @@ class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         if (textStyle == null) {
             return "ZoneId()";
         }
-        return "Zone(" + textStyle + ")";
+        return "ZoneText(" + textStyle + ")";
     }
 
 }

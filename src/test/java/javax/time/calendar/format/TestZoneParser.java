@@ -195,7 +195,7 @@ public class TestZoneParser {
 
     public void test_toString_text() {
         ZonePrinterParser pp = new ZonePrinterParser(TextStyle.FULL);
-        assertEquals(pp.toString(), "Zone(FULL)");
+        assertEquals(pp.toString(), "ZoneText(FULL)");
     }
 
 }

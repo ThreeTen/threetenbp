@@ -327,13 +327,18 @@ public class TestNumberPrinter {
 
     //-----------------------------------------------------------------------
     public void test_toString1() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(hourOfDayRule(), 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.toString(), "Number(ISO.HourOfDay,2)");
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfDayRule(), 1, 10, SignStyle.NORMAL);
+        assertEquals(pp.toString(), "Value(ISO.HourOfDay)");
     }
 
     public void test_toString2() throws Exception {
+        NumberPrinterParser pp = new NumberPrinterParser(hourOfDayRule(), 2, 2, SignStyle.NOT_NEGATIVE);
+        assertEquals(pp.toString(), "Value(ISO.HourOfDay,2)");
+    }
+
+    public void test_toString3() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(hourOfDayRule(), 1, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.toString(), "Number(ISO.HourOfDay,1,2,NOT_NEGATIVE)");
+        assertEquals(pp.toString(), "Value(ISO.HourOfDay,1,2,NOT_NEGATIVE)");
     }
 
 }

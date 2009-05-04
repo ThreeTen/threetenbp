@@ -178,9 +178,14 @@ public class TestTextPrinter {
     }
 
     //-----------------------------------------------------------------------
-    public void test_toString() throws Exception {
+    public void test_toString1() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
-        assertEquals(pp.toString(), "Text(ISO.MonthOfYear,FULL)");
+        assertEquals(pp.toString(), "Text(ISO.MonthOfYear)");
+    }
+
+    public void test_toString2() throws Exception {
+        TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
+        assertEquals(pp.toString(), "Text(ISO.MonthOfYear,SHORT)");
     }
 
 }
