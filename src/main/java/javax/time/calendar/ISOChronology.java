@@ -791,7 +791,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekBasedYearRule() {
-            super(ISOChronology.INSTANCE, "Weekyear", WEEKYEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
+            super(ISOChronology.INSTANCE, "WeekBasedYear", WEEKYEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -830,7 +830,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfWeekBasedYearRule() {
-            super(ISOChronology.INSTANCE, "WeekOfWeekyear", WEEKS, WEEKYEARS, 1, 53);
+            super(ISOChronology.INSTANCE, "WeekOfWeekBasedYear", WEEKS, WEEKYEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
