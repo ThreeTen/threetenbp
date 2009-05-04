@@ -33,10 +33,10 @@ package javax.time.calendar.format;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Map;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
@@ -492,246 +492,119 @@ public class DateTimeFormatterBuilder {
                 if (pos >= pattern.length()) {
                     throw new IllegalArgumentException("Pattern ends with an incomplete string literal: " + pattern);
                 }
-                String str = extractString(pattern, pattern.substring(start, pos + 1), true);
+                String str = extractString(pattern, pattern.substring(start, pos + 1));
                 appendLiteral(str);
-                
-            } else if (cur == '(' || cur == '[') {
-                // parse composite
-                char end = (cur == '(' ? ')' : ']');
-                int start = ++pos;
-                int depth = 1;
-                for ( ; pos < pattern.length() && depth > 0; pos++) {
-                    cur = pattern.charAt(pos);
-                    if (depth == 1 && cur == end) {
-                        break;  // end of composite
-                    } else if (cur == '(' || cur == '[') {
-                        depth++;
-                    } else if (cur == ')' || cur == ']') {
-                        depth--;
-                    } else if (cur == '\'') {
-                        // ignore literals
-                        pos++;
-                        for ( ; pos < pattern.length(); pos++) {
-                            if (pattern.charAt(pos) == '\'') {
-                                if (pos + 1 < pattern.length() && pattern.charAt(pos + 1) == '\'') {
-                                    pos++;
-                                } else {
-                                    break;  // end of literal
-                                }
-                            }
-                        }
-                        if (pos >= pattern.length()) {
-                            throw new IllegalArgumentException("Pattern ends with an incomplete string literal: " + pattern);
-                        }
-                    }
-                }
-                if (depth < 1 || pos >= pattern.length()) {
-                    throw new IllegalArgumentException("Pattern brackets mismatch: " + pattern);
-                }
-                DateTimeFormatter sub = new DateTimeFormatterBuilder()
-                    .appendPattern(pattern.substring(start, pos)).toFormatter();
-                if (end == ')') {
-                    append(sub);
-                } else {
-                    appendOptional(sub);
-                }
-                
-            } else if (cur == ')' || cur == ']') {
-                throw new IllegalArgumentException("Pattern brackets mismatch: " + pattern);
                 
             } else if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
                 // parse patterns
                 int start = pos++;
-                for ( ; pos < pattern.length(); pos++) {
-                    cur = pattern.charAt(pos);
-                    if ((cur < 'A' || cur > 'Z') && (cur < 'a' || cur > 'z')) {
-                        break;
-                    }
-                }
-                String segmentType = pattern.substring(start, pos);
-                if (APPEND_SEGMENTS.contains(segmentType)) {
-                    List<String> args = new ArrayList<String>();
-                    pos = parseArgs(pattern, pos, args);
-                    if (segmentType.equals("Value")) {
-                        switch (args.size()) {
-                            case 1: {
-                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
-                                appendValue(rule);
-                                break;
-                            }
-                            case 2: {
-                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
-                                appendValue(rule, extractInt(pattern, args.get(1)));
-                                break;
-                            }
-                            case 4: {
-                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
-                                appendValue(rule, extractInt(pattern, args.get(1)),
-                                        extractInt(pattern, args.get(2)), SignStyle.valueOf(args.get(3)));
-                                break;
-                            }
-                            default:
-                                throw new IllegalArgumentException("Pattern has invalid arguments for Value(): " + pattern);
+                for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                int count = pos - start;
+                DateTimeFieldRule rule = RULE_MAP.get(cur);
+                if (rule == null) {
+                    if (cur == 'z') {
+                        if (count < 4) {
+                            appendZoneText(TextStyle.SHORT);
+                        } else {
+                            appendZoneText(TextStyle.FULL);
                         }
-                    } else if (segmentType.equals("Fraction")) {
-                        if (args.size() != 3) {
-                            throw new IllegalArgumentException("Pattern has invalid arguments for Fraction(): " + pattern);
+                    } else if (cur == 'Z') {
+                        if (count == 1) {
+                            appendOffset("Z", false, true);
+                        } else {
+                            appendOffsetId();
                         }
-                        appendFraction(
-                                extractRule(pattern, args.get(0)),
-                                extractInt(pattern, args.get(1)),
-                                extractInt(pattern, args.get(2)));
-                    } else if (segmentType.equals("Text")) {
-                        switch (args.size()) {
-                            case 1: {
-                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
-                                appendText(rule);
-                                break;
-                            }
-                            case 2: {
-                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
-                                appendText(rule, TextStyle.valueOf(args.get(1)));
-                                break;
-                            }
-                            default:
-                                throw new IllegalArgumentException("Pattern has invalid arguments for Text(): " + pattern);
-                        }
-                    } else if (segmentType.equals("ZoneId")) {
-                        if (args.size() > 0) {
-                            throw new IllegalArgumentException("Pattern has invalid arguments for ZoneId(): " + pattern);
-                        }
-                        appendZoneId();
-                    } else if (segmentType.equals("ZoneText")) {
-                        if (args.size() != 1) {
-                            throw new IllegalArgumentException("Pattern has invalid arguments for ZoneText(): " + pattern);
-                        }
-                        appendZoneText(TextStyle.valueOf(args.get(0)));
-                    } else if (segmentType.equals("OffsetId")) {
-                        if (args.size() > 0) {
-                            throw new IllegalArgumentException("Pattern has invalid arguments for OffsetId(): " + pattern);
-                        }
-                        appendOffsetId();
-                    } else if (segmentType.equals("Offset")) {
-                        if (args.size() != 3) {
-                            throw new IllegalArgumentException("Pattern has invalid arguments for Offset(): " + pattern);
-                        }
-                        appendOffset(
-                                extractString(pattern, args.get(0), false),
-                                extractBoolean(pattern, args.get(1)),
-                                extractBoolean(pattern, args.get(2)));
                     } else {
-                        throw new IllegalArgumentException("Pattern has unknown segment '" + segmentType + "': " + pattern);
+                        appendLiteral(pattern.substring(start, pos));
                     }
                 } else {
-                    throw new IllegalArgumentException("Pattern has unknown segment '" + segmentType + "': " + pattern);
+                    switch (cur) {
+                        case 'x':
+                        case 'y':
+                            if (count < 4) {
+                                appendValue(rule, count, 10, SignStyle.NORMAL);
+                            } else {
+                                appendValue(rule, count, 10, SignStyle.EXCEEDS_PAD);
+                            }
+                            break;
+                        case 'M':
+                            switch (count) {
+                                case 1:
+                                    appendValue(rule);
+                                    break;
+                                case 2:
+                                    appendValue(rule, 2);
+                                    break;
+                                case 3:
+                                    appendText(rule, TextStyle.SHORT);
+                                    break;
+                                default:
+                                    appendText(rule, TextStyle.FULL);
+                                    break;
+                            }
+                            break;
+                        case 'a':
+                        case 'E':
+                            if (count < 4) {
+                                appendText(rule, TextStyle.SHORT);
+                            } else {
+                                appendText(rule, TextStyle.FULL);
+                            }
+                            break;
+                        default:
+                            if (count == 1) {
+                                appendValue(rule);
+                            } else {
+                                appendValue(rule, count);
+                            }
+                            break;
+                    }
                 }
-                
+                pos--;
             } else {
-                // parse remainder
                 appendLiteral(cur);
             }
         }
     }
 
-    private int parseArgs(String pattern, int pos, List<String> args) {
-        if (pos >= pattern.length() || pattern.charAt(pos) != '(') {
-            throw new IllegalArgumentException("Pattern arguments invalid: " + pattern);
-        }
-        pos++;
-        int argStart = pos;
-        boolean quoted = false;
-        for ( ; pos < pattern.length(); pos++) {
-            char cur = pattern.charAt(pos);
-            if (cur == '\'') {
-                for (pos++ ; pos < pattern.length(); pos++) {
-                    if (pattern.charAt(pos) == '\'') {
-                        if (pos + 1 < pattern.length() && pattern.charAt(pos + 1) == '\'') {
-                            pos++;
-                        } else {
-                            break;  // end of literal
-                        }
-                    }
-                }
-                if (pos >= pattern.length()) {
-                    throw new IllegalArgumentException("Pattern ends with an incomplete string literal: " + pattern);
-                }
-                quoted = true;
-            } else if (cur == ')') {
-                if (pos > argStart || args.size() > 0) {
-                    args.add(pattern.substring(argStart, pos));
-                }
-                return pos;  // end of arguments
-            } else if (cur == ',') {
-                args.add(pattern.substring(argStart, pos));
-                argStart = pos + 1;
-                quoted = false;
-            } else if (quoted) {
-                throw new IllegalArgumentException("Pattern arguments invalid: " + pattern);
-            }
-        }
-        throw new IllegalArgumentException("Pattern arguments invalid: " + pattern);
+    /** Map of letters to rules. */
+    private static final Map<Character, DateTimeFieldRule> RULE_MAP = new HashMap<Character, DateTimeFieldRule>();
+    static {
+//        RULE_MAP.put('G', ISOChronology.eraRule());
+        RULE_MAP.put('y', ISOChronology.yearRule());
+        RULE_MAP.put('x', ISOChronology.weekBasedYearRule());  // new
+        RULE_MAP.put('Q', ISOChronology.quarterOfYearRule());  // new
+        RULE_MAP.put('M', ISOChronology.monthOfYearRule());
+        RULE_MAP.put('q', ISOChronology.monthOfQuarterRule());  // new
+        RULE_MAP.put('w', ISOChronology.weekOfWeekBasedYearRule());
+//        RULE_MAP.put('W', ISOChronology.weekOfWeekBasedMonthRule());
+        RULE_MAP.put('D', ISOChronology.dayOfYearRule());
+        RULE_MAP.put('d', ISOChronology.dayOfMonthRule());
+        RULE_MAP.put('F', ISOChronology.weekOfMonthRule());
+        RULE_MAP.put('E', ISOChronology.dayOfWeekRule());
+        RULE_MAP.put('e', ISOChronology.dayOfWeekRule());
+        RULE_MAP.put('a', ISOChronology.amPmOfDayRule());
+        RULE_MAP.put('H', ISOChronology.hourOfDayRule());
+//        RULE_MAP.put('k', ISOChronology.clockHourOfDayRule());
+        RULE_MAP.put('K', ISOChronology.hourOfAmPmRule());
+//        RULE_MAP.put('h', ISOChronology.clockHourOfAmPmRule());  // TODO
+        RULE_MAP.put('m', ISOChronology.minuteOfHourRule());
+        RULE_MAP.put('s', ISOChronology.secondOfMinuteRule());
+        RULE_MAP.put('S', ISOChronology.milliOfSecondRule());
+        RULE_MAP.put('n', ISOChronology.nanoOfSecondRule());  // new
+        // reserved - z,Z
     }
 
-    private String extractString(String pattern, String token, boolean emptyIsApos) {
+    private String extractString(String pattern, String token) {
         if (token.startsWith("'") == false) {
             throw new IllegalArgumentException("Pattern string argument invalid: " + pattern);
         }
         token = token.substring(1, token.length() - 1);
         if (token.length() == 0) {
-            return emptyIsApos ? "'" : "";
+            return "'";
         }
         token = token.replace("''", "'");
         return token;
-    }
-
-    private boolean extractBoolean(String pattern, String token) {
-        if (token.equalsIgnoreCase("true") || token.equalsIgnoreCase("T")) {
-            return true;
-        }
-        if (token.equalsIgnoreCase("false") || token.equalsIgnoreCase("F")) {
-            return false;
-        }
-        throw new IllegalArgumentException("Pattern boolean argument invalid: " + pattern);
-    }
-
-    private int extractInt(String pattern, String token) {
-        try {
-            return Integer.parseInt(token);
-        } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Pattern int argument invalid: " + pattern, ex);
-        }
-    }
-
-    private DateTimeFieldRule extractRule(String pattern, String token) {
-        // TODO
-        if (token.equals("ISO.Year")) {
-            return ISOChronology.yearRule();
-        }
-        if (token.equals("ISO.MonthOfYear")) {
-            return ISOChronology.monthOfYearRule();
-        }
-        if (token.equals("ISO.DayOfMonth")) {
-            return ISOChronology.dayOfMonthRule();
-        }
-        if (token.equals("ISO.DayOfWeek")) {
-            return ISOChronology.dayOfWeekRule();
-        }
-        if (token.equals("ISO.NanoOfSecond")) {
-            return ISOChronology.nanoOfSecondRule();
-        }
-        throw new IllegalArgumentException("Pattern DateTimeFieldRule argument invalid '" + token + "': " + pattern);
-    }
-
-    /** Segments that correspond to append methods. */
-    private static final Set<String> APPEND_SEGMENTS = new HashSet<String>();
-    static {
-        APPEND_SEGMENTS.add("Value");
-        APPEND_SEGMENTS.add("Fraction");
-        APPEND_SEGMENTS.add("Text");
-        APPEND_SEGMENTS.add("OffsetId");
-        APPEND_SEGMENTS.add("Offset");
-        APPEND_SEGMENTS.add("ZoneId");
-        APPEND_SEGMENTS.add("ZoneText");
     }
 
     //-----------------------------------------------------------------------

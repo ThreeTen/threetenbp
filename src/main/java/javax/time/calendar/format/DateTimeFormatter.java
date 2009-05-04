@@ -299,12 +299,13 @@ public class DateTimeFormatter {
     }
 
     /**
-     * Returns the pattern of the underlying formatters.
+     * Returns a description of the underlying formatters.
      *
      * @return the pattern that will be used, never null
      */
-    public String toPattern() {
-        String pattern = printerParser.toString();  // TODO, don't use toString()
+    @Override
+    public String toString() {
+        String pattern = printerParser.toString();
         return pattern.startsWith("[") ? pattern : pattern.substring(1, pattern.length() - 1);
     }
 

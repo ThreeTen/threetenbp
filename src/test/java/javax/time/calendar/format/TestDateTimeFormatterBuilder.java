@@ -63,7 +63,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendValue_1arg() throws Exception {
         builder.appendValue(DOM_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "Value(ISO.DayOfMonth)");
+        assertEquals(f.toString(), "Value(ISO.DayOfMonth)");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -75,7 +75,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendValue_2arg() throws Exception {
         builder.appendValue(DOM_RULE, 3);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "Value(ISO.DayOfMonth,3)");
+        assertEquals(f.toString(), "Value(ISO.DayOfMonth,3)");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -97,7 +97,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendValue_3arg() throws Exception {
         builder.appendValue(DOM_RULE, 2, 3, SignStyle.NORMAL);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "Value(ISO.DayOfMonth,2,3,NORMAL)");
+        assertEquals(f.toString(), "Value(ISO.DayOfMonth,2,3,NORMAL)");
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -139,75 +139,56 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendPattern_charLiteral() throws Exception {
         builder.appendPattern("'a'");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'a'");
+        assertEquals(f.toString(), "'a'");
         assertEquals(f.print(LocalDate.date(2008, 6, 30)), "a");
     }
 
     public void test_appendPattern_charLiteral_singleApos() throws Exception {
         builder.appendPattern("''");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "''");
+        assertEquals(f.toString(), "''");
         assertEquals(f.print(LocalDate.date(2008, 6, 30)), "'");
-    }
-
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_appendPattern_unexpectedEndRoundBracket() throws Exception {
-        builder.appendPattern(")");
-    }
-
-    
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_appendPattern_unexpectedEndSquareBracket() throws Exception {
-        builder.appendPattern("]");
-    }
-
-    public void test_appendPattern_unexpectedComma() throws Exception {
-        builder.appendPattern(",");
-        DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "','");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), ",");
     }
 
     public void test_appendPattern_unexpectedOther() throws Exception {
         builder.appendPattern("%");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'%'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "%");
+        assertEquals(f.toString(), "'%'");
     }
 
     //-----------------------------------------------------------------------
     public void test_appendPattern_stringLiteral() throws Exception {
         builder.appendPattern("'hello_people,][)('");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'hello_people,][)('");
+        assertEquals(f.toString(), "'hello_people,][)('");
         assertEquals(f.print(LocalDate.date(2008, 6, 30)), "hello_people,][)(");
     }
 
     public void test_appendPattern_stringLiteralLength2() throws Exception {
         builder.appendPattern("'hi'");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'hi'");
+        assertEquals(f.toString(), "'hi'");
         assertEquals(f.print(LocalDate.date(2008, 6, 30)), "hi");
     }
 
     public void test_appendPattern_stringLiteral_wrapMeaningful() throws Exception {
-        builder.appendPattern("'ZoneId()'");
+        builder.appendPattern("'yyyy'");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'ZoneId()'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "ZoneId()");
+        assertEquals(f.toString(), "'yyyy'");
+        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "yyyy");
     }
 
     public void test_appendPattern_stringLiteral_singleApos() throws Exception {
         builder.appendPattern("''''");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "''");
+        assertEquals(f.toString(), "''");
         assertEquals(f.print(LocalDate.date(2008, 6, 30)), "'");
     }
 
     public void test_appendPattern_stringLiteral_mixedApos() throws Exception {
         builder.appendPattern("'o''clock'");
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'o''clock'");
+        assertEquals(f.toString(), "'o''clock'");
         assertEquals(f.print(LocalDate.date(2008, 6, 30)), "o'clock");
     }
 
@@ -227,62 +208,93 @@ public class TestDateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    public void test_appendPattern_compositeMandatory() throws Exception {
-        builder.appendPattern("'aaa'('bbb')'ccc'");
-        DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'aaa'('bbb')'ccc'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "aaabbbccc");
-    }
-
-    public void test_appendPattern_compositeMandatory_midApos() throws Exception {
-        builder.appendPattern("'aaa'('b''bb')'ccc'");
-        DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'aaa'('b''bb')'ccc'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "aaab'bbccc");
-    }
-
-    public void test_appendPattern_compositeOptional() throws Exception {
-        builder.appendPattern("'aaa'['bbb']'ccc'");
-        DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), "'aaa'['bbb']'ccc'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "aaabbbccc");
-    }
-
-    //-----------------------------------------------------------------------
     @DataProvider(name="validPatterns")
     Object[][] dataValid() {
         return new Object[][] {
-            {"Value(ISO.DayOfMonth)", "Value(ISO.DayOfMonth)"},
+            {"y", "Value(ISO.Year)"},
+            {"yy", "Value(ISO.Year,2,10,NORMAL)"},
+            {"yyy", "Value(ISO.Year,3,10,NORMAL)"},
+            {"yyyy", "Value(ISO.Year,4,10,EXCEEDS_PAD)"},
+            {"yyyyy", "Value(ISO.Year,5,10,EXCEEDS_PAD)"},
             
-            {"Value(ISO.DayOfMonth,2)", "Value(ISO.DayOfMonth,2)"},
+            {"x", "Value(ISO.WeekBasedYear)"},
+            {"xx", "Value(ISO.WeekBasedYear,2,10,NORMAL)"},
+            {"xxx", "Value(ISO.WeekBasedYear,3,10,NORMAL)"},
+            {"xxxx", "Value(ISO.WeekBasedYear,4,10,EXCEEDS_PAD)"},
+            {"xxxxx", "Value(ISO.WeekBasedYear,5,10,EXCEEDS_PAD)"},
             
-            {"Value(ISO.DayOfMonth,1,2,NORMAL)", "Value(ISO.DayOfMonth,1,2,NORMAL)"},
-            {"Value(ISO.DayOfMonth,1,10,NORMAL)", "Value(ISO.DayOfMonth)"},
+            {"Q", "Value(ISO.QuarterOfYear)"},
+            {"QQ", "Value(ISO.QuarterOfYear,2)"},
+            {"QQQ", "Value(ISO.QuarterOfYear,3)"},
             
-            {"Fraction(ISO.NanoOfSecond,3,9)", "Fraction(ISO.NanoOfSecond,3,9)"},
+            {"M", "Value(ISO.MonthOfYear)"},
+            {"MM", "Value(ISO.MonthOfYear,2)"},
+            {"MMM", "Text(ISO.MonthOfYear,SHORT)"},
+            {"MMMM", "Text(ISO.MonthOfYear)"},
+            {"MMMMM", "Text(ISO.MonthOfYear)"},
             
-            {"Text(ISO.DayOfWeek)", "Text(ISO.DayOfWeek)"},
+            {"q", "Value(ISO.MonthOfQuarter)"},
+            {"qq", "Value(ISO.MonthOfQuarter,2)"},
+            {"qqq", "Value(ISO.MonthOfQuarter,3)"},
             
-            {"Text(ISO.DayOfWeek,FULL)", "Text(ISO.DayOfWeek)"},
-            {"Text(ISO.DayOfWeek,SHORT)", "Text(ISO.DayOfWeek,SHORT)"},
+            {"w", "Value(ISO.WeekOfWeekBasedYear)"},
+            {"ww", "Value(ISO.WeekOfWeekBasedYear,2)"},
+            {"www", "Value(ISO.WeekOfWeekBasedYear,3)"},
             
-            {"OffsetId()", "OffsetId()"},
+            {"D", "Value(ISO.DayOfYear)"},
+            {"DD", "Value(ISO.DayOfYear,2)"},
+            {"DDD", "Value(ISO.DayOfYear,3)"},
             
-            {"Offset('Z',true,false)", "Offset('Z',true,false)"},
-            {"Offset('Z',true,true)", "OffsetId()"},
-            {"Offset('+00:00',true,false)", "Offset('+00:00',true,false)"},
-            {"Offset('',true,false)", "Offset('',true,false)"},
-            {"Offset('''',true,false)", "Offset('''',true,false)"},
-            {"Offset('a,b',true,false)", "Offset('a,b',true,false)"},
-            {"Offset('Z',T,F)", "Offset('Z',true,false)"},
-            {"Offset('Z',T,T)", "OffsetId()"},
+            {"d", "Value(ISO.DayOfMonth)"},
+            {"dd", "Value(ISO.DayOfMonth,2)"},
+            {"ddd", "Value(ISO.DayOfMonth,3)"},
             
-            {"ZoneId()", "ZoneId()"},
+            {"F", "Value(ISO.WeekOfMonth)"},
+            {"FF", "Value(ISO.WeekOfMonth,2)"},
+            {"FFF", "Value(ISO.WeekOfMonth,3)"},
             
-            {"ZoneText(FULL)", "ZoneText(FULL)"},
-            {"ZoneText(SHORT)", "ZoneText(SHORT)"},
+            {"E", "Text(ISO.DayOfWeek,SHORT)"},
+            {"EE", "Text(ISO.DayOfWeek,SHORT)"},
+            {"EEE", "Text(ISO.DayOfWeek,SHORT)"},
+            {"EEEE", "Text(ISO.DayOfWeek)"},
+            {"EEEEE", "Text(ISO.DayOfWeek)"},
             
-            {"Value(ISO.Year,4)-Value(ISO.MonthOfYear,2)-Value(ISO.DayOfMonth,2)", "Value(ISO.Year,4)'-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)"},
+            {"e", "Value(ISO.DayOfWeek)"},
+            {"ee", "Value(ISO.DayOfWeek,2)"},
+            {"eee", "Value(ISO.DayOfWeek,3)"},
+            
+            {"a", "Text(ISO.AmPmOfDay,SHORT)"},
+            {"aa", "Text(ISO.AmPmOfDay,SHORT)"},
+            {"aaa", "Text(ISO.AmPmOfDay,SHORT)"},
+            {"aaaa", "Text(ISO.AmPmOfDay)"},
+            {"aaaaa", "Text(ISO.AmPmOfDay)"},
+            
+            {"H", "Value(ISO.HourOfDay)"},
+            {"HH", "Value(ISO.HourOfDay,2)"},
+            {"HHH", "Value(ISO.HourOfDay,3)"},
+            
+            {"K", "Value(ISO.HourOfAmPm)"},
+            {"KK", "Value(ISO.HourOfAmPm,2)"},
+            {"KKK", "Value(ISO.HourOfAmPm,3)"},
+            
+            {"m", "Value(ISO.MinuteOfHour)"},
+            {"mm", "Value(ISO.MinuteOfHour,2)"},
+            {"mmm", "Value(ISO.MinuteOfHour,3)"},
+            
+            {"s", "Value(ISO.SecondOfMinute)"},
+            {"ss", "Value(ISO.SecondOfMinute,2)"},
+            {"sss", "Value(ISO.SecondOfMinute,3)"},
+            
+            {"S", "Value(ISO.MilliOfSecond)"},
+            {"SS", "Value(ISO.MilliOfSecond,2)"},
+            {"SSS", "Value(ISO.MilliOfSecond,3)"},
+            
+            {"n", "Value(ISO.NanoOfSecond)"},
+            {"nn", "Value(ISO.NanoOfSecond,2)"},
+            {"nnn", "Value(ISO.NanoOfSecond,3)"},
+            
+            {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(ISO.Year,4,10,EXCEEDS_PAD)'-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)" +
+                "'T'Value(ISO.HourOfDay,2)':'Value(ISO.MinuteOfHour,2)':'Value(ISO.SecondOfMinute,2)'.'Value(ISO.MilliOfSecond,3)"},
         };
     }
 
@@ -290,83 +302,16 @@ public class TestDateTimeFormatterBuilder {
     public void test_appendPattern_valid(String input, String expected) throws Exception {
         builder.appendPattern(input);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toPattern(), expected);
+        assertEquals(f.toString(), expected);
     }
 
     //-----------------------------------------------------------------------
     @DataProvider(name="invalidPatterns")
     Object[][] dataInvalid() {
         return new Object[][] {
-            {"Value"},
-            {"Value(ISO.DayOfMonth,2,3)"},
-            {"Value(ISO.DayOfMonth,2,3,NORMAL,2)"},
-            
-            {"Value()"},
-            {"Value(X)"},
-            
-            {"Value(X,2)"},
-            {"Value(ISO.DayOfMonth,X)"},
-            {"Value(ISO.DayOfMonth,0)"},
-            {"Value(ISO.DayOfMonth,11)"},
-            
-            {"Value(X,2,3,NORMAL)"},
-            {"Value(ISO.DayOfMonth,X,3,NORMAL)"},
-            {"Value(ISO.DayOfMonth,2,X,NORMAL)"},
-            {"Value(ISO.DayOfMonth,2,3,X)"},
-            {"Value(ISO.DayOfMonth,0,3,NORMAL)"},
-            {"Value(ISO.DayOfMonth,2,11,NORMAL)"},
-            
-            {"Fraction"},
-            {"Fraction()"},
-            {"Fraction(ISO.NanoOfSecond)"},
-            {"Fraction(ISO.NanoOfSecond,3)"},
-            {"Fraction(ISO.NanoOfSecond,3,9,2)"},
-            {"Fraction(X,3,9)"},
-            {"Fraction(ISO.NanoOfSecond,X,9)"},
-            {"Fraction(ISO.NanoOfSecond,3,X)"},
-            {"Fraction(ISO.NanoOfSecond,-1,9)"},
-            {"Fraction(ISO.NanoOfSecond,3,10)"},
-            {"Fraction(ISO.DayOfMonth,3,9)"},
-            
-            {"Text"},
-            {"Text()"},
-            {"Text(ISO.DayOfWeek,FULL,2)"},
-            
-            {"Text(X)"},
-            {"Text(X,FULL)"},
-            {"Text(ISO.DayOfWeek,X)"},
-            
-            {"OffsetId"},
-            {"OffsetId(2)"},
-            
-            {"Offset"},
-            {"Offset()"},
-            {"Offset('Z')"},
-            {"Offset('Z',true)"},
-            {"Offset('Z,true,true,true)"},
-            
-            {"Offset(X,true,false)"},
-            {"Offset('Z',X,false)"},
-            {"Offset('Z',true,X)"},
-            {"Offset('Z,true,true)"},
-            {"Offset('Z'X,true,false)"},
-            
-            {"ZoneId"},
-            {"ZoneId(2)"},
-            
-            {"ZoneText"},
-            {"ZoneText()"},
-            {"ZoneText(FULL,2)"},
-            
-            {"ZoneText(X)"},
-            
-            {"yyyy-MM-dd"},
-            
-            {"ZoneId("},
-            {"ZoneId()(')"},
-            {"ZoneId()(()"},
-            {"ZoneId()([)"},
-            {"ZoneId()(]"},
+            {"'"},
+            {"'hello"},
+            {"'hello''"},
         };
     }
 
@@ -379,5 +324,11 @@ public class TestDateTimeFormatterBuilder {
             throw ex;
         }
     }
+
+//    public void test_sdf() throws Exception {
+//        SimpleDateFormat dsf = new SimpleDateFormat("ss.SSS");
+//        Date date = dsf.parse("1.1");
+//        System.out.println(Instant.millisInstant(date.getTime()));
+//    }
 
 }
