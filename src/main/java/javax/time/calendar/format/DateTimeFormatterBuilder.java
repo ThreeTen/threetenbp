@@ -31,11 +31,15 @@
  */
 package javax.time.calendar.format;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 
 /**
  * Builder to create formats for dates and times.
@@ -74,6 +78,20 @@ public class DateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Validates that the input value is not null.
+     *
+     * @param object  the object to check
+     * @param errorMessage  the error to throw
+     * @throws NullPointerException if the object is null
+     */
+    static void checkNotNull(Object object, String errorMessage) {
+        if (object == null) {
+            throw new NullPointerException(errorMessage);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Appends the value of a date-time field to the formatter using a normal
      * output style.
      * <p>
@@ -88,7 +106,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the field rule is null
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
-        FormatUtil.checkNotNull(fieldRule, "field rule");
+        checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
         appendInternal(pp, pp);
         return this;
@@ -112,7 +130,7 @@ public class DateTimeFormatterBuilder {
      * @throws IllegalArgumentException if the width is invalid
      */
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule, int width) {
-        FormatUtil.checkNotNull(fieldRule, "field rule");
+        checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         if (width < 1 || width > 10) {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
         }
@@ -134,15 +152,15 @@ public class DateTimeFormatterBuilder {
      * @param fieldRule  the rule of the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 10
      * @param maxWidth  the maximum field width of the printed field, from 1 to 10
-     * @param signStyle  the postive/negative output style, not null
+     * @param signStyle  the positive/negative output style, not null
      * @return this, for chaining, never null
      * @throws NullPointerException if the field rule or sign style is null
      * @throws IllegalArgumentException if the widths are invalid
      */
     public DateTimeFormatterBuilder appendValue(
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
-        FormatUtil.checkNotNull(fieldRule, "field rule");
-        FormatUtil.checkNotNull(signStyle, "sign style");
+        checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+        checkNotNull(signStyle, "SignStyle must not be null");
         if (minWidth < 1 || minWidth > 10) {
             throw new IllegalArgumentException("The minimum width must be from 1 to 10 inclusive but was " + minWidth);
         }
@@ -191,7 +209,7 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendFraction(
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth) {
-        FormatUtil.checkNotNull(fieldRule, "field rule");
+        checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         if (fieldRule.isFixedValueSet() == false) {
             throw new IllegalArgumentException("The field does not have a fixed set of values");
         }
@@ -249,8 +267,8 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the field rule or text style is null
      */
     public DateTimeFormatterBuilder appendText(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-        FormatUtil.checkNotNull(fieldRule, "field rule");
-        FormatUtil.checkNotNull(textStyle, "text style");
+        checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+        checkNotNull(textStyle, "TextStyle must not be null");
         TextPrinterParser pp = new TextPrinterParser(fieldRule, textStyle);
         appendInternal(pp, pp);
         return this;
@@ -301,7 +319,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the UTC text is null
      */
     public DateTimeFormatterBuilder appendOffset(String utcText, boolean includeColon, boolean allowSeconds) {
-        FormatUtil.checkNotNull(utcText, "UTC text");
+        checkNotNull(utcText, "UTC text must not be null");
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser(utcText, includeColon, allowSeconds);
         appendInternal(pp, pp);
         return this;
@@ -340,7 +358,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the text style is null
      */
     public DateTimeFormatterBuilder appendZoneText(TextStyle textStyle) {
-        FormatUtil.checkNotNull(textStyle, "text style");
+        checkNotNull(textStyle, "TextStyle must not be null");
         ZonePrinterParser pp = new ZonePrinterParser(textStyle);
         appendInternal(pp, pp);
         return this;
@@ -373,10 +391,15 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the literal is null
      */
     public DateTimeFormatterBuilder appendLiteral(String literal) {
-        FormatUtil.checkNotNull(literal, "literal");
+        checkNotNull(literal, "Literal text must not be null");
         if (literal.length() > 0) {
-            StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
-            appendInternal(pp, pp);
+            if (literal.length() == 1) {
+                CharLiteralPrinterParser pp = new CharLiteralPrinterParser(literal.charAt(0));
+                appendInternal(pp, pp);
+            } else {
+                StringLiteralPrinterParser pp = new StringLiteralPrinterParser(literal);
+                appendInternal(pp, pp);
+            }
         }
         return this;
     }
@@ -412,9 +435,7 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the formatter is null
      */
     public DateTimeFormatterBuilder append(DateTimeFormatter formatter) {
-        if (formatter == null) {
-            throw new NullPointerException("DateTimeFormatter must not be null");
-        }
+        checkNotNull(formatter, "DateTimeFormatter must not be null");
         CompositePrinterParser cpp = formatter.toPrinterParser(false);
         appendInternal(cpp, cpp);
         return this;
@@ -431,12 +452,286 @@ public class DateTimeFormatterBuilder {
      * @throws NullPointerException if the formatter is null
      */
     public DateTimeFormatterBuilder appendOptional(DateTimeFormatter formatter) {
-        if (formatter == null) {
-            throw new NullPointerException("DateTimeFormatter must not be null");
-        }
+        checkNotNull(formatter, "DateTimeFormatter must not be null");
         CompositePrinterParser cpp = formatter.toPrinterParser(true);
         appendInternal(cpp, cpp);
         return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Appends the elements defined by the specified pattern to the builder.
+     * <p>
+     * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
+     *
+     * @param pattern  the pattern to add, not null
+     * @return this, for chaining, never null
+     * @throws NullPointerException if the pattern is null
+     */
+    public DateTimeFormatterBuilder appendPattern(String pattern) {
+        checkNotNull(pattern, "Pattern must not be null");
+        parse(pattern);
+        return this;
+    }
+
+    private void parse(String pattern) {
+        for (int pos = 0; pos < pattern.length(); pos++) {
+            char cur = pattern.charAt(pos);
+            if (cur == '\'') {
+                // parse literals
+                int start = pos++;
+                for ( ; pos < pattern.length(); pos++) {
+                    if (pattern.charAt(pos) == '\'') {
+                        if (pos + 1 < pattern.length() && pattern.charAt(pos + 1) == '\'') {
+                            pos++;
+                        } else {
+                            break;  // end of literal
+                        }
+                    }
+                }
+                if (pos >= pattern.length()) {
+                    throw new IllegalArgumentException("Pattern ends with an incomplete string literal: " + pattern);
+                }
+                String str = extractString(pattern, pattern.substring(start, pos + 1), true);
+                appendLiteral(str);
+                
+            } else if (cur == '(' || cur == '[') {
+                // parse composite
+                char end = (cur == '(' ? ')' : ']');
+                int start = ++pos;
+                int depth = 1;
+                for ( ; pos < pattern.length() && depth > 0; pos++) {
+                    cur = pattern.charAt(pos);
+                    if (depth == 1 && cur == end) {
+                        break;  // end of composite
+                    } else if (cur == '(' || cur == '[') {
+                        depth++;
+                    } else if (cur == ')' || cur == ']') {
+                        depth--;
+                    } else if (cur == '\'') {
+                        // ignore literals
+                        pos++;
+                        for ( ; pos < pattern.length(); pos++) {
+                            if (pattern.charAt(pos) == '\'') {
+                                if (pos + 1 < pattern.length() && pattern.charAt(pos + 1) == '\'') {
+                                    pos++;
+                                } else {
+                                    break;  // end of literal
+                                }
+                            }
+                        }
+                        if (pos >= pattern.length()) {
+                            throw new IllegalArgumentException("Pattern ends with an incomplete string literal: " + pattern);
+                        }
+                    }
+                }
+                if (depth < 1 || pos >= pattern.length()) {
+                    throw new IllegalArgumentException("Pattern brackets mismatch: " + pattern);
+                }
+                DateTimeFormatter sub = new DateTimeFormatterBuilder()
+                    .appendPattern(pattern.substring(start, pos)).toFormatter();
+                if (end == ')') {
+                    append(sub);
+                } else {
+                    appendOptional(sub);
+                }
+                
+            } else if (cur == ')' || cur == ']') {
+                throw new IllegalArgumentException("Pattern brackets mismatch: " + pattern);
+                
+            } else if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
+                // parse patterns
+                int start = pos++;
+                for ( ; pos < pattern.length(); pos++) {
+                    cur = pattern.charAt(pos);
+                    if ((cur < 'A' || cur > 'Z') && (cur < 'a' || cur > 'z')) {
+                        break;
+                    }
+                }
+                String segmentType = pattern.substring(start, pos);
+                if (APPEND_SEGMENTS.contains(segmentType)) {
+                    List<String> args = new ArrayList<String>();
+                    pos = parseArgs(pattern, pos, args);
+                    if (segmentType.equals("Value")) {
+                        switch (args.size()) {
+                            case 1: {
+                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
+                                appendValue(rule);
+                                break;
+                            }
+                            case 2: {
+                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
+                                appendValue(rule, extractInt(pattern, args.get(1)));
+                                break;
+                            }
+                            case 4: {
+                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
+                                appendValue(rule, extractInt(pattern, args.get(1)),
+                                        extractInt(pattern, args.get(2)), SignStyle.valueOf(args.get(3)));
+                                break;
+                            }
+                            default:
+                                throw new IllegalArgumentException("Pattern has invalid arguments for Value(): " + pattern);
+                        }
+                    } else if (segmentType.equals("Fraction")) {
+                        if (args.size() != 3) {
+                            throw new IllegalArgumentException("Pattern has invalid arguments for Fraction(): " + pattern);
+                        }
+                        appendFraction(
+                                extractRule(pattern, args.get(0)),
+                                extractInt(pattern, args.get(1)),
+                                extractInt(pattern, args.get(2)));
+                    } else if (segmentType.equals("Text")) {
+                        switch (args.size()) {
+                            case 1: {
+                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
+                                appendText(rule);
+                                break;
+                            }
+                            case 2: {
+                                DateTimeFieldRule rule = extractRule(pattern, args.get(0));
+                                appendText(rule, TextStyle.valueOf(args.get(1)));
+                                break;
+                            }
+                            default:
+                                throw new IllegalArgumentException("Pattern has invalid arguments for Text(): " + pattern);
+                        }
+                    } else if (segmentType.equals("ZoneId")) {
+                        if (args.size() > 0) {
+                            throw new IllegalArgumentException("Pattern has invalid arguments for ZoneId(): " + pattern);
+                        }
+                        appendZoneId();
+                    } else if (segmentType.equals("ZoneText")) {
+                        if (args.size() != 1) {
+                            throw new IllegalArgumentException("Pattern has invalid arguments for ZoneText(): " + pattern);
+                        }
+                        appendZoneText(TextStyle.valueOf(args.get(0)));
+                    } else if (segmentType.equals("OffsetId")) {
+                        if (args.size() > 0) {
+                            throw new IllegalArgumentException("Pattern has invalid arguments for OffsetId(): " + pattern);
+                        }
+                        appendOffsetId();
+                    } else if (segmentType.equals("Offset")) {
+                        if (args.size() != 3) {
+                            throw new IllegalArgumentException("Pattern has invalid arguments for Offset(): " + pattern);
+                        }
+                        appendOffset(
+                                extractString(pattern, args.get(0), false),
+                                extractBoolean(pattern, args.get(1)),
+                                extractBoolean(pattern, args.get(2)));
+                    } else {
+                        throw new IllegalArgumentException("Pattern has unknown segment '" + segmentType + "': " + pattern);
+                    }
+                } else {
+                    throw new IllegalArgumentException("Pattern has unknown segment '" + segmentType + "': " + pattern);
+                }
+                
+            } else {
+                // parse remainder
+                appendLiteral(cur);
+            }
+        }
+    }
+
+    private int parseArgs(String pattern, int pos, List<String> args) {
+        if (pos >= pattern.length() || pattern.charAt(pos) != '(') {
+            throw new IllegalArgumentException("Pattern arguments invalid: " + pattern);
+        }
+        pos++;
+        int argStart = pos;
+        boolean quoted = false;
+        for ( ; pos < pattern.length(); pos++) {
+            char cur = pattern.charAt(pos);
+            if (cur == '\'') {
+                for (pos++ ; pos < pattern.length(); pos++) {
+                    if (pattern.charAt(pos) == '\'') {
+                        if (pos + 1 < pattern.length() && pattern.charAt(pos + 1) == '\'') {
+                            pos++;
+                        } else {
+                            break;  // end of literal
+                        }
+                    }
+                }
+                if (pos >= pattern.length()) {
+                    throw new IllegalArgumentException("Pattern ends with an incomplete string literal: " + pattern);
+                }
+                quoted = true;
+            } else if (cur == ')') {
+                if (pos > argStart || args.size() > 0) {
+                    args.add(pattern.substring(argStart, pos));
+                }
+                return pos;  // end of arguments
+            } else if (cur == ',') {
+                args.add(pattern.substring(argStart, pos));
+                argStart = pos + 1;
+                quoted = false;
+            } else if (quoted) {
+                throw new IllegalArgumentException("Pattern arguments invalid: " + pattern);
+            }
+        }
+        throw new IllegalArgumentException("Pattern arguments invalid: " + pattern);
+    }
+
+    private String extractString(String pattern, String token, boolean emptyIsApos) {
+        if (token.startsWith("'") == false) {
+            throw new IllegalArgumentException("Pattern string argument invalid: " + pattern);
+        }
+        token = token.substring(1, token.length() - 1);
+        if (token.length() == 0) {
+            return emptyIsApos ? "'" : "";
+        }
+        token = token.replace("''", "'");
+        return token;
+    }
+
+    private boolean extractBoolean(String pattern, String token) {
+        if (token.equalsIgnoreCase("true") || token.equalsIgnoreCase("T")) {
+            return true;
+        }
+        if (token.equalsIgnoreCase("false") || token.equalsIgnoreCase("F")) {
+            return false;
+        }
+        throw new IllegalArgumentException("Pattern boolean argument invalid: " + pattern);
+    }
+
+    private int extractInt(String pattern, String token) {
+        try {
+            return Integer.parseInt(token);
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException("Pattern int argument invalid: " + pattern, ex);
+        }
+    }
+
+    private DateTimeFieldRule extractRule(String pattern, String token) {
+        // TODO
+        if (token.equals("ISO.Year")) {
+            return ISOChronology.yearRule();
+        }
+        if (token.equals("ISO.MonthOfYear")) {
+            return ISOChronology.monthOfYearRule();
+        }
+        if (token.equals("ISO.DayOfMonth")) {
+            return ISOChronology.dayOfMonthRule();
+        }
+        if (token.equals("ISO.DayOfWeek")) {
+            return ISOChronology.dayOfWeekRule();
+        }
+        if (token.equals("ISO.NanoOfSecond")) {
+            return ISOChronology.nanoOfSecondRule();
+        }
+        throw new IllegalArgumentException("Pattern DateTimeFieldRule argument invalid '" + token + "': " + pattern);
+    }
+
+    /** Segments that correspond to append methods. */
+    private static final Set<String> APPEND_SEGMENTS = new HashSet<String>();
+    static {
+        APPEND_SEGMENTS.add("Value");
+        APPEND_SEGMENTS.add("Fraction");
+        APPEND_SEGMENTS.add("Text");
+        APPEND_SEGMENTS.add("OffsetId");
+        APPEND_SEGMENTS.add("Offset");
+        APPEND_SEGMENTS.add("ZoneId");
+        APPEND_SEGMENTS.add("ZoneText");
     }
 
     //-----------------------------------------------------------------------

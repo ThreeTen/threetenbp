@@ -298,6 +298,16 @@ public class DateTimeFormatter {
         return new ClassicFormat();
     }
 
+    /**
+     * Returns the pattern of the underlying formatters.
+     *
+     * @return the pattern that will be used, never null
+     */
+    public String toPattern() {
+        String pattern = printerParser.toString();  // TODO, don't use toString()
+        return pattern.startsWith("[") ? pattern : pattern.substring(1, pattern.length() - 1);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Implements the classic Java Format API.
