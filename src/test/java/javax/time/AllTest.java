@@ -74,6 +74,7 @@ import javax.time.calendar.format.TestCalendricalFormatException;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatter;
+import javax.time.calendar.format.TestDateTimeFormatterBuilder;
 import javax.time.calendar.format.TestDateTimeFormatters;
 import javax.time.calendar.format.TestDateTimeParseContext;
 import javax.time.calendar.format.TestFractionPrinterParser;
@@ -174,6 +175,7 @@ public class AllTest {
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,
             TestDateTimeFormatters.class,
+            TestDateTimeFormatterBuilder.class,
             TestFractionPrinterParser.class,
             TestNumberParser.class,
             TestNumberPrinter.class,

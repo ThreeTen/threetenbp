@@ -35,7 +35,6 @@ import static org.testng.Assert.*;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.LocalDate;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -50,7 +49,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatterBuilder {
 
+    private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
     private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule DOW_RULE = ISOChronology.dayOfWeekRule();
 
     private DateTimeFormatterBuilder builder;
 
@@ -136,81 +137,91 @@ public class TestDateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    public void test_appendPattern_charLiteral() throws Exception {
-        builder.appendPattern("'a'");
+    public void test_padNext() throws Exception {
+        builder.appendValue(MOY_RULE).padNext(2).appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "'a'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "a");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),Value(ISO.DayOfMonth),2)Value(ISO.DayOfWeek)");
     }
 
-    public void test_appendPattern_charLiteral_singleApos() throws Exception {
-        builder.appendPattern("''");
+    public void test_padNext_dash() throws Exception {
+        builder.appendValue(MOY_RULE).padNext(2, '-').appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "''");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "'");
-    }
-
-    public void test_appendPattern_unexpectedOther() throws Exception {
-        builder.appendPattern("%");
-        DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "'%'");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),Value(ISO.DayOfMonth),2,'-')Value(ISO.DayOfWeek)");
     }
 
     //-----------------------------------------------------------------------
-    public void test_appendPattern_stringLiteral() throws Exception {
-        builder.appendPattern("'hello_people,][)('");
+    public void test_optionalStart_noEnd() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "'hello_people,][)('");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "hello_people,][)(");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)Value(ISO.DayOfWeek)]");
     }
 
-    public void test_appendPattern_stringLiteralLength2() throws Exception {
-        builder.appendPattern("'hi'");
+    public void test_optionalStart2_noEnd() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).optionalStart().appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "'hi'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "hi");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)[Value(ISO.DayOfWeek)]]");
     }
 
-    public void test_appendPattern_stringLiteral_wrapMeaningful() throws Exception {
-        builder.appendPattern("'yyyy'");
+    public void test_optionalStart_doubleStart() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().optionalStart().appendValue(DOM_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "'yyyy'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "yyyy");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[[Value(ISO.DayOfMonth)]]");
     }
 
-    public void test_appendPattern_stringLiteral_singleApos() throws Exception {
-        builder.appendPattern("''''");
+    //-----------------------------------------------------------------------
+    public void test_optionalEnd() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).optionalEnd().appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "''");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "'");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)]Value(ISO.DayOfWeek)");
     }
 
-    public void test_appendPattern_stringLiteral_mixedApos() throws Exception {
-        builder.appendPattern("'o''clock'");
+    public void test_optionalEnd2() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE)
+            .optionalStart().appendValue(DOW_RULE).optionalEnd().appendValue(DOM_RULE).optionalEnd();
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "'o''clock'");
-        assertEquals(f.print(LocalDate.date(2008, 6, 30)), "o'clock");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[Value(ISO.DayOfMonth)[Value(ISO.DayOfWeek)]Value(ISO.DayOfMonth)]");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_appendPattern_stringLiteral_incomplete() throws Exception {
-        builder.appendPattern("'hello");
+    public void test_optionalEnd_doubleStartSingleEnd() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().optionalStart().appendValue(DOM_RULE).optionalEnd();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[[Value(ISO.DayOfMonth)]]");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_appendPattern_stringLiteral_incomplete_midApos() throws Exception {
-        builder.appendPattern("'hel''lo");
+    public void test_optionalEnd_doubleStartDoubleEnd() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().optionalStart().appendValue(DOM_RULE).optionalEnd().optionalEnd();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)[[Value(ISO.DayOfMonth)]]");
     }
 
-    @Test(expectedExceptions=IllegalArgumentException.class)
-    public void test_appendPattern_stringLiteral_incomplete_endApos() throws Exception {
-        builder.appendPattern("'hello''");
+    public void test_optionalStartEnd_immediateStartEnd() throws Exception {
+        builder.appendValue(MOY_RULE).optionalStart().optionalEnd().appendValue(DOM_RULE);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Value(ISO.DayOfMonth)");
     }
 
+    @Test(expectedExceptions=IllegalStateException.class)
+    public void test_optionalEnd_noStart() throws Exception {
+        builder.optionalEnd();
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     @DataProvider(name="validPatterns")
     Object[][] dataValid() {
         return new Object[][] {
+            {"'a'", "'a'"},
+            {"''", "''"},
+            {"'!'", "'!'"},
+            {"!", "'!'"},
+            
+            {"'hello_people,][)('", "'hello_people,][)('"},
+            {"'hi'", "'hi'"},
+            {"'yyyy'", "'yyyy'"},
+            {"''''", "''"},
+            {"'o''clock'", "'o''clock'"},
+            
             {"y", "Value(ISO.Year)"},
             {"yy", "Value(ISO.Year,2,10,NORMAL)"},
             {"yyy", "Value(ISO.Year,3,10,NORMAL)"},
@@ -293,6 +304,29 @@ public class TestDateTimeFormatterBuilder {
             {"nn", "Value(ISO.NanoOfSecond,2)"},
             {"nnn", "Value(ISO.NanoOfSecond,3)"},
             
+            {"z", "ZoneText(SHORT)"},
+            {"zz", "ZoneText(SHORT)"},
+            {"zzz", "ZoneText(SHORT)"},
+            {"zzzz", "ZoneText(FULL)"},
+            {"zzzzz", "ZoneText(FULL)"},
+            
+            {"I", "ZoneId()"},
+            {"II", "ZoneId()"},
+            {"III", "ZoneId()"},
+            {"IIII", "ZoneId()"},
+            {"IIIII", "ZoneId()"},
+            
+            {"Z", "Offset('+0000',false,false)"},
+            {"ZZ", "Offset('+00:00',true,false)"},
+            {"ZZZ", "Offset('Z',false,true)"},
+            {"ZZZZ", "OffsetId()"},
+            
+            {"RO", "'R''O'"},
+            
+            {"yyyy[-MM[-dd", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
+            {"yyyy[-MM[-dd]]", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
+            {"yyyy[-MM[]-dd]", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)]"},
+            
             {"yyyy-MM-dd'T'HH:mm:ss.SSS", "Value(ISO.Year,4,10,EXCEEDS_PAD)'-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)" +
                 "'T'Value(ISO.HourOfDay,2)':'Value(ISO.MinuteOfHour,2)':'Value(ISO.SecondOfMinute,2)'.'Value(ISO.MilliOfSecond,3)"},
         };
@@ -311,7 +345,12 @@ public class TestDateTimeFormatterBuilder {
         return new Object[][] {
             {"'"},
             {"'hello"},
+            {"'hel''lo"},
             {"'hello''"},
+            {"]"},
+            {"yyyy]"},
+            {"yyyy]MM"},
+            {"yyyy[MM]]"},
         };
     }
 
@@ -320,7 +359,7 @@ public class TestDateTimeFormatterBuilder {
         try {
             builder.appendPattern(input);
         } catch (IllegalArgumentException ex) {
-            System.out.println(ex.getMessage());
+//            System.out.println(ex.getMessage());
             throw ex;
         }
     }
