@@ -53,6 +53,7 @@ public class TestDateTimeFormatterBuilder {
     private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
     private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
     private static final DateTimeFieldRule DOW_RULE = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
 
     private DateTimeFormatterBuilder builder;
 
@@ -140,6 +141,55 @@ public class TestDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
+    public void test_appendFraction_3arg() throws Exception {
+        builder.appendFraction(MIN_RULE, 1, 9);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Fraction(ISO.MinuteOfHour,1,9)");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendFraction_3arg_nullRule() throws Exception {
+        builder.appendFraction(null, 1, 9);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_invalidRuleNotFixedSet() throws Exception {
+        builder.appendFraction(DOM_RULE, 1, 9);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_invalidRuleNotMinZero() throws Exception {
+        builder.appendFraction(MOY_RULE, 1, 9);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_minTooSmall() throws Exception {
+        builder.appendFraction(MIN_RULE, -1, 9);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_minTooBig() throws Exception {
+        builder.appendFraction(MIN_RULE, 10, 9);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_maxTooSmall() throws Exception {
+        builder.appendFraction(MIN_RULE, 0, -1);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_maxTooBig() throws Exception {
+        builder.appendFraction(MIN_RULE, 1, 10);
+    }
+
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_appendFraction_3arg_maxWidthMinWidth() throws Exception {
+        builder.appendFraction(MIN_RULE, 9, 3);
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     public void test_appendText_1arg() throws Exception {
         builder.appendText(MOY_RULE);
         DateTimeFormatter f = builder.toFormatter();
@@ -171,18 +221,71 @@ public class TestDateTimeFormatterBuilder {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
-    public void test_padNext() throws Exception {
+    public void test_appendOffsetId() throws Exception {
+        builder.appendOffsetId();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "OffsetId()");
+    }
+
+    public void test_appendOffset_3arg() throws Exception {
+        builder.appendOffset("Z", true, false);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Offset('Z',true,false)");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendOffset_3arg_nullText() throws Exception {
+        builder.appendOffset(null, true, false);
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    public void test_appendZoneId() throws Exception {
+        builder.appendZoneId();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ZoneId()");
+    }
+
+    public void test_appendZoneText_1arg() throws Exception {
+        builder.appendZoneText(TextStyle.FULL);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ZoneText(FULL)");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendZoneText_1arg_nullText() throws Exception {
+        builder.appendZoneText(null);
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    public void test_padNext_1arg() throws Exception {
         builder.appendValue(MOY_RULE).padNext(2).appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),Value(ISO.DayOfMonth),2)Value(ISO.DayOfWeek)");
     }
 
-    public void test_padNext_dash() throws Exception {
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_padNext_1arg_invalidWidth() throws Exception {
+        builder.padNext(0);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_padNext_2arg_dash() throws Exception {
         builder.appendValue(MOY_RULE).padNext(2, '-').appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),Value(ISO.DayOfMonth),2,'-')Value(ISO.DayOfWeek)");
     }
 
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void test_padNext_2arg_invalidWidth() throws Exception {
+        builder.padNext(0, '-');
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_optionalStart_noEnd() throws Exception {
         builder.appendValue(MOY_RULE).optionalStart().appendValue(DOM_RULE).appendValue(DOW_RULE);
