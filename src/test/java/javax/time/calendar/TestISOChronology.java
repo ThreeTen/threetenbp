@@ -163,8 +163,8 @@ public class TestISOChronology {
 
     public void test_weekyearRule() throws Exception {
         DateTimeFieldRule rule = ISOChronology.weekBasedYearRule();
-        assertEquals(rule.getID(), "ISO.Weekyear");
-        assertEquals(rule.getName(), "Weekyear");
+        assertEquals(rule.getID(), "ISO.WeekBasedYear");
+        assertEquals(rule.getName(), "WeekBasedYear");
         assertEquals(rule.getMinimumValue(), WeekBasedYear.MIN_YEAR);
         assertEquals(rule.getLargestMinimumValue(), WeekBasedYear.MIN_YEAR);
         assertEquals(rule.getMaximumValue(), WeekBasedYear.MAX_YEAR);
@@ -177,8 +177,8 @@ public class TestISOChronology {
 
     public void test_weekOfWeekyearRule() throws Exception {
         DateTimeFieldRule rule = ISOChronology.weekOfWeekBasedYearRule();
-        assertEquals(rule.getID(), "ISO.WeekOfWeekyear");
-        assertEquals(rule.getName(), "WeekOfWeekyear");
+        assertEquals(rule.getID(), "ISO.WeekOfWeekBasedYear");
+        assertEquals(rule.getName(), "WeekOfWeekBasedYear");
         assertEquals(rule.getMinimumValue(), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 53);
