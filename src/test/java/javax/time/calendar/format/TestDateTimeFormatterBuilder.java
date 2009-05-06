@@ -36,6 +36,7 @@ import static org.testng.Assert.*;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -136,6 +137,39 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(DOM_RULE, 2, 3, null);
     }
 
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    public void test_appendText_1arg() throws Exception {
+        builder.appendText(MOY_RULE);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Text(ISO.MonthOfYear)");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendText_1arg_null() throws Exception {
+        builder.appendText(null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendText_2arg() throws Exception {
+        builder.appendText(MOY_RULE, TextStyle.SHORT);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Text(ISO.MonthOfYear,SHORT)");
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendText_2arg_nullRule() throws Exception {
+        builder.appendText(null, TextStyle.SHORT);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_appendText_2arg_nullStyle() throws Exception {
+        builder.appendText(MOY_RULE, null);
+    }
+
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_padNext() throws Exception {
         builder.appendValue(MOY_RULE).padNext(2).appendValue(DOM_RULE).appendValue(DOW_RULE);
