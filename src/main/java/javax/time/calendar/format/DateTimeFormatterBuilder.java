@@ -465,38 +465,39 @@ public class DateTimeFormatterBuilder {
      * All letters 'A' to 'Z' and 'a' to 'z' are reserved as pattern letters.
      * The following pattern letters are defined:
      * <pre>
-     *  Symbol  Meaning                      Presentation  Examples
-     *  ------  -------                      ------------  -------
-     *   y       year                         year          1996
-     *   D       day of year                  number        189
-     *   M       month of year                month         July; Jul; 07
-     *   d       day of month                 number        10
+     *  Symbol  Meaning                     Presentation     Examples
+     *  ------  -------                     ------------     -------
+     *   y       year                        year             1996
+     *   D       day of year                 number           189
+     *   M       month of year               month            July; Jul; 07
+     *   d       day of month                number           10
      *
-     *   Q       quarter of year              number        3
-     *   q       month of quarter             number        2
+     *   Q       quarter of year             number           3
+     *   q       month of quarter            number           2
      *
-     *   x       week-based-year              year          1996
-     *   w       week of week-based-year      number        27
-     *   e       day of week                  number        2
-     *   E       day of week                  text          Tuesday; Tue
-     *   F       week of month                number        3
+     *   x       week-based-year             year             1996
+     *   w       week of week-based-year     number           27
+     *   e       day of week                 number           2
+     *   E       day of week                 text             Tuesday; Tue
+     *   F       week of month               number           3
      *
-     *   a       am-pm of day                 text          PM
-     *   h       clockhour of am-pm  (1~12)   number        12
-     *   K       hour of am-pm (0~11)         number        0
+     *   a       am-pm of day                text             PM
+     *   h       clockhour of am-pm  (1~12)  number           12
+     *   K       hour of am-pm (0~11)        number/fraction  0
      *
-     *   H       hour of day (0~23)           number        0
-     *   m       minute of hour               number        30
-     *   s       second of minute             number        55
-     *   S       milli of second              number        978
-     *   n       nano of second               number        987654321
+     *   H       hour of day (0~23)          number/fraction  0
+     *   m       minute of hour              number/fraction  30
+     *   s       second of minute            number/fraction  55
+     *   S       milli of second             number/fraction  978
+     *   n       nano of second              number/fraction  987654321
      *
-     *   I       time zone ID                 zoneID        America/Los_Angeles
-     *   z       time zone name               text          Pacific Standard Time; PST
-     *   Z       zone offset                  offset        -0800; -08:00;
+     *   I       time zone ID                zoneID           America/Los_Angeles
+     *   z       time zone name              text             Pacific Standard Time; PST
+     *   Z       zone offset                 offset           -0800; -08:00;
      *
-     *   '       escape for text              delimiter
-     *   ''      single quote                 literal       '
+     *   f       make next a fraction        fraction         .123
+     *   '       escape for text             delimiter
+     *   ''      single quote                literal          '
      *   [       optional section start
      *   ]       optional section end
      * </pre>
@@ -509,6 +510,17 @@ public class DateTimeFormatterBuilder {
      * <b>Number</b>: If the count of letters is one, then the value is printed using the minimum number
      * of digits and without padding as per {@link #appendValue(DateTimeFieldRule)}. Otherwise, the
      * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeFieldRule, int)}.
+     * <p>
+     * <b>Fraction</b>: Modifies the pattern that immediately follows to be a fraction.
+     * All fractional values must use the 'f' prefix to ensure correct parsing.
+     * The fraction also outputs the decimal point.
+     * If the count of 'f' is one, then the fractional value has the exact number of digits defined by
+     * the count of the value being output.
+     * If the count of 'f' is two or more, then the fractional value has the a minimum number of digits
+     * defined by the count of the value being output and a maximum output of nine digits.
+     * <p>
+     * For example, 'ssffnnn' outputs the second followed by 3-9 digits of the nanosecond, while
+     * 'mmfss' outputs the minute followed by exactly 2 digits representing the second.
      * <p>
      * <b>Year</b>: The count of letters determines the minimum field width below which padding is used.
      * If the count of letters is less than four, then the sign is only output for negative years as per
@@ -538,7 +550,7 @@ public class DateTimeFormatterBuilder {
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
      * SimpleDateFormat pattern letters 'G', 'W' and 'k' are not available.
-     * Pattern letters 'x', 'Q', 'q', 'e', 'n' and 'I' are added.
+     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I' and 'f' are added.
      * Letters 'y', 'z' and 'Z' have some differences.
      *
      * @param pattern  the pattern to add, not null
@@ -555,7 +567,49 @@ public class DateTimeFormatterBuilder {
     private void parse(String pattern) {
         for (int pos = 0; pos < pattern.length(); pos++) {
             char cur = pattern.charAt(pos);
-            if (cur == '\'') {
+            if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
+                // parse patterns
+                int start = pos++;
+                for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                int count = pos - start;
+                int fraction = 0;
+                if (cur == 'f') {
+                    if (pos < pattern.length()) {
+                        cur = pattern.charAt(pos);
+                        if (cur == 'H' || cur == 'K' || cur == 'm' || cur == 's' || cur == 'S' || cur == 'n') {
+                            fraction = count;
+                            start = pos++;
+                            for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                            count = pos - start;
+                        }
+                    }
+                    if (fraction == 0) {
+                        throw new IllegalArgumentException(
+                                "Fraction letter 'f' must be followed by valid fraction pattern: " + pattern);
+                    }
+                }
+                DateTimeFieldRule rule = RULE_MAP.get(cur);
+                if (rule == null) {
+                    if (cur == 'z') {
+                        if (count < 4) {
+                            appendZoneText(TextStyle.SHORT);
+                        } else {
+                            appendZoneText(TextStyle.FULL);
+                        }
+                    } else if (cur == 'I') {
+                        appendZoneId();
+                    } else if (cur == 'Z') {
+                        appendOffset(count == 1 ? "+0000" : (count == 2 ? "+00:00" : "Z"), count == 2 || count >= 4, count >= 3);
+                    } else {
+                        appendLiteral(pattern.substring(start, pos));
+                    }
+                } else {
+                    parseRule(cur, count, rule, fraction);
+                }
+                fraction = 0;
+                pos--;
+                
+            } else if (cur == '\'') {
                 // parse literals
                 int start = pos++;
                 for ( ; pos < pattern.length(); pos++) {
@@ -586,37 +640,13 @@ public class DateTimeFormatterBuilder {
                 }
                 optionalEnd();
                 
-            } else if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
-                // parse patterns
-                int start = pos++;
-                for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
-                int count = pos - start;
-                DateTimeFieldRule rule = RULE_MAP.get(cur);
-                if (rule == null) {
-                    if (cur == 'z') {
-                        if (count < 4) {
-                            appendZoneText(TextStyle.SHORT);
-                        } else {
-                            appendZoneText(TextStyle.FULL);
-                        }
-                    } else if (cur == 'I') {
-                        appendZoneId();
-                    } else if (cur == 'Z') {
-                        appendOffset(count == 1 ? "+0000" : (count == 2 ? "+00:00" : "Z"), count == 2 || count >= 4, count >= 3);
-                    } else {
-                        appendLiteral(pattern.substring(start, pos));
-                    }
-                } else {
-                    parseRule(cur, count, rule);
-                }
-                pos--;
             } else {
                 appendLiteral(cur);
             }
         }
     }
 
-    private void parseRule(char cur, int count, DateTimeFieldRule rule) {
+    private void parseRule(char cur, int count, DateTimeFieldRule rule, int fraction) {
         switch (cur) {
             case 'x':
             case 'y':
@@ -651,10 +681,14 @@ public class DateTimeFormatterBuilder {
                 }
                 break;
             default:
-                if (count == 1) {
-                    appendValue(rule);
+                if (fraction > 0) {
+                    appendFraction(rule, count, fraction == 1 ? count : 9);
                 } else {
-                    appendValue(rule, count);
+                    if (count == 1) {
+                        appendValue(rule);
+                    } else {
+                        appendValue(rule, count);
+                    }
                 }
                 break;
         }
@@ -685,7 +719,7 @@ public class DateTimeFormatterBuilder {
         RULE_MAP.put('s', ISOChronology.secondOfMinuteRule());
         RULE_MAP.put('S', ISOChronology.milliOfSecondRule());
         RULE_MAP.put('n', ISOChronology.nanoOfSecondRule());  // new
-        // reserved - z,Z,I
+        // reserved - z,Z,I,f
     }
 
     //-----------------------------------------------------------------------

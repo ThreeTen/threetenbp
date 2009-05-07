@@ -460,6 +460,29 @@ public class TestDateTimeFormatterBuilder {
             
             {"RO", "'R''O'"},
             
+            {"ssfn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,1,1)"},
+            {"ssfnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,2,2)"},
+            {"ssfnnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,3,3)"},
+            
+            {"ssffn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,1,9)"},
+            {"ssffnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,2,9)"},
+            {"ssffnnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,3,9)"},
+            
+            {"mmfs", "Value(ISO.MinuteOfHour,2)Fraction(ISO.SecondOfMinute,1,1)"},
+            {"mmfss", "Value(ISO.MinuteOfHour,2)Fraction(ISO.SecondOfMinute,2,2)"},
+            {"mmfsss", "Value(ISO.MinuteOfHour,2)Fraction(ISO.SecondOfMinute,3,3)"},
+            
+            {"mmffs", "Value(ISO.MinuteOfHour,2)Fraction(ISO.SecondOfMinute,1,9)"},
+            {"mmffss", "Value(ISO.MinuteOfHour,2)Fraction(ISO.SecondOfMinute,2,9)"},
+            {"mmffsss", "Value(ISO.MinuteOfHour,2)Fraction(ISO.SecondOfMinute,3,9)"},
+            
+            {"fH", "Fraction(ISO.HourOfDay,1,1)"},
+            {"fK", "Fraction(ISO.HourOfAmPm,1,1)"},
+            {"fm", "Fraction(ISO.MinuteOfHour,1,1)"},
+            {"fs", "Fraction(ISO.SecondOfMinute,1,1)"},
+            {"fS", "Fraction(ISO.MilliOfSecond,1,1)"},
+            {"fn", "Fraction(ISO.NanoOfSecond,1,1)"},
+            
             {"yyyy[-MM[-dd", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
             {"yyyy[-MM[-dd]]", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)['-'Value(ISO.DayOfMonth,2)]]"},
             {"yyyy[-MM[]-dd]", "Value(ISO.Year,4,10,EXCEEDS_PAD)['-'Value(ISO.MonthOfYear,2)'-'Value(ISO.DayOfMonth,2)]"},
@@ -488,6 +511,12 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy]"},
             {"yyyy]MM"},
             {"yyyy[MM]]"},
+            
+            {"f"},
+            {"ff"},
+            {"fy"},
+            {"fa"},
+            {"fM"},
         };
     }
 
