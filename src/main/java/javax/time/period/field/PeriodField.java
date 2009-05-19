@@ -36,12 +36,12 @@ import javax.time.period.PeriodFields;
 import javax.time.period.PeriodUnit;
 
 /**
- * A period measured in terms of a single field, such as days or seconds.
+ * An abstract period measured in terms of a single field, such as days or seconds.
  * <p>
- * Years is an immutable period that can only store years.
- * It is a type-safe way of representing a number of years in an application.
+ * PeriodField is an immutable period that can only store years.
+ * It is a type-safe way of representing a period in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The number of years may be queried using getYears().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
