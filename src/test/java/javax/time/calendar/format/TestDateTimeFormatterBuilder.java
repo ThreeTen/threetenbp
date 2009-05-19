@@ -460,6 +460,10 @@ public class TestDateTimeFormatterBuilder {
             
             {"RO", "'R''O'"},
             
+            {"ppH", "Pad(Value(ISO.HourOfDay),Value(ISO.HourOfDay),2)"},
+            {"pppDD", "Pad(Value(ISO.DayOfYear,2),Value(ISO.DayOfYear,2),3)"},
+            {"pppffn", "Pad(Fraction(ISO.NanoOfSecond,1,9),Fraction(ISO.NanoOfSecond,1,9),3)"},
+            
             {"ssfn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,1,1)"},
             {"ssfnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,2,2)"},
             {"ssfnnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,3,3)"},
@@ -512,8 +516,13 @@ public class TestDateTimeFormatterBuilder {
             {"yyyy]MM"},
             {"yyyy[MM]]"},
             
+            {"p"},
+            {"pp"},
+            {"p:"},
+            
             {"f"},
             {"ff"},
+            {"f:"},
             {"fy"},
             {"fa"},
             {"fM"},

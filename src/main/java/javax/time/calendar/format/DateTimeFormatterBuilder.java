@@ -495,7 +495,9 @@ public class DateTimeFormatterBuilder {
      *   z       time zone name              text             Pacific Standard Time; PST
      *   Z       zone offset                 offset           -0800; -08:00;
      *
-     *   f       make next a fraction        fraction         .123
+     *   f       make next a fraction        fraction modifier  .123
+     *   p       pad next                    pad modifier      1
+     *
      *   '       escape for text             delimiter
      *   ''      single quote                literal          '
      *   [       optional section start
@@ -511,7 +513,7 @@ public class DateTimeFormatterBuilder {
      * of digits and without padding as per {@link #appendValue(DateTimeFieldRule)}. Otherwise, the
      * count of digits is used as the width of the output field as per {@link #appendValue(DateTimeFieldRule, int)}.
      * <p>
-     * <b>Fraction</b>: Modifies the pattern that immediately follows to be a fraction.
+     * <b>Fraction modifier</b>: Modifies the pattern that immediately follows to be a fraction.
      * All fractional values must use the 'f' prefix to ensure correct parsing.
      * The fraction also outputs the decimal point.
      * If the count of 'f' is one, then the fractional value has the exact number of digits defined by
@@ -542,6 +544,12 @@ public class DateTimeFormatterBuilder {
      * <b>Optional section</b>: The optional section markers work exactly like calling {@link #optionalStart()}
      * and {@link #optionalEnd()}.
      * <p>
+     * <b>Pad modifier</b>: Modifies the pattern that immediately follows to be padded with spaces.
+     * The pad width is determined by the number of pattern letters.
+     * This is the same as calling {@link #padNext(int)}.
+     * <p>
+     * For example, 'ppH' outputs the hour of day padded on the left with spaces to a width of 2.
+     * <p>
      * Any unrecognized letter will be output directly.
      * However, since these are reserved, that may change in future versions.
      * Any non-letter character, other than '[', ']' and the single quote will be output directly.
@@ -550,7 +558,7 @@ public class DateTimeFormatterBuilder {
      * <p>
      * The pattern string is similar, but not identical, to {@link SimpleDateFormat}.
      * SimpleDateFormat pattern letters 'G', 'W' and 'k' are not available.
-     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I' and 'f' are added.
+     * Pattern letters 'x', 'Q', 'q', 'e', 'n', 'I', 'f' and 'p' are added.
      * Letters 'y', 'z' and 'Z' have some differences.
      *
      * @param pattern  the pattern to add, not null
@@ -572,6 +580,23 @@ public class DateTimeFormatterBuilder {
                 int start = pos++;
                 for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
                 int count = pos - start;
+                if (cur == 'p') {
+                    int pad = 0;
+                    if (pos < pattern.length()) {
+                        cur = pattern.charAt(pos);
+                        if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
+                            pad = count;
+                            start = pos++;
+                            for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                            count = pos - start;
+                        }
+                    }
+                    if (pad == 0) {
+                        throw new IllegalArgumentException(
+                                "Pad letter 'p' must be followed by valid pad pattern: " + pattern);
+                    }
+                    padNext(pad);
+                }
                 int fraction = 0;
                 if (cur == 'f') {
                     if (pos < pattern.length()) {
