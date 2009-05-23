@@ -182,6 +182,30 @@ public class TestNumberParser {
         assertEquals(context.getFieldValueMapValue(RULE_DOM), -2147483648);
     }
 
+    public void test_parse_overflowLargeRollback() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
+        int newPos = pp.parse(context, "2147483648", 0);
+        assertEquals(newPos, 9);
+        assertEquals(context.getFieldValueMapValue(RULE_DOM), 214748364);  // last digit not parsed
+    }
+
+    public void test_parse_overflowSmallRollback() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NORMAL);
+        int newPos = pp.parse(context, "-2147483649", 0);
+        assertEquals(newPos, 10);
+        assertEquals(context.getFieldValueMapValue(RULE_DOM), -214748364);  // last digit not parsed
+    }
+
+    public void test_parse_overflowVeryLargeRollback() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
+        int newPos = pp.parse(context, "987659876598765", 0);
+        assertEquals(newPos, 9);
+        assertEquals(context.getFieldValueMapValue(RULE_DOM), 987659876);  // parse 9 digits
+    }
+
     //-----------------------------------------------------------------------
     public void test_parse_noMatch1() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
@@ -220,22 +244,6 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 4, SignStyle.NEVER);
         int newPos = pp.parse(context, "1-2", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
-    }
-
-    public void test_parse_tooBig() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
-        int newPos = pp.parse(context, "2147483648", 0);
-        assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
-    }
-
-    public void test_parse_tooSmall() throws Exception {
-        DateTimeParseContext context = new DateTimeParseContext(symbols);
-        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NORMAL);
-        int newPos = pp.parse(context, "-2147483649", 0);
-        assertEquals(newPos, ~1);
         assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
     }
 

@@ -209,7 +209,9 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             }
         }
         if (total > Integer.MAX_VALUE || total < Integer.MIN_VALUE) {
-            return ~position;  // overflow
+            // overflow, parse 9 digits instead of 10
+            total /= 10;
+            pos--;
         }
         context.setFieldValue(fieldRule, (int) total);
         return pos;
