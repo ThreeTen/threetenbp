@@ -92,7 +92,7 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--2", 0);
         assertEquals(result, 3);
         assertEquals(context.toCalendrical().getFieldMap().size(), 1);
-        assertEquals(context.getFieldValueMapValue(ISOChronology.monthOfYearRule()), 2);
+        assertEquals(context.getFieldValue(ISOChronology.monthOfYearRule()), 2);
     }
 
     public void test_parse_noReadBeyond() throws Exception {
@@ -101,7 +101,7 @@ public class TestPadParserDecorator {
         int result = pp.parse(context, "--22", 0);
         assertEquals(result, 3);
         assertEquals(context.toCalendrical().getFieldMap().size(), 1);
-        assertEquals(context.getFieldValueMapValue(ISOChronology.monthOfYearRule()), 2);
+        assertEquals(context.getFieldValue(ISOChronology.monthOfYearRule()), 2);
     }
 
     public void test_parse_textLessThanPadWidth() throws Exception {

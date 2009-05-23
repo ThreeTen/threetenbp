@@ -100,7 +100,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 0);
         assertEquals(newPos, 6);
-        assertEquals(context.getFieldValueMapValue(RULE_DOW), 1);
+        assertEquals(context.getFieldValue(RULE_DOW), 1);
     }
 
     public void test_parse_midStr() throws Exception {
@@ -108,7 +108,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "XxxMondayXxx", 3);
         assertEquals(newPos, 9);
-        assertEquals(context.getFieldValueMapValue(RULE_DOW), 1);
+        assertEquals(context.getFieldValue(RULE_DOW), 1);
     }
 
     public void test_parse_remainderIgnored() throws Exception {
@@ -116,7 +116,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.SHORT);
         int newPos = pp.parse(context, "Wednesday", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValueMapValue(RULE_DOW), 3);
+        assertEquals(context.getFieldValue(RULE_DOW), 3);
     }
 
     //-----------------------------------------------------------------------
@@ -194,7 +194,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, input.length());
-        assertEquals(context.getFieldValueMapValue(rule), dow);
+        assertEquals(context.getFieldValue(rule), dow);
     }
 
 }

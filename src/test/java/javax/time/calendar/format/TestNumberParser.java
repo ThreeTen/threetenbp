@@ -107,7 +107,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "12", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 12);
+        assertEquals(context.getFieldValue(RULE_DOM), 12);
     }
 
     public void test_parse_midStr1() throws Exception {
@@ -115,7 +115,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "Xxx12Xxx", 3);
         assertEquals(newPos, 5);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 12);
+        assertEquals(context.getFieldValue(RULE_DOM), 12);
     }
 
     public void test_parse_midStr2() throws Exception {
@@ -123,7 +123,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "99912999", 3);
         assertEquals(newPos, 5);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 12);
+        assertEquals(context.getFieldValue(RULE_DOM), 12);
     }
 
     public void test_parse_remainderIgnored_maxWidth() throws Exception {
@@ -131,7 +131,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 4, SignStyle.NEVER);
         int newPos = pp.parse(context, "12345", 0);
         assertEquals(newPos, 4);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 1234);
+        assertEquals(context.getFieldValue(RULE_DOM), 1234);
     }
 
     public void test_parse_remainderIgnored_nonDigit1() throws Exception {
@@ -139,7 +139,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 4, SignStyle.NEVER);
         int newPos = pp.parse(context, "12-45", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 12);
+        assertEquals(context.getFieldValue(RULE_DOM), 12);
     }
 
     public void test_parse_remainderIgnored_nonDigit2() throws Exception {
@@ -147,7 +147,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 4, SignStyle.NEVER);
         int newPos = pp.parse(context, "123-5", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 123);
+        assertEquals(context.getFieldValue(RULE_DOM), 123);
     }
 
     public void test_parse_fieldRangeIgnored() throws Exception {
@@ -155,7 +155,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);
         int newPos = pp.parse(context, "32", 0);
         assertEquals(newPos, 2);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 32);  // parsed dayOfMonth=32
+        assertEquals(context.getFieldValue(RULE_DOM), 32);  // parsed dayOfMonth=32
     }
 
     public void test_parse_textField() throws Exception {
@@ -163,7 +163,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOW, 1, 1, SignStyle.NEVER);
         int newPos = pp.parse(context, "5999", 0);
         assertEquals(newPos, 1);
-        assertEquals(context.getFieldValueMapValue(RULE_DOW), 5);
+        assertEquals(context.getFieldValue(RULE_DOW), 5);
     }
 
     public void test_parse_maxInteger() throws Exception {
@@ -171,7 +171,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
         int newPos = pp.parse(context, "2147483647", 0);
         assertEquals(newPos, 10);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 2147483647);
+        assertEquals(context.getFieldValue(RULE_DOM), 2147483647);
     }
 
     public void test_parse_minInteger() throws Exception {
@@ -179,7 +179,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NORMAL);
         int newPos = pp.parse(context, "-2147483648", 0);
         assertEquals(newPos, 11);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), -2147483648);
+        assertEquals(context.getFieldValue(RULE_DOM), -2147483648);
     }
 
     public void test_parse_overflowLargeRollback() throws Exception {
@@ -187,7 +187,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
         int newPos = pp.parse(context, "2147483648", 0);
         assertEquals(newPos, 9);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 214748364);  // last digit not parsed
+        assertEquals(context.getFieldValue(RULE_DOM), 214748364);  // last digit not parsed
     }
 
     public void test_parse_overflowSmallRollback() throws Exception {
@@ -195,7 +195,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NORMAL);
         int newPos = pp.parse(context, "-2147483649", 0);
         assertEquals(newPos, 10);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), -214748364);  // last digit not parsed
+        assertEquals(context.getFieldValue(RULE_DOM), -214748364);  // last digit not parsed
     }
 
     public void test_parse_overflowVeryLargeRollback() throws Exception {
@@ -203,7 +203,7 @@ public class TestNumberParser {
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER);
         int newPos = pp.parse(context, "987659876598765", 0);
         assertEquals(newPos, 9);
-        assertEquals(context.getFieldValueMapValue(RULE_DOM), 987659876);  // parse 9 digits
+        assertEquals(context.getFieldValue(RULE_DOM), 987659876);  // parse 9 digits
     }
 
     //-----------------------------------------------------------------------
@@ -347,7 +347,7 @@ public class TestNumberParser {
         if (parseVal == null) {
             assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
         } else {
-            assertEquals(context.getFieldValueMapValue(RULE_DOM), parseVal.intValue());
+            assertEquals(context.getFieldValue(RULE_DOM), parseVal.intValue());
         }
     }
 

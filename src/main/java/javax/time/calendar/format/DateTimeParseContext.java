@@ -107,8 +107,12 @@ public final class DateTimeParseContext implements CalendricalProvider {
     }
 
     /**
-     * Gets the value for the specified field throwing an exception if the
-     * field is not in the field-value map.
+     * Tries to derives the value for the specified field from the fields available in
+     * the field-value map throwing an exception if unable to derive.
+     * <p>
+     * The derivation only considers direct child relationships in the field hierarchy.
+     * Thus a value for the day of year cannot be derived even given a year,
+     * month of year and day of month.
      * <p>
      * The value returned might contradict the date or time, or be out of
      * range for the rule.
@@ -119,12 +123,31 @@ public final class DateTimeParseContext implements CalendricalProvider {
      * @return the value mapped to the specified field
      * @throws UnsupportedCalendarFieldException if the field is not in the map
      */
-    public int getFieldValueMapValue(DateTimeFieldRule fieldRule) {
+    public int deriveFieldValue(DateTimeFieldRule fieldRule) {
         return currentCalendrical().deriveValue(fieldRule);
     }
 
     /**
+     * Gets the value for the specified field throwing an exception if the
+     * field is not in the field-value map.
+     * <p>
+     * The value returned is directly obtained from the stored map of values.
+     * It might contradict the date or time, or be out of range for the rule.
+     * <p>
+     * For example, the day of month might be set to 50, or the hour to 1000.
+     *
+     * @param fieldRule  the rule to query from the map, not null
+     * @return the value mapped to the specified field
+     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     */
+    public int getFieldValue(DateTimeFieldRule fieldRule) {
+        return currentCalendrical().getFieldMap().get(fieldRule);
+    }
+
+    /**
      * Sets the value associated with the specified field rule.
+     * <p>
+     * The value stored may be out of range for the rule - no checks are performed.
      *
      * @param fieldRule  the field to set in the field-value map, not null
      * @param value  the value to set in the field-value map

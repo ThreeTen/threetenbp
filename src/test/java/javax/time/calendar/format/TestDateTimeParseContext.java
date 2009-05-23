@@ -85,7 +85,7 @@ public class TestDateTimeParseContext {
         
         test.setFieldValue(RULE_YEAR, 2008);
         
-        assertEquals(test.getFieldValueMapValue(RULE_YEAR), 2008);
+        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getZone(), null);
         Map<DateTimeFieldRule, Integer> map = test.toCalendrical().getFieldMap().toFieldValueMap();
@@ -94,7 +94,7 @@ public class TestDateTimeParseContext {
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
-        assertEquals(test.getFieldValueMapValue(RULE_YEAR), 2008);
+        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
     }
 
     public void test_fields_twoFields() throws Exception {
@@ -106,8 +106,8 @@ public class TestDateTimeParseContext {
         test.setFieldValue(RULE_MOY, 6);
         
         assertEquals(test.toCalendrical().getFieldMap().size(), 2);
-        assertEquals(test.getFieldValueMapValue(RULE_YEAR), 2008);
-        assertEquals(test.getFieldValueMapValue(RULE_MOY), 6);
+        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
+        assertEquals(test.getFieldValue(RULE_MOY), 6);
         assertEquals(test.getOffset(), null);
         assertEquals(test.getZone(), null);
         Map<DateTimeFieldRule, Integer> map = test.toCalendrical().getFieldMap().toFieldValueMap();
@@ -117,15 +117,28 @@ public class TestDateTimeParseContext {
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
-        assertEquals(test.getFieldValueMapValue(RULE_YEAR), 2008);
-        assertEquals(test.getFieldValueMapValue(RULE_MOY), 6);
+        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
+        assertEquals(test.getFieldValue(RULE_MOY), 6);
+    }
+
+    public void test_fields_oneField_derive() throws Exception {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
+        DateTimeParseContext test = new DateTimeParseContext(symbols);
+        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
+        
+        test.setFieldValue(RULE_MOY, 6);
+        
+        assertEquals(test.toCalendrical().getFieldMap().size(), 1);
+        assertEquals(test.getFieldValue(RULE_MOY), 6);
+        
+        assertEquals(test.deriveFieldValue(ISOChronology.monthOfQuarterRule()), 3);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_fields_getNull() throws Exception {
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
         DateTimeParseContext test = new DateTimeParseContext(symbols);
-        test.getFieldValueMapValue(null);
+        test.getFieldValue(null);
     }
 
     @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
@@ -133,7 +146,7 @@ public class TestDateTimeParseContext {
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
         DateTimeParseContext test = new DateTimeParseContext(symbols);
         try {
-            test.getFieldValueMapValue(RULE_DOM);
+            test.getFieldValue(RULE_DOM);
         } catch (UnsupportedCalendarFieldException ex) {
             assertEquals(ex.getFieldRule(), RULE_DOM);
             throw ex;

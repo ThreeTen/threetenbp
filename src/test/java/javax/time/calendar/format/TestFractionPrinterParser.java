@@ -261,7 +261,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
         } else {
-            assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+            assertEquals(context.getFieldValue(NANO_RULE), expectedValue);
         }
     }
 
@@ -275,7 +275,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
         } else {
-            assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+            assertEquals(context.getFieldValue(NANO_RULE), expectedValue);
         }
     }
 
@@ -289,7 +289,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
         } else {
-            assertEquals(context.getFieldValueMapValue(NANO_RULE), expectedValue);
+            assertEquals(context.getFieldValue(NANO_RULE), expectedValue);
         }
     }
 
@@ -310,7 +310,7 @@ public class TestFractionPrinterParser {
         if (value == 0 && minWidth == 0) {
             assertEquals(context.toCalendrical().getFieldMap().contains(SECOND_RULE), false);
         } else {
-            assertEquals(context.getFieldValueMapValue(SECOND_RULE), value);
+            assertEquals(context.getFieldValue(SECOND_RULE), value);
         }
     }
 
