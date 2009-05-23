@@ -78,6 +78,10 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * The positive/negative sign style, not null.
      */
     private final SignStyle signStyle;
+    /**
+     * The subsequent width of fixed width non-negative number fields, 0 or greater.
+     */
+    private final int subsequentWidth;
 
     /**
      * Constructor.
@@ -93,6 +97,35 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
         this.signStyle = signStyle;
+        this.subsequentWidth = 0;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param fieldRule  the rule of the field to print, not null
+     * @param minWidth  the minimum field width, from 1 to 10
+     * @param maxWidth  the maximum field width, from minWidth to 10
+     * @param signStyle  the positive/negative sign style, not null
+     * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
+     */
+    private NumberPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
+        // validated by caller
+        this.fieldRule = fieldRule;
+        this.minWidth = minWidth;
+        this.maxWidth = maxWidth;
+        this.signStyle = signStyle;
+        this.subsequentWidth = subsequentWidth;
+    }
+
+    /**
+     * Returns a new instance with an updated subsequent width.
+     *
+     * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
+     * @return a new updated printer-parser, never null
+     */
+    NumberPrinterParser withSubsequentWidth(int subsequentWidth) {
+        return new NumberPrinterParser(fieldRule, minWidth, maxWidth, signStyle, this.subsequentWidth + subsequentWidth);
     }
 
     //-----------------------------------------------------------------------
@@ -176,20 +209,32 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         if (minEndPos > length) {
             return ~position;
         }
-        int maxEndPos = Math.min(position + maxWidth, length);
+        int effMaxWidth = maxWidth + subsequentWidth;
         long total = 0;  // long to handle large numbers
         int pos = position;
-        while (pos < maxEndPos) {
-            char ch = parseText.charAt(pos++);
-            int digit = context.getSymbols().convertToDigit(ch);
-            if (digit < 0) {
-                pos--;
-                if (pos < minEndPos) {
-                    return ~position;  // need at least min width digits
+        for (int pass = 0; pass < 2; pass++) {
+            int maxEndPos = Math.min(pos + effMaxWidth, length);
+            while (pos < maxEndPos) {
+                char ch = parseText.charAt(pos++);
+                int digit = context.getSymbols().convertToDigit(ch);
+                if (digit < 0) {
+                    pos--;
+                    if (pos < minEndPos) {
+                        return ~position;  // need at least min width digits
+                    }
+                    break;
                 }
+                total = total * 10 + digit;
+            }
+            if (subsequentWidth > 0 && pass == 0) {
+                // re-parse now we know the correct width
+                int parseLen = pos - position;
+                effMaxWidth = Math.max(minWidth, parseLen - subsequentWidth);
+                pos = position;
+                total = 0;
+            } else {
                 break;
             }
-            total = total * 10 + digit;
         }
         if (negative) {
             if (total == 0) {

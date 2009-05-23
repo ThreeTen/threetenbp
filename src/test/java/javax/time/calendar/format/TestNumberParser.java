@@ -207,6 +207,94 @@ public class TestNumberParser {
     }
 
     //-----------------------------------------------------------------------
+    public void test_parse_subsequent1_small() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
+        int newPos = pp.parse(context, "12", 0);
+        assertEquals(newPos, 1);
+        assertEquals(context.getFieldValue(RULE_DOM), 1);  // parse 1 digit
+    }
+
+    public void test_parse_subsequent1_medium() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
+        int newPos = pp.parse(context, "12345", 0);
+        assertEquals(newPos, 4);
+        assertEquals(context.getFieldValue(RULE_DOM), 1234);  // parse 4 digits
+    }
+
+    public void test_parse_subsequent1_largeEndOfNumbers() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
+        int newPos = pp.parse(context, "12345678901", 0);
+        assertEquals(newPos, 10);
+        assertEquals(context.getFieldValue(RULE_DOM), 1234567890);  // parse 4 digits
+    }
+
+    public void test_parse_subsequent1_largeNotEndOfNumbers() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
+        int newPos = pp.parse(context, "123456789012345678901234567890", 0);
+        assertEquals(newPos, 10);
+        assertEquals(context.getFieldValue(RULE_DOM), 1234567890);  // parse 10 digits
+    }
+
+    public void test_parse_subsequent1_tooShort() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(1);
+        int newPos = pp.parse(context, "1", 0);
+        assertEquals(newPos, 1);
+        assertEquals(context.getFieldValue(RULE_DOM), 1);  // parse 3 digits
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parse_subsequent2_small() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
+        int newPos = pp.parse(context, "123", 0);
+        assertEquals(newPos, 1);
+        assertEquals(context.getFieldValue(RULE_DOM), 1);  // parse 1 digit
+    }
+
+    public void test_parse_subsequent2_medium() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
+        int newPos = pp.parse(context, "12345", 0);
+        assertEquals(newPos, 3);
+        assertEquals(context.getFieldValue(RULE_DOM), 123);  // parse 3 digits
+    }
+
+    public void test_parse_subsequent2_tooShort1() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
+        int newPos = pp.parse(context, "1", 0);
+        assertEquals(newPos, 1);
+        assertEquals(context.getFieldValue(RULE_DOM), 1);  // parse 1 digits
+    }
+
+    public void test_parse_subsequent2_tooShort2() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 10, SignStyle.NEVER).withSubsequentWidth(2);
+        int newPos = pp.parse(context, "12", 0);
+        assertEquals(newPos, 1);
+        assertEquals(context.getFieldValue(RULE_DOM), 1);  // parse 1 digit (min possible)
+    }
+
+    public void test_parse_subsequent2_tooShort1_require2_atEnd() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 10, SignStyle.NEVER).withSubsequentWidth(2);
+        int newPos = pp.parse(context, "1", 0);
+        assertEquals(newPos, ~0);
+    }
+
+    public void test_parse_subsequent2_tooShort1_require2_mid() throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 2, 10, SignStyle.NEVER).withSubsequentWidth(2);
+        int newPos = pp.parse(context, "1AAAAABBBBBCCCCC", 0);
+        assertEquals(newPos, ~0);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_parse_noMatch1() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, 1, 2, SignStyle.NEVER);

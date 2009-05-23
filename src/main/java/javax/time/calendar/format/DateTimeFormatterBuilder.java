@@ -40,9 +40,34 @@ import java.util.Map;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneOffset;
 
 /**
  * Builder to create formats for dates and times.
+ * <p>
+ * All date-time formats are created ultimately using this builder.
+ * Each consists of two halves a {@link DateTimePrinter printer} and a {@link DateTimeParser parser}.
+ * Most of the methods will create both a printer and a parser automatically, however
+ * it is possible to use one append method to add just a printer or a parser.
+ * <p>
+ * The basic elements of date-time can all be added:
+ * <ul>
+ * <li>Value - a numeric value</li>
+ * <li>Fraction - a fractional value including the decimal place. Always use this when
+ * outputting fractions to ensure that the fraction is parsed correctly</li>
+ * <li>Text - the textual equivalent for the value</li>
+ * <li>OffsetId/Offset - the {@link ZoneOffset zone offset}</li>
+ * <li>ZoneId - the {@link TimeZone time zone} id</li>
+ * <li>ZoneText - the name of the time zone</li>
+ * <li>Literal - a text literal</li>
+ * <li>Nested and Optional - formats can be nested or made optional</li>
+ * <li>Other - the printer and parser interfaces can be used to add user supplied formatting</li>
+ * </ul>
+ * In addition, any of the elements may be decorated by padding, either with spaces or any other character.
+ * <p>
+ * Finally, a shorthand pattern, mostly compatible with <code>SimpleDateFormat</code> can be used.
+ * In practice, this simply parses the pattern and calls other methods on the builder.
  *
  * @author Stephen Colebourne
  */
@@ -68,6 +93,10 @@ public class DateTimeFormatterBuilder {
      * The character to pad the next field with.
      */
     private char padNextChar;
+    /**
+     * The index of the last variable width value parser.
+     */
+    private int valueParserIndex = -1;
 
     /**
      * Constructs a new instance of the builder.
@@ -100,6 +129,10 @@ public class DateTimeFormatterBuilder {
      * <p>
      * The value will be printed as per the normal print of an integer value.
      * Only negative numbers will be signed. No padding will be added.
+     * <p>
+     * The parser for a variable width value such as this normally behaves greedily, accepting as many
+     * digits as possible. This behavior can be affected by 'adjacent value parsing'.
+     * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
      *
      * @param fieldRule  the rule of the field to append, not null
      * @return this, for chaining, never null
@@ -108,7 +141,7 @@ public class DateTimeFormatterBuilder {
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
         checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
-        appendInternal(pp, pp);
+        valueParserIndex = appendInternal(pp, pp);
         return this;
     }
 
@@ -122,6 +155,37 @@ public class DateTimeFormatterBuilder {
      * The value will be zero-padded on the left. If the size of the value
      * means that it cannot be printed within the width then an exception is thrown.
      * If the value of the field is negative then an exception is thrown during printing.
+     * <p>
+     * This method supports a special technique of parsing known as 'adjacent value parsing'.
+     * This technique solves the problem where a variable length value is followed by one or more
+     * fixed length values. The standard parser is greedy, and thus it would normally
+     * steal the digits that are needed by the fixed width value parsers that follow the
+     * variable width one.
+     * <p>
+     * No action is required to initiate 'adjacent value parsing'.
+     * When a call to <code>appendValue</code> with a variable width is made, the builder
+     * enters adjacent value parsing setup mode. If the immediately subsequent method
+     * call or calls on the same builder are to this method, then the parser will reserve
+     * space so that the fixed width values can be parsed.
+     * <p>
+     * For example, consider <code>builder.appendValue(yearRule).appendValue(monthRule, 2);</code>
+     * The year is a variable width parse of between 1 and 10 digits.
+     * The month is a fixed width parse of 2 digits.
+     * Because these were appended to the same builder immediately after one another,
+     * the year parser will reserve two digits for the month to parse.
+     * Thus, the text '200906' will correctly parse to a year of 2009 and a month of 6.
+     * Without adjacent value parsing, the year would greedily parse all six digits and leave
+     * nothing for the month.
+     * <p>
+     * Adjacent value parsing applies to each set of fixed width not-negative values in the parser
+     * that immediately follow any kind of variable width value.
+     * Calling any other append method will end the setup of adjacent value parsing.
+     * Thus, in the unlikely event that you need to avoid adjacent value parsing behavior,
+     * simply add the <code>appendValue</code> to another <code>DateTimeFormatterBuilder</code>
+     * and add that to this builder.
+     * <p>
+     * If the four-parameter version of <code>appendValue</code> is called with equal minimum
+     * and maximum widths and a sign style of not-negative then it delegates to this method.
      *
      * @param fieldRule  the rule of the field to append, not null
      * @param width  the width of the printed field, from 1 to 10
@@ -135,7 +199,17 @@ public class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
         }
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, width, width, SignStyle.NOT_NEGATIVE);
-        appendInternal(pp, pp);
+        if (valueParserIndex >= 0) {
+            NumberPrinterParser basePP = (NumberPrinterParser) printers.get(valueParserIndex);
+            basePP = basePP.withSubsequentWidth(width);
+            int activeValueParser = valueParserIndex;
+            printers.set(valueParserIndex, basePP);
+            parsers.set(valueParserIndex, basePP);
+            appendInternal(pp, pp);
+            valueParserIndex = activeValueParser;
+        } else {
+            appendInternal(pp, pp);
+        }
         return this;
     }
 
@@ -148,6 +222,10 @@ public class DateTimeFormatterBuilder {
      * <p>
      * This method provides full control of the numeric formatting, including
      * zero-padding and the positive/negative sign.
+     * <p>
+     * The parser for a variable width value normally behaves greedily, accepting as many
+     * digits as possible. This behavior can be affected by 'adjacent value parsing'.
+     * See {@link #appendValue(DateTimeFieldRule, int)} for full details.
      *
      * @param fieldRule  the rule of the field to append, not null
      * @param minWidth  the minimum field width of the printed field, from 1 to 10
@@ -159,6 +237,9 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendValue(
             DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
+        if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
+            return appendValue(fieldRule, maxWidth);
+        }
         checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         checkNotNull(signStyle, "SignStyle must not be null");
         if (minWidth < 1 || minWidth > 10) {
@@ -172,7 +253,11 @@ public class DateTimeFormatterBuilder {
                     maxWidth + " < " + minWidth);
         }
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, minWidth, maxWidth, signStyle);
-        appendInternal(pp, pp);
+        if (minWidth == maxWidth) {
+            appendInternal(pp, pp);
+        } else {
+            valueParserIndex = appendInternal(pp, pp);
+        }
         return this;
     }
 
@@ -568,11 +653,11 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder appendPattern(String pattern) {
         checkNotNull(pattern, "Pattern must not be null");
-        parse(pattern);
+        parsePattern(pattern);
         return this;
     }
 
-    private void parse(String pattern) {
+    private void parsePattern(String pattern) {
         for (int pos = 0; pos < pattern.length(); pos++) {
             char cur = pattern.charAt(pos);
             if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
@@ -784,6 +869,7 @@ public class DateTimeFormatterBuilder {
         }
         this.padNextWidth = padWidth;
         this.padNextChar = padChar;
+        valueParserIndex = -1;
         return this;
     }
 
@@ -810,6 +896,7 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder optionalStart() {
         optionalIndexStack.add(printers.size());
+        valueParserIndex = -1;
         return this;
     }
 
@@ -873,7 +960,7 @@ public class DateTimeFormatterBuilder {
      * @param parser  the parser to add, null prevents the formatter from parsing
      * @return this, for chaining, never null
      */
-    private DateTimeFormatterBuilder appendInternal(DateTimePrinter printer, DateTimeParser parser) {
+    private int appendInternal(DateTimePrinter printer, DateTimeParser parser) {
         if (padNextWidth > 0) {
             if (printer != null || parser != null) {
                 printer = new PadPrinterParserDecorator(printer, parser, padNextWidth, padNextChar);
@@ -883,7 +970,8 @@ public class DateTimeFormatterBuilder {
         }
         printers.add(printer);
         parsers.add(parser);
-        return this;
+        valueParserIndex = -1;
+        return printers.size() - 1;
     }
 
     //-----------------------------------------------------------------------
