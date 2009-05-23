@@ -224,14 +224,18 @@ public class DateTimeFormatter {
     public Calendrical parse(String text) {
         ParsePosition pos = new ParsePosition(0);
         Calendrical result = parse(text, pos);
-        boolean textNotConsumed = pos.getIndex() < text.length();
-        if (textNotConsumed || pos.getErrorIndex() >= 0) {
+        if (pos.getErrorIndex() >= 0 || pos.getIndex() < text.length()) {
             String str = text;
             if (str.length() > 64) {
                 str = str.substring(0, 64) + "...";
             }
-            throw new CalendricalParseException("Text could not be parsed: " + str, text,
-                    pos.getErrorIndex() >= 0 ? pos.getErrorIndex() : pos.getIndex());
+            if (pos.getErrorIndex() >= 0) {
+                throw new CalendricalParseException("Text could not be parsed at index " +
+                        pos.getErrorIndex() + ": " + str, text, pos.getErrorIndex());
+            } else {
+                throw new CalendricalParseException("Unparsed text found at index " +
+                        pos.getIndex() + ": " + str, text, pos.getIndex());
+            }
         }
         return result;
     }
