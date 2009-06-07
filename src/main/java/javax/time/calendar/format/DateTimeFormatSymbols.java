@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,8 +41,8 @@ import java.util.Map.Entry;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.AmPmOfDay;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -138,7 +138,7 @@ public final class DateTimeFormatSymbols {
 //            }
 //        }
 //
-        FormatUtil.checkNotNull(locale, "locale");
+        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
         DateFormatSymbols symbols = new DateFormatSymbols(locale);
         return new DateTimeFormatSymbols(locale, symbols);
     }
@@ -150,7 +150,7 @@ public final class DateTimeFormatSymbols {
      * @param locale  the locale, not null
      */
     private DateTimeFormatSymbols(Locale locale) {
-        FormatUtil.checkNotNull(locale, "locale");
+        DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
         textMap = new HashMap<String, Map<TextStyle, TextStore>>();
     }
@@ -163,7 +163,7 @@ public final class DateTimeFormatSymbols {
      */
     private DateTimeFormatSymbols(Locale locale, DateFormatSymbols oldSymbols) {
         this(locale);
-        FormatUtil.checkNotNull(oldSymbols, "symbols to convert");
+        DateTimeFormatter.checkNotNull(oldSymbols, "Symbols to convert must not be null");
         
         Map<Integer, String> map = new HashMap<Integer, String>();
         String[] array = null;
@@ -400,7 +400,7 @@ public final class DateTimeFormatSymbols {
      */
     public int[] matchFieldText(DateTimeFieldRule fieldRule, TextStyle textStyle, boolean ignoreCase, String searchText) {
         TextStore store = getTextStore(fieldRule, textStyle);
-        FormatUtil.checkNotNull(searchText, "search text");
+        DateTimeFormatter.checkNotNull(searchText, "Search text must not be null");
         if (store == null) {
             return null;
         }
@@ -442,8 +442,8 @@ public final class DateTimeFormatSymbols {
      * @return the text store, null if no text defined
      */
     private TextStore getTextStore(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-        FormatUtil.checkNotNull(fieldRule, "field rule");
-        FormatUtil.checkNotNull(textStyle, "text style");
+        DateTimeFormatter.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
+        DateTimeFormatter.checkNotNull(textStyle, "TextStyle must not be null");
         String id = fieldRule.getID();
         Map<TextStyle, TextStore> styleMap = textMap.get(id);
         return styleMap == null ? null : styleMap.get(textStyle);
@@ -472,7 +472,7 @@ public final class DateTimeFormatSymbols {
          * @throws IllegalArgumentException if the map contains null or empty text
          */
         private TextStore(Map<Integer, String> map) {
-            FormatUtil.checkNotNull(map, "text map");
+            DateTimeFormatter.checkNotNull(map, "Text map must not be null");
             if (map.containsKey(null) || map.containsValue(null) || map.containsValue("")) {
                 throw new IllegalArgumentException("The map must not contain null or empty text");
             }
