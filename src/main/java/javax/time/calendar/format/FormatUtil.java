@@ -48,19 +48,6 @@ final class FormatUtil {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the object is not null throwing an exception if it is.
-     *
-     * @param object  the object to check for null
-     * @param description  the description to use in the exception if the object is null
-     */
-    static void checkNotNull(Object object, String description) {
-        if (object == null) {
-            throw new NullPointerException("The " + description + " must not be null");
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Converts a number to the internationalised version.
      *
      * @param numericText  the text containing only numbers to convert to a string, not null

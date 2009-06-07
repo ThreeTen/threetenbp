@@ -72,7 +72,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     public DateTimeParseContext(DateTimeFormatSymbols symbols) {
         super();
-        FormatUtil.checkNotNull(symbols, "symbols");
+        DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
         this.symbols = symbols;
         calendricals.add(new Calendrical());
     }
