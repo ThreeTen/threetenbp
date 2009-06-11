@@ -1,0 +1,2 @@
+Portions of this codebase (held in the src-oracle tree) are provided by Oracle.
+This code is contributed to JSR-310 via the standard JSR licensing process.
