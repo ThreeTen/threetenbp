@@ -167,4 +167,16 @@ public class TestPadPrinterDecorator {
         assertEquals(pp.toString(), "Pad('Y','Z',5)");
     }
 
+    public void test_toString4() throws Exception {
+        CharLiteralPrinterParser wrapped = new CharLiteralPrinterParser('Y');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(wrapped, wrapped, 5, ' ');
+        assertEquals(pp.toString(), "Pad('Y',5)");
+    }
+
+    public void test_toString5() throws Exception {
+        CharLiteralPrinterParser wrapped = new CharLiteralPrinterParser('Y');
+        PadPrinterParserDecorator pp = new PadPrinterParserDecorator(wrapped, wrapped, 5, '-');
+        assertEquals(pp.toString(), "Pad('Y',5,'-')");
+    }
+
 }

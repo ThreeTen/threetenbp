@@ -137,9 +137,13 @@ class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Pad(" + (printer == null ? "" : printer) + "," +
-            (parser == null ? "" : parser) + "," + padWidth +
-            (padChar == ' ' ? ")" : ",'" + padChar + "')");
+        String base = "Pad(";
+        if (printer == parser) {
+            base += printer;
+        } else {
+            base += (printer == null ? "" : printer) + "," + (parser == null ? "" : parser);
+        }
+        return base + "," + padWidth + (padChar == ' ' ? ")" : ",'" + padChar + "')");
     }
 
 }

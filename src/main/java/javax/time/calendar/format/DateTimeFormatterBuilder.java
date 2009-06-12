@@ -71,8 +71,16 @@ import javax.time.calendar.ZoneOffset;
  *
  * @author Stephen Colebourne
  */
-public class DateTimeFormatterBuilder {
+public final class DateTimeFormatterBuilder {
 
+    /**
+     * The currently active builder, used by the outermost builder.
+     */
+    private DateTimeFormatterBuilder active = this;
+    /**
+     * The parent builder, null for the outermost builder.
+     */
+    private final DateTimeFormatterBuilder parent;
     /**
      * The list of printers that will be used.
      */
@@ -82,9 +90,9 @@ public class DateTimeFormatterBuilder {
      */
     private final List<DateTimeParser> parsers = new ArrayList<DateTimeParser>();
     /**
-     * The list of indices into the printer/parser list for the start of an optional section.
+     * Whether this builder produces an optional formatter.
      */
-    private final List<Integer> optionalIndexStack = new ArrayList<Integer>();
+    private final boolean optional;
     /**
      * The width to pad the next field to.
      */
@@ -103,6 +111,20 @@ public class DateTimeFormatterBuilder {
      */
     public DateTimeFormatterBuilder() {
         super();
+        parent = null;
+        optional = false;
+    }
+
+    /**
+     * Constructs a new instance of the builder.
+     *
+     * @param parent  the parent builder, not null
+     * @param optional  whether the formatter is optional, not null
+     */
+    private DateTimeFormatterBuilder(DateTimeFormatterBuilder parent, boolean optional) {
+        super();
+        this.parent = parent;
+        this.optional = optional;
     }
 
     //-----------------------------------------------------------------------
@@ -141,7 +163,7 @@ public class DateTimeFormatterBuilder {
     public DateTimeFormatterBuilder appendValue(DateTimeFieldRule fieldRule) {
         checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
-        valueParserIndex = appendInternal(pp, pp);
+        active.valueParserIndex = appendInternal(pp, pp);
         return this;
     }
 
@@ -199,14 +221,14 @@ public class DateTimeFormatterBuilder {
             throw new IllegalArgumentException("The width must be from 1 to 10 inclusive but was " + width);
         }
         NumberPrinterParser pp = new NumberPrinterParser(fieldRule, width, width, SignStyle.NOT_NEGATIVE);
-        if (valueParserIndex >= 0) {
-            NumberPrinterParser basePP = (NumberPrinterParser) printers.get(valueParserIndex);
+        if (active.valueParserIndex >= 0) {
+            NumberPrinterParser basePP = (NumberPrinterParser) active.printers.get(active.valueParserIndex);
             basePP = basePP.withSubsequentWidth(width);
-            int activeValueParser = valueParserIndex;
-            printers.set(valueParserIndex, basePP);
-            parsers.set(valueParserIndex, basePP);
+            int activeValueParser = active.valueParserIndex;
+            active.printers.set(active.valueParserIndex, basePP);
+            active.parsers.set(active.valueParserIndex, basePP);
             appendInternal(pp, pp);
-            valueParserIndex = activeValueParser;
+            active.valueParserIndex = activeValueParser;
         } else {
             appendInternal(pp, pp);
         }
@@ -256,7 +278,7 @@ public class DateTimeFormatterBuilder {
         if (minWidth == maxWidth) {
             appendInternal(pp, pp);
         } else {
-            valueParserIndex = appendInternal(pp, pp);
+            active.valueParserIndex = appendInternal(pp, pp);
         }
         return this;
     }
@@ -745,7 +767,7 @@ public class DateTimeFormatterBuilder {
                 optionalStart();
                 
             } else if (cur == ']') {
-                if (optionalIndexStack.isEmpty()) {
+                if (active.parent == null) {
                     throw new IllegalArgumentException("Pattern invalid as it contains ] without previous [");
                 }
                 optionalEnd();
@@ -867,11 +889,24 @@ public class DateTimeFormatterBuilder {
         if (padWidth < 1) {
             throw new IllegalArgumentException("The pad width must be at least one but was " + padWidth);
         }
-        this.padNextWidth = padWidth;
-        this.padNextChar = padChar;
-        valueParserIndex = -1;
+        active.padNextWidth = padWidth;
+        active.padNextChar = padChar;
+        active.valueParserIndex = -1;
         return this;
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Changes the parse style for the remainder of the builder.
+//     *
+//     * @param parseStyle  the parse style to use, not null
+//     * @return this, for chaining, never null
+//     */
+//    public DateTimeFormatterBuilder parsing(ParseStyle parseStyle) {
+//        checkNotNull(parseStyle, "ParseStyle must not be null");
+//        active.parseStyle = parseStyle;
+//        return this;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -895,8 +930,8 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     public DateTimeFormatterBuilder optionalStart() {
-        optionalIndexStack.add(printers.size());
-        valueParserIndex = -1;
+        active.valueParserIndex = -1;
+        active = new DateTimeFormatterBuilder(active, true);
         return this;
     }
 
@@ -926,30 +961,17 @@ public class DateTimeFormatterBuilder {
      * @throws IllegalStateException if there was no previous call to <code>optionalStart</code>
      */
     public DateTimeFormatterBuilder optionalEnd() {
-        if (optionalIndexStack.isEmpty()) {
+        if (active.parent == null) {
             throw new IllegalStateException("Cannot call optionalEnd() as there was no previous call to optionalStart()");
         }
-        int startIndex = optionalIndexStack.remove(optionalIndexStack.size() - 1);
-        if (startIndex < printers.size()) {
-            optionalEnd(startIndex, printers, parsers);
+        if (active.printers.size() > 0) {
+            CompositePrinterParser cpp = new CompositePrinterParser(active.printers, active.parsers, active.optional);
+            active = active.parent;
+            appendInternal(cpp, cpp);
+        } else {
+            active = active.parent;
         }
         return this;
-    }
-
-    /**
-     * Ends the optional section.
-     * @param startIndex  the index of the start of the optional section, valid
-     * @param printers  the printers to alter, not null
-     * @param parsers  the parsers to alter, not null
-     */
-    private void optionalEnd(int startIndex, List<DateTimePrinter> printers, List<DateTimeParser> parsers) {
-        List<DateTimePrinter> optionalPrinters = printers.subList(startIndex, printers.size());
-        List<DateTimeParser> optionalParsers = parsers.subList(startIndex, parsers.size());
-        CompositePrinterParser cpp = new CompositePrinterParser(optionalPrinters, optionalParsers, true);
-        optionalPrinters.clear();
-        optionalParsers.clear();
-        printers.add(cpp.isPrintSupported() ? cpp : null);
-        parsers.add(cpp.isParseSupported() ? cpp : null);
     }
 
     //-----------------------------------------------------------------------
@@ -961,29 +983,28 @@ public class DateTimeFormatterBuilder {
      * @return this, for chaining, never null
      */
     private int appendInternal(DateTimePrinter printer, DateTimeParser parser) {
-        if (padNextWidth > 0) {
+        if (active.padNextWidth > 0) {
             if (printer != null || parser != null) {
-                printer = new PadPrinterParserDecorator(printer, parser, padNextWidth, padNextChar);
+                printer = new PadPrinterParserDecorator(printer, parser, active.padNextWidth, active.padNextChar);
             }
-            padNextWidth = 0;
-            padNextChar = 0;
+            active.padNextWidth = 0;
+            active.padNextChar = 0;
         }
-        printers.add(printer);
-        parsers.add(parser);
-        valueParserIndex = -1;
-        return printers.size() - 1;
+        active.printers.add(printer);
+        active.parsers.add(parser);
+        active.valueParserIndex = -1;
+        return active.printers.size() - 1;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Completes this builder by creating the DateTimeFormatter.
+     * Completes this builder by creating the DateTimeFormatter using the default locale.
      * <p>
-     * This builder can still be used after creating the formatter, and the
-     * created formatter will be unaffected.
+     * Calling this method will end any open optional sections by repeatedly
+     * calling {@link #optionalEnd()} before creating the formatter.
      * <p>
-     * Any optional sections that have been started but not ended will be considered
-     * to have been ended in the returned formatter. However, this builder itself will
-     * still have the optional sections as open.
+     * This builder can still be used after creating the formatter if desired,
+     * although the state may have been changed by calls to <code>optionalEnd</code>.
      *
      * @return the created formatter, never null
      */
@@ -992,32 +1013,24 @@ public class DateTimeFormatterBuilder {
     }
 
     /**
-     * Completes this builder by creating the DateTimeFormatter.
+     * Completes this builder by creating the DateTimeFormatter using the specified locale.
      * <p>
-     * This builder can still be used after creating the formatter, and the
-     * created formatter will be unaffected.
+     * Calling this method will end any open optional sections by repeatedly
+     * calling {@link #optionalEnd()} before creating the formatter.
      * <p>
-     * Any optional sections that have been started but not ended will be considered
-     * to have been ended in the returned formatter. However, this builder itself will
-     * still have the optional sections as open.
+     * This builder can still be used after creating the formatter if desired,
+     * although the state may have been changed by calls to <code>optionalEnd</code>.
      *
      * @param locale  the locale to use for formatting, not null
      * @return the created formatter, never null
      */
     public DateTimeFormatter toFormatter(Locale locale) {
-        FormatUtil.checkNotNull(locale, "locale");
+        DateTimeFormatterBuilder.checkNotNull(locale, "Locale must not be null");
         
-        if (optionalIndexStack.size() > 0) {
-            List<DateTimePrinter> printers = new ArrayList<DateTimePrinter>(this.printers);
-            List<DateTimeParser> parsers = new ArrayList<DateTimeParser>(this.parsers);
-            for (int i = optionalIndexStack.size() - 1; i >= 0; i--) {
-                int startIndex = optionalIndexStack.get(i);
-                optionalEnd(startIndex, printers, parsers);
-            }
-            return new DateTimeFormatter(locale, new CompositePrinterParser(printers, parsers, false));
-        } else {
-            return new DateTimeFormatter(locale, new CompositePrinterParser(printers, parsers, false));
+        while (active.parent != null) {
+            optionalEnd();
         }
+        return new DateTimeFormatter(locale, new CompositePrinterParser(printers, parsers, false));
     }
 
     //-----------------------------------------------------------------------
@@ -1026,7 +1039,7 @@ public class DateTimeFormatterBuilder {
      *
      * @author Stephen Colebourne
      */
-    public enum SignStyle {
+    public static enum SignStyle {
         /**
          * Style to output the sign only if the value is negative.
          * In strict parsing, the positive sign will be rejected.
@@ -1061,19 +1074,47 @@ public class DateTimeFormatterBuilder {
      *
      * @author Stephen Colebourne
      */
-    public enum TextStyle {
-        /**
-         * Narrow text, typically a single letter.
-         */
-        NARROW,
-        /**
-         * Short text, typically an abreviation.
-         */
-        SHORT,
+    public static enum TextStyle {
         /**
          * Full text, typically the full description.
          */
-        FULL;
+        FULL,
+        /**
+         * Short text, typically an abbreviation.
+         */
+        SHORT,
+        /**
+         * Narrow text, typically a single letter.
+         */
+        NARROW;
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Enumeration of the style of parsing to use.
+//     *
+//     * @author Stephen Colebourne
+//     */
+//    public static enum ParseStyle {
+//        /**
+//         * Strict parsing.
+//         * The textual elements are case sensitive.
+//         * The text style must be matched exactly.
+//         * The positive/negative signs must match the sign style.
+//         */
+//        STRICT,
+//        /**
+//         * Strict ignoring case.
+//         * This will parse as per strict except that case is ignored for textual items.
+//         */
+//        STRICT_IGNORE_CASE,
+//        /**
+//         * Lenient parsing.
+//         * The textual elements are case insensitive.
+//         * Any text style may be matched.
+//         * The positive/negative signs will be interpreted flexibly.
+//         */
+//        LENIENT;
+//    }
 
 }

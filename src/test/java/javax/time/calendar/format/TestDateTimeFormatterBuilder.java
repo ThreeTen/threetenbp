@@ -307,7 +307,7 @@ public class TestDateTimeFormatterBuilder {
     public void test_padNext_1arg() throws Exception {
         builder.appendValue(MOY_RULE).padNext(2).appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),Value(ISO.DayOfMonth),2)Value(ISO.DayOfWeek)");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),2)Value(ISO.DayOfWeek)");
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
@@ -319,12 +319,19 @@ public class TestDateTimeFormatterBuilder {
     public void test_padNext_2arg_dash() throws Exception {
         builder.appendValue(MOY_RULE).padNext(2, '-').appendValue(DOM_RULE).appendValue(DOW_RULE);
         DateTimeFormatter f = builder.toFormatter();
-        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),Value(ISO.DayOfMonth),2,'-')Value(ISO.DayOfWeek)");
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad(Value(ISO.DayOfMonth),2,'-')Value(ISO.DayOfWeek)");
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_padNext_2arg_invalidWidth() throws Exception {
         builder.padNext(0, '-');
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_padOptional() throws Exception {
+        builder.appendValue(MOY_RULE).padNext(5).optionalStart().appendValue(DOM_RULE).optionalEnd().appendValue(DOW_RULE);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "Value(ISO.MonthOfYear)Pad([Value(ISO.DayOfMonth)],5)Value(ISO.DayOfWeek)");
     }
 
     //-----------------------------------------------------------------------
@@ -503,9 +510,9 @@ public class TestDateTimeFormatterBuilder {
             
             {"RO", "'R''O'"},
             
-            {"ppH", "Pad(Value(ISO.HourOfDay),Value(ISO.HourOfDay),2)"},
-            {"pppDD", "Pad(Value(ISO.DayOfYear,2),Value(ISO.DayOfYear,2),3)"},
-            {"pppffn", "Pad(Fraction(ISO.NanoOfSecond,1,9),Fraction(ISO.NanoOfSecond,1,9),3)"},
+            {"ppH", "Pad(Value(ISO.HourOfDay),2)"},
+            {"pppDD", "Pad(Value(ISO.DayOfYear,2),3)"},
+            {"pppffn", "Pad(Fraction(ISO.NanoOfSecond,1,9),3)"},
             
             {"ssfn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,1,1)"},
             {"ssfnn", "Value(ISO.SecondOfMinute,2)Fraction(ISO.NanoOfSecond,2,2)"},
