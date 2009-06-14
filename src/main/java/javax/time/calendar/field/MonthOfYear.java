@@ -46,7 +46,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
-import javax.time.calendar.format.DateTimeFormatSymbols;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -221,9 +220,7 @@ public enum MonthOfYear
      * @return the short text value of the month of year, never null
      */
     public String getShortText(Locale locale) {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(rule(), TextStyle.SHORT, monthOfYear);
-        return text == null ? Integer.toString(monthOfYear) : text;
+        return rule().getText(monthOfYear, locale, TextStyle.SHORT);
     }
 
     /**
@@ -238,9 +235,7 @@ public enum MonthOfYear
      * @return the long text value of the month of year, never null
      */
     public String getText(Locale locale) {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(rule(), TextStyle.FULL, monthOfYear);
-        return text == null ? Integer.toString(monthOfYear) : text;
+        return rule().getText(monthOfYear, locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------

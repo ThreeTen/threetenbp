@@ -106,6 +106,7 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_DATE;
     static {
         ISO_OFFSET_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .appendOffsetId()
             .toFormatter();
@@ -136,6 +137,7 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_DATE;
     static {
         ISO_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .optionalStart()
             .appendOffsetId()
@@ -206,6 +208,7 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_OFFSET_TIME;
     static {
         ISO_OFFSET_TIME = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_TIME)
             .appendOffsetId()
             .toFormatter();
@@ -238,6 +241,7 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_TIME;
     static {
         ISO_TIME = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_TIME)
             .optionalStart()
             .appendOffsetId()
@@ -274,6 +278,7 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_LOCAL_DATE_TIME;
     static {
         ISO_LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .append(ISO_LOCAL_DATE)
             .appendLiteral('T')
             .append(ISO_LOCAL_TIME)
@@ -411,11 +416,12 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_ORDINAL_DATE;
     static {
         ISO_ORDINAL_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .appendValue(ISOChronology.yearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral('-')
             .appendValue(ISOChronology.dayOfYearRule(), 3)
             .optionalStart()
-            .appendOffset("Z", true, false)
+            .appendOffsetId()
             .optionalStart()
             .appendLiteral('[')
             .appendZoneId()
@@ -443,13 +449,14 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter ISO_WEEK_DATE;
     static {
         ISO_WEEK_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .appendValue(ISOChronology.weekBasedYearRule(), 4, 10, SignStyle.EXCEEDS_PAD)
             .appendLiteral("-W")
             .appendValue(ISOChronology.weekOfWeekBasedYearRule(), 2)
             .appendLiteral('-')
             .appendValue(ISOChronology.dayOfWeekRule(), 1)
             .optionalStart()
-            .appendOffset("Z", true, false)
+            .appendOffsetId()
             .optionalStart()
             .appendLiteral('[')
             .appendZoneId()
@@ -477,6 +484,7 @@ public class DateTimeFormatters {
     private static final DateTimeFormatter BASIC_ISO_DATE;
     static {
         BASIC_ISO_DATE = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
             .appendValue(ISOChronology.yearRule(), 4)
             .appendValue(ISOChronology.monthOfYearRule(), 2)
             .appendValue(ISOChronology.dayOfMonthRule(), 2)

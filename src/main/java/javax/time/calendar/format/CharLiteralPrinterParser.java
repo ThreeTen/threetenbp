@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -75,8 +75,13 @@ class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
         if (position == length) {
             return ~position;
         }
-        if (parseText.charAt(position) != literal) {
-            return ~position;
+        char ch = parseText.charAt(position);
+        if (ch != literal) {
+            if (context.isCaseSensitive() ||
+                    (Character.toUpperCase(ch) != Character.toUpperCase(literal) &&
+                     Character.toLowerCase(ch) != Character.toLowerCase(literal))) {
+                return ~position;
+            }
         }
         return position + 1;
     }

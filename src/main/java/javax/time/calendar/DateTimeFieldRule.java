@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008,2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,10 +32,24 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -73,6 +87,8 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     private final int minimumValue;
     /** The maximum value for the field. */
     private final int maximumValue;
+    /** The cached text for this rule. */
+    private final ConcurrentMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>> textStores;
 
     /**
      * Constructor.
@@ -91,6 +107,28 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
             PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
+        this(chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param chronology  the chronology, not null
+     * @param name  the name of the type, not null
+     * @param periodUnit  the period unit, not null
+     * @param periodRange  the period range, not null
+     * @param minimumValue  the minimum value
+     * @param maximumValue  the minimum value
+     * @param hasText  true if this field has a text representation
+     */
+    protected DateTimeFieldRule(
+            Chronology chronology,
+            String name,
+            PeriodUnit periodUnit,
+            PeriodUnit periodRange,
+            int minimumValue,
+            int maximumValue,
+            boolean hasText) {
         if (chronology == null) {
             throw new NullPointerException("The chronology must not be null");
         }
@@ -110,6 +148,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         this.periodRange = periodRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
+        this.textStores = (hasText ? new ConcurrentHashMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>>() : null);
     }
 
     //-----------------------------------------------------------------------
@@ -510,27 +549,75 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         return getMaximumValue();
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the text for this field.
-//     * <p>
-//     * The value is queried using {@link #getValue(CalendricalProvider)}. The text
-//     * is then obtained for that value. If there is no textual mapping, then
-//     * the value is returned as per {@link Integer#toString()}.
-//     *
-//     * @param calendricalProvider  the calendrical provider, not null
-//     * @param locale  the locale to use, not null
-//     * @param textStyle  the text style, not null
-//     * @return the text of the field, never null
-//     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
-//     */
-//    public String getText(CalendricalProvider calendricalProvider, Locale locale, TextStyle textStyle) {
-//        int value = getValue(calendricalProvider);
-//        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-//        String text = symbols.getFieldValueText(this, textStyle, value);
-//        return text == null ? Integer.toString(value) : text;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the text for this field.
+     * <p>
+     * Some fields have a textual representation, such as day of week or
+     * month of year. This method provides a convenient way to convert a value
+     * to such a textual representation.
+     * More control is available using {@link #getTextStore}.
+     * <p>
+     * If there is no textual mapping, then the value is returned as per
+     * {@link Integer#toString()}. Note that this is different to what occurs
+     * in printing /parsing, where a more advanced localized conversion from
+     * int to String is used.
+     *
+     * @param value  the value to convert to text, not null
+     * @param locale  the locale to use, not null
+     * @param textStyle  the text style, not null
+     * @return the text of the field, never null
+     */
+    public String getText(int value, Locale locale, TextStyle textStyle) {
+        TextStore textStore = getTextStore(locale, textStyle);
+        String text = (textStore != null ? textStore.getValueText(value) : null);
+        return text == null ? Integer.toString(value) : text;
+    }
 
+    /**
+     * Gets the text map for this field with the specified locale and style.
+     * <p>
+     * Some fields have a textual representation, such as day of week or
+     * month of year. The text store provides details of those textual representations.
+     * <p>
+     * To supply text, subclasses should pass true in the constructor and
+     * override {@link #createTextStore}. This method is not normally overridden.
+     *
+     * @param locale  the locale to use, not null
+     * @param textStyle  the text style, not null
+     * @return the text cache, null if no text available
+     */
+    public TextStore getTextStore(Locale locale, TextStyle textStyle) {
+        if (textStores == null) {
+            return null;
+        }
+        SoftReference<EnumMap<TextStyle, TextStore>> ref = textStores.get(locale);
+        if (ref != null) {
+            EnumMap<TextStyle, TextStore> textMapByStyle = ref.get();
+            if (textMapByStyle != null) {
+                return textMapByStyle.get(textStyle);
+            }
+        }
+        EnumMap<TextStyle, TextStore> textStoreByStyle = new EnumMap<TextStyle, TextStore>(TextStyle.class);
+        createTextStores(textStoreByStyle, locale);
+        textStoreByStyle = new EnumMap<TextStyle, TextStore>(textStoreByStyle);
+        textStores.put(locale, new SoftReference<EnumMap<TextStyle, TextStore>>(textStoreByStyle));
+        return textStoreByStyle.get(textStyle);
+    }
+
+    /**
+     * Creates the text store for each style for the specified locale.
+     * <p>
+     * It is intended that a new copy of the text store should be created in
+     * response to calling this method as the result is cached by {@link #getTextStore}.
+     *
+     * @param textStores  the map to populate with TextStore instances, not null
+     * @param locale  the locale to use, not null
+     */
+    protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
+        // do nothing - override if field provides text
+    }
+ 
     //-----------------------------------------------------------------------
     /**
      * Converts a value for this field to a fraction between 0 and 1.
@@ -650,4 +737,183 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     public String toString() {
         return getID();
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * The mapping between integer values and textual representations.
+     * <p>
+     * Some fields have a textual representation, such as day of week or month of year.
+     * These textual representations can be captured in this class for printing
+     * and parsing.
+     * <p>
+     * TextStore is immutable and thread-safe.
+     *
+     * @author Stephen Colebourne
+     */
+    public static final class TextStore {
+        /**
+         * The locale of the text.
+         */
+        private final Locale locale;
+        /**
+         * Map of value to text.
+         */
+        private final Map<Integer, String> valueTextMap;
+        /**
+         * Map of case sensitive text to value.
+         */
+        private final Map<String, Integer> textValueMap;
+        /**
+         * Map of case insensitive text to value.
+         */
+        private final Map<String, Integer> insensitiveTextValueMap;
+        /**
+         * The lengths of the text items.
+         */
+        private final int[] lengths;
+
+        //-----------------------------------------------------------------------
+        /**
+         * Constructor.
+         *
+         * @param locale  the locale, not null
+         * @param valueTextMap  the map of values to text to store, not null
+         */
+        public TextStore(Locale locale, Map<Integer, String> valueTextMap) {
+            ISOChronology.checkNotNull(locale, "Locale must not be null");
+            ISOChronology.checkNotNull(valueTextMap, "Map must not be null");
+            if (valueTextMap.containsKey(null) || valueTextMap.containsValue(null) || valueTextMap.containsValue("")) {
+                throw new IllegalArgumentException("The map must not contain null or empty text");
+            }
+            this.locale = locale;
+            Map<Integer, String> copy = new HashMap<Integer, String>(valueTextMap);
+            Map<String, Integer> reverse = new HashMap<String, Integer>();
+            Map<String, Integer> insensitive = new HashMap<String, Integer>();
+            Set<Integer> lengthSet = new HashSet<Integer>();
+            for (Entry<Integer, String> entry : copy.entrySet()) {
+                String text = entry.getValue();
+                Integer value = entry.getKey();
+                reverse.put(text, value);
+                lengthSet.add(text.length());
+                String lower = text.toLowerCase(locale);
+                insensitive.put(lower, value);
+                lengthSet.add(lower.length());
+                String upper = text.toUpperCase(locale);
+                insensitive.put(upper, value);
+                lengthSet.add(upper.length());
+            }
+            if (reverse.size() < copy.size()) {
+                // duplicate text for a given value, so parsing is not supported
+                this.textValueMap = Collections.emptyMap();
+                this.insensitiveTextValueMap = Collections.emptyMap();
+                this.lengths = null;
+            } else {
+                textValueMap = Collections.unmodifiableMap(reverse);
+                insensitiveTextValueMap = Collections.unmodifiableMap(insensitive);
+                this.lengths = new int[lengthSet.size()];
+                int i = 0;
+                for (Iterator<Integer> it = lengthSet.iterator(); it.hasNext(); ) {
+                    lengths[i++] = it.next();
+                }
+                Arrays.sort(lengths);
+            }
+            this.valueTextMap = Collections.unmodifiableMap(copy);
+        }
+
+        //-----------------------------------------------------------------------
+        /**
+         * Gets the locale that the text relates to.
+         *
+         * @return the locale for the text, never null
+         */
+        public Locale getLocale() {
+            return locale;
+        }
+
+        //-----------------------------------------------------------------------
+        /**
+         * Gets the map of text for each integer value.
+         *
+         * @return the unmodifiable map of value to text, never null
+         */
+        public Map<Integer, String> getValueTextMap() {
+            return valueTextMap;
+        }
+
+        /**
+         * Gets the text for the specified integer value.
+         * <p>
+         * The text associated with the value is returned, or null if none found.
+         *
+         * @param value  the value to get text for
+         * @return the text for the field value, null if no text found
+         */
+        public String getValueText(int value) {
+            return valueTextMap.get(value);
+        }
+
+        //-----------------------------------------------------------------------
+        /**
+         * Gets the derived map expressing the value for each text.
+         * <p>
+         * If the value-text map contains duplicate text elements then this map
+         * will be empty.
+         *
+         * @return the unmodifiable map of text to value for the field rule and style, never null
+         */
+        public Map<String, Integer> getTextValueMap() {
+            return textValueMap;
+        }
+
+        /**
+         * Matches the specified text against the text-value map returning the
+         * matched length and value.
+         * <p>
+         * This method is intended for use during parsing, and matches the search text
+         * against the text-value map, optionally ignoring case.
+         *
+         * @param ignoreCase  true to ignore case during the matching
+         * @param parseText  the text to match against
+         * @return a long packed result of two int values (for performance in parsing).
+         *  The value is <code>(parseLength << 32 + matchedValue)</code>.
+         *  Zero is returned if there is no match.
+         *  Minus one is returned if the text store cannot parse.
+         *  The parse length can be obtained via (result >>> 32).
+         *  The value can be obtained via ((int) result).
+         */
+        public long matchText(boolean ignoreCase, String parseText) {
+            ISOChronology.checkNotNull(parseText, "Search text must not be null");
+            if (lengths == null) {
+                return -1;
+            }
+            int lengthsStart = Arrays.binarySearch(lengths, parseText.length());
+            lengthsStart = (lengthsStart < 0 ? -lengthsStart - 2 : lengthsStart);
+            if (ignoreCase) {
+                parseText = parseText.toUpperCase(locale);
+                for (int i = lengthsStart; i >= 0; i--) {
+                    Integer value = insensitiveTextValueMap.get(parseText.substring(0, lengths[i]));
+                    if (value != null) {
+                        return (((long) lengths[i]) << 32) + value;
+                    }
+                }
+                parseText = parseText.toLowerCase(locale);
+                for (int i = lengthsStart; i >= 0; i--) {
+                    Integer value = insensitiveTextValueMap.get(parseText.substring(0, lengths[i]));
+                    if (value != null) {
+                        return (((long) lengths[i]) << 32) + value;
+                    }
+                }
+            } else {
+                for (int i = lengthsStart; i >= 0; i--) {
+                    Integer value = textValueMap.get(parseText.substring(0, lengths[i]));
+                    if (value != null) {
+                        return (((long) lengths[i]) << 32) + value;
+                    }
+                }
+            }
+            return 0;
+        }
+
+    }
+
 }

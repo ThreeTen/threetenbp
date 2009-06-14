@@ -42,7 +42,6 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
-import javax.time.calendar.format.DateTimeFormatSymbols;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -155,9 +154,7 @@ public enum AmPmOfDay
      * @return the long text value of the day of week, never null
      */
     public String getShortText(Locale locale) {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(rule(), TextStyle.SHORT, amPmOfDay);
-        return text == null ? Integer.toString(amPmOfDay) : text;
+        return rule().getText(amPmOfDay, locale, TextStyle.SHORT);
     }
 
     /**
@@ -172,9 +169,7 @@ public enum AmPmOfDay
      * @return the long text value of the day of week, never null
      */
     public String getText(Locale locale) {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(rule(), TextStyle.FULL, amPmOfDay);
-        return text == null ? Integer.toString(amPmOfDay) : text;
+        return rule().getText(amPmOfDay, locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------

@@ -65,6 +65,32 @@ public class TestDateTimeFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+    public void test_parseCaseSensitive() throws Exception {
+        builder.parseCaseSensitive();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ParseCaseSensitive(true)");
+    }
+
+    public void test_parseCaseInsensitive() throws Exception {
+        builder.parseCaseInsensitive();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ParseCaseSensitive(false)");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parseStrict() throws Exception {
+        builder.parseStrict();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ParseStrict(true)");
+    }
+
+    public void test_parseLenient() throws Exception {
+        builder.parseLenient();
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "ParseStrict(false)");
+    }
+
+    //-----------------------------------------------------------------------
     public void test_appendValue_1arg() throws Exception {
         builder.appendValue(DOM_RULE);
         DateTimeFormatter f = builder.toFormatter();

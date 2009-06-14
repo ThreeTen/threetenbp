@@ -189,7 +189,11 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     position++;
                     break;
                 default:
-                    return ~position;
+                    if (context.isStrict()) {
+                        return ~position;
+                    }
+                    position++;
+                    break;
             }
         } else if (sign == context.getSymbols().getNegativeSignChar()) {
             negative = true;
@@ -200,10 +204,16 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     position++;
                     break;
                 default:
-                    return ~position;
+                    if (context.isStrict()) {
+                        return ~position;
+                    }
+                    position++;
+                    break;
             }
         } else if (signStyle == SignStyle.ALWAYS) {
-            return ~position;
+            if (context.isStrict()) {
+                return ~position;
+            }
         }
         int minEndPos = position + minWidth;
         if (minEndPos > length) {
@@ -241,7 +251,7 @@ class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                 return ~(position - 1);  // minus zero not allowed
             }
             total = -total;
-        } else if (signStyle == SignStyle.EXCEEDS_PAD) {
+        } else if (signStyle == SignStyle.EXCEEDS_PAD && context.isStrict()) {
             int parseLen = pos - position;
             if (positive) {
                 if (parseLen <= minWidth) {

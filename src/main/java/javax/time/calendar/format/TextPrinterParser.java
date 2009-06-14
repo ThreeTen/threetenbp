@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import java.io.IOException;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeFieldRule.TextStore;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -55,6 +56,11 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      * The text style, not null.
      */
     private final TextStyle textStyle;
+    /**
+     * The cached number printer parser.
+     * Immutable and volatile, so no synchronization needed.
+     */
+    private volatile NumberPrinterParser numberPrinterParser;
 
     /**
      * Constructor.
@@ -72,11 +78,13 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = calendrical.deriveValue(fieldRule);
-        String text = symbols.getFieldValueText(fieldRule, textStyle, value);
-        if (text == null) {
-            text = FormatUtil.convertToI18N(Integer.toString(value), symbols);
+        TextStore textStore = fieldRule.getTextStore(symbols.getLocale(), textStyle);
+        String text = (textStore != null ? textStore.getValueText(value) : null);
+        if (text != null) {
+            appendable.append(text);
+        } else {
+            numberPrinterParser().print(calendrical, appendable, symbols);
         }
-        appendable.append(text);
     }
 
     /** {@inheritDoc} */
@@ -90,16 +98,44 @@ class TextPrinterParser implements DateTimePrinter, DateTimeParser {
         if (position > length) {
             throw new IndexOutOfBoundsException();
         }
-        int[] match = context.getSymbols().matchFieldText(fieldRule, textStyle, false, parseText.substring(position));
-        if (match == null) {
-            return new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL).parse(context, parseText, position);
-        } else if (match[0] == 0) {
-            return ~position;
+        if (context.isStrict()) {
+            TextStore textStore = fieldRule.getTextStore(context.getLocale(), textStyle);
+            if (textStore != null) {
+                long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
+                if (match == 0) {
+                    return ~position;
+                } else if (match > 0) {
+                    position += (match >>> 32);
+                    context.setFieldValue(fieldRule, (int) match);
+                    return position;
+                }
+            }
+            return numberPrinterParser().parse(context, parseText, position);
         } else {
-            position += match[0];
-            context.setFieldValue(fieldRule, match[1]);
+            for (TextStyle textStyle : TextStyle.values()) {
+                TextStore textStore = fieldRule.getTextStore(context.getLocale(), textStyle);
+                if (textStore != null) {
+                    long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
+                    if (match > 0) {
+                        position += (match >>> 32);
+                        context.setFieldValue(fieldRule, (int) match);
+                        return position;
+                    }
+                }
+            }
+            return numberPrinterParser().parse(context, parseText, position);
         }
-        return position;
+    }
+
+    /**
+     * Create and cache a number printer parser.
+     * @return the number printer parser for this field, never null
+     */
+    private NumberPrinterParser numberPrinterParser() {
+        if (numberPrinterParser == null) {
+            numberPrinterParser = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
+        }
+        return numberPrinterParser;
     }
 
     /** {@inheritDoc} */

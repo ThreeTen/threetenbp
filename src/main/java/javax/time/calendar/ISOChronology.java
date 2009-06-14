@@ -34,6 +34,12 @@ package javax.time.calendar;
 import static javax.time.period.PeriodUnits.*;
 
 import java.io.Serializable;
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
@@ -44,6 +50,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -685,7 +692,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(ISOChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12);
+            super(ISOChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12, true);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -693,6 +700,40 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : date.getMonthOfYear().getValue());
+        }
+        @Override
+        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
+            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
+            String[] array = oldSymbols.getMonths();
+            Map<Integer, String> map = new HashMap<Integer, String>();
+            map.put(1, array[Calendar.JANUARY]);
+            map.put(2, array[Calendar.FEBRUARY]);
+            map.put(3, array[Calendar.MARCH]);
+            map.put(4, array[Calendar.APRIL]);
+            map.put(5, array[Calendar.MAY]);
+            map.put(6, array[Calendar.JUNE]);
+            map.put(7, array[Calendar.JULY]);
+            map.put(8, array[Calendar.AUGUST]);
+            map.put(9, array[Calendar.SEPTEMBER]);
+            map.put(10, array[Calendar.OCTOBER]);
+            map.put(11, array[Calendar.NOVEMBER]);
+            map.put(12, array[Calendar.DECEMBER]);
+            textStores.put(TextStyle.FULL, new TextStore(locale, map));
+            array = oldSymbols.getShortMonths();
+            map.clear();
+            map.put(1, array[Calendar.JANUARY]);
+            map.put(2, array[Calendar.FEBRUARY]);
+            map.put(3, array[Calendar.MARCH]);
+            map.put(4, array[Calendar.APRIL]);
+            map.put(5, array[Calendar.MAY]);
+            map.put(6, array[Calendar.JUNE]);
+            map.put(7, array[Calendar.JULY]);
+            map.put(8, array[Calendar.AUGUST]);
+            map.put(9, array[Calendar.SEPTEMBER]);
+            map.put(10, array[Calendar.OCTOBER]);
+            map.put(11, array[Calendar.NOVEMBER]);
+            map.put(12, array[Calendar.DECEMBER]);
+            textStores.put(TextStyle.SHORT, new TextStore(locale, map));
         }
     }
 
@@ -861,7 +902,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(ISOChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
+            super(ISOChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7, true);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -869,6 +910,30 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public Integer getValueQuiet(LocalDate date, LocalTime time) {
             return (date == null ? null : date.getDayOfWeek().getValue());
+        }
+        @Override
+        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
+            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
+            String[] array = oldSymbols.getWeekdays();
+            Map<Integer, String> map = new HashMap<Integer, String>();
+            map.put(1, array[Calendar.MONDAY]);
+            map.put(2, array[Calendar.TUESDAY]);
+            map.put(3, array[Calendar.WEDNESDAY]);
+            map.put(4, array[Calendar.THURSDAY]);
+            map.put(5, array[Calendar.FRIDAY]);
+            map.put(6, array[Calendar.SATURDAY]);
+            map.put(7, array[Calendar.SUNDAY]);
+            textStores.put(TextStyle.FULL, new TextStore(locale, map));
+            array = oldSymbols.getShortWeekdays();
+            map.clear();
+            map.put(1, array[Calendar.MONDAY]);
+            map.put(2, array[Calendar.TUESDAY]);
+            map.put(3, array[Calendar.WEDNESDAY]);
+            map.put(4, array[Calendar.THURSDAY]);
+            map.put(5, array[Calendar.FRIDAY]);
+            map.put(6, array[Calendar.SATURDAY]);
+            map.put(7, array[Calendar.SUNDAY]);
+            textStores.put(TextStyle.SHORT, new TextStore(locale, map));
         }
     }
 
@@ -1279,7 +1344,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private AmPmOfDayRule() {
-            super(ISOChronology.INSTANCE, "AmPmOfDay", TWELVE_HOURS, DAYS, 0, 1);
+            super(ISOChronology.INSTANCE, "AmPmOfDay", TWELVE_HOURS, DAYS, 0, 1, true);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1308,6 +1373,17 @@ public final class ISOChronology extends Chronology implements Serializable {
                 merger.markFieldAsProcessed(this);
                 merger.markFieldAsProcessed(ISOChronology.hourOfAmPmRule());
             }
+        }
+        @Override
+        protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
+            DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
+            String[] array = oldSymbols.getAmPmStrings();
+            Map<Integer, String> map = new HashMap<Integer, String>();
+            map.put(0, array[Calendar.AM]);
+            map.put(1, array[Calendar.PM]);
+            TextStore textStore = new TextStore(locale, map);
+            textStores.put(TextStyle.FULL, textStore);
+            textStores.put(TextStyle.SHORT, textStore);  // re-use, as we don't have different data
         }
     }
 

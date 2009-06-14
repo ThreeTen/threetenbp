@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -75,6 +75,28 @@ public class TestDateTimeParseContext {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_constructor_null() throws Exception {
         new DateTimeParseContext(null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_caseSensitive() throws Exception {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
+        DateTimeParseContext test = new DateTimeParseContext(symbols);
+        assertEquals(test.isCaseSensitive(), true);
+        
+        test.setCaseSensitive(false);
+        
+        assertEquals(test.isCaseSensitive(), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_strict() throws Exception {
+        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
+        DateTimeParseContext test = new DateTimeParseContext(symbols);
+        assertEquals(test.isStrict(), true);
+        
+        test.setStrict(false);
+        
+        assertEquals(test.isStrict(), false);
     }
 
     //-----------------------------------------------------------------------

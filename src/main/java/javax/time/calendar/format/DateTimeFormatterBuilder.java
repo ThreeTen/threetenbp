@@ -49,7 +49,7 @@ import javax.time.calendar.ZoneOffset;
  * All date-time formats are created ultimately using this builder.
  * Each consists of two halves a {@link DateTimePrinter printer} and a {@link DateTimeParser parser}.
  * Most of the methods will create both a printer and a parser automatically, however
- * it is possible to use one append method to add just a printer or a parser.
+ * it is possible to create a formatter that only prints or only parses.
  * <p>
  * The basic elements of date-time can all be added:
  * <ul>
@@ -139,6 +139,79 @@ public final class DateTimeFormatterBuilder {
         if (object == null) {
             throw new NullPointerException(errorMessage);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Changes the parse style to be case sensitive for the remainder of the formatter.
+     * <p>
+     * Parsing can be case sensitive or insensitive - by default it is case sensitive.
+     * This controls how text is compared.
+     * <p>
+     * When used, this method changes the parsing to be case sensitive from this point onwards.
+     * As case sensitive is the default, this is normally only needed after calling {@link #parseCaseInsensitive()}.
+     * The change will remain in force until the end of the formatter that is eventually
+     * constructed or until <code>parseCaseInsensitive</code> is called.
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder parseCaseSensitive() {
+        appendInternal(CaseSensitivePrinterParser.SENSITIVE, CaseSensitivePrinterParser.SENSITIVE);
+        return this;
+    }
+
+    /**
+     * Changes the parse style to be case insensitive for the remainder of the formatter.
+     * <p>
+     * Parsing can be case sensitive or insensitive - by default it is case sensitive.
+     * This controls how text is compared.
+     * <p>
+     * When used, this method changes the parsing to be case insensitive from this point onwards.
+     * The change will remain in force until the end of the formatter that is eventually
+     * constructed or until <code>parseCaseSensitive</code> is called.
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder parseCaseInsensitive() {
+        appendInternal(CaseSensitivePrinterParser.INSENSITIVE, CaseSensitivePrinterParser.INSENSITIVE);
+        return this;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Changes the parse style to be strict for the remainder of the formatter.
+     * <p>
+     * Parsing can be strict or lenient - by default its strict.
+     * This controls the degree of flexibility in matching the text and sign styles.
+     * <p>
+     * When used, this method changes the parsing to be strict from this point onwards.
+     * As strict is the default, this is normally only needed after calling {@link #parseLenient()}.
+     * The change will remain in force until the end of the formatter that is eventually
+     * constructed or until <code>parseLenient</code> is called.
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder parseStrict() {
+        appendInternal(StrictLenientPrinterParser.STRICT, StrictLenientPrinterParser.STRICT);
+        return this;
+    }
+
+    /**
+     * Changes the parse style to be lenient for the remainder of the formatter.
+     * Note that case sensitivity is set separately to this method.
+     * <p>
+     * Parsing can be strict or lenient - by default its strict.
+     * This controls the degree of flexibility in matching the text and sign styles.
+     * <p>
+     * When used, this method changes the parsing to be strict from this point onwards.
+     * The change will remain in force until the end of the formatter that is eventually
+     * constructed or until <code>parseStrict</code> is called.
+     *
+     * @return this, for chaining, never null
+     */
+    public DateTimeFormatterBuilder parseLenient() {
+        appendInternal(StrictLenientPrinterParser.LENIENT, StrictLenientPrinterParser.LENIENT);
+        return this;
     }
 
     //-----------------------------------------------------------------------
@@ -532,10 +605,10 @@ public final class DateTimeFormatterBuilder {
     }
 
     /**
-     * Appends a formatter to the builder which will optionally print/parse.
+     * Appends all the elements of a formatter to the builder.
      * <p>
-     * The formatter will print if data is available for all the fields contained within it.
-     * The formatter will parse if the string matches, otherwise no error is returned.
+     * This method has the same effect as appending each of the constituent
+     * parts of the formatter directly to this builder.
      *
      * @param formatter  the formatter to add, not null
      * @return this, for chaining, never null
@@ -550,6 +623,10 @@ public final class DateTimeFormatterBuilder {
 
     /**
      * Appends a formatter to the builder which will optionally print/parse.
+     * <p>
+     * This method has the same effect as appending each of the constituent
+     * parts directly to this builder surrounded by an {@link #optionalStart()} and
+     * {@link #optionalEnd()}.
      * <p>
      * The formatter will print if data is available for all the fields contained within it.
      * The formatter will parse if the string matches, otherwise no error is returned.
@@ -895,19 +972,6 @@ public final class DateTimeFormatterBuilder {
         return this;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Changes the parse style for the remainder of the builder.
-//     *
-//     * @param parseStyle  the parse style to use, not null
-//     * @return this, for chaining, never null
-//     */
-//    public DateTimeFormatterBuilder parsing(ParseStyle parseStyle) {
-//        checkNotNull(parseStyle, "ParseStyle must not be null");
-//        active.parseStyle = parseStyle;
-//        return this;
-//    }
-
     //-----------------------------------------------------------------------
     /**
      * Mark the start of an optional section.
@@ -1088,33 +1152,5 @@ public final class DateTimeFormatterBuilder {
          */
         NARROW;
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Enumeration of the style of parsing to use.
-//     *
-//     * @author Stephen Colebourne
-//     */
-//    public static enum ParseStyle {
-//        /**
-//         * Strict parsing.
-//         * The textual elements are case sensitive.
-//         * The text style must be matched exactly.
-//         * The positive/negative signs must match the sign style.
-//         */
-//        STRICT,
-//        /**
-//         * Strict ignoring case.
-//         * This will parse as per strict except that case is ignored for textual items.
-//         */
-//        STRICT_IGNORE_CASE,
-//        /**
-//         * Lenient parsing.
-//         * The textual elements are case insensitive.
-//         * Any text style may be matched.
-//         * The positive/negative signs will be interpreted flexibly.
-//         */
-//        LENIENT;
-//    }
 
 }

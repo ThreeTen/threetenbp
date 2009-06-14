@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,61 +36,43 @@ import java.io.IOException;
 import javax.time.calendar.Calendrical;
 
 /**
- * Prints or parses a string literal.
- * <p>
- * StringLiteralPrinterParser is immutable and thread-safe.
+ * Enumeration to set the case sensitivity parse style.
  *
  * @author Stephen Colebourne
  */
-class StringLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
+enum CaseSensitivePrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The literal to print or parse.
+     * Case sensitive parsing.
      */
-    private final String literal;
-
+    SENSITIVE,
     /**
-     * Constructor.
-     *
-     * @param literal  the literal to print or parse, not empty, not null
+     * Case insensitive parsing.
      */
-    StringLiteralPrinterParser(String literal) {
-        // validated by caller
-        this.literal = literal;
-    }
+    INSENSITIVE;
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        appendable.append(literal);
-    }
-
-    /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
+        // do nothing
         return true;
     }
 
-    //-----------------------------------------------------------------------
     /** {@inheritDoc} */
-    public int parse(DateTimeParseContext context, String parseText, int position) {
-        int length = parseText.length();
-        if (position > length || position < 0) {
-            throw new IndexOutOfBoundsException();
-        }
-        // TODO: should this use the locale for comparison
-        boolean ignoreCase = !context.isCaseSensitive();
-        if (parseText.regionMatches(ignoreCase, position, literal, 0, literal.length()) == false) {
-            return ~position;
-        }
-        return position + literal.length();
+    public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
+        // do nothing
     }
 
-    //-----------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public int parse(DateTimeParseContext context, String parseText, int position) {
+        context.setCaseSensitive(this == SENSITIVE);
+        return position;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        String converted = literal.replace("'", "''");
-        return "'" + converted + "'";
+        return "ParseCaseSensitive(" + (this == SENSITIVE) + ")";
     }
 
 }

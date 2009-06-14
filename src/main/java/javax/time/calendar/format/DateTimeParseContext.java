@@ -61,6 +61,14 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     private final DateTimeFormatSymbols symbols;
     /**
+     * Whether to parse using case sensitively.
+     */
+    private boolean caseSensitive = true;
+    /**
+     * Whether to parse using strict rules.
+     */
+    private boolean strict = true;
+    /**
      * The calendrical collecting the results.
      */
     private final ArrayList<Calendrical> calendricals = new ArrayList<Calendrical>();
@@ -94,6 +102,46 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     public DateTimeFormatSymbols getSymbols() {
         return symbols;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if parsing is case sensitive.
+     *
+     * @return true if parsing is case sensitive, false if case insensitive
+     */
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+
+    /**
+     * Sets whether the parsing is case sensitive or not.
+     *
+     * @param caseSensitive  changes the parsing to be case sensitive or not from now on
+     */
+    public void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if parsing is strict.
+     * <p>
+     * Strict parsing requires exact matching of the text and sign styles.
+     *
+     * @return true if parsing is strict, false if lenient
+     */
+    public boolean isStrict() {
+        return strict;
+    }
+
+    /**
+     * Sets whether parsing is strict or lenient.
+     *
+     * @param strict  changes the parsing to be strict or lenient from now on
+     */
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 
     //-----------------------------------------------------------------------

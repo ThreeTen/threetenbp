@@ -71,6 +71,7 @@ import javax.time.calendar.field.TestWeekBasedYear;
 import javax.time.calendar.field.TestWeekOfWeekBasedYear;
 import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCalendricalFormatException;
+import javax.time.calendar.format.TestCaseSensitivePrinterParser;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatter;
@@ -82,6 +83,7 @@ import javax.time.calendar.format.TestNumberParser;
 import javax.time.calendar.format.TestNumberPrinter;
 import javax.time.calendar.format.TestPadParserDecorator;
 import javax.time.calendar.format.TestPadPrinterDecorator;
+import javax.time.calendar.format.TestStrictLenientPrinterParser;
 import javax.time.calendar.format.TestStringLiteralParser;
 import javax.time.calendar.format.TestStringLiteralPrinter;
 import javax.time.calendar.format.TestTextParser;
@@ -169,11 +171,12 @@ public class AllTest {
             TestDayOfMonthRule.class,
             // format
             TestCalendricalFormatException.class,
+            TestCaseSensitivePrinterParser.class,
+            TestCharLiteralParser.class,
+            TestCharLiteralPrinter.class,
             TestDateTimeFormatter.class,
             TestDateTimeFormatters.class,
             TestDateTimeParseContext.class,
-            TestCharLiteralParser.class,
-            TestCharLiteralPrinter.class,
             TestDateTimeFormatters.class,
             TestDateTimeFormatterBuilder.class,
             TestFractionPrinterParser.class,
@@ -181,6 +184,7 @@ public class AllTest {
             TestNumberPrinter.class,
             TestPadParserDecorator.class,
             TestPadPrinterDecorator.class,
+            TestStrictLenientPrinterParser.class,
             TestStringLiteralPrinter.class,
             TestStringLiteralParser.class,
             TestTextPrinter.class,

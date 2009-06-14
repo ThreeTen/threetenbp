@@ -41,7 +41,6 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.format.DateTimeFormatSymbols;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -217,9 +216,7 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      * @return the short text value of the day of week, never null
      */
     public String getShortText(Locale locale) {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(rule(), TextStyle.SHORT, dayOfWeek);
-        return text == null ? Integer.toString(dayOfWeek) : text;
+        return rule().getText(dayOfWeek, locale, TextStyle.SHORT);
     }
 
     /**
@@ -234,9 +231,7 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      * @return the long text value of the day of week, never null
      */
     public String getText(Locale locale) {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(locale);
-        String text = symbols.getFieldValueText(rule(), TextStyle.FULL, dayOfWeek);
-        return text == null ? Integer.toString(dayOfWeek) : text;
+        return rule().getText(dayOfWeek, locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------

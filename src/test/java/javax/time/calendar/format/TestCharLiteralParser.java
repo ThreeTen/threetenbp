@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -137,6 +137,23 @@ public class TestCharLiteralParser {
         CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
         int result = pp.parse(context, "a", 1);
         assertEquals(result, ~1);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_parse_caseSensitive() throws Exception {
+        context.setCaseSensitive(true);
+        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
+        int result = pp.parse(context, "A", 0);
+        assertEquals(result, ~0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+    }
+
+    public void test_parse_caseInsensitive() throws Exception {
+        context.setCaseSensitive(false);
+        CharLiteralPrinterParser pp = new CharLiteralPrinterParser('a');
+        int result = pp.parse(context, "A", 0);
+        assertEquals(result, 1);
         assertEquals(context.toCalendrical().getFieldMap().size(), 0);
     }
 

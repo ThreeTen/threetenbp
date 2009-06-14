@@ -439,4 +439,94 @@ public class TestNumberParser {
         }
     }
 
+    //-----------------------------------------------------------------------
+    @DataProvider(name="parseLenient")
+    Object[][] provider_dowLenient() {
+        return new Object[][] {
+            // never
+            {"0", 1, 2, SignStyle.NEVER, 1, 0},
+            {"5", 1, 2, SignStyle.NEVER, 1, 5},
+            {"50", 1, 2, SignStyle.NEVER, 2, 50},
+            {"500", 1, 2, SignStyle.NEVER, 2, 50},
+            {"-5", 1, 2, SignStyle.NEVER, 2, -5},
+            {"-50", 1, 2, SignStyle.NEVER, 3, -50},
+            {"-500", 1, 2, SignStyle.NEVER, 3, -50},
+            {"-AAA", 1, 2, SignStyle.NEVER, ~1, null},
+            {"+5", 1, 2, SignStyle.NEVER, 2, 5},
+            {"+50", 1, 2, SignStyle.NEVER, 3, 50},
+            {"+500", 1, 2, SignStyle.NEVER, 3, 50},
+            {"+AAA", 1, 2, SignStyle.NEVER, ~1, null},
+            
+            // negative error
+            {"0", 1, 2, SignStyle.NOT_NEGATIVE, 1, 0},
+            {"5", 1, 2, SignStyle.NOT_NEGATIVE, 1, 5},
+            {"50", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
+            {"500", 1, 2, SignStyle.NOT_NEGATIVE, 2, 50},
+            {"-5", 1, 2, SignStyle.NOT_NEGATIVE, 2, -5},
+            {"-50", 1, 2, SignStyle.NOT_NEGATIVE, 3, -50},
+            {"-500", 1, 2, SignStyle.NOT_NEGATIVE, 3, -50},
+            {"-AAA", 1, 2, SignStyle.NOT_NEGATIVE, ~1, null},
+            {"+5", 1, 2, SignStyle.NOT_NEGATIVE, 2, 5},
+            {"+50", 1, 2, SignStyle.NOT_NEGATIVE, 3, 50},
+            {"+500", 1, 2, SignStyle.NOT_NEGATIVE, 3, 50},
+            {"+AAA", 1, 2, SignStyle.NOT_NEGATIVE, ~1, null},
+            
+            // normal
+            {"0", 1, 2, SignStyle.NORMAL, 1, 0},
+            {"5", 1, 2, SignStyle.NORMAL, 1, 5},
+            {"50", 1, 2, SignStyle.NORMAL, 2, 50},
+            {"500", 1, 2, SignStyle.NORMAL, 2, 50},
+            {"-5", 1, 2, SignStyle.NORMAL, 2, -5},
+            {"-50", 1, 2, SignStyle.NORMAL, 3, -50},
+            {"-500", 1, 2, SignStyle.NORMAL, 3, -50},
+            {"-AAA", 1, 2, SignStyle.NORMAL, ~1, null},
+            {"+5", 1, 2, SignStyle.NORMAL, 2, 5},
+            {"+50", 1, 2, SignStyle.NORMAL, 3, 50},
+            {"+500", 1, 2, SignStyle.NORMAL, 3, 50},
+            {"+AAA", 1, 2, SignStyle.NORMAL, ~1, null},
+            
+            // always
+            {"0", 1, 2, SignStyle.ALWAYS, 1, 0},
+            {"5", 1, 2, SignStyle.ALWAYS, 1, 5},
+            {"50", 1, 2, SignStyle.ALWAYS, 2, 50},
+            {"500", 1, 2, SignStyle.ALWAYS, 2, 50},
+            {"-5", 1, 2, SignStyle.ALWAYS, 2, -5},
+            {"-50", 1, 2, SignStyle.ALWAYS, 3, -50},
+            {"-500", 1, 2, SignStyle.ALWAYS, 3, -50},
+            {"-AAA", 1, 2, SignStyle.ALWAYS, ~1, null},
+            {"+5", 1, 2, SignStyle.ALWAYS, 2, 5},
+            {"+50", 1, 2, SignStyle.ALWAYS, 3, 50},
+            {"+500", 1, 2, SignStyle.ALWAYS, 3, 50},
+            {"+AAA", 1, 2, SignStyle.ALWAYS, ~1, null},
+            
+            // exceeds pad
+            {"0", 1, 2, SignStyle.EXCEEDS_PAD, 1, 0},
+            {"5", 1, 2, SignStyle.EXCEEDS_PAD, 1, 5},
+            {"50", 1, 2, SignStyle.EXCEEDS_PAD, 2, 50},
+            {"500", 1, 2, SignStyle.EXCEEDS_PAD, 2, 50},
+            {"-5", 1, 2, SignStyle.EXCEEDS_PAD, 2, -5},
+            {"-50", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
+            {"-500", 1, 2, SignStyle.EXCEEDS_PAD, 3, -50},
+            {"-AAA", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},
+            {"+5", 1, 2, SignStyle.EXCEEDS_PAD, 2, 5},
+            {"+50", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
+            {"+500", 1, 2, SignStyle.EXCEEDS_PAD, 3, 50},
+            {"+AAA", 1, 2, SignStyle.EXCEEDS_PAD, ~1, null},
+       };
+    }
+
+    @Test(dataProvider="parseLenient") 
+    public void test_parseLenient(String input, int min, int max, SignStyle style, int parseLen, Integer parseVal) throws Exception {
+        DateTimeParseContext context = new DateTimeParseContext(symbols);
+        context.setStrict(false);
+        NumberPrinterParser pp = new NumberPrinterParser(RULE_DOM, min, max, style);
+        int newPos = pp.parse(context, input, 0);
+        assertEquals(newPos, parseLen);
+        if (parseVal == null) {
+            assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOM), false);
+        } else {
+            assertEquals(context.getFieldValue(RULE_DOM), parseVal.intValue());
+        }
+    }
+
 }

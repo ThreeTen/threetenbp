@@ -352,4 +352,43 @@ public class TestZoneOffsetParser {
         assertEquals(context.toCalendrical().getOffset(), expected);
     }
 
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    public void test_parse_caseSensitiveUTC_matchedCase() throws Exception {
+        context.setCaseSensitive(true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        int result = pp.parse(context, "Z", 0);
+        assertEquals(result, 1);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
+    public void test_parse_caseSensitiveUTC_unmatchedCase() throws Exception {
+        context.setCaseSensitive(true);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        int result = pp.parse(context, "z", 0);
+        assertEquals(result, ~0);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), null);
+    }
+
+    public void test_parse_caseInsensitiveUTC_matchedCase() throws Exception {
+        context.setCaseSensitive(false);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        int result = pp.parse(context, "Z", 0);
+        assertEquals(result, 1);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
+    public void test_parse_caseInsensitiveUTC_unmatchedCase() throws Exception {
+        context.setCaseSensitive(false);
+        ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
+        int result = pp.parse(context, "z", 0);
+        assertEquals(result, 1);
+        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendrical().getOffset(), ZoneOffset.UTC);
+    }
+
 }
