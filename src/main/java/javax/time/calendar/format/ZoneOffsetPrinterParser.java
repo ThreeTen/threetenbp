@@ -43,7 +43,7 @@ import javax.time.calendar.ZoneOffset;
  *
  * @author Stephen Colebourne
  */
-class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
+final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The text to use for UTC.

@@ -55,7 +55,7 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  *
  * @author Stephen Colebourne
  */
-public class DateTimeFormatter {
+public final class DateTimeFormatter {
 
     /**
      * The symbols to use for formatting, not null.

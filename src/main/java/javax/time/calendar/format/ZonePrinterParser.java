@@ -53,7 +53,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  *
  * @author Stephen Colebourne
  */
-class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
+final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The text style to output, null means the id.

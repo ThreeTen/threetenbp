@@ -44,7 +44,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
  *
  * @author Stephen Colebourne
  */
-class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
+final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * Array of 10 to the power of n

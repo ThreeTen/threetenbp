@@ -44,7 +44,7 @@ import javax.time.calendar.Calendrical;
  *
  * @author Stephen Colebourne
  */
-class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
+final class CompositePrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The list of printers that will be used, treated as immutable.

@@ -42,7 +42,7 @@ import javax.time.calendar.Calendrical;
  *
  * @author Stephen Colebourne
  */
-class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
+final class CharLiteralPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The literal to print or parse.

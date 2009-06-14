@@ -46,7 +46,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  *
  * @author Stephen Colebourne
  */
-class TextPrinterParser implements DateTimePrinter, DateTimeParser {
+final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The field to output, not null.

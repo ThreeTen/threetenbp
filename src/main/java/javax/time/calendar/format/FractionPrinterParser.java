@@ -45,7 +45,7 @@ import javax.time.calendar.DateTimeFieldRule;
  *
  * @author Stephen Colebourne
  */
-class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
+final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
      * The field to output, not null.
