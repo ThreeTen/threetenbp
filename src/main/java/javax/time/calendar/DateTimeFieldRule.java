@@ -617,7 +617,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
         // do nothing - override if field provides text
     }
- 
+
     //-----------------------------------------------------------------------
     /**
      * Converts a value for this field to a fraction between 0 and 1.
@@ -631,7 +631,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * For example, the second of minute value of 15 would be returned as 0.25,
      * assuming the standard definition of 60 seconds in a minute.
      *
-     * @param value  the value to convert, not null
+     * @param value  the value to convert, valid for this field
      * @return the fractional value of the field
      * @throws UnsupportedCalendarFieldException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid

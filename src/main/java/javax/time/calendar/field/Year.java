@@ -60,6 +60,14 @@ import javax.time.period.PeriodProvider;
  * This class does not store or represent a month, day, time or time zone.
  * Thus, for example, the value "2007" can be stored in a Year.
  * <p>
+ * This class uses the proleptic numbering system for years.
+ * The year 1 is preceded by year 0, then by year -1.
+ * <p>
+ * Note that years in the ISO chronology only align with years in the
+ * Gregorian-Julian system for modern years. Parts of Russia did not switch to the
+ * modern Gregorian/ISO rules until 1920.
+ * As such, historical years must be treated with caution.
+ * <p>
  * Year is immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
