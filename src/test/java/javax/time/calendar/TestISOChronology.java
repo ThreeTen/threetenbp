@@ -119,6 +119,20 @@ public class TestISOChronology {
         serialize(rule);
     }
 
+//    public void test_twoDigitYearRule() throws Exception {
+//        DateTimeFieldRule rule = ISOChronology.twoDigitYearRule();
+//        assertEquals(rule.getID(), "ISO.TwoDigitYear");
+//        assertEquals(rule.getName(), "TwoDigitYear");
+//        assertEquals(rule.getMinimumValue(), 0);
+//        assertEquals(rule.getLargestMinimumValue(), 0);
+//        assertEquals(rule.getMaximumValue(), 99);
+//        assertEquals(rule.getSmallestMaximumValue(), 99);
+//        assertEquals(rule.isFixedValueSet(), true);
+//        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
+//        assertEquals(rule.getPeriodRange(), PeriodUnits.CENTURIES);
+//        serialize(rule);
+//    }
+
     public void test_monthOfYearRule() throws Exception {
         DateTimeFieldRule rule = ISOChronology.monthOfYearRule();
         assertEquals(rule.getID(), "ISO.MonthOfYear");
@@ -381,6 +395,20 @@ public class TestISOChronology {
         assertEquals(rule.getLargestMinimumValue(), 0);
         assertEquals(rule.getMaximumValue(), 11);
         assertEquals(rule.getSmallestMaximumValue(), 11);
+        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getPeriodUnit(), PeriodUnits.HOURS);
+        assertEquals(rule.getPeriodRange(), PeriodUnits.TWELVE_HOURS);
+        serialize(rule);
+    }
+
+    public void test_clockHourOfAmPmRule() throws Exception {
+        DateTimeFieldRule rule = ISOChronology.clockHourOfAmPmRule();
+        assertEquals(rule.getID(), "ISO.ClockHourOfAmPm");
+        assertEquals(rule.getName(), "ClockHourOfAmPm");
+        assertEquals(rule.getMinimumValue(), 1);
+        assertEquals(rule.getLargestMinimumValue(), 1);
+        assertEquals(rule.getMaximumValue(), 12);
+        assertEquals(rule.getSmallestMaximumValue(), 12);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.HOURS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.TWELVE_HOURS);

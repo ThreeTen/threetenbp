@@ -366,10 +366,9 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Gets the rule for the year field in the ISO chronology.
      * <p>
-     * This field counts years sequentially from the epoch year of 1970.
-     * The defintion follows the ISO-8601 rules which mean that there is no
-     * historical cutover from the Julian to Gregorian calendar, typically
-     * defined as occurring in October 1582.
+     * This field counts years using the modern civil calendar system as defined
+     * by ISO-8601. There is no historical cutover (as found in historical dates
+     * such as from the Julian to Gregorian calendar).
      * <p>
      * The implication of this is that historical dates will not be accurate.
      * All work requiring accurate historical dates must use the appropriate
@@ -377,13 +376,30 @@ public final class ISOChronology extends Chronology implements Serializable {
      * <p>
      * A further implication of the ISO-8601 rules is that the year zero
      * exists. This roughly equates to 1 BC/BCE, however the alignment is
-     * not exact due to the lack of a Julian/Gregorian cutover.
+     * not exact as explained above.
      *
      * @return the rule for the year field, never null
      */
     public static DateTimeFieldRule yearRule() {
         return YearRule.INSTANCE;
     }
+
+//    /**
+//     * Gets the rule for the two-digit year field in the ISO chronology.
+//     * <p>
+//     * This field is used to represent the commonly used, and abused, two-digit year.
+//     * This is defined as the least significant two digits of the year ignoring negatives.
+//     * This implies that the year 2011 will have the two-digit year 11 and that
+//     * the year -1423 will have the two-digit year 23.
+//     * <p>
+//     * Note that this field does not combine with any other field.
+//     * As such, it must be manually handled in the calendrical merge process.
+//     *
+//     * @return the rule for the two digit year field, never null
+//     */
+//    public static DateTimeFieldRule twoDigitYearRule() {
+//        return TwoDigitYearRule.INSTANCE;
+//    }
 
     /**
      * Gets the rule for the month of year field in the ISO chronology.
@@ -635,7 +651,7 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the hour of AM/PM field.
+     * Gets the rule for the hour of AM/PM field from 0 to 11.
      * <p>
      * This field counts hours sequentially from the start of the half-day AM/PM.
      * The values run from 0 to 11.
@@ -645,6 +661,53 @@ public final class ISOChronology extends Chronology implements Serializable {
     public static DateTimeFieldRule hourOfAmPmRule() {
         return HourOfAmPmRule.INSTANCE;
     }
+
+    /**
+     * Gets the rule for the clock hour of AM/PM field from 1 to 12.
+     * <p>
+     * This field counts hours sequentially within the half-day AM/PM as
+     * normally seen on a clock or watch. The values run from 1 to 12.
+     *
+     * @return the rule for the hour of AM/PM field, never null
+     */
+    public static DateTimeFieldRule clockHourOfAmPmRule() {
+        return ClockHourOfAmPmRule.INSTANCE;
+    }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Rule implementation.
+//     */
+//    private static final class TwoDigitYearRule extends DateTimeFieldRule implements Serializable {
+//        /** Singleton instance. */
+//        private static final DateTimeFieldRule INSTANCE = new TwoDigitYearRule();
+//        /** A serialization identifier for this class. */
+//        private static final long serialVersionUID = 1L;
+//        /** Constructor. */
+//        private TwoDigitYearRule() {
+//            super(ISOChronology.INSTANCE, "TwoDigitYear", YEARS, CENTURIES, 0, 99);
+//        }
+//        private Object readResolve() {
+//            return INSTANCE;
+//        }
+//        @Override
+//        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+//            if (date == null) {
+//                return null;
+//            }
+//            int year = date.getYear() % 100;
+//            return year < 0 ? year + 100 : year;
+//        }
+//        @Override
+//        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+//            Integer yVal = yearRule().getValueQuiet(fieldMap);
+//            if (yVal == null) {
+//                return null;
+//            }
+//            int year = yVal % 100;
+//            return year < 0 ? year + 100 : year;
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -959,7 +1022,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer doyVal = monthOfYearRule().getValueQuiet(fieldMap);
+            Integer doyVal = dayOfYearRule().getValueQuiet(fieldMap);
             if (doyVal == null) {
                 return null;
             }
@@ -1413,9 +1476,56 @@ public final class ISOChronology extends Chronology implements Serializable {
             if (hourVal == null) {
                 return null;
             }
-            int hour = hourVal;
-            hour = (hour < 0 ? 1073741832 + hour + 1073741832 : hour);  // add multiple of 24 to make positive
-            return (hour % 12);
+            long hour = hourVal;
+            hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
+            return (int) hour;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    private static final class ClockHourOfAmPmRule extends DateTimeFieldRule implements Serializable {
+        /** Singleton instance. */
+        private static final DateTimeFieldRule INSTANCE = new ClockHourOfAmPmRule();
+        /** A serialization identifier for this class. */
+        private static final long serialVersionUID = 1L;
+        /** Constructor. */
+        private ClockHourOfAmPmRule() {
+            super(ISOChronology.INSTANCE, "ClockHourOfAmPm", HOURS, TWELVE_HOURS, 1, 12);
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+            if (time == null) {
+                return null;
+            }
+            int hour = time.getHourOfDay() % 12;
+            return (hour == 0 ? 12 : hour);
+        }
+        @Override
+        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
+            Integer hourVal = hourOfDayRule().getValueQuiet(fieldMap);
+            if (hourVal == null) {
+                return null;
+            }
+            long hour = hourVal;
+            hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
+            return (int) (hour == 0 ? 12 : hour);
+        }
+        @Override
+        protected void mergeFields(Calendrical.Merger merger) {
+            Integer apVal = merger.getValueQuiet(ISOChronology.amPmOfDayRule());
+            if (apVal != null) {
+                int hour = merger.getValue(this);
+                int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(apVal, 12), hour);
+                merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
+                merger.markFieldAsProcessed(this);
+                merger.markFieldAsProcessed(ISOChronology.amPmOfDayRule());
+            }
         }
     }
 

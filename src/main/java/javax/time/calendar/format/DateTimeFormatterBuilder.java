@@ -544,6 +544,49 @@ public final class DateTimeFormatterBuilder {
         return this;
     }
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Appends a localized date-time pattern to the formatter.
+//     * <p>
+//     * The pattern is resolved lazily using the locale being used during the print/parse
+//     * (stored in {@link DateTimeFormatter}.
+//     * <p>
+//     * The pattern can vary by chronology, although typically it doesn't.
+//     * This method uses the standard ISO chronology patterns.
+//     *
+//     * @param dateStyle  the date style to use, null means no date required
+//     * @param timeStyle  the time style to use, null means no time required
+//     * @return this, for chaining, never null
+//     * @throws NullPointerException if the text style is null
+//     */
+//    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle) {
+//        return appendLocalized(dateStyle, timeStyle, ISOChronology.INSTANCE);
+//    }
+//
+//    /**
+//     * Appends a localized date-time pattern to the formatter.
+//     * <p>
+//     * The pattern is resolved lazily using the locale being used during the print/parse
+//     * (stored in {@link DateTimeFormatter}.
+//     * <p>
+//     * The pattern can vary by chronology, although typically it doesn't.
+//     * This method allows the chronology to be specified.
+//     *
+//     * @param dateStyle  the date style to use, null means no date required
+//     * @param timeStyle  the time style to use, null means no time required
+//     * @param chronology  the chronology to use, not null
+//     * @return this, for chaining, never null
+//     * @throws NullPointerException if the text style is null
+//     */
+//    public DateTimeFormatterBuilder appendLocalized(FormatStyle dateStyle, FormatStyle timeStyle, Chronology chronology) {
+//        checkNotNull(chronology, "Chronology must not be null");
+//        if (dateStyle != null || timeStyle != null) {
+//            LocalizedPrinterParser pp = new LocalizedPrinterParser(dateStyle, timeStyle, chronology);
+//            appendInternal(pp, pp);
+//        }
+//        return this;
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Appends a character literal to the formatter.
@@ -906,6 +949,7 @@ public final class DateTimeFormatterBuilder {
     /** Map of letters to rules. */
     private static final Map<Character, DateTimeFieldRule> RULE_MAP = new HashMap<Character, DateTimeFieldRule>();
     static {
+        // TODO: cross chrck with CLDR for letters
 //        RULE_MAP.put('G', ISOChronology.eraRule());
         RULE_MAP.put('y', ISOChronology.yearRule());
         RULE_MAP.put('x', ISOChronology.weekBasedYearRule());  // new
@@ -923,7 +967,7 @@ public final class DateTimeFormatterBuilder {
         RULE_MAP.put('H', ISOChronology.hourOfDayRule());
 //        RULE_MAP.put('k', ISOChronology.clockHourOfDayRule());
         RULE_MAP.put('K', ISOChronology.hourOfAmPmRule());
-//        RULE_MAP.put('h', ISOChronology.clockHourOfAmPmRule());  // TODO
+        RULE_MAP.put('h', ISOChronology.clockHourOfAmPmRule());
         RULE_MAP.put('m', ISOChronology.minuteOfHourRule());
         RULE_MAP.put('s', ISOChronology.secondOfMinuteRule());
         RULE_MAP.put('S', ISOChronology.milliOfSecondRule());
@@ -1152,5 +1196,34 @@ public final class DateTimeFormatterBuilder {
          */
         NARROW;
     }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Enumeration of the style of a localized date, time or date-time formatter.
+//     *
+//     * @author Stephen Colebourne
+//     */
+//    public static enum FormatStyle {
+//        /**
+//         * Full text style, with the most detail.
+//         * An example might be 'Tuesday, April 12, 1952 AD' or '3:30:42pm PST'.
+//         */
+//        FULL,
+//        /**
+//         * Long text style, with lots of detail.
+//         * An example might be 'January 12, 1952'.
+//         */
+//        LONG,
+//        /**
+//         * Medium text style, with some detail.
+//         * An example might be 'Jan 12, 1952'.
+//         */
+//        MEDIUM,
+//        /**
+//         * Short text style, typically numeric.
+//         * An example might be '12.13.52' or '3:30pm'.
+//         */
+//        SHORT;
+//    }
 
 }
