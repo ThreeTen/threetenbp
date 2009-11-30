@@ -42,6 +42,9 @@ Instant
 Date/Time classes
 - factories from Calendrical... ?
 - parse factories
+- getYearMonth(), getMonthDay()
+- getChronology()
+- DONE - withXxx() taking Year, MonthOfYear - with(Adjuster)
 
 Date/Time fields
 - isJanuary()
@@ -62,7 +65,10 @@ Date/Time formatting
 - default calendrical to pre-define era for example
 
 Time zones
-- zone prev/next transition
+- DONE? zone prev/next transition
+- public access to transitions and transition rules?
+- OffsetInfo, discontinuity rename to transition
+- zone rule where time of day is 24:00
 - SPI and zone providers
 - versions of zone data files
 
