@@ -110,7 +110,7 @@ public final class Instant
      * also checks the validity of the result of the provider.
      *
      * @param instantProvider  a provider of instant information, not null
-     * @return the created instant instance, never null
+     * @return the created instant, never null
      */
     public static Instant instant(InstantProvider instantProvider) {
         checkNotNull(instantProvider, "InstantProvider must not be null");
@@ -120,11 +120,11 @@ public final class Instant
     }
 
     /**
-     * Factory method to create an instance of Instant using seconds from the
+     * Obtains an instance of <code>Instant</code> using seconds from the
      * epoch of 1970-01-01T00:00:00Z with a zero nanosecond fraction.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
-     * @return the created Instant, never null
+     * @return the created instant, never null
      */
     public static Instant instant(long epochSeconds) {
         if (epochSeconds == 0) {
@@ -134,7 +134,7 @@ public final class Instant
     }
 
     /**
-     * Factory method to create an instance of Instant using seconds from the
+     * Obtains an instance of <code>Instant</code> using seconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
      * <p>
      * Primitive fractions of seconds can be unintuitive.
@@ -147,11 +147,11 @@ public final class Instant
      * <code>instant(0L, -1)</code> - which does represent one nanosecond before
      * the epoch.
      * Thus, the <code>nanoOfSecond</code> parameter is a positive or negative
-     * adjustment to the <code>epochSeconds</code> parameter along the timeline.
+     * adjustment to the <code>epochSeconds</code> parameter along the time-line.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfSecond  the nanoseconds within the second, -999,999,999 to 999,999,999
-     * @return the created Instant
+     * @return the created instant, never null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, int nanoOfSecond) {
@@ -172,12 +172,12 @@ public final class Instant
     }
 
     /**
-     * Factory method to create an instance of Instant using seconds from the
+     * Obtains an instance of <code>Instant</code> using seconds from the
      * epoch of 1970-01-01T00:00:00Z and fraction of second.
      *
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @param fractionOfSecond  the fraction of the second, from -1 to 1 exclusive
-     * @return the created Instant, never null
+     * @return the created instant, never null
      * @throws IllegalArgumentException if fractionOfSecond is out of range
      */
     public static Instant instant(long epochSeconds, double fractionOfSecond) {
@@ -197,11 +197,11 @@ public final class Instant
 
     //-----------------------------------------------------------------------
     /**
-     * Factory method to create an instance of Instant using milliseconds from the
+     * Obtains an instance of <code>Instant</code> using milliseconds from the
      * epoch of 1970-01-01T00:00:00Z with no further fraction of a second.
      *
      * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
-     * @return the created Instant, never null
+     * @return the created instant, never null
      */
     public static Instant millisInstant(long epochMillis) {
         if (epochMillis < 0) {
@@ -218,12 +218,12 @@ public final class Instant
     }
 
     /**
-     * Factory method to create an instance of Instant using milliseconds from the
+     * Obtains an instance of <code>Instant</code> using milliseconds from the
      * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of millisecond.
      *
      * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
      * @param nanoOfMillisecond  the nanoseconds within the millisecond, must be positive
-     * @return the created Instant, never null
+     * @return the created instant, never null
      * @throws IllegalArgumentException if nanoOfMillisecond is not in the range 0 to 999,999
      */
     public static Instant millisInstant(long epochMillis, int nanoOfMillisecond) {
