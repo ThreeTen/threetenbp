@@ -38,7 +38,12 @@ Duration
 Instant
 - review in line with changes to Duration
 - parse factory
-- time-scales
+
+Time scales
+- time scales (minimum?)
+
+Intervals
+- intervals (defer completely?)
 
 Date/Time classes
 - factories from Calendrical... ?
@@ -75,12 +80,6 @@ Periods
 - construct fields without period units (what does this mean?)
 - formatting (defer? but need parse factory)
 
-Intervals
-- intervals (defer completely?)
-
-Time scales
-- time scales (minimum?)
-
 Matchers/Adjusters
 - DateTimeMatcher
 - DateTimeAdjuster
@@ -105,6 +104,7 @@ Possible items
 - roll()
 - round()
 - iteration
+
 
 DONE
 - getYearMonth(), getMonthDay()
