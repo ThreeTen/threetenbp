@@ -1,13 +1,21 @@
 <!--
   @author Fabio Kung (fabio.kung@gmail.com)
+  @author Oliver Fischer (o.b.fischer@swe-blog.net)
 -->
-<project name="jsr-310-ri" default="jar">
+<project name="jsr-310-ri" default="compileOpenJDK">
     <description>
         Reference Implementation for the JSR 310 - Date and Time API
     </description>
 
     <property file="build.properties" />
+    <property file="version.properties"/>
 
+    <property name="jarCoreName" value="jsr-310-ri-core-${version.full}.jar" />
+    <property name="jarOpenJDKName" value="jsr-310-ri-openjdk-${version.full}.jar" />
+    <property name="jarOracleName" value="jsr-310-ri-oracle-${version.full}.jar" />
+    <property name="jarAllName" value="jsr-310-ri-${version.full}.jar" />
+    <property name="distFileName" value="jsr-310-${version.full}.zip"/>
+    
     <macrodef name="get-dependency">
         <attribute name="group" />
         <attribute name="artifact" />
@@ -19,12 +27,14 @@
                 src="${maven.ibiblio.url}/@{group}/@{artifact}/@{version}/@{artifact}-@{version}@{variant}.jar"
                 dest="@{dest}/@{artifact}-@{version}@{variant}.jar"
                 verbose="true"
-                usetimestamp="true" />
+                usetimestamp="true" ignoreerrors="true"/>
         </sequential>
     </macrodef>
 
     <path id="main.path">
-        <pathelement location="${build.main}" />
+        <pathelement location="${core.classes}" />
+        <pathelement location="${oracle.classes}" />
+        <pathelement location="${ojdk.classes}" />
         <fileset dir="lib/main">
             <include name="**/*.jar" />
         </fileset>
@@ -61,34 +71,54 @@
         <tstamp />
     </target>
 
-    <target name="clean" description="clean up">
+    <target name="cleanAll" description="clean up">
         <delete dir="${build}" />
         <delete dir="${dist}" />
     </target>
 
-    <target name="compile" depends="init" description="compile the source">
-        <mkdir dir="${build.main}" />
-        <javac srcdir="${src.main}" destdir="${build.main}" classpathref="main.path" />
-    </target>
-   
-    <target name="javadoc" depends="init" description="generates javadoc for the api">
-      <mkdir dir="${build.javadoc}"/>
-      <javadoc sourcepath="${src.main}" destdir="${build.javadoc}" 
-                classpathref="main.path"
-               windowtitle="JSR-310 - Date and Time API" 
-               failonerror="true"
-               packagenames="javax.time**/*,java.util**/*"
-               overview="${src.main}/javax/time/overview.html" />
+    <target name="compileCore" depends="init">
+        <mkdir  dir="${core.classes}"/>
+        <javac srcdir="${core.main}" destdir="${core.classes}">
+            <classpath refid="main.path"/>
+        </javac>
     </target>
 
-    <target name="compile-tests" depends="compile" description="compile the tests">
+    <target name="compileOpenJDK" depends="compileCore">
+        <mkdir  dir="${ojdk.classes}"/>
+        <javac srcdir="${ojdk.main}" destdir="${ojdk.classes}" nowarn="true">
+            <classpath refid="main.path"/>            
+        </javac>
+    </target>
+
+    <target name="compileOracle" depends="compileCore">
+        <mkdir dir="${oracle.classes}"/>
+        <javac  srcdir="${oracle.main}" destdir="${oracle.classes}" verbose="yes">
+            <classpath location="${core.classes}"/>
+            <classpath refid="main.path"/>
+        </javac>
+    </target>
+
+    <target name="compileAll" depends="compileCore, compileOracle, compileOpenJDK" description="compile all sources">
+    </target>
+
+    <target name="javadoc" depends="init" description="generates javadoc for the api">
+      <mkdir dir="${build.javadoc}"/>
+      <javadoc sourcepath="${core.main}" destdir="${build.javadoc}"
+               classpathref="main.path"
+               windowtitle="JSR-310 - Date and Time API"
+               failonerror="true"
+               packagenames="javax.time**/*,java.util**/*"
+               overview="${core.main}/javax/time/overview.html" />
+    </target>
+
+    <target name="compile-tests" depends="compileCore" description="compile the tests">
         <mkdir dir="${build.test}" />
-        <javac srcdir="${src.test}" destdir="${build.test}" classpathref="test.path" />
+        <javac srcdir="${core.test}" destdir="${build.test}" classpathref="test.path" />
     </target>
 
     <target name="test" depends="compile-tests" description="run the tests">
         <taskdef resource="testngtasks" classpathref="test.path" />
-        <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${src.test}" haltonfailure="true" verbose="2">
+        <testng classpathref="test.path" outputDir="${build.test}" sourceDir="${core.test}" haltonfailure="true" verbose="2">
             <jvmarg value="-Xmx512M" />
             <classfileset dir="${build.test}" includes="**/Test*.class" excludes="java/util/*" />
         </testng>
@@ -97,24 +127,58 @@
     <target name="coverage" depends="compile-tests" description="test coverage">
         <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
         <mkdir dir="${coverage}" />
-           <emmajava libclasspathref="emma.lib" 
+           <emmajava libclasspathref="emma.lib"
                    fullmetadata="yes"
-                   sourcepath="${src.main}"
+                   sourcepath="${core.test}"
                    classname="javax.time.AllTest"
                 classpathref="test.path">
+               <jvmarg value="-Xmx512M" />
                <filter includes="javax.time.*" excludes="*Test*, *Mock*, *Performance*, *Examples*" />
               <txt outfile="${coverage}/coverage.txt" />
                <html outfile="${coverage}/coverage.html" metrics="method:90,block:90,line:90,class:95" />
         </emmajava>
     </target>
 
-    <target name="jar" depends="compile" description="build a jar file">
+    <target  name="jarOracle" depends="compileOracle">
+        <mkdir dir="${dist}" />        
+        <jar jarfile="${dist}/lib/${jarOracleName}">
+          <fileset dir="${oracle.classes}"/>
+        </jar>
+    </target>
+
+    <target  name="jarOpenJDK" depends="compileOpenJDK">
+        <mkdir dir="${dist}" />
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarOpenJDKName}">
+          <fileset dir="${ojdk.classes}"/>
+        </jar>
+    </target>
+
+    <target name="jarCore" depends="compileCore">
+        <mkdir dir="${dist}" />
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarCoreName}">
+          <fileset dir="${core.classes}"/>
+        </jar>
+    </target>
+
+    <target name="jarAll" depends="compileAll">
+        <mkdir dir="${dist}" />
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarAllName}">
+          <fileset dir="${ojdk.classes}"/>
+          <fileset dir="${oracle.classes}"/>
+          <fileset dir="${core.classes}"/>
+        </jar>
+    </target>
+
+    <target name="jar" depends="compileAll" description="build a jar file">
         <delete dir="${dist}" />
         <mkdir dir="${dist}" />
         <jar jarfile="${dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${build.main}" />
     </target>
 
-    <target name="dist" depends="jar" description="generate the distribution">
+    <target name="dist" depends="jarAll, jarCore, jarOpenJDK, jarOracle" description="generate the distribution">
         <mkdir dir="${dist}/${src}" />
         <copy todir="${dist}/${src}">
             <fileset dir="${src}"/>
@@ -130,11 +194,10 @@
         <copy file="LICENSE_OpenJDK.txt" todir="${dist}" />
         <copy file="README.txt" todir="${dist}" />
         <copy file="TODO.txt" todir="${dist}" />
-        <zip destfile="${ant.project.name}-${DSTAMP}.zip" basedir="${dist}" />
+        <zip destfile="${distFileName}" basedir="${dist}" />
     </target>
 
-    <target name="examples" depends="compile-tests" description="outputs some examples to system out">
+    <target name="testExamples" depends="compile-tests" description="outputs some examples to system out">
         <java classname="javax.time.Examples" classpathref="test.path" fork="true"/>
     </target>
-
 </project>
