@@ -1890,6 +1890,7 @@ public abstract class Calendar
      * @return <code>true</code> if this object is equal to <code>obj</code>;
      * <code>false</code> otherwise.
      */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -1914,6 +1915,7 @@ public abstract class Calendar
      * @return a hash code value for this object.
      * @since 1.2
      */
+    @Override
     public int hashCode() {
         // 'otheritems' represents the hash code for the previous versions.
         int otheritems = (lenient ? 1 : 0)
@@ -2389,6 +2391,7 @@ public abstract class Calendar
      *
      * @return a copy of this object.
      */
+    @Override
     public Object clone()
     {
         try {
@@ -2438,6 +2441,7 @@ public abstract class Calendar
      *
      * @return  a string representation of this calendar.
      */
+    @Override
     public String toString() {
         // NOTE: BuddhistCalendar.toString() interprets the string
         // produced by this method so that the Gregorian year number

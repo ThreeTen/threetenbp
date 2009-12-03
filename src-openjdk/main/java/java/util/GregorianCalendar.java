@@ -852,6 +852,7 @@ public class GregorianCalendar
      * <code>false</code> otherwise.
      * @see Calendar#compareTo(Calendar)
      */
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof GregorianCalendar &&
             super.equals(obj) &&
@@ -861,6 +862,7 @@ public class GregorianCalendar
     /**
      * Generates the hash code for this <code>GregorianCalendar</code> object.
      */
+    @Override
     public int hashCode() {
         return super.hashCode() ^ (int)gregorianCutoverDate;
     }
@@ -893,6 +895,7 @@ public class GregorianCalendar
      * or if any calendar fields have out-of-range values in
      * non-lenient mode.
      */
+    @Override
     public void add(int field, int amount) {
         // If amount == 0, do nothing even the given field is out of
         // range. This is tested by JCK.
@@ -1091,6 +1094,7 @@ public class GregorianCalendar
      * @see #add(int,int)
      * @see #set(int,int)
      */
+    @Override
     public void roll(int field, boolean up) {
         roll(field, up ? +1 : -1);
     }
@@ -1139,6 +1143,7 @@ public class GregorianCalendar
      * @see #set(int,int)
      * @since 1.2
      */
+    @Override
     public void roll(int field, int amount) {
         // If amount == 0, do nothing even the given field is out of
         // range. This is tested by JCK.
@@ -1495,6 +1500,7 @@ public class GregorianCalendar
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
+    @Override
     public int getMinimum(int field) {
         return MIN_VALUES[field];
     }
@@ -1518,6 +1524,7 @@ public class GregorianCalendar
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
+    @Override
     public int getMaximum(int field) {
         switch (field) {
         case MONTH:
@@ -1566,6 +1573,7 @@ public class GregorianCalendar
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
+    @Override
     public int getGreatestMinimum(int field) {
         if (field == DAY_OF_MONTH) {
             BaseCalendar.Date d = getGregorianCutoverDate();
@@ -1595,6 +1603,7 @@ public class GregorianCalendar
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
+    @Override
     public int getLeastMaximum(int field) {
         switch (field) {
         case MONTH:
@@ -1644,6 +1653,7 @@ public class GregorianCalendar
      * @see #getActualMaximum(int)
      * @since 1.2
      */
+    @Override
     public int getActualMinimum(int field) {
         if (field == DAY_OF_MONTH) {
             GregorianCalendar gc = getNormalizedCalendar();
@@ -1680,6 +1690,7 @@ public class GregorianCalendar
      * @see #getActualMinimum(int)
      * @since 1.2
      */
+    @Override
     public int getActualMaximum(int field) {
         final int fieldsForFixedMax = ERA_MASK|DAY_OF_WEEK_MASK|HOUR_MASK|AM_PM_MASK|
             HOUR_OF_DAY_MASK|MINUTE_MASK|SECOND_MASK|MILLISECOND_MASK|
@@ -1943,6 +1954,7 @@ public class GregorianCalendar
             (internalGet(ZONE_OFFSET) + internalGet(DST_OFFSET));
     }
 
+    @Override
     public Object clone()
     {
         GregorianCalendar other = (GregorianCalendar) super.clone();
@@ -1960,6 +1972,7 @@ public class GregorianCalendar
         return other;
     }
 
+    @Override
     public TimeZone getTimeZone() {
         TimeZone zone = super.getTimeZone();
         // To share the zone by CalendarDates
@@ -1970,6 +1983,7 @@ public class GregorianCalendar
         return zone;
     }
 
+    @Override
     public void setTimeZone(TimeZone zone) {
         super.setTimeZone(zone);
         // To share the zone by CalendarDates
@@ -2040,6 +2054,7 @@ public class GregorianCalendar
      *
      * @see Calendar#complete
      */
+    @Override
     protected void computeFields() {
         int mask = 0;
         if (isPartiallyNormalized()) {
@@ -2361,6 +2376,7 @@ public class GregorianCalendar
      *
      * @exception IllegalArgumentException if any calendar fields are invalid.
      */
+    @Override
     protected void computeTime() {
         // In non-lenient mode, perform brief checking of calendar
         // fields which have been set externally. Through this

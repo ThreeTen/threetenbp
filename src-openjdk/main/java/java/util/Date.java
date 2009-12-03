@@ -323,6 +323,7 @@ public class Date
     /**
      * Return a copy of this object.
      */
+    @Override
     public Object clone() {
         Date d = null;
         try {
@@ -992,6 +993,7 @@ public class Date
      *          <code>false</code> otherwise.
      * @see     java.util.Date#getTime()
      */
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof Date && getTime() == ((Date) obj).getTime();
     }
@@ -1035,6 +1037,7 @@ public class Date
      *
      * @return  a hash code value for this object.
      */
+    @Override
     public int hashCode() {
         long ht = this.getTime();
         return (int) ht ^ (int) (ht >> 32);
@@ -1070,6 +1073,7 @@ public class Date
      * @see     java.util.Date#toLocaleString()
      * @see     java.util.Date#toGMTString()
      */
+    @Override
     public String toString() {
         // "EEE MMM dd HH:mm:ss zzz yyyy";
         BaseCalendar.Date date = normalize();
