@@ -492,47 +492,6 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>YearMonth</code> initialised to the
-     * year and month of this date-time.
-     *
-     * @return the year-month object, never null
-     */
-    public YearMonth getYearMonth() {
-        return date.getYearMonth();
-    }
-
-    /**
-     * Gets an instance of <code>MonthDay</code> initialised to the
-     * month and day of month of this date-time.
-     *
-     * @return the month-day object, never null
-     */
-    public MonthDay getMonthDay() {
-        return date.getMonthDay();
-    }
-
-    /**
-     * Gets an instance of <code>LocalDate</code> initialised to the
-     * date of this date-time.
-     *
-     * @return the date object, never null
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
-     * Gets an instance of <code>LocalTime</code> initialised to the
-     * time of this date-time.
-     *
-     * @return the time object, never null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the year field as a <code>Year</code>.
      * <p>
      * This method provides access to an object representing the year field.

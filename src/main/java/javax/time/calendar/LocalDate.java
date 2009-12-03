@@ -339,27 +339,6 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>YearMonth</code> initialised to the
-     * year and month of this date.
-     *
-     * @return the year-month object, never null
-     */
-    public YearMonth getYearMonth() {
-        return YearMonth.yearMonth(year, month);
-    }
-
-    /**
-     * Gets an instance of <code>MonthDay</code> initialised to the
-     * month and day of month of this date.
-     *
-     * @return the month-day object, never null
-     */
-    public MonthDay getMonthDay() {
-        return MonthDay.monthDay(month, day);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the year field as a <code>Year</code>.
      * <p>
      * This method provides access to an object representing the year field.

@@ -453,16 +453,6 @@ public class TestLocalDate {
     // get*()
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
-    public void test_getYearMonth(int y, int m, int d) {
-        assertEquals(LocalDate.date(y, m, d).getYearMonth(), YearMonth.yearMonth(y, m));
-    }
-
-    @Test(dataProvider="sampleDates")
-    public void test_getMonthDay(int y, int m, int d) {
-        assertEquals(LocalDate.date(y, m, d).getMonthDay(), MonthDay.monthDay(m, d));
-    }
-
-    @Test(dataProvider="sampleDates")
     public void test_get(int y, int m, int d) {
         LocalDate a = LocalDate.date(y, m, d);
         assertEquals(a.getYear(), y);

@@ -38,13 +38,12 @@ Duration
 Instant
 - review in line with changes to Duration
 - parse factory
+- time-scales
 
 Date/Time classes
 - factories from Calendrical... ?
 - parse factories
-- getYearMonth(), getMonthDay()
 - getChronology()
-- DONE - withXxx() taking Year, MonthOfYear - with(Adjuster)
 
 Date/Time fields
 - isJanuary()
@@ -65,7 +64,6 @@ Date/Time formatting
 - default calendrical to pre-define era for example
 
 Time zones
-- DONE? zone prev/next transition
 - public access to transitions and transition rules?
 - OffsetInfo, discontinuity rename to transition
 - zone rule where time of day is 24:00
@@ -107,3 +105,9 @@ Possible items
 - roll()
 - round()
 - iteration
+
+DONE
+- getYearMonth(), getMonthDay()
+- withXxx() taking Year, MonthOfYear - with(Adjuster)
+- zone prev/next transition
+

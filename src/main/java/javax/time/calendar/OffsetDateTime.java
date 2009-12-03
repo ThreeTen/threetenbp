@@ -1758,8 +1758,8 @@ public final class OffsetDateTime
      * @return the number of seconds from the epoch of 1970-01-01T00:00:00Z
      */
     public long toEpochSeconds() {
-        long epochDays = dateTime.getDate().toEpochDays();
-        long secs = epochDays * 60L * 60L * 24L + dateTime.getTime().toSecondOfDay();
+        long epochDays = dateTime.toLocalDate().toEpochDays();
+        long secs = epochDays * 60L * 60L * 24L + dateTime.toLocalTime().toSecondOfDay();
         secs -= offset.getAmountSeconds();
         return secs;
     }
