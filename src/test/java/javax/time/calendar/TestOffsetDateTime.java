@@ -371,7 +371,6 @@ public class TestOffsetDateTime {
         LocalTime localTime = LocalTime.time(h, m, s, n);
         LocalDateTime localDateTime = LocalDateTime.dateTime(localDate, localTime);
         OffsetDateTime a = OffsetDateTime.dateTime(localDateTime, offset);
-        assertSame(a.getDateTime(), localDateTime);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         

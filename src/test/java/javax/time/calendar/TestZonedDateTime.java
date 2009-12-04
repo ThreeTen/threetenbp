@@ -568,7 +568,6 @@ public class TestZonedDateTime {
         LocalDateTime localDateTime = LocalDateTime.dateTime(localDate, localTime);
         ZoneOffset offset = zone.getRules().getOffsetInfo(localDateTime).getEstimatedOffset();
         ZonedDateTime a = ZonedDateTime.dateTime(localDateTime, zone);
-        assertSame(a.getDateTime(), localDateTime);
         assertSame(a.getOffset(), offset);
         assertSame(a.getZone(), zone);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
@@ -708,7 +707,7 @@ public class TestZonedDateTime {
         ZonedDateTime base = ZonedDateTime.dateTime(odt, ZONE_PARIS);
         ZonedDateTime test = base.withEarlierOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0200);  // offset changed to earlier
-        assertSame(test.getDateTime(), base.getDateTime());
+        assertSame(test.toLocalDateTime(), base.toLocalDateTime());
         assertSame(test.getZone(), base.getZone());
     }
 
@@ -741,7 +740,7 @@ public class TestZonedDateTime {
         ZonedDateTime base = ZonedDateTime.dateTime(odt, ZONE_PARIS);
         ZonedDateTime test = base.withLaterOffsetAtOverlap();
         assertEquals(test.getOffset(), OFFSET_0100);  // offset changed to later
-        assertSame(test.getDateTime(), base.getDateTime());
+        assertSame(test.toLocalDateTime(), base.toLocalDateTime());
         assertSame(test.getZone(), base.getZone());
     }
 

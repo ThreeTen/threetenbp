@@ -317,7 +317,7 @@ public abstract class ZoneRules {
      * @return true if the offset date-time is valid for these rules
      */
     public boolean isValidDateTime(OffsetDateTime dateTime) {
-        OffsetInfo info = getOffsetInfo(dateTime.getDateTime());
+        OffsetInfo info = getOffsetInfo(dateTime.toLocalDateTime());
         return info.isValidOffset(dateTime.getOffset());
     }
 

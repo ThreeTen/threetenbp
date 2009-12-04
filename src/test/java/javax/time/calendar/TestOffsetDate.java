@@ -461,7 +461,6 @@ public class TestOffsetDate {
     public void test_get(int y, int m, int d, ZoneOffset offset) {
         LocalDate localDate = LocalDate.date(y, m, d);
         OffsetDate a = OffsetDate.date(localDate, offset);
-        assertSame(a.getDate(), localDate);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
@@ -1703,7 +1702,7 @@ public class TestOffsetDate {
     @Test(dataProvider="sampleDates")
     public void test_toCalendrical(int year, int month, int day, ZoneOffset offset) {
         OffsetDate t = OffsetDate.date(year, month, day, offset);
-        assertEquals(t.toCalendrical(), new Calendrical(t.getDate(), null, t.getOffset(), null));
+        assertEquals(t.toCalendrical(), new Calendrical(t.toLocalDate(), null, t.getOffset(), null));
     }
 
     //-----------------------------------------------------------------------
@@ -1897,7 +1896,7 @@ public class TestOffsetDate {
     }
 
     public void test_matchesDate_itself_true() {
-        assertEquals(TEST_2007_07_15_PONE.matchesDate(TEST_2007_07_15_PONE.getDate()), true);
+        assertEquals(TEST_2007_07_15_PONE.matchesDate(TEST_2007_07_15_PONE.toLocalDate()), true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1911,13 +1910,13 @@ public class TestOffsetDate {
     @Test(dataProvider="sampleDates")
     public void test_adjustDate(int y, int m, int d, ZoneOffset offset) {
         OffsetDate a = OffsetDate.date(y, m, d, offset);
-        assertSame(a.adjustDate(TEST_2007_07_15_PONE.getDate()), a.getDate());
-        assertSame(TEST_2007_07_15_PONE.adjustDate(a.getDate()), TEST_2007_07_15_PONE.getDate());
+        assertSame(a.adjustDate(TEST_2007_07_15_PONE.toLocalDate()), a.toLocalDate());
+        assertSame(TEST_2007_07_15_PONE.adjustDate(a.toLocalDate()), TEST_2007_07_15_PONE.toLocalDate());
     }
 
     public void test_adjustDate_same() {
-        assertSame(OffsetDate.date(2007, 7, 15, OFFSET_PONE).adjustDate(TEST_2007_07_15_PONE.getDate()), 
-              TEST_2007_07_15_PONE.getDate());
+        assertSame(OffsetDate.date(2007, 7, 15, OFFSET_PONE).adjustDate(TEST_2007_07_15_PONE.toLocalDate()),
+              TEST_2007_07_15_PONE.toLocalDate());
     }
 
     @Test(expectedExceptions=NullPointerException.class)

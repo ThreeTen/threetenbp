@@ -300,17 +300,6 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the local time.
-     * <p>
-     * This returns the time without the zone offset.
-     *
-     * @return the local time, never null
-     */
-    public LocalTime getTime() {
-        return time;
-    }
-
-    /**
      * Returns a copy of this OffsetTime with a different local time.
      * <p>
      * This method changes the time stored to a different time.

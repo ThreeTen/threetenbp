@@ -442,17 +442,6 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the local date-time, such as '2007-12-03T10:15:30'.
-     * <p>
-     * This returns the date-time without any zone or offset information.
-     *
-     * @return the local date-time, never null
-     */
-    public LocalDateTime getDateTime() {
-        return dateTime.getDateTime();
-    }
-
-    /**
      * Returns a copy of this ZonedDateTime with a different local date-time.
      * <p>
      * This method changes the offset date-time stored to a different one.

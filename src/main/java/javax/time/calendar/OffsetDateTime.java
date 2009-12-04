@@ -522,17 +522,6 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the local date-time.
-     * <p>
-     * This returns the date-time without the zone offset.
-     *
-     * @return the local date-time, never null
-     */
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    /**
      * Returns a copy of this OffsetDateTime with a different local date-time.
      * <p>
      * This method changes the date-time stored to a different one.

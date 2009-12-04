@@ -252,17 +252,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the local date.
-     * <p>
-     * This returns the date without the zone offset.
-     *
-     * @return the local date, never null
-     */
-    public LocalDate getDate() {
-        return date;
-    }
-
-    /**
      * Returns a copy of this OffsetDate with a different local date.
      * <p>
      * This method changes the date stored to a different date.

@@ -394,7 +394,6 @@ public class TestOffsetTime {
     public void test_get(int h, int m, int s, int n, ZoneOffset offset) {
         LocalTime localTime = LocalTime.time(h, m, s, n);
         OffsetTime a = OffsetTime.time(localTime, offset);
-        assertSame(a.getTime(), localTime);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
@@ -1005,7 +1004,7 @@ public class TestOffsetTime {
     }
 
     public void test_matchesTime_itself_true() {
-        assertEquals(TEST_TIME.matchesTime(TEST_TIME.getTime()), true);
+        assertEquals(TEST_TIME.matchesTime(TEST_TIME.toLocalTime()), true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1019,12 +1018,12 @@ public class TestOffsetTime {
     @Test(dataProvider="sampleTimes")
     public void test_adjustTime(int h, int m, int s, int n, ZoneOffset ignored) {
         LocalTime a = LocalTime.time(h, m, s, n);
-        assertSame(a.adjustTime(TEST_TIME.getTime()), a);
-        assertSame(TEST_TIME.adjustTime(a), TEST_TIME.getTime());
+        assertSame(a.adjustTime(TEST_TIME.toLocalTime()), a);
+        assertSame(TEST_TIME.adjustTime(a), TEST_TIME.toLocalTime());
     }
 
     public void test_adjustTime_same() {
-        assertSame(OffsetTime.time(11, 30, 59, 500, OFFSET_PTWO).adjustTime(TEST_TIME.getTime()), TEST_TIME.getTime());
+        assertSame(OffsetTime.time(11, 30, 59, 500, OFFSET_PTWO).adjustTime(TEST_TIME.toLocalTime()), TEST_TIME.toLocalTime());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
