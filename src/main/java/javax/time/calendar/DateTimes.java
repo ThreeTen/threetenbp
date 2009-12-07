@@ -65,30 +65,9 @@ public final class DateTimes {
      *
      * @return the instant provider comparator, never null
      */
+    @SuppressWarnings("unchecked")
     public static Comparator<InstantProvider> instantComparator() {
-        return InstantProviderComparator.INSTANCE;
-    }
-
-    /**
-     * Sort by InstantProvider.
-     */
-    private static final class InstantProviderComparator implements Comparator<InstantProvider>, Serializable {
-        /** Singleton. */
-        static final Comparator<InstantProvider> INSTANCE = new InstantProviderComparator();
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private InstantProviderComparator() {
-            super();
-        }
-        /** Preserve singleton. */
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        public int compare(InstantProvider ip1, InstantProvider ip2) {
-            return Instant.instant(ip1).compareTo(Instant.instant(ip2));
-        }
+        return Impl.INSTANT;
     }
 
     //-----------------------------------------------------------------------
@@ -103,30 +82,9 @@ public final class DateTimes {
      *
      * @return the local date-time provider comparator, never null
      */
+    @SuppressWarnings("unchecked")
     public static Comparator<DateTimeProvider> localDateTimeComparator() {
-        return DateTimeProviderComparator.INSTANCE;
-    }
-
-    /**
-     * Sort by DateTimeProvider.
-     */
-    private static final class DateTimeProviderComparator implements Comparator<DateTimeProvider>, Serializable {
-        /** Singleton. */
-        static final Comparator<DateTimeProvider> INSTANCE = new DateTimeProviderComparator();
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DateTimeProviderComparator() {
-            super();
-        }
-        /** Preserve singleton. */
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        public int compare(DateTimeProvider dtp1, DateTimeProvider dtp2) {
-            return LocalDateTime.dateTime(dtp1).compareTo(LocalDateTime.dateTime(dtp2));
-        }
+        return Impl.DATE_TIME;
     }
 
     //-----------------------------------------------------------------------
@@ -142,30 +100,9 @@ public final class DateTimes {
      *
      * @return the local date provider comparator, never null
      */
+    @SuppressWarnings("unchecked")
     public static Comparator<DateProvider> localDateComparator() {
-        return DateProviderComparator.INSTANCE;
-    }
-
-    /**
-     * Sort by DateProvider.
-     */
-    private static final class DateProviderComparator implements Comparator<DateProvider>, Serializable {
-        /** Singleton. */
-        static final Comparator<DateProvider> INSTANCE = new DateProviderComparator();
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private DateProviderComparator() {
-            super();
-        }
-        /** Preserve singleton. */
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        public int compare(DateProvider dp1, DateProvider dp2) {
-            return LocalDate.date(dp1).compareTo(LocalDate.date(dp2));
-        }
+        return Impl.DATE;
     }
 
     //-----------------------------------------------------------------------
@@ -181,30 +118,45 @@ public final class DateTimes {
      *
      * @return the local time provider comparator, never null
      */
+    @SuppressWarnings("unchecked")
     public static Comparator<TimeProvider> localTimeComparator() {
-        return TimeProviderComparator.INSTANCE;
+        return Impl.TIME;
     }
 
+    //-------------------------------------------------------------------------
     /**
-     * Sort by TimeProvider.
+     * Sort implementations.
      */
-    private static final class TimeProviderComparator implements Comparator<TimeProvider>, Serializable {
-        /** Singleton. */
-        static final Comparator<TimeProvider> INSTANCE = new TimeProviderComparator();
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private TimeProviderComparator() {
-            super();
-        }
-        /** Preserve singleton. */
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        /** {@inheritDoc} */
-        public int compare(TimeProvider tp1, TimeProvider tp2) {
-            return LocalTime.time(tp1).compareTo(LocalTime.time(tp2));
-        }
+    @SuppressWarnings("unchecked")
+    private static enum Impl implements Comparator, Serializable {
+        /** Instant comparator. */
+        INSTANT {
+            /** {@inheritDoc} */
+            public int compare(Object obj1, Object obj2) {
+                return Instant.instant((InstantProvider) obj1).compareTo(Instant.instant((InstantProvider) obj2));
+            }
+        },
+        /** Date-time comparator. */
+        DATE_TIME {
+            /** {@inheritDoc} */
+            public int compare(Object obj1, Object obj2) {
+                return LocalDateTime.dateTime((DateTimeProvider) obj1).compareTo(LocalDateTime.dateTime((DateTimeProvider) obj2));
+            }
+        },
+        /** Date comparator. */
+        DATE {
+            /** {@inheritDoc} */
+            public int compare(Object obj1, Object obj2) {
+                return LocalDate.date((DateProvider) obj1).compareTo(LocalDate.date((DateProvider) obj2));
+            }
+        },
+        /** Time comparator. */
+        TIME {
+            /** {@inheritDoc} */
+            public int compare(Object obj1, Object obj2) {
+                return LocalTime.time((TimeProvider) obj1).compareTo(LocalTime.time((TimeProvider) obj2));
+            }
+        },
     }
 
 }
