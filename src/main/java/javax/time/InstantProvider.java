@@ -60,8 +60,8 @@ package javax.time;
  * {@link javax.time.calendar.ZonedDateTime ZonedDateTime}, implements this
  * interface and also provides full date, time and time zone information.
  * <p>
- * InstantProvider makes no guarantees about the thread-safety or immutability
- * of implementations.
+ * InstantProvider makes no overall guarantees about the thread-safety or immutability
+ * of implementations. However, the method itself has a specific thread-safe guarantee.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -69,7 +69,7 @@ package javax.time;
 public interface InstantProvider {
 
     /**
-     * Returns an instance of <code>Instant</code> initialised from the
+     * Returns an instance of <code>Instant</code> initialized from the
      * state of this object.
      * <p>
      * This method will take the instant represented by this object and return
@@ -80,6 +80,12 @@ public interface InstantProvider {
      * below the precision it does support must be set to zero. For example,
      * if this instance only stores millisecond precision, then the
      * nanoseconds part of the <code>Instant</code> will be set to zero.
+     * <p>
+     * InstantProvider makes no overall guarantees about the thread-safety.
+     * However, this method must return a fully consistent result.
+     * For example, if the implementation is mutable and contains two fields,
+     * then the result of this method must refer to a valid snapshot of both fields,
+     * and not a snapshot where one field has been updated and not the other.
      *
      * @return the <code>Instant</code> equivalent to this object, never null
      * @throws CalendricalException if the time cannot be converted
