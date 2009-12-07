@@ -44,7 +44,7 @@ import javax.time.calendar.format.CalendricalParseException;
  * This is used to represent the human-scale description of an amount of time, known as a period.
  * As an example, "3 months, 4 days and 7 hours" can be stored.
  * <p>
- * Period stores just six units - years, months, days, hours, minutes and seconds.
+ * Period stores just seven units - years, months, days, hours, minutes, seconds, and nanoseconds.
  * Certain methods have an implied relationship between some of these units:
  * <ul>
  * <li>12 months in a year</li>
@@ -456,6 +456,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of years.
      * <p>
+     * This method will only affect the the years field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to represent
@@ -470,6 +473,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified amount of months.
+     * <p>
+     * This method will only affect the the months field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -486,6 +492,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of days.
      * <p>
+     * This method will only affect the the days field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to represent
@@ -500,6 +509,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified amount of hours.
+     * <p>
+     * This method will only affect the the hours field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -516,6 +528,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of minutes.
      * <p>
+     * This method will only affect the the minutes field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to represent
@@ -531,6 +546,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified amount of seconds.
      * <p>
+     * This method will only affect the the seconds field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to represent
@@ -545,6 +563,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified amount of nanoseconds.
+     * <p>
+     * This method will only affect the the nanoseconds field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -585,6 +606,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of years added.
      * <p>
+     * This method will only affect the the years field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to add, positive or negative
@@ -597,6 +621,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified number of months added.
+     * <p>
+     * This method will only affect the the months field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -611,6 +638,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of days added.
      * <p>
+     * This method will only affect the the days field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to add, positive or negative
@@ -623,6 +653,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified number of hours added.
+     * <p>
+     * This method will only affect the the hours field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -637,6 +670,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of minutes added.
      * <p>
+     * This method will only affect the the minutes field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to add, positive or negative
@@ -650,6 +686,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of seconds added.
      * <p>
+     * This method will only affect the the seconds field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to add, positive or negative
@@ -662,6 +701,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified number of nanoseconds added.
+     * <p>
+     * This method will only affect the the nanoseconds field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -700,6 +742,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of years subtracted.
      * <p>
+     * This method will only affect the the years field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param years  the years to subtract, positive or negative
@@ -712,6 +757,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified number of months subtracted.
+     * <p>
+     * This method will only affect the the months field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -726,6 +774,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of days subtracted.
      * <p>
+     * This method will only affect the the days field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param days  the days to subtract, positive or negative
@@ -738,6 +789,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified number of hours subtracted.
+     * <p>
+     * This method will only affect the the hours field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -752,6 +806,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of minutes subtracted.
      * <p>
+     * This method will only affect the the minutes field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param minutes  the minutes to subtract, positive or negative
@@ -765,6 +822,9 @@ public final class Period
     /**
      * Returns a copy of this period with the specified number of seconds subtracted.
      * <p>
+     * This method will only affect the the seconds field.
+     * All other fields are left untouched.
+     * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param seconds  the seconds to subtract, positive or negative
@@ -777,6 +837,9 @@ public final class Period
 
     /**
      * Returns a copy of this period with the specified number of nanoseconds subtracted.
+     * <p>
+     * This method will only affect the the nanoseconds field.
+     * All other fields are left untouched.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
