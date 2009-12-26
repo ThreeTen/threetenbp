@@ -39,6 +39,11 @@ package javax.time.calendar.format;
 public class CalendricalParseException extends RuntimeException {
 
     /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * The text that was being parsed.
      */
     private final String parsedString;

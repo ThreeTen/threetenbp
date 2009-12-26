@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,6 +39,11 @@ import javax.time.CalendricalException;
  * @author Stephen Colebourne
  */
 public class CalendarConversionException extends CalendricalException {
+
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 36572682L;
 
     /**
      * Constructs a new conversion exception with the specified message.

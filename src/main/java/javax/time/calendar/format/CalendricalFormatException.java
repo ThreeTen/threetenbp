@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,6 +41,11 @@ import java.io.IOException;
 public class CalendricalFormatException extends RuntimeException {
 
     /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Constructs a new exception with the specified message.
      *
      * @param message  the message to use for this exception, may be null
@@ -62,7 +67,7 @@ public class CalendricalFormatException extends RuntimeException {
     //-----------------------------------------------------------------------
     /**
      * Checks if the cause of this exception was an IOException, and if so
-     * rethrows it
+     * re-throws it
      * <p>
      * This method is useful if you call a printer with an open stream or
      * writer and want to ensure that IOExceptions are not lost.
@@ -71,10 +76,10 @@ public class CalendricalFormatException extends RuntimeException {
      *   printer.print(writer, dateTime);
      * } catch (CalendricalFormatException ex) {
      *   ex.rethrowIOException();
-     *   // if code reaches here exception was caused by datetime issues
+     *   // if code reaches here exception was caused by date-time issues
      * }
      * </pre>
-     * Note that calling this method will rethrow the original IOException,
+     * Note that calling this method will re-throw the original IOException,
      * causing this CalendricalFormatException to be lost.
      *
      * @throws IOException if the cause of this exception is an IOException

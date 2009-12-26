@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -40,6 +40,11 @@ package javax.time;
  * @author Stephen Colebourne
  */
 public class CalendricalException extends RuntimeException {
+
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = -352878934L;
 
     /**
      * Constructs a new conversion exception with the specified message.
