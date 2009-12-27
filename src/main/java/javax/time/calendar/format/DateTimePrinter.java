@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,7 @@ import java.io.IOException;
 import javax.time.calendar.Calendrical;
 
 /**
- * Strategy for printing a date to an appenable.
+ * Strategy for printing a date to an appendable.
  * <p>
  * The printer may print any part, or the whole, of the input Calendrical.
  * Typically, a complete print is constructed from a number of smaller
