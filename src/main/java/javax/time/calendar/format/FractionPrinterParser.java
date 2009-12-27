@@ -78,7 +78,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         int value = rule.getInt(calendrical);
-        BigDecimal fraction = rule.convertValueToFraction(value);
+        BigDecimal fraction = rule.convertIntToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {
                 appendable.append(symbols.getDecimalPointChar());
@@ -139,7 +139,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             total = total * 10 + digit;
         }
         BigDecimal fraction = new BigDecimal(total).movePointLeft(pos - position);
-        int value = rule.convertFractionToValue(fraction);
+        int value = rule.convertFractionToInt(fraction);
         context.setParsed(rule, value);
         return pos;
     }

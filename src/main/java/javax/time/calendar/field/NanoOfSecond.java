@@ -160,7 +160,7 @@ public final class NanoOfSecond
      * @return the nano of second, from 0 to 0.999,999,999, never null
      */
     public BigDecimal getFractionalValue() {
-        return rule().convertValueToFraction(nanoOfSecond);
+        return rule().convertIntToFraction(nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------

@@ -575,7 +575,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * @throws UnsupportedRuleException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public BigDecimal convertValueToFraction(int value) {
+    public BigDecimal convertIntToFraction(int value) {
         if (isFixedValueSet() == false) {
             throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
                     " cannot be obtained as the range is not fixed");
@@ -608,7 +608,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * @throws UnsupportedRuleException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public int convertFractionToValue(BigDecimal fraction) {
+    public int convertFractionToInt(BigDecimal fraction) {
         if (isFixedValueSet() == false) {
             throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
                     " cannot be converted as the range is not fixed");
