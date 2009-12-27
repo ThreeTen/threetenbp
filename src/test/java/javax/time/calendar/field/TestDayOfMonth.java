@@ -32,6 +32,7 @@
 package javax.time.calendar.field;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -118,7 +119,7 @@ public class TestDayOfMonth {
 
     //-----------------------------------------------------------------------
     public void test_rule() {
-        assertEquals(DayOfMonth.rule(), RULE);
+        assertSame(DayOfMonth.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------

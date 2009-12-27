@@ -954,12 +954,12 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.get(yearRule());
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            if (year != null && moy != null) {
-                return moy.lengthInDays(year);
+            if (moy == null) {
+                return 31;
             }
-            return getMaximumValue();
+            Integer year = calendrical.get(yearRule());
+            return year != null ? moy.lengthInDays(year) : moy.maxLengthInDays();
         }
         @Override
         protected Integer deriveValue(Calendrical calendrical) {
@@ -991,10 +991,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public int getMaximumValue(Calendrical calendrical) {
             Integer year = calendrical.get(yearRule());
-            if (year != null) {
-                return Year.isoYear(year).lengthInDays();
-            }
-            return getMaximumValue();
+            return (year != null && isLeapYear(year) == false ? 365 : 366);
         }
         @Override
         protected Integer deriveValue(Calendrical calendrical) {

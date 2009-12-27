@@ -40,6 +40,10 @@ import javax.time.calendar.TestDateMatchers;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestISODayOfMonthRule;
+import javax.time.calendar.TestISODayOfWeekRule;
+import javax.time.calendar.TestISODayOfYearRule;
+import javax.time.calendar.TestISOMonthOfYearRule;
+import javax.time.calendar.TestISOYearRule;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
@@ -132,6 +136,10 @@ public class AllTest {
 //            TestDateTimeFields.class,  // needs Comparable impl
             TestISOChronology.class,
             TestISODayOfMonthRule.class,
+            TestISODayOfWeekRule.class,
+            TestISODayOfYearRule.class,
+            TestISOMonthOfYearRule.class,
+            TestISOYearRule.class,
             TestLocalDate.class,
             TestLocalDateTime.class,
             TestLocalTime.class,

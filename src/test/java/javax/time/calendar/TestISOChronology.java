@@ -31,7 +31,9 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,10 +46,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.Year;
 import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
@@ -95,21 +94,6 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    public void test_yearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.yearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.Year");
-        assertEquals(rule.getName(), "Year");
-        assertEquals(rule.getMinimumValue(), Year.MIN_YEAR);
-        assertEquals(rule.getLargestMinimumValue(), Year.MIN_YEAR);
-        assertEquals(rule.getMaximumValue(), Year.MAX_YEAR);
-        assertEquals(rule.getSmallestMaximumValue(), Year.MAX_YEAR);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
-        assertEquals(rule.getPeriodRange(), null);
-        serialize(rule);
-    }
-
 //    public void test_twoDigitYearRule() throws Exception {
 //        DateTimeFieldRule rule = ISOChronology.twoDigitYearRule();
 //        assertEquals(rule.getID(), "ISO.TwoDigitYear");
@@ -123,51 +107,6 @@ public class TestISOChronology {
 //        assertEquals(rule.getPeriodRange(), PeriodUnits.CENTURIES);
 //        serialize(rule);
 //    }
-
-    public void test_monthOfYearRule() throws Exception {
-        DateTimeFieldRule<MonthOfYear> rule = ISOChronology.monthOfYearRule();
-        assertEquals(rule.getReifiedType(), MonthOfYear.class);
-        assertEquals(rule.getID(), "ISO.MonthOfYear");
-        assertEquals(rule.getName(), "MonthOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 12);
-        assertEquals(rule.getSmallestMaximumValue(), 12);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        serialize(rule);
-    }
-
-    public void test_dayOfMonthRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.DayOfMonth");
-        assertEquals(rule.getName(), "DayOfMonth");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 31);
-        assertEquals(rule.getSmallestMaximumValue(), 28);
-        assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
-        serialize(rule);
-    }
-
-    public void test_dayOfYearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.DayOfYear");
-        assertEquals(rule.getName(), "DayOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 366);
-        assertEquals(rule.getSmallestMaximumValue(), 365);
-        assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        serialize(rule);
-    }
 
     public void test_weekyearRule() throws Exception {
         DateTimeFieldRule<Integer> rule = ISOChronology.weekBasedYearRule();
@@ -196,21 +135,6 @@ public class TestISOChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKYEARS);
-        serialize(rule);
-    }
-
-    public void test_dayOfWeekRule() throws Exception {
-        DateTimeFieldRule<DayOfWeek> rule = ISOChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), DayOfWeek.class);
-        assertEquals(rule.getID(), "ISO.DayOfWeek");
-        assertEquals(rule.getName(), "DayOfWeek");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 7);
-        assertEquals(rule.getSmallestMaximumValue(), 7);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
         serialize(rule);
     }
 

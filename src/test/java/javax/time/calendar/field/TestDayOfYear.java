@@ -31,6 +31,7 @@
  */
 package javax.time.calendar.field;
 
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -114,7 +115,7 @@ public class TestDayOfYear {
 
     //-----------------------------------------------------------------------
     public void test_rule() {
-        assertEquals(DayOfYear.rule(), RULE);
+        assertSame(DayOfYear.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------

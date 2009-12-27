@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,81 +34,63 @@ package javax.time.calendar;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
 /**
- * Test ISO DayOfMonth rule.
+ * Test ISO MonthOfYear rule.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
+public class TestISOMonthOfYearRule extends AbstractTestDateTimeFieldRule {
 
-    public TestISODayOfMonthRule() {
-        super(LocalDate.date(2009, 12, 26), 26, 26);
+    public TestISOMonthOfYearRule() {
+        super(LocalDate.date(2009, 12, 26), MonthOfYear.DECEMBER, 12);
     }
 
     @Override
-    protected DateTimeFieldRule<Integer> rule() {
-        return ISOChronology.dayOfMonthRule();
+    protected DateTimeFieldRule<MonthOfYear> rule() {
+        return ISOChronology.monthOfYearRule();
     }
 
     //-----------------------------------------------------------------------
     // Basics
     //-----------------------------------------------------------------------
     public void test_basics() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfMonthRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.DayOfMonth");
-        assertEquals(rule.getName(), "DayOfMonth");
+        DateTimeFieldRule<MonthOfYear> rule = ISOChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), MonthOfYear.class);
+        assertEquals(rule.getID(), "ISO.MonthOfYear");
+        assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), 1);
+        assertEquals(rule.getMinimumValue(new MockSimpleCalendrical()), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 31);
-        assertEquals(rule.getSmallestMaximumValue(), 28);
-        assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
+        assertEquals(rule.getMaximumValue(), 12);
+        assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), 12);
+        assertEquals(rule.getSmallestMaximumValue(), 12);
+        assertEquals(rule.isFixedValueSet(), true);
+        assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
+        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
     }
 
     //-----------------------------------------------------------------------
-    // getMaximumValue(Calendrical)
+    // convertValueToInt(T)
     //-----------------------------------------------------------------------
-    public void test_getMaximumValue_Calendrical_june() {
-        Calendrical cal = YearMonth.yearMonth(2007, MonthOfYear.JUNE);
-        assertEquals(rule().getMaximumValue(cal), 30);
+    @Override
+    public void test_convertValueToInt() {
+        assertEquals(rule().convertValueToInt(MonthOfYear.FEBRUARY), 2);
+        assertEquals(rule().convertValueToInt(MonthOfYear.JUNE), 6);
     }
 
-    public void test_getMaximumValue_Calendrical_july() {
-        Calendrical cal = YearMonth.yearMonth(2007, MonthOfYear.JULY);
-        assertEquals(rule().getMaximumValue(cal), 31);
-    }
-
-    public void test_getMaximumValue_Calendrical_febLeap() {
-        Calendrical cal = YearMonth.yearMonth(2008, MonthOfYear.FEBRUARY);
-        assertEquals(rule().getMaximumValue(cal), 29);
-    }
-
-    public void test_getMaximumValue_Calendrical_febNonLeap() {
-        Calendrical cal = YearMonth.yearMonth(2007, MonthOfYear.FEBRUARY);
-        assertEquals(rule().getMaximumValue(cal), 28);
-    }
-
-    public void test_getMaximumValue_Calendrical_juneNoYear() {
-        Calendrical cal = MonthOfYear.JUNE;
-        assertEquals(rule().getMaximumValue(cal), 30);
-    }
-
-    public void test_getMaximumValue_Calendrical_julyNoYear() {
-        Calendrical cal = MonthOfYear.JULY;
-        assertEquals(rule().getMaximumValue(cal), 31);
-    }
-
-    public void test_getMaximumValue_Calendrical_febNoYear() {
-        Calendrical cal = MonthOfYear.FEBRUARY;
-        assertEquals(rule().getMaximumValue(cal), 29);
+    //-----------------------------------------------------------------------
+    // convertIntToValue(int)
+    //-----------------------------------------------------------------------
+    @Override
+    public void test_convertIntToValue() {
+        assertEquals(rule().convertIntToValue(2), MonthOfYear.FEBRUARY);
+        assertEquals(rule().convertIntToValue(6), MonthOfYear.JUNE);
     }
 
     //-----------------------------------------------------------------------
@@ -116,22 +98,22 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.date(2007, 6, 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValueQuiet(cal), MonthOfYear.JUNE);
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValueQuiet(cal), MonthOfYear.JUNE);
     }
 
     public void test_getValue_Calendrical_monthDay() {
         Calendrical cal = MonthDay.monthDay(6, 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValueQuiet(cal), MonthOfYear.JUNE);
     }
 
-    public void test_getValue_Calendrical_dateTimeFields() {
-        Calendrical cal = DateTimeFields.fields(rule(), 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+    public void test_getValue_Calendrical_yearMonth() {
+        Calendrical cal = YearMonth.yearMonth(2007, 6);
+        assertEquals(rule().getValueQuiet(cal), MonthOfYear.JUNE);
     }
 
 }
