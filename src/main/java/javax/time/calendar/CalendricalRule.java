@@ -32,6 +32,7 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.field.Year;
@@ -41,6 +42,11 @@ import javax.time.calendar.field.Year;
  * <p>
  * Calendrical rules may be fields like day of month, or combinations like date-time.
  * <p>
+ * Each rule uses an underlying type to represent the data.
+ * This is captured in the generic type of the rule.
+ * The underlying type is reified and made available via {@link #getReifiedType()}.
+ * It is expected, but not enforced, that the underlying type is {@link Comparable}.
+ * <p>
  * CalendricalRule is an abstract class and must be implemented with care to
  * ensure other classes in the framework operate correctly.
  * All instantiable subclasses must be final, immutable and thread-safe and must
@@ -49,7 +55,8 @@ import javax.time.calendar.field.Year;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T>>, Serializable {
+public abstract class CalendricalRule<T>
+        implements Comparable<CalendricalRule<T>>, Comparator<Calendrical>, Serializable {
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 36518675L;
@@ -101,9 +108,9 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
     }
 
     /**
-     * Gets the id of the rule.
+     * Gets the ID of the rule.
      * <p>
-     * The id is of the form 'ChronologyName.RuleName'.
+     * The ID is of the form 'ChronologyName.RuleName'.
      * No two fields should have the same id.
      *
      * @return the id of the rule, never null
@@ -349,9 +356,57 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this DateTimeFieldRule to another based on the period unit
-     * followed by the period range followed by the chronology name.
+     * Compares two <code>Calendrical</code> implementations based on the value
+     * of this rule extracted from each calendrical.
      * <p>
+     * This implements the {@link Comparator} interface and allows any two
+     * <code>Calendrical</code> implementations to be compared using this rule.
+     * The comparison is based on the result of calling {@link Calendrical#get}
+     * on each calendrical, and comparing those values.
+     * <p>
+     * For example, to sort a list into year order when the list may contain any
+     * mixture of calendricals, such as a <code>LocalDate</code>, <code>YearMonth</code>
+     * and <code>ZonedDateTime</code>:
+     * <pre>
+     *  List<Calendrical> list = ...
+     *  Collections.sort(list, ISOChronology.yearRule());
+     * </pre>
+     * If the value cannot be obtained from a calendrical, then that calendrical
+     * will be sorted at the end of the list. Thus, in the example of sorting by
+     * year, if the list contained a <code>LocalTime</code>, then this would be
+     * sorted at the end of the list.
+     * <p>
+     * If the underlying type of this rule does not implement {@link Comparable}
+     * then an exception will be thrown.
+     *
+     * @param cal1  the first calendrical to compare, not null
+     * @param cal2  the second calendrical to compare, not null
+     * @return the comparator result, negative if first is less, positive if first is greater, zero if equal
+     * @throws NullPointerException if either input is null
+     * @throws ClassCastException if this rule has a generic type that is not comparable
+     */
+    @SuppressWarnings("unchecked")
+    public int compare(Calendrical cal1, Calendrical cal2) {
+        Comparable value1 = (Comparable) cal1.get(this);
+        Object value2 = cal2.get(this);
+        if (value1 == null && value2 == null) {
+            return 0;
+        }
+        if (value1 == null) {
+            return 1;
+        }
+        if (value2 == null) {
+            return -1;
+        }
+        return value1.compareTo(value2);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this <code>CalendricalRule</code> to another.
+     * <p>
+     * The comparison is based on the period unit followed by the period range
+     * followed by the chronology name.
      * The period unit is compared first, so MinuteOfHour will be less than
      * HourOfDay, which will be less than DayOfWeek. When the period unit is
      * the same, the period range is compared, so DayOfWeek is less than
@@ -385,9 +440,34 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a string representation of the rule.
+     * Compares two rules based on their ID.
+     *
+     * @return true if the rules are the same
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        return id.equals(((CalendricalRule<?>) obj).id);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a hash code based on the ID.
      *
      * @return a description of the rule
+     */
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a string representation of the rule.
+     *
+     * @return a description of the rule, never null
      */
     @Override
     public String toString() {

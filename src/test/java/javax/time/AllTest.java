@@ -33,6 +33,7 @@ package javax.time;
 
 import java.util.Arrays;
 
+import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
@@ -128,6 +129,7 @@ public class AllTest {
             TestTimeSource_System.class,
             // calendar classes
 //            TestCalendricalMerger.class,
+            TestCalendricalRule.class,
             TestClock.class,
             TestClock_TimeSourceClock.class,
             TestDateAdjusters.class,
