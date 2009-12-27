@@ -117,7 +117,7 @@ public final class WeekBasedYear
      * @return the WeekBasedYear instance, never null
      * @throws IllegalCalendarFieldValueException if the week-based-year is invalid
      */
-    public static WeekBasedYear weekyear(int weekyear) {
+    public static WeekBasedYear weekBasedYear(int weekyear) {
         rule().checkValue(weekyear);
         return new WeekBasedYear(weekyear);
     }
@@ -132,8 +132,8 @@ public final class WeekBasedYear
      * @return the WeekBasedYear instance, never null
      * @throws UnsupportedRuleException if the week-based-year cannot be obtained
      */
-    public static WeekBasedYear weekyear(Calendrical calendrical) {
-        return weekyear(rule().getInt(calendrical));
+    public static WeekBasedYear weekBasedYear(Calendrical calendrical) {
+        return weekBasedYear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -206,7 +206,7 @@ public final class WeekBasedYear
      * @return an object representing the last week of the week-based-year
      */
     public WeekOfWeekBasedYear getLastWeekOfWeekyear() {
-        return WeekOfWeekBasedYear.weekOfWeekyear(lengthInWeeks());
+        return WeekOfWeekBasedYear.weekOfWeekBasedYear(lengthInWeeks());
     }
 
     //-----------------------------------------------------------------------

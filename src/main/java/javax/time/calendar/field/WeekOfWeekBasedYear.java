@@ -102,7 +102,7 @@ public final class WeekOfWeekBasedYear
      * @return the WeekOfWeekBasedYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the weekOfWeekyear is invalid
      */
-    public static WeekOfWeekBasedYear weekOfWeekyear(int weekOfWeekyear) {
+    public static WeekOfWeekBasedYear weekOfWeekBasedYear(int weekOfWeekyear) {
         try {
             WeekOfWeekBasedYear result = CACHE.get(--weekOfWeekyear);
             if (result == null) {
@@ -126,8 +126,8 @@ public final class WeekOfWeekBasedYear
      * @return the WeekOfWeekBasedYear instance, never null
      * @throws UnsupportedRuleException if the week-of-week-based-year cannot be obtained
      */
-    public static WeekOfWeekBasedYear weekOfWeekyear(Calendrical calendrical) {
-        return weekOfWeekyear(rule().getInt(calendrical));
+    public static WeekOfWeekBasedYear weekOfWeekBasedYear(Calendrical calendrical) {
+        return weekOfWeekBasedYear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -146,7 +146,7 @@ public final class WeekOfWeekBasedYear
      * @return the singleton, never null
      */
     private Object readResolve() {
-        return weekOfWeekyear(weekOfWeekyear);
+        return weekOfWeekBasedYear(weekOfWeekyear);
     }
 
     //-----------------------------------------------------------------------
