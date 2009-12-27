@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -60,7 +60,7 @@ public class TestPadParserDecorator {
         try {
             int result = pp.parse((DateTimeParseContext) null, "--Z", 0);
             assertEquals(result, 3);
-            assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+            assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional
@@ -91,8 +91,8 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "--2", 0);
         assertEquals(result, 3);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 1);
-        assertEquals(context.getFieldValue(ISOChronology.monthOfYearRule()), 2);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(context.getParsed(ISOChronology.monthOfYearRule()), 2);
     }
 
     public void test_parse_noReadBeyond() throws Exception {
@@ -100,8 +100,8 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "--22", 0);
         assertEquals(result, 3);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 1);
-        assertEquals(context.getFieldValue(ISOChronology.monthOfYearRule()), 2);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(context.getParsed(ISOChronology.monthOfYearRule()), 2);
     }
 
     public void test_parse_textLessThanPadWidth() throws Exception {
@@ -109,7 +109,7 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "-1", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_decoratedErrorPassedBack() throws Exception {
@@ -117,7 +117,7 @@ public class TestPadParserDecorator {
                 null, new NumberPrinterParser(ISOChronology.monthOfYearRule(), 1, 3, SignStyle.NEVER), 3, '-');
         int result = pp.parse(context, "--A", 0);
         assertEquals(result, ~2);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_decoratedDidNotParseToPadWidth() throws Exception {
@@ -134,7 +134,7 @@ public class TestPadParserDecorator {
                 null, new StringLiteralPrinterParser("-HELLO-"), 8, '-');
         int result = pp.parse(context, "--HELLO-", 0);
         assertEquals(result, 8);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
 }

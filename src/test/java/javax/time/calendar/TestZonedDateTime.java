@@ -39,7 +39,12 @@ import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
+import javax.time.calendar.field.AmPmOfDay;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.WeekBasedYear;
+import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -73,9 +78,10 @@ public class TestZonedDateTime {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_DATE_TIME instanceof CalendricalProvider);
-        assertTrue(TEST_DATE_TIME instanceof Serializable);
-        assertTrue(TEST_DATE_TIME instanceof Comparable);
+        Object obj = TEST_DATE_TIME;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
     }
 
     public void test_immutable() {
@@ -594,57 +600,56 @@ public class TestZonedDateTime {
         assertEquals(a.toOffsetDate(), OffsetDate.date(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.time(localTime, offset));
         assertEquals(a.toOffsetDateTime(), OffsetDateTime.dateTime(localDateTime, offset));
-        assertEquals(a.toCalendrical(), new Calendrical(localDateTime.toLocalDate(), localDateTime.toLocalTime(), offset, zone));
         assertEquals(a.toString(), a.toOffsetDateTime().toString() + "[" + zone.toString() + "]");
     }
 
     //-----------------------------------------------------------------------
-    // isSupported(DateTimeFieldRule)
+    // get(CalendricalRule)
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.yearRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.monthOfYearRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.dayOfMonthRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.dayOfWeekRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.dayOfYearRule()), true);
+    public void test_get_CalendricalRule() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 12, 30, 40, 987654321);
+        ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), (Integer) 2);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekyear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekyear(test).getValue());
         
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.hourOfDayRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.minuteOfHourRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.secondOfMinuteRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.nanoOfSecondRule()), true);
-        assertEquals(TEST_DATE_TIME.isSupported(ISOChronology.hourOfAmPmRule()), true);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), (Integer) 40);
+        assertEquals(test.get(ISOChronology.nanoOfSecondRule()), (Integer) 987654321);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), (Integer) 0);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
+        
+        assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
+        assertEquals(test.get(LocalTime.rule()), test.toLocalTime());
+        assertEquals(test.get(LocalDateTime.rule()), test.toLocalDateTime());
+        assertEquals(test.get(OffsetDate.rule()), test.toOffsetDate());
+        assertEquals(test.get(OffsetTime.rule()), test.toOffsetTime());
+        assertEquals(test.get(OffsetDateTime.rule()), test.toOffsetDateTime());
+        assertEquals(test.get(ZonedDateTime.rule()), test);
+        assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
+        assertEquals(test.get(TimeZone.rule()), test.getZone());
+        assertEquals(test.get(YearMonth.rule()), YearMonth.yearMonth(2008, 6));
+        assertEquals(test.get(MonthDay.rule()), MonthDay.monthDay(6, 30));
     }
 
-    //-----------------------------------------------------------------------
-    // get(DateTimeFieldRule)
-    //-----------------------------------------------------------------------
-    public void test_get_DateTimeFieldRule() {
+    public void test_get_CalendricalRule_unsupported() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        assertEquals(test.get(ISOChronology.hourOfDayRule()), 23);
-        assertEquals(test.get(ISOChronology.minuteOfHourRule()), 30);
-        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), 59);
-        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), 11);
-        assertEquals(test.get(ISOChronology.amPmOfDayRule()), 1);
+        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_get_DateTimeFieldRule_null() {
+    public void test_get_CalendricalRule_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        test.get((DateTimeFieldRule) null);
-    }
-
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class )
-    public void test_get_DateTimeFieldRule_unsupported() {
-        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        try {
-            test.get(MockRuleNoValue.INSTANCE);
-        } catch (UnsupportedCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), MockRuleNoValue.INSTANCE);
-            throw ex;
-        }
+        test.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------

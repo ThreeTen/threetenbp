@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
@@ -62,7 +62,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
-        implements CalendricalProvider, Comparable<DayOfMonth>, DateAdjuster, DateMatcher, Serializable {
+        implements Calendrical, Comparable<DayOfMonth>, DateAdjuster, DateMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -87,7 +87,7 @@ public final class DayOfMonth
      *
      * @return the day of month rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.dayOfMonthRule();
     }
 
@@ -146,6 +146,21 @@ public final class DayOfMonth
      */
     private Object readResolve() {
         return dayOfMonth(dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, dayOfMonth, this);
     }
 
     //-----------------------------------------------------------------------
@@ -231,16 +246,6 @@ public final class DayOfMonth
             throw new NullPointerException("MonthOfYear must not be null");
         }
         return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

@@ -77,7 +77,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, DateTimeProvider, CalendricalProvider, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, DateTimeProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -304,7 +304,7 @@ public final class ZonedDateTime
      * This factory creates a <code>ZonedDateTime</code> from an offset date-time and time zone.
      * This is an optimized implementation of:
      * <pre>
-     * ZonedDateTime.dateTime(offsetDateTime.toInstant(), zone);
+     * ZonedDateTime.fromInstant(offsetDateTime.toInstant(), zone);
      * </pre>
      * If the offset date-time is in the wrong offset for the zone at the gap, then the
      * date, time and offset will be adjusted to ensure that the result has the same instant.
@@ -312,9 +312,9 @@ public final class ZonedDateTime
      * If the time zone has a floating version, then this conversion will use the latest time zone rules.
      * <p>
      * An alternative to this method is {@link #dateTime(OffsetDateTime, TimeZone)}.
-     * This method will change the date and time if necessary to retain the same instant.
-     * The <code>dateTime</code> method will retain the date and time and throw an exception
-     * if the offset is invalid.
+     * The <code>fromInstant</code> method will change the date and time if necessary to
+     * retain the same instant. The <code>dateTime</code> method will retain the date and
+     * time and throw an exception if the offset is invalid.
      *
      * @param dateTime  the offset date-time to use, not null
      * @param zone  the time zone, not null
@@ -367,7 +367,7 @@ public final class ZonedDateTime
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static ZonedDateTime parse(String text) {
-        return DateTimeFormatters.isoZonedDateTime().parse(text).mergeStrict().toZonedDateTime();
+        return DateTimeFormatters.isoZonedDateTime().parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -403,8 +403,7 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for
-     * this date-time.
+     * Gets the chronology that this date-time uses, which is the ISO calendar system.
      *
      * @return the ISO chronology, never null
      */
@@ -414,30 +413,17 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this <code>ZonedDateTime</code> can
-     * be queried using the specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date-time then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return dateTime.isSupported(fieldRule);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        return dateTime.get(fieldRule);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -1729,15 +1715,6 @@ public final class ZonedDateTime
         return dateTime;
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(toLocalDate(), toLocalTime(), getOffset(), zone);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time based on the UTC
@@ -1833,6 +1810,49 @@ public final class ZonedDateTime
     @Override
     public String toString() {
         return dateTime.toString() + '[' + zone.toString() + ']';
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for <code>ZonedDateTime</code>.
+     *
+     * @return the rule for the date-time, never null
+     */
+    public static CalendricalRule<ZonedDateTime> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<ZonedDateTime> implements Serializable {
+        private static final CalendricalRule<ZonedDateTime> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+//        public Calendrical[] getChildren(ZonedDateTime calendrical) {
+//            return new Calendrical[] {calendrical.getZone(), calendrical.toOffsetDateTime()};
+//        }
+//        public ZonedDateTime createValue(Calendrical calendrical) {
+//            TimeZone zone = TimeZone.rule().createValue(calendrical);
+//            if (zone == null) {
+//                throw new CalendricalException("Unable to create ZonedDateTime as TimeZone not available");
+//            }
+//            OffsetDateTime odt = OffsetDateTime.rule().createValue(calendrical);
+//            if (odt != null) {
+//                return ZonedDateTime.dateTime(odt, zone);
+//            }
+//            LocalDateTime ldt = LocalDateTime.rule().createValue(calendrical);
+//            if (ldt != null) {
+//                return ZonedDateTime.dateTime(ldt, zone);
+//            }
+//            throw new CalendricalException("Unable to create ZonedDateTime as date-time not available");
+//        }
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008,2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -39,14 +39,14 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.MockDateProviderReturnsNull;
+import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -61,7 +61,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfWeek {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule<DayOfWeek> RULE = ISOChronology.dayOfWeekRule();
 
     @BeforeMethod
     public void setUp() {
@@ -69,7 +69,7 @@ public class TestDayOfWeek {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(DayOfWeek.class));
+        assertTrue(Calendrical.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(DateMatcher.class.isAssignableFrom(DayOfWeek.class));
@@ -100,7 +100,7 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_DateProvider() {
+    public void test_factory_LocalDate() {
         LocalDate date = LocalDate.date(2007, 1, 1);  // Monday
         for (int i = 0; i <= 1500; i++) {
             DayOfWeek test = DayOfWeek.dayOfWeek(date);
@@ -109,7 +109,7 @@ public class TestDayOfWeek {
         }
     }
 
-    public void test_factory_DateProvider_oldDate() {
+    public void test_factory_LocalDate_oldDate() {
         LocalDate date = LocalDate.date(2007, 1, 1).minusDays(70000);  // Monday
         for (int i = 0; i <= 1500; i++) {
             DayOfWeek test = DayOfWeek.dayOfWeek(date);
@@ -120,12 +120,36 @@ public class TestDayOfWeek {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullDateProvider() {
-        DayOfWeek.dayOfWeek((DateProvider) null);
+        DayOfWeek.dayOfWeek((LocalDate) null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_factory_Calendrical() {
+        LocalDate date = LocalDate.date(2007, 1, 1);  // Monday
+        for (int i = 0; i <= 1500; i++) {
+            DayOfWeek test = DayOfWeek.dayOfWeek((Calendrical) date);
+            assertEquals(test.getValue(), (i % 7) + 1);
+            date = date.plusDays(1);
+        }
+    }
+
+    public void test_factory_Calendrical_oldDate() {
+        LocalDate date = LocalDate.date(2007, 1, 1).minusDays(70000);  // Monday
+        for (int i = 0; i <= 1500; i++) {
+            DayOfWeek test = DayOfWeek.dayOfWeek((Calendrical) date);
+            assertEquals(test.getValue(), (i % 7) + 1);
+            date = date.plusDays(1);
+        }
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_unsupported() {
+        DayOfWeek.dayOfWeek(DateTimeFields.fields());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badDateProvider() {
-        DayOfWeek.dayOfWeek(new MockDateProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        DayOfWeek.dayOfWeek((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -146,6 +170,22 @@ public class TestDayOfWeek {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_firstDayOfWeekFor_null() {
         DayOfWeek.firstDayOfWeekFor(null);
+    }
+
+    //-----------------------------------------------------------------------
+    // get(CalendricalField)
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(DayOfWeek.THURSDAY.get(RULE), DayOfWeek.THURSDAY);
+    }
+
+    public void test_get_unsupported() {
+        assertEquals(DayOfWeek.THURSDAY.get(ISOChronology.weekBasedYearRule()), null);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_null() {
+        DayOfWeek.THURSDAY.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -318,26 +358,16 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = 1; i <= 7; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
-        }
-    }
-
-    //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(DayOfWeek.MONDAY.toString(), "DayOfWeek=MONDAY");
-        assertEquals(DayOfWeek.TUESDAY.toString(), "DayOfWeek=TUESDAY");
-        assertEquals(DayOfWeek.WEDNESDAY.toString(), "DayOfWeek=WEDNESDAY");
-        assertEquals(DayOfWeek.THURSDAY.toString(), "DayOfWeek=THURSDAY");
-        assertEquals(DayOfWeek.FRIDAY.toString(), "DayOfWeek=FRIDAY");
-        assertEquals(DayOfWeek.SATURDAY.toString(), "DayOfWeek=SATURDAY");
-        assertEquals(DayOfWeek.SUNDAY.toString(), "DayOfWeek=SUNDAY");
+        assertEquals(DayOfWeek.MONDAY.toString(), "MONDAY");
+        assertEquals(DayOfWeek.TUESDAY.toString(), "TUESDAY");
+        assertEquals(DayOfWeek.WEDNESDAY.toString(), "WEDNESDAY");
+        assertEquals(DayOfWeek.THURSDAY.toString(), "THURSDAY");
+        assertEquals(DayOfWeek.FRIDAY.toString(), "FRIDAY");
+        assertEquals(DayOfWeek.SATURDAY.toString(), "SATURDAY");
+        assertEquals(DayOfWeek.SUNDAY.toString(), "SUNDAY");
     }
 
     //-----------------------------------------------------------------------

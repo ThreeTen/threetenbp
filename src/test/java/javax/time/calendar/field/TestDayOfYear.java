@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,8 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,7 +44,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
@@ -66,7 +66,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.dayOfYearRule();
+    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.dayOfYearRule();
     private static final Year YEAR_STANDARD = Year.isoYear(2007);
     private static final Year YEAR_LEAP = Year.isoYear(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
@@ -78,7 +78,7 @@ public class TestDayOfYear {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(DayOfYear.class));
+        assertTrue(Calendrical.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfYear.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(DayOfYear.class));
@@ -197,7 +197,7 @@ public class TestDayOfYear {
         try {
             test.adjustDate(base);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE);
+            assertEquals(ex.getRule(), RULE);
             throw ex;
         }
     }
@@ -209,7 +209,7 @@ public class TestDayOfYear {
         try {
             test.adjustDate(base);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE);
+            assertEquals(ex.getRule(), RULE);
             throw ex;
         }
     }
@@ -347,7 +347,7 @@ public class TestDayOfYear {
         try {
             test.atYear(YEAR_STANDARD);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE);
+            assertEquals(ex.getRule(), RULE);
             throw ex;
         }
     }
@@ -385,7 +385,7 @@ public class TestDayOfYear {
         try {
             test.atYear(2007);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE);
+            assertEquals(ex.getRule(), RULE);
             throw ex;
         }
     }
@@ -403,16 +403,6 @@ public class TestDayOfYear {
     public void test_atYear_int_invalidDay() {
         DayOfYear test = DayOfYear.dayOfYear(1);
         test.atYear(Year.MIN_YEAR - 1);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            DayOfYear test = DayOfYear.dayOfYear(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
-        }
     }
 
     //-----------------------------------------------------------------------

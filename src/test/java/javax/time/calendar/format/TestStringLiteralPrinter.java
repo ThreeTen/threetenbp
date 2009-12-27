@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.LocalDateTime;
 
 import org.testng.annotations.BeforeMethod;
@@ -60,8 +61,8 @@ public class TestStringLiteralPrinter {
     public void setUp() {
         buf = new StringBuilder("EXISTING");
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = new Calendrical();
-        calendrical = LocalDateTime.dateTime(2008, 12, 3, 10, 15).toCalendrical();
+        emptyCalendrical = DateTimeFields.fields();
+        calendrical = LocalDateTime.dateTime(2008, 12, 3, 10, 15);
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 

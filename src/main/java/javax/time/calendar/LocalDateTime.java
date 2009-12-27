@@ -65,7 +65,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class LocalDateTime
-        implements DateTimeProvider, CalendricalProvider, Comparable<LocalDateTime>,
+        implements Calendrical, DateTimeProvider, Comparable<LocalDateTime>,
                     DateMatcher, TimeMatcher, DateAdjuster, TimeAdjuster, Serializable {
 
     /**
@@ -420,7 +420,7 @@ public final class LocalDateTime
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static LocalDateTime parse(String text) {
-        return DateTimeFormatters.isoLocalDateTime().parse(text).mergeStrict().toLocalDateTime();
+        return DateTimeFormatters.isoLocalDateTime().parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -452,8 +452,7 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for
-     * this date-time.
+     * Gets the chronology that this date-time uses, which is the ISO calendar system.
      *
      * @return the ISO chronology, never null
      */
@@ -463,31 +462,17 @@ public final class LocalDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this date-time can be queried using the
-     * specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date-time then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule != null && fieldRule.isSupported(date, time);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        return fieldRule.getValue(date, time);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -1614,15 +1599,6 @@ public final class LocalDateTime
         return this;
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(date, time, null, null);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this date-time to another date-time.
@@ -1711,6 +1687,46 @@ public final class LocalDateTime
     @Override
     public String toString() {
         return date + "T" + time;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for <code>LocalDateTime</code>.
+     *
+     * @return the field rule for the date-time, never null
+     */
+    public static CalendricalRule<LocalDateTime> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<LocalDateTime> implements Serializable {
+        private static final CalendricalRule<LocalDateTime> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(LocalDateTime.class, ISOChronology.INSTANCE, "LocalDateTime");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected LocalDateTime deriveValue(Calendrical calendrical) {
+            OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
+            return odt != null ? odt.toLocalDateTime() : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            ZoneOffset offset = merger.getValue(ZoneOffset.rule());
+            if (offset != null) {
+                LocalDateTime dateTime = merger.getValue(this);
+                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.dateTime(dateTime, offset));
+                merger.removeProcessed(this);
+                merger.removeProcessed(ZoneOffset.rule());
+            }
+        }
     }
 
 }

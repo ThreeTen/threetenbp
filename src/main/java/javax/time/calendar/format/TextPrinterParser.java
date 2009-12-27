@@ -49,9 +49,9 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The field to output, not null.
+     * The rule to output, not null.
      */
-    private final DateTimeFieldRule fieldRule;
+    private final DateTimeFieldRule<?> rule;
     /**
      * The text style, not null.
      */
@@ -65,20 +65,20 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param fieldRule  the rule of the field, not null
+     * @param rule  the rule to output, not null
      * @param textStyle  the text style, not null
      */
-    TextPrinterParser(DateTimeFieldRule fieldRule, TextStyle textStyle) {
+    TextPrinterParser(DateTimeFieldRule<?> rule, TextStyle textStyle) {
         // validated by caller
-        this.fieldRule = fieldRule;
+        this.rule = rule;
         this.textStyle = textStyle;
     }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = calendrical.deriveValue(fieldRule);
-        TextStore textStore = fieldRule.getTextStore(symbols.getLocale(), textStyle);
+        int value = rule.getInt(calendrical);
+        TextStore textStore = rule.getTextStore(symbols.getLocale(), textStyle);
         String text = (textStore != null ? textStore.getValueText(value) : null);
         if (text != null) {
             appendable.append(text);
@@ -89,7 +89,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return calendrical.isDerivable(fieldRule);
+        return calendrical.get(rule) != null;  // TODO: Better, or remove method
     }
 
     /** {@inheritDoc} */
@@ -99,26 +99,26 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
             throw new IndexOutOfBoundsException();
         }
         if (context.isStrict()) {
-            TextStore textStore = fieldRule.getTextStore(context.getLocale(), textStyle);
+            TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
             if (textStore != null) {
                 long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
                 if (match == 0) {
                     return ~position;
                 } else if (match > 0) {
                     position += (match >>> 32);
-                    context.setFieldValue(fieldRule, (int) match);
+                    context.setParsed(rule, (int) match);
                     return position;
                 }
             }
             return numberPrinterParser().parse(context, parseText, position);
         } else {
             for (TextStyle textStyle : TextStyle.values()) {
-                TextStore textStore = fieldRule.getTextStore(context.getLocale(), textStyle);
+                TextStore textStore = rule.getTextStore(context.getLocale(), textStyle);
                 if (textStore != null) {
                     long match = textStore.matchText(!context.isCaseSensitive(), parseText.substring(position));
                     if (match > 0) {
                         position += (match >>> 32);
-                        context.setFieldValue(fieldRule, (int) match);
+                        context.setParsed(rule, (int) match);
                         return position;
                     }
                 }
@@ -133,7 +133,7 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
      */
     private NumberPrinterParser numberPrinterParser() {
         if (numberPrinterParser == null) {
-            numberPrinterParser = new NumberPrinterParser(fieldRule, 1, 10, SignStyle.NORMAL);
+            numberPrinterParser = new NumberPrinterParser(rule, 1, 10, SignStyle.NORMAL);
         }
         return numberPrinterParser;
     }
@@ -142,9 +142,9 @@ final class TextPrinterParser implements DateTimePrinter, DateTimeParser {
     @Override
     public String toString() {
         if (textStyle == TextStyle.FULL) {
-            return "Text(" + fieldRule.getID() + ")";
+            return "Text(" + rule.getID() + ")";
         }
-        return "Text(" + fieldRule.getID() + "," + textStyle + ")";
+        return "Text(" + rule.getID() + "," + textStyle + ")";
     }
 
 }

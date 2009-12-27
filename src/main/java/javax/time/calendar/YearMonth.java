@@ -61,7 +61,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class YearMonth
-        implements CalendricalProvider, Comparable<YearMonth>, Serializable, DateAdjuster, DateMatcher {
+        implements Calendrical, Comparable<YearMonth>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -147,13 +147,12 @@ public final class YearMonth
      *
      * @param calendricalProvider  the calendrical to use, not null
      * @return the year-month, never null
-     * @throws UnsupportedCalendarFieldException if either field cannot be found
+     * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
-    public static YearMonth yearMonth(CalendricalProvider calendricalProvider) {
-        Calendrical calendrical = calendricalProvider.toCalendrical();
-        int year = calendrical.deriveValue(ISOChronology.yearRule());
-        int month = calendrical.deriveValue(ISOChronology.monthOfYearRule());
+    public static YearMonth yearMonth(Calendrical calendrical) {
+        Integer year = ISOChronology.yearRule().getValue(calendrical);
+        MonthOfYear month = ISOChronology.monthOfYearRule().getValue(calendrical);
         return yearMonth(year, month);
     }
 
@@ -176,8 +175,7 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
     public static YearMonth parse(String text) {
-        ISOChronology.checkNotNull(text, "Text to parse must not be null");
-        return yearMonth(PARSER.parse(text));
+        return PARSER.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -209,13 +207,34 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for
-     * this year-month.
+     * Gets the chronology that this year-month uses, which is the ISO calendar system.
      *
      * @return the ISO chronology, never null
      */
     public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this year-month then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
+        if (rule.equals(ISOChronology.yearRule())) {
+            return rule.reify(year);
+        }
+        if (rule.equals(ISOChronology.monthOfYearRule())) {
+            return rule.reify(month);
+        }
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -564,18 +583,6 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(
-                ISOChronology.yearRule(), year,
-                ISOChronology.monthOfYearRule(), month.getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this year-month to another year-month.
      *
      * @param other  the other year-month to compare to, not null
@@ -667,6 +674,37 @@ public final class YearMonth
         return buf.append(monthValue < 10 ? "-0" : "-")
             .append(monthValue)
             .toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for the year-month.
+     *
+     * @return the field rule for the date-time, never null
+     */
+    public static CalendricalRule<YearMonth> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<YearMonth> implements Serializable {
+        private static final CalendricalRule<YearMonth> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(YearMonth.class, ISOChronology.INSTANCE, "YearMonth");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected YearMonth deriveValue(Calendrical calendrical) {
+            Integer year = calendrical.get(ISOChronology.yearRule());
+            MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
+            return year != null && moy != null ? YearMonth.yearMonth(year, moy) : null;
+        }
     }
 
 }

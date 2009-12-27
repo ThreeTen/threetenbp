@@ -74,7 +74,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class ZoneOffset
-        implements Comparable<ZoneOffset>, Serializable {
+        implements Calendrical, Comparable<ZoneOffset>, Serializable {
 
     /** Cache of time zone offset by offset in seconds. */
     private static final ReadWriteLock CACHE_LOCK = new ReentrantReadWriteLock();
@@ -604,6 +604,62 @@ public final class ZoneOffset
     @Override
     public String toString() {
         return id;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this offset then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for the zone-offset.
+     *
+     * @return the field rule for the zone-offset, never null
+     */
+    public static CalendricalRule<ZoneOffset> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<ZoneOffset> implements Serializable {
+        private static final CalendricalRule<ZoneOffset> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(ZoneOffset.class, ISOChronology.INSTANCE, "ZoneOffset");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected ZoneOffset deriveValue(Calendrical calendrical) {
+            OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
+            if (odt != null) {
+                return odt.getOffset();
+            }
+            OffsetDate od = calendrical.get(OffsetDate.rule());
+            if (od != null) {
+                return od.getOffset();
+            }
+            OffsetTime ot = calendrical.get(OffsetTime.rule());
+            if (ot != null) {
+                return ot.getOffset();
+            }
+            return null;
+        }
     }
 
 }

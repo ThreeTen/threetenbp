@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
@@ -62,7 +62,8 @@ import javax.time.calendar.LocalDate;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparable<WeekOfWeekBasedYear>, DateMatcher, Serializable {
+public final class WeekOfWeekBasedYear
+        implements Calendrical, Comparable<WeekOfWeekBasedYear>, DateMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -87,7 +88,7 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
      *
      * @return the week of week-based-year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.weekOfWeekBasedYearRule();
     }
 
@@ -157,6 +158,21 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, weekOfWeekyear, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the week of week-based-year value.
      *
      * @return the week of week-based-year, from 1 to 53
@@ -174,16 +190,6 @@ public final class WeekOfWeekBasedYear implements CalendricalProvider, Comparabl
      */
     public boolean matchesDate(LocalDate date) {
         return WeekOfWeekBasedYear.weekOfWeekyear(date).equals(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -48,9 +48,9 @@ import javax.time.calendar.DateTimeFieldRule;
 final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /**
-     * The field to output, not null.
+     * The rule to output, not null.
      */
-    private final DateTimeFieldRule fieldRule;
+    private final DateTimeFieldRule<?> rule;
     /**
      * The minimum width, from 0 to 9.
      */
@@ -63,13 +63,13 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param fieldRule  the rule of the field to output, not null
+     * @param rule  the rule to output, not null
      * @param minWidth  the minimum width to output, from 0 to 9
      * @param maxWidth  the maximum width to output, from 0 to 9
      */
-    FractionPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth) {
+    FractionPrinterParser(DateTimeFieldRule<?> rule, int minWidth, int maxWidth) {
         // validated by caller
-        this.fieldRule = fieldRule;
+        this.rule = rule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
     }
@@ -77,8 +77,8 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = calendrical.deriveValue(fieldRule);
-        BigDecimal fraction = fieldRule.convertValueToFraction(value);
+        int value = rule.getInt(calendrical);
+        BigDecimal fraction = rule.convertValueToFraction(value);
         if (fraction.scale() == 0) {  // scale is zero if value is zero
             if (minWidth > 0) {
                 appendable.append(symbols.getDecimalPointChar());
@@ -98,7 +98,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return calendrical.isDerivable(fieldRule);
+        return calendrical.get(rule) != null;  // TODO: Better, or remove method
     }
 
     //-----------------------------------------------------------------------
@@ -139,8 +139,8 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             total = total * 10 + digit;
         }
         BigDecimal fraction = new BigDecimal(total).movePointLeft(pos - position);
-        int value = fieldRule.convertFractionToValue(fraction);
-        context.setFieldValue(fieldRule, value);
+        int value = rule.convertFractionToValue(fraction);
+        context.setParsed(rule, value);
         return pos;
     }
 
@@ -148,7 +148,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Fraction(" + fieldRule.getID() + "," + minWidth + "," + maxWidth + ")";
+        return "Fraction(" + rule.getID() + "," + minWidth + "," + maxWidth + ")";
     }
 
 }

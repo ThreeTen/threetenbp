@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -42,9 +42,14 @@ import javax.time.calendar.field.Year;
  *
  * @author Stephen Colebourne
  */
-public class MockFieldRule extends DateTimeFieldRule implements Serializable {
+public class MockFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 1L;
+
     /** Constructor. */
     MockFieldRule() {
-        super(ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super(Integer.class, ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
     }
 }

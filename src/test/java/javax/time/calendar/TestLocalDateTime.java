@@ -96,12 +96,13 @@ public class TestLocalDateTime {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_2007_07_15_12_30_40_987654321 instanceof CalendricalProvider);
-        assertTrue(TEST_2007_07_15_12_30_40_987654321 instanceof Serializable);
-        assertTrue(TEST_2007_07_15_12_30_40_987654321 instanceof Comparable);
-        assertTrue(TEST_2007_07_15_12_30_40_987654321 instanceof DateTimeProvider);
-        assertTrue(TEST_2007_07_15_12_30_40_987654321 instanceof DateMatcher);
-        assertTrue(TEST_2007_07_15_12_30_40_987654321 instanceof TimeMatcher);
+        Object obj = TEST_2007_07_15_12_30_40_987654321;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
+        assertTrue(obj instanceof DateTimeProvider);
+        assertTrue(obj instanceof DateMatcher);
+        assertTrue(obj instanceof TimeMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -219,10 +220,6 @@ public class TestLocalDateTime {
     public void factory_dateMidnight_DateProvider_null_toLocalDate() {
         LocalDateTime.dateMidnight(new DateProvider() {
             public LocalDate toLocalDate() {
-                return null;
-            }
-
-            public Calendrical toCalendrical() {
                 return null;
             }
         });
@@ -729,10 +726,6 @@ public class TestLocalDateTime {
             public LocalDate toLocalDate() {
                 return null;
             }
-
-            public Calendrical toCalendrical() {
-                return null;
-            }
         }, LocalTime.time(12, 30, 40, 987654321));
     }
 
@@ -745,10 +738,6 @@ public class TestLocalDateTime {
     public void factory_dateTime_DateProvider_TimeProvider_null_toLocalTime() {
         LocalDateTime.dateTime(LocalDate.date(2007, 7, 15), new TimeProvider() {
             public LocalTime toLocalTime() {
-                return null;
-            }
-
-            public Calendrical toCalendrical() {
                 return null;
             }
         });
@@ -812,45 +801,47 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.yearRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.quarterOfYearRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.monthOfYearRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.monthOfQuarterRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.dayOfMonthRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.dayOfWeekRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.dayOfYearRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekOfMonthRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekOfWeekBasedYearRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.weekBasedYearRule()));
+    // get(CalendricalRule)
+    //-----------------------------------------------------------------------
+    public void test_get_CalendricalRule() {
+        LocalDateTime test = LocalDateTime.dateTime(2008, 6, 30, 12, 30, 40, 987654321);
+        assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), (Integer) 2);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekyear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekyear(test).getValue());
         
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.hourOfDayRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.minuteOfHourRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.secondOfMinuteRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.nanoOfSecondRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.hourOfAmPmRule()));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.isSupported(ISOChronology.amPmOfDayRule()));
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), (Integer) 40);
+        assertEquals(test.get(ISOChronology.nanoOfSecondRule()), (Integer) 987654321);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), (Integer) 0);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
         
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.isSupported(null));
+        assertEquals(test.get(LocalDate.rule()), test.toLocalDate());
+        assertEquals(test.get(LocalTime.rule()), test.toLocalTime());
+        assertEquals(test.get(LocalDateTime.rule()), test);
+        assertEquals(test.get(OffsetDate.rule()), null);
+        assertEquals(test.get(OffsetTime.rule()), null);
+        assertEquals(test.get(OffsetDateTime.rule()), null);
+        assertEquals(test.get(ZonedDateTime.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), null);
+        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(YearMonth.rule()), YearMonth.yearMonth(2008, 6));
+        assertEquals(test.get(MonthDay.rule()), MonthDay.monthDay(6, 30));
     }
 
-    public void test_get() {
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.yearRule()), 2007);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.quarterOfYearRule()), 3);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.monthOfYearRule()), 7);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.monthOfQuarterRule()), TEST_2007_07_15_12_30_40_987654321.getMonthOfYear().getMonthOfQuarter());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfMonthRule()), 15);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfWeekRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfWeek().getValue());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15_12_30_40_987654321.getDayOfYear());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekOfWeekBasedYearRule()), WeekOfWeekBasedYear.weekOfWeekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.weekBasedYearRule()), WeekBasedYear.weekyear(TEST_2007_07_15_12_30_40_987654321).getValue());
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_CalendricalRule_null() {
+        TEST_2007_07_15_12_30_40_987654321.get((CalendricalRule<?>) null);
+    }
 
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.hourOfDayRule()), 12);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.minuteOfHourRule()), 30);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.secondOfMinuteRule()), 40);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.nanoOfSecondRule()), 987654321);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.hourOfAmPmRule()), 0);
-        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM.getValue());
+    public void test_get_unsupported() {
+        assertEquals(TEST_2007_07_15_12_30_40_987654321.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -2465,7 +2456,7 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusMonths_int_invalidTooSmall() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
+        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
     public void test_minusMonths_int_DateResolver_normal() {
@@ -3243,23 +3234,6 @@ public class TestLocalDateTime {
         LocalTime t = LocalTime.time(h, m, s, ns);
         LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
         assertSame(dt.toLocalTime(), t);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_toCalendrical(int year, int month, int day) {
-        LocalDate d = LocalDate.date(year, month, day);
-        LocalDateTime dt = LocalDateTime.dateMidnight(d);
-        assertEquals(dt.toCalendrical(), new Calendrical(d, LocalTime.MIDNIGHT, null, null));
-    }
-
-    @Test(dataProvider="sampleTimes")
-    public void test_toCalendrical(int h, int m, int s, int ns) {
-        LocalTime t = LocalTime.time(h, m, s, ns);
-        LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
-        assertEquals(dt.toCalendrical(), new Calendrical(TEST_2007_07_15_12_30_40_987654321.toLocalDate(), t, null, null));
     }
 
     //-----------------------------------------------------------------------

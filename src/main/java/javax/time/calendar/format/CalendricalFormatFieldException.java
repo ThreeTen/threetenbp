@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,8 +31,9 @@
  */
 package javax.time.calendar.format;
 
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * An exception thrown when an error occurs during formatting of calendricals
@@ -43,9 +44,14 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
 public class CalendricalFormatFieldException extends CalendricalFormatException {
 
     /**
-     * The field that caused the exception
+     * A serialization identifier for this class.
      */
-    private final DateTimeFieldRule fieldRule;
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The rule that caused the exception
+     */
+    private final CalendricalRule<?> rule;
     /**
      * The value of the field that caused the exception
      */
@@ -56,10 +62,10 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
      *
      * @param cause  the exception cause, may be null
      */
-    public CalendricalFormatFieldException(UnsupportedCalendarFieldException cause) {
-        super("Field " + (cause.getFieldRule() == null ? "null" : cause.getFieldRule().getName()) +
+    public CalendricalFormatFieldException(UnsupportedRuleException cause) {
+        super("Rule " + (cause.getRule() == null ? "null" : cause.getRule().getName()) +
                 " cannot be printed as the value cannot be obtained");
-        this.fieldRule = cause.getFieldRule();
+        this.rule = cause.getRule();
         this.value = null;
     }
 
@@ -70,11 +76,11 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
      * @param fieldRule  the rule of the field that caused the exception, may be null
      * @param value  the value of the field that caused the exception
      */
-    public CalendricalFormatFieldException(DateTimeFieldRule fieldRule, int value) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) +
+    public CalendricalFormatFieldException(DateTimeFieldRule<?> fieldRule, int value) {
+        super("Rule " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " cannot be negative according to the SignStyle");
-        this.fieldRule = fieldRule;
+        this.rule = fieldRule;
         this.value = value;
     }
 
@@ -86,22 +92,22 @@ public class CalendricalFormatFieldException extends CalendricalFormatException 
      * @param value  the value of the field that caused the exception
      * @param maxWidth  the maximum print width
      */
-    public CalendricalFormatFieldException(DateTimeFieldRule fieldRule, int value, int maxWidth) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getName()) +
+    public CalendricalFormatFieldException(DateTimeFieldRule<?> fieldRule, int value, int maxWidth) {
+        super("Rule " + (fieldRule == null ? "null" : fieldRule.getName()) +
                 " cannot be printed as the value " + value +
                 " exceeds the maximum print width of " + maxWidth);
-        this.fieldRule = fieldRule;
+        this.rule = fieldRule;
         this.value = value;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule of the field that caused the exception.
+     * Gets the rule that caused the exception.
      *
      * @return the field rule, null if unknown
      */
-    public DateTimeFieldRule getFieldRule() {
-        return fieldRule;
+    public CalendricalRule<?> getRule() {
+        return rule;
     }
 
     /**

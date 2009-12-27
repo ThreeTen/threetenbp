@@ -31,7 +31,8 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.CENTURIES;
+import static javax.time.period.PeriodUnits.YEARS;
 
 import java.io.Serializable;
 
@@ -40,27 +41,21 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class MockYearOfCenturyFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockYearOfCenturyFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockYearOfCenturyFieldRule();
+    public static final DateTimeFieldRule<Integer> INSTANCE = new MockYearOfCenturyFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockYearOfCenturyFieldRule() {
-        super(ISOChronology.INSTANCE, "YearOfCentury", YEARS, CENTURIES, 0, 99);
+        super(Integer.class, ISOChronology.INSTANCE, "YearOfCentury", YEARS, CENTURIES, 0, 99);
     }
     private Object readResolve() {
         return INSTANCE;
     }
-    /** {@inheritDoc} */
     @Override
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return date == null ? null : date.getYear() % 100;
-    }
-    /** {@inheritDoc} */
-    @Override
-    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-        Integer yearVal = ISOChronology.yearRule().getValueQuiet(fieldMap);
+    protected Integer deriveValue(Calendrical calendrical) {
+        Integer yearVal = calendrical.get(ISOChronology.yearRule());
         return (yearVal == null ? null : yearVal % 100);
     }
 }

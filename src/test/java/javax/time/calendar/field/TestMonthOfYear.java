@@ -39,20 +39,20 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -66,7 +66,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthOfYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule<MonthOfYear> RULE = ISOChronology.monthOfYearRule();
     private static final Year YEAR_STANDARD = Year.isoYear(2007);
     private static final Year YEAR_LEAP = Year.isoYear(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
@@ -79,7 +79,7 @@ public class TestMonthOfYear {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(MonthOfYear.class));
+        assertTrue(Calendrical.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(MonthOfYear.class));
@@ -112,7 +112,7 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_DateProvider_notLeapYear() {
+    public void test_factory_Calendrical_notLeapYear() {
         LocalDate date = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(MonthOfYear.monthOfYear(date).getValue(), 1);
@@ -164,7 +164,7 @@ public class TestMonthOfYear {
         }
     }
 
-    public void test_factory_DateProvider_leapYear() {
+    public void test_factory_Calendrical_leapYear() {
         LocalDate date = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(MonthOfYear.monthOfYear(date).getValue(), 1);
@@ -181,13 +181,30 @@ public class TestMonthOfYear {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        MonthOfYear.monthOfYear((DateProvider) null);
+    public void test_factory_nullCalendrical() {
+        MonthOfYear.monthOfYear((Calendrical) null);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_unsupported() {
+        MonthOfYear.monthOfYear(DateTimeFields.fields());
+    }
+
+    //-----------------------------------------------------------------------
+    // get(CalendricalField)
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(MonthOfYear.APRIL.get(RULE), MonthOfYear.APRIL);
+        assertEquals(MonthOfYear.APRIL.get(ISOChronology.monthOfQuarterRule()), (Integer) 1);
+    }
+
+    public void test_get_unsupported() {
+        assertEquals(MonthOfYear.APRIL.get(ISOChronology.weekBasedYearRule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badDateProvider() {
-        MonthOfYear.monthOfYear(new MockDateProviderReturnsNull());
+    public void test_get_null() {
+        MonthOfYear.APRIL.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -418,7 +435,7 @@ public class TestMonthOfYear {
         try {
             test.adjustDate(base, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }
@@ -430,7 +447,7 @@ public class TestMonthOfYear {
         try {
             test.adjustDate(base, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }
@@ -696,7 +713,7 @@ public class TestMonthOfYear {
         try {
             test.atDay(DayOfMonth.dayOfMonth(31));
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }
@@ -715,18 +732,8 @@ public class TestMonthOfYear {
         try {
             test.atDay(31);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
             throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            MonthOfYear test = MonthOfYear.monthOfYear(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 
@@ -734,18 +741,18 @@ public class TestMonthOfYear {
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(MonthOfYear.JANUARY.toString(), "MonthOfYear=JANUARY");
-        assertEquals(MonthOfYear.FEBRUARY.toString(), "MonthOfYear=FEBRUARY");
-        assertEquals(MonthOfYear.MARCH.toString(), "MonthOfYear=MARCH");
-        assertEquals(MonthOfYear.APRIL.toString(), "MonthOfYear=APRIL");
-        assertEquals(MonthOfYear.MAY.toString(), "MonthOfYear=MAY");
-        assertEquals(MonthOfYear.JUNE.toString(), "MonthOfYear=JUNE");
-        assertEquals(MonthOfYear.JULY.toString(), "MonthOfYear=JULY");
-        assertEquals(MonthOfYear.AUGUST.toString(), "MonthOfYear=AUGUST");
-        assertEquals(MonthOfYear.SEPTEMBER.toString(), "MonthOfYear=SEPTEMBER");
-        assertEquals(MonthOfYear.OCTOBER.toString(), "MonthOfYear=OCTOBER");
-        assertEquals(MonthOfYear.NOVEMBER.toString(), "MonthOfYear=NOVEMBER");
-        assertEquals(MonthOfYear.DECEMBER.toString(), "MonthOfYear=DECEMBER");
+        assertEquals(MonthOfYear.JANUARY.toString(), "JANUARY");
+        assertEquals(MonthOfYear.FEBRUARY.toString(), "FEBRUARY");
+        assertEquals(MonthOfYear.MARCH.toString(), "MARCH");
+        assertEquals(MonthOfYear.APRIL.toString(), "APRIL");
+        assertEquals(MonthOfYear.MAY.toString(), "MAY");
+        assertEquals(MonthOfYear.JUNE.toString(), "JUNE");
+        assertEquals(MonthOfYear.JULY.toString(), "JULY");
+        assertEquals(MonthOfYear.AUGUST.toString(), "AUGUST");
+        assertEquals(MonthOfYear.SEPTEMBER.toString(), "SEPTEMBER");
+        assertEquals(MonthOfYear.OCTOBER.toString(), "OCTOBER");
+        assertEquals(MonthOfYear.NOVEMBER.toString(), "NOVEMBER");
+        assertEquals(MonthOfYear.DECEMBER.toString(), "DECEMBER");
     }
 
     //-----------------------------------------------------------------------

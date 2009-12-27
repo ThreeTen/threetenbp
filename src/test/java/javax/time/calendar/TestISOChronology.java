@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,6 +43,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import javax.time.calendar.field.AmPmOfDay;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.PeriodUnits;
@@ -65,7 +68,7 @@ public class TestISOChronology {
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        ISOChronology chronology = ISOChronology.INSTANCE;
+        Object chronology = ISOChronology.INSTANCE;
         assertTrue(chronology instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -92,21 +95,9 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    public void test_instance() throws Exception {
-        assertSame(ISOChronology.INSTANCE.year(), ISOChronology.yearRule());
-        assertSame(ISOChronology.INSTANCE.monthOfYear(), ISOChronology.monthOfYearRule());
-        assertSame(ISOChronology.INSTANCE.dayOfMonth(), ISOChronology.dayOfMonthRule());
-        assertSame(ISOChronology.INSTANCE.dayOfYear(), ISOChronology.dayOfYearRule());
-        assertSame(ISOChronology.INSTANCE.dayOfWeek(), ISOChronology.dayOfWeekRule());
-        assertSame(ISOChronology.INSTANCE.hourOfDay(), ISOChronology.hourOfDayRule());
-        assertSame(ISOChronology.INSTANCE.minuteOfHour(), ISOChronology.minuteOfHourRule());
-        assertSame(ISOChronology.INSTANCE.secondOfMinute(), ISOChronology.secondOfMinuteRule());
-        assertSame(ISOChronology.INSTANCE.nanoOfSecond(), ISOChronology.nanoOfSecondRule());
-    }
-
-    //-----------------------------------------------------------------------
     public void test_yearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.yearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.yearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.Year");
         assertEquals(rule.getName(), "Year");
         assertEquals(rule.getMinimumValue(), Year.MIN_YEAR);
@@ -134,7 +125,8 @@ public class TestISOChronology {
 //    }
 
     public void test_monthOfYearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.monthOfYearRule();
+        DateTimeFieldRule<MonthOfYear> rule = ISOChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), MonthOfYear.class);
         assertEquals(rule.getID(), "ISO.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -148,7 +140,8 @@ public class TestISOChronology {
     }
 
     public void test_dayOfMonthRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.dayOfMonthRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfMonthRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -162,7 +155,8 @@ public class TestISOChronology {
     }
 
     public void test_dayOfYearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.dayOfYearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.dayOfYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -176,7 +170,8 @@ public class TestISOChronology {
     }
 
     public void test_weekyearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekBasedYearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.weekBasedYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.WeekBasedYear");
         assertEquals(rule.getName(), "WeekBasedYear");
         assertEquals(rule.getMinimumValue(), WeekBasedYear.MIN_YEAR);
@@ -190,7 +185,8 @@ public class TestISOChronology {
     }
 
     public void test_weekOfWeekyearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekOfWeekBasedYearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfWeekBasedYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.WeekOfWeekBasedYear");
         assertEquals(rule.getName(), "WeekOfWeekBasedYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -204,7 +200,8 @@ public class TestISOChronology {
     }
 
     public void test_dayOfWeekRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.dayOfWeekRule();
+        DateTimeFieldRule<DayOfWeek> rule = ISOChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DayOfWeek.class);
         assertEquals(rule.getID(), "ISO.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -218,7 +215,8 @@ public class TestISOChronology {
     }
 
     public void test_weekOfYearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekOfYearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.WeekOfYear");
         assertEquals(rule.getName(), "WeekOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -232,7 +230,8 @@ public class TestISOChronology {
     }
 
     public void test_quarterOfYearRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.quarterOfYearRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.quarterOfYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.QuarterOfYear");
         assertEquals(rule.getName(), "QuarterOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -246,7 +245,8 @@ public class TestISOChronology {
     }
 
     public void test_monthOfQuarterRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.monthOfQuarterRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.monthOfQuarterRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.MonthOfQuarter");
         assertEquals(rule.getName(), "MonthOfQuarter");
         assertEquals(rule.getMinimumValue(), 1);
@@ -260,7 +260,8 @@ public class TestISOChronology {
     }
 
     public void test_weekOfMonthRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.weekOfMonthRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfMonthRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.WeekOfMonth");
         assertEquals(rule.getName(), "WeekOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -275,7 +276,8 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_hourOfDayRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.hourOfDayRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.hourOfDayRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.HourOfDay");
         assertEquals(rule.getName(), "HourOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -289,7 +291,8 @@ public class TestISOChronology {
     }
 
     public void test_minuteOfHourRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.minuteOfHourRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.minuteOfHourRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.MinuteOfHour");
         assertEquals(rule.getName(), "MinuteOfHour");
         assertEquals(rule.getMinimumValue(), 0);
@@ -303,7 +306,8 @@ public class TestISOChronology {
     }
 
     public void test_secondOfMinuteRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.secondOfMinuteRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.secondOfMinuteRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.SecondOfMinute");
         assertEquals(rule.getName(), "SecondOfMinute");
         assertEquals(rule.getMinimumValue(), 0);
@@ -317,7 +321,8 @@ public class TestISOChronology {
     }
 
     public void test_nanoOfSecondRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.nanoOfSecondRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.nanoOfSecondRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.NanoOfSecond");
         assertEquals(rule.getName(), "NanoOfSecond");
         assertEquals(rule.getMinimumValue(), 0);
@@ -332,7 +337,8 @@ public class TestISOChronology {
 
     //-----------------------------------------------------------------------
     public void test_secondOfDayRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.secondOfDayRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.secondOfDayRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.SecondOfDay");
         assertEquals(rule.getName(), "SecondOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -346,7 +352,8 @@ public class TestISOChronology {
     }
 
     public void test_milliOfDayRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.milliOfDayRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.milliOfDayRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.MilliOfDay");
         assertEquals(rule.getName(), "MilliOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -360,7 +367,8 @@ public class TestISOChronology {
     }
 
     public void test_milliOfSecondRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.milliOfSecondRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.milliOfSecondRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.MilliOfSecond");
         assertEquals(rule.getName(), "MilliOfSecond");
         assertEquals(rule.getMinimumValue(), 0);
@@ -374,7 +382,8 @@ public class TestISOChronology {
     }
 
     public void test_amPmOfDayRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.amPmOfDayRule();
+        DateTimeFieldRule<AmPmOfDay> rule = ISOChronology.amPmOfDayRule();
+        assertEquals(rule.getReifiedType(), AmPmOfDay.class);
         assertEquals(rule.getID(), "ISO.AmPmOfDay");
         assertEquals(rule.getName(), "AmPmOfDay");
         assertEquals(rule.getMinimumValue(), 0);
@@ -388,7 +397,8 @@ public class TestISOChronology {
     }
 
     public void test_hourOfAmPmRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.hourOfAmPmRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.hourOfAmPmRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.HourOfAmPm");
         assertEquals(rule.getName(), "HourOfAmPm");
         assertEquals(rule.getMinimumValue(), 0);
@@ -402,7 +412,8 @@ public class TestISOChronology {
     }
 
     public void test_clockHourOfAmPmRule() throws Exception {
-        DateTimeFieldRule rule = ISOChronology.clockHourOfAmPmRule();
+        DateTimeFieldRule<Integer> rule = ISOChronology.clockHourOfAmPmRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.ClockHourOfAmPm");
         assertEquals(rule.getName(), "ClockHourOfAmPm");
         assertEquals(rule.getMinimumValue(), 1);
@@ -421,7 +432,7 @@ public class TestISOChronology {
     }
 
     //-----------------------------------------------------------------------
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

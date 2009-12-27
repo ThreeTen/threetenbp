@@ -1,6 +1,8 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,7 +15,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.i18n.HijrahChronology;
 import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
@@ -27,23 +28,21 @@ public class TestHijrahChronology {
     
     @Test
     public void testConstructor() throws Exception {
-        for (Constructor constructor : HijrahChronology.class.getDeclaredConstructors()) {
+        for (Constructor<?> constructor : HijrahChronology.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         }
     }
     
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
-        HijrahChronology chronology = HijrahChronology.INSTANCE;
+        Object chronology = HijrahChronology.INSTANCE;
         assertTrue(chronology instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(chronology);
         oos.close();
-        
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), chronology);
     }
 
@@ -63,7 +62,7 @@ public class TestHijrahChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.era();
+        DateTimeFieldRule<HijrahEra> rule = HijrahChronology.eraRule();
         assertEquals(rule.getID(), "Hijrah.Era");
         assertEquals(rule.getName(), "Era");
         assertEquals(rule.getMinimumValue(), 0);
@@ -73,29 +72,12 @@ public class TestHijrahChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DECADES);
         assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
-        serialize(rule);
-    }
-
-    @Test
-    public void testYear() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.year();
-        assertEquals(rule.getID(), "Hijrah.Year");
-        assertEquals(rule.getName(), "Year");
-        assertEquals(rule.getMinimumValue(), -HijrahDate.MAX_YEAR_OF_ERA + 1);
-        assertEquals(rule.getLargestMinimumValue(), -HijrahDate.MAX_YEAR_OF_ERA + 1);
-        assertEquals(rule.getMaximumValue(), HijrahDate.MAX_YEAR_OF_ERA);
-        assertEquals(rule.getSmallestMaximumValue(), HijrahDate.MAX_YEAR_OF_ERA);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
-        assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.yearOfEra();
+        DateTimeFieldRule<Integer> rule = HijrahChronology.yearOfEraRule();
         assertEquals(rule.getID(), "Hijrah.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
         assertEquals(rule.getMinimumValue(), HijrahDate.MIN_YEAR_OF_ERA);
@@ -105,13 +87,12 @@ public class TestHijrahChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
         assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.monthOfYear();
+        DateTimeFieldRule<Integer> rule = HijrahChronology.monthOfYearRule();
         assertEquals(rule.getID(), "Hijrah.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -121,12 +102,11 @@ public class TestHijrahChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        assertEquals(rule.getValueQuiet(null, null), null);
     }
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.dayOfMonth();
+        DateTimeFieldRule<Integer> rule = HijrahChronology.dayOfMonthRule();
         assertEquals(rule.getID(), "Hijrah.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -136,13 +116,12 @@ public class TestHijrahChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.dayOfYear();
+        DateTimeFieldRule<Integer> rule = HijrahChronology.dayOfYearRule();
         assertEquals(rule.getID(), "Hijrah.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -152,14 +131,13 @@ public class TestHijrahChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
 
     }
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule rule = HijrahChronology.INSTANCE.dayOfWeek();
+        DateTimeFieldRule<Integer> rule = HijrahChronology.dayOfWeekRule();
         assertEquals(rule.getID(), "Hijrah.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -169,41 +147,19 @@ public class TestHijrahChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_hourOfDayRule() throws Exception {
-        HijrahChronology.INSTANCE.hourOfDay();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_minuteOfHourRule() throws Exception {
-        HijrahChronology.INSTANCE.minuteOfHour();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_secondOfMinuteRule() throws Exception {
-        HijrahChronology.INSTANCE.secondOfMinute();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_nanoOfSecondRule() throws Exception {
-        HijrahChronology.INSTANCE.nanoOfSecond();
-    }
-    
     public void test_toString() throws Exception {
         assertEquals(HijrahChronology.INSTANCE.toString(), "Hijrah");
     }
 
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);
         oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), rule);
     }
 

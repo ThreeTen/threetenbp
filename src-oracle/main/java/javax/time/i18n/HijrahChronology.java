@@ -3,19 +3,20 @@
  */
 package javax.time.i18n;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.DAYS;
+import static javax.time.period.PeriodUnits.DECADES;
+import static javax.time.period.PeriodUnits.MONTHS;
+import static javax.time.period.PeriodUnits.WEEKS;
+import static javax.time.period.PeriodUnits.YEARS;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.Calendrical.FieldMap;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -35,7 +36,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * <li>Total of 10631 days in a 30 years cycle.</li>
  * </ul>
  * <P>
- * The table shows the features descrived above.
+ * The table shows the features described above.
  * <blockquote>
  * <table border="1">
  *   <tbody>
@@ -115,6 +116,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * HijrahChronology is thread-safe and immutable.
  *
  * @author Ryoji Suzuki
+ * @author Stephen Colebourne
  */
 public final class HijrahChronology extends Chronology implements Serializable {
 
@@ -190,12 +192,25 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Gets the rule for the year field in the Hijrah chronology.
+//     * <p>
+//     * The values for the year field match those for year of era in the current era.
+//     * For the previous era, the values run backwards and include zero, thus
+//     * BEFORE_HIJRAH 1 has the value 0, and BEFORE_HIJRAH 2 has the value -1.
+//     *
+//     * @return the rule for the year field, never null
+//     */
+//    public static DateTimeFieldRule<Integer> yearRule() {
+//        return YearRule.INSTANCE;
+//    }
+
     /**
      * Gets the rule for the era field in the Hijrah chronology.
      *
      * @return the rule for the year field, never null
      */
-    public DateTimeFieldRule era() {
+    public static DateTimeFieldRule<HijrahEra> eraRule() {
         return EraRule.INSTANCE;
     }
 
@@ -204,22 +219,8 @@ public final class HijrahChronology extends Chronology implements Serializable {
      *
      * @return the rule for the year of era field, never null
      */
-    public DateTimeFieldRule yearOfEra() {
+    public static DateTimeFieldRule<Integer> yearOfEraRule() {
         return YearOfEraRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the year field in the Hijrah chronology.
-     * <p>
-     * The values for the year field match those for year of era in the current era.
-     * For the previous era, the values run backwards and include zero, thus
-     * BEFORE_HIJRAH 1 has the value 0, and BEFORE_HIJRAH 2 has the value -1.
-     *
-     * @return the rule for the year field, never null
-     */
-    @Override
-    public DateTimeFieldRule year() {
-        return YearRule.INSTANCE;
     }
 
     /**
@@ -227,8 +228,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month of year field, never null
      */
-    @Override
-    public DateTimeFieldRule monthOfYear() {
+    public static DateTimeFieldRule<Integer> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -237,8 +237,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of month field, never null
      */
-    @Override
-    public DateTimeFieldRule dayOfMonth() {
+    public static DateTimeFieldRule<Integer> dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -247,8 +246,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of year field, never null
      */
-    @Override
-    public DateTimeFieldRule dayOfYear() {
+    public static DateTimeFieldRule<Integer> dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -257,153 +255,67 @@ public final class HijrahChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of week field, never null
      */
-    @Override
-    public DateTimeFieldRule dayOfWeek() {
+    public static DateTimeFieldRule<Integer> dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * The hour of day field is not supported by the Hijrah chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule hourOfDay() {
-        throw new UnsupportedOperationException("HijrahChronology does not support HourOfDay");
-    }
-
-    /**
-     * The minute of hour field is not supported by the Hijrah chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule minuteOfHour() {
-        throw new UnsupportedOperationException("HijrahChronology does not support MinuteOfHour");
-    }
-
-    /**
-     * The second of minute field is not supported by the Hijrah chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule secondOfMinute() {
-        throw new UnsupportedOperationException("HijrahChronology does not support SecondOfMinute");
-   }
-
-    /**
-     * The nano of second field is not supported by the Hijrah chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule nanoOfSecond() {
-        throw new UnsupportedOperationException("HijrahChronology does not support NanoOfSecond");
-    }
+//    /**
+//     * Rule implementation.
+//     */
+//    private static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
+//        /** Singleton instance. */
+//        private static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
+//        /** A serialization identifier for this class. */
+//        private static final long serialVersionUID = 1L;
+//        /** Constructor. */
+//        private YearRule() {
+//            super(Integer.class, HijrahChronology.INSTANCE, "Year", YEARS, null,
+//                    -HijrahDate.MAX_YEAR_OF_ERA + 1, HijrahDate.MAX_YEAR_OF_ERA);
+//        }
+//        private Object readResolve() {
+//            return INSTANCE;
+//        }
+//        @Override
+//        protected Integer deriveValue(Calendrical calendrical) {
+//            HijrahDate hd = calendrical.get(HijrahDate.rule());
+//            if (hd == null) {
+//                return null;
+//            }
+//            HijrahEra era = hd.getEra();
+//            int yoe = hd.getYearOfEra();
+//            return era == HijrahEra.BEFORE_HIJRAH ? 1 - yoe : yoe;
+//        }
+//        @Override
+//        protected void merge(CalendricalMerger merger) {
+//            HijrahChronology.INSTANCE.merge(merger);
+//        }
+//    }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+    private static final class EraRule extends DateTimeFieldRule<HijrahEra> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new YearRule();
-        /** A serialization identifier for this class. */
-        private static final long serialVersionUID = 1L;
-        /** Constructor. */
-        private YearRule() {
-            super(HijrahChronology.INSTANCE, "Year", YEARS, null,
-                    -HijrahDate.MAX_YEAR_OF_ERA + 1, HijrahDate.MAX_YEAR_OF_ERA);
-        }
-        private Object readResolve() {
-            return INSTANCE;
-        }
-        @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (date == null) {
-                return null;
-            } else {
-                HijrahDate hijrahDate = HijrahDate.hijrahDate(date);
-                HijrahEra era = hijrahDate.getEra();
-                int year = hijrahDate.getYearOfEra();
-                if (era == HijrahEra.BEFORE_HIJRAH) {
-                    year = 1 - year;
-                }
-                return year;
-            }
-        }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer moyVal = merger.getValueQuiet(HijrahChronology.INSTANCE.monthOfYear());
-            Integer domVal = merger.getValueQuiet(HijrahChronology.INSTANCE.dayOfMonth());
-            if (moyVal != null && domVal != null) {
-                int year = merger.getValue(this);
-                int yearOfEra = Math.abs(year);
-                HijrahEra era = (year < 1 ? HijrahEra.BEFORE_HIJRAH : HijrahEra.HIJRAH);
-                HijrahDate date;
-                if (merger.isStrict()) {
-                    date = HijrahDate.hijrahDate(era, yearOfEra, moyVal, domVal);
-                } else {
-                    date = HijrahDate.hijrahDate(era, yearOfEra, 1, 1).plusMonths(moyVal)
-                            .plusMonths(-1).plusDays(domVal).plusDays(-1);
-                }
-                merger.storeMergedDate(date.toLocalDate());
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(HijrahChronology.INSTANCE.monthOfYear());
-                merger.markFieldAsProcessed(HijrahChronology.INSTANCE.dayOfMonth());
-            }
-        }
-    }
-
-    /**
-     * Rule implementation.
-     */
-    private static final class EraRule extends DateTimeFieldRule implements Serializable {
-        /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new EraRule();
+        private static final DateTimeFieldRule<HijrahEra> INSTANCE = new EraRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
             // Use DECADES for now as there is no ERAS defined.
-            super(HijrahChronology.INSTANCE, "Era", DECADES, null, 0, 1);
+            super(HijrahEra.class, HijrahChronology.INSTANCE, "Era", DECADES, null, 0, 1);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : HijrahDate.hijrahDate(date).getEra().getValue());
+        protected HijrahEra deriveValue(Calendrical calendrical) {
+            HijrahDate date = calendrical.get(HijrahDate.rule());
+            return date != null ? date.getEra() : null;
         }
         @Override
-        protected Integer deriveValue(FieldMap fieldMap) {
-            Integer yearVal = HijrahChronology.INSTANCE.year().getValueQuiet(fieldMap);
-            if (yearVal == null) {
-                return null;
-            }
-            return (yearVal < 1 ? 0 : 1);
-        }
-        /**
-         * Gets the text for this field.
-         * <p>
-         * The value is queried using {@link #getValue(CalendricalProvider)}. The text
-         * is then obtained for that value. If there is no textual mapping, then
-         * the value is returned as per {@link Integer#toString()}.
-         *
-         * @param calendricalProvider  the calendrical provider, not null
-         * @param locale  the locale to use, not null
-         * @param textStyle  the text style, not null
-         * @return the text of the field, never null
-         * @throws UnsupportedCalendarFieldException if the value cannot be extracted
-         */
-        public String getText(CalendricalProvider calendricalProvider, Locale locale, TextStyle textStyle) {
-            int value = getValue(calendricalProvider);
+        public String getText(int value, Locale locale, TextStyle textStyle) {
             String[] names = null;
             String language = locale.getLanguage();
             
@@ -429,106 +341,93 @@ public final class HijrahChronology extends Chronology implements Serializable {
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class YearOfEraRule extends DateTimeFieldRule implements Serializable {
+    private static final class YearOfEraRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new YearOfEraRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new YearOfEraRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(HijrahChronology.INSTANCE, "YearOfEra", YEARS, null,
+            super(Integer.class, HijrahChronology.INSTANCE, "YearOfEra", YEARS, null,
                     HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA);
         }
         private Object readResolve() {
             return INSTANCE;
         }
+        // TODO: min/max years based on era
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : HijrahDate.hijrahDate(date).getYearOfEra());
+        protected Integer deriveValue(Calendrical calendrical) {
+            HijrahDate date = calendrical.get(HijrahDate.rule());
+            return date != null ? date.getYearOfEra() : null;
         }
         @Override
-        protected Integer deriveValue(FieldMap fieldMap) {
-            Integer yearVal = HijrahChronology.INSTANCE.year().getValueQuiet(fieldMap);
-            if (yearVal == null) {
-                return null;
-            }
-            int year = yearVal;
-            return (year < 1 ? -(year - 1) : year);
-        }
-        @Override
-        protected void mergeFields(Calendrical.Merger merger) {
-            Integer eraVal = merger.getValueQuiet(HijrahChronology.INSTANCE.era());
-            HijrahEra era = (eraVal != null ? HijrahEra.hijrahEra(eraVal) : HijrahEra.HIJRAH);
-            int yearOfEra = merger.getValue(this);
-            int year = (era == HijrahEra.BEFORE_HIJRAH ? -yearOfEra + 1 : yearOfEra);
-            merger.storeMergedField(HijrahChronology.INSTANCE.year(), year);
-            if (eraVal != null) {
-                merger.markFieldAsProcessed(HijrahChronology.INSTANCE.era());
-            }
-            merger.markFieldAsProcessed(HijrahChronology.INSTANCE.yearOfEra());
-        }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer moyVal = merger.getValueQuiet(HijrahChronology.INSTANCE.monthOfYear());
-            Integer domVal = merger.getValueQuiet(HijrahChronology.INSTANCE.dayOfMonth());
+        protected void merge(CalendricalMerger merger) {
+            HijrahEra era = merger.getValue(HijrahChronology.eraRule());
+            era = (era != null ? era : HijrahEra.HIJRAH);
+            Integer yoeVal = merger.getValue(this);
+            // era, year, month, day-of-month
+            Integer moyVal = merger.getValue(HijrahChronology.monthOfYearRule());
+            Integer domVal = merger.getValue(HijrahChronology.dayOfMonthRule());
             if (moyVal != null && domVal != null) {
-                Integer eraVal = merger.getValueQuiet(HijrahChronology.INSTANCE.era());
-                HijrahEra era = (eraVal != null ? HijrahEra.hijrahEra(eraVal) : HijrahEra.HIJRAH);
-                int yearOfEra = merger.getValue(this);
-                HijrahDate date;
-                if (merger.isStrict()) {
-                    date = HijrahDate.hijrahDate(era, yearOfEra, moyVal, domVal);
-                } else {
-                    date = HijrahDate.hijrahDate(era, yearOfEra, 1, 1).plusMonths(moyVal)
-                            .plusMonths(-1).plusDays(domVal).plusDays(-1);
-                }
-                merger.storeMergedDate(date.toLocalDate());
-                if (eraVal != null) {
-                    merger.markFieldAsProcessed(HijrahChronology.INSTANCE.era());
-                }
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(HijrahChronology.INSTANCE.monthOfYear());
-                merger.markFieldAsProcessed(HijrahChronology.INSTANCE.dayOfMonth());
+                HijrahDate date = HijrahDate.hijrahDate(era, yoeVal, moyVal, domVal);
+                merger.storeMerged(HijrahDate.rule(), date);
+                merger.removeProcessed(HijrahChronology.eraRule());
+                merger.removeProcessed(this);
+                merger.removeProcessed(HijrahChronology.monthOfYearRule());
+                merger.removeProcessed(HijrahChronology.dayOfMonthRule());
+            }
+            // era, year, day-of-year
+            Integer doyVal = merger.getValue(HijrahChronology.dayOfYearRule());
+            if (doyVal != null) {
+                HijrahDate date = HijrahDate.hijrahDate(era, yoeVal, 1, 1).plusDays(doyVal);
+                merger.storeMerged(HijrahDate.rule(), date);
+                merger.removeProcessed(HijrahChronology.eraRule());
+                merger.removeProcessed(this);
+                merger.removeProcessed(HijrahChronology.yearOfEraRule());
+                merger.removeProcessed(HijrahChronology.dayOfYearRule());
             }
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(HijrahChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12);
+            super(Integer.class, HijrahChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : HijrahDate.hijrahDate(date).getMonthOfYear());
+        protected Integer deriveValue(Calendrical calendrical) {
+            HijrahDate date = calendrical.get(HijrahDate.rule());
+            return date != null ? date.getMonthOfYear() : null;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule
-            implements Serializable {
+    private static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(HijrahChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, HijrahDate.getMaximumDayOfMonth());
+            super(Integer.class, HijrahChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, HijrahDate.getMaximumDayOfMonth());
         }
         private Object readResolve() {
             return INSTANCE;
@@ -540,31 +439,34 @@ public final class HijrahChronology extends Chronology implements Serializable {
 
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer yearVal = calendrical.deriveValueQuiet(HijrahChronology.INSTANCE.year());
-            Integer moyVal = calendrical.deriveValueQuiet(HijrahChronology.INSTANCE.monthOfYear());
-            if (yearVal != null && moyVal != null) {
-                return HijrahDate.getMonthLength(moyVal - 1, yearVal);
+            HijrahEra era = calendrical.get(HijrahEra.rule());
+            Integer yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
+            Integer moyVal = calendrical.get(HijrahChronology.monthOfYearRule());
+            if (era != null && yoeVal != null && moyVal != null) {
+                int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoeVal : yoeVal);
+                return HijrahDate.getMonthLength(moyVal - 1, hijrahYear);
             }
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : HijrahDate.hijrahDate(date).getDayOfMonth());
+        protected Integer deriveValue(Calendrical calendrical) {
+            HijrahDate date = calendrical.get(HijrahDate.rule());
+            return date != null ? date.getDayOfMonth() : null;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule
-            implements Serializable {
+    private static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(HijrahChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, HijrahDate.getMaximumDayOfYear());
+            super(Integer.class, HijrahChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, HijrahDate.getMaximumDayOfYear());
         }
         private Object readResolve() {
             return INSTANCE;
@@ -575,55 +477,42 @@ public final class HijrahChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer yearVal = calendrical.deriveValueQuiet(HijrahChronology.INSTANCE.year());
-            Integer moyVal = calendrical.deriveValueQuiet(HijrahChronology.INSTANCE.monthOfYear());
-            if (yearVal != null && moyVal != null) {
-                return HijrahDate.getYearLength(yearVal);
+            HijrahEra era = calendrical.get(HijrahEra.rule());
+            Integer yoeVal = calendrical.get(HijrahChronology.yearOfEraRule());
+            if (era != null && yoeVal != null) {
+                int hijrahYear = (era == HijrahEra.BEFORE_HIJRAH ? 1 - yoeVal : yoeVal);
+                return HijrahDate.getYearLength(hijrahYear);
             }
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : HijrahDate.hijrahDate(date).getDayOfYear());
-        }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer yearVal = merger.getValueQuiet(HijrahChronology.INSTANCE.year());
-            if (yearVal != null) {
-                int doyVal = merger.getValue(this);
-                int yearOfEra = Math.abs(yearVal);
-                HijrahEra era = (yearVal < 1 ? HijrahEra.BEFORE_HIJRAH : HijrahEra.HIJRAH);
-                HijrahDate date;
-                if (merger.isStrict()) {
-                    date = HijrahDate.hijrahDate(era, yearOfEra, 1, 1).withDayOfYear(doyVal);
-                } else {
-                    date = HijrahDate.hijrahDate(era, yearOfEra, 1, 1).plusDays(doyVal).plusDays(-1);
-                }
-                merger.storeMergedDate(date.toLocalDate());
-                merger.markFieldAsProcessed(HijrahChronology.INSTANCE.year());
-                merger.markFieldAsProcessed(this);
-            }
+        protected Integer deriveValue(Calendrical calendrical) {
+            HijrahDate date = calendrical.get(HijrahDate.rule());
+            return date != null ? date.getDayOfYear() : null;
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(HijrahChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
+            super(Integer.class, HijrahChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : date.getDayOfWeek().getValue());
+        protected Integer deriveValue(Calendrical calendrical) {
+            HijrahDate date = calendrical.get(HijrahDate.rule());
+            return date != null ? date.getDayOfWeek() : null;
         }
     }
+
 }

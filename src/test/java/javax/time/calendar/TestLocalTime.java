@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -87,12 +91,13 @@ public class TestLocalTime {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_12_30_40_987654321 instanceof CalendricalProvider);
-        assertTrue(TEST_12_30_40_987654321 instanceof Serializable);
-        assertTrue(TEST_12_30_40_987654321 instanceof Comparable);
-        assertTrue(TEST_12_30_40_987654321 instanceof TimeAdjuster);
-        assertTrue(TEST_12_30_40_987654321 instanceof TimeMatcher);
-        assertTrue(TEST_12_30_40_987654321 instanceof TimeProvider);
+        Object obj = TEST_12_30_40_987654321;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
+        assertTrue(obj instanceof TimeAdjuster);
+        assertTrue(obj instanceof TimeMatcher);
+        assertTrue(obj instanceof TimeProvider);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -389,10 +394,6 @@ public class TestLocalTime {
             public LocalTime toLocalTime() {
                 return null;
             }
-
-            public Calendrical toCalendrical() {
-                return null;
-            }
         });
     }
 
@@ -424,7 +425,7 @@ public class TestLocalTime {
         try {
             LocalTime.fromSecondOfDay(-1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
         }
     }
@@ -434,7 +435,7 @@ public class TestLocalTime {
         try {
             LocalTime.fromSecondOfDay(24 * 60 * 60);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
         }
     }
@@ -460,7 +461,7 @@ public class TestLocalTime {
         try {
             LocalTime.fromSecondOfDay(-1, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
         }
     }
@@ -470,7 +471,7 @@ public class TestLocalTime {
         try {
             LocalTime.fromSecondOfDay(24 * 60 * 60, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.secondOfDayRule());
+            assertEquals(ex.getRule(), ISOChronology.secondOfDayRule());
             throw ex;
         }
     }
@@ -480,7 +481,7 @@ public class TestLocalTime {
         try {
             LocalTime.fromSecondOfDay(0, -1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.nanoOfSecondRule());
+            assertEquals(ex.getRule(), ISOChronology.nanoOfSecondRule());
             throw ex;
         }
     }
@@ -490,7 +491,7 @@ public class TestLocalTime {
         try {
             LocalTime.fromSecondOfDay(0, 1000000000);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.nanoOfSecondRule());
+            assertEquals(ex.getRule(), ISOChronology.nanoOfSecondRule());
             throw ex;
         }
     }
@@ -584,45 +585,47 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // isSupported(DateTimeFieldRule)
+    // get(CalendricalRule)
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.yearRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.quarterOfYearRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.monthOfYearRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.monthOfQuarterRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.dayOfMonthRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.dayOfWeekRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.dayOfYearRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekOfMonthRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekOfWeekBasedYearRule()));
-        assertFalse(TEST_12_30_40_987654321.isSupported(ISOChronology.weekBasedYearRule()));
+    public void test_get_CalendricalRule() {
+        LocalTime test = TEST_12_30_40_987654321;
+        assertEquals(test.get(ISOChronology.yearRule()), null);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), null);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), null);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), null);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()), null);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()), null);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()), null);
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), null);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), null);
         
-        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.hourOfDayRule()));
-        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.minuteOfHourRule()));
-        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.secondOfMinuteRule()));
-        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.nanoOfSecondRule()));
-        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.hourOfAmPmRule()));
-        assertTrue(TEST_12_30_40_987654321.isSupported(ISOChronology.amPmOfDayRule()));
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), (Integer) 40);
+        assertEquals(test.get(ISOChronology.nanoOfSecondRule()), (Integer) 987654321);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), (Integer) 0);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
         
-        assertFalse(TEST_12_30_40_987654321.isSupported(null));
+        assertEquals(test.get(LocalDate.rule()), null);
+        assertEquals(test.get(LocalTime.rule()), test);
+        assertEquals(test.get(LocalDateTime.rule()), null);
+        assertEquals(test.get(OffsetDate.rule()), null);
+        assertEquals(test.get(OffsetTime.rule()), null);
+        assertEquals(test.get(OffsetDateTime.rule()), null);
+        assertEquals(test.get(ZonedDateTime.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), null);
+        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(YearMonth.rule()), null);
+        assertEquals(test.get(MonthDay.rule()), null);
     }
 
-    //-----------------------------------------------------------------------
-    // get(DateTimeFieldRule)
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.hourOfDayRule()), 12);
-        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.minuteOfHourRule()), 30);
-        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.secondOfMinuteRule()), 40);
-        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.nanoOfSecondRule()), 987654321);
-        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.hourOfAmPmRule()), 0);
-        assertEquals(TEST_12_30_40_987654321.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM.getValue());
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_CalendricalRule_null() {
+        TEST_12_30_40_987654321.get((CalendricalRule<?>) null);
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupported() {
-        TEST_12_30_40_987654321.get(ISOChronology.yearRule());
+        assertEquals(TEST_12_30_40_987654321.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -1572,15 +1575,6 @@ public class TestLocalTime {
     public void test_toLocalTime(int h, int m, int s, int ns) {
         LocalTime t = LocalTime.time(h, m, s, ns);
         assertSame(t.toLocalTime(), t);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_toCalendrical(int h, int m, int s, int ns) {
-        LocalTime t = LocalTime.time(h, m, s, ns);
-        assertEquals(t.toCalendrical(), new Calendrical(null, t, null, null));
     }
 
     //-----------------------------------------------------------------------

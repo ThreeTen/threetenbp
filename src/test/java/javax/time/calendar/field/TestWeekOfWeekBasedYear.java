@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,10 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,7 +46,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
@@ -64,12 +66,12 @@ import org.testng.annotations.Test;
 @Test
 public class TestWeekOfWeekBasedYear {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.weekOfWeekBasedYearRule();
+    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.weekOfWeekBasedYearRule();
     private static final int MAX_LENGTH = 53;
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(WeekOfWeekBasedYear.class));
+        assertTrue(Calendrical.class.isAssignableFrom(WeekOfWeekBasedYear.class));
         assertTrue(Serializable.class.isAssignableFrom(WeekOfWeekBasedYear.class));
         assertTrue(Comparable.class.isAssignableFrom(WeekOfWeekBasedYear.class));
         assertTrue(DateMatcher.class.isAssignableFrom(WeekOfWeekBasedYear.class));
@@ -207,16 +209,6 @@ public class TestWeekOfWeekBasedYear {
     public void test_isValid_null() {
         WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(1);
         test.isValid(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            WeekOfWeekBasedYear test = WeekOfWeekBasedYear.weekOfWeekyear(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
-        }
     }
 
     //-----------------------------------------------------------------------

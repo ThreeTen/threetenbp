@@ -7,13 +7,13 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.DayOfYear;
 
 /**
@@ -33,7 +33,7 @@ import javax.time.calendar.field.DayOfYear;
  * @author Stephen Colebourne
  */
 public final class MinguoDate
-        implements DateProvider, CalendricalProvider, Comparable<MinguoDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<MinguoDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -88,9 +88,9 @@ public final class MinguoDate
      */
     public static MinguoDate minguoDate(MinguoEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "MinguoEra must not be null");
-        MinguoChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
-        MinguoChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
-        MinguoChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
+        MinguoChronology.monthOfYearRule().checkValue(monthOfYear);
+        MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
         int year = yearOfEra;
         if (era == MinguoEra.BEFORE_MINGUO) {
             year = 1 - yearOfEra;
@@ -109,9 +109,9 @@ public final class MinguoDate
 //     * @return a MinguoDate object
 //     */
 //    static MinguoDate minguoDateFromDoY(MinguoEra era, int year, int dayOfYear) {
-//        MinguoChronology.INSTANCE.era().checkValue(era);
-//        MinguoChronology.INSTANCE.year().checkValue(year);
-//        MinguoChronology.INSTANCE.dayOfYear().checkValue(dayOfYear);
+//        MinguoChronology.era().checkValue(era);
+//        MinguoChronology.year().checkValue(year);
+//        MinguoChronology.dayOfYear().checkValue(dayOfYear);
 //        int[] gregorianEraYear = getGregorianEraYearFromLocalEraYear(era, year);
 //        long julianDay = I18NUtil.getJulianDayFromGregorianDate(
 //                gregorianEraYear[0], gregorianEraYear[1], 1,
@@ -131,7 +131,7 @@ public final class MinguoDate
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
         }
-        MinguoChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
+        MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
         return new MinguoDate(date);
     }
 
@@ -155,31 +155,19 @@ public final class MinguoDate
         return MinguoChronology.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this date can be queried using the
-     * specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return date.isSupported(fieldRule);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        return date.get(fieldRule);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -263,7 +251,7 @@ public final class MinguoDate
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public MinguoDate withYear(MinguoEra era, int yearOfEra) {
-        MinguoChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
+        MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
         int year = yearOfEra;
         if (era == MinguoEra.BEFORE_MINGUO) {
             year = 1 - yearOfEra;
@@ -301,7 +289,7 @@ public final class MinguoDate
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
     public MinguoDate withMonthOfYear(int monthOfYear) {
-        MinguoChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
+        MinguoChronology.monthOfYearRule().checkValue(monthOfYear);
         return MinguoDate.minguoDate(date.withMonthOfYear(monthOfYear));
     }
 
@@ -316,7 +304,7 @@ public final class MinguoDate
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year and month
      */
     public MinguoDate withDayOfMonth(int dayOfMonth) {
-        MinguoChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
         return MinguoDate.minguoDate(date.withDayOfMonth(dayOfMonth));
     }
 
@@ -331,7 +319,7 @@ public final class MinguoDate
      * @throws InvalidCalendarFieldException if the day of year is invalid for the year
      */
     public MinguoDate withDayOfYear(int dayOfYear) {
-        MinguoChronology.INSTANCE.dayOfYear().checkValue(dayOfYear);
+        MinguoChronology.dayOfYearRule().checkValue(dayOfYear);
         return MinguoDate.minguoDate(date.with(DayOfYear.dayOfYear(dayOfYear)));
     }
 
@@ -481,15 +469,6 @@ public final class MinguoDate
         return date;
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(toLocalDate(), null, null, null);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
@@ -576,6 +555,42 @@ public final class MinguoDate
                 .append(monthValue < 10 ? "-0" : "-").append(monthValue)
                 .append(dayValue < 10 ? "-0" : "-").append(dayValue)
                 .append(" (Minguo)").toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for <code>MinguoDate</code>.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<MinguoDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<MinguoDate> implements Serializable {
+        private static final CalendricalRule<MinguoDate> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(MinguoDate.class, ISOChronology.INSTANCE, "MinguoDate");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected MinguoDate deriveValue(Calendrical calendrical) {
+            LocalDate ld = calendrical.get(LocalDate.rule());
+            return ld != null ? MinguoDate.minguoDate(ld) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            MinguoDate md = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), md.toLocalDate());
+            merger.removeProcessed(this);
+        }
     }
 
 }

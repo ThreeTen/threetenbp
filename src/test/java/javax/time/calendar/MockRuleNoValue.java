@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,25 +31,21 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
-
 /**
  * Mock DateTimeFieldRule that returns null.
  *
  * @author Stephen Colebourne
  */
-public class MockRuleNoValue extends DateTimeFieldRule {
+public class MockRuleNoValue extends CalendricalRule<Integer> {
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 1L;
 
     /** Instance. */
     public static final MockRuleNoValue INSTANCE = new MockRuleNoValue();
 
     private MockRuleNoValue() {
-        super(ISOChronology.INSTANCE, "Mock", HOURS, YEARS, 1, 30);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return null;
+        super(Integer.class, ISOChronology.INSTANCE, "Mock");
     }
 }

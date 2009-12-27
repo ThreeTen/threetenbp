@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,14 +31,17 @@
  */
 package javax.time.calendar.format;
 
+import javax.time.calendar.CalendricalMerger;
+
 /**
  * Strategy for parsing text to calendrical information.
  * <p>
  * The parser may parse any piece of text from the input, storing the result
  * in the context. Typically, each individual parser will just parse one
- * field, such as the day of month, into the field-value map of the
- * context. Once the parse is complete, the caller will then merge the
- * field-value map to create the desired object, such as a LocalDate.
+ * field, such as the day of month, storing the value in the context.
+ * Once the parse is complete, the caller will then convert the context
+ * to a {@link CalendricalMerger} to merge the parsed values to create the
+ * desired object, such as a <code>LocalDate</code>.
  * <p>
  * The parse position will be updated during the parse. Parsing will start at
  * the specified index and the return value specifies the new parse position

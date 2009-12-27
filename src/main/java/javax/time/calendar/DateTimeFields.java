@@ -58,8 +58,8 @@ import java.util.Map.Entry;
  * @author Stephen Colebourne
  */
 public final class DateTimeFields
-        implements CalendricalProvider,
-            DateMatcher, TimeMatcher, Iterable<DateTimeFieldRule>, Serializable {
+        implements Calendrical,
+            DateMatcher, TimeMatcher, Iterable<DateTimeFieldRule<?>>, Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -69,7 +69,7 @@ public final class DateTimeFields
     /**
      * The date time map, never null, may be empty.
      */
-    private final TreeMap<DateTimeFieldRule, Integer> fieldValueMap;
+    private final TreeMap<DateTimeFieldRule<?>, Integer> fieldValueMap;
 
     /**
      * Obtains an empty instance of <code>DateTimeFields</code>.
@@ -94,10 +94,10 @@ public final class DateTimeFields
      * @throws NullPointerException if the field rule is null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public static DateTimeFields fields(DateTimeFieldRule fieldRule, int value) {
+    public static DateTimeFields fields(DateTimeFieldRule<?> fieldRule, int value) {
         ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         fieldRule.checkValue(value);
-        TreeMap<DateTimeFieldRule, Integer> map = createMap();
+        TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
         map.put(fieldRule, value);
         return new DateTimeFields(map);
     }
@@ -119,12 +119,12 @@ public final class DateTimeFields
      * @throws NullPointerException if either field rule is null
      * @throws IllegalCalendarFieldValueException if either value is invalid
      */
-    public static DateTimeFields fields(DateTimeFieldRule fieldRule1, int value1, DateTimeFieldRule fieldRule2, int value2) {
+    public static DateTimeFields fields(DateTimeFieldRule<?> fieldRule1, int value1, DateTimeFieldRule<?> fieldRule2, int value2) {
         ISOChronology.checkNotNull(fieldRule1, "First DateTimeFieldRule must not be null");
         ISOChronology.checkNotNull(fieldRule2, "Second DateTimeFieldRule must not be null");
         fieldRule1.checkValue(value1);
         fieldRule2.checkValue(value2);
-        TreeMap<DateTimeFieldRule, Integer> map = createMap();
+        TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
         map.put(fieldRule1, value1);
         map.put(fieldRule2, value2);
         return new DateTimeFields(map);
@@ -145,15 +145,15 @@ public final class DateTimeFields
      * @throws NullPointerException if the map contains null keys or values
      * @throws IllegalCalendarFieldValueException if any value is invalid
      */
-    public static DateTimeFields fields(Map<DateTimeFieldRule, Integer> fieldValueMap) {
+    public static DateTimeFields fields(Map<DateTimeFieldRule<?>, Integer> fieldValueMap) {
         ISOChronology.checkNotNull(fieldValueMap, "Field-value map must not be null");
         if (fieldValueMap.isEmpty()) {
             return EMPTY;
         }
         // don't use contains() as tree map and others can throw NPE
-        TreeMap<DateTimeFieldRule, Integer> map = createMap();
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            DateTimeFieldRule fieldRule = entry.getKey();
+        TreeMap<DateTimeFieldRule<?>, Integer> map = createMap();
+        for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
+            DateTimeFieldRule<?> fieldRule = entry.getKey();
             Integer value = entry.getValue();
             ISOChronology.checkNotNull(fieldRule, "Null keys are not permitted in field-value map");
             ISOChronology.checkNotNull(value, "Null values are not permitted in field-value map");
@@ -168,8 +168,8 @@ public final class DateTimeFields
      *
      * @return ordered representation of internal map
      */
-    private static TreeMap<DateTimeFieldRule, Integer> createMap() {
-        return new TreeMap<DateTimeFieldRule, Integer>(Collections.reverseOrder());
+    private static TreeMap<DateTimeFieldRule<?>, Integer> createMap() {
+        return new TreeMap<DateTimeFieldRule<?>, Integer>(Collections.reverseOrder());
     }
 
     //-----------------------------------------------------------------------
@@ -178,7 +178,7 @@ public final class DateTimeFields
      *
      * @param assignedMap  the map of fields, which is assigned, not null
      */
-    private DateTimeFields(TreeMap<DateTimeFieldRule, Integer> assignedMap) {
+    private DateTimeFields(TreeMap<DateTimeFieldRule<?>, Integer> assignedMap) {
         fieldValueMap = assignedMap;
     }
 
@@ -213,7 +213,7 @@ public final class DateTimeFields
      *
      * @return an iterator over the fields in this object, never null
      */
-    public Iterator<DateTimeFieldRule> iterator() {
+    public Iterator<DateTimeFieldRule<?>> iterator() {
         return fieldValueMap.keySet().iterator();
     }
 
@@ -225,31 +225,53 @@ public final class DateTimeFields
      * @param fieldRule  the field to query, null returns false
      * @return true if the field is supported, false otherwise
      */
-    public boolean contains(DateTimeFieldRule fieldRule) {
+    public boolean contains(DateTimeFieldRule<?> fieldRule) {
         return fieldRule != null && fieldValueMap.containsKey(fieldRule);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * an attempt is made to derive the value.
+     * If that fails, <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
+        if (rule instanceof DateTimeFieldRule<?>) {
+            Integer value = fieldValueMap.get(rule);
+            if (value != null) {
+                DateTimeFieldRule<T> r = (DateTimeFieldRule<T>) rule;
+                return r.convertIntToValue(value);
+            }
+        }
+        return rule.deriveValueFrom(this);
+    }
+
     /**
      * Gets the value for the specified field throwing an exception if the
      * field is not in the field-value map.
      * <p>
      * The value will be within the valid range for the field.
      * <p>
-     * No attempt is made to derive values - the result is simply based on
+     * No attempt is made to derive values. The result is simply based on
      * the contents of the stored field-value map. If you want to derive a
-     * value then convert this object to a <code>Calendrical</code> and
-     * use {@link Calendrical#deriveValue(DateTimeFieldRule)}.
+     * value then use {@link #get} or a {@link CalendricalMerger}.
      *
-     * @param fieldRule  the rule to query from the map, not null
+     * @param rule  the rule to query from the map, not null
      * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     * @throws UnsupportedRuleException if the field is not in the map
      */
-    public int get(DateTimeFieldRule fieldRule) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        Integer value = fieldValueMap.get(fieldRule);
+    public int getInt(DateTimeFieldRule<?> rule) {
+        ISOChronology.checkNotNull(rule, "DateTimeFieldRule must not be null");
+        Integer value = fieldValueMap.get(rule);
         if (value == null) {
-            throw new UnsupportedCalendarFieldException(fieldRule, "DateTimeFields");
+            throw new UnsupportedRuleException(rule);
         }
         return value;
     }
@@ -263,7 +285,7 @@ public final class DateTimeFields
      * @param fieldRule  the rule to query from the map, null returns null
      * @return the value mapped to the specified field, null if not present
      */
-    public Integer getQuiet(DateTimeFieldRule fieldRule) {
+    public Integer getQuiet(DateTimeFieldRule<?> fieldRule) {
         return fieldRule == null ? null : fieldValueMap.get(fieldRule);
     }
 
@@ -282,10 +304,10 @@ public final class DateTimeFields
      * @throws NullPointerException if DateTimeFieldRule is null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public DateTimeFields with(DateTimeFieldRule fieldRule, int value) {
+    public DateTimeFields with(DateTimeFieldRule<?> fieldRule, int value) {
         ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
         fieldRule.checkValue(value);
-        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
+        TreeMap<DateTimeFieldRule<?>, Integer> clonedMap = clonedMap();
         clonedMap.put(fieldRule, value);
         return new DateTimeFields(clonedMap);
     }
@@ -337,7 +359,7 @@ public final class DateTimeFields
         if (fields.size() == 0 || fields == this) {
             return this;
         }
-        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
+        TreeMap<DateTimeFieldRule<?>, Integer> clonedMap = clonedMap();
         clonedMap.putAll(fields.fieldValueMap);
         return new DateTimeFields(clonedMap);
     }
@@ -353,9 +375,9 @@ public final class DateTimeFields
      * @param fieldRule  the field to remove from the returned object, not null
      * @return a new, updated DateTimeFields, never null
      */
-    public DateTimeFields withFieldRemoved(DateTimeFieldRule fieldRule) {
+    public DateTimeFields withFieldRemoved(DateTimeFieldRule<?> fieldRule) {
         ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        TreeMap<DateTimeFieldRule, Integer> clonedMap = clonedMap();
+        TreeMap<DateTimeFieldRule<?>, Integer> clonedMap = clonedMap();
         if (clonedMap.remove(fieldRule) == null) {
             return this;
         }
@@ -373,8 +395,8 @@ public final class DateTimeFields
      */
     public boolean matchesDate(LocalDate date) {
         ISOChronology.checkNotNull(date, "LocalDate must not be null");
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            Integer dateValue = entry.getKey().getValueQuiet(date, null);
+        for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
+            Integer dateValue = entry.getKey().getIntQuiet(date);
             if (dateValue != null && dateValue.equals(entry.getValue()) == false) {
                 return false;
             }
@@ -392,8 +414,8 @@ public final class DateTimeFields
      */
     public boolean matchesTime(LocalTime time) {
         ISOChronology.checkNotNull(time, "LocalTime must not be null");
-        for (Entry<DateTimeFieldRule, Integer> entry : fieldValueMap.entrySet()) {
-            Integer timeValue = entry.getKey().getValueQuiet(null, time);
+        for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
+            Integer timeValue = entry.getKey().getIntQuiet(time);
             if (timeValue != null && timeValue.equals(entry.getValue()) == false) {
                 return false;
             }
@@ -410,8 +432,8 @@ public final class DateTimeFields
      *
      * @return an independent, modifiable copy of the field-value map, never null
      */
-    public SortedMap<DateTimeFieldRule, Integer> toFieldValueMap() {
-        return new TreeMap<DateTimeFieldRule, Integer>(fieldValueMap);
+    public SortedMap<DateTimeFieldRule<?>, Integer> toFieldValueMap() {
+        return new TreeMap<DateTimeFieldRule<?>, Integer>(fieldValueMap);
     }
 
     /**
@@ -419,32 +441,10 @@ public final class DateTimeFields
      *
      * @return a clone of the field-value map, never null
      */
-    private TreeMap<DateTimeFieldRule, Integer> clonedMap() {
-        TreeMap<DateTimeFieldRule, Integer> cloned = createMap();
+    private TreeMap<DateTimeFieldRule<?>, Integer> clonedMap() {
+        TreeMap<DateTimeFieldRule<?>, Integer> cloned = createMap();
         cloned.putAll(fieldValueMap);
         return cloned;
-    }
-
-    /**
-     * Copies the field-value map into the specified map.
-     *
-     * @param map  the map to copy into, not null
-     */
-    void copyInto(Map<DateTimeFieldRule, Integer> map) {
-        map.putAll(fieldValueMap);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this object to a <code>Calendrical</code> with the same set of fields.
-     * <p>
-     * Methods on the <code>Calendrical</code> allow conversion to and from
-     * other date/time objects.
-     *
-     * @return the calendrical with the same set of fields, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(this);
     }
 
     //-----------------------------------------------------------------------

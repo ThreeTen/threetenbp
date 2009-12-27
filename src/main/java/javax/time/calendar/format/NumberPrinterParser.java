@@ -63,9 +63,9 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     };
 
     /**
-     * The field to output, not null.
+     * The rule to output, not null.
      */
-    private final DateTimeFieldRule fieldRule;
+    private final DateTimeFieldRule<?> rule;
     /**
      * The minimum width allowed, zero padding is used up to this width, from 1 to 10.
      */
@@ -86,14 +86,14 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param fieldRule  the rule of the field to print, not null
+     * @param rule  the rule of the field to print, not null
      * @param minWidth  the minimum field width, from 1 to 10
      * @param maxWidth  the maximum field width, from minWidth to 10
      * @param signStyle  the positive/negative sign style, not null
      */
-    NumberPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle) {
+    NumberPrinterParser(DateTimeFieldRule<?> rule, int minWidth, int maxWidth, SignStyle signStyle) {
         // validated by caller
-        this.fieldRule = fieldRule;
+        this.rule = rule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
         this.signStyle = signStyle;
@@ -103,15 +103,15 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     /**
      * Constructor.
      *
-     * @param fieldRule  the rule of the field to print, not null
+     * @param rule  the rule of the field to print, not null
      * @param minWidth  the minimum field width, from 1 to 10
      * @param maxWidth  the maximum field width, from minWidth to 10
      * @param signStyle  the positive/negative sign style, not null
      * @param subsequentWidth  the width of subsequent non-negative numbers, 0 or greater
      */
-    private NumberPrinterParser(DateTimeFieldRule fieldRule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
+    private NumberPrinterParser(DateTimeFieldRule<?> rule, int minWidth, int maxWidth, SignStyle signStyle, int subsequentWidth) {
         // validated by caller
-        this.fieldRule = fieldRule;
+        this.rule = rule;
         this.minWidth = minWidth;
         this.maxWidth = maxWidth;
         this.signStyle = signStyle;
@@ -125,16 +125,16 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
      * @return a new updated printer-parser, never null
      */
     NumberPrinterParser withSubsequentWidth(int subsequentWidth) {
-        return new NumberPrinterParser(fieldRule, minWidth, maxWidth, signStyle, this.subsequentWidth + subsequentWidth);
+        return new NumberPrinterParser(rule, minWidth, maxWidth, signStyle, this.subsequentWidth + subsequentWidth);
     }
 
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        int value = calendrical.deriveValue(fieldRule);
+        int value = rule.getInt(calendrical);
         String str = (value == Integer.MIN_VALUE ? "2147483648" : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
-            throw new CalendricalFormatFieldException(fieldRule, value, maxWidth);
+            throw new CalendricalFormatFieldException(rule, value, maxWidth);
         }
         str = FormatUtil.convertToI18N(str, symbols);
         
@@ -157,7 +157,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     appendable.append(symbols.getNegativeSignChar());
                     break;
                 case NOT_NEGATIVE:
-                    throw new CalendricalFormatFieldException(fieldRule, value);
+                    throw new CalendricalFormatFieldException(rule, value);
             }
         }
         for (int i = 0; i < minWidth - str.length(); i++) {
@@ -168,7 +168,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return calendrical.isDerivable(fieldRule);
+        return calendrical.get(rule) != null;  // TODO: Better, or remove method
     }
 
     //-----------------------------------------------------------------------
@@ -268,7 +268,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
             total /= 10;
             pos--;
         }
-        context.setFieldValue(fieldRule, (int) total);
+        context.setParsed(rule, (int) total);
         return pos;
     }
 
@@ -277,12 +277,12 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
     @Override
     public String toString() {
         if (minWidth == 1 && maxWidth == 10 && signStyle == SignStyle.NORMAL) {
-            return "Value(" + fieldRule.getID() + ")";
+            return "Value(" + rule.getID() + ")";
         }
         if (minWidth == maxWidth && signStyle == SignStyle.NOT_NEGATIVE) {
-            return "Value(" + fieldRule.getID() + "," + minWidth + ")";
+            return "Value(" + rule.getID() + "," + minWidth + ")";
         }
-        return "Value(" + fieldRule.getID() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
+        return "Value(" + rule.getID() + "," + minWidth + "," + maxWidth + "," + signStyle + ")";
     }
 
 }

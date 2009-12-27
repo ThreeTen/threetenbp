@@ -31,7 +31,8 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.DECADES;
+import static javax.time.period.PeriodUnits.YEARS;
 
 import java.io.Serializable;
 
@@ -40,27 +41,21 @@ import java.io.Serializable;
  *
  * @author Stephen Colebourne
  */
-public final class MockYearOfDecadeFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockYearOfDecadeFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockYearOfDecadeFieldRule();
+    public static final DateTimeFieldRule<Integer> INSTANCE = new MockYearOfDecadeFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockYearOfDecadeFieldRule() {
-        super(ISOChronology.INSTANCE, "YearOfDecade", YEARS, DECADES, 0, 9);
+        super(Integer.class, ISOChronology.INSTANCE, "YearOfDecade", YEARS, DECADES, 0, 9);
     }
     private Object readResolve() {
         return INSTANCE;
     }
-    /** {@inheritDoc} */
     @Override
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return date == null ? null : date.getYear() % 10;
-    }
-    /** {@inheritDoc} */
-    @Override
-    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-        Integer yocVal = MockYearOfCenturyFieldRule.INSTANCE.getValueQuiet(fieldMap);
+    protected Integer deriveValue(Calendrical calendrical) {
+        Integer yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
         return (yocVal == null ? null : yocVal % 10);
     }
 }

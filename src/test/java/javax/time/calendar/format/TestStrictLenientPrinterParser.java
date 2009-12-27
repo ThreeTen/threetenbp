@@ -31,11 +31,11 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFields;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -67,7 +67,7 @@ public class TestStrictLenientPrinterParser {
         StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
         StringBuilder buf = new StringBuilder();
         DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
-        pp.print(new Calendrical(), buf, symbols);
+        pp.print(DateTimeFields.fields(), buf, symbols);
         assertEquals(buf.toString(), "");
     }
 
@@ -79,7 +79,7 @@ public class TestStrictLenientPrinterParser {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable() throws Exception {
         StrictLenientPrinterParser pp = StrictLenientPrinterParser.STRICT;
-        assertEquals(pp.isPrintDataAvailable(new Calendrical()), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), true);
     }
 
     public void test_isPrintDataAvailable_nulls() throws Exception {

@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.CENTURIES;
 
 import java.io.Serializable;
 
@@ -43,39 +43,32 @@ import javax.time.calendar.field.Year;
  *
  * @author Stephen Colebourne
  */
-public final class MockCenturyFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockCenturyFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockCenturyFieldRule();
+    public static final DateTimeFieldRule<Integer> INSTANCE = new MockCenturyFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockCenturyFieldRule() {
-        super(ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super(Integer.class, ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
     }
     private Object readResolve() {
         return INSTANCE;
     }
-    /** {@inheritDoc} */
     @Override
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return date == null ? null : date.getYear() / 100;
-    }
-    /** {@inheritDoc} */
-    @Override
-    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-        Integer yearVal = ISOChronology.yearRule().getValueQuiet(fieldMap);
+    protected Integer deriveValue(Calendrical calendrical) {
+        Integer yearVal = calendrical.get(ISOChronology.yearRule());
         return (yearVal == null ? null : yearVal / 100);
     }
-    /** {@inheritDoc} */
     @Override
-    protected void mergeFields(Calendrical.Merger merger) {
-        Integer yocVal = merger.getValueQuiet(MockYearOfCenturyFieldRule.INSTANCE);
+    protected void merge(CalendricalMerger merger) {
+        Integer yocVal = merger.getValue(MockYearOfCenturyFieldRule.INSTANCE);
         if (yocVal != null) {
             int cen = merger.getValue(this);
             int year = MathUtils.safeAdd(MathUtils.safeMultiply(cen, 100), yocVal);
-            merger.storeMergedField(ISOChronology.yearRule(), year);
-            merger.markFieldAsProcessed(this);
-            merger.markFieldAsProcessed(MockYearOfCenturyFieldRule.INSTANCE);
+            merger.storeMerged(ISOChronology.yearRule(), year);
+            merger.removeProcessed(this);
+            merger.removeProcessed(MockYearOfCenturyFieldRule.INSTANCE);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
 public class TestZoneResolvers {
 
     private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
-    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
+//    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.zoneOffset(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.zoneOffset(2);
     private static final LocalDateTime DT_PARIS_OVERLAP = dateTime(2008, 10, 26, 2, 30);

@@ -7,13 +7,13 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.DayOfYear;
 
 /**
@@ -30,9 +30,10 @@ import javax.time.calendar.field.DayOfYear;
  * ThaiBuddhistDate is thread-safe and immutable.
  *
  * @author Ryoji Suzuki
+ * @author Stephen Colebourne
  */
 public final class ThaiBuddhistDate
-        implements DateProvider, CalendricalProvider, Comparable<ThaiBuddhistDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<ThaiBuddhistDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -87,9 +88,9 @@ public final class ThaiBuddhistDate
      */
     public static ThaiBuddhistDate thaiBuddhistDate(ThaiBuddhistEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "ThaiBuddhistEra must not be null");
-        ThaiBuddhistChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
-        ThaiBuddhistChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
-        ThaiBuddhistChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
+        ThaiBuddhistChronology.monthOfYearRule().checkValue(monthOfYear);
+        ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
         int year = yearOfEra;
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
             year = 1 - yearOfEra;
@@ -111,7 +112,7 @@ public final class ThaiBuddhistDate
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
         }
-        ThaiBuddhistChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
+        ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
         return new ThaiBuddhistDate(date);
     }
 
@@ -135,31 +136,19 @@ public final class ThaiBuddhistDate
         return ThaiBuddhistChronology.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this date can be queried using the
-     * specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return date.isSupported(fieldRule);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        return date.get(fieldRule);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -243,7 +232,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public ThaiBuddhistDate withYear(ThaiBuddhistEra era, int yearOfEra) {
-        ThaiBuddhistChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
+        ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
         int year = yearOfEra;
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
             year = 1 - yearOfEra;
@@ -281,7 +270,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
     public ThaiBuddhistDate withMonthOfYear(int monthOfYear) {
-        ThaiBuddhistChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
+        ThaiBuddhistChronology.monthOfYearRule().checkValue(monthOfYear);
         return ThaiBuddhistDate.thaiBuddhistDate(date.withMonthOfYear(monthOfYear));
     }
 
@@ -296,7 +285,7 @@ public final class ThaiBuddhistDate
      * @throws InvalidCalendarFieldException if the day of month is invalid for the year and month
      */
     public ThaiBuddhistDate withDayOfMonth(int dayOfMonth) {
-        ThaiBuddhistChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
         return ThaiBuddhistDate.thaiBuddhistDate(date.withDayOfMonth(dayOfMonth));
     }
 
@@ -311,7 +300,7 @@ public final class ThaiBuddhistDate
      * @throws InvalidCalendarFieldException if the day of year is invalid for the year
      */
     public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
-        ThaiBuddhistChronology.INSTANCE.dayOfYear().checkValue(dayOfYear);
+        ThaiBuddhistChronology.dayOfYearRule().checkValue(dayOfYear);
         return ThaiBuddhistDate.thaiBuddhistDate(date.with(DayOfYear.dayOfYear(dayOfYear)));
     }
 
@@ -461,15 +450,6 @@ public final class ThaiBuddhistDate
         return date;
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(toLocalDate(), null, null, null);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
@@ -556,6 +536,42 @@ public final class ThaiBuddhistDate
                 .append(monthValue < 10 ? "-0" : "-").append(monthValue)
                 .append(dayValue < 10 ? "-0" : "-").append(dayValue)
                 .append(" (ThaiBuddhist)").toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for <code>ThaiBuddhistDate</code>.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<ThaiBuddhistDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<ThaiBuddhistDate> implements Serializable {
+        private static final CalendricalRule<ThaiBuddhistDate> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(ThaiBuddhistDate.class, ISOChronology.INSTANCE, "ThaiBuddhistDate");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected ThaiBuddhistDate deriveValue(Calendrical calendrical) {
+            LocalDate ld = calendrical.get(LocalDate.rule());
+            return ld != null ? ThaiBuddhistDate.thaiBuddhistDate(ld) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            ThaiBuddhistDate td = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), td.toLocalDate());
+            merger.removeProcessed(this);
+        }
     }
 
 }

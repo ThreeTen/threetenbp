@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,10 @@
  */
 package javax.time.calendar.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,14 +46,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MockDateProviderReturnsNull;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
@@ -77,10 +78,11 @@ public class TestCopticDate {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_1234_7_15 instanceof CalendricalProvider);
-        assertTrue(TEST_1234_7_15 instanceof DateProvider);
-        assertTrue(TEST_1234_7_15 instanceof Serializable);
-        assertTrue(TEST_1234_7_15 instanceof Comparable);
+        Object obj = TEST_1234_7_15;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof DateProvider);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -174,21 +176,20 @@ public class TestCopticDate {
 
     //-----------------------------------------------------------------------
     public void test_get() throws Exception {
-        assertEquals(TEST_1234_7_15.get(CopticChronology.INSTANCE.year()), TEST_1234_7_15.getYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.INSTANCE.monthOfYear()), TEST_1234_7_15.getMonthOfYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.INSTANCE.dayOfMonth()), TEST_1234_7_15.getDayOfMonth());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.INSTANCE.dayOfYear()), TEST_1234_7_15.getDayOfYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.INSTANCE.dayOfWeek()), TEST_1234_7_15.getDayOfWeek());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.yearRule()), (Integer) TEST_1234_7_15.getYear());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.monthOfYearRule()), (Integer) TEST_1234_7_15.getMonthOfYear());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfMonthRule()), (Integer) TEST_1234_7_15.getDayOfMonth());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfYearRule()), (Integer) TEST_1234_7_15.getDayOfYear());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfWeekRule()), (Integer) TEST_1234_7_15.getDayOfWeek());
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupported() throws Exception {
-        TEST_1234_7_15.get(HourOfDay.rule());
+        assertEquals(TEST_1234_7_15.get(HourOfDay.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_get_null() throws Exception {
-        TEST_1234_7_15.get((DateTimeFieldRule) null);
+        TEST_1234_7_15.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -223,7 +224,7 @@ public class TestCopticDate {
             TEST_1234_7_15.withYear(CopticDate.MIN_YEAR - 1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.year());
+            assertEquals(ex.getRule(), CopticChronology.yearRule());
         }
     }
 
@@ -232,7 +233,7 @@ public class TestCopticDate {
             TEST_1234_7_15.withYear(CopticDate.MAX_YEAR + 1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.year());
+            assertEquals(ex.getRule(), CopticChronology.yearRule());
         }
     }
 
@@ -261,7 +262,7 @@ public class TestCopticDate {
             TEST_1234_7_15.withMonthOfYear(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), CopticChronology.monthOfYearRule());
         }
     }
 
@@ -270,7 +271,7 @@ public class TestCopticDate {
             TEST_1234_7_15.withMonthOfYear(14);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), CopticChronology.monthOfYearRule());
         }
     }
 
@@ -305,7 +306,7 @@ public class TestCopticDate {
             test.withDayOfMonth(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -315,7 +316,7 @@ public class TestCopticDate {
             test.withDayOfMonth(31);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -325,7 +326,7 @@ public class TestCopticDate {
             test.withDayOfMonth(6);
             fail();
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -335,7 +336,7 @@ public class TestCopticDate {
             test.withDayOfMonth(7);
             fail();
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -363,7 +364,7 @@ public class TestCopticDate {
             test.withDayOfYear(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -373,7 +374,7 @@ public class TestCopticDate {
             test.withDayOfYear(366);
             fail();
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -383,7 +384,7 @@ public class TestCopticDate {
             test.withDayOfYear(367);
             fail();
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
         }
     }
 
@@ -419,7 +420,7 @@ public class TestCopticDate {
             test.plusYears(plus);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.year());
+            assertEquals(ex.getRule(), CopticChronology.yearRule());
         }
     }
 
@@ -459,7 +460,7 @@ public class TestCopticDate {
             test.plusMonths(plus);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.year());
+            assertEquals(ex.getRule(), CopticChronology.yearRule());
         }
     }
 
@@ -495,7 +496,7 @@ public class TestCopticDate {
             test.plusDays(plus);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.year());
+            assertEquals(ex.getRule(), CopticChronology.yearRule());
         }
     }
 
@@ -505,14 +506,6 @@ public class TestCopticDate {
     public void test_toLocalDate() throws Exception {
         assertEquals(CopticDate.copticDate(1,1,1).toLocalDate(), LocalDate.date(284, 8, 29));
         assertEquals(CopticDate.copticDate(1662, 3,3).toLocalDate(), LocalDate.date(1945, 11, 12));
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() throws Exception {
-        Calendrical test = CopticDate.copticDate(1,1,1).toCalendrical();
-        assertEquals(test, new Calendrical(LocalDate.date(284, 8, 29), null, null, null));
     }
 
     //-----------------------------------------------------------------------
@@ -684,17 +677,17 @@ public class TestCopticDate {
                 throw ex;  // should be IllegalCalendarFieldValueException
             }
             if (month == 13 && (day > 6 || (day == 6 && isLeapYear(year) == false))) {
-                assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+                assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
             } else {
                 throw ex;  // valid date
             }
         } catch (IllegalCalendarFieldValueException ex) {
             if (year < 1 || year > 9999) {
-                assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.year());
+                assertEquals(ex.getRule(), CopticChronology.yearRule());
             } else if (month < 1 || month > 13) {
-                assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.monthOfYear());
+                assertEquals(ex.getRule(), CopticChronology.monthOfYearRule());
             } else if (day < 1 || day > 30) {
-                assertEquals(ex.getFieldRule(), CopticChronology.INSTANCE.dayOfMonth());
+                assertEquals(ex.getRule(), CopticChronology.dayOfMonthRule());
             }
         }
     }

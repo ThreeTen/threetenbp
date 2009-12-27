@@ -63,7 +63,7 @@ import javax.time.CalendricalException;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public interface DateProvider extends CalendricalProvider {
+public interface DateProvider {
 
     /**
      * Returns an instance of <code>LocalDate</code> initialized from the

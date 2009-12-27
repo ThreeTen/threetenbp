@@ -31,7 +31,12 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,8 +74,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestLocalDate {
 
-    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
-    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
+//    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
+//    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
     private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
     private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
     private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
@@ -95,11 +100,12 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_2007_07_15 instanceof CalendricalProvider);
-        assertTrue(TEST_2007_07_15 instanceof Serializable);
-        assertTrue(TEST_2007_07_15 instanceof Comparable);
-        assertTrue(TEST_2007_07_15 instanceof DateProvider);
-        assertTrue(TEST_2007_07_15 instanceof DateMatcher);
+        Object obj = TEST_2007_07_15;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
+        assertTrue(obj instanceof DateProvider);
+        assertTrue(obj instanceof DateMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -392,48 +398,47 @@ public class TestLocalDate {
     }
 
     //-----------------------------------------------------------------------
-    // isSupported(DateTimeFieldRule)
+    // get(CalendricalRule)
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.yearRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.quarterOfYearRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.monthOfYearRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.monthOfQuarterRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfMonthRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfWeekRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.dayOfYearRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfMonthRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekOfWeekBasedYearRule()));
-        assertTrue(TEST_2007_07_15.isSupported(ISOChronology.weekBasedYearRule()));
+    public void test_get_CalendricalRule() {
+        LocalDate test = LocalDate.date(2008, 6, 30);
+        assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), (Integer) 2);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekyear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekyear(test).getValue());
         
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.hourOfDayRule()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.minuteOfHourRule()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.secondOfMinuteRule()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.nanoOfSecondRule()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.hourOfAmPmRule()));
-        assertFalse(TEST_2007_07_15.isSupported(ISOChronology.amPmOfDayRule()));
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), null);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), null);
+        assertEquals(test.get(ISOChronology.nanoOfSecondRule()), null);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), null);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), null);
         
-        assertFalse(TEST_2007_07_15.isSupported(null));
+        assertEquals(test.get(LocalDate.rule()), test);
+        assertEquals(test.get(LocalTime.rule()), null);
+        assertEquals(test.get(LocalDateTime.rule()), null);
+        assertEquals(test.get(OffsetDate.rule()), null);
+        assertEquals(test.get(OffsetTime.rule()), null);
+        assertEquals(test.get(OffsetDateTime.rule()), null);
+        assertEquals(test.get(ZonedDateTime.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), null);
+        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(YearMonth.rule()), YearMonth.yearMonth(2008, 6));
+        assertEquals(test.get(MonthDay.rule()), MonthDay.monthDay(6, 30));
     }
 
-    //-----------------------------------------------------------------------
-    // get(DateTimeFieldRule)
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(TEST_2007_07_15.get(ISOChronology.yearRule()), TEST_2007_07_15.getYear());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.quarterOfYearRule()), TEST_2007_07_15.getMonthOfYear().getQuarterOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.monthOfYearRule()), TEST_2007_07_15.getMonthOfYear().getValue());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.monthOfQuarterRule()), TEST_2007_07_15.getMonthOfYear().getMonthOfQuarter());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfMonthRule()), TEST_2007_07_15.getDayOfMonth());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfWeekRule()), TEST_2007_07_15.getDayOfWeek().getValue());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.dayOfYearRule()), TEST_2007_07_15.getDayOfYear());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.weekOfWeekBasedYearRule()), WeekOfWeekBasedYear.weekOfWeekyear(TEST_2007_07_15).getValue());
-        assertEquals(TEST_2007_07_15.get(ISOChronology.weekBasedYearRule()), WeekBasedYear.weekyear(TEST_2007_07_15).getValue());
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_CalendricalRule_null() {
+        TEST_2007_07_15.get((CalendricalRule<?>) null);
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_get_unsupported() {
-        TEST_2007_07_15.get(ISOChronology.hourOfDayRule());
+        assertEquals(TEST_2007_07_15.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -1387,7 +1392,7 @@ public class TestLocalDate {
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooSmall() {
-        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 1).minusMonths(1);
+        LocalDate.date(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
     public void test_minusMonths_int_DateResolver_normal() {
@@ -1753,15 +1758,6 @@ public class TestLocalDate {
     public void test_toLocalDate(int year, int month, int day) {
         LocalDate t = LocalDate.date(year, month, day);
         assertSame(t.toLocalDate(), t);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_toCalendrical(int year, int month, int day) {
-        LocalDate t = LocalDate.date(year, month, day);
-        assertEquals(t.toCalendrical(), new Calendrical(t, null, null, null));
     }
 
     //-----------------------------------------------------------------------

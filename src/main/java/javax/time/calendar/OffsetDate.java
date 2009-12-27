@@ -63,7 +63,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class OffsetDate
-        implements CalendricalProvider, DateProvider, DateMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
+        implements Calendrical, DateProvider, DateMatcher, DateAdjuster, Comparable<OffsetDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -189,8 +189,7 @@ public final class OffsetDate
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public static OffsetDate parse(String text) {
-        ISOChronology.checkNotNull(text, "Text to parse must not be null");
-        return DateTimeFormatters.isoOffsetDate().parse(text).mergeStrict().toOffsetDate();
+        return DateTimeFormatters.isoOffsetDate().parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -213,8 +212,7 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for
-     * this date.
+     * Gets the chronology that this date uses, which is the ISO calendar system.
      *
      * @return the ISO chronology, never null
      */
@@ -224,30 +222,17 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this <code>OffsetDate</code> can
-     * be queried using the specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return date.isSupported(fieldRule);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        return date.get(fieldRule);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -965,15 +950,6 @@ public final class OffsetDate
         return date;
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(date, null, offset, null);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this date to another date based on the UTC equivalent dates
@@ -1076,6 +1052,36 @@ public final class OffsetDate
     @Override
     public String toString() {
         return date.toString() + offset.toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for <code>OffsetDate</code>.
+     *
+     * @return the field rule for the date, never null
+     */
+    public static CalendricalRule<OffsetDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<OffsetDate> implements Serializable {
+        private static final CalendricalRule<OffsetDate> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(OffsetDate.class, ISOChronology.INSTANCE, "OffsetDate");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected OffsetDate deriveValue(Calendrical calendrical) {
+            OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
+            return odt != null ? odt.toOffsetDate() : null;
+        }
     }
 
 }

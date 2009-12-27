@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,16 +31,44 @@
  */
 package javax.time.calendar;
 
+import javax.time.CalendricalException;
+
 /**
- * Mock CalendricalProvider that returns null.
+ * An exception used when an exception is connected to a specified rule.
  *
  * @author Stephen Colebourne
  */
-public class MockCalendricalProviderReturnsNull implements CalendricalProvider {
+public class CalendricalRuleException extends CalendricalException {
 
-    /** {@inheritDoc} */
-    public Calendrical toCalendrical() {
-        return null;
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 2876487267826L;
+
+    /**
+     * The rule that caused the exception
+     */
+    private final CalendricalRule<?> rule;
+
+    /**
+     * Constructs a new unsupported field exception creating a standard error message.
+     *
+     * @param message  the message describing the problem, should not be null
+     * @param fieldRule  the rule of the field that is not supported, may be null
+     */
+    public CalendricalRuleException(String message, CalendricalRule<?> fieldRule) {
+        super(message);
+        this.rule = fieldRule;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that is connected to the exception.
+     *
+     * @return the field rule, null if unknown
+     */
+    public CalendricalRule<?> getRule() {
+        return rule;
     }
 
 }

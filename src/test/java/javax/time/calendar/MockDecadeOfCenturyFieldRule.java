@@ -31,7 +31,8 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.CENTURIES;
+import static javax.time.period.PeriodUnits.DECADES;
 
 import java.io.Serializable;
 
@@ -42,39 +43,33 @@ import javax.time.MathUtils;
  *
  * @author Stephen Colebourne
  */
-public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule implements Serializable {
+public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
+
     /** Singleton instance. */
-    public static final DateTimeFieldRule INSTANCE = new MockDecadeOfCenturyFieldRule();
+    public static final DateTimeFieldRule<Integer> INSTANCE = new MockDecadeOfCenturyFieldRule();
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockDecadeOfCenturyFieldRule() {
-        super(ISOChronology.INSTANCE, "DecadeOfCentury", DECADES, CENTURIES, 0, 9);
+        super(Integer.class, ISOChronology.INSTANCE, "DecadeOfCentury", DECADES, CENTURIES, 0, 9);
     }
     private Object readResolve() {
         return INSTANCE;
     }
-    /** {@inheritDoc} */
     @Override
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return date == null ? null : (date.getYear() / 10) % 10;
-    }
-    /** {@inheritDoc} */
-    @Override
-    protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-        Integer yocVal = MockYearOfCenturyFieldRule.INSTANCE.getValueQuiet(fieldMap);
+    protected Integer deriveValue(Calendrical calendrical) {
+        Integer yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
         return (yocVal == null ? null : yocVal / 10);
     }
-    /** {@inheritDoc} */
     @Override
-    protected void mergeFields(Calendrical.Merger merger) {
-        Integer yodVal = merger.getValueQuiet(MockYearOfDecadeFieldRule.INSTANCE);
+    protected void merge(CalendricalMerger merger) {
+        Integer yodVal = merger.getValue(MockYearOfDecadeFieldRule.INSTANCE);
         if (yodVal != null) {
             int doc = merger.getValue(this);
             int yoc = MathUtils.safeAdd(MathUtils.safeMultiply(doc, 10), yodVal);
-            merger.storeMergedField(MockYearOfCenturyFieldRule.INSTANCE, yoc);
-            merger.markFieldAsProcessed(this);
-            merger.markFieldAsProcessed(MockYearOfDecadeFieldRule.INSTANCE);
+            merger.storeMerged(MockYearOfCenturyFieldRule.INSTANCE, yoc);
+            merger.removeProcessed(this);
+            merger.removeProcessed(MockYearOfDecadeFieldRule.INSTANCE);
         }
     }
 }

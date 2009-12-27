@@ -38,8 +38,9 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -53,8 +54,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestFractionPrinterParser {
 
-    private static DateTimeFieldRule NANO_RULE = ISOChronology.nanoOfSecondRule();
-    private static DateTimeFieldRule SECOND_RULE = ISOChronology.secondOfMinuteRule();
+    private static DateTimeFieldRule<Integer> NANO_RULE = ISOChronology.nanoOfSecondRule();
+    private static DateTimeFieldRule<Integer> SECOND_RULE = ISOChronology.secondOfMinuteRule();
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
@@ -65,7 +66,7 @@ public class TestFractionPrinterParser {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = new Calendrical();
+        emptyCalendrical = DateTimeFields.fields();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
@@ -74,7 +75,7 @@ public class TestFractionPrinterParser {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -87,20 +88,20 @@ public class TestFractionPrinterParser {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, buf, (DateTimeFormatSymbols) null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(emptyCalendrical, buf, symbols);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -109,7 +110,7 @@ public class TestFractionPrinterParser {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = new Calendrical(NANO_RULE, 3);
+        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, 3);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 0, 9);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -193,7 +194,7 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Nanos")
     public void test_print_nanos(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = new Calendrical(NANO_RULE, value);
+        Calendrical calendrical = DateTimeFields.fields(NANO_RULE, value);
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, minWidth, maxWidth);
         pp.print(calendrical, buf, symbols);
         if (result == null) {
@@ -228,7 +229,7 @@ public class TestFractionPrinterParser {
 
     @Test(dataProvider="Seconds")
     public void test_print_seconds(int minWidth, int maxWidth, int value, String result) throws Exception {
-        Calendrical calendrical = new Calendrical(SECOND_RULE, value);
+        Calendrical calendrical = DateTimeFields.fields(SECOND_RULE, value);
         FractionPrinterParser pp = new FractionPrinterParser(SECOND_RULE, minWidth, maxWidth);
         pp.print(calendrical, buf, symbols);
         if (result == null) {
@@ -240,12 +241,12 @@ public class TestFractionPrinterParser {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
-        assertEquals(pp.isPrintDataAvailable(new Calendrical(NANO_RULE, 4)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields(NANO_RULE, 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
-        assertEquals(pp.isPrintDataAvailable(new Calendrical()), false);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), false);
     }
 
     //-----------------------------------------------------------------------
@@ -259,9 +260,9 @@ public class TestFractionPrinterParser {
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
         } else {
-            assertEquals(context.getFieldValue(NANO_RULE), expectedValue);
+            assertEquals(context.getParsed(NANO_RULE), (Integer) expectedValue);
         }
     }
 
@@ -273,9 +274,9 @@ public class TestFractionPrinterParser {
         assertEquals(newPos, result.length());
         int expectedValue = fixParsedValue(maxWidth, value);
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
         } else {
-            assertEquals(context.getFieldValue(NANO_RULE), expectedValue);
+            assertEquals(context.getParsed(NANO_RULE), (Integer) expectedValue);
         }
     }
 
@@ -287,9 +288,9 @@ public class TestFractionPrinterParser {
         assertEquals(newPos, result.length() + 1);
         int expectedValue = fixParsedValue(maxWidth, value);
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
         } else {
-            assertEquals(context.getFieldValue(NANO_RULE), expectedValue);
+            assertEquals(context.getParsed(NANO_RULE), (Integer) expectedValue);
         }
     }
 
@@ -308,9 +309,9 @@ public class TestFractionPrinterParser {
         int newPos = pp.parse(context, result, 0);
         assertEquals(newPos, result.length());
         if (value == 0 && minWidth == 0) {
-            assertEquals(context.toCalendrical().getFieldMap().contains(SECOND_RULE), false);
+            assertEquals(context.toCalendricalMerger().getInputMap().containsKey(SECOND_RULE), false);
         } else {
-            assertEquals(context.getFieldValue(SECOND_RULE), value);
+            assertEquals(context.getParsed(SECOND_RULE), (Integer) value);
         }
     }
 
@@ -320,7 +321,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, "", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     public void test_parse_noPoint() throws Exception {
@@ -328,7 +329,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, "A", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     public void test_parse_point_noDigits() throws Exception {
@@ -336,7 +337,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, ".", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     public void test_parse_point_notMinWidthDigits1() throws Exception {
@@ -344,7 +345,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, ".5", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     public void test_parse_point_notMinWidthDigits2() throws Exception {
@@ -352,7 +353,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, ".51", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     public void test_parse_point_nonDigit1() throws Exception {
@@ -360,7 +361,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, ".A23456", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     public void test_parse_point_nonDigit2() throws Exception {
@@ -368,7 +369,7 @@ public class TestFractionPrinterParser {
         FractionPrinterParser pp = new FractionPrinterParser(NANO_RULE, 3, 6);
         int newPos = pp.parse(context, ".1A3456", 0);
         assertEquals(newPos, ~1);
-        assertEquals(context.toCalendrical().getFieldMap().contains(NANO_RULE), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(NANO_RULE), false);
     }
 
     //-----------------------------------------------------------------------

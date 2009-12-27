@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfMonth;
 
@@ -60,14 +61,14 @@ public class TestPadPrinterDecorator {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = new Calendrical();
+        emptyCalendrical = DateTimeFields.fields();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = new Calendrical(DayOfMonth.rule(), 3);
+        Calendrical calendrical = DateTimeFields.fields(DayOfMonth.rule(), 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -95,7 +96,7 @@ public class TestPadPrinterDecorator {
     }
 
     public void test_print_fullDateTime() throws Exception {
-        Calendrical calendrical = LocalDate.date(2008, 12, 3).toCalendrical();
+        Calendrical calendrical = LocalDate.date(2008, 12, 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "--Z");

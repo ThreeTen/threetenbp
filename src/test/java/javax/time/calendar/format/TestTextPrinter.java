@@ -38,8 +38,11 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -54,9 +57,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestTextPrinter {
 
-    private static final DateTimeFieldRule RULE_DOW = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule<DayOfWeek> RULE_DOW = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
 
     private StringBuilder buf;
     private Appendable exceptionAppenable;
@@ -67,14 +70,14 @@ public class TestTextPrinter {
     public void setUp() {
         buf = new StringBuilder();
         exceptionAppenable = new MockIOExceptionAppendable();
-        emptyCalendrical = new Calendrical();
+        emptyCalendrical = DateTimeFields.fields();
         symbols = DateTimeFormatSymbols.getInstance(Locale.ENGLISH);
     }
 
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, (Appendable) null, symbols);
     }
@@ -87,20 +90,20 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullSymbols() throws Exception {
-        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, buf, null);
     }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
+    @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(emptyCalendrical, buf, symbols);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
@@ -109,7 +112,7 @@ public class TestTextPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = new Calendrical(RULE_DOW, 3);
+        Calendrical calendrical = DateTimeFields.fields(RULE_DOW, 3);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
@@ -159,8 +162,8 @@ public class TestTextPrinter {
     }
 
     @Test(dataProvider="print") 
-    public void test_print(DateTimeFieldRule rule, TextStyle style, int dow, String expected) throws Exception {
-        Calendrical calendrical = new Calendrical(rule, dow);
+    public void test_print(DateTimeFieldRule<?> rule, TextStyle style, int dow, String expected) throws Exception {
+        Calendrical calendrical = DateTimeFields.fields(rule, dow);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), expected);
@@ -169,12 +172,12 @@ public class TestTextPrinter {
     //-----------------------------------------------------------------------
     public void test_isPrintDataAvailable_true() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(new Calendrical(RULE_MOY, 4)), true);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields(RULE_MOY, 4)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
-        assertEquals(pp.isPrintDataAvailable(new Calendrical()), false);
+        assertEquals(pp.isPrintDataAvailable(DateTimeFields.fields()), false);
     }
 
     //-----------------------------------------------------------------------

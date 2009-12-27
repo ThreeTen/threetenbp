@@ -32,7 +32,7 @@
 package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
@@ -54,7 +54,7 @@ import javax.time.calendar.LocalDate;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear implements CalendricalProvider, DateMatcher {
+public enum QuarterOfYear implements Calendrical, DateMatcher {
 
     /**
      * The singleton instance for the first quarter of year, from January to March.
@@ -89,7 +89,7 @@ public enum QuarterOfYear implements CalendricalProvider, DateMatcher {
      *
      * @return the quarter of year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.quarterOfYearRule();
     }
 
@@ -147,22 +147,27 @@ public enum QuarterOfYear implements CalendricalProvider, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, quarterOfYear, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the quarter of year value.
      *
      * @return the quarter of year, from 1 to 4
      */
     public int getValue() {
         return quarterOfYear;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

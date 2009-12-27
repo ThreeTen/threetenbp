@@ -37,6 +37,8 @@ import java.util.Locale;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -51,9 +53,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestTextParser {
 
-    private static final DateTimeFieldRule RULE_DOW = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule<DayOfWeek> RULE_DOW = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
 
     private DateTimeFormatSymbols symbols;
 
@@ -72,7 +74,7 @@ public class TestTextParser {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullText() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setFieldValue(RULE_DOW, 2);
+        context.setParsed(RULE_DOW, 2);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.parse(context, (String) null, 0);
     }
@@ -80,7 +82,7 @@ public class TestTextParser {
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooSmall() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setFieldValue(RULE_DOW, 2);
+        context.setParsed(RULE_DOW, 2);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.parse(context, "Monday", -1);
     }
@@ -88,7 +90,7 @@ public class TestTextParser {
     @Test(expectedExceptions=IndexOutOfBoundsException.class)
     public void test_print_invalidPositionTooBig() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setFieldValue(RULE_DOW, 2);
+        context.setParsed(RULE_DOW, 2);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         pp.parse(context, "Monday", 7);
     }
@@ -96,11 +98,11 @@ public class TestTextParser {
     //-----------------------------------------------------------------------
     public void test_parse_replaceContextValue() throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
-        context.setFieldValue(RULE_DOW, 2);
+        context.setParsed(RULE_DOW, 2);
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 0);
         assertEquals(newPos, 6);
-        assertEquals(context.getFieldValue(RULE_DOW), 1);
+        assertEquals(context.getParsed(RULE_DOW), 1);
     }
 
     public void test_parse_midStr() throws Exception {
@@ -108,7 +110,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "XxxMondayXxx", 3);
         assertEquals(newPos, 9);
-        assertEquals(context.getFieldValue(RULE_DOW), 1);
+        assertEquals(context.getParsed(RULE_DOW), 1);
     }
 
     public void test_parse_remainderIgnored() throws Exception {
@@ -116,7 +118,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.SHORT);
         int newPos = pp.parse(context, "Wednesday", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValue(RULE_DOW), 3);
+        assertEquals(context.getParsed(RULE_DOW), 3);
     }
 
     //-----------------------------------------------------------------------
@@ -125,7 +127,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Munday", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_DOW), false);
     }
 
     public void test_parse_noMatch2() throws Exception {
@@ -133,7 +135,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 3);
         assertEquals(newPos, ~3);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_DOW), false);
     }
 
     public void test_parse_noMatch_atEnd() throws Exception {
@@ -141,7 +143,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_DOW, TextStyle.FULL);
         int newPos = pp.parse(context, "Monday", 6);
         assertEquals(newPos, ~6);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_DOW), false);
     }
 
     //-----------------------------------------------------------------------
@@ -188,63 +190,63 @@ public class TestTextParser {
     }
 
     @Test(dataProvider="parseText")
-    public void test_parseText(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parseText(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, input.length());
-        assertEquals(context.getFieldValue(rule), dow);
+        assertEquals(context.getParsed(rule), dow);
     }
 
     @Test(dataProvider="parseNumber")
-    public void test_parseNumber(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parseNumber(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input, 0);
         assertEquals(newPos, input.length());
-        assertEquals(context.getFieldValue(rule), dow);
+        assertEquals(context.getParsed(rule), dow);
     }
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseUpper(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseUpper(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input.toUpperCase(), 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_DOW), false);
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseUpper(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input.toUpperCase(), 0);
         assertEquals(newPos, input.length());
-        assertEquals(context.getFieldValue(rule), dow);
+        assertEquals(context.getParsed(rule), dow);
     }
 
     //-----------------------------------------------------------------------
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseSensitive_parseLower(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseSensitive_parseLower(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(true);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input.toLowerCase(), 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_DOW), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_DOW), false);
     }
 
     @Test(dataProvider="parseText")
-    public void test_parse_strict_caseInsensitive_parseLower(DateTimeFieldRule rule, TextStyle style, int dow, String input) throws Exception {
+    public void test_parse_strict_caseInsensitive_parseLower(DateTimeFieldRule<?> rule, TextStyle style, int dow, String input) throws Exception {
         DateTimeParseContext context = new DateTimeParseContext(symbols);
         context.setCaseSensitive(false);
         TextPrinterParser pp = new TextPrinterParser(rule, style);
         int newPos = pp.parse(context, input.toLowerCase(), 0);
         assertEquals(newPos, input.length());
-        assertEquals(context.getFieldValue(rule), dow);
+        assertEquals(context.getParsed(rule), dow);
     }
 
     //-----------------------------------------------------------------------
@@ -256,7 +258,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
         int newPos = pp.parse(context, "January", 0);
         assertEquals(newPos, 7);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_full_strict_short_noMatch() throws Exception {
@@ -265,7 +267,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
         int newPos = pp.parse(context, "Janua", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_MOY), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_MOY), false);
     }
 
     public void test_parse_full_strict_number_noMatch() throws Exception {
@@ -274,7 +276,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_MOY), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_MOY), false);
     }
 
     //-----------------------------------------------------------------------
@@ -284,7 +286,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "January", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_short_strict_short_match() throws Exception {
@@ -293,7 +295,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "Janua", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_short_strict_number_noMatch() throws Exception {
@@ -302,7 +304,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_MOY), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_MOY), false);
     }
 
     //-----------------------------------------------------------------------
@@ -313,7 +315,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "janvier", 0);  // correct short form is 'janv.'
         assertEquals(newPos, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().contains(RULE_MOY), false);
+        assertEquals(context.toCalendricalMerger().getInputMap().containsKey(RULE_MOY), false);
     }
 
     public void test_parse_french_short_strict_short_match() throws Exception {
@@ -323,7 +325,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "janv.", 0);
         assertEquals(newPos, 5);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     //-----------------------------------------------------------------------
@@ -333,7 +335,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
         int newPos = pp.parse(context, "January", 0);
         assertEquals(newPos, 7);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_full_lenient_short_match() throws Exception {
@@ -342,7 +344,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
         int newPos = pp.parse(context, "Janua", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_full_lenient_number_match() throws Exception {
@@ -351,7 +353,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.FULL);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, 1);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     //-----------------------------------------------------------------------
@@ -361,7 +363,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "January", 0);
         assertEquals(newPos, 7);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_short_lenient_short_match() throws Exception {
@@ -370,7 +372,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "Janua", 0);
         assertEquals(newPos, 3);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
     public void test_parse_short_lenient_number_match() throws Exception {
@@ -379,7 +381,7 @@ public class TestTextParser {
         TextPrinterParser pp = new TextPrinterParser(RULE_MOY, TextStyle.SHORT);
         int newPos = pp.parse(context, "1", 0);
         assertEquals(newPos, 1);
-        assertEquals(context.getFieldValue(RULE_MOY), 1);
+        assertEquals(context.getParsed(RULE_MOY), 1);
     }
 
 }

@@ -43,6 +43,7 @@ import java.util.Set;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.TimeZone;
+import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
@@ -80,7 +81,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        TimeZone zone = calendrical.getZone();
+        TimeZone zone = calendrical.get(TimeZone.rule());
         if (zone == null) {
             throw new CalendricalFormatException("Unable to print TimeZone");
         }
@@ -95,7 +96,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return (calendrical.getZone() != null);
+        return (calendrical.get(TimeZone.rule()) != null);
     }
 
     //-----------------------------------------------------------------------
@@ -147,10 +148,11 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
             int startPos = position + 3;
             int endPos = new ZoneOffsetPrinterParser("", true, true).parse(newContext, parseText, startPos);
             if (endPos < 0) {
-                context.setZone(TimeZone.UTC);
+                context.setParsed(TimeZone.rule(), TimeZone.UTC);
                 return startPos;
             }
-            context.setZone(TimeZone.timeZone(newContext.getOffset()));
+            TimeZone zone = TimeZone.timeZone((ZoneOffset) newContext.getParsed(ZoneOffset.rule()));
+            context.setParsed(TimeZone.rule(), zone);
             return endPos;
         }
         
@@ -169,7 +171,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         
         if (parsedZoneId != null && preparedIDs.contains(parsedZoneId)) {
             TimeZone zone = TimeZone.timeZone(parsedZoneId);
-            context.setZone(zone);
+            context.setParsed(TimeZone.rule(), zone);
             return position + parsedZoneId.length();
         } else {
             return ~position;

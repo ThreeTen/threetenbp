@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,6 +49,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.NanoOfSecond;
@@ -78,12 +83,13 @@ public class TestOffsetTime {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_TIME instanceof CalendricalProvider);
-        assertTrue(TEST_TIME instanceof Serializable);
-        assertTrue(TEST_TIME instanceof Comparable);
-        assertTrue(TEST_TIME instanceof TimeMatcher);
-        assertTrue(TEST_TIME instanceof TimeAdjuster);
-        assertTrue(TEST_TIME instanceof TimeProvider);
+        Object obj = TEST_TIME;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
+        assertTrue(obj instanceof TimeMatcher);
+        assertTrue(obj instanceof TimeAdjuster);
+        assertTrue(obj instanceof TimeProvider);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -408,54 +414,53 @@ public class TestOffsetTime {
         assertEquals(a.toNanoOfSecond(), localTime.toNanoOfSecond());
         
         assertSame(a.toLocalTime(), localTime);
-        assertEquals(a.toCalendrical(), new Calendrical(null, localTime, offset, null));
         assertEquals(a.toString(), localTime.toString() + offset.toString());
     }
 
     //-----------------------------------------------------------------------
-    // isSupported(TimeTimeFieldRule)
+    // get(CalendricalRule)
     //-----------------------------------------------------------------------
-    public void test_isSupported() {
-        assertEquals(TEST_TIME.isSupported(ISOChronology.yearRule()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.monthOfYearRule()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.dayOfMonthRule()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.dayOfWeekRule()), false);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.dayOfYearRule()), false);
+    public void test_get_CalendricalRule() {
+        OffsetTime test = OffsetTime.time(12, 30, 40, 987654321, OFFSET_PONE);
+        assertEquals(test.get(ISOChronology.yearRule()), null);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), null);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), null);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), null);
+        assertEquals(test.get(ISOChronology.dayOfMonthRule()), null);
+        assertEquals(test.get(ISOChronology.dayOfWeekRule()), null);
+        assertEquals(test.get(ISOChronology.dayOfYearRule()), null);
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), null);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), null);
         
-        assertEquals(TEST_TIME.isSupported(ISOChronology.hourOfDayRule()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.minuteOfHourRule()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.secondOfMinuteRule()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.nanoOfSecondRule()), true);
-        assertEquals(TEST_TIME.isSupported(ISOChronology.hourOfAmPmRule()), true);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(DateTimeFieldRule)
-    //-----------------------------------------------------------------------
-    public void test_get_DateTimeFieldRule() {
-        OffsetTime test = OffsetTime.time(23, 30, 59, OFFSET_PONE);
-        assertEquals(test.get(ISOChronology.hourOfDayRule()), 23);
-        assertEquals(test.get(ISOChronology.minuteOfHourRule()), 30);
-        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), 59);
-        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), 11);
-        assertEquals(test.get(ISOChronology.amPmOfDayRule()), 1);
+        assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
+        assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
+        assertEquals(test.get(ISOChronology.secondOfMinuteRule()), (Integer) 40);
+        assertEquals(test.get(ISOChronology.nanoOfSecondRule()), (Integer) 987654321);
+        assertEquals(test.get(ISOChronology.hourOfAmPmRule()), (Integer) 0);
+        assertEquals(test.get(ISOChronology.amPmOfDayRule()), AmPmOfDay.PM);
+        
+        assertEquals(test.get(LocalDate.rule()), null);
+        assertEquals(test.get(LocalTime.rule()), test.toLocalTime());
+        assertEquals(test.get(LocalDateTime.rule()), null);
+        assertEquals(test.get(OffsetDate.rule()), null);
+        assertEquals(test.get(OffsetTime.rule()), test);
+        assertEquals(test.get(OffsetDateTime.rule()), null);
+        assertEquals(test.get(ZonedDateTime.rule()), null);
+        assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
+        assertEquals(test.get(TimeZone.rule()), null);
+        assertEquals(test.get(YearMonth.rule()), null);
+        assertEquals(test.get(MonthDay.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_get_DateTimeFieldRule_null() {
+    public void test_get_CalendricalRule_null() {
         OffsetTime test = OffsetTime.time(11, 30, 59, OFFSET_PONE);
-        test.get((DateTimeFieldRule) null);
+        test.get((CalendricalRule<?>) null);
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class )
-    public void test_get_DateTimeFieldRule_unsupported() {
+    public void test_get_unsupported() {
         OffsetTime test = OffsetTime.time(11, 30, 59, OFFSET_PONE);
-        try {
-            test.get(MockRuleNoValue.INSTANCE);
-        } catch (UnsupportedCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), MockRuleNoValue.INSTANCE);
-            throw ex;
-        }
+        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------

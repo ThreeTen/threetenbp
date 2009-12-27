@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +46,6 @@ import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
@@ -65,7 +66,7 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestWeekBasedYear {
-    private static final DateTimeFieldRule RULE = ISOChronology.weekBasedYearRule();
+    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.weekBasedYearRule();
 
     @BeforeMethod
     public void setUp() {
@@ -73,7 +74,7 @@ public class TestWeekBasedYear {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(WeekBasedYear.class));
+        assertTrue(Calendrical.class.isAssignableFrom(WeekBasedYear.class));
         assertTrue(Serializable.class.isAssignableFrom(WeekBasedYear.class));
         assertTrue(Comparable.class.isAssignableFrom(WeekBasedYear.class));
         assertTrue(DateMatcher.class.isAssignableFrom(WeekBasedYear.class));
@@ -262,21 +263,6 @@ public class TestWeekBasedYear {
         LocalDate date = null;
         WeekBasedYear test = WeekBasedYear.weekyear(1);
         test.matchesDate(date);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = Year.MIN_YEAR; i <= Year.MIN_YEAR + 100; i++) {
-            WeekBasedYear test = WeekBasedYear.weekyear(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
-        }
-
-        for (int i = Year.MAX_YEAR; i >= Year.MAX_YEAR - 100; i--) {
-            WeekBasedYear test = WeekBasedYear.weekyear(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
-        }
     }
 
     //-----------------------------------------------------------------------

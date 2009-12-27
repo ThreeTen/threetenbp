@@ -35,7 +35,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class SecondOfMinute
-        implements CalendricalProvider, Comparable<SecondOfMinute>, TimeAdjuster, TimeMatcher, Serializable {
+        implements Calendrical, Comparable<SecondOfMinute>, TimeAdjuster, TimeMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -84,7 +84,7 @@ public final class SecondOfMinute
      *
      * @return the second of minute rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.secondOfMinuteRule();
     }
 
@@ -146,6 +146,21 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, secondOfMinute, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the second of minute value.
      *
      * @return the second of minute, from 0 to 59
@@ -180,16 +195,6 @@ public final class SecondOfMinute
      */
     public boolean matchesTime(LocalTime time) {
         return secondOfMinute == time.getSecondOfMinute();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

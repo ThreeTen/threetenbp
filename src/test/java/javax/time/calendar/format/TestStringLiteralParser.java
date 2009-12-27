@@ -57,7 +57,7 @@ public class TestStringLiteralParser {
         try {
             int result = pp.parse((DateTimeParseContext) null, "hello", 0);
             assertEquals(result, 5);
-            assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+            assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional
@@ -87,28 +87,28 @@ public class TestStringLiteralParser {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "hello", 0);
         assertEquals(result, 5);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "helloOTHER", 0);
         assertEquals(result, 5);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "OTHERhelloOTHER", 5);
         assertEquals(result, 10);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_endStringMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "OTHERhello", 5);
         assertEquals(result, 10);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -116,42 +116,42 @@ public class TestStringLiteralParser {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "hlloo", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "OTHERhlloOTHER", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_endStringNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "hello", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_startStringTooShortNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "h", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_midStringTooShortNoMatch() throws Exception {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "OTHERhel", 5);
         assertEquals(result, ~5);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -160,7 +160,7 @@ public class TestStringLiteralParser {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "HELLO", 0);
         assertEquals(result, ~0);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
     public void test_parse_caseInsensitive() throws Exception {
@@ -168,7 +168,7 @@ public class TestStringLiteralParser {
         StringLiteralPrinterParser pp = new StringLiteralPrinterParser("hello");
         int result = pp.parse(context, "HELLO", 0);
         assertEquals(result, 5);
-        assertEquals(context.toCalendrical().getFieldMap().size(), 0);
+        assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
     }
 
 }

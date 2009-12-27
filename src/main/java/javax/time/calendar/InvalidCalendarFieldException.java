@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,16 +36,21 @@ package javax.time.calendar;
  *
  * @author Stephen Colebourne
  */
-public class InvalidCalendarFieldException extends CalendarFieldException {
+public class InvalidCalendarFieldException extends CalendricalRuleException {
+
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 6278674L;
 
     /**
      * Constructs a new invalid field exception.
      *
      * @param message  the message describing the problem, should not be null
-     * @param fieldRule  the rule of the field that is invalid, may be null
+     * @param rule  the rule that is invalid, may be null
      */
-    public InvalidCalendarFieldException(String message, DateTimeFieldRule fieldRule) {
-        super(message, fieldRule);
+    public InvalidCalendarFieldException(String message, CalendricalRule<?> rule) {
+        super(message, rule);
     }
 
 }

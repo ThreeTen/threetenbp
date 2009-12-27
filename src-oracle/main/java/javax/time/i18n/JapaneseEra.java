@@ -4,10 +4,11 @@
 package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.DateProvider;
+import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Defines the valid eras for the Japanese Imperial calendar system.
@@ -21,14 +22,15 @@ import javax.time.calendar.LocalDate;
  * JapaneseEra is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
+ * @author Stephen Colebourne
  */
-public enum JapaneseEra implements CalendricalProvider {
+public enum JapaneseEra implements Calendrical {
 
     /**
      * The singleton instance for the before Keio era ( - 1865-04-06)
      * which has the value -3.
      */
-    UNKNOWN,
+    UNKNOWN,  // TODO: Remove
     /**
      * The singleton instance for the Keio era (1865-04-07 - 1868-09-07)
      * which has the value -2.
@@ -65,7 +67,21 @@ public enum JapaneseEra implements CalendricalProvider {
         LocalDate.date(1926, 12, 24), // End of TAISHO era
         LocalDate.date(1989, 1, 7) // End of SHOWA era
         };
-    
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the era field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the era rule, never null
+     */
+    public static DateTimeFieldRule<JapaneseEra> rule() {
+        return JapaneseChronology.eraRule();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>JapaneseEra</code> from a value.
      * <p>
@@ -92,63 +108,18 @@ public enum JapaneseEra implements CalendricalProvider {
             case 2:
                 return HEISEI;
             default:
-                throw new IllegalCalendarFieldValueException(JapaneseChronology.INSTANCE.era(), japaneseEra, 0, 1);
+                throw new IllegalCalendarFieldValueException(JapaneseChronology.eraRule(), japaneseEra, -3, 2);
         }
     }
-    
+
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>JapaneseEra</code> from a date provider.
-     * <p>
-     * This can be used extract an era directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * Obtains an instance of <code>JapaneseEra</code> from a date.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param date  the date, not null
      * @return the JapaneseEra singleton, never null
      */
-    public static JapaneseEra japaneseEra(DateProvider dateProvider) {
-        return getEra(dateProvider.toLocalDate());
-    }
-    /**
-     * Gets the era value.
-     * <p>
-     * The SHOWA era that contains 1970-01-01 (ISO calendar system) has the value 1
-     * Later eras are numbered 2 (HEISEI). Earlier eras are numbered 0 (TAISHO), -1 (MEIJI), -2 (KEIO).
-     *
-     * @return the era value, from -2 to 2
-     */
-    public int getValue() {
-        return ordinal() - 3;
-    }
-
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(JapaneseChronology.INSTANCE.era(), getValue());
-    }
-
-    /**
-     * Returns year offset in the era.
-     *
-     * @return year offset, never null
-     */
-    public int getYearOffset() {
-        if (getValue() == UNKNOWN.getValue()) {
-            return 0;
-        }
-        LocalDate date = ERA_END_DATES[getValue() + 2];
-        return date.getYear() - 1;
-    }
-    
-    /**
-     * Return JapaneseEra from LocalDate object.
-     *
-     * @param date  the date, validated in range, validated not null
-     * @return the JapaneseEra singleton, never null
-     */
-    private static JapaneseEra getEra(LocalDate date) {
+    static JapaneseEra japaneseEra(LocalDate date) {
         for (int i = ERA_END_DATES.length; i > 0; i--) {
             LocalDate eraEndingDate = ERA_END_DATES[i - 1];
             if (date.isAfter(eraEndingDate)) {
@@ -157,4 +128,62 @@ public enum JapaneseEra implements CalendricalProvider {
         }
         return UNKNOWN;
     }
+
+    /**
+     * Obtains an instance of <code>JapaneseEra</code> from a calendrical.
+     * <p>
+     * This can be used extract the era directly from any implementation
+     * of Calendrical, including those in other calendar systems.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the JapaneseEra enum instance, never null
+     * @throws UnsupportedRuleException if the era cannot be obtained
+     */
+    public static JapaneseEra japaneseEra(Calendrical calendrical) {
+        return rule().getValue(calendrical);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the era numeric value.
+     * <p>
+     * The SHOWA era that contains 1970-01-01 (ISO calendar system) has the value 1
+     * Later eras are numbered 2 (HEISEI).
+     * Earlier eras are numbered 0 (TAISHO), -1 (MEIJI), -2 (KEIO).
+     *
+     * @return the era value, from -3 (UNKNOWN) to 2 (HEISEI)
+     */
+    public int getValue() {
+        return ordinal() - 3;
+    }
+
+    /**
+     * Returns year offset in the era.
+     *
+     * @return year offset, never null
+     */
+    public int getYearOffset() {
+        // TODO: Better javadoc and method name
+        if (this == UNKNOWN) {
+            return 0;
+        }
+        LocalDate date = ERA_END_DATES[getValue() + 2];
+        return date.getYear() - 1;
+    }
+
 }

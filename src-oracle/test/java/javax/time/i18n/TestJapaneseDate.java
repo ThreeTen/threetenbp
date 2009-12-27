@@ -1,6 +1,8 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,15 +15,10 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.i18n.JapaneseChronology;
-import javax.time.i18n.JapaneseDate;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -44,10 +41,11 @@ public class TestJapaneseDate {
     
     @Test
     public void testInterfaces() {
-        assertTrue(testDate instanceof CalendricalProvider);
-        assertTrue(testDate instanceof DateProvider);
-        assertTrue(testDate instanceof Serializable);
-        assertTrue(testDate instanceof Comparable);
+        Object obj = testDate;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof DateProvider);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
     }
 
     @Test
@@ -105,7 +103,7 @@ public class TestJapaneseDate {
             JapaneseDate.japaneseDate(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
     
@@ -115,7 +113,7 @@ public class TestJapaneseDate {
             JapaneseDate.japaneseDate(testYear, 13, testDayOfMonth);// Invalid month of year
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), JapaneseChronology.monthOfYearRule());
         }
     }
     
@@ -125,7 +123,7 @@ public class TestJapaneseDate {
             JapaneseDate.japaneseDate(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), JapaneseChronology.dayOfMonthRule());
         }
     }
 
@@ -136,22 +134,21 @@ public class TestJapaneseDate {
     
     @Test
     public void testGet() throws Exception {
-        assertEquals(testDate.get(JapaneseChronology.INSTANCE.era()), testDate.getEra().getValue());
-        assertEquals(testDate.get(JapaneseChronology.INSTANCE.yearOfEra()), testDate.getYearOfEra());
-        assertEquals(testDate.get(JapaneseChronology.INSTANCE.monthOfYear()), testDate.getMonthOfYear());
-        assertEquals(testDate.get(JapaneseChronology.INSTANCE.dayOfMonth()), testDate.getDayOfMonth());
-        assertEquals(testDate.get(JapaneseChronology.INSTANCE.dayOfYear()), testDate.getDayOfYear());
-        assertEquals(testDate.get(JapaneseChronology.INSTANCE.dayOfWeek()), testDate.getDayOfWeek());
+        assertEquals(testDate.get(JapaneseChronology.eraRule()), testDate.getEra());
+        assertEquals(testDate.get(JapaneseChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
+        assertEquals(testDate.get(JapaneseChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
+        assertEquals(testDate.get(JapaneseChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
+        assertEquals(testDate.get(JapaneseChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
+        assertEquals(testDate.get(JapaneseChronology.dayOfWeekRule()), (Integer) testDate.getDayOfWeek());
     }
     
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void testGetUnsupported() throws Exception {
-        testDate.get(HourOfDay.rule());
+        assertEquals(testDate.get(HourOfDay.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void testGetNull() throws Exception {
-        testDate.get((DateTimeFieldRule) null);
+        testDate.get(null);
     }
 
     @Test
@@ -220,7 +217,7 @@ public class TestJapaneseDate {
             testDate.withYearOfEra(-1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
     
@@ -230,7 +227,7 @@ public class TestJapaneseDate {
             testDate.withYearOfEra(10000);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -250,7 +247,7 @@ public class TestJapaneseDate {
             testDate.withYear(testEra, -1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
     
@@ -260,7 +257,7 @@ public class TestJapaneseDate {
             testDate.withYear(testEra, 10000);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -279,7 +276,7 @@ public class TestJapaneseDate {
             testDate.withMonthOfYear(-1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), JapaneseChronology.monthOfYearRule());
         }
     }
     
@@ -289,7 +286,7 @@ public class TestJapaneseDate {
             testDate.withMonthOfYear(13);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), JapaneseChronology.monthOfYearRule());
         }
     }
 
@@ -308,7 +305,7 @@ public class TestJapaneseDate {
             testDate.withDayOfMonth(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), JapaneseChronology.dayOfMonthRule());
         }
     }
     
@@ -318,7 +315,7 @@ public class TestJapaneseDate {
             testDate.withDayOfMonth(32);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), JapaneseChronology.dayOfMonthRule());
         }
     }
     
@@ -337,7 +334,7 @@ public class TestJapaneseDate {
             testDate.withDayOfYear(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.dayOfYear());
+            assertEquals(ex.getRule(), JapaneseChronology.dayOfYearRule());
         }
     }
     
@@ -347,7 +344,7 @@ public class TestJapaneseDate {
             testDate.withDayOfYear(367);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.dayOfYear());
+            assertEquals(ex.getRule(), JapaneseChronology.dayOfYearRule());
         }
     }
     
@@ -378,7 +375,7 @@ public class TestJapaneseDate {
             testDate.plusMonths(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -396,7 +393,7 @@ public class TestJapaneseDate {
             testDate.plusDays(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -414,7 +411,7 @@ public class TestJapaneseDate {
             testDate.plusWeeks(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -445,7 +442,7 @@ public class TestJapaneseDate {
             testDate.minusMonths(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -463,7 +460,7 @@ public class TestJapaneseDate {
             testDate.minusDays(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
     
@@ -481,7 +478,7 @@ public class TestJapaneseDate {
             testDate.minusWeeks(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), JapaneseChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
         }
     }
 
@@ -492,15 +489,6 @@ public class TestJapaneseDate {
     public void testToLocalDate() {
         assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth).toLocalDate(),
                 LocalDate.date(testGregorianYear, testMonthOfYear, testDayOfMonth));
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    @Test
-    public void testToCalendrical() {
-        Calendrical test = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth).toCalendrical();
-        assertEquals(test, new Calendrical(LocalDate.date(testGregorianYear, testMonthOfYear, testDayOfMonth), null, null, null));
     }
 
     //-----------------------------------------------------------------------
@@ -564,6 +552,7 @@ public class TestJapaneseDate {
         testDate.isAfter(null);
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expectedExceptions=ClassCastException.class)
     public void testCompareToNonDate() throws Exception {
        Comparable c = testDate;

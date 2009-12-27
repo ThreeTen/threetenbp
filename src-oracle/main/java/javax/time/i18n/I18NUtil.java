@@ -7,10 +7,9 @@ package javax.time.i18n;
 /**
  * Package scoped utility class for international calendars.
  *
- * @author rsuzuki
- *
+ * @author Ryoji Suzuki
  */
-public class I18NUtil {
+class I18NUtil {
     /**
      * Validates that the input value is not null.
      *

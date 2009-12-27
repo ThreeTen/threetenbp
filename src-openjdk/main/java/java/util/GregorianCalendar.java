@@ -49,6 +49,7 @@ import java.io.ObjectInputStream;
 
 import javax.time.Instant;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeProvider;
 import javax.time.calendar.LocalDate;
@@ -341,7 +342,7 @@ import sun.util.calendar.ZoneInfo;
  */
 public class GregorianCalendar
         extends Calendar
-        implements DateTimeProvider, DateProvider, TimeProvider {
+        implements Calendrical, DateTimeProvider, DateProvider, TimeProvider {
     /*
      * Implementation Notes
      *
@@ -3011,7 +3012,7 @@ public class GregorianCalendar
      * @since ?
      */
     public LocalDate toLocalDate() {
-        if (get(YEAR) > gregorianCutoverYear) {
+        if (get(YEAR) > gregorianCutoverYear && getClass() == GregorianCalendar.class) {
             return LocalDate.date(get(YEAR), get(MONTH) + 1, get(DATE));
         }
         return toOffsetDateTime().toLocalDate();
@@ -3025,13 +3026,16 @@ public class GregorianCalendar
      *
      * <p>The result does not store offset or time zone information. The time that
      * will be represented will be the same as querying the time fields hour, minute,
-     * second and millisecond on this cobject.
+     * second and millisecond on this object.
      *
      * @return the time representing the same point on the time-line, never null.
      * @since ?
      */
     public LocalTime toLocalTime() {
-        return LocalTime.time(get(HOUR_OF_DAY), get(MINUTE), get(SECOND), get(MILLISECOND));
+        if (getClass() == GregorianCalendar.class) {
+            return LocalTime.time(get(HOUR_OF_DAY), get(MINUTE), get(SECOND), get(MILLISECOND));
+        }
+        return toZonedDateTime().toLocalTime();
     }
 
     /**
@@ -3051,9 +3055,12 @@ public class GregorianCalendar
      * @since ?
      */
     public OffsetDateTime toOffsetDateTime() {
-        Instant instant = Instant.millisInstant(getTimeInMillis());
-        ZoneOffset offset = ZoneOffset.forTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
-        return OffsetDateTime.fromInstant(instant, offset);
+        if (getClass() == GregorianCalendar.class) {
+            Instant instant = Instant.millisInstant(getTimeInMillis());
+            ZoneOffset offset = ZoneOffset.forTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
+            return OffsetDateTime.fromInstant(instant, offset);
+        }
+        return toZonedDateTime().toOffsetDateTime();
     }
 
     /**
@@ -3083,7 +3090,7 @@ public class GregorianCalendar
      *
      * <p>The result does not store offset or time zone information. The time that
      * will be represented will be the same as querying the time fields hour, minute,
-     * second and millisecond on this cobject.
+     * second and millisecond on this object.
      *
      * @return the time representing the same point on the time-line, never null.
      * @since ?
@@ -3114,10 +3121,11 @@ public class GregorianCalendar
     }
 
     /**
-     * Converts this object to a <code>Calendrical</code>.
-     *
-     * <p>The conversion creates a <code>Calendrical</code> that represents the
-     * same point on the time-line as this <code>GregorianCalendar</code>.
+     * Gets the value of the specified calendrical rule.
+     * 
+     * <p>This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this time then
+     * <code>null</code> will be returned.
      *
      * <p>Since this object supports a Julian-Gregorian cutover date and
      * <code>Calendrical</code> does not, it is possible that the resulting year,
@@ -3125,11 +3133,16 @@ public class GregorianCalendar
      * correct day in the ISO calendar system, which will also be the same value
      * for Modified Julian Days.
      *
-     * @return the date-time representing the same point on the time-line, never null.
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      * @since ?
      */
-    public Calendrical toCalendrical() {
-        return toZonedDateTime().toCalendrical();
+    public <T> T get(CalendricalRule<T> rule) {
+        return toZonedDateTime().get(rule);
+//        if (rule.equals(ZonedDateTime.rule())) {
+//            
+//        }
+//        return rule().deriveValueQuiet(rule, this, this);
     }
 
 }

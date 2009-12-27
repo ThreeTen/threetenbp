@@ -31,15 +31,18 @@
  */
 package javax.time.i18n;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.DAYS;
+import static javax.time.period.PeriodUnits.MONTHS;
+import static javax.time.period.PeriodUnits.WEEKS;
+import static javax.time.period.PeriodUnits.YEARS;
 
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
 
 /**
  * The Coptic calendar system.
@@ -115,14 +118,79 @@ public final class CopticChronology extends Chronology implements Serializable {
         return "Coptic";
     }
 
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the equivalent rule for the specified field in the Coptic chronology.
+//     * <p>
+//     * This will take the input field and provide the closest matching field
+//     * that is based......
+//     *
+//     * @param rule  the rule to convert, not null
+//     * @return the rule in Coptic chronology, never null
+//     */
+////    @Override
+//    public DateTimeFieldRule<?> convertRule(DateTimeFieldRule<?> rule) {
+//        if (rule.getChronology().equals(this)) {
+//            return rule;
+//        }
+//        rule = convertToISO(rule);
+//        if (rule.equals(ISOChronology.yearRule())) {
+//            return year();
+//        }
+//        if (rule.equals(ISOChronology.monthOfYearRule())) {
+//            return monthOfYear();
+//        }
+//        if (rule.equals(ISOChronology.dayOfMonthRule())) {
+//            return dayOfMonth();
+//        }
+//        if (rule.equals(ISOChronology.dayOfYearRule())) {
+//            return dayOfYear();
+//        }
+//        if (rule.equals(ISOChronology.dayOfWeekRule())) {
+//            return dayOfWeek();
+//        }
+//        return null;
+//    }
+//
+//    /**
+//     * Gets the equivalent rule for the specified field in the Coptic chronology.
+//     * <p>
+//     * This will take the input field and provide the closest matching field
+//     * that is based......
+//     *
+//     * @param rule  the rule to convert, not null
+//     * @return the rule in ISO chronology, never null
+//     */
+////    @Override
+//    protected DateTimeFieldRule<?> convertToISO(DateTimeFieldRule<?> rule) {
+//        if (rule.getChronology().equals(ISOChronology.INSTANCE)) {
+//            return rule;
+//        }
+//        if (rule.equals(year())) {
+//            return ISOChronology.yearRule();
+//        }
+//        if (rule.equals(monthOfYear())) {
+//            return ISOChronology.monthOfYearRule();
+//        }
+//        if (rule.equals(dayOfMonth())) {
+//            return ISOChronology.dayOfMonthRule();
+//        }
+//        if (rule.equals(dayOfYear())) {
+//            return ISOChronology.dayOfYearRule();
+//        }
+//        if (rule.equals(dayOfWeek())) {
+//            return ISOChronology.dayOfWeekRule();
+//        }
+//        return null;
+//    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the rule for the year field in the Coptic chronology.
      *
      * @return the rule for the year field, never null
      */
-    @Override
-    public DateTimeFieldRule year() {
+    public static DateTimeFieldRule<Integer> yearRule() {
         return YearRule.INSTANCE;
     }
 
@@ -131,8 +199,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month of year field, never null
      */
-    @Override
-    public DateTimeFieldRule monthOfYear() {
+    public static DateTimeFieldRule<Integer> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -141,8 +208,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of month field, never null
      */
-    @Override
-    public DateTimeFieldRule dayOfMonth() {
+    public static DateTimeFieldRule<Integer> dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -151,8 +217,7 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of year field, never null
      */
-    @Override
-    public DateTimeFieldRule dayOfYear() {
+    public static DateTimeFieldRule<Integer> dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -161,93 +226,48 @@ public final class CopticChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of week field, never null
      */
-    @Override
-    public DateTimeFieldRule dayOfWeek() {
+    public static DateTimeFieldRule<Integer> dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * The hour of day field is not supported by the Coptic chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule hourOfDay() {
-        throw new UnsupportedOperationException("CopticChronology does not support the hour of day field");
-    }
-
-    /**
-     * The minute of hour field is not supported by the Coptic chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule minuteOfHour() {
-        throw new UnsupportedOperationException("CopticChronology does not support the minute of hour field");
-    }
-
-    /**
-     * The second of minute field is not supported by the Coptic chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule secondOfMinute() {
-        throw new UnsupportedOperationException("CopticChronology does not support the second of minute field");
-    }
-
-    /**
-     * The nano of second field is not supported by the Coptic chronology.
-     *
-     * @return never
-     * @throws UnsupportedOperationException always
-     */
-    @Override
-    public DateTimeFieldRule nanoOfSecond() {
-        throw new UnsupportedOperationException("CopticChronology does not support the nano of second field");
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+    private static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new YearRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule() {
-            super(CopticChronology.INSTANCE, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
+            super(Integer.class, CopticChronology.INSTANCE, "Year", YEARS, null, CopticDate.MIN_YEAR, CopticDate.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : CopticDate.copticDate(date).getYear());
+        protected Integer deriveValue(Calendrical calendrical) {
+            CopticDate cd = calendrical.get(CopticDate.rule());
+            return cd != null ? cd.getYear() : null;
         }
         @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer moyVal = merger.getValueQuiet(CopticChronology.INSTANCE.monthOfYear());
-            Integer domVal = merger.getValueQuiet(CopticChronology.INSTANCE.dayOfMonth());
+        protected void merge(CalendricalMerger merger) {
+            Integer moyVal = merger.getValue(CopticChronology.monthOfYearRule());
+            Integer domVal = merger.getValue(CopticChronology.dayOfMonthRule());
             if (moyVal != null && domVal != null) {
                 int year = merger.getValue(this);
                 CopticDate date;
-                if (merger.isStrict()) {
+                if (merger.getContext().isStrict()) {
                     date = CopticDate.copticDate(year, moyVal, domVal);
                 } else {
                     date = CopticDate.copticDate(year, 1, 1)
                                 .plusMonths(moyVal).plusMonths(-1).plusDays(domVal).plusDays(-1);
                 }
-                merger.storeMergedDate(date.toLocalDate());
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(CopticChronology.INSTANCE.monthOfYear());
-                merger.markFieldAsProcessed(CopticChronology.INSTANCE.dayOfMonth());
+                merger.storeMerged(LocalDate.rule(), date.toLocalDate());
+                merger.removeProcessed(this);
+                merger.removeProcessed(CopticChronology.monthOfYearRule());
+                merger.removeProcessed(CopticChronology.dayOfMonthRule());
             }
         }
     }
@@ -256,21 +276,22 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(CopticChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 13);
+            super(Integer.class, CopticChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 13);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : CopticDate.copticDate(date).getMonthOfYear());
+        protected Integer deriveValue(Calendrical calendrical) {
+            CopticDate cd = calendrical.get(CopticDate.rule());
+            return cd != null ? cd.getMonthOfYear() : null;
         }
     }
 
@@ -278,14 +299,14 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(CopticChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 30);
+            super(Integer.class, CopticChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 30);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -296,8 +317,8 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.deriveValueQuiet(CopticChronology.INSTANCE.year());
-            Integer moy = calendrical.deriveValueQuiet(CopticChronology.INSTANCE.monthOfYear());
+            Integer year = calendrical.get(CopticChronology.yearRule());
+            Integer moy = calendrical.get(CopticChronology.monthOfYearRule());
             if (year != null && moy != null) {
                 if (moy == 13) {
                     return isLeapYear(year) ? 6 : 5;
@@ -308,8 +329,9 @@ public final class CopticChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : CopticDate.copticDate(date).getDayOfMonth());
+        protected Integer deriveValue(Calendrical calendrical) {
+            CopticDate cd = calendrical.get(CopticDate.rule());
+            return cd != null ? cd.getDayOfMonth() : null;
         }
     }
 
@@ -317,14 +339,14 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(CopticChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
+            super(Integer.class, CopticChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -335,30 +357,31 @@ public final class CopticChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.deriveValueQuiet(CopticChronology.INSTANCE.year());
+            Integer year = calendrical.get(CopticChronology.yearRule());
             if (year != null) {
                 return isLeapYear(year) ? 366 : 365;
             }
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : CopticDate.copticDate(date).getDayOfYear());
+        protected Integer deriveValue(Calendrical calendrical) {
+            CopticDate cd = calendrical.get(CopticDate.rule());
+            return cd != null ? cd.getDayOfYear() : null;
         }
         @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer yearVal = merger.getValueQuiet(CopticChronology.INSTANCE.year());
+        protected void merge(CalendricalMerger merger) {
+            Integer yearVal = merger.getValue(CopticChronology.yearRule());
             if (yearVal != null) {
                 int doy = merger.getValue(this);
                 CopticDate date;
-                if (merger.isStrict()) {
+                if (merger.getContext().isStrict()) {
                     date = CopticDate.copticDate(yearVal, 1, 1).withDayOfYear(doy);
                 } else {
                     date = CopticDate.copticDate(yearVal, 1, 1).plusDays(doy).plusDays(-1);
                 }
-                merger.storeMergedDate(date.toLocalDate());
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(CopticChronology.INSTANCE.year());
+                merger.storeMerged(LocalDate.rule(), date.toLocalDate());
+                merger.removeProcessed(this);
+                merger.removeProcessed(CopticChronology.yearRule());
             }
         }
     }
@@ -367,21 +390,22 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
+        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(CopticChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
+            super(Integer.class, CopticChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : CopticDate.copticDate(date).getDayOfWeek());
+        protected Integer deriveValue(Calendrical calendrical) {
+            CopticDate cd = calendrical.get(CopticDate.rule());
+            return cd != null ? cd.getDayOfWeek() : null;
         }
     }
 }

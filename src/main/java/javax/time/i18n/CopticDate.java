@@ -35,13 +35,14 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A date in the Coptic calendar system.
@@ -51,7 +52,7 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  * The date has a precision of one day and a range from Coptic year 1 to year 9999 (inclusive).
  * <p>
  * Instances of this class may be created from any other object that implements
- * {@link DateProvider} including {@link LocalDate}. Simlarly, instances of
+ * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
  * this class may be passed into the factory method of any other implementation
  * of <code>DateProvider</code>.
  * <p>
@@ -61,7 +62,7 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  * @author Stephen Colebourne
  */
 public final class CopticDate
-        implements DateProvider, CalendricalProvider, Comparable<CopticDate>, Serializable {
+        implements DateProvider, Calendrical, Comparable<CopticDate>, Serializable {
 
     /**
      * The minimum valid year.
@@ -122,12 +123,12 @@ public final class CopticDate
      * @return a CopticDate object
      */
     public static CopticDate copticDate(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
-        CopticChronology.INSTANCE.year().checkValue(copticYear);
-        CopticChronology.INSTANCE.monthOfYear().checkValue(copticMonthOfYear);
-        CopticChronology.INSTANCE.dayOfMonth().checkValue(copticDayOfMonth);
+        CopticChronology.yearRule().checkValue(copticYear);
+        CopticChronology.monthOfYearRule().checkValue(copticMonthOfYear);
+        CopticChronology.dayOfMonthRule().checkValue(copticDayOfMonth);
         if (copticMonthOfYear == 13 && copticDayOfMonth > 5) {
             if (copticDayOfMonth > 6 || CopticChronology.isLeapYear(copticYear) == false) {
-                throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.INSTANCE.dayOfMonth());
+                throw new InvalidCalendarFieldException("Invalid Coptic date", CopticChronology.dayOfMonthRule());
             }
         }
         int epochDays = (copticYear - 1) * 365 + (copticYear / 4) + 30 * (copticMonthOfYear - 1) + copticDayOfMonth - 1;
@@ -143,9 +144,9 @@ public final class CopticDate
      * @return a CopticDate object
      */
     private static CopticDate copticDatePreviousValid(int year, int monthOfYear, int dayOfMonth) {
-        CopticChronology.INSTANCE.year().checkValue(year);
-        CopticChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
-        CopticChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        CopticChronology.yearRule().checkValue(year);
+        CopticChronology.monthOfYearRule().checkValue(monthOfYear);
+        CopticChronology.dayOfMonthRule().checkValue(dayOfMonth);
         if (monthOfYear == 13 && dayOfMonth > 5) {
             dayOfMonth = CopticChronology.isLeapYear(year) ? 6 : 5;
         }
@@ -175,7 +176,7 @@ public final class CopticDate
     private static CopticDate copticDateFromEopchDays(int epochDays) {
         if (epochDays < MIN_EPOCH_DAY || epochDays > MAX_EPOCH_DAY) {
             throw new IllegalCalendarFieldValueException(
-                    "Date exceeds supported range for CopticDate", CopticChronology.INSTANCE.year());
+                    "Date exceeds supported range for CopticDate", CopticChronology.yearRule());
         }
         int year = ((epochDays * 4) + 1463) / 1461;
         int startYearEpochDays = (year - 1) * 365 + (year / 4);
@@ -189,7 +190,7 @@ public final class CopticDate
     /**
      * Constructs an instance with the specified date.
      *
-     * @param epochDays  the coptic epoch days, caller checked to be one or greater
+     * @param epochDays  the Coptic epoch days, caller checked to be one or greater
      * @param year  the year to represent, caller calculated
      * @param month  the month of year to represent, caller calculated
      * @param day  the day of month to represent, caller calculated
@@ -212,7 +213,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the Coptic calendar system.
+     * Gets the chronology that this date uses, which is the Coptic calendar system.
      *
      * @return the Coptic chronology, never null
      */
@@ -222,30 +223,20 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
-     * <p>
-     * This method queries whether this date can be queried using the
-     * specified calendar field.
-     *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
-     */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule != null && fieldRule.getValueQuiet(toLocalDate(), null) != null;
-    }
-
-    /**
      * Gets the value of the specified calendar field.
      * <p>
      * This method queries the value of the specified calendar field.
      * If the calendar field is not supported then an exception is thrown.
      *
-     * @param fieldRule  the field to query, not null
+     * @param rule  the field to query, not null
      * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
+     * @throws UnsupportedRuleException if no value for the field is found
      */
-    public int get(DateTimeFieldRule fieldRule) {
-        return fieldRule.getValue(toLocalDate(), null);
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule.equals(LocalDate.rule())) {  // NPE check
+            return rule.reify(toLocalDate());
+        }
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -451,15 +442,6 @@ public final class CopticDate
         return LocalDate.fromModifiedJulianDays(epochDays - MJD_TO_COPTIC);
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(toLocalDate(), null, null, null);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
@@ -549,6 +531,42 @@ public final class CopticDate
             .append(dayValue)
             .append(" (Coptic)")
             .toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for <code>CopticDate</code>.
+     *
+     * @return the field rule for the date, never null
+     */
+    public static CalendricalRule<CopticDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<CopticDate> implements Serializable {
+        private static final CalendricalRule<CopticDate> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(CopticDate.class, ISOChronology.INSTANCE, "CopticDate");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected CopticDate deriveValue(Calendrical calendrical) {
+            LocalDate ld = calendrical.get(LocalDate.rule());
+            return ld != null ? CopticDate.copticDate(ld) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            CopticDate cd = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), cd.toLocalDate());
+            merger.removeProcessed(this);
+        }
     }
 
 }

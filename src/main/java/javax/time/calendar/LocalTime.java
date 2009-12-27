@@ -32,8 +32,6 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
@@ -63,7 +61,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements TimeProvider, CalendricalProvider, Comparable<LocalTime>, Serializable, TimeMatcher, TimeAdjuster {
+        implements Calendrical, TimeProvider, TimeMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constants for the local time of each hour.
@@ -376,14 +374,13 @@ public final class LocalTime
      * The second has 2 digits with values from 0 to 59.
      * The nanosecond fraction has from 1 to 9 digits with values from 0 to 999,999,999.
      *
-     * @param time  the text to parse such as '10:15:30', not null
+     * @param text  the text to parse such as '10:15:30', not null
      * @return the parsed local time, never null
      * @throws CalendricalParseException if the text cannot be parsed
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static LocalTime parse(String time) {
-        ISOChronology.checkNotNull(time, "Text to parse must not be null");
-        return DateTimeFormatters.isoLocalTime().parse(time).mergeStrict().toLocalTime();
+    public static LocalTime parse(String text) {
+        return DateTimeFormatters.isoLocalTime().parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -433,8 +430,7 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for
-     * this time.
+     * Gets the chronology that this time uses, which is the ISO calendar system.
      *
      * @return the ISO chronology, never null
      */
@@ -444,31 +440,17 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this time can be queried using the
-     * specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this time then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule != null && fieldRule.isSupported(null, this);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        ISOChronology.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-        return fieldRule.getValue(null, this);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -958,20 +940,20 @@ public final class LocalTime
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Converts this time to a <code>DateTimeFields</code> containing the
-     * hour, minute, second and nano fields.
-     *
-     * @return the field set, never null
-     */
-    public DateTimeFields toDateTimeFields() {
-        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
-        map.put(ISOChronology.hourOfDayRule(), (int) hour);
-        map.put(ISOChronology.minuteOfHourRule(), (int) minute);
-        map.put(ISOChronology.secondOfMinuteRule(), (int) second);
-        map.put(ISOChronology.nanoOfSecondRule(), nano);
-        return DateTimeFields.fields(map);
-    }
+//    /**
+//     * Converts this time to a <code>DateTimeFields</code> containing the
+//     * hour, minute, second and nano fields.
+//     *
+//     * @return the field set, never null
+//     */
+//    public DateTimeFields toDateTimeFields() {
+//        Map<DateTimeFieldRule, Integer> map = new HashMap<DateTimeFieldRule, Integer>();
+//        map.put(ISOChronology.hourOfDayRule(), (int) hour);
+//        map.put(ISOChronology.minuteOfHourRule(), (int) minute);
+//        map.put(ISOChronology.secondOfMinuteRule(), (int) second);
+//        map.put(ISOChronology.nanoOfSecondRule(), nano);
+//        return DateTimeFields.fields(map);
+//    }
 
     /**
      * Converts this time to a <code>LocalTime</code>, trivially
@@ -981,15 +963,6 @@ public final class LocalTime
      */
     public LocalTime toLocalTime() {
         return this;
-    }
-
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(null, this, null, null);
     }
 
     //-----------------------------------------------------------------------
@@ -1417,6 +1390,43 @@ public final class LocalTime
         @Override
         public String toString() {
             return getResultTime().toString() + " + P" + days + "D";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for <code>LocalTime</code>.
+     *
+     * @return the rule for the time, never null
+     */
+    public static CalendricalRule<LocalTime> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<LocalTime> implements Serializable {
+        private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected LocalTime deriveValue(Calendrical calendrical) {
+            LocalDateTime ldt = calendrical.get(LocalDateTime.rule());
+            if (ldt != null) {
+                return ldt.toLocalTime();
+            }
+            OffsetTime ot = calendrical.get(OffsetTime.rule());
+            if (ot != null) {
+                return ot.toLocalTime();
+            }
+            return null;
         }
     }
 

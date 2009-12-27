@@ -32,20 +32,25 @@
 package javax.time.calendar.format;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalContext;
+import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.TimeZone;
-import javax.time.calendar.UnsupportedCalendarFieldException;
-import javax.time.calendar.ZoneOffset;
 
 /**
  * Context object used during date and time parsing.
  * <p>
- * This context is essentially a wrapper around a {@link Calendrical} providing
- * methods and functionality to support parsing.
+ * This class represents the current state of the parse.
+ * It has the ability to store and retrieve the parsed values and manage optional segments.
+ * It also provides key information to the parsing methods.
+ * <p>
+ * Once parsing is complete, the {@link #toCalendricalMerger()} is typically used
+ * to obtain a merger that will merge the separate parsed fields into meaningful values.
  * <p>
  * This class is mutable and thus not thread-safe.
  * Usage of the class is thread-safe within the Java Time Framework as the
@@ -54,7 +59,7 @@ import javax.time.calendar.ZoneOffset;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class DateTimeParseContext implements CalendricalProvider {
+public final class DateTimeParseContext {
 
     /**
      * The date time format symbols, not null.
@@ -69,9 +74,9 @@ public final class DateTimeParseContext implements CalendricalProvider {
      */
     private boolean strict = true;
     /**
-     * The calendrical collecting the results.
+     * The list of parsed data.
      */
-    private final ArrayList<Calendrical> calendricals = new ArrayList<Calendrical>();
+    private final ArrayList<Parsed> calendricals = new ArrayList<Parsed>();
 
     /**
      * Constructor.
@@ -82,7 +87,7 @@ public final class DateTimeParseContext implements CalendricalProvider {
         super();
         DateTimeFormatter.checkNotNull(symbols, "DateTimeFormatSymbols must not be null");
         this.symbols = symbols;
-        calendricals.add(new Calendrical());
+        calendricals.add(new Parsed());
     }
 
     //-----------------------------------------------------------------------
@@ -150,98 +155,62 @@ public final class DateTimeParseContext implements CalendricalProvider {
      *
      * @return the current calendrical, never null
      */
-    private Calendrical currentCalendrical() {
+    private Parsed currentCalendrical() {
         return calendricals.get(calendricals.size() - 1);
     }
 
     /**
-     * Tries to derives the value for the specified field from the fields available in
-     * the field-value map throwing an exception if unable to derive.
-     * <p>
-     * The derivation only considers direct child relationships in the field hierarchy.
-     * Thus a value for the day of year cannot be derived even given a year,
-     * month of year and day of month.
-     * <p>
-     * The value returned might contradict the date or time, or be out of
-     * range for the rule.
-     * <p>
-     * For example, the day of month might be set to 50, or the hour to 1000.
-     *
-     * @param fieldRule  the rule to query from the map, not null
-     * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field is not in the map
-     */
-    public int deriveFieldValue(DateTimeFieldRule fieldRule) {
-        return currentCalendrical().deriveValue(fieldRule);
-    }
-
-    /**
-     * Gets the value for the specified field throwing an exception if the
-     * field is not in the field-value map.
+     * Gets the parsed value for the specified rule.
      * <p>
      * The value returned is directly obtained from the stored map of values.
-     * It might contradict the date or time, or be out of range for the rule.
-     * <p>
+     * It may be of any type and any value.
      * For example, the day of month might be set to 50, or the hour to 1000.
      *
-     * @param fieldRule  the rule to query from the map, not null
-     * @return the value mapped to the specified field
-     * @throws UnsupportedCalendarFieldException if the field is not in the map
+     * @param rule  the rule to query from the map, not null
+     * @return the value mapped to the specified rule, null if rule not in the map
      */
-    public int getFieldValue(DateTimeFieldRule fieldRule) {
-        return currentCalendrical().getFieldMap().get(fieldRule);
+    public Object getParsed(CalendricalRule<?> rule) {
+        DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
+        return currentCalendrical().values.get(rule);
     }
 
     /**
-     * Sets the value associated with the specified field rule.
+     * Gets the set of parsed rules.
+     * <p>
+     * The set can be read and have elements removed, but nothing can be added.
+     *
+     * @return the set of rules previously parsed, never null
+     */
+    public Set<CalendricalRule<?>> getParsedRules() {
+        return currentCalendrical().values.keySet();
+    }
+
+    /**
+     * Sets the parsed value associated with the specified rule.
+     * <p>
+     * The value stored may be out of range for the rule and of any type -
+     * no checks are performed.
+     *
+     * @param rule  the rule to set in the rule-value map, not null
+     * @param value  the value to set in the rule-value map, not null
+     */
+    public void setParsed(CalendricalRule<?> rule, Object value) {
+        DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
+        DateTimeFormatter.checkNotNull(value, "Value must not be null");
+        currentCalendrical().values.put(rule, value);
+    }
+
+    /**
+     * Sets the parsed value associated with the specified rule.
      * <p>
      * The value stored may be out of range for the rule - no checks are performed.
      *
-     * @param fieldRule  the field to set in the field-value map, not null
-     * @param value  the value to set in the field-value map
+     * @param rule  the rule to set in the rule-value map, not null
+     * @param value  the value to set in the rule-value map
      */
-    public void setFieldValue(DateTimeFieldRule fieldRule, int value) {
-        currentCalendrical().getFieldMap().put(fieldRule, value);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the optional time zone offset, such as '+02:00'.
-     * This method will return null if the offset is null.
-     *
-     * @return the offset, may be null
-     */
-    public ZoneOffset getOffset() {
-        return currentCalendrical().getOffset();
-    }
-
-    /**
-     * Sets the parsed offset, such as '+02:00'.
-     *
-     * @param offset  the zone offset to store, may be null
-     */
-    public void setOffset(ZoneOffset offset) {
-        currentCalendrical().setOffset(offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the optional time zone rules, such as 'Europe/Paris'.
-     * This method will return null if the zone is null.
-     *
-     * @return the zone, may be null
-     */
-    public TimeZone getZone() {
-        return currentCalendrical().getZone();
-    }
-
-    /**
-     * Sets the parsed zone, such as 'Europe/Paris'.
-     *
-     * @param zone  the zone to store, may be null
-     */
-    public void setZone(TimeZone zone) {
-        currentCalendrical().setZone(zone);
+    public void setParsed(DateTimeFieldRule<?> rule, int value) {
+        DateTimeFormatter.checkNotNull(rule, "DateTimeFieldRule must not be null");
+        currentCalendrical().values.put(rule, value);
     }
 
     //-----------------------------------------------------------------------
@@ -267,26 +236,19 @@ public final class DateTimeParseContext implements CalendricalProvider {
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this object to a Calendrical with the same fields.
+     * Returns a <code>CalendricalMerger</code> that can be used to interpret
+     * the results of the parse.
      * <p>
-     * The returned calendrical is part of the internal state of this object.
-     * This design is chosen for performance.
+     * This method is typically used once parsing is complete to obtain the parsed data.
+     * Parsing will typically result in separate fields, such as year, month and day.
+     * The returned merger can be used to combine the parsed data into meaningful
+     * objects such as <code>LocalDate</code>, potentially applying complex processing
+     * to handle invalid parsed data.
      *
-     * @return the current Calendrical state with the parsed fields, never null
+     * @return a new independent merger with the parsed rule-value map, never null
      */
-    Calendrical asCalendrical() {
-        return currentCalendrical();
-    }
-
-    /**
-     * Converts this object to a Calendrical with the same fields.
-     * <p>
-     * The returned calendrical is independent of the internal state of this object.
-     *
-     * @return a new Calendrical with the parsed fields, never null
-     */
-    public Calendrical toCalendrical() {
-        return currentCalendrical().clone();
+    public CalendricalMerger toCalendricalMerger() {
+        return new CalendricalMerger(new CalendricalContext(true, true), currentCalendrical().values);
     }
 
     //-----------------------------------------------------------------------
@@ -298,6 +260,21 @@ public final class DateTimeParseContext implements CalendricalProvider {
     @Override
     public String toString() {
         return currentCalendrical().toString();
+    }
+
+    static class Parsed {
+        Map<CalendricalRule<?>, Object> values = new HashMap<CalendricalRule<?>, Object>();
+        
+        @Override
+        protected Parsed clone() {
+            Parsed cloned = new Parsed();
+            cloned.values.putAll(this.values);
+            return cloned;
+        }
+        @Override
+        public String toString() {
+            return values.toString();
+        }
     }
 
 }

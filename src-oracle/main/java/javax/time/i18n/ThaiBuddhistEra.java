@@ -4,8 +4,10 @@
 package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Defines the valid eras for the Thai Buddhist calendar system.
@@ -16,8 +18,9 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
  * ThaiBuddhistEra is immutable and thread-safe.
  *
  * @author Ryoji Suzuki
+ * @author Stephen Colebourne
  */
-public enum ThaiBuddhistEra implements CalendricalProvider {
+public enum ThaiBuddhistEra implements Calendrical {
 
     /**
      * The singleton instance for the era before the current one - Before Buddhist -
@@ -29,6 +32,20 @@ public enum ThaiBuddhistEra implements CalendricalProvider {
      */
     BUDDHIST;
 
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the era field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the era rule, never null
+     */
+    public static DateTimeFieldRule<ThaiBuddhistEra> rule() {
+        return ThaiBuddhistChronology.eraRule();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>ThaiBuddhistEra</code> from a value.
      * <p>
@@ -46,29 +63,51 @@ public enum ThaiBuddhistEra implements CalendricalProvider {
             case 1:
                 return BUDDHIST;
             default:
-                throw new IllegalCalendarFieldValueException(ThaiBuddhistChronology.INSTANCE.era(), thaiBuddhistEra, 0, 1);
+                throw new IllegalCalendarFieldValueException(ThaiBuddhistChronology.eraRule(), thaiBuddhistEra, 0, 1);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Gets the era value.
+     * Obtains an instance of <code>ThaiBuddhistEra</code> from a calendrical.
+     * <p>
+     * This can be used extract the era directly from any implementation
+     * of Calendrical, including those in other calendar systems.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the ThaiBuddhistEra enum instance, never null
+     * @throws UnsupportedRuleException if the era cannot be obtained
+     */
+    public static ThaiBuddhistEra thaiBuddhistEra(Calendrical calendrical) {
+        return rule().getValue(calendrical);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the era numeric value.
      * <p>
      * The current era (from ISO year -543 onwards) has the value 1
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 to 1
+     * @return the era value, from 0 (BEFORE_BUDDHIST) to 1 (BUDDHIST)
      */
     public int getValue() {
         return ordinal();
-    }
-
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(ThaiBuddhistChronology.INSTANCE.era(), getValue());
     }
 
 }

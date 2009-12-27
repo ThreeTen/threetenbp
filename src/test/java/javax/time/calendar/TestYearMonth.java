@@ -31,7 +31,10 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,6 +52,7 @@ import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -66,9 +70,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestYearMonth {
 
-    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule RULE_MONTH = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule<MonthOfYear> RULE_MONTH = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
     private YearMonth TEST_2008_06;
 
     @BeforeMethod
@@ -78,11 +82,12 @@ public class TestYearMonth {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TEST_2008_06 instanceof CalendricalProvider);
-        assertTrue(TEST_2008_06 instanceof Serializable);
-        assertTrue(TEST_2008_06 instanceof Comparable);
-        assertTrue(TEST_2008_06 instanceof DateAdjuster);
-        assertTrue(TEST_2008_06 instanceof DateMatcher);
+        Object obj = TEST_2008_06;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
+        assertTrue(obj instanceof DateAdjuster);
+        assertTrue(obj instanceof DateMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -139,7 +144,7 @@ public class TestYearMonth {
         try {
             YearMonth.yearMonth(Year.MIN_YEAR - 1, MonthOfYear.JANUARY);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_YEAR);
+            assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
         }
     }
@@ -152,7 +157,7 @@ public class TestYearMonth {
         try {
             YearMonth.yearMonth(Year.MAX_YEAR + 1, MonthOfYear.JANUARY);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_YEAR);
+            assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
         }
     }
@@ -173,7 +178,7 @@ public class TestYearMonth {
         try {
             YearMonth.yearMonth(Year.MIN_YEAR - 1, 2);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_YEAR);
+            assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
         }
     }
@@ -186,7 +191,7 @@ public class TestYearMonth {
         try {
             YearMonth.yearMonth(Year.MAX_YEAR + 1, 2);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_YEAR);
+            assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
         }
     }
@@ -196,7 +201,7 @@ public class TestYearMonth {
         try {
             YearMonth.yearMonth(2008, 0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
         }
     }
@@ -206,7 +211,7 @@ public class TestYearMonth {
         try {
             YearMonth.yearMonth(2008, 13);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
         }
     }
@@ -219,7 +224,7 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_DateProvider_null() {
-        YearMonth.yearMonth(null);
+        YearMonth.yearMonth((DateProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -228,29 +233,51 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_CalendricalProvider() {
-        CalendricalProvider provider = new Calendrical(RULE_YEAR, 2008, RULE_MONTH, 6);
-        assertEquals(YearMonth.yearMonth(provider), TEST_2008_06);
+    public void factory_Calendrical() {
+        Calendrical cal = new MockSimpleCalendrical(RULE_YEAR, 2008, RULE_MONTH, MonthOfYear.JUNE);
+        assertEquals(YearMonth.yearMonth(cal), TEST_2008_06);
     }
 
-    public void factory_CalendricalProvider_otherFieldsIgnored() {
-        Calendrical provider = LocalDate.date(2008, 6, 30).toCalendrical();
-        assertEquals(YearMonth.yearMonth(provider), TEST_2008_06);
+    public void factory_Calendrical_otherFieldsIgnored() {
+        Calendrical cal = LocalDate.date(2008, 6, 30);
+        assertEquals(YearMonth.yearMonth(cal), TEST_2008_06);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void factory_Calendrical_unsupportedField() {
+        Calendrical cal = LocalTime.time(12, 30);
+        YearMonth.yearMonth(cal);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_CalendricalProvider_null() {
-        YearMonth.yearMonth(null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_CalendricalProvider_badProvider() {
-        YearMonth.yearMonth(new MockCalendricalProviderReturnsNull());
+    public void factory_Calendrical_null() {
+        YearMonth.yearMonth((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
     public void test_getChronology() {
         assertEquals(ISOChronology.INSTANCE, TEST_2008_06.getChronology());
+    }
+
+    //-----------------------------------------------------------------------
+    // get(CalendricalRule)
+    //-----------------------------------------------------------------------
+    public void test_get_CalendricalRule() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
+        assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
+        assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class )
+    public void test_get_CalendricalRule_null() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        test.get((CalendricalRule<?>) null);
+    }
+
+    public void test_get_unsupported() {
+        YearMonth test = YearMonth.yearMonth(2008, 6);
+        assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
     //-----------------------------------------------------------------------
@@ -333,7 +360,7 @@ public class TestYearMonth {
         try {
             test.withYear(Year.MIN_YEAR - 1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_YEAR);
+            assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
         }
     }
@@ -347,7 +374,7 @@ public class TestYearMonth {
         try {
             test.withYear(Year.MAX_YEAR + 1);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_YEAR);
+            assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
         }
     }
@@ -371,7 +398,7 @@ public class TestYearMonth {
         try {
             test.withMonthOfYear(0);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
         }
     }
@@ -382,7 +409,7 @@ public class TestYearMonth {
         try {
             test.withMonthOfYear(13);
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), RULE_MONTH);
+            assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
         }
     }
@@ -716,7 +743,7 @@ public class TestYearMonth {
         try {
             test.adjustDate(date, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE_DOM);
+            assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
         }
     }
@@ -777,7 +804,7 @@ public class TestYearMonth {
         try {
             test.atDay(DayOfMonth.dayOfMonth(31));
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
     }
@@ -796,17 +823,9 @@ public class TestYearMonth {
         try {
             test.atDay(31);
         } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), ISOChronology.dayOfMonthRule());
+            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
             throw ex;
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.toCalendrical(), new Calendrical(RULE_YEAR, 2008, RULE_MONTH, 6));
     }
 
     //-----------------------------------------------------------------------

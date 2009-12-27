@@ -39,8 +39,9 @@ import java.text.ParsePosition;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
-import javax.time.calendar.UnsupportedCalendarFieldException;
+import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Formatter for dates and times.
@@ -160,7 +161,7 @@ public final class DateTimeFormatter {
      * @throws NullPointerException if the calendrical is null
      * @throws CalendricalFormatException if an error occurs during printing
      */
-    public String print(CalendricalProvider calendrical) {
+    public String print(Calendrical calendrical) {
         StringBuilder buf = new StringBuilder(32);
         print(calendrical, buf);
         return buf.toString();
@@ -180,19 +181,18 @@ public final class DateTimeFormatter {
      * See {@link CalendricalFormatException#rethrowIOException()} for a means
      * to extract the IOException.
      *
-     * @param calendricalProvider  the provider of the calendrical to print, not null
+     * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws NullPointerException if the calendrical or appendable is null
      * @throws CalendricalFormatException if an error occurs during printing
      */
-    public void print(CalendricalProvider calendricalProvider, Appendable appendable) {
-        DateTimeFormatter.checkNotNull(calendricalProvider, "CalendricalProvider must not be null");
+    public void print(Calendrical calendrical, Appendable appendable) {
+        DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
         DateTimeFormatter.checkNotNull(appendable, "Appendable must not be null");
-        Calendrical calendrical = calendricalProvider.toCalendrical();
         try {
             printerParser.print(calendrical, appendable, symbols);
-        } catch (UnsupportedCalendarFieldException ex) {
+        } catch (UnsupportedRuleException ex) {
             throw new CalendricalFormatFieldException(ex);
         } catch (IOException ex) {
             throw new CalendricalFormatException(ex.getMessage(), ex);
@@ -215,29 +215,61 @@ public final class DateTimeFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Fully parses the text into a Calendrical.
+     * Fully parses the text producing an object of the type defined by the rule.
      * <p>
-     * This parses the entire text into a calendrical. If the parse completes
-     * without reading the entire length of the text, and exception is thrown.
-     * If a problem occurs during parsing, an exception is thrown.
+     * This parses the entire text to produce the required calendrical value.
+     * For example:
+     * <pre>
+     * LocalDateTime dt = parser.parse(str, LocalDateTime.rule());
+     * </pre>
+     * If the parse completes without reading the entire length of the text,
+     * or a problem occurs during parsing or merging, then an exception is thrown.
+     *
+     * @param text  the text to parse, not null
+     * @return the parsed date, never null
+     * @throws UnsupportedOperationException if this formatter cannot parse
+     * @throws NullPointerException if the text is null
+     * @throws CalendricalParseException if the parse fails
+     */
+    public <T> T parse(String text, CalendricalRule<T> rule) {
+        DateTimeFormatter.checkNotNull(text, "Text must not be null");
+        DateTimeFormatter.checkNotNull(rule, "CalendricalRule must not be null");
+        CalendricalMerger merger = parse(text);
+        T result = merger.merge().get(rule);
+        if (result == null) {
+            String str = text;
+            if (str.length() > 64) {
+                str = str.substring(0, 64) + "...";
+            }
+            throw new CalendricalParseException("Text could not be parsed into a " + rule.getName() + ": " + str, text, 0);
+        }
+        return result;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Fully parses the text returning a merger that can be used to manage the
+     * merging of separate parsed fields to a meaningful calendrical.
+     * <p>
+     * If the parse completes without reading the entire length of the text,
+     * or a problem occurs during parsing, then an exception is thrown.
      * <p>
      * The result may be invalid including out of range values such as a month of 65.
      * The methods on the calendrical allow you to handle the invalid input.
      * For example:
      * <pre>
-     * LocalDateTime dt = parser.parse(str).mergeStrict().toLocalDateTime();
+     * LocalDateTime dt = parser.parse(str).merge().get(LocalDateTime.rule());
      * </pre>
      *
      * @param text  the text to parse, not null
      * @return the parsed text, never null
      * @throws UnsupportedOperationException if this formatter cannot parse
      * @throws NullPointerException if the text is null
-     * @throws IndexOutOfBoundsException if the position is invalid
      * @throws CalendricalParseException if the parse fails
      */
-    public Calendrical parse(String text) {
+    public CalendricalMerger parse(String text) {
         ParsePosition pos = new ParsePosition(0);
-        Calendrical result = parse(text, pos);
+        DateTimeParseContext result = parse(text, pos);
         if (pos.getErrorIndex() >= 0 || pos.getIndex() < text.length()) {
             String str = text;
             if (str.length() > 64) {
@@ -251,7 +283,7 @@ public final class DateTimeFormatter {
                         pos.getIndex() + ": " + str, text, pos.getIndex());
             }
         }
-        return result;
+        return result.toCalendricalMerger();
     }
 
     /**
@@ -272,7 +304,7 @@ public final class DateTimeFormatter {
      * @throws NullPointerException if the text or position is null
      * @throws IndexOutOfBoundsException if the position is invalid
      */
-    public Calendrical parse(String text, ParsePosition position) {
+    public DateTimeParseContext parse(String text, ParsePosition position) {
         DateTimeFormatter.checkNotNull(text, "Text must not be null");
         DateTimeFormatter.checkNotNull(position, "ParsePosition must not be null");
         DateTimeParseContext context = new DateTimeParseContext(symbols);
@@ -283,7 +315,7 @@ public final class DateTimeFormatter {
             return null;
         }
         position.setIndex(pos);
-        return context.asCalendrical();
+        return context;
     }
 
     //-----------------------------------------------------------------------
@@ -300,12 +332,12 @@ public final class DateTimeFormatter {
     /**
      * Returns this formatter as a <code>java.text.Format</code> instance.
      * <p>
-     * The {@link Format} instance will print any {@link CalendricalProvider}
-     * and parses to a {@link Calendrical}.
+     * The {@link Format} instance will print any {@link Calendrical}
+     * and parses to a merged {@link CalendricalMerger}.
      * <p>
      * The format will throw <code>UnsupportedOperationException</code> and
      * <code>IndexOutOfBoundsException</code> in line with those thrown by the
-     * {@link #print(CalendricalProvider, Appendable) print} and
+     * {@link #print(Calendrical, Appendable) print} and
      * {@link #parse(String, ParsePosition) parse} methods.
      * <p>
      * The format does not support attributing of the returned format string.
@@ -342,18 +374,12 @@ public final class DateTimeFormatter {
             DateTimeFormatter.checkNotNull(obj, "Object to be printed must not be null");
             DateTimeFormatter.checkNotNull(toAppendTo, "StringBuffer must not be null");
             DateTimeFormatter.checkNotNull(pos, "FieldPosition must not be null");
-            Calendrical fdt = null;
-            if (obj instanceof CalendricalProvider) {
-                fdt = ((CalendricalProvider) obj).toCalendrical();
-                if (fdt == null) {
-                    throw new NullPointerException("The CalendricalProvider implementation must not return null");
-                }
-            } else {
+            if (obj instanceof Calendrical == false) {
                 throw new IllegalArgumentException("DateTimeFormatter can format Calendrical instances");
             }
             pos.setBeginIndex(0);
             pos.setEndIndex(0);
-            print(fdt, toAppendTo);
+            print((Calendrical) obj, toAppendTo);
             return toAppendTo;
         }
 
@@ -370,7 +396,8 @@ public final class DateTimeFormatter {
         /** {@inheritDoc} */
         @Override
         public Object parseObject(String source, ParsePosition pos) {
-            return parse(source, pos);
+            DateTimeParseContext context = parse(source, pos);
+            return context != null ? context.toCalendricalMerger().merge() : null;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007,2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,29 +32,34 @@
 package javax.time.calendar;
 
 /**
- * An exception used when querying a calendar for a field that is not supported.
+ * An exception used when the value for a rule cannot be found.
  *
  * @author Stephen Colebourne
  */
-public class UnsupportedCalendarFieldException extends CalendarFieldException {
+public class UnsupportedRuleException extends CalendricalRuleException {
+
+    /**
+     * A serialization identifier for this class.
+     */
+    private static final long serialVersionUID = 8274857567L;
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
      *
-     * @param fieldRule  the rule of the field that is not supported, may be null
+     * @param rule  the rule that is not supported, may be null
      */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getID()) + " is not supported", fieldRule);
+    public UnsupportedRuleException(CalendricalRule<?> rule) {
+        super("Rule " + (rule == null ? "null" : rule.getID()) + " is not supported", rule);
     }
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
      *
-     * @param fieldRule  the rule of the field that is not supported, may be null
-     * @param objectDescription  the description of the calendrical that does not support the field, may be null
+     * @param rule  the rule that is not supported, may be null
+     * @param message  the error message, not null
      */
-    public UnsupportedCalendarFieldException(DateTimeFieldRule fieldRule, String objectDescription) {
-        super("Field " + (fieldRule == null ? "null" : fieldRule.getID()) + " is not supported on " + objectDescription, fieldRule);
+    public UnsupportedRuleException(CalendricalRule<?> rule, String message) {
+        super(message, rule);
     }
 
 }

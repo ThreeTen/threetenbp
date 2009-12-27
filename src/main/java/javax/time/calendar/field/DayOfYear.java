@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
@@ -61,7 +61,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfYear
-        implements CalendricalProvider, Comparable<DayOfYear>, DateAdjuster, DateMatcher, Serializable {
+        implements Calendrical, Comparable<DayOfYear>, DateAdjuster, DateMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -94,7 +94,7 @@ public final class DayOfYear
      *
      * @return the day of year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.dayOfYearRule();
     }
 
@@ -160,6 +160,21 @@ public final class DayOfYear
      */
     private Object readResolve() {
         return dayOfYear(dayOfYear);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, dayOfYear, this);
     }
 
     //-----------------------------------------------------------------------
@@ -317,16 +332,6 @@ public final class DayOfYear
         MonthOfYear moy = MonthOfYear.monthOfYear(month);
         int dom = dayOfYear - array[month - 1];
         return LocalDate.date(year, moy, dom);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

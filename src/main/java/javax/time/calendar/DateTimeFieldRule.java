@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -50,12 +49,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.period.Period;
 import javax.time.period.PeriodUnit;
 
 /**
  * The rule defining how a measurable field of time operates.
  * <p>
- * Time field rule implementations define how a field like 'day of month' operates.
+ * Rule implementations define how a field like 'day of month' operates.
  * This includes the field name and minimum/maximum values.
  * <p>
  * DateTimeFieldRule is an abstract class and must be implemented with care to
@@ -66,19 +66,15 @@ import javax.time.period.PeriodUnit;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>, Serializable {
+public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
 
+    /** A serialization identifier for this class. */
+    private static final long serialVersionUID = 837528753278L;
     /** A Math context for calculating fractions from values. */
     private static final MathContext FRACTION_CONTEXT = new MathContext(9, RoundingMode.FLOOR);
     /** A Math context for calculating values from fractions. */
     private static final MathContext VALUE_CONTEXT = new MathContext(0, RoundingMode.FLOOR);
 
-    /** The name of the rule, not null. */
-    private final Chronology chronology;
-    /** The id of the rule, not null. */
-    private final String id;
-    /** The name of the rule, not null. */
-    private final String name;
     /** The period unit, not null. */
     private final PeriodUnit periodUnit;
     /** The period range, not null. */
@@ -93,6 +89,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
     /**
      * Constructor.
      *
+     * @param reifiedClass  the reified class, not null
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
@@ -101,18 +98,20 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @param maximumValue  the minimum value
      */
     protected DateTimeFieldRule(
+            Class<T> reifiedClass,
             Chronology chronology,
             String name,
             PeriodUnit periodUnit,
             PeriodUnit periodRange,
             int minimumValue,
             int maximumValue) {
-        this(chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
+        this(reifiedClass, chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
     }
 
     /**
      * Constructor.
      *
+     * @param reifiedClass  the reified class, not null
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
      * @param periodUnit  the period unit, not null
@@ -122,6 +121,7 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      * @param hasText  true if this field has a text representation
      */
     protected DateTimeFieldRule(
+            Class<T> reifiedClass,
             Chronology chronology,
             String name,
             PeriodUnit periodUnit,
@@ -129,50 +129,12 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
             int minimumValue,
             int maximumValue,
             boolean hasText) {
-        if (chronology == null) {
-            throw new NullPointerException("The chronology must not be null");
-        }
-        if (name == null) {
-            throw new NullPointerException("The name must not be null");
-        }
-//        if (periodUnit == null) {
-//            throw new NullPointerException("periodUnit must not be null");
-//        }
-//        if (periodRange == null) {
-//            throw new NullPointerException("periodRange must not be null");
-//        }
-        this.chronology = chronology;
-        this.id = chronology.getName() + '.' + name;
-        this.name = name;
+        super(reifiedClass, chronology, name);
         this.periodUnit = periodUnit;
         this.periodRange = periodRange;
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
         this.textStores = (hasText ? new ConcurrentHashMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>>() : null);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the id of the field.
-     * <p>
-     * The id is of the form 'ChronologyName.FieldName'.
-     * No two fields should have the same id.
-     *
-     * @return the id of the field, never null
-     */
-    public final String getID() {
-        return id;
-    }
-
-    /**
-     * Gets the name of the field.
-     * <p>
-     * Subclasses should use the form 'UnitOfRange' whenever possible.
-     *
-     * @return the name of the field, never null
-     */
-    public String getName() {
-        return name;
     }
 
     //-----------------------------------------------------------------------
@@ -200,187 +162,130 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the this field is supported for the specified date and time.
-     *
-     * @param date  the date, may be null
-     * @param time  the time, may be null
-     * @return true if the field is supported
-     */
-    public final boolean isSupported(LocalDate date, LocalTime time) {
-        return (getValueQuiet(date, time) != null);
-    }
-
-    /**
-     * Gets the value for this field throwing an exception if the field cannot be obtained.
+     * Gets the <code>Integer</code> value of this field from the specified calendrical.
      * <p>
-     * The value will be checked for basic validity.
-     * The value returned will be within the valid range for the field.
-     * Also, if the value is present in both the date/time and the field-value
-     * map then the two values must be the same.
+     * This map uses {@link #getValueQuiet(Calendrical)} to find the value and
+     * then converts it to an <code>Integer</code>.
      *
-     * @param calendricalProvider  the calendrical provider, not null
-     * @return the value of the field
-     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
+     * @param calendrical  the calendrical to get the field value from, not null
+     * @return the value of the field, null if unable to extract the field
      */
-    public int getValue(CalendricalProvider calendricalProvider) {
-        int value = calendricalProvider.toCalendrical().deriveValue(this);
-        checkValue(value);
-        return value;
+    public final Integer getIntQuiet(Calendrical calendrical) {
+        T value = getValueQuiet(calendrical);
+        return value == null ? null : convertValueToInteger(value);
     }
 
     /**
-     * Gets the value of this field from the date or time specified.
+     * Gets the value of the field from the specified calendrical throwing
+     * an exception if the field cannot be returned.
      *
-     * @param date  the date, may be null
-     * @param time  the time, may be null
-     * @return the value of the field
-     * @throws UnsupportedCalendarFieldException if the value cannot be extracted
+     * @param calendrical  the calendrical to get the field value from, not null
+     * @return the value of the field, never null
+     * @throws UnsupportedRuleException if the field cannot be extracted
      */
-    public final int getValue(LocalDate date, LocalTime time) {
-        Integer value = getValueQuiet(date, time);
+    public final int getInt(Calendrical calendrical) {
+        T value = getValueQuiet(calendrical);
         if (value == null) {
-            throw new UnsupportedCalendarFieldException(this);
+            throw new UnsupportedRuleException(this);
         }
-        return value;
+        return convertValueToInt(value);
     }
 
     /**
-     * Gets the value of this field from the date or time specified.
+     * Converts the typed value of the rule to the Integer value.
      * <p>
-     * A typical implementation of this method checks for null and calculates
-     * the value. For example, here is an implementation for the year field:
-     * <pre>
-     * return (date == null ? null : date.getYear().getValue());
-     * </pre>
+     * This default implementation simply performs a cast.
+     * Where the reified type is not <code>Integer</code>, this method must be overridden.
      *
-     * @param date  the date, may be null
-     * @param time  the time, may be null
-     * @return the value of the field, null if unable to derive field
+     * @param value  the value to convert, not null
+     * @return the int value of the field
      */
-    public Integer getValueQuiet(LocalDate date, LocalTime time) {
-        return null;  // override if field can be derived
+    private Integer convertValueToInteger(T value) {
+        if (getReifiedType() == Integer.class) {
+            return (Integer) value;
+        }
+        return convertValueToInt(value);
     }
 
     /**
-     * Gets the value of this field from the map of field-value pairs specified.
+     * Converts the typed value of the rule to the int value.
      * <p>
-     * This method queries the map to determine if it holds a value for this field.
-     * If it does, then the value is returned.
-     * Otherwise, an attempt is made to {@link #deriveValue derive}
-     * the value from the value of other fields in the map.
+     * This default implementation simply performs a cast.
+     * Where the reified type is not <code>Integer</code>, this method must be overridden.
      *
-     * @param calendricalFieldMap  the calendrical to derive from, not null
-     * @return the value of the field, null if unable to derive field
+     * @param value  the value to convert, not null
+     * @return the int value of the field
+     * @throws ClassCastException if the value cannot be converted
      */
-    public final Integer getValueQuiet(Calendrical.FieldMap calendricalFieldMap) {
-        Integer value = calendricalFieldMap.getQuiet(this);
-        return (value == null ? deriveValue(calendricalFieldMap) : value);
+    public int convertValueToInt(T value) {
+        return (Integer) value;
     }
 
     /**
-     * Derives the value of this field from the specified calendrical.
+     * Converts the int to a typed value of the rule.
      * <p>
-     * This method derives the value for this field from other fields in the map.
-     * The implementation does not check if the map already contains a value for this field.
-     * For example, if this field is QuarterOfYear, then the value can be derived
-     * from MonthOfYear. The implementation must not check to see of the map
-     * already contains a value for QuarterOfYear.
-     * <p>
-     * The derivation can be recursive depending on the hierarchy of fields.
-     * This is achieved by using {@link #getValueQuiet} to obtain the parent field rule.
-     * <p>
-     * A typical implementation of this method obtains the parent value and performs a calculation.
-     * For example, here is a simple implementation for the QuarterOfYear field
-     * (which doesn't handle negative numbers or leniency):
-     * <pre>
-     * Integer moyVal = ISOChronology.monthOfYearRule().getValueQuiet(fieldValueMap);
-     * return (moyVal == null ? null : ((moyVal - 1) % 4) + 1);
-     * </pre>
-     * Extracts the value for this field using information in the field map.
-     * <p>
-     * This method is designed to be overridden in subclasses.
-     * The subclass implementation must be thread-safe.
+     * This default implementation simply calls {@link #reify(Object)}.
+     * Where the reified type is not <code>Integer</code>, this method must be overridden.
      *
-     * @param calendricalFieldMap  the calendrical to derive from, not null
-     * @return the derived value, null if unable to derive
+     * @param value  the value to convert, not null
+     * @return the int value of the field
+     * @throws IllegalCalendarFieldValueException if the value is invalid
+     * @throws ClassCastException if the value cannot be converted
      */
-    protected Integer deriveValue(Calendrical.FieldMap calendricalFieldMap) {
-        return null;  // do nothing - override if this field can derive
+    public T convertIntToValue(int value) {
+        checkValue(value);
+        return reify(value);
     }
 
-    /**
-     * Merges this field with other fields to form higher level fields.
-     * <p>
-     * The aim of this method is to assist in the process of extracting the most
-     * date-time information possible from a map of field-value pairs.
-     * The merging process is controlled by the mutable merger instance and
-     * the input and output of the this merge are held there.
-     * <p>
-     * Subclasses that override this method may use methods on the merger to
-     * obtain the values to merge. The value is guaranteed to be available for
-     * this field if this method is called.
-     * <p>
-     * If the override successfully merged some fields then the following must be performed.
-     * The merged field must be stored using {@link Calendrical.Merger#storeMergedField}.
-     * Each field used in the merge must be marked as being used by calling
-     * {@link Calendrical.Merger#markFieldAsProcessed}.
-     * <p>
-     * An example to merge two fields into one - hour of AM/PM and AM/PM:
-     * <pre>
-     *  Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
-     *  if (hapVal != null) {
-     *    int amPm = merger.getValueInt(this);
-     *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
-     *    merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
-     *    merger.markFieldAsProcessed(this);
-     *    merger.markFieldAsProcessed(ISOChronology.hourOfAmPmRule());
-     *  }
-     * </pre>
-     *
-     * @param merger  the merger instance controlling the merge process, not null
-     */
-    protected void mergeFields(Calendrical.Merger merger) {
-        // do nothing - override if this field can merge to a more significant field
-    }
+//    /**
+//     * Interprets the numeric value ensuring it is within the valid range for this rule.
+//     * <p>
+//     * If the value is outside the valid range, the implementation must add/subtract
+//     * until the value is within the range. The amount added is stored in the overflow
+//     * on the merger.
+//     *
+//     * @param merger  the merger instance controlling the merge process, not null
+//     * @param value  the value to interpret, not null
+//     */
+//    protected Object interpretNumber(CalendricalMerger merger, Number value) {
+//        // TODO: overkill - just go straight to int?
+//        long longVal = value.longValue();
+//        int val = MathUtils.safeToInt(longVal);
+//        return interpretNumber(merger, val);
+//    }
+//
+//    /**
+//     * Interprets the numeric value ensuring it is within the valid range for this rule.
+//     * <p>
+//     * If the value is outside the valid range, the implementation must add/subtract
+//     * until the value is within the range. The amount added is stored in the overflow
+//     * on the merger.
+//     *
+//     * @param merger  the merger instance controlling the merge process, not null
+//     * @param value  the value to interpret, not null
+//     */
+//    protected int interpretNumber(CalendricalMerger merger, int value) {
+//        if (value > getMaximumValue()) {
+//            merger.addToOverflow(createPeriod(value - getMaximumValue()));
+//            return getMaximumValue();
+//        }
+//        if (value > getMinimumValue()) {
+//            merger.addToOverflow(createPeriod(value - getMinimumValue()));
+//            return getMinimumValue();
+//        }
+//        return value;
+//    }
 
     /**
-     * Merges this field with other fields to form a date or time.
+     * Creates a period in the unit of this rule.
      * <p>
-     * The aim of this method is to assist in the process of extracting the most
-     * date-time information possible from a map of field-value pairs.
-     * The merging process is controlled by the mutable merger instance and
-     * the input and output of the this merge are held there.
-     * <p>
-     * Subclasses that override this method may use methods on the merger to
-     * obtain the values to merge. The value is guaranteed to be available for
-     * this field if this method is called.
-     * <p>
-     * If the override successfully merged some fields then the following must be performed.
-     * A merged date must be stored using {@link Calendrical.Merger#storeMergedDate(LocalDate)}.
-     * A merged time must be stored using {@link Calendrical.Merger#storeMergedTime(LocalTime)}
-     * if the merge is strict, or {@link Calendrical.Merger#storeMergedTime(javax.time.calendar.LocalTime.Overflow)}
-     * if the merge is lenient.
-     * Each field used in the merge must be marked as being used by calling
-     * {@link Calendrical.Merger#markFieldAsProcessed}.
-     * <p>
-     * An example to merge three fields into a date - year, month and day:
-     * <pre>
-     *  Integer moyVal = merger.getValue(ISOChronology.monthOfYearRule());
-     *  Integer domVal = merger.getValue(ISOChronology.dayOfMonthRule());
-     *  if (moyVal != null && domVal != null) {
-     *    int year = merger.getValueInt(this);
-     *    LocalDate date = merger.getContext().resolveDate(year, moyVal, domVal);
-     *    merger.storeMergedDate(date);
-     *    merger.markFieldAsProcessed(this);
-     *    merger.markFieldAsProcessed(ISOChronology.monthOfYearRule());
-     *    merger.markFieldAsProcessed(ISOChronology.dayOfMonthRule());
-     *  }
-     * </pre>
+     * For example, if this represents the day of month, the the unit is the day
+     * and the period created will have the days field set.
      *
-     * @param merger  the merger instance controlling the merge process, not null
+     * @param amount  the amount that the period should represent
      */
-    protected void mergeDateTime(Calendrical.Merger merger) {
-        // do nothing - override if this field can merge to a date/time
+    protected Period createPeriod(int amount) {
+        throw new UnsupportedOperationException();
     }
 
     //-----------------------------------------------------------------------
@@ -667,16 +572,16 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      *
      * @param value  the value to convert, valid for this field
      * @return the fractional value of the field
-     * @throws UnsupportedCalendarFieldException if the value cannot be converted
+     * @throws UnsupportedRuleException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public BigDecimal convertValueToFraction(int value) {
         if (isFixedValueSet() == false) {
-            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
                     " cannot be obtained as the range is not fixed");
         }
         if (getMinimumValue() != 0) {
-            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
                     " cannot be obtained as the minimum field value is not zero");
         }
         checkValue(value);
@@ -700,16 +605,16 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
      *
      * @param fraction  the fraction to convert, not null
      * @return the value of the field, checked for validity
-     * @throws UnsupportedCalendarFieldException if the value cannot be converted
+     * @throws UnsupportedRuleException if the value cannot be converted
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public int convertFractionToValue(BigDecimal fraction) {
         if (isFixedValueSet() == false) {
-            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
                     " cannot be converted as the range is not fixed");
         }
         if (getMinimumValue() != 0) {
-            throw new UnsupportedCalendarFieldException(this, "The fractional value of " + getName() +
+            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
                     " cannot be converted as the minimum field value is not zero");
         }
         long range = getMaximumValue();
@@ -725,52 +630,41 @@ public abstract class DateTimeFieldRule implements Comparable<DateTimeFieldRule>
         }
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this DateTimeFieldRule to another based on the period unit
-     * followed by the period range followed by the chronology name.
-     * <p>
-     * The period unit is compared first, so MinuteOfHour will be less than
-     * HourOfDay, which will be less than DayOfWeek. When the period unit is
-     * the same, the period range is compared, so DayOfWeek is less than
-     * DayOfMonth, which is less than DayOfYear. Finally, the chronology name
-     * is compared.
-     *
-     * @param other  the other type to compare to, not null
-     * @return the comparator result, negative if less, postive if greater, zero if equal
-     * @throws NullPointerException if other is null
-     */
-    public int compareTo(DateTimeFieldRule other) {
-        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
-        if (cmp != 0) {
-            return cmp;
-        }
-        if (this.getPeriodRange() == other.getPeriodRange()) {
-            return chronology.getName().compareTo(other.chronology.getName());
-        }
-        if (this.getPeriodRange() == null) {
-            return 1;
-        }
-        if (other.getPeriodRange() == null) {
-            return -1;
-        }
-        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
-        if (cmp != 0) {
-            return cmp;
-        }
-        return chronology.getName().compareTo(other.chronology.getName());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a string representation of the rule.
-     *
-     * @return a description of the rule
-     */
-    @Override
-    public String toString() {
-        return getID();
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Compares this DateTimeFieldRule to another based on the period unit
+//     * followed by the period range followed by the chronology name.
+//     * <p>
+//     * The period unit is compared first, so MinuteOfHour will be less than
+//     * HourOfDay, which will be less than DayOfWeek. When the period unit is
+//     * the same, the period range is compared, so DayOfWeek is less than
+//     * DayOfMonth, which is less than DayOfYear. Finally, the chronology name
+//     * is compared.
+//     *
+//     * @param other  the other type to compare to, not null
+//     * @return the comparator result, negative if less, positive if greater, zero if equal
+//     * @throws NullPointerException if other is null
+//     */
+//    public int compareTo(DateTimeFieldRule<T> other) {
+//        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
+//        if (cmp != 0) {
+//            return cmp;
+//        }
+//        if (this.getPeriodRange() == other.getPeriodRange()) {
+//            return chronology.getName().compareTo(other.chronology.getName());
+//        }
+//        if (this.getPeriodRange() == null) {
+//            return 1;
+//        }
+//        if (other.getPeriodRange() == null) {
+//            return -1;
+//        }
+//        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
+//        if (cmp != 0) {
+//            return cmp;
+//        }
+//        return chronology.getName().compareTo(other.chronology.getName());
+//    }
 
     //-----------------------------------------------------------------------
     /**

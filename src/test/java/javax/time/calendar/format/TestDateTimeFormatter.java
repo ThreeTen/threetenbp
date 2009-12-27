@@ -31,7 +31,8 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 
 import java.io.IOException;
 import java.text.Format;
@@ -42,12 +43,11 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockCalendricalProviderReturnsNull;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
 import org.testng.annotations.BeforeMethod;
@@ -61,7 +61,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatter {
 
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
     private List<DateTimePrinter> printers;
     private List<DateTimeParser> parsers;
     private StringLiteralPrinterParser stringPP;
@@ -161,7 +161,7 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_Calendrical_null() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        test.print((CalendricalProvider) null);
+        test.print((Calendrical) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
@@ -191,7 +191,7 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable_nullCalendrical() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
-        test.print((CalendricalProvider) null, buf);
+        test.print((Calendrical) null, buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -222,9 +222,9 @@ public class TestDateTimeFormatter {
     //-----------------------------------------------------------------------
     public void test_parse_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        Calendrical result = test.parse("ONE30");
-        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
-        assertEquals(result.deriveValue(RULE_DOM), 30);
+        CalendricalMerger result = test.parse("ONE30");
+        assertEquals(result.getInputMap().size(), 1);
+        assertEquals(result.getInputMap().get(RULE_DOM), 30);
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
@@ -284,17 +284,17 @@ public class TestDateTimeFormatter {
     public void test_parse_StringParsePosition() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(0);
-        Calendrical result = test.parse("ONE30XXX", pos);
+        DateTimeParseContext result = test.parse("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
-        assertEquals(result.deriveValue(RULE_DOM), 30);
+        assertEquals(result.toCalendricalMerger().getInputMap().size(), 1);
+        assertEquals(result.getParsed(RULE_DOM), (Integer) 30);
     }
 
     public void test_parse_StringParsePosition_parseError() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         ParsePosition pos = new ParsePosition(0);
-        Calendrical result = test.parse("ONEXXX", pos);
+        DateTimeParseContext result = test.parse("ONEXXX", pos);
         assertEquals(pos.getIndex(), 0);  // TODO: is this right?
         assertEquals(pos.getErrorIndex(), 3);
         assertEquals(result, null);
@@ -343,18 +343,11 @@ public class TestDateTimeFormatter {
         format.format(null);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_toFormat_format_badProvider() throws Exception {
-        DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        Format format = test.toFormat();
-        format.format(new MockCalendricalProviderReturnsNull());
-    }
-
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_toFormat_format_notCalendrical() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
-        format.format("Not a CalendricalProvider");
+        format.format("Not a Calendrical");
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
@@ -370,9 +363,9 @@ public class TestDateTimeFormatter {
     public void test_toFormat_parseObject_String() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
-        Calendrical result = (Calendrical) format.parseObject("ONE30");
-        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
-        assertEquals(result.deriveValue(RULE_DOM), 30);
+        CalendricalMerger result = (CalendricalMerger) format.parseObject("ONE30");
+        assertEquals(result.getInputMap().size(), 1);
+        assertEquals(result.getInputMap().get(RULE_DOM), 30);
     }
 
     @Test(expectedExceptions=ParseException.class)
@@ -423,11 +416,11 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
         ParsePosition pos = new ParsePosition(0);
-        Calendrical result = (Calendrical) format.parseObject("ONE30XXX", pos);
+        CalendricalMerger result = (CalendricalMerger) format.parseObject("ONE30XXX", pos);
         assertEquals(pos.getIndex(), 5);
         assertEquals(pos.getErrorIndex(), -1);
-        assertEquals(result.getFieldMap().toDateTimeFields().size(), 1);
-        assertEquals(result.deriveValue(RULE_DOM), 30);
+        assertEquals(result.getInputMap().size(), 1);
+        assertEquals(result.getValue(RULE_DOM), (Integer) 30);
     }
 
     public void test_toFormat_parseObject_StringParsePosition_parseError() throws Exception {

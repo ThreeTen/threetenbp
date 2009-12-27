@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,41 +29,51 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
+package javax.time.calendar.format;
 
-import javax.time.CalendricalException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalRule;
 
 /**
- * An exception used when a calendar field is in error.
+ * Simple Mock Calendrical.
  *
  * @author Stephen Colebourne
  */
-public class CalendarFieldException extends CalendricalException {
+public class MockSimpleCalendrical implements Calendrical {
 
-    /**
-     * The field that caused the exception
-     */
-    private final DateTimeFieldRule fieldRule;
+    private Map<CalendricalRule<?>, Object> map = new HashMap<CalendricalRule<?>, Object>();
 
-    /**
-     * Constructs a new unsupported field exception creating a standard error message.
-     *
-     * @param message  the message describing the problem, should not be null
-     * @param fieldRule  the rule of the field that is not supported, may be null
-     */
-    public CalendarFieldException(String message, DateTimeFieldRule fieldRule) {
-        super(message);
-        this.fieldRule = fieldRule;
+    public MockSimpleCalendrical() {
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule of the field that caused the exception.
-     *
-     * @return the field rule, null if unknown
-     */
-    public DateTimeFieldRule getFieldRule() {
-        return fieldRule;
+    public <T> MockSimpleCalendrical(CalendricalRule<T> rule, T value) {
+        map.put(rule, value);
+    }
+
+    public <T, U> MockSimpleCalendrical(CalendricalRule<T> rule1, T value1, CalendricalRule<U> rule2, U value2) {
+        map.put(rule1, value1);
+        map.put(rule2, value2);
+    }
+
+    public <T> T get(CalendricalRule<T> rule) {
+        Object value = map.get(rule);
+        return value != null ? rule.reify(value) : rule.deriveValueFrom(this);
+    }
+
+    public <T> void put(CalendricalRule<T> rule, T value) {
+        map.put(rule, value);
+    }
+
+    public void putWeird(CalendricalRule<?> rule, Object value) {
+        map.put(rule, value);
+    }
+
+    public Set<CalendricalRule<?>> rules() {
+        return map.keySet();
     }
 
 }

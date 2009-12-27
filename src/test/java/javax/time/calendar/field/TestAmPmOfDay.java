@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,21 +31,23 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockTimeProviderReturnsNull;
 import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,7 +61,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestAmPmOfDay {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.amPmOfDayRule();
+    private static final DateTimeFieldRule<AmPmOfDay> RULE = ISOChronology.amPmOfDayRule();
 
     @BeforeMethod
     public void setUp() {
@@ -67,7 +69,7 @@ public class TestAmPmOfDay {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(AmPmOfDay.class));
+        assertTrue(Calendrical.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(AmPmOfDay.class));
@@ -99,26 +101,42 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_TimeProvider_AM() {
+    public void test_factory_Calendrical_AM() {
         LocalTime time = LocalTime.time(11, 59);
         AmPmOfDay test = AmPmOfDay.amPmOfDay(time);
         assertEquals(test.getValue(), 0);
     }
 
-    public void test_factory_TimeProvider_PM() {
+    public void test_factory_Calendrical_PM() {
         LocalTime time = LocalTime.time(12, 00);
         AmPmOfDay test = AmPmOfDay.amPmOfDay(time);
         assertEquals(test.getValue(), 1);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullTimeProvider() {
-        AmPmOfDay.amPmOfDay((TimeProvider) null);
+    public void test_factory_nullCalendrical() {
+        AmPmOfDay.amPmOfDay((Calendrical) null);
+    }
+
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_unsupported() {
+        AmPmOfDay.amPmOfDay(DateTimeFields.fields());
+    }
+
+    //-----------------------------------------------------------------------
+    // get(CalendricalField)
+    //-----------------------------------------------------------------------
+    public void test_get() {
+        assertEquals(AmPmOfDay.AM.get(RULE), AmPmOfDay.AM);
+    }
+
+    public void test_get_unsupportedField() {
+        assertEquals(AmPmOfDay.AM.get(ISOChronology.weekBasedYearRule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badTimeProvider() {
-        AmPmOfDay.amPmOfDay(new MockTimeProviderReturnsNull());
+    public void test_get_null() {
+        AmPmOfDay.AM.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -208,19 +226,11 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        assertEquals(AmPmOfDay.AM.toCalendrical(), new Calendrical(RULE, 0));
-        assertEquals(AmPmOfDay.PM.toCalendrical(), new Calendrical(RULE, 1));
-    }
-
-    //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(AmPmOfDay.AM.toString(), "AmPmOfDay=AM");
-        assertEquals(AmPmOfDay.PM.toString(), "AmPmOfDay=PM");
+        assertEquals(AmPmOfDay.AM.toString(), "AM");
+        assertEquals(AmPmOfDay.PM.toString(), "PM");
     }
 
     //-----------------------------------------------------------------------

@@ -31,7 +31,18 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
+import static javax.time.period.PeriodUnits.DAYS;
+import static javax.time.period.PeriodUnits.HOURS;
+import static javax.time.period.PeriodUnits.MILLIS;
+import static javax.time.period.PeriodUnits.MINUTES;
+import static javax.time.period.PeriodUnits.MONTHS;
+import static javax.time.period.PeriodUnits.NANOS;
+import static javax.time.period.PeriodUnits.QUARTERS;
+import static javax.time.period.PeriodUnits.SECONDS;
+import static javax.time.period.PeriodUnits.TWELVE_HOURS;
+import static javax.time.period.PeriodUnits.WEEKS;
+import static javax.time.period.PeriodUnits.WEEKYEARS;
+import static javax.time.period.PeriodUnits.YEARS;
 
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
@@ -42,7 +53,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.time.CalendricalException;
-import javax.time.MathUtils;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
@@ -51,6 +61,7 @@ import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
+import javax.time.period.Period;
 
 /**
  * The ISO-8601 calendar system, which follows the rules of the current
@@ -224,143 +235,22 @@ public final class ISOChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the year field in the ISO chronology.
-     * <p>
-     * This field counts years sequentially from the epoch year of 1970.
-     * The defintion follows the ISO-8601 rules which mean that there is no
-     * historical cutover from the Julian to Gregorian calendar, typically
-     * defined as occurring in October 1582.
-     * <p>
-     * The implication of this is that historical dates will not be accurate.
-     * All work requiring accurate historical dates must use the appropriate
-     * chronology that defines the Gregorian cutover.
-     * <p>
-     * A further implication of the ISO-8601 rules is that the year zero
-     * exists. This roughly equates to 1 BC/BCE, however the alignment is
-     * not exact due to the lack of a Julian/Gregorian cutover.
-     *
-     * @return the rule for the year field, never null
-     */
-    @Override
-    public DateTimeFieldRule year() {
-        return YearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the month of year field in the ISO chronology.
-     * <p>
-     * This field counts months sequentially from the start of the year.
-     * The values follow the ISO-8601 standard and normal human interactions.
-     * These define January as value 1 to December as value 12.
-     * <p>
-     * The enum {@link MonthOfYear} should be used wherever possible in
-     * applications when referring to the day of the week to avoid
-     * hard-coding the values.
-     *
-     * @return the rule for the month of year field, never null
-     */
-    @Override
-    public DateTimeFieldRule monthOfYear() {
-        return MonthOfYearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the day of month field in the ISO chronology.
-     * <p>
-     * This field counts days sequentially from the start of the month.
-     * The first day of the month is 1 and the last is 28, 29, 30 or 31
-     * depending on the month and whether it is a leap year.
-     *
-     * @return the rule for the day of month field, never null
-     */
-    @Override
-    public DateTimeFieldRule dayOfMonth() {
-        return DayOfMonthRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the day of year field in the ISO chronology.
-     * <p>
-     * This field counts days sequentially from the start of the year.
-     * The first day of the year is 1 and the last is 365, or 366 in a leap year.
-     *
-     * @return the rule for the day of year field, never null
-     */
-    @Override
-    public DateTimeFieldRule dayOfYear() {
-        return DayOfYearRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the day of week field.
-     * <p>
-     * This field uses the ISO-8601 values for the day of week.
-     * These define Monday as value 1 to Sunday as value 7.
-     * <p>
-     * The enum {@link DayOfWeek} should be used wherever possible in
-     * applications when referring to the day of the week to avoid
-     * hard-coding the values.
-     *
-     * @return the rule for the day of week field, never null
-     */
-    @Override
-    public DateTimeFieldRule dayOfWeek() {
-        return DayOfWeekRule.INSTANCE;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the hour of day field.
-     * <p>
-     * This field counts hours sequentially from the start of the day.
-     * The values run from 0 to 23.
-     *
-     * @return the rule for the hour of day field, never null
-     */
-    @Override
-    public DateTimeFieldRule hourOfDay() {
-        return HourOfDayRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the minute of hour field.
-     * <p>
-     * This field counts minutes sequentially from the start of the hour.
-     * The values run from 0 to 59.
-     *
-     * @return the rule for the minute of hour field, never null
-     */
-    @Override
-    public DateTimeFieldRule minuteOfHour() {
-        return MinuteOfHourRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the second of minute field.
-     * <p>
-     * This field counts seconds sequentially from the start of the minute.
-     * The values run from 0 to 59.
-     *
-     * @return the rule for the second of minute field, never null
-     */
-    @Override
-    public DateTimeFieldRule secondOfMinute() {
-        return SecondOfMinuteRule.INSTANCE;
-    }
-
-    /**
-     * Gets the rule for the nano of second field.
-     * <p>
-     * This field counts nanoseconds sequentially from the start of the second.
-     * The values run from 0 to 999,999,999.
-     *
-     * @return the rule for the nano of second field, never null
-     */
-    @Override
-    public DateTimeFieldRule nanoOfSecond() {
-        return NanoOfSecondRule.INSTANCE;
-    }
+//    /**
+//     * Gets the equivalent rule for the specified field in the ISO chronology.
+//     * <p>
+//     * This will take the input field and provide the closest matching field
+//     * that is based......
+//     *
+//     * @param rule  the rule to convert, not null
+//     * @return the rule in ISO chronology, never null
+//     */
+//    public DateTimeFieldRule<?> convertRule(DateTimeFieldRule<?> rule) {
+//        if (rule.getChronology().equals(this)) {
+//            return rule;
+//        }
+//        return null;
+////        return rule.getChronology().convertRule(rule);;
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -380,7 +270,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the year field, never null
      */
-    public static DateTimeFieldRule yearRule() {
+    public static DateTimeFieldRule<Integer> yearRule() {
         return YearRule.INSTANCE;
     }
 
@@ -414,7 +304,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month of year field, never null
      */
-    public static DateTimeFieldRule monthOfYearRule() {
+    public static DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -427,7 +317,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of month field, never null
      */
-    public static DateTimeFieldRule dayOfMonthRule() {
+    public static DateTimeFieldRule<Integer> dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
@@ -439,7 +329,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of year field, never null
      */
-    public static DateTimeFieldRule dayOfYearRule() {
+    public static DateTimeFieldRule<Integer> dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
@@ -454,7 +344,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the week-based-year field, never null
      */
-    public static DateTimeFieldRule weekBasedYearRule() {
+    public static DateTimeFieldRule<Integer> weekBasedYearRule() {
         return WeekBasedYearRule.INSTANCE;
     }
 
@@ -470,7 +360,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the week of week-based-year field, never null
      */
-    public static DateTimeFieldRule weekOfWeekBasedYearRule() {
+    public static DateTimeFieldRule<Integer> weekOfWeekBasedYearRule() {
         return WeekOfWeekBasedYearRule.INSTANCE;
     }
 
@@ -486,7 +376,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of week field, never null
      */
-    public static DateTimeFieldRule dayOfWeekRule() {
+    public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -499,7 +389,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the week of year field, never null
      */
-    public static DateTimeFieldRule weekOfYearRule() {
+    public static DateTimeFieldRule<Integer> weekOfYearRule() {
         return WeekOfYearRule.INSTANCE;
     }
 
@@ -512,7 +402,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the quarter of year field, never null
      */
-    public static DateTimeFieldRule quarterOfYearRule() {
+    public static DateTimeFieldRule<Integer> quarterOfYearRule() {
         return QuarterOfYearRule.INSTANCE;
     }
 
@@ -525,7 +415,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month of quarter field, never null
      */
-    public static DateTimeFieldRule monthOfQuarterRule() {
+    public static DateTimeFieldRule<Integer> monthOfQuarterRule() {
         return MonthOfQuarterRule.INSTANCE;
     }
 
@@ -542,7 +432,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the week of month field, never null
      */
-    public static DateTimeFieldRule weekOfMonthRule() {
+    public static DateTimeFieldRule<Integer> weekOfMonthRule() {
         return WeekOfMonthRule.INSTANCE;
     }
 
@@ -555,7 +445,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the hour of day field, never null
      */
-    public static DateTimeFieldRule hourOfDayRule() {
+    public static DateTimeFieldRule<Integer> hourOfDayRule() {
         return HourOfDayRule.INSTANCE;
     }
 
@@ -567,7 +457,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the minute of hour field, never null
      */
-    public static DateTimeFieldRule minuteOfHourRule() {
+    public static DateTimeFieldRule<Integer> minuteOfHourRule() {
         return MinuteOfHourRule.INSTANCE;
     }
 
@@ -579,7 +469,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the second of minute field, never null
      */
-    public static DateTimeFieldRule secondOfMinuteRule() {
+    public static DateTimeFieldRule<Integer> secondOfMinuteRule() {
         return SecondOfMinuteRule.INSTANCE;
     }
 
@@ -591,7 +481,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the nano of second field, never null
      */
-    public static DateTimeFieldRule nanoOfSecondRule() {
+    public static DateTimeFieldRule<Integer> nanoOfSecondRule() {
         return NanoOfSecondRule.INSTANCE;
     }
 
@@ -604,7 +494,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the second of day field, never null
      */
-    public static DateTimeFieldRule secondOfDayRule() {
+    public static DateTimeFieldRule<Integer> secondOfDayRule() {
         return SecondOfDayRule.INSTANCE;
     }
 
@@ -616,7 +506,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the nano of second field, never null
      */
-    public static DateTimeFieldRule milliOfDayRule() {
+    public static DateTimeFieldRule<Integer> milliOfDayRule() {
         return MilliOfDayRule.INSTANCE;
     }
 
@@ -628,7 +518,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the nano of second field, never null
      */
-    public static DateTimeFieldRule milliOfSecondRule() {
+    public static DateTimeFieldRule<Integer> milliOfSecondRule() {
         return MilliOfSecondRule.INSTANCE;
     }
 
@@ -646,7 +536,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the am/pm of day field, never null
      */
-    public static DateTimeFieldRule amPmOfDayRule() {
+    public static DateTimeFieldRule<AmPmOfDay> amPmOfDayRule() {
         return AmPmOfDayRule.INSTANCE;
     }
 
@@ -658,7 +548,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the hour of AM/PM field, never null
      */
-    public static DateTimeFieldRule hourOfAmPmRule() {
+    public static DateTimeFieldRule<Integer> hourOfAmPmRule() {
         return HourOfAmPmRule.INSTANCE;
     }
 
@@ -670,8 +560,228 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the hour of AM/PM field, never null
      */
-    public static DateTimeFieldRule clockHourOfAmPmRule() {
+    public static DateTimeFieldRule<Integer> clockHourOfAmPmRule() {
         return ClockHourOfAmPmRule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Merges the set of fields known by this chronology.
+     *
+     * @param merger  the merger to use, not null
+     */
+    void merge(CalendricalMerger merger) {
+        // milli of day
+        Integer modVal = merger.getValue(ISOChronology.milliOfDayRule());
+        if (modVal != null) {
+            merger.storeMerged(LocalTime.rule(), LocalTime.fromNanoOfDay(modVal * 1000000L));
+            merger.removeProcessed(ISOChronology.milliOfDayRule());
+        }
+        
+        // second of day
+        Integer sodVal = merger.getValue(ISOChronology.secondOfDayRule());
+        if (modVal != null) {
+            Integer nosVal = merger.getValue(ISOChronology.nanoOfSecondRule());
+            if (nosVal != null) {
+                merger.storeMerged(LocalTime.rule(), LocalTime.fromSecondOfDay(sodVal, nosVal));
+                merger.removeProcessed(ISOChronology.nanoOfSecondRule());
+            } else {
+                Integer mosVal = merger.getValue(ISOChronology.milliOfSecondRule());
+                if (mosVal != null) {
+                    merger.storeMerged(LocalTime.rule(), LocalTime.fromSecondOfDay(sodVal, mosVal * 1000000));
+                    merger.removeProcessed(ISOChronology.milliOfSecondRule());
+                } else {
+                    merger.storeMerged(LocalTime.rule(), LocalTime.fromSecondOfDay(sodVal));
+                }
+            }
+            merger.removeProcessed(ISOChronology.secondOfDayRule());
+        }
+        
+        // am-hour
+        AmPmOfDay amPm = merger.getValue(ISOChronology.amPmOfDayRule());
+        if (amPm != null) {
+            Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+            if (hapVal != null) {
+                int hourOfDay = amPm.getValue() * 12 + hapVal;
+                merger.storeMerged(ISOChronology.hourOfDayRule(), hourOfDay);
+                merger.removeProcessed(ISOChronology.amPmOfDayRule());
+                merger.removeProcessed(ISOChronology.hourOfAmPmRule());
+            }
+            Integer chapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+            if (chapVal != null) {
+                int hourOfDay = amPm.getValue() * 12 + chapVal;
+                if (hourOfDay == 24) {
+                    merger.addToOverflow(Period.days(1));
+                    hourOfDay = 0;
+                }
+                merger.storeMerged(ISOChronology.hourOfDayRule(), hourOfDay);
+                merger.removeProcessed(ISOChronology.amPmOfDayRule());
+                merger.removeProcessed(ISOChronology.clockHourOfAmPmRule());
+            }
+        }
+        
+        // hour-minute-second-nano
+        Integer hourVal = merger.getValue(ISOChronology.hourOfDayRule());
+        if (hourVal != null) {
+            Integer minuteVal = merger.getValue(ISOChronology.minuteOfHourRule());
+            Integer secondVal = merger.getValue(ISOChronology.secondOfMinuteRule());
+            Integer mosVal = merger.getValue(ISOChronology.milliOfSecondRule());
+            Integer nanoVal = merger.getValue(ISOChronology.nanoOfSecondRule());
+            if (minuteVal != null && secondVal != null && nanoVal != null) {
+                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, secondVal, nanoVal));
+                merger.removeProcessed(ISOChronology.hourOfDayRule());
+                merger.removeProcessed(ISOChronology.minuteOfHourRule());
+                merger.removeProcessed(ISOChronology.secondOfMinuteRule());
+                merger.removeProcessed(ISOChronology.nanoOfSecondRule());
+            } else if (minuteVal != null && secondVal != null && mosVal != null) {
+                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, secondVal, mosVal * 1000000));
+                merger.removeProcessed(ISOChronology.hourOfDayRule());
+                merger.removeProcessed(ISOChronology.minuteOfHourRule());
+                merger.removeProcessed(ISOChronology.secondOfMinuteRule());
+                merger.removeProcessed(ISOChronology.milliOfSecondRule());
+            } else if (minuteVal != null && secondVal != null) {
+                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, secondVal, 0));
+                merger.removeProcessed(ISOChronology.hourOfDayRule());
+                merger.removeProcessed(ISOChronology.minuteOfHourRule());
+                merger.removeProcessed(ISOChronology.secondOfMinuteRule());
+            } else if (minuteVal != null) {
+                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, 0, 0));
+                merger.removeProcessed(ISOChronology.hourOfDayRule());
+                merger.removeProcessed(ISOChronology.minuteOfHourRule());
+            } else {
+                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, 0));
+                merger.removeProcessed(ISOChronology.hourOfDayRule());
+            }
+        }
+        
+        // quarter-of-year and month-of-quarter
+        Integer qoyVal = merger.getValue(ISOChronology.quarterOfYearRule());
+        Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
+        if (qoyVal != null && moqVal != null) {
+            MonthOfYear moy = MonthOfYear.monthOfYear((qoyVal - 1) * 3 + moqVal);
+            merger.storeMerged(ISOChronology.monthOfYearRule(), moy);
+            merger.removeProcessed(ISOChronology.quarterOfYearRule());
+            merger.removeProcessed(ISOChronology.monthOfQuarterRule());
+        }
+        
+        // year
+        Integer yearVal = merger.getValue(ISOChronology.yearRule());
+        if (yearVal != null) {
+            // year-month-day
+            MonthOfYear moy = merger.getValue(ISOChronology.monthOfYearRule());
+            Integer domVal = merger.getValue(ISOChronology.dayOfMonthRule());
+            if (moy != null && domVal != null) {
+                LocalDate date = merger.getContext().resolveDate(yearVal, moy.getValue(), domVal);
+                merger.storeMerged(LocalDate.rule(), date);
+                merger.removeProcessed(ISOChronology.yearRule());
+                merger.removeProcessed(ISOChronology.monthOfYearRule());
+                merger.removeProcessed(ISOChronology.dayOfMonthRule());
+            }
+            // year-day
+            Integer doyVal = merger.getValue(ISOChronology.dayOfYearRule());
+            if (doyVal != null) {
+                merger.storeMerged(LocalDate.rule(), DayOfYear.dayOfYear(doyVal).atYear(yearVal));
+//                merger.storeMergedField(LocalDate.rule(), LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
+                merger.removeProcessed(ISOChronology.yearRule());
+                merger.removeProcessed(ISOChronology.dayOfYearRule());
+            }
+            // year-week-day
+            Integer woyVal = merger.getValue(ISOChronology.weekOfYearRule());
+            DayOfWeek dow = merger.getValue(ISOChronology.dayOfWeekRule());
+            if (woyVal != null && dow != null) {
+                LocalDate date = LocalDate.date(yearVal, 1, 1).plusWeeks(woyVal - 1);
+                date = date.with(DateAdjusters.nextOrCurrent(dow));
+                merger.storeMerged(LocalDate.rule(), date);
+                merger.removeProcessed(ISOChronology.yearRule());
+                merger.removeProcessed(ISOChronology.weekOfYearRule());
+                merger.removeProcessed(ISOChronology.dayOfWeekRule());
+            }
+            // year-month-week-day
+            Integer womVal = merger.getValue(ISOChronology.weekOfMonthRule());
+            if (moy != null && womVal != null && dow != null) {
+                LocalDate date = LocalDate.date(yearVal, 1, 1).plusMonths(moy.getValue() - 1).plusWeeks(womVal - 1);
+                date = date.with(DateAdjusters.nextOrCurrent(dow));
+                merger.storeMerged(LocalDate.rule(), date);
+                merger.removeProcessed(ISOChronology.yearRule());
+                merger.removeProcessed(ISOChronology.monthOfYearRule());
+                merger.removeProcessed(ISOChronology.weekOfMonthRule());
+                merger.removeProcessed(ISOChronology.dayOfWeekRule());
+            }
+        }
+        
+        // weekyear-week-day
+        Integer wbyVal = merger.getValue(ISOChronology.weekBasedYearRule());
+        if (wbyVal != null) {
+            Integer woy = merger.getValue(ISOChronology.weekOfWeekBasedYearRule());
+            DayOfWeek dow = merger.getValue(ISOChronology.dayOfWeekRule());
+            if (woy != null && dow != null) {
+                // TODO: implement
+                merger.removeProcessed(ISOChronology.weekBasedYearRule());
+                merger.removeProcessed(ISOChronology.weekOfWeekBasedYearRule());
+                merger.removeProcessed(ISOChronology.dayOfWeekRule());
+            }
+        }
+        
+        // LocalDateTime
+        LocalDate date = merger.getValue(LocalDate.rule());
+        LocalTime time = merger.getValue(LocalTime.rule());
+        ZoneOffset offset = merger.getValue(ZoneOffset.rule());
+        TimeZone zone = merger.getValue(TimeZone.rule());
+        if (date != null && time != null) {
+            merger.storeMerged(LocalDateTime.rule(), LocalDateTime.dateTime(date, time));
+            merger.removeProcessed(LocalDate.rule());
+            merger.removeProcessed(LocalTime.rule());
+        }
+        
+        // OffsetDate
+        if (date != null && offset != null) {
+            merger.storeMerged(OffsetDate.rule(), OffsetDate.date(date, offset));
+            merger.removeProcessed(LocalDate.rule());
+            merger.removeProcessed(ZoneOffset.rule());
+        }
+        
+        // OffsetTime
+        if (time != null && offset != null) {
+            merger.storeMerged(OffsetTime.rule(), OffsetTime.time(time, offset));
+            merger.removeProcessed(LocalTime.rule());
+            merger.removeProcessed(ZoneOffset.rule());
+        }
+        
+        // OffsetDateTime
+        LocalDateTime ldt = merger.getValue(LocalDateTime.rule());
+        if (ldt != null && offset != null) {
+            merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.dateTime(ldt, offset));
+            merger.removeProcessed(LocalDateTime.rule());
+            merger.removeProcessed(ZoneOffset.rule());
+        } else {
+            OffsetDate od = merger.getValue(OffsetDate.rule());
+            OffsetTime ot = merger.getValue(OffsetTime.rule());
+            if (od != null && ot != null ) {
+                if (od.getOffset().equals(ot.getOffset()) == false) {
+                    if (merger.getContext().isStrict()) {
+                        throw new CalendricalRuleException("Unable to merge OffsetDate and OffsetTime as offsets differ", OffsetTime.rule());
+                    } else {
+                        // TODO test
+                        ot = ot.adjustLocalTime(od.getOffset());
+                    }
+                }
+                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.dateTime(od, ot, od.getOffset()));
+                merger.removeProcessed(OffsetDate.rule());
+                merger.removeProcessed(OffsetTime.rule());
+            }
+        }
+        
+        // ZonedDateTime
+        OffsetDateTime odt = merger.getValue(OffsetDateTime.rule());
+        if (odt != null && zone != null) {
+            if (merger.getContext().isStrict()) {
+                merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.dateTime(odt, zone));
+            } else {
+                merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.fromInstant(odt, zone));
+            }
+            merger.removeProcessed(OffsetDateTime.rule());
+            merger.removeProcessed(TimeZone.rule());
+        }
     }
 
 //    //-----------------------------------------------------------------------
@@ -713,56 +823,78 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class YearRule extends DateTimeFieldRule implements Serializable {
+    static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new YearRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new YearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearRule() {
-            super(ISOChronology.INSTANCE, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR);
+            super(Integer.class, ISOChronology.INSTANCE, "Year", YEARS, null, Year.MIN_YEAR, Year.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
             return (date == null ? null : date.getYear());
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer moyVal = merger.getValueQuiet(ISOChronology.monthOfYearRule());
-            Integer domVal = merger.getValueQuiet(ISOChronology.dayOfMonthRule());
-            if (moyVal != null && domVal != null) {
-                int year = merger.getValue(this);
-                LocalDate date = merger.getContext().resolveDate(year, moyVal, domVal);
-                merger.storeMergedDate(date);
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.monthOfYearRule());
-                merger.markFieldAsProcessed(ISOChronology.dayOfMonthRule());
-            }
-        }
+//        @Override
+//        protected void mergeFields(CalendricalMerger merger) {
+//            MonthOfYear moyVal = merger.getValueQuiet(ISOChronology.monthOfYearRule());
+//            Integer domVal = merger.getValueQuiet(ISOChronology.dayOfMonthRule());
+//            if (moyVal != null && domVal != null) {
+//                int year = merger.getValue(this);
+//                LocalDate date = merger.getContext().resolveDate(year, moyVal.getValue(), domVal);
+//                merger.storeMergedField(LocalDate.rule(), date);
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.monthOfYearRule());
+//                merger.markFieldAsProcessed(ISOChronology.dayOfMonthRule());
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule implements Serializable {
+    static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MonthOfYearRule();
+        static final DateTimeFieldRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(ISOChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12, true);
+            super(MonthOfYear.class, ISOChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12, true);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : date.getMonthOfYear().getValue());
+        protected MonthOfYear deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+            return (date == null ? null : date.getMonthOfYear());
+        }
+        @Override
+        public int convertValueToInt(MonthOfYear value) {
+            return value.getValue();
+        }
+        @Override
+        public MonthOfYear convertIntToValue(int value) {
+            return MonthOfYear.monthOfYear(value);
+        }
+        @Override
+        protected MonthOfYear interpretValue(CalendricalMerger merger, Object value) {
+            if (value instanceof Integer) {
+                int val = (Integer) value;
+                if (val < 1 || val > 12) {
+                    merger.addToOverflow(Period.months(val - 1));  // TODO: MIN_VALUE overflow
+                    val = 1;
+                }
+                return MonthOfYear.monthOfYear(val);
+            }
+            return null;
         }
         @Override
         protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
@@ -804,14 +936,14 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfMonthRule extends DateTimeFieldRule implements Serializable {
+    static final class DayOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfMonthRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new DayOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(ISOChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 31);
+            super(Integer.class, ISOChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 31);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -822,16 +954,16 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.deriveValueQuiet(yearRule());
-            Integer moy = calendrical.deriveValueQuiet(monthOfYearRule());
+            Integer year = calendrical.get(yearRule());
+            MonthOfYear moy = calendrical.get(monthOfYearRule());
             if (year != null && moy != null) {
-                MonthOfYear month = MonthOfYear.monthOfYear(moy);
-                return month.lengthInDays(year);
+                return moy.lengthInDays(year);
             }
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
             return (date == null ? null : date.getDayOfMonth());
         }
     }
@@ -840,14 +972,14 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfYearRule extends DateTimeFieldRule implements Serializable {
+    static final class DayOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfYearRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new DayOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(ISOChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
+            super(Integer.class, ISOChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -858,83 +990,85 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.deriveValueQuiet(yearRule());
+            Integer year = calendrical.get(yearRule());
             if (year != null) {
                 return Year.isoYear(year).lengthInDays();
             }
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
             return (date == null ? null : date.getDayOfYear());
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer year = merger.getValueQuiet(ISOChronology.yearRule());
-            if (year != null) {
-                int doy = merger.getValue(this);
-                if (merger.isStrict() || doy >= 1 && doy <= 365) {  // range is valid for all years
-                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).atYear(year));
-                } else {
-                    merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
-                }
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.yearRule());
-            }
-        }
+//        @Override
+//        protected void mergeFields(CalendricalMerger merger) {
+//            Integer year = merger.getValue(ISOChronology.yearRule());
+//            if (year != null) {
+//                int doy = merger.getValue(this);
+//                if (merger.getContext().isStrict() || doy >= 1 && doy <= 365) {  // range is valid for all years
+//                    merger.storeMergedField(LocalDate.rule(), DayOfYear.dayOfYear(doy).atYear(year));
+//                } else {
+//                    merger.storeMergedField(LocalDate.rule(), LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
+//                }
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.yearRule());
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class WeekBasedYearRule extends DateTimeFieldRule implements Serializable {
+    static final class WeekBasedYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new WeekBasedYearRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new WeekBasedYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekBasedYearRule() {
-            super(ISOChronology.INSTANCE, "WeekBasedYear", WEEKYEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekBasedYear", WEEKYEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
             return (date == null ? null : WeekBasedYear.weekyear(date).getValue());
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            // TODO: implement, move to Weekyear?
-            Integer woy = merger.getValueQuiet(ISOChronology.weekOfWeekBasedYearRule());
-            Integer dow = merger.getValueQuiet(ISOChronology.dayOfWeekRule());
-            if (woy != null && dow != null) {
-                int wyear = merger.getValue(this);
-//                if (merger.isStrict() || woy >= 1 && woy <= 52) {  // range is valid for all years
-//                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
-//                } else {
-//                    merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
-//                }
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.weekOfWeekBasedYearRule());
-                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
-            }
-        }
+//        @Override
+//        protected void mergeDateTime(CalendricalMerger merger) {
+//            // TODO: implement, move to Weekyear?
+//            Integer woy = merger.getValue(ISOChronology.weekOfWeekBasedYearRule());
+//            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+//            if (woy != null && dow != null) {
+////                int wyear = merger.getValue(this);
+////                if (merger.isStrict() || woy >= 1 && woy <= 52) {  // range is valid for all years
+////                    merger.storeMergedDate(DayOfYear.dayOfYear(doy).createDate(Year.isoYear(year)));
+////                } else {
+////                    merger.storeMergedDate(LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
+////                }
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.weekOfWeekBasedYearRule());
+//                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class WeekOfWeekBasedYearRule extends DateTimeFieldRule implements Serializable {
+    static final class WeekOfWeekBasedYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new WeekOfWeekBasedYearRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new WeekOfWeekBasedYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfWeekBasedYearRule() {
-            super(ISOChronology.INSTANCE, "WeekOfWeekBasedYear", WEEKS, WEEKYEARS, 1, 53);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekOfWeekBasedYear", WEEKS, WEEKYEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -949,7 +1083,8 @@ public final class ISOChronology extends Chronology implements Serializable {
 //            return getMaximumValue();
 //        }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
             return (date == null ? null : WeekOfWeekBasedYear.weekOfWeekyear(date).getValue());
         }
     }
@@ -958,21 +1093,42 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule implements Serializable {
+    static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new DayOfWeekRule();
+        static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(ISOChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7, true);
+            super(DayOfWeek.class, ISOChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7, true);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : date.getDayOfWeek().getValue());
+        protected DayOfWeek deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+            return (date == null ? null : date.getDayOfWeek());
+        }
+        @Override
+        public int convertValueToInt(DayOfWeek value) {
+            return value.getValue();
+        }
+        @Override
+        public DayOfWeek convertIntToValue(int value) {
+            return DayOfWeek.dayOfWeek(value);
+        }
+        @Override
+        protected DayOfWeek interpretValue(CalendricalMerger merger, Object value) {
+            if (value instanceof Integer) {
+                int val = (Integer) value;
+                if (val < 1 || val > 7) {
+                    merger.addToOverflow(Period.days(val - 1));  // TODO: MIN_VALUE overflow
+                    val = 1;
+                }
+                return DayOfWeek.dayOfWeek(val);
+            }
+            return null;
         }
         @Override
         protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
@@ -1004,121 +1160,111 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class WeekOfYearRule extends DateTimeFieldRule implements Serializable {
+    static final class WeekOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new WeekOfYearRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new WeekOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfYearRule() {
-            super(ISOChronology.INSTANCE, "WeekOfYear", WEEKS, YEARS, 1, 53);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekOfYear", WEEKS, YEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (date == null ? null : ((date.getDayOfYear() - 1) % 7) + 1);
-        }
-        @Override
-        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer doyVal = dayOfYearRule().getValueQuiet(fieldMap);
+        protected Integer deriveValue(Calendrical calendrical) {
+            Integer doyVal = dayOfYearRule().getValueQuiet(calendrical);
             if (doyVal == null) {
                 return null;
             }
             int doy = doyVal;
             return (doy >= 1 ? ((doy - 1) / 7) + 1 : 0);  // TODO negatives
        }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer year = merger.getValueQuiet(ISOChronology.yearRule());
-            Integer dow = merger.getValueQuiet(ISOChronology.dayOfWeekRule());
-            if (year != null && dow != null) {
-                int woy = merger.getValue(this);
-                LocalDate date = LocalDate.date(year, 1, 1).plusDays((((long) woy) - 1) * 7);
-                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
-                merger.storeMergedDate(date);
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.yearRule());
-                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
-            }
-        }
+//        @Override
+//        protected void mergeDateTime(CalendricalMerger merger) {
+//            Integer year = merger.getValue(ISOChronology.yearRule());
+//            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+//            if (year != null && dow != null) {
+//                int woy = merger.getValue(this);
+//                LocalDate date = LocalDate.date(year, 1, 1).plusDays((((long) woy) - 1) * 7);
+//                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
+//                merger.storeMergedDate(date);
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.yearRule());
+//                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class QuarterOfYearRule extends DateTimeFieldRule implements Serializable {
+    static final class QuarterOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new QuarterOfYearRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new QuarterOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private QuarterOfYearRule() {
-            super(ISOChronology.INSTANCE, "QuarterOfYear", QUARTERS, YEARS, 1, 4);
+            super(Integer.class, ISOChronology.INSTANCE, "QuarterOfYear", QUARTERS, YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return date == null ? null : date.getMonthOfYear().getQuarterOfYear().getValue();
-        }
-        @Override
-        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer moyVal = monthOfYearRule().getValueQuiet(fieldMap);
-            if (moyVal == null) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            MonthOfYear moy = monthOfYearRule().getValueQuiet(calendrical);
+            if (moy == null) {
                 return null;
             }
-            int moy = moyVal;
-            return (moy >= 1 ? ((moy - 1) / 3) + 1 : 0);  // TODO negatives
+            return moy.getQuarterOfYear().getValue();
+//            int moy = moyVal;
+//            return (moy >= 1 ? ((moy - 1) / 3) + 1 : 0);  // TODO negatives???
         }
-        @Override
-        protected void mergeFields(Calendrical.Merger merger) {
-            Integer moqVal = merger.getValueQuiet(ISOChronology.monthOfQuarterRule());
-            if (moqVal != null) {
-                // TODO negatives
-                int qoy = merger.getValue(this);
-                qoy = MathUtils.safeDecrement(qoy);
-                int moq = MathUtils.safeDecrement(moqVal);
-                int moy = MathUtils.safeAdd(MathUtils.safeMultiply(qoy, 3), moq);
-                moy = MathUtils.safeIncrement(moy);
-                merger.storeMergedField(ISOChronology.monthOfYearRule(), moy);
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.monthOfQuarterRule());
-            }
-        }
+//        @Override
+//        protected void mergeFields(CalendricalMerger merger) {
+//            Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
+//            if (moqVal != null) {
+//                // TODO negatives
+//                int qoy = merger.getValue(this);
+//                qoy = MathUtils.safeDecrement(qoy);
+//                int moq = MathUtils.safeDecrement(moqVal);
+//                int moy = MathUtils.safeAdd(MathUtils.safeMultiply(qoy, 3), moq);
+//                moy = MathUtils.safeIncrement(moy);
+//                merger.storeMergedField(ISOChronology.monthOfYearRule(), moy);
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.monthOfQuarterRule());
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class MonthOfQuarterRule extends DateTimeFieldRule implements Serializable {
+    static final class MonthOfQuarterRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MonthOfQuarterRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfQuarterRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfQuarterRule() {
-            super(ISOChronology.INSTANCE, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3);
+            super(Integer.class, ISOChronology.INSTANCE, "MonthOfQuarter", MONTHS, QUARTERS, 1, 3);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return date == null ? null : date.getMonthOfYear().getMonthOfQuarter();
-        }
-        @Override
-        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer moyVal = monthOfYearRule().getValueQuiet(fieldMap);
-            if (moyVal == null) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            MonthOfYear moy = monthOfYearRule().getValueQuiet(calendrical);
+            if (moy == null) {
                 return null;
             }
-            int moy = moyVal;
-            return (moy >= 1 ? ((moy - 1) % 3) + 1 : 3 + (moy % 3));  // TODO negatives
+            return moy.getMonthOfQuarter();
+//            int moy = moy;
+//            return (moy >= 1 ? ((moy - 1) % 3) + 1 : 3 + (moy % 3));  // TODO negatives???
        }
     }
 
@@ -1126,14 +1272,14 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class WeekOfMonthRule extends DateTimeFieldRule implements Serializable {
+    static final class WeekOfMonthRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new WeekOfMonthRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new WeekOfMonthRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfMonthRule() {
-            super(ISOChronology.INSTANCE, "WeekOfMonth", WEEKS, MONTHS, 1, 5);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekOfMonth", WEEKS, MONTHS, 1, 5);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1144,112 +1290,115 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            Integer year = calendrical.deriveValueQuiet(yearRule());
-            if (year != null) {
+            Integer year = calendrical.get(yearRule());
+            if (year != null) {  // TODO: check month
                 return Year.isoYear(year).isLeap() ? 5 : 4;
             }
             return getMaximumValue();
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
             return (date == null ? null : ((date.getDayOfMonth() - 1) % 7) + 1);
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            Integer year = merger.getValueQuiet(ISOChronology.yearRule());
-            Integer moy = merger.getValueQuiet(ISOChronology.monthOfYearRule());
-            Integer dow = merger.getValueQuiet(ISOChronology.dayOfWeekRule());
-            if (year != null && moy != null && dow != null) {
-                int wom = merger.getValue(this);
-                LocalDate date = LocalDate.date(year, 1, 1).plusMonths(moy).plusDays((((long) wom) - 1) * 7);
-                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
-                merger.storeMergedDate(date);
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.yearRule());
-                merger.markFieldAsProcessed(ISOChronology.monthOfYearRule());
-                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
-            }
-        }
+//        @Override
+//        protected void mergeDateTime(CalendricalMerger merger) {
+//            Integer year = merger.getValue(ISOChronology.yearRule());
+//            Integer moy = merger.getValue(ISOChronology.monthOfYearRule());
+//            Integer dow = merger.getValue(ISOChronology.dayOfWeekRule());
+//            if (year != null && moy != null && dow != null) {
+//                int wom = merger.getValue(this);
+//                LocalDate date = LocalDate.date(year, 1, 1).plusMonths(moy).plusDays((((long) wom) - 1) * 7);
+//                date = date.with(DateAdjusters.nextOrCurrent(DayOfWeek.dayOfWeek(dow)));
+//                merger.storeMergedDate(date);
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.yearRule());
+//                merger.markFieldAsProcessed(ISOChronology.monthOfYearRule());
+//                merger.markFieldAsProcessed(ISOChronology.dayOfWeekRule());
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class HourOfDayRule extends DateTimeFieldRule implements Serializable {
+    static final class HourOfDayRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new HourOfDayRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new HourOfDayRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private HourOfDayRule() {
-            super(ISOChronology.INSTANCE, "HourOfDay", HOURS, DAYS, 0, 23);
+            super(Integer.class, ISOChronology.INSTANCE, "HourOfDay", HOURS, DAYS, 0, 23);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : time.getHourOfDay());
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            int hour = merger.getValue(this);
-            Integer minuteObj = merger.getValueQuiet(ISOChronology.minuteOfHourRule());
-            Integer secondObj = merger.getValueQuiet(ISOChronology.secondOfMinuteRule());
-            Integer nanoObj = merger.getValueQuiet(ISOChronology.nanoOfSecondRule());
-            int minute = 0;
-            int second = 0;
-            int nano = 0;
-            if (minuteObj != null && secondObj != null && nanoObj != null) {
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.minuteOfHourRule());
-                merger.markFieldAsProcessed(ISOChronology.secondOfMinuteRule());
-                merger.markFieldAsProcessed(ISOChronology.nanoOfSecondRule());
-                minute = minuteObj;
-                second = secondObj;
-                nano = nanoObj;
-            } else if (minuteObj != null && secondObj != null && nanoObj == null) {
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.minuteOfHourRule());
-                merger.markFieldAsProcessed(ISOChronology.secondOfMinuteRule());
-                minute = minuteObj;
-                second = secondObj;
-            } else if (minuteObj != null && secondObj == null && nanoObj == null) {
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.minuteOfHourRule());
-                minute = minuteObj;
-            } else if (minuteObj == null && secondObj == null && nanoObj == null) {
-                merger.markFieldAsProcessed(this);
-            } else {
-                return;  // no match
-            }
-            if (merger.isStrict()) {
-                merger.storeMergedTime(LocalTime.time(hour, minute, second, nano));
-            } else {
-                merger.storeMergedTime(LocalTime.MIDNIGHT.plusWithOverflow(hour, minute, second, nano));
-            }
-        }
+//        @Override
+//        protected void mergeDateTime(CalendricalMerger merger) {
+//            int hour = merger.getValue(this);
+//            Integer minuteObj = merger.getValue(ISOChronology.minuteOfHourRule());
+//            Integer secondObj = merger.getValue(ISOChronology.secondOfMinuteRule());
+//            Integer nanoObj = merger.getValue(ISOChronology.nanoOfSecondRule());
+//            int minute = 0;
+//            int second = 0;
+//            int nano = 0;
+//            if (minuteObj != null && secondObj != null && nanoObj != null) {
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.minuteOfHourRule());
+//                merger.markFieldAsProcessed(ISOChronology.secondOfMinuteRule());
+//                merger.markFieldAsProcessed(ISOChronology.nanoOfSecondRule());
+//                minute = minuteObj;
+//                second = secondObj;
+//                nano = nanoObj;
+//            } else if (minuteObj != null && secondObj != null && nanoObj == null) {
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.minuteOfHourRule());
+//                merger.markFieldAsProcessed(ISOChronology.secondOfMinuteRule());
+//                minute = minuteObj;
+//                second = secondObj;
+//            } else if (minuteObj != null && secondObj == null && nanoObj == null) {
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.minuteOfHourRule());
+//                minute = minuteObj;
+//            } else if (minuteObj == null && secondObj == null && nanoObj == null) {
+//                merger.markFieldAsProcessed(this);
+//            } else {
+//                return;  // no match
+//            }
+//            if (merger.getContext().isStrict()) {
+//                merger.storeMergedTime(LocalTime.time(hour, minute, second, nano));
+//            } else {
+//                merger.storeMergedTime(LocalTime.MIDNIGHT.plusWithOverflow(hour, minute, second, nano));
+//            }
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class MinuteOfHourRule extends DateTimeFieldRule implements Serializable {
+    static final class MinuteOfHourRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MinuteOfHourRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new MinuteOfHourRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MinuteOfHourRule() {
-            super(ISOChronology.INSTANCE, "MinuteOfHour", MINUTES, HOURS, 0, 59);
+            super(Integer.class, ISOChronology.INSTANCE, "MinuteOfHour", MINUTES, HOURS, 0, 59);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : time.getMinuteOfHour());
         }
     }
@@ -1258,20 +1407,21 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class SecondOfMinuteRule extends DateTimeFieldRule implements Serializable {
+    static final class SecondOfMinuteRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new SecondOfMinuteRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new SecondOfMinuteRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private SecondOfMinuteRule() {
-            super(ISOChronology.INSTANCE, "SecondOfMinute", SECONDS, MINUTES, 0, 59);
+            super(Integer.class, ISOChronology.INSTANCE, "SecondOfMinute", SECONDS, MINUTES, 0, 59);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : time.getSecondOfMinute());
         }
     }
@@ -1280,20 +1430,21 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class NanoOfSecondRule extends DateTimeFieldRule implements Serializable {
+    static final class NanoOfSecondRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new NanoOfSecondRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new NanoOfSecondRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private NanoOfSecondRule() {
-            super(ISOChronology.INSTANCE, "NanoOfSecond", NANOS, SECONDS, 0, 999999999);
+            super(Integer.class, ISOChronology.INSTANCE, "NanoOfSecond", NANOS, SECONDS, 0, 999999999);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : time.getNanoOfSecond());
         }
     }
@@ -1302,141 +1453,161 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class SecondOfDayRule extends DateTimeFieldRule implements Serializable {
+    static final class SecondOfDayRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new SecondOfDayRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new SecondOfDayRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private SecondOfDayRule() {
-            super(ISOChronology.INSTANCE, "SecondOfDay", SECONDS, DAYS, 0, 86399);
+            super(Integer.class, ISOChronology.INSTANCE, "SecondOfDay", SECONDS, DAYS, 0, 86399);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : (int) (time.toSecondOfDay()));
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            int sod = merger.getValue(this);
-            Integer nanoObj = merger.getValueQuiet(ISOChronology.nanoOfSecondRule());
-            int nano = 0;
-            if (nanoObj != null) {
-                nano = nanoObj;
-            }
-            if (merger.isStrict()) {
-                merger.storeMergedTime(LocalTime.fromSecondOfDay(sod, nano));
-            } else {
-                merger.storeMergedTime(LocalTime.MIDNIGHT.plusWithOverflow(0, 0, sod, nano));
-            }
-            merger.markFieldAsProcessed(this);
-        }
+//        @Override
+//        protected void mergeDateTime(CalendricalMerger merger) {
+//            int sod = merger.getValue(this);
+//            Integer nanoObj = merger.getValue(ISOChronology.nanoOfSecondRule());
+//            int nano = 0;
+//            if (nanoObj != null) {
+//                nano = nanoObj;
+//            }
+//            if (merger.getContext().isStrict()) {
+//                merger.storeMergedTime(LocalTime.fromSecondOfDay(sod, nano));
+//            } else {
+//                merger.storeMergedTime(LocalTime.MIDNIGHT.plusWithOverflow(0, 0, sod, nano));
+//            }
+//            merger.markFieldAsProcessed(this);
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class MilliOfDayRule extends DateTimeFieldRule implements Serializable {
+    static final class MilliOfDayRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MilliOfDayRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new MilliOfDayRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MilliOfDayRule() {
-            super(ISOChronology.INSTANCE, "MilliOfDay", MILLIS, DAYS, 0, 86399999);
+            super(Integer.class, ISOChronology.INSTANCE, "MilliOfDay", MILLIS, DAYS, 0, 86399999);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : (int) (time.toNanoOfDay() / 1000000));
         }
-        @Override
-        protected void mergeDateTime(Calendrical.Merger merger) {
-            long mod = merger.getValue(this);
-            if (merger.isStrict()) {
-                merger.storeMergedTime(LocalTime.fromNanoOfDay(mod * 1000000L));
-            } else {
-                merger.storeMergedTime(LocalTime.MIDNIGHT.plusNanosWithOverflow(mod * 1000000L));
-            }
-            merger.markFieldAsProcessed(this);
-        }
+//        @Override
+//        protected void mergeDateTime(CalendricalMerger merger) {
+//            long mod = merger.getValue(this);
+//            if (merger.getContext().isStrict()) {
+//                merger.storeMergedTime(LocalTime.fromNanoOfDay(mod * 1000000L));
+//            } else {
+//                merger.storeMergedTime(LocalTime.MIDNIGHT.plusNanosWithOverflow(mod * 1000000L));
+//            }
+//            merger.markFieldAsProcessed(this);
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class MilliOfSecondRule extends DateTimeFieldRule implements Serializable {
+    static final class MilliOfSecondRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new MilliOfSecondRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new MilliOfSecondRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MilliOfSecondRule() {
-            super(ISOChronology.INSTANCE, "MilliOfSecond", MILLIS, SECONDS, 0, 999);
+            super(Integer.class, ISOChronology.INSTANCE, "MilliOfSecond", MILLIS, SECONDS, 0, 999);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
+        protected Integer deriveValue(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
             return (time == null ? null : time.getNanoOfSecond() / 1000000);
         }
-        @Override
-        protected void mergeFields(Calendrical.Merger merger) {
-            int mod = merger.getValue(this);
-            int nod = MathUtils.safeMultiply(mod, 1000000);
-            merger.storeMergedField(ISOChronology.nanoOfSecondRule(), nod);
-            merger.markFieldAsProcessed(this);
-        }
+//        @Override
+//        protected void mergeFields(CalendricalMerger merger) {
+//            int mod = merger.getValue(this);
+//            int nod = MathUtils.safeMultiply(mod, 1000000);
+//            merger.storeMergedField(ISOChronology.nanoOfSecondRule(), nod);
+//            merger.markFieldAsProcessed(this);
+//        }
     }
 
     //-----------------------------------------------------------------------
     /**
      * Rule implementation.
      */
-    private static final class AmPmOfDayRule extends DateTimeFieldRule implements Serializable {
+    static final class AmPmOfDayRule extends DateTimeFieldRule<AmPmOfDay> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new AmPmOfDayRule();
+        static final DateTimeFieldRule<AmPmOfDay> INSTANCE = new AmPmOfDayRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private AmPmOfDayRule() {
-            super(ISOChronology.INSTANCE, "AmPmOfDay", TWELVE_HOURS, DAYS, 0, 1, true);
+            super(AmPmOfDay.class, ISOChronology.INSTANCE, "AmPmOfDay", TWELVE_HOURS, DAYS, 0, 1, true);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.toHourOfDay().getAmPm().getValue());
-        }
-        @Override
-        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(fieldMap);
+        protected AmPmOfDay deriveValue(Calendrical calendrical) {
+            Integer hourVal = hourOfDayRule().getValueQuiet(calendrical);
             if (hourVal == null) {
                 return null;
             }
             int hour = hourVal;
             hour = (hour < 0 ? 1073741832 + hour + 1073741832 : hour);  // add multiple of 24 to make positive
-            return ((hour % 24) / 2);
+            return AmPmOfDay.amPmOfDay((hour % 24) / 12);
         }
         @Override
-        protected void mergeFields(Calendrical.Merger merger) {
-            Integer hapVal = merger.getValueQuiet(ISOChronology.hourOfAmPmRule());
-            if (hapVal != null) {
-                int amPm = merger.getValue(this);
-                int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
-                merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.hourOfAmPmRule());
-            }
+        public int convertValueToInt(AmPmOfDay value) {
+            return value.getValue();
         }
+        @Override
+        public AmPmOfDay convertIntToValue(int value) {
+            return AmPmOfDay.amPmOfDay(value);
+        }
+        @Override
+        protected AmPmOfDay interpretValue(CalendricalMerger merger, Object value) {
+            if (value instanceof Integer) {
+                int val = (Integer) value;
+                if (val < 0 || val > 1) {  // TODO: check this logic
+                    int days = val > 0 ? val / 2 : ((val + 1) / 2) - 1;
+                    merger.addToOverflow(Period.days(days));
+                    val = (val > 0 ? val % 2 : -(val % 2));
+                }
+                return AmPmOfDay.amPmOfDay(val);
+            }
+            return null;
+        }
+//        @Override
+//        protected void mergeFields(CalendricalMerger merger) {
+//            Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
+//            if (hapVal != null) {
+//                AmPmOfDay amPm = merger.getValue(this);
+//                int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm.getValue(), 12), hapVal);
+//                merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.hourOfAmPmRule());
+//            }
+//        }
         @Override
         protected void createTextStores(EnumMap<TextStyle, TextStore> textStores, Locale locale) {
             DateFormatSymbols oldSymbols = new DateFormatSymbols(locale);
@@ -1454,25 +1625,21 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class HourOfAmPmRule extends DateTimeFieldRule implements Serializable {
+    static final class HourOfAmPmRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new HourOfAmPmRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new HourOfAmPmRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private HourOfAmPmRule() {
-            super(ISOChronology.INSTANCE, "HourOfAmPm", HOURS, TWELVE_HOURS, 0, 11);
+            super(Integer.class, ISOChronology.INSTANCE, "HourOfAmPm", HOURS, TWELVE_HOURS, 0, 11);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            return (time == null ? null : time.toHourOfDay().getHourOfAmPm());
-        }
-        @Override
-        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(fieldMap);
+        protected Integer deriveValue(Calendrical calendrical) {
+            Integer hourVal = hourOfDayRule().getValueQuiet(calendrical);
             if (hourVal == null) {
                 return null;
             }
@@ -1486,29 +1653,21 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class ClockHourOfAmPmRule extends DateTimeFieldRule implements Serializable {
+    static final class ClockHourOfAmPmRule extends DateTimeFieldRule<Integer> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule INSTANCE = new ClockHourOfAmPmRule();
+        static final DateTimeFieldRule<Integer> INSTANCE = new ClockHourOfAmPmRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private ClockHourOfAmPmRule() {
-            super(ISOChronology.INSTANCE, "ClockHourOfAmPm", HOURS, TWELVE_HOURS, 1, 12);
+            super(Integer.class, ISOChronology.INSTANCE, "ClockHourOfAmPm", HOURS, TWELVE_HOURS, 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        public Integer getValueQuiet(LocalDate date, LocalTime time) {
-            if (time == null) {
-                return null;
-            }
-            int hour = time.getHourOfDay() % 12;
-            return (hour == 0 ? 12 : hour);
-        }
-        @Override
-        protected Integer deriveValue(Calendrical.FieldMap fieldMap) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(fieldMap);
+        protected Integer deriveValue(Calendrical calendrical) {
+            Integer hourVal = hourOfDayRule().getValueQuiet(calendrical);
             if (hourVal == null) {
                 return null;
             }
@@ -1516,17 +1675,17 @@ public final class ISOChronology extends Chronology implements Serializable {
             hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
             return (int) (hour == 0 ? 12 : hour);
         }
-        @Override
-        protected void mergeFields(Calendrical.Merger merger) {
-            Integer apVal = merger.getValueQuiet(ISOChronology.amPmOfDayRule());
-            if (apVal != null) {
-                int hour = merger.getValue(this);
-                int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(apVal, 12), hour);
-                merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
-                merger.markFieldAsProcessed(this);
-                merger.markFieldAsProcessed(ISOChronology.amPmOfDayRule());
-            }
-        }
+//        @Override
+//        protected void mergeFields(CalendricalMerger merger) {
+//            AmPmOfDay amPm = merger.getValue(ISOChronology.amPmOfDayRule());
+//            if (amPm != null) {
+//                int hour = merger.getValue(this);
+//                int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm.getValue(), 12), hour);
+//                merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
+//                merger.markFieldAsProcessed(this);
+//                merger.markFieldAsProcessed(ISOChronology.amPmOfDayRule());
+//            }
+//        }
     }
 
 }

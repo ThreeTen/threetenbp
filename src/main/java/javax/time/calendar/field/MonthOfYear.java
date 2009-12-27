@@ -34,10 +34,9 @@ package javax.time.calendar.field;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -46,6 +45,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -63,7 +63,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Stephen Colebourne
  */
 public enum MonthOfYear
-        implements CalendricalProvider, DateAdjuster, DateMatcher {
+        implements Calendrical, DateAdjuster, DateMatcher {
 
     /**
      * The singleton instance for the month of January.
@@ -129,7 +129,7 @@ public enum MonthOfYear
      *
      * @return the month of year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<MonthOfYear> rule() {
         return ISOChronology.monthOfYearRule();
     }
 
@@ -176,16 +176,17 @@ public enum MonthOfYear
     }
 
     /**
-     * Obtains an instance of <code>MonthOfYear</code> from a date provider.
+     * Obtains an instance of <code>MonthOfYear</code> from a calendrical.
      * <p>
      * This can be used extract a month of year object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * of Calendrical, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the MonthOfYear singleton, never null
+     * @throws UnsupportedRuleException if the month of year cannot be obtained
      */
-    public static MonthOfYear monthOfYear(DateProvider dateProvider) {
-        return LocalDate.date(dateProvider).getMonthOfYear();
+    public static MonthOfYear monthOfYear(Calendrical calendrical) {
+        return rule().getValue(calendrical);
     }
 
     //-----------------------------------------------------------------------
@@ -196,6 +197,21 @@ public enum MonthOfYear
      */
     private MonthOfYear(int monthOfYear) {
         this.monthOfYear = monthOfYear;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -490,27 +506,6 @@ public enum MonthOfYear
      */
     public MonthDay atDay(int dayOfMonth) {
         return MonthDay.monthDay(this, dayOfMonth);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * A string describing the month of year object.
-     *
-     * @return a string describing this object
-     */
-    @Override
-    public String toString() {
-        return "MonthOfYear=" + name();
     }
 
 }

@@ -36,10 +36,9 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -48,7 +47,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.YearMonth;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -74,7 +72,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class Year
-        implements CalendricalProvider, Comparable<Year>, Serializable, DateAdjuster, DateMatcher {
+        implements Calendrical, Comparable<Year>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system.
@@ -104,7 +102,7 @@ public final class Year
      *
      * @return the year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.yearRule();
     }
 
@@ -128,17 +126,30 @@ public final class Year
         return new Year(isoYear);
     }
 
+//    /**
+//     * Obtains an instance of <code>Year</code> from a date provider.
+//     * <p>
+//     * This can be used extract a year object directly from any implementation
+//     * of DateProvider, including those in other calendar systems.
+//     *
+//     * @param dateProvider  the date provider to use, not null
+//     * @return a Year object, never null
+//     */
+//    public static Year year(DateProvider dateProvider) {
+//        return LocalDate.date(dateProvider).toYear();
+//    }
+
     /**
-     * Obtains an instance of <code>Year</code> from a date provider.
+     * Obtains an instance of <code>Year</code> from a Calendrical.
      * <p>
      * This can be used extract a year object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * of Calendrical, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param calendrical  the calendrical to use, not null
      * @return a Year object, never null
      */
-    public static Year year(DateProvider dateProvider) {
-        return LocalDate.date(dateProvider).toYear();
+    public static Year year(Calendrical calendrical) {
+        return Year.isoYear(rule().getValue(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -163,30 +174,17 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this <code>Year</code> can
-     * be queried using the specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
      *
-     * @param field  the field to query, not null
-     * @return true if the field is supported
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule field) {
-        return toCalendrical().isDerivable(field);
-    }
-
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param field  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if the field is not supported
-     */
-    public int get(DateTimeFieldRule field) {
-        return toCalendrical().deriveValue(field);
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, year, this);
     }
 
     //-----------------------------------------------------------------------
@@ -540,16 +538,6 @@ public final class Year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
         return LocalDate.date(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

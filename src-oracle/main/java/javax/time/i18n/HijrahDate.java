@@ -19,13 +19,13 @@ import java.util.zip.ZipFile;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalMerger;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 
 /**
  * A date in the Hijrah calendar system.
@@ -37,14 +37,14 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  * The Hijrah calendar has a different total of days in a year than
  * Gregorian calendar, and a month is based on the period of a complete
  * revolution of the moon around the earth (as between successive new moons).
- * The calendar cycles becomes longer and unstable, and sometiomes a manual
- * adjustement (for entering deviation) is necessary for correctness
+ * The calendar cycles becomes longer and unstable, and sometimes a manual
+ * adjustment (for entering deviation) is necessary for correctness
  * because of the complex algorithm.
  * <p>
  * HijrahDate supports the manual adjustment feature by providing a configuration
  * file. The configuration file contains the adjustment (deviation) data with following format.
  * <pre>
- *   StartYear/StartMonth(0-based)-EndYear/EndMonth(0-based):Diviation day (1, 2, -1, or -2)
+ *   StartYear/StartMonth(0-based)-EndYear/EndMonth(0-based):Deviation day (1, 2, -1, or -2)
  *   Line separator or ";" is used for the separator of each deviation data.
  *
  *   Here is the example.
@@ -69,22 +69,22 @@ import javax.time.calendar.UnsupportedCalendarFieldException;
  * </pre>
  * <p>
  * Instances of this class may be created from any other object that implements
- * {@link DateProvider} including {@link LocalDate}. Simlarly, instances of
+ * {@link DateProvider} including {@link LocalDate}. Similarly, instances of
  * this class may be passed into the factory method of any other implementation
  * of <code>DateProvider</code>.
  * <p>
  * HijrahDate is thread-safe and immutable.
  *
  * @author Ryoji Suzuki
+ * @author Stephen Colebourne
  */
-public final class HijrahDate implements DateProvider, CalendricalProvider,
-        Comparable<HijrahDate>, Serializable {
+public final class HijrahDate
+        implements DateProvider, Calendrical, Comparable<HijrahDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
      */
     private static final long serialVersionUID = 4427481252775308020L;
-
     /**
      * The minimum valid year of era.
      * This is currently set to 1 but may be changed to increase the valid range
@@ -97,26 +97,22 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
      * in a future version of the specification.
      */
     public static final int MAX_YEAR_OF_ERA = 9999;
-
     /**
-     * 0-based, for number of day of year in the begining of month in normal
+     * 0-based, for number of day of year in the beginning of month in normal
      * year.
      */
     private static final int NUM_DAYS[] =
         {0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325};
-
     /**
-     * 0-based, for number of day of year in the begining of month in leap year.
+     * 0-based, for number of day of year in the beginning of month in leap year.
      */
     private static final int LEAP_NUM_DAYS[] =
         {0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325};
-
     /**
      * 0-based, for day of month in normal year.
      */
     private static final int MONTH_LENGTH[] =
         {30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29};
-  
     /**
      * 0-based, for day of month in leap year.
      */
@@ -165,7 +161,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         };
 
     /**
-     * Maximumn values.
+     * Maximum values.
      */
     private static final int MAX_VALUES[] =
         {
@@ -179,19 +175,19 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         };
   
    /**
-     * position of day of month. This value is used to get the min/max value
+     * Position of day of month. This value is used to get the min/max value
      * from an array.
      */
     private static final int POSITION_DAY_OF_MONTH = 5;
 
     /**
-     * position of day of year. This value is used to get the min/max value from
+     * Position of day of year. This value is used to get the min/max value from
      * an array.
      */
     private static final int POSITION_DAY_OF_YEAR = 6;
 
     /**
-     * zero-based start date of cycle year.
+     * Zero-based start date of cycle year.
      */
     private static final int CYCLEYEAR_START_DATE[] =
         {
@@ -228,22 +224,22 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         };
   
     /**
-     * file separator.
+     * File separator.
      */
     private static final char FILE_SEP = File.separatorChar;
 
     /**
-     * path separator.
+     * Path separator.
      */
     private static final String PATH_SEP = File.pathSeparator;
 
     /**
-     * default config file name.
+     * Default config file name.
      */
     private static final String DEFAULT_CONFIG_FILENAME = "hijrah_deviation.cfg";
 
     /**
-     * default path to the config file.
+     * Default path to the config file.
      */
     private static final String DEFAULT_CONFIG_PATH = "javax" + FILE_SEP
             + "time" + FILE_SEP + "i18n";
@@ -275,7 +271,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     private static final Long[] ADJUSTED_CYCLES;
 
     /**
-     * Holidng the adjusted min values.
+     * Holding the adjusted min values.
      */
     private static final Integer[] ADJUSTED_MIN_VALUES;
 
@@ -412,7 +408,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
 
     /**
      * Gregorian days for this object. Holding number of days since 1970/01/01.
-     * The number of days are calucuated with pure Gregorian calendar
+     * The number of days are calculated with pure Gregorian calendar
      * based.
      */
     private final long gregorianEpochDays;
@@ -452,9 +448,9 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
      */
     public static HijrahDate hijrahDate(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "HijrahEra must not be null");
-        HijrahChronology.INSTANCE.yearOfEra().checkValue(yearOfEra);
-        HijrahChronology.INSTANCE.monthOfYear().checkValue(monthOfYear);
-        HijrahChronology.INSTANCE.dayOfMonth().checkValue(dayOfMonth);
+        HijrahChronology.yearOfEraRule().checkValue(yearOfEra);
+        HijrahChronology.monthOfYearRule().checkValue(monthOfYear);
+        HijrahChronology.dayOfMonthRule().checkValue(dayOfMonth);
         long gregorianDays = getGregorianEpochDays(era.getValue(), yearOfEra, monthOfYear, dayOfMonth);
         return new HijrahDate(gregorianDays);
     }
@@ -479,13 +475,13 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     private HijrahDate(long gregorianDay) {
         int[] dateInfo = getHijrahDateInfo(gregorianDay);
         
-        HijrahChronology.INSTANCE.era().checkValue(dateInfo[0]);
-        HijrahChronology.INSTANCE.yearOfEra().checkValue(dateInfo[1]);
-        HijrahChronology.INSTANCE.monthOfYear().checkValue(dateInfo[2]);
-        HijrahChronology.INSTANCE.dayOfMonth().checkValue(dateInfo[3]);
-        HijrahChronology.INSTANCE.dayOfYear().checkValue(dateInfo[4]);
-        HijrahChronology.INSTANCE.dayOfWeek().checkValue(dateInfo[5]);
-
+        HijrahChronology.eraRule().checkValue(dateInfo[0]);
+        HijrahChronology.yearOfEraRule().checkValue(dateInfo[1]);
+        HijrahChronology.monthOfYearRule().checkValue(dateInfo[2]);
+        HijrahChronology.dayOfMonthRule().checkValue(dateInfo[3]);
+        HijrahChronology.dayOfYearRule().checkValue(dateInfo[4]);
+        HijrahChronology.dayOfWeekRule().checkValue(dateInfo[5]);
+        
         this.era = HijrahEra.hijrahEra(dateInfo[0]);
         this.yearOfEra = dateInfo[1];
         this.monthOfYear = dateInfo[2];
@@ -505,6 +501,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         return new HijrahDate(this.gregorianEpochDays);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the chronology that describes the calendar system rules for this
      * date.
@@ -515,33 +512,22 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         return HijrahChronology.INSTANCE;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if the specified calendar field is supported.
+     * Gets the value of the specified calendrical rule.
      * <p>
-     * This method queries whether this date can be queried using the
-     * specified calendar field.
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this date then
+     * <code>null</code> will be returned.
      *
-     * @param fieldRule  the field to query, null returns false
-     * @return true if the field is supported, false otherwise
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
      */
-    public boolean isSupported(DateTimeFieldRule fieldRule) {
-        return fieldRule != null && fieldRule.getValueQuiet(toLocalDate(), null) != null;
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
-    /**
-     * Gets the value of the specified calendar field.
-     * <p>
-     * This method queries the value of the specified calendar field.
-     * If the calendar field is not supported then an exception is thrown.
-     *
-     * @param fieldRule  the field to query, not null
-     * @return the value for the field
-     * @throws UnsupportedCalendarFieldException if no value for the field is found
-     */
-    public int get(DateTimeFieldRule fieldRule) {
-        return fieldRule.getValue(toLocalDate(), null);
-    }
-
+    //-----------------------------------------------------------------------
     /**
      * Gets the era value.
      *
@@ -552,7 +538,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     }
 
     /**
-     * Gets the year value.
+     * Gets the year of era value.
      *
      * @return the year, from 1 to 9999
      */
@@ -605,6 +591,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         return this.isLeapYear;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this HijrahDate with the year value altered.
      * <p>
@@ -658,7 +645,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     public HijrahDate withDayOfMonth(int dayOfMonth) {
         return HijrahDate.hijrahDate(this.era, this.yearOfEra, this.monthOfYear, dayOfMonth);
     }
-    
+
     /**
      * Returns a copy of this HijrahDate with the day of year value altered.
      * <p>
@@ -670,10 +657,11 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
      * @throws InvalidCalendarFieldException if the day of year is invalid for the year
      */
     public HijrahDate withDayOfYear(int dayOfYear) {
-        HijrahChronology.INSTANCE.dayOfYear().checkValue(dayOfYear);
+        HijrahChronology.dayOfYearRule().checkValue(dayOfYear);
         return HijrahDate.hijrahDate(this.era, this.yearOfEra, 1, 1).plusDays(dayOfYear).plusDays(-1);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this HijrahDate with the specified number of years
      * added.
@@ -691,8 +679,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         int newYear = 0;
         try {
             newYear = MathUtils.safeAdd(this.yearOfEra, years);
-            return HijrahDate.hijrahDate(this.era, newYear, this.monthOfYear,
-                    this.dayOfMonth);
+            return HijrahDate.hijrahDate(this.era, newYear, this.monthOfYear, this.dayOfMonth);
         } catch (ArithmeticException ae) {
             throw new CalendricalException("Year "
                     + (((long) this.yearOfEra) + years)
@@ -720,7 +707,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         }
         int newMonth = this.monthOfYear - 1;
         newMonth = newMonth + months;
-        int years = (int) (newMonth / 12);
+        int years = newMonth / 12;
         newMonth = newMonth % 12;
         if (newMonth < 0) {
             newMonth += 12;
@@ -728,21 +715,6 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         }
         int newYear = MathUtils.safeAdd(this.yearOfEra, years);
         return HijrahDate.hijrahDate(this.era, newYear, newMonth + 1, this.dayOfMonth);
-    }
-
-    /**
-     * Returns a copy of this HijrahDate with the specified number of days
-     * added.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to add, positive or negative
-     * @return a new updated HijrahDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the year range is exceeded
-     */
-    public HijrahDate plusDays(long days) {
-        return new HijrahDate(this.gregorianEpochDays
-                + days);
     }
 
     /**
@@ -760,6 +732,21 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     }
 
     /**
+     * Returns a copy of this HijrahDate with the specified number of days
+     * added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to add, positive or negative
+     * @return a new updated HijrahDate instance, never null
+     * @throws IllegalCalendarFieldValueException if the year range is exceeded
+     */
+    public HijrahDate plusDays(long days) {
+        return new HijrahDate(this.gregorianEpochDays + days);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this HijrahDate with the specified period in years
      * subtracted.
      * <p>
@@ -776,8 +763,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         int newYear = 0;
         try {
             newYear = MathUtils.safeSubtract(this.yearOfEra, years);
-            return HijrahDate.hijrahDate(this.era, newYear, this.monthOfYear,
-                    this.dayOfMonth);
+            return HijrahDate.hijrahDate(this.era, newYear, this.monthOfYear, this.dayOfMonth);
         } catch (ArithmeticException ae) {
             throw new CalendricalException("Year "
                     + (((long) this.yearOfEra) + years)
@@ -818,20 +804,6 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     }
 
     /**
-     * Returns a copy of this HijrahDate with the specified number of days
-     * subtracted.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, may be negative
-     * @return a new updated HijrahDate, never null
-     * @throws CalendricalException if the result exceeds the supported date range
-     */
-    public HijrahDate minusDays(long days) {
-        return new HijrahDate(this.gregorianEpochDays - days);
-    }
-
-    /**
      * Returns a copy of this HijrahDate with the specified period in weeks
      * subtracted.
      * <p>
@@ -846,6 +818,21 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     }
 
     /**
+     * Returns a copy of this HijrahDate with the specified number of days
+     * subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param days  the days to subtract, may be negative
+     * @return a new updated HijrahDate, never null
+     * @throws CalendricalException if the result exceeds the supported date range
+     */
+    public HijrahDate minusDays(long days) {
+        return new HijrahDate(this.gregorianEpochDays - days);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Converts this date to an ISO-8601 calendar system <code>LocalDate</code>.
      *
      * @return the equivalent date in the ISO-8601 calendar system, never null
@@ -854,15 +841,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         return LocalDate.fromEpochDays(this.gregorianEpochDays);
     }
 
-    /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(toLocalDate(), null, null, null);
-    }
-
+    //-----------------------------------------------------------------------
     /**
      * Compares this instance to another.
      *
@@ -896,6 +875,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         return this.gregorianEpochDays < otherDate.gregorianEpochDays;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Is this instance equal to that specified.
      *
@@ -917,13 +897,14 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
     /**
      * A hash code for this object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
         return (yearOfEra & 0xFFFFF800) ^ ((yearOfEra << 11) + (monthOfYear << 6) + (dayOfMonth));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Outputs the date as a <code>String</code>, such as '1430-03-05 (Hijrah)'.
      * <p>
@@ -943,6 +924,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
                         " (" + getChronology().getName() + ")").toString();
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns the int array containing the following field from the julian day.
      *
@@ -1321,8 +1303,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
         int cycleNumber = (year - 1) / 30;
         Integer[] cycleYears;
         try {
-            cycleYears = (Integer[]) ADJUSTED_CYCLE_YEARS.get(new Integer(
-                    cycleNumber));
+            cycleYears = ADJUSTED_CYCLE_YEARS.get(cycleNumber);
         } catch (ArrayIndexOutOfBoundsException e) {
             cycleYears = null;
         }
@@ -1675,7 +1656,7 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
      * Read hijrah_deviation.cfg file. The config file contains the deviation data with
      * following format.
      *
-     * StartYear/StartMonth(0-based)-EndYear/EndMonth(0-based):Diviation day (1,
+     * StartYear/StartMonth(0-based)-EndYear/EndMonth(0-based):Deviation day (1,
      * 2, -1, or -2)
      *
      * Line separator or ";" is used for the separator of each deviation data.
@@ -1710,23 +1691,9 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
                 }
             } finally {
                 try {
-                    if (br != null) {
-                        br.close();
-                    }
-                } catch (IOException ex) {
-                }
-                try {
-                    if (isr != null) {
-                        isr.close();
-                    }
-                } catch (IOException ex) {
-                }
-            }
-            try {
-                if (is != null) {
                     is.close();
+                } catch (IOException ex) {
                 }
-            } catch (IOException ex) {
             }
         }
     }
@@ -1938,4 +1905,41 @@ public final class HijrahDate implements DateProvider, CalendricalProvider,
             return null;
         }
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule for <code>HijrahDate</code>.
+     *
+     * @return the rule for the date, never null
+     */
+    public static CalendricalRule<HijrahDate> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<HijrahDate> implements Serializable {
+        private static final CalendricalRule<HijrahDate> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(HijrahDate.class, ISOChronology.INSTANCE, "HijrahDate");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected HijrahDate deriveValue(Calendrical calendrical) {
+            LocalDate ld = calendrical.get(LocalDate.rule());
+            return ld != null ? HijrahDate.hijrahDate(ld) : null;
+        }
+        @Override
+        protected void merge(CalendricalMerger merger) {
+            HijrahDate hd = merger.getValue(this);
+            merger.storeMerged(LocalDate.rule(), hd.toLocalDate());
+            merger.removeProcessed(this);
+        }
+    }
+
 }

@@ -45,7 +45,6 @@ import java.util.StringTokenizer;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjusters;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
@@ -57,6 +56,7 @@ import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
+import javax.time.calendar.format.DateTimeParseContext;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;
 
@@ -444,11 +444,11 @@ public final class TZDBZoneRulesCompiler {
             .optionalStart().appendLiteral(':').appendValue(ISOChronology.secondOfMinuteRule(), 2)
             .toFormatter();
         ParsePosition pp = new ParsePosition(0);
-        Calendrical cal = f.parse(str, pp);
+        DateTimeParseContext cal = f.parse(str, pp);
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        return deduplicate(cal.mergeStrict().toLocalTime());
+        return deduplicate(cal.toCalendricalMerger().merge().get(LocalTime.rule()));
     }
 
     private int parseSecs(String str) {
@@ -462,11 +462,11 @@ public final class TZDBZoneRulesCompiler {
             pos = 1;
         }
         ParsePosition pp = new ParsePosition(pos);
-        Calendrical cal = f.parse(str, pp);
+        DateTimeParseContext cal = f.parse(str, pp);
         if (pp.getErrorIndex() >= 0) {
             throw new IllegalArgumentException(str);
         }
-        LocalTime time = cal.mergeStrict().toLocalTime();
+        LocalTime time = cal.toCalendricalMerger().merge().get(LocalTime.rule());
         int secs = time.getHourOfDay() * 60 * 60 +
                 time.getMinuteOfHour() * 60 + time.getSecondOfMinute();
         if (pos == 1) {

@@ -66,7 +66,7 @@ import javax.time.CalendricalException;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public interface TimeProvider extends CalendricalProvider {
+public interface TimeProvider {
 
     /**
      * Returns an instance of <code>LocalTime</code> initialized from the

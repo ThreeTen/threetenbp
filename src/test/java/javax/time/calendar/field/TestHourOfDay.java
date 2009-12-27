@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,8 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,7 +44,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -65,7 +65,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestHourOfDay {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.hourOfDayRule();
+    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.hourOfDayRule();
     private static final int MAX_LENGTH = 23;
 
     @BeforeMethod
@@ -74,7 +74,7 @@ public class TestHourOfDay {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(HourOfDay.class));
+        assertTrue(Calendrical.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(HourOfDay.class));
@@ -252,16 +252,6 @@ public class TestHourOfDay {
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.hourOfDay(i);
             assertEquals(test.getClockHourOfDay(), (i == 0 ? 24 : i));
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = 0; i <= MAX_LENGTH; i++) {
-            HourOfDay test = HourOfDay.hourOfDay(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
         }
     }
 

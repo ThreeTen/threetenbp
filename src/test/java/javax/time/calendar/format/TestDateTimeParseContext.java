@@ -31,18 +31,19 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Locale;
 import java.util.Map;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.TimeZone;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.ZoneOffset;
+import javax.time.calendar.field.MonthOfYear;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -53,23 +54,24 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeParseContext {
 
-    private static final DateTimeFieldRule RULE_YEAR = ISOChronology.yearRule();
-    private static final DateTimeFieldRule RULE_MOY = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule RULE_DOM = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule<Integer> RULE_YEAR = ISOChronology.yearRule();
+    private static final DateTimeFieldRule<MonthOfYear> RULE_MOY = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule<Integer> RULE_DOM = ISOChronology.dayOfMonthRule();
 
-//    @BeforeMethod
-//    public void setUp() {
-//    }
+    private DateTimeFormatSymbols symbols;
+    private DateTimeParseContext context;
+
+    @BeforeMethod
+    public void setUp() {
+        symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
+        context = new DateTimeParseContext(symbols);
+    }
 
     //-----------------------------------------------------------------------
     public void test_constructor() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.getSymbols(), symbols);
-        assertEquals(test.getLocale(), Locale.GERMANY);
-        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
-        assertEquals(test.getOffset(), null);
-        assertEquals(test.getZone(), null);
+        assertEquals(context.getSymbols(), symbols);
+        assertEquals(context.getLocale(), Locale.GERMANY);
+        assertEquals(context.getParsedRules().size(), 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -79,168 +81,118 @@ public class TestDateTimeParseContext {
 
     //-----------------------------------------------------------------------
     public void test_caseSensitive() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.isCaseSensitive(), true);
+        assertEquals(context.isCaseSensitive(), true);
         
-        test.setCaseSensitive(false);
+        context.setCaseSensitive(false);
         
-        assertEquals(test.isCaseSensitive(), false);
+        assertEquals(context.isCaseSensitive(), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_strict() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.isStrict(), true);
+        assertEquals(context.isStrict(), true);
         
-        test.setStrict(false);
+        context.setStrict(false);
         
-        assertEquals(test.isStrict(), false);
+        assertEquals(context.isStrict(), false);
     }
 
     //-----------------------------------------------------------------------
     public void test_fields_oneField() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
+        context.setParsed(RULE_YEAR, 2008);
         
-        test.setFieldValue(RULE_YEAR, 2008);
-        
-        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
-        assertEquals(test.getOffset(), null);
-        assertEquals(test.getZone(), null);
-        Map<DateTimeFieldRule, Integer> map = test.toCalendrical().getFieldMap().toFieldValueMap();
+        assertEquals(context.getParsedRules().size(), 1);
+        assertEquals(context.getParsed(RULE_YEAR), 2008);
+        Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 1);
         assertEquals(map.get(RULE_YEAR), Integer.valueOf(2008));
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
-        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
+        assertEquals(context.getParsedRules().size(), 1);
     }
 
     public void test_fields_twoFields() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
+        context.setParsed(RULE_YEAR, 2008);
+        context.setParsed(RULE_MOY, 6);
         
-        test.setFieldValue(RULE_YEAR, 2008);
-        test.setFieldValue(RULE_MOY, 6);
-        
-        assertEquals(test.toCalendrical().getFieldMap().size(), 2);
-        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
-        assertEquals(test.getFieldValue(RULE_MOY), 6);
-        assertEquals(test.getOffset(), null);
-        assertEquals(test.getZone(), null);
-        Map<DateTimeFieldRule, Integer> map = test.toCalendrical().getFieldMap().toFieldValueMap();
+        assertEquals(context.getParsedRules().size(), 2);
+        assertEquals(context.getParsed(RULE_YEAR), 2008);
+        assertEquals(context.getParsed(RULE_MOY), 6);
+        Map<CalendricalRule<?>, Object> map = context.toCalendricalMerger().getInputMap();
         assertEquals(map.size(), 2);
         assertEquals(map.get(RULE_YEAR), Integer.valueOf(2008));
         assertEquals(map.get(RULE_MOY), Integer.valueOf(6));
         //  test cloned and modifiable
         map.clear();
         assertEquals(map.size(), 0);
-        assertEquals(test.getFieldValue(RULE_YEAR), 2008);
-        assertEquals(test.getFieldValue(RULE_MOY), 6);
-    }
-
-    public void test_fields_oneField_derive() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
-        
-        test.setFieldValue(RULE_MOY, 6);
-        
-        assertEquals(test.toCalendrical().getFieldMap().size(), 1);
-        assertEquals(test.getFieldValue(RULE_MOY), 6);
-        
-        assertEquals(test.deriveFieldValue(ISOChronology.monthOfQuarterRule()), 3);
+        assertEquals(context.getParsedRules().size(), 2);
+        assertEquals(context.getParsed(RULE_YEAR), 2008);
+        assertEquals(context.getParsed(RULE_MOY), 6);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_fields_getNull() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        test.getFieldValue(null);
+        context.getParsed(null);
     }
 
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void test_fields_get_notPresent() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        try {
-            test.getFieldValue(RULE_DOM);
-        } catch (UnsupportedCalendarFieldException ex) {
-            assertEquals(ex.getFieldRule(), RULE_DOM);
-            throw ex;
-        }
+        assertEquals(context.getParsed(RULE_DOM), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_fields_setNull() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        test.setFieldValue(null, 2008);
+        context.setParsed(null, 2008);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_getParsedRules_set() throws Exception {
+        context.setParsed(RULE_DOM, 2);
+        
+        assertEquals(context.getParsedRules().size(), 1);
+        assertEquals(context.getParsedRules().iterator().next(), RULE_DOM);
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_getParsedRules_noAdd() throws Exception {
+        context.getParsedRules().add(RULE_MOY);
+    }
+
+    public void test_getParsedRules_remove() throws Exception {
+        context.setParsed(RULE_DOM, 2);
+        context.getParsedRules().remove(RULE_DOM);
     }
 
     //-----------------------------------------------------------------------
     public void test_offset() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.getOffset(), null);
+        assertEquals(context.getParsed(ZoneOffset.rule()), null);
         
-        test.setOffset(ZoneOffset.zoneOffset(18));
+        context.setParsed(ZoneOffset.rule(), ZoneOffset.zoneOffset(18));
         
-        assertEquals(test.getOffset(), ZoneOffset.zoneOffset(18));
-        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
-        assertEquals(test.getZone(), null);
+        assertEquals(context.getParsed(ZoneOffset.rule()), ZoneOffset.zoneOffset(18));
     }
 
     //-----------------------------------------------------------------------
     public void test_zone() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        assertEquals(test.getZone(), null);
+        assertEquals(context.getParsed(TimeZone.rule()), null);
         
-        test.setZone(TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
+        context.setParsed(TimeZone.rule(), TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
         
-        assertEquals(test.getZone(), TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
-        assertEquals(test.toCalendrical().getFieldMap().size(), 0);
-        assertEquals(test.getOffset(), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        test.setFieldValue(RULE_YEAR, 2008);
-        test.setFieldValue(RULE_MOY, 6);
-        test.setOffset(ZoneOffset.zoneOffset(16));
-        test.setZone(TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
-        
-        Calendrical cal = test.toCalendrical();
-        
-        assertEquals(cal.getFieldMap(), test.toCalendrical().getFieldMap());
-        assertEquals(cal.getOffset(), test.getOffset());
-        assertEquals(cal.getZone(), test.getZone());
+        assertEquals(context.getParsed(TimeZone.rule()), TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        test.setFieldValue(RULE_YEAR, 2008);
-        test.setFieldValue(RULE_MOY, 6);
-        test.setOffset(ZoneOffset.zoneOffset(16));
-        test.setZone(TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
+        context.setParsed(RULE_YEAR, 2008);
+        context.setParsed(RULE_MOY, 6);
+        context.setParsed(ZoneOffset.rule(), ZoneOffset.zoneOffset(16));
+        context.setParsed(TimeZone.rule(),TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
         
-        assertEquals(test.toString(), "{ISO.Year=2008, ISO.MonthOfYear=6} +16:00 UTC+18:00");
+        assertEquals(context.toString(), "{ISO.Year=2008, ISO.MonthOfYear=6, ZoneOffset=+16:00, TimeZone=UTC+18:00}");
     }
 
     public void test_toString_empty() throws Exception {
-        DateTimeFormatSymbols symbols = DateTimeFormatSymbols.getInstance(Locale.GERMANY);
-        DateTimeParseContext test = new DateTimeParseContext(symbols);
-        
-        assertEquals(test.toString(), "");
+        assertEquals(context.toString(), "{}");
     }
 
 }

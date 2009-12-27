@@ -34,14 +34,14 @@ package javax.time.calendar.field;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.TimeMatcher;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -50,8 +50,8 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * AmPmOfDay is an enum that represents the half-day concepts of AM and PM.
  * AM is defined as from 00:00 to 11:59, while PM is defined from 12:00 to 23:59.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a AmPmOfDay
- * instance. Use getValue() instead.</b>
+ * <b>Do not use ordinal() to obtain the numeric representation of a AmPmOfDay instance.
+ * Use getValue() instead.</b>
  * <p>
  * AmPmOfDay is immutable and thread-safe.
  *
@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Stephen Colebourne
  */
 public enum AmPmOfDay
-        implements CalendricalProvider, TimeAdjuster, TimeMatcher {
+        implements Calendrical, TimeAdjuster, TimeMatcher {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -85,7 +85,7 @@ public enum AmPmOfDay
      *
      * @return the AM/PM rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<AmPmOfDay> rule() {
         return ISOChronology.amPmOfDayRule();
     }
 
@@ -110,16 +110,17 @@ public enum AmPmOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>AmPmOfDay</code> from a time provider.
+     * Obtains an instance of <code>AmPmOfDay</code> from a calendrical.
      * <p>
      * This can be used extract the AM/PM value directly from any implementation
-     * of TimeProvider, including those in other calendar systems.
+     * of Calendrical, including those in other calendar systems.
      *
-     * @param timeProvider  the time provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the AmPmOfDay enum instance, never null
+     * @throws UnsupportedRuleException if the AM/PM cannot be obtained
      */
-    public static AmPmOfDay amPmOfDay(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).toHourOfDay().getAmPm();
+    public static AmPmOfDay amPmOfDay(Calendrical calendrical) {
+        return rule().getValue(calendrical);
     }
 
     //-----------------------------------------------------------------------
@@ -134,7 +135,22 @@ public enum AmPmOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the AM/PM value.
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the AM/PM numeric value.
      *
      * @return the AM/PM value, from 0 (AM) to 1 (PM)
      */
@@ -219,27 +235,6 @@ public enum AmPmOfDay
      */
     public boolean matchesTime(LocalTime time) {
         return this == time.toHourOfDay().getAmPm();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * A string describing the AM/PM value.
-     *
-     * @return a string describing this object
-     */
-    @Override
-    public String toString() {
-        return "AmPmOfDay=" + name();
     }
 
 }

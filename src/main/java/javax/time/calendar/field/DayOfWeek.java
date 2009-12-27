@@ -34,13 +34,13 @@ package javax.time.calendar.field;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -57,7 +57,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek implements CalendricalProvider, DateMatcher {
+public enum DayOfWeek implements Calendrical, DateMatcher {
 
     /**
      * The singleton instance for the day of week of Monday.
@@ -103,7 +103,7 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      *
      * @return the day of week rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<DayOfWeek> rule() {
         return ISOChronology.dayOfWeekRule();
     }
 
@@ -143,22 +143,34 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
     }
 
     /**
-     * Obtains an instance of <code>DayOfWeek</code> from a date provider.
-     * <p>
-     * This can be used extract a day of week object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * Obtains an instance of <code>DayOfWeek</code> from a date.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param date  the date provider to use, not null
      * @return the DayOfWeek singleton, never null
      */
-    public static DayOfWeek dayOfWeek(DateProvider dateProvider) {
-        long mjd = LocalDate.date(dateProvider).toModifiedJulianDays();
+    public static DayOfWeek dayOfWeek(LocalDate date) {
+        // TODO: should this code be elsewhere?
+        long mjd = date.toModifiedJulianDays();
         if (mjd < 0) {
             long weeks = mjd / 7;
             mjd += (-weeks + 1) * 7;
         }
         int dow0 = (int) ((mjd + 2) % 7);
         return dayOfWeek(dow0 + 1);
+    }
+
+    /**
+     * Obtains an instance of <code>DayOfWeek</code> from a calendrical.
+     * <p>
+     * This can be used extract a day of week object directly from any implementation
+     * of Calendrical, including those in other calendar systems.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the DayOfWeek singleton, never null
+     * @throws UnsupportedRuleException if the day of week cannot be obtained
+     */
+    public static DayOfWeek dayOfWeek(Calendrical calendrical) {
+        return rule().getValue(calendrical);
     }
 
     /**
@@ -192,6 +204,21 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      */
     private DayOfWeek(int dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -297,27 +324,6 @@ public enum DayOfWeek implements CalendricalProvider, DateMatcher {
      */
     public boolean matchesDate(LocalDate date) {
         return date.getDayOfWeek() == this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * A string describing the day of week object.
-     *
-     * @return a string describing this object
-     */
-    @Override
-    public String toString() {
-        return "DayOfWeek=" + name();
     }
 
 }

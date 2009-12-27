@@ -49,9 +49,9 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
  * This class does not store or represent a year, time or time zone.
  * Thus, for example, the value "2nd October" can be stored in a MonthDay.
  * <p>
- * A MonthDay does not posses a year, thus the 29th of February is considered valid.
+ * A MonthDay does not possess a year, thus the 29th of February is considered valid.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * <p>
  * MonthDay is immutable and thread-safe.
  *
@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements CalendricalProvider, Comparable<MonthDay>, Serializable, DateAdjuster, DateMatcher {
+        implements Calendrical, Comparable<MonthDay>, Serializable, DateAdjuster, DateMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -174,13 +174,12 @@ public final class MonthDay
      *
      * @param calendricalProvider  the calendrical provider to use, not null
      * @return the month-day, never null
-     * @throws UnsupportedCalendarFieldException if either field cannot be found
+     * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
-    public static MonthDay monthDay(CalendricalProvider calendricalProvider) {
-        Calendrical calendrical = calendricalProvider.toCalendrical();
-        int month = calendrical.deriveValue(ISOChronology.monthOfYearRule());
-        int dom = calendrical.deriveValue(ISOChronology.dayOfMonthRule());
+    public static MonthDay monthDay(Calendrical calendrical) {
+        MonthOfYear month = ISOChronology.monthOfYearRule().getValue(calendrical);
+        Integer dom = ISOChronology.dayOfMonthRule().getValue(calendrical);
         return monthDay(month, dom);
     }
 
@@ -202,8 +201,7 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month
      */
     public static MonthDay parse(String text) {
-        ISOChronology.checkNotNull(text, "Text to parse must not be null");
-        return monthDay(PARSER.parse(text));
+        return PARSER.parse(text, rule());
     }
 
     //-----------------------------------------------------------------------
@@ -235,13 +233,34 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the chronology that describes the calendar system rules for
-     * this month-day.
+     * Gets the chronology that this month-day uses, which is the ISO calendar system.
      *
      * @return the ISO chronology, never null
      */
     public ISOChronology getChronology() {
         return ISOChronology.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this month-day then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        ISOChronology.checkNotNull(rule, "CalendricalRule must not be null");
+        if (rule.equals(ISOChronology.monthOfYearRule())) {
+            return rule.reify(month);
+        }
+        if (rule.equals(ISOChronology.dayOfMonthRule())) {
+            return rule.reify(day);
+        }
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------
@@ -511,18 +530,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Converts this date to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(
-                ISOChronology.monthOfYearRule(), month.getValue(),
-                ISOChronology.dayOfMonthRule(), day);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this month-day to another month-day.
      *
      * @param other  the other month-day to compare to, not null
@@ -604,6 +611,37 @@ public final class MonthDay
             .append(monthValue < 10 ? "0" : "").append(monthValue)
             .append(dayValue < 10 ? "-0" : "-").append(dayValue)
             .toString();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for the month-day.
+     *
+     * @return the field rule for the month-day, never null
+     */
+    public static CalendricalRule<MonthDay> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<MonthDay> implements Serializable {
+        private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected MonthDay deriveValue(Calendrical calendrical) {
+            MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
+            Integer dom = calendrical.get(ISOChronology.dayOfMonthRule());
+            return moy != null && dom != null ? MonthDay.monthDay(moy, dom) : null;
+        }
     }
 
 }

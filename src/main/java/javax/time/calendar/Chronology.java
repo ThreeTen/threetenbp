@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -71,107 +71,6 @@ public abstract class Chronology {
      * @return the name of the chronology, never null
      */
     public abstract String getName();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the year field in the chronology.
-     * <p>
-     * The meaning of a 'year' will vary by chronology and will not necessarily
-     * align with the years of the ISO chronology.
-     *
-     * @return the rule for the year field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule year();
-
-    /**
-     * Gets the rule for the month of year field.
-     * <p>
-     * The meaning of a 'month of year' will vary by chronology and will not
-     * necessarily align with the months of the ISO chronology.
-     *
-     * @return the rule for the month of year field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule monthOfYear();
-
-    /**
-     * Gets the rule for the day of month field.
-     * <p>
-     * The meaning of a 'month of year' will vary by chronology and will not
-     * necessarily align with the days of the ISO chronology.
-     *
-     * @return the rule for the day of month field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule dayOfMonth();
-
-    /**
-     * Gets the rule for the day of year field.
-     * <p>
-     * The meaning of a 'day of year' will vary by chronology and will not
-     * necessarily align with the days of the ISO chronology.
-     *
-     * @return the rule for the day of year field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule dayOfYear();
-
-    /**
-     * Gets the rule for the day of week field.
-     * <p>
-     * The meaning of a 'day of week' will vary by chronology and will not
-     * necessarily align with the days of the ISO chronology.
-     *
-     * @return the rule for the day of week field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule dayOfWeek();
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule for the hour of day field.
-     * <p>
-     * The meaning of a 'hour of day' will vary by chronology and will not
-     * necessarily align with the hours of the ISO chronology.
-     *
-     * @return the rule for the hour of day field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule hourOfDay();
-
-    /**
-     * Gets the rule for the minute of hour field.
-     * <p>
-     * The meaning of a 'minute of hour' will vary by chronology and will not
-     * necessarily align with the minutes of the ISO chronology.
-     *
-     * @return the rule for the minute of hour field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule minuteOfHour();
-
-    /**
-     * Gets the rule for the second of minute field.
-     * <p>
-     * The meaning of a 'second of minute' will vary by chronology and will not
-     * necessarily align with the seconds of the ISO chronology.
-     *
-     * @return the rule for the second of minute field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule secondOfMinute();
-
-    /**
-     * Gets the rule for the nano of second field.
-     * <p>
-     * The meaning of a 'nano of second' will vary by chronology and will not
-     * necessarily align with the nanos of the ISO chronology.
-     *
-     * @return the rule for the nano of second field, never null
-     * @throws UnsupportedOperationException if the chronology does not support this field
-     */
-    public abstract DateTimeFieldRule nanoOfSecond();
 
     //-----------------------------------------------------------------------
     /**

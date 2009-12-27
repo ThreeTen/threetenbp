@@ -40,7 +40,7 @@ import javax.time.InstantProvider;
  * @author Stephen Colebourne
  */
 public class MockMultiProvider
-        implements InstantProvider, DateTimeProvider, DateProvider, TimeProvider, CalendricalProvider {
+        implements InstantProvider, DateTimeProvider, DateProvider, TimeProvider, Calendrical {
     final OffsetDateTime dateTime;
     /** Constructor. */
     public MockMultiProvider(int y, int mon, int d, int h, int min) {
@@ -89,7 +89,7 @@ public class MockMultiProvider
     public ZonedDateTime toZonedDateTime() {
         return ZonedDateTime.dateTime(dateTime, TimeZone.timeZone("Europe/Paris"));
     }
-    public Calendrical toCalendrical() {
-        return toZonedDateTime().toCalendrical();
+    public <T> T get(CalendricalRule<T> rule) {
+        return null;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +46,6 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -66,7 +67,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestNanoOfSecond {
 
-    private static final DateTimeFieldRule RULE = ISOChronology.nanoOfSecondRule();
+    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.nanoOfSecondRule();
     private static final int MAX_LENGTH = 999999999;
     private static final int SKIP = 500000;
 
@@ -76,7 +77,7 @@ public class TestNanoOfSecond {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(CalendricalProvider.class.isAssignableFrom(NanoOfSecond.class));
+        assertTrue(Calendrical.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Serializable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(Comparable.class.isAssignableFrom(NanoOfSecond.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(NanoOfSecond.class));
@@ -211,16 +212,6 @@ public class TestNanoOfSecond {
     public void test_matchesTime_nullLocalTime() {
         NanoOfSecond test = NanoOfSecond.nanoOfSecond(1);
         test.matchesTime((LocalTime) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    public void test_toCalendrical() {
-        for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
-            NanoOfSecond test = NanoOfSecond.nanoOfSecond(i);
-            assertEquals(test.toCalendrical(), new Calendrical(RULE, i));
-        }
     }
 
     //-----------------------------------------------------------------------

@@ -75,7 +75,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     //-----------------------------------------------------------------------
     /** {@inheritDoc} */
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
-        ZoneOffset offset = calendrical.getOffset();
+        ZoneOffset offset = calendrical.get(ZoneOffset.rule());
         if (offset == null) {
             throw new CalendricalFormatException("Unable to print ZoneOffset");
         }
@@ -103,7 +103,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
 
     /** {@inheritDoc} */
     public boolean isPrintDataAvailable(Calendrical calendrical) {
-        return (calendrical.getOffset() != null);
+        return (calendrical.get(ZoneOffset.rule()) != null);
     }
 
     //-----------------------------------------------------------------------
@@ -114,7 +114,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
         int utcLen = utcText.length();
         if (utcLen == 0) {
             if (position == length) {
-                context.setOffset(ZoneOffset.UTC);
+                context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
                 return position;
             }
         } else {
@@ -123,7 +123,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
             }
             // TODO: should the comparison use the locale?
             if (parseText.regionMatches(!context.isCaseSensitive(), position, utcText, 0, utcLen)) {
-                context.setOffset(ZoneOffset.UTC);
+                context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
                 return position + utcLen;
             }
         }
@@ -143,11 +143,11 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
                 return ~position;
             }
             offset = ZoneOffset.zoneOffset(negative * array[1], negative * array[2], negative * array[3]);
-            context.setOffset(offset);
+            context.setParsed(ZoneOffset.rule(), offset);
             return array[0];
         } else {
             if (utcLen == 0) {
-                context.setOffset(ZoneOffset.UTC);
+                context.setParsed(ZoneOffset.rule(), ZoneOffset.UTC);
                 return position + utcLen;
             }
             return ~position;

@@ -35,7 +35,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
@@ -58,7 +58,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class NanoOfSecond
-        implements CalendricalProvider, Comparable<NanoOfSecond>, Serializable, TimeAdjuster, TimeMatcher {
+        implements Calendrical, Comparable<NanoOfSecond>, Serializable, TimeAdjuster, TimeMatcher {
 
     /**
      * A singleton instance for zero nanoseconds.
@@ -83,7 +83,7 @@ public final class NanoOfSecond
      *
      * @return the nano of second rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.nanoOfSecondRule();
     }
 
@@ -124,6 +124,21 @@ public final class NanoOfSecond
      */
     private NanoOfSecond(int nanoOfSecond) {
         this.nanoOfSecond = nanoOfSecond;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, nanoOfSecond, this);
     }
 
     //-----------------------------------------------------------------------
@@ -174,16 +189,6 @@ public final class NanoOfSecond
      */
     public boolean matchesTime(LocalTime time) {
         return nanoOfSecond == time.getNanoOfSecond();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

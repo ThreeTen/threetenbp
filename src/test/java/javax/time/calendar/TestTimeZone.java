@@ -64,7 +64,9 @@ public class TestTimeZone {
     // Basics
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(TimeZone.UTC instanceof Serializable);
+        Object obj = TimeZone.UTC;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
     }
 
     public void test_immutable() {

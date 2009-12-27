@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import javax.time.CalendricalException;
+import javax.time.Instant;
 import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRulesGroup;
 
@@ -95,7 +96,7 @@ import javax.time.calendar.zone.ZoneRulesGroup;
  *
  * @author Stephen Colebourne
  */
-public final class TimeZone implements Serializable {
+public final class TimeZone implements Calendrical, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -722,6 +723,54 @@ public final class TimeZone implements Serializable {
     @Override
     public String toString() {
         return getID();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this offset then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> fieldRule) {
+        if (fieldRule.equals(ZoneOffset.rule()) && isFixed()) {
+            return fieldRule.reify(getRules().getOffset(Instant.EPOCH));
+        }
+        return rule().deriveValueFor(fieldRule, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the field rule for <code>DateTimeZone</code>.
+     *
+     * @return the field rule for the time-zone, never null
+     */
+    public static CalendricalRule<TimeZone> rule() {
+        return Rule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Rule implementation.
+     */
+    static final class Rule extends CalendricalRule<TimeZone> implements Serializable {
+        private static final CalendricalRule<TimeZone> INSTANCE = new Rule();
+        private static final long serialVersionUID = 1L;
+        private Rule() {
+            super(TimeZone.class, ISOChronology.INSTANCE, "TimeZone");
+        }
+        private Object readResolve() {
+            return INSTANCE;
+        }
+        @Override
+        protected TimeZone deriveValue(Calendrical calendrical) {
+            ZonedDateTime zdt = calendrical.get(ZonedDateTime.rule());
+            return zdt != null ? zdt.getZone() : null;
+        }
     }
 
 }

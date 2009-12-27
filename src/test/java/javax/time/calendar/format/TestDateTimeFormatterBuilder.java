@@ -31,11 +31,13 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -51,11 +53,11 @@ import org.testng.annotations.Test;
 @Test
 public class TestDateTimeFormatterBuilder {
 
-    private static final DateTimeFieldRule YEAR_RULE = ISOChronology.yearRule();
-    private static final DateTimeFieldRule MOY_RULE = ISOChronology.monthOfYearRule();
-    private static final DateTimeFieldRule DOM_RULE = ISOChronology.dayOfMonthRule();
-    private static final DateTimeFieldRule DOW_RULE = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule MIN_RULE = ISOChronology.minuteOfHourRule();
+    private static final DateTimeFieldRule<Integer> YEAR_RULE = ISOChronology.yearRule();
+    private static final DateTimeFieldRule<MonthOfYear> MOY_RULE = ISOChronology.monthOfYearRule();
+    private static final DateTimeFieldRule<Integer> DOM_RULE = ISOChronology.dayOfMonthRule();
+    private static final DateTimeFieldRule<DayOfWeek> DOW_RULE = ISOChronology.dayOfWeekRule();
+    private static final DateTimeFieldRule<Integer> MIN_RULE = ISOChronology.minuteOfHourRule();
 
     private DateTimeFormatterBuilder builder;
 
@@ -171,27 +173,27 @@ public class TestDateTimeFormatterBuilder {
         builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValue(DOM_RULE, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
-        Calendrical cal = f.parse("123");
-        assertEquals(cal.getFieldMap().get(MOY_RULE), 1);
-        assertEquals(cal.getFieldMap().get(DOM_RULE), 23);
+        CalendricalMerger cal = f.parse("123");
+        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
+        assertEquals(cal.getInputMap().get(DOM_RULE), 23);
     }
 
     public void test_appendValue_subsequent2_parse4() throws Exception {
         builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValue(DOM_RULE, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)");
-        Calendrical cal = f.parse("0123");
-        assertEquals(cal.getFieldMap().get(MOY_RULE), 1);
-        assertEquals(cal.getFieldMap().get(DOM_RULE), 23);
+        CalendricalMerger cal = f.parse("0123");
+        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
+        assertEquals(cal.getInputMap().get(DOM_RULE), 23);
     }
 
     public void test_appendValue_subsequent2_parse5() throws Exception {
         builder.appendValue(MOY_RULE, 1, 2, SignStyle.NORMAL).appendValue(DOM_RULE, 2).appendLiteral('4');
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.MonthOfYear,1,2,NORMAL)Value(ISO.DayOfMonth,2)'4'");
-        Calendrical cal = f.parse("01234");
-        assertEquals(cal.getFieldMap().get(MOY_RULE), 1);
-        assertEquals(cal.getFieldMap().get(DOM_RULE), 23);
+        CalendricalMerger cal = f.parse("01234");
+        assertEquals(cal.getInputMap().get(MOY_RULE), 1);
+        assertEquals(cal.getInputMap().get(DOM_RULE), 23);
     }
 
     public void test_appendValue_subsequent3_parse6() throws Exception {
@@ -201,10 +203,10 @@ public class TestDateTimeFormatterBuilder {
             .appendValue(DOM_RULE, 2);
         DateTimeFormatter f = builder.toFormatter();
         assertEquals(f.toString(), "Value(ISO.Year,4,10,EXCEEDS_PAD)Value(ISO.MonthOfYear,2)Value(ISO.DayOfMonth,2)");
-        Calendrical cal = f.parse("20090630");
-        assertEquals(cal.getFieldMap().get(YEAR_RULE), 2009);
-        assertEquals(cal.getFieldMap().get(MOY_RULE), 6);
-        assertEquals(cal.getFieldMap().get(DOM_RULE), 30);
+        CalendricalMerger cal = f.parse("20090630");
+        assertEquals(cal.getInputMap().get(YEAR_RULE), 2009);
+        assertEquals(cal.getInputMap().get(MOY_RULE), 6);
+        assertEquals(cal.getInputMap().get(DOM_RULE), 30);
     }
 
     //-----------------------------------------------------------------------

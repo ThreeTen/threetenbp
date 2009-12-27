@@ -35,7 +35,7 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
@@ -76,7 +76,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class WeekBasedYear
-        implements CalendricalProvider, Comparable<WeekBasedYear>, DateMatcher, Serializable {
+        implements Calendrical, Comparable<WeekBasedYear>, DateMatcher, Serializable {
 
     /**
      * Constant for the minimum week-based-year.
@@ -105,7 +105,7 @@ public final class WeekBasedYear
      *
      * @return the week-based-year rule, never null
      */
-    public static DateTimeFieldRule rule() {
+    public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.weekBasedYearRule();
     }
 
@@ -180,6 +180,21 @@ public final class WeekBasedYear
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, weekyear, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the week-based-year value.
      *
      * @return the week-based-year, from MIN_YEAR to MAX_YEAR
@@ -196,16 +211,6 @@ public final class WeekBasedYear
      */
     public boolean matchesDate(LocalDate date) {
         return WeekBasedYear.weekyear(date).equals(this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(rule(), getValue());
     }
 
     //-----------------------------------------------------------------------

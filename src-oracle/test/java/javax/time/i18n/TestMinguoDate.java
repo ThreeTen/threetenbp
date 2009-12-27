@@ -1,6 +1,8 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,15 +15,10 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
 import javax.time.calendar.DateProvider;
-import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.UnsupportedCalendarFieldException;
 import javax.time.calendar.field.HourOfDay;
-import javax.time.i18n.MinguoChronology;
-import javax.time.i18n.MinguoDate;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -44,10 +41,11 @@ public class TestMinguoDate {
     
     @Test
     public void testInterfaces() {
-        assertTrue(testDate instanceof CalendricalProvider);
-        assertTrue(testDate instanceof DateProvider);
-        assertTrue(testDate instanceof Serializable);
-        assertTrue(testDate instanceof Comparable);
+        Object obj = testDate;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof DateProvider);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
     }
 
     @Test
@@ -105,7 +103,7 @@ public class TestMinguoDate {
             MinguoDate.minguoDate(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
     
@@ -115,7 +113,7 @@ public class TestMinguoDate {
             MinguoDate.minguoDate(testYear, 13, testDayOfMonth);// Invalid month of year
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), MinguoChronology.monthOfYearRule());
         }
     }
     
@@ -125,7 +123,7 @@ public class TestMinguoDate {
             MinguoDate.minguoDate(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), MinguoChronology.dayOfMonthRule());
         }
     }
 
@@ -136,22 +134,21 @@ public class TestMinguoDate {
     
     @Test
     public void testGet() throws Exception {
-        assertEquals(testDate.get(MinguoChronology.INSTANCE.era()), testDate.getEra().getValue());
-        assertEquals(testDate.get(MinguoChronology.INSTANCE.yearOfEra()), testDate.getYearOfEra());
-        assertEquals(testDate.get(MinguoChronology.INSTANCE.monthOfYear()), testDate.getMonthOfYear());
-        assertEquals(testDate.get(MinguoChronology.INSTANCE.dayOfMonth()), testDate.getDayOfMonth());
-        assertEquals(testDate.get(MinguoChronology.INSTANCE.dayOfYear()), testDate.getDayOfYear());
-        assertEquals(testDate.get(MinguoChronology.INSTANCE.dayOfWeek()), testDate.getDayOfWeek());
+        assertEquals(testDate.get(MinguoChronology.eraRule()), testDate.getEra());
+        assertEquals(testDate.get(MinguoChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
+        assertEquals(testDate.get(MinguoChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
+        assertEquals(testDate.get(MinguoChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
+        assertEquals(testDate.get(MinguoChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
+        assertEquals(testDate.get(MinguoChronology.dayOfWeekRule()), (Integer) testDate.getDayOfWeek());
     }
     
-    @Test(expectedExceptions=UnsupportedCalendarFieldException.class)
     public void testGetUnsupported() throws Exception {
-        testDate.get(HourOfDay.rule());
+        assertEquals(testDate.get(HourOfDay.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void testGetNull() throws Exception {
-        testDate.get((DateTimeFieldRule) null);
+        testDate.get(null);
     }
 
     @Test
@@ -220,7 +217,7 @@ public class TestMinguoDate {
             testDate.withYearOfEra(-1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
     
@@ -230,7 +227,7 @@ public class TestMinguoDate {
             testDate.withYearOfEra(10000);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -249,7 +246,7 @@ public class TestMinguoDate {
             testDate.withYear(testEra, -1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
     
@@ -259,7 +256,7 @@ public class TestMinguoDate {
             testDate.withYear(testEra, 10000);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -278,7 +275,7 @@ public class TestMinguoDate {
             testDate.withMonthOfYear(-1);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), MinguoChronology.monthOfYearRule());
         }
     }
     
@@ -288,7 +285,7 @@ public class TestMinguoDate {
             testDate.withMonthOfYear(13);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.monthOfYear());
+            assertEquals(ex.getRule(), MinguoChronology.monthOfYearRule());
         }
     }
 
@@ -307,7 +304,7 @@ public class TestMinguoDate {
             testDate.withDayOfMonth(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), MinguoChronology.dayOfMonthRule());
         }
     }
     
@@ -317,7 +314,7 @@ public class TestMinguoDate {
             testDate.withDayOfMonth(32);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.dayOfMonth());
+            assertEquals(ex.getRule(), MinguoChronology.dayOfMonthRule());
         }
     }
     
@@ -336,7 +333,7 @@ public class TestMinguoDate {
             testDate.withDayOfYear(0);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.dayOfYear());
+            assertEquals(ex.getRule(), MinguoChronology.dayOfYearRule());
         }
     }
     
@@ -346,7 +343,7 @@ public class TestMinguoDate {
             testDate.withDayOfYear(367);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.dayOfYear());
+            assertEquals(ex.getRule(), MinguoChronology.dayOfYearRule());
         }
     }
     
@@ -377,7 +374,7 @@ public class TestMinguoDate {
             testDate.plusMonths(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -395,7 +392,7 @@ public class TestMinguoDate {
             testDate.plusDays(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -413,7 +410,7 @@ public class TestMinguoDate {
             testDate.plusWeeks(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -444,7 +441,7 @@ public class TestMinguoDate {
             testDate.minusMonths(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -462,7 +459,7 @@ public class TestMinguoDate {
             testDate.minusDays(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
     
@@ -480,7 +477,7 @@ public class TestMinguoDate {
             testDate.minusWeeks(Integer.MAX_VALUE);
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getFieldRule(), MinguoChronology.INSTANCE.yearOfEra());
+            assertEquals(ex.getRule(), MinguoChronology.yearOfEraRule());
         }
     }
 
@@ -491,15 +488,6 @@ public class TestMinguoDate {
     public void testToLocalDate() {
         assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, testDayOfMonth).toLocalDate(),
                 LocalDate.date(testGregorianYear, testMonthOfYear, testDayOfMonth));
-    }
-
-    //-----------------------------------------------------------------------
-    // toCalendrical()
-    //-----------------------------------------------------------------------
-    @Test
-    public void testToCalendrical() {
-        Calendrical test = MinguoDate.minguoDate(testYear, testMonthOfYear, testDayOfMonth).toCalendrical();
-        assertEquals(test, new Calendrical(LocalDate.date(testGregorianYear, testMonthOfYear, testDayOfMonth), null, null, null));
     }
 
     //-----------------------------------------------------------------------
@@ -563,6 +551,7 @@ public class TestMinguoDate {
         testDate.isAfter(null);
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expectedExceptions=ClassCastException.class)
     public void testCompareToNonDate() throws Exception {
        Comparable c = testDate;

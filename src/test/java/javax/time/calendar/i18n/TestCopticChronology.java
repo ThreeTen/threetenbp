@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -66,7 +66,7 @@ public class TestCopticChronology {
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
-        CopticChronology chronology = CopticChronology.INSTANCE;
+        Object chronology = CopticChronology.INSTANCE;
         assertTrue(chronology instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -101,7 +101,8 @@ public class TestCopticChronology {
 
     //-----------------------------------------------------------------------
     public void test_yearRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.INSTANCE.year();
+        DateTimeFieldRule<Integer> rule = CopticChronology.yearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "Coptic.Year");
         assertEquals(rule.getName(), "Year");
         assertEquals(rule.getMinimumValue(), CopticDate.MIN_YEAR);
@@ -111,12 +112,12 @@ public class TestCopticChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
         assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     public void test_monthOfYearRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.INSTANCE.monthOfYear();
+        DateTimeFieldRule<Integer> rule = CopticChronology.monthOfYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "Coptic.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -126,12 +127,12 @@ public class TestCopticChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     public void test_dayOfMonthRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.INSTANCE.dayOfMonth();
+        DateTimeFieldRule<Integer> rule = CopticChronology.dayOfMonthRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "Coptic.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -141,12 +142,12 @@ public class TestCopticChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     public void test_dayOfYearRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.INSTANCE.dayOfYear();
+        DateTimeFieldRule<Integer> rule = CopticChronology.dayOfYearRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "Coptic.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -156,12 +157,12 @@ public class TestCopticChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     public void test_dayOfWeekRule() throws Exception {
-        DateTimeFieldRule rule = CopticChronology.INSTANCE.dayOfWeek();
+        DateTimeFieldRule<Integer> rule = CopticChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "Coptic.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -171,29 +172,7 @@ public class TestCopticChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
-    }
-
-    //-----------------------------------------------------------------------
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_hourOfDayRule() throws Exception {
-        CopticChronology.INSTANCE.hourOfDay();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_minuteOfHourRule() throws Exception {
-        CopticChronology.INSTANCE.minuteOfHour();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_secondOfMinuteRule() throws Exception {
-        CopticChronology.INSTANCE.secondOfMinute();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_nanoOfSecondRule() throws Exception {
-        CopticChronology.INSTANCE.nanoOfSecond();
     }
 
     //-----------------------------------------------------------------------
@@ -202,7 +181,7 @@ public class TestCopticChronology {
     }
 
     //-----------------------------------------------------------------------
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);

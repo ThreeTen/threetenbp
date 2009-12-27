@@ -32,8 +32,10 @@
 package javax.time.i18n;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalProvider;
+import javax.time.calendar.CalendricalRule;
+import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * Defines the valid eras for the Minguo calendar system.
@@ -45,7 +47,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
  *
  * @author Stephen Colebourne
  */
-public enum MinguoEra implements CalendricalProvider {
+public enum MinguoEra implements Calendrical {
 
     /**
      * The singleton instance for the era before the current one - Before Minguo -
@@ -57,18 +59,18 @@ public enum MinguoEra implements CalendricalProvider {
      */
     MINGUO;
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the rule that defines how the quarter of year field operates.
-//     * <p>
-//     * The rule provides access to the minimum and maximum values, and a
-//     * generic way to access values within a calendrical.
-//     *
-//     * @return the quarter of year rule, never null
-//     */
-//    public static DateTimeFieldRule rule() {
-//        return MinguoChronology.INSTANCE.era();
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the rule that defines how the era field operates.
+     * <p>
+     * The rule provides access to the minimum and maximum values, and a
+     * generic way to access values within a calendrical.
+     *
+     * @return the era rule, never null
+     */
+    public static DateTimeFieldRule<MinguoEra> rule() {
+        return MinguoChronology.eraRule();
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -88,44 +90,51 @@ public enum MinguoEra implements CalendricalProvider {
             case 1:
                 return MINGUO;
             default:
-                throw new IllegalCalendarFieldValueException(MinguoChronology.INSTANCE.era(), minguoEra, 0, 1);
+                throw new IllegalCalendarFieldValueException(MinguoChronology.eraRule(), minguoEra, 0, 1);
         }
     }
 
-//    /**
-//     * Obtains an instance of <code>MinguoEra</code> from a date provider.
-//     * <p>
-//     * This can be used extract an era directly from any implementation
-//     * of DateProvider, including those in other calendar systems.
-//     *
-//     * @param dateProvider  the date provider to use, not null
-//     * @return the MinguoEra singleton, never null
-//     */
-//    public static MinguoEra minguoEra(DateProvider dateProvider) {
-//        return LocalDate.date(dateProvider).getYear() < 1912 ? BEFORE_MINGUO : MINGUO;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of <code>MinguoEra</code> from a calendrical.
+     * <p>
+     * This can be used extract the era directly from any implementation
+     * of Calendrical, including those in other calendar systems.
+     *
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the MinguoEra enum instance, never null
+     * @throws UnsupportedRuleException if the era cannot be obtained
+     */
+    public static MinguoEra minguoEra(Calendrical calendrical) {
+        return rule().getValue(calendrical);
+    }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the era value.
+     * Gets the value of the specified calendrical rule.
+     * <p>
+     * This method queries the value of the specified calendrical rule.
+     * If the value cannot be returned for the rule from this instance then
+     * <code>null</code> will be returned.
+     *
+     * @param rule  the rule to use, not null
+     * @return the value for the rule, null if the value cannot be returned
+     */
+    public <T> T get(CalendricalRule<T> rule) {
+        return rule().deriveValueFor(rule, this, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the era numeric value.
      * <p>
      * The current era (from ISO year 1912 onwards) has the value 1
      * The previous era has the value 0.
      *
-     * @return the era value, from 0 to 1
+     * @return the era value, from 0 (BEFORE_MINGUO) to 1 (MINGUO)
      */
     public int getValue() {
         return ordinal();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts this field to a <code>Calendrical</code>.
-     *
-     * @return the calendrical representation for this instance, never null
-     */
-    public Calendrical toCalendrical() {
-        return new Calendrical(MinguoChronology.INSTANCE.era(), getValue());
     }
 
 }

@@ -57,8 +57,10 @@ public class TestZoneOffset {
     // Basics
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(ZoneOffset.UTC instanceof Serializable);
-        assertTrue(ZoneOffset.UTC instanceof Comparable);
+        Object obj = ZoneOffset.UTC;
+        assertTrue(obj instanceof Calendrical);
+        assertTrue(obj instanceof Serializable);
+        assertTrue(obj instanceof Comparable<?>);
     }
 
     public void test_immutable() {

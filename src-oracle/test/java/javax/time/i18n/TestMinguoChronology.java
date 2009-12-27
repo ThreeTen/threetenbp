@@ -1,6 +1,8 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,7 +15,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.i18n.MinguoChronology;
 import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
@@ -27,23 +28,21 @@ public class TestMinguoChronology {
     
     @Test
     public void testConstructor() throws Exception {
-        for (Constructor constructor : MinguoChronology.class.getDeclaredConstructors()) {
+        for (Constructor<?> constructor : MinguoChronology.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         }
     }
     
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
-        MinguoChronology chronology = MinguoChronology.INSTANCE;
+        Object chronology = MinguoChronology.INSTANCE;
         assertTrue(chronology instanceof Serializable);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(chronology);
         oos.close();
-        
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), chronology);
     }
 
@@ -63,7 +62,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testEra() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.era();
+        DateTimeFieldRule<MinguoEra> rule = MinguoChronology.eraRule();
         assertEquals(rule.getID(), "Minguo.Era");
         assertEquals(rule.getName(), "Era");
         assertEquals(rule.getMinimumValue(), 0);
@@ -73,29 +72,12 @@ public class TestMinguoChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DECADES);
         assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
-        serialize(rule);
-    }
-
-    @Test
-    public void testYear() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.year();
-        assertEquals(rule.getID(), "Minguo.Year");
-        assertEquals(rule.getName(), "Year");
-        assertEquals(rule.getMinimumValue(), -MinguoDate.MAX_YEAR_OF_ERA + 1);
-        assertEquals(rule.getLargestMinimumValue(), -MinguoDate.MAX_YEAR_OF_ERA + 1);
-        assertEquals(rule.getMaximumValue(), MinguoDate.MAX_YEAR_OF_ERA);
-        assertEquals(rule.getSmallestMaximumValue(), MinguoDate.MAX_YEAR_OF_ERA);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
-        assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     @Test
     public void testYearOfEra() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.yearOfEra();
+        DateTimeFieldRule<Integer> rule = MinguoChronology.yearOfEraRule();
         assertEquals(rule.getID(), "Minguo.YearOfEra");
         assertEquals(rule.getName(), "YearOfEra");
         assertEquals(rule.getMinimumValue(), MinguoDate.MIN_YEAR_OF_ERA);
@@ -105,13 +87,12 @@ public class TestMinguoChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
         assertEquals(rule.getPeriodRange(), null);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.monthOfYear();
+        DateTimeFieldRule<Integer> rule = MinguoChronology.monthOfYearRule();
         assertEquals(rule.getID(), "Minguo.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -121,12 +102,11 @@ public class TestMinguoChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        assertEquals(rule.getValueQuiet(null, null), null);
     }
 
     @Test
     public void testDayOfMonth() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.dayOfMonth();
+        DateTimeFieldRule<Integer> rule = MinguoChronology.dayOfMonthRule();
         assertEquals(rule.getID(), "Minguo.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
@@ -136,13 +116,12 @@ public class TestMinguoChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
     @Test
     public void testDayOfYear() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.dayOfYear();
+        DateTimeFieldRule<Integer> rule = MinguoChronology.dayOfYearRule();
         assertEquals(rule.getID(), "Minguo.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
@@ -152,14 +131,13 @@ public class TestMinguoChronology {
         assertEquals(rule.isFixedValueSet(), false);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
 
     }
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule rule = MinguoChronology.INSTANCE.dayOfWeek();
+        DateTimeFieldRule<Integer> rule = MinguoChronology.dayOfWeekRule();
         assertEquals(rule.getID(), "Minguo.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);
@@ -169,41 +147,19 @@ public class TestMinguoChronology {
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
         assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
-        assertEquals(rule.getValueQuiet(null, null), null);
         serialize(rule);
     }
 
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_hourOfDayRule() throws Exception {
-        MinguoChronology.INSTANCE.hourOfDay();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_minuteOfHourRule() throws Exception {
-        MinguoChronology.INSTANCE.minuteOfHour();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_secondOfMinuteRule() throws Exception {
-        MinguoChronology.INSTANCE.secondOfMinute();
-    }
-
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void test_nanoOfSecondRule() throws Exception {
-        MinguoChronology.INSTANCE.nanoOfSecond();
-    }
-    
     public void test_toString() throws Exception {
         assertEquals(MinguoChronology.INSTANCE.toString(), "Minguo");
     }
 
-    private void serialize(DateTimeFieldRule rule) throws Exception {
+    private void serialize(DateTimeFieldRule<?> rule) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(rule);
         oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
-                baos.toByteArray()));
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         assertSame(ois.readObject(), rule);
     }
 
