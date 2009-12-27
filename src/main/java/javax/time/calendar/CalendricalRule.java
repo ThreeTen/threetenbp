@@ -56,7 +56,7 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
 
     /** The reified class for the generic type. */
     private final Class<T> reified;
-    /** The name of the rule, not null. */
+    /** The chronology of the rule, not null. */
     private final Chronology chronology;
     /** The id of the rule, not null. */
     private final String id;
@@ -64,7 +64,7 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
     private final String name;
 
     /**
-     * Constructor.
+     * Constructor used to create a rule.
      *
      * @param reifiedClass  the reified class, not null
      * @param chronology  the chronology, not null
@@ -74,6 +74,7 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
             Class<T> reifiedClass,
             Chronology chronology,
             String name) {
+        // avoid possible circular references by using inline NPE checks
         if (reifiedClass == null) {
             throw new NullPointerException("Reified class must not be null");
         }
