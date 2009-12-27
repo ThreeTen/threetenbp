@@ -88,6 +88,12 @@ public class TestClock_TimeSourceClock {
         assertEquals(changed.getZone(), ZONE);
     }
 
+    public void test_withSource_same() {
+        Clock test = Clock.clock(TIME_SOURCE, ZONE);
+        Clock changed = test.withSource(TIME_SOURCE);
+        assertSame(test, changed);
+    }
+
     public void test_withZone() {
         Clock test = Clock.clock(TIME_SOURCE, ZONE);
         TimeZone london = TimeZone.timeZone("Europe/London");
@@ -96,6 +102,12 @@ public class TestClock_TimeSourceClock {
         assertEquals(test.getZone(), ZONE);
         assertEquals(changed.getSource(), TIME_SOURCE);
         assertEquals(changed.getZone(), london);
+    }
+
+    public void test_withZone_same() {
+        Clock test = Clock.clock(TIME_SOURCE, ZONE);
+        Clock changed = test.withZone(ZONE);
+        assertSame(test, changed);
     }
 
     //-----------------------------------------------------------------------

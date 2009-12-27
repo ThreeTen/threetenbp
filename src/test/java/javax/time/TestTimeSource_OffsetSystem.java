@@ -68,6 +68,12 @@ public class TestTimeSource_OffsetSystem {
     }
 
     //-----------------------------------------------------------------------
+    public void test_offset_zero() {
+        TimeSource test = TimeSource.offsetSystem(Duration.ZERO);
+        assertEquals(test, TimeSource.system());
+    }
+
+    //-----------------------------------------------------------------------
     public void test_offset_instant() {
         TimeSource offset = TimeSource.offsetSystem(OFFSET);
         for (int i = 0; i < 10000; i++) {

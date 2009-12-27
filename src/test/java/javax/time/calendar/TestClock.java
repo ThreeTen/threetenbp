@@ -79,11 +79,15 @@ public class TestClock {
         }
     }
 
+    static class MockClockNoOverrides extends Clock {
+    }
+
     private static final ZoneOffset OFFSET = ZoneOffset.zoneOffset(2);
     private static final OffsetDateTime DATE_TIME = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET);
     private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
     private static final TimeZone ZONE = TimeZone.timeZone("Europe/Paris");
     private static final Clock MOCK = new MockClock(TIME_SOURCE, ZONE);
+    private static final Clock MOCK_NO_OVERRIDES = new MockClockNoOverrides();
 
     //-----------------------------------------------------------------------
     public void test_simpleClock() throws Exception {
@@ -103,6 +107,27 @@ public class TestClock {
                 }
             }
         }
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_mockClockNoOverrides_getSource() {
+        MOCK_NO_OVERRIDES.getSource();
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_mockClockNoOverrides_withSource() {
+        MOCK_NO_OVERRIDES.withSource(TIME_SOURCE);
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_mockClockNoOverrides_getZone() {
+        MOCK_NO_OVERRIDES.getZone();
+    }
+
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void test_mockClockNoOverrides_withZone() {
+        MOCK_NO_OVERRIDES.withZone(ZONE);
     }
 
     //-----------------------------------------------------------------------
