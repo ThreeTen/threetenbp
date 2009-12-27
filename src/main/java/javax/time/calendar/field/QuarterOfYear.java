@@ -32,13 +32,12 @@
 package javax.time.calendar.field;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a quarter of year in the ISO-8601 calendar system.
@@ -123,16 +122,17 @@ public enum QuarterOfYear implements Calendrical, CalendricalMatcher {
     }
 
     /**
-     * Obtains an instance of <code>QuarterOfYear</code> from a date provider.
+     * Obtains an instance of <code>QuarterOfYear</code> from a calendrical.
      * <p>
-     * This can be used extract a quarter of year object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * This can be used extract the quarter-of-year value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the QuarterOfYear singleton, never null
+     * @throws UnsupportedRuleException if the quarter-of-year cannot be obtained
      */
-    public static QuarterOfYear quarterOfYear(DateProvider dateProvider) {
-        return LocalDate.date(dateProvider).getMonthOfYear().getQuarterOfYear();
+    public static QuarterOfYear quarterOfYear(Calendrical calendrical) {
+        return QuarterOfYear.quarterOfYear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

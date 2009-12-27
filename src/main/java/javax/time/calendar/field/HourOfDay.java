@@ -42,7 +42,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a hour of day in the ISO-8601 calendar system.
@@ -125,18 +125,18 @@ public final class HourOfDay
         return hourOfDay(hourOfDay);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>HourOfDay</code> from a time provider.
+     * Obtains an instance of <code>HourOfDay</code> from a calendrical.
      * <p>
-     * This can be used extract the hour of day directly from any implementation
-     * of TimeProvider, including those in other calendar systems.
+     * This can be used extract the hour-of-day value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param timeProvider  the time provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the HourOfDay instance, never null
+     * @throws UnsupportedRuleException if the hour-of-day cannot be obtained
      */
-    public static HourOfDay hourOfDay(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).toHourOfDay();
+    public static HourOfDay hourOfDay(Calendrical calendrical) {
+        return hourOfDay(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

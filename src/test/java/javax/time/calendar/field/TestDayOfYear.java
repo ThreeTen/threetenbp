@@ -31,8 +31,8 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -45,16 +45,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockDateProviderReturnsNull;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -139,7 +139,7 @@ public class TestDayOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_DateProvider_notLeapYear() {
+    public void test_factory_Calendrical_notLeapYear() {
         LocalDate date = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.dayOfYear(date);
@@ -150,7 +150,7 @@ public class TestDayOfYear {
         assertEquals(test.getValue(), 1);
     }
 
-    public void test_factory_DateProvider_leapYear() {
+    public void test_factory_Calendrical_leapYear() {
         LocalDate date = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             DayOfYear test = DayOfYear.dayOfYear(date);
@@ -159,14 +159,14 @@ public class TestDayOfYear {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        DayOfYear.dayOfYear((DateProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        DayOfWeek.dayOfWeek(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badDateProvider() {
-        DayOfYear.dayOfYear(new MockDateProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        DayOfYear.dayOfYear((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

@@ -36,9 +36,9 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -47,6 +47,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.YearMonth;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -126,30 +127,18 @@ public final class Year
         return new Year(isoYear);
     }
 
-//    /**
-//     * Obtains an instance of <code>Year</code> from a date provider.
-//     * <p>
-//     * This can be used extract a year object directly from any implementation
-//     * of DateProvider, including those in other calendar systems.
-//     *
-//     * @param dateProvider  the date provider to use, not null
-//     * @return a Year object, never null
-//     */
-//    public static Year year(DateProvider dateProvider) {
-//        return LocalDate.date(dateProvider).toYear();
-//    }
-
     /**
-     * Obtains an instance of <code>Year</code> from a Calendrical.
+     * Obtains an instance of <code>Year</code> from a calendrical.
      * <p>
-     * This can be used extract a year object directly from any implementation
-     * of Calendrical, including those in other calendar systems.
+     * This can be used extract the year value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param calendrical  the calendrical to use, not null
-     * @return a Year object, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the Year instance, never null
+     * @throws UnsupportedRuleException if the year cannot be obtained
      */
     public static Year year(Calendrical calendrical) {
-        return Year.isoYear(rule().getValueChecked(calendrical));
+        return Year.isoYear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

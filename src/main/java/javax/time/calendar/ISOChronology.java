@@ -53,12 +53,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.time.CalendricalException;
+import javax.time.MathUtils;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.Period;
@@ -115,10 +114,14 @@ public final class ISOChronology extends Chronology implements Serializable {
 //    private static final int[] STANDARD_MONTH_LENGTHS = new int[] {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 //    /** The length of months in a leap year. */
 //    private static final int[] LEAP_MONTH_LENGTHS = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-//    /** The start of months in a standard year. */
-//    private static final int[] STANDARD_MONTH_START = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-//    /** The start of months in a leap year. */
-//    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
+    /**
+     * The start of months in a standard year.
+     */
+    private static final int[] STANDARD_MONTH_START = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+    /**
+     * The start of months in a leap year.
+     */
+    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
     //-----------------------------------------------------------------------
     /**
@@ -191,6 +194,107 @@ public final class ISOChronology extends Chronology implements Serializable {
             throw new CalendricalException("Subtraction exceeds the supported year range: " + year + " - " + years);
         }
         return result;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the day-of-week from a date.
+     *
+     * @param date  the date to use, not null
+     * @return the day-of-week
+     */
+    static DayOfWeek getDayOfWeekFromDate(LocalDate date) {
+        long mjd = date.toModifiedJulianDays();
+        if (mjd < 0) {
+            long weeks = mjd / 7;
+            mjd += (-weeks + 1) * 7;
+        }
+        int dow0 = (int) ((mjd + 2) % 7);
+        return DayOfWeek.dayOfWeek(dow0 + 1);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the day-of-year from a date.
+     *
+     * @param date  the date to use, not null
+     * @return the day-of-year
+     */
+    static int getDayOfYearFromDate(LocalDate date) {
+        int moy0 = date.getMonthOfYear().ordinal();
+        int dom = date.getDayOfMonth();
+        if (ISOChronology.isLeapYear(date.getYear())) {
+            return LEAP_MONTH_START[moy0] + dom;
+        } else {
+            return STANDARD_MONTH_START[moy0] + dom;
+        }
+    }
+
+    /**
+     * Calculates the date from a year and day-of-year.
+     *
+     * @param year  the year, valid
+     * @param year  the day-of-year, valid
+     * @return the date, never null
+     */
+    static LocalDate getDateFromDayOfYear(int year, int dayOfYear) {
+        boolean leap = ISOChronology.isLeapYear(year);
+        if (dayOfYear == 366 && leap == false) {
+            throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, dayOfYearRule());
+        }
+        int doy0 = dayOfYear - 1;
+        int[] array = (leap ? LEAP_MONTH_START : STANDARD_MONTH_START);
+        int month = 1;
+        for ( ; month < 12; month++) {
+            if (doy0 < array[month]) {
+                break;
+            }
+        }
+        MonthOfYear moy = MonthOfYear.monthOfYear(month);
+        int dom = dayOfYear - array[month - 1];
+        return LocalDate.date(year, moy, dom);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Calculates the week-based-year.
+     *
+     * @param date  the date, not null
+     * @return the week-based-year
+     */
+    static int getWeekBasedYearFromDate(LocalDate date) {
+        Year year = date.toYear();  // use ISO year object so previous/next are checked
+        if (date.getMonthOfYear() == MonthOfYear.JANUARY) {
+            int dom = date.getDayOfMonth();
+            if (dom < 4) {
+                int dow = date.getDayOfWeek().getValue();
+                if (dow > dom + 3) {
+                    year = year.previous();
+                }
+            }
+        } else if (date.getMonthOfYear() == MonthOfYear.DECEMBER) {
+            int dom = date.getDayOfMonth();
+            if (dom > 28) {
+                int dow = date.getDayOfWeek().getValue();
+                if (dow <= dom % 7) {
+                    year = year.next();
+                }
+            }
+        }
+        return year.getValue();
+    }
+
+    /**
+     * Calculates the week of week-based-year.
+     *
+     * @param date  the date to use, not null
+     * @return the week
+     */
+    public static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
+        int wby = getWeekBasedYearFromDate(date);
+        LocalDate yearStart = LocalDate.date(wby, MonthOfYear.JANUARY, 4);
+        return MathUtils.safeToInt((date.toModifiedJulianDays() - yearStart.toModifiedJulianDays() +
+                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -680,8 +784,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             // year-day
             Integer doyVal = merger.getValue(ISOChronology.dayOfYearRule());
             if (doyVal != null) {
-                merger.storeMerged(LocalDate.rule(), DayOfYear.dayOfYear(doyVal).atYear(yearVal));
-//                merger.storeMergedField(LocalDate.rule(), LocalDate.date(year, 1, 1).plusDays(((long) doy) - 1));  // MIN/MAX handled ok
+                merger.storeMerged(LocalDate.rule(), getDateFromDayOfYear(yearVal, doyVal));
                 merger.removeProcessed(ISOChronology.yearRule());
                 merger.removeProcessed(ISOChronology.dayOfYearRule());
             }
@@ -699,7 +802,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             // year-month-week-day
             Integer womVal = merger.getValue(ISOChronology.weekOfMonthRule());
             if (moy != null && womVal != null && dow != null) {
-                LocalDate date = LocalDate.date(yearVal, 1, 1).plusMonths(moy.getValue() - 1).plusWeeks(womVal - 1);
+                LocalDate date = LocalDate.date(yearVal, moy, 1).plusWeeks(womVal - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(dow));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(ISOChronology.yearRule());
@@ -838,7 +941,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : date.getYear());
+            return date != null ? date.getYear() : null;
         }
     }
 
@@ -861,7 +964,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected MonthOfYear derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : date.getMonthOfYear());
+            return date != null ? date.getMonthOfYear() : null;
         }
         @Override
         public int convertValueToInt(MonthOfYear value) {
@@ -951,7 +1054,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : date.getDayOfMonth());
+            return date != null ? date.getDayOfMonth() : null;
         }
     }
 
@@ -983,7 +1086,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : date.getDayOfYear());
+            return date != null ? getDayOfYearFromDate(date) : null;
         }
     }
 
@@ -1006,7 +1109,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : WeekBasedYear.weekyear(date).getValue());
+            return date != null ? getWeekBasedYearFromDate(date) : null;
         }
     }
 
@@ -1038,7 +1141,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : WeekOfWeekBasedYear.weekOfWeekyear(date).getValue());
+            return date != null ? getWeekOfWeekBasedYearFromDate(date) : null;
         }
     }
 
@@ -1061,7 +1164,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected DayOfWeek derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : date.getDayOfWeek());
+            return date != null ? getDayOfWeekFromDate(date) : null;
         }
         @Override
         public int convertValueToInt(DayOfWeek value) {
@@ -1128,11 +1231,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             Integer doyVal = calendrical.get(dayOfYearRule());
-            if (doyVal == null) {
-                return null;
-            }
-            int doy = doyVal;
-            return (doy >= 1 ? ((doy - 1) / 7) + 1 : 0);  // TODO negatives
+            return doyVal != null ? (doyVal + 6) / 7 : null;
        }
     }
 
@@ -1155,12 +1254,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            if (moy == null) {
-                return null;
-            }
-            return moy.getQuarterOfYear().getValue();
-//            int moy = moyVal;
-//            return (moy >= 1 ? ((moy - 1) / 3) + 1 : 0);  // TODO negatives???
+            return moy != null ? moy.getQuarterOfYear().getValue() : null;
         }
     }
 
@@ -1183,12 +1277,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            if (moy == null) {
-                return null;
-            }
-            return moy.getMonthOfQuarter();
-//            int moy = moy;
-//            return (moy >= 1 ? ((moy - 1) % 3) + 1 : 3 + (moy % 3));  // TODO negatives???
+            return moy != null ? moy.getMonthOfQuarter() : null;
        }
     }
 
@@ -1222,8 +1311,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         protected Integer derive(Calendrical calendrical) {
-            LocalDate date = calendrical.get(LocalDate.rule());
-            return (date == null ? null : ((date.getDayOfMonth() - 1) % 7) + 1);
+            Integer domVal = calendrical.get(dayOfMonthRule());
+            return domVal != null ? (domVal + 6) / 7 : null;
         }
     }
 
@@ -1246,7 +1335,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : time.getHourOfDay());
+            return time != null ? time.getHourOfDay() : null;
         }
     }
 
@@ -1269,7 +1358,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : time.getMinuteOfHour());
+            return time != null ? time.getMinuteOfHour() : null;
         }
     }
 
@@ -1292,7 +1381,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : time.getSecondOfMinute());
+            return time != null ? time.getSecondOfMinute() : null;
         }
     }
 
@@ -1315,7 +1404,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : time.getNanoOfSecond());
+            return time != null ? time.getNanoOfSecond() : null;
         }
     }
 
@@ -1338,7 +1427,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : (int) (time.toSecondOfDay()));
+            return time != null ? time.toSecondOfDay() : null;
         }
     }
 
@@ -1361,7 +1450,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : (int) (time.toNanoOfDay() / 1000000));
+            return time != null ? (int) (time.toNanoOfDay() / 1000000L) : null;
         }
     }
 
@@ -1384,7 +1473,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalTime time = calendrical.get(LocalTime.rule());
-            return (time == null ? null : time.getNanoOfSecond() / 1000000);
+            return time != null ? time.getNanoOfSecond() / 1000000 : null;
         }
     }
 
@@ -1471,6 +1560,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 return null;
             }
             long hour = hourVal;
+            // TODO: Remove overflow handling
             hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
             return (int) hour;
         }
@@ -1499,6 +1589,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 return null;
             }
             long hour = hourVal;
+            // TODO: Remove overflow handling
             hour = (hour < 0 ? hour + 2147483664L : hour) % 12;  // add multiple of 24 to make positive
             return (int) (hour == 0 ? 12 : hour);
         }

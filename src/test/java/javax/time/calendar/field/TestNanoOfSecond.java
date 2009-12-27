@@ -52,9 +52,9 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockTimeProviderReturnsNull;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -143,7 +143,7 @@ public class TestNanoOfSecond {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_TimeProvider() {
+    public void test_factory_Calendrical() {
         LocalTime time = LocalTime.time(5, 10, 20, 0);
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             NanoOfSecond test = NanoOfSecond.nanoOfSecond(time);
@@ -152,14 +152,14 @@ public class TestNanoOfSecond {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullTimeProvider() {
-        NanoOfSecond.nanoOfSecond((TimeProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        NanoOfSecond.nanoOfSecond(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badTimeProvider() {
-        NanoOfSecond.nanoOfSecond(new MockTimeProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        NanoOfSecond.nanoOfSecond((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

@@ -42,13 +42,13 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -114,14 +114,14 @@ public class TestAmPmOfDay {
         assertEquals(test.getValue(), 1);
     }
 
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        AmPmOfDay.amPmOfDay(new MockSimpleCalendrical());
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullCalendrical() {
         AmPmOfDay.amPmOfDay((Calendrical) null);
-    }
-
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_unsupported() {
-        AmPmOfDay.amPmOfDay(DateTimeFields.fields());
     }
 
     //-----------------------------------------------------------------------

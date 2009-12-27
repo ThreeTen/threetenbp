@@ -45,9 +45,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
+import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -56,8 +55,9 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -143,7 +143,7 @@ public class TestDayOfMonth {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_DateProvider_notLeapYear() {
+    public void test_factory_Calendrical_notLeapYear() {
         LocalDate date = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
@@ -195,7 +195,7 @@ public class TestDayOfMonth {
         }
     }
 
-    public void test_factory_DateProvider_leapYear() {
+    public void test_factory_Calendrical_leapYear() {
         LocalDate date = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
@@ -211,14 +211,14 @@ public class TestDayOfMonth {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        DayOfMonth.dayOfMonth((DateProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        DayOfMonth.dayOfMonth(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badDateProvider() {
-        DayOfMonth.dayOfMonth(new MockDateProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        DayOfMonth.dayOfMonth((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

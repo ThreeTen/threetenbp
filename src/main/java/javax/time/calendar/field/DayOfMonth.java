@@ -36,16 +36,16 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a day of month in the ISO-8601 calendar system.
@@ -117,16 +117,17 @@ public final class DayOfMonth
     }
 
     /**
-     * Obtains an instance of <code>DayOfMonth</code> from a date provider.
+     * Obtains an instance of <code>DayOfMonth</code> from a calendrical.
      * <p>
-     * This can be used extract a day of month object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * This can be used extract the day-of-month value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @return the DayOfMonth singleton, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the DayOfMonth instance, never null
+     * @throws UnsupportedRuleException if the day-of-month cannot be obtained
      */
-    public static DayOfMonth dayOfMonth(DateProvider dateProvider) {
-        return LocalDate.date(dateProvider).toDayOfMonth();
+    public static DayOfMonth dayOfMonth(Calendrical calendrical) {
+        return dayOfMonth(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

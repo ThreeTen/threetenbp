@@ -45,7 +45,6 @@ import javax.time.calendar.DateAdjuster;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
@@ -54,6 +53,7 @@ import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockDateResolverReturnsNull;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -181,14 +181,14 @@ public class TestMonthOfYear {
         }
     }
 
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        MonthOfYear.monthOfYear(new MockSimpleCalendrical());
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_nullCalendrical() {
         MonthOfYear.monthOfYear((Calendrical) null);
-    }
-
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_unsupported() {
-        MonthOfYear.monthOfYear(DateTimeFields.fields());
     }
 
     //-----------------------------------------------------------------------

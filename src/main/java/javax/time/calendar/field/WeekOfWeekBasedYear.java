@@ -34,15 +34,13 @@ package javax.time.calendar.field;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a week of week-based-year in the ISO-8601 calendar system.
@@ -119,22 +117,17 @@ public final class WeekOfWeekBasedYear
     }
 
     /**
-     * Obtains an instance of <code>WeekOfWeekBasedYear</code> from a date provider.
+     * Obtains an instance of <code>WeekOfWeekBasedYear</code> from a calendrical.
      * <p>
-     * This can be used extract a week of week-based-year object directly from
-     * any implementation of DateProvider, including those in other calendar systems.
+     * This can be used extract the week-of-week-based-year value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @return the WeekOfWeekBasedYear singleton, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the WeekOfWeekBasedYear instance, never null
+     * @throws UnsupportedRuleException if the week-of-week-based-year cannot be obtained
      */
-    public static WeekOfWeekBasedYear weekOfWeekyear(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        Year year = WeekBasedYear.computeYear(date);
-
-        LocalDate yearStart = LocalDate.date(year, MonthOfYear.JANUARY, DayOfMonth.dayOfMonth(4));
-
-        return weekOfWeekyear(MathUtils.safeToInt((date.toModifiedJulianDays() - yearStart.toModifiedJulianDays() +
-                yearStart.getDayOfWeek().getValue() - 1) / 7 + 1));
+    public static WeekOfWeekBasedYear weekOfWeekyear(Calendrical calendrical) {
+        return weekOfWeekyear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

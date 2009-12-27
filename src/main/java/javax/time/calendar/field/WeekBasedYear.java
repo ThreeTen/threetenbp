@@ -35,13 +35,13 @@ import java.io.Serializable;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a week-based-year in the ISO-8601 calendar system.
@@ -123,49 +123,17 @@ public final class WeekBasedYear
     }
 
     /**
-     * Obtains an instance of <code>WeekBasedYear</code> from a date provider.
+     * Obtains an instance of <code>WeekBasedYear</code> from a calendrical.
      * <p>
-     * This can be used extract a week-based-year object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * This can be used extract the week-based-year value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the WeekBasedYear instance, never null
+     * @throws UnsupportedRuleException if the week-based-year cannot be obtained
      */
-    public static WeekBasedYear weekyear(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        return WeekBasedYear.weekyear(computeYear(date).getValue());
-    }
-
-    /**
-     * Calculates the year.
-     * @param date  the date
-     * @return the year
-     */
-    static Year computeYear(LocalDate date) {
-        Year year = date.toYear();
-        int dom;
-
-        switch (date.getMonthOfYear()) {
-            case JANUARY:
-                dom = date.getDayOfMonth();
-                if (dom < 4) {
-                    int dow = date.getDayOfWeek().getValue();
-                    if (dow > dom + 3) {
-                        year = year.previous();
-                    }
-                }
-                break;
-            case DECEMBER:
-                dom = date.getDayOfMonth();
-                if (dom > 28) {
-                    int dow = date.getDayOfWeek().getValue();
-                    if (dow <= dom % 7) {
-                        year = year.next();
-                    }
-                }
-        }
-
-        return year;
+    public static WeekBasedYear weekyear(Calendrical calendrical) {
+        return weekyear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

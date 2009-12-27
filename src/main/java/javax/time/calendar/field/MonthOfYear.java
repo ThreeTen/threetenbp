@@ -178,12 +178,12 @@ public enum MonthOfYear
     /**
      * Obtains an instance of <code>MonthOfYear</code> from a calendrical.
      * <p>
-     * This can be used extract a month of year object directly from any implementation
-     * of Calendrical, including those in other calendar systems.
+     * This can be used extract the month-of-year value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the MonthOfYear singleton, never null
-     * @throws UnsupportedRuleException if the month of year cannot be obtained
+     * @throws UnsupportedRuleException if the month-of-year cannot be obtained
      */
     public static MonthOfYear monthOfYear(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);

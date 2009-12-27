@@ -50,9 +50,9 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockTimeProviderReturnsNull;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -158,7 +158,7 @@ public class TestHourOfDay {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_TimeProvider() {
+    public void test_factory_Calendrical() {
         LocalTime time = LocalTime.time(0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             HourOfDay test = HourOfDay.hourOfDay(time);
@@ -167,14 +167,14 @@ public class TestHourOfDay {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullTimeProvider() {
-        HourOfDay.hourOfDay((TimeProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        HourOfDay.hourOfDay(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badTimeProvider() {
-        HourOfDay.hourOfDay(new MockTimeProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        HourOfDay.hourOfDay((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

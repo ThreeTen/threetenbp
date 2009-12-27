@@ -34,12 +34,11 @@ package javax.time.calendar.field;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.CalendricalMatcher;
+import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -143,31 +142,14 @@ public enum DayOfWeek implements Calendrical, CalendricalMatcher {
     }
 
     /**
-     * Obtains an instance of <code>DayOfWeek</code> from a date.
-     *
-     * @param date  the date provider to use, not null
-     * @return the DayOfWeek singleton, never null
-     */
-    public static DayOfWeek dayOfWeek(LocalDate date) {
-        // TODO: should this code be elsewhere?
-        long mjd = date.toModifiedJulianDays();
-        if (mjd < 0) {
-            long weeks = mjd / 7;
-            mjd += (-weeks + 1) * 7;
-        }
-        int dow0 = (int) ((mjd + 2) % 7);
-        return dayOfWeek(dow0 + 1);
-    }
-
-    /**
      * Obtains an instance of <code>DayOfWeek</code> from a calendrical.
      * <p>
-     * This can be used extract a day of week object directly from any implementation
-     * of Calendrical, including those in other calendar systems.
+     * This can be used extract the day-of-week value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
      * @return the DayOfWeek singleton, never null
-     * @throws UnsupportedRuleException if the day of week cannot be obtained
+     * @throws UnsupportedRuleException if the day-of-week cannot be obtained
      */
     public static DayOfWeek dayOfWeek(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);

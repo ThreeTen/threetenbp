@@ -50,9 +50,9 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockTimeProviderReturnsNull;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -134,7 +134,7 @@ public class TestSecondOfMinute {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_TimeProvider() {
+    public void test_factory_Calendrical() {
         LocalTime time = LocalTime.time(5, 10, 0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             SecondOfMinute test = SecondOfMinute.secondOfMinute(time);
@@ -143,14 +143,14 @@ public class TestSecondOfMinute {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullTimeProvider() {
-        SecondOfMinute.secondOfMinute((TimeProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        SecondOfMinute.secondOfMinute(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badTimeProvider() {
-        SecondOfMinute.secondOfMinute(new MockTimeProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        SecondOfMinute.secondOfMinute((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

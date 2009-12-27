@@ -36,15 +36,15 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a day of year in the ISO-8601 calendar system.
@@ -71,14 +71,6 @@ public final class DayOfYear
      * Cache of singleton instances.
      */
     private static final AtomicReferenceArray<DayOfYear> CACHE = new AtomicReferenceArray<DayOfYear>(366);
-    /**
-     * The start of months in a standard year.
-     */
-    private static final int[] STANDARD_MONTH_START = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-    /**
-     * The start of months in a leap year.
-     */
-    private static final int[] LEAP_MONTH_START = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335};
 
     /**
      * The day of year being represented.
@@ -124,23 +116,17 @@ public final class DayOfYear
     }
 
     /**
-     * Obtains an instance of <code>DayOfYear</code> from a date provider.
+     * Obtains an instance of <code>DayOfYear</code> from a calendrical.
      * <p>
-     * This can be used extract a day of year object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
+     * This can be used extract the day-of-year value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @return the DayOfWeek singleton, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the DayOfYear instance, never null
+     * @throws UnsupportedRuleException if the day-of-year cannot be obtained
      */
-    public static DayOfYear dayOfYear(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        int moy0 = date.getMonthOfYear().ordinal();
-        int dom = date.getDayOfMonth();
-        if (ISOChronology.isLeapYear(date.getYear())) {
-            return dayOfYear(LEAP_MONTH_START[moy0] + dom);
-        } else {
-            return dayOfYear(STANDARD_MONTH_START[moy0] + dom);
-        }
+    public static DayOfYear dayOfYear(Calendrical calendrical) {
+        return dayOfYear(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -323,17 +309,7 @@ public final class DayOfYear
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, rule());
         }
-        int doy0 = dayOfYear - 1;
-        int[] array = (leap ? LEAP_MONTH_START : STANDARD_MONTH_START);
-        int month = 1;
-        for ( ; month < 12; month++) {
-            if (doy0 < array[month]) {
-                break;
-            }
-        }
-        MonthOfYear moy = MonthOfYear.monthOfYear(month);
-        int dom = dayOfYear - array[month - 1];
-        return LocalDate.date(year, moy, dom);
+        return LocalDate.date(year, 1, 1).plusDays(dayOfYear - 1);
     }
 
     //-----------------------------------------------------------------------

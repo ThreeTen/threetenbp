@@ -41,7 +41,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a nano of second in the ISO-8601 calendar system.
@@ -102,18 +102,18 @@ public final class NanoOfSecond
         return new NanoOfSecond(nanoOfSecond);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>NanoOfSecond</code> from a time provider.
+     * Obtains an instance of <code>NanoOfSecond</code> from a calendrical.
      * <p>
-     * This can be used extract the second of minute directly from any implementation
-     * of TimeProvider, including those in other calendar systems.
+     * This can be used extract the nano-of-second value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param timeProvider  the time provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the NanoOfSecond instance, never null
+     * @throws UnsupportedRuleException if the nano-of-second cannot be obtained
      */
-    public static NanoOfSecond nanoOfSecond(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).toNanoOfSecond();
+    public static NanoOfSecond nanoOfSecond(Calendrical calendrical) {
+        return nanoOfSecond(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

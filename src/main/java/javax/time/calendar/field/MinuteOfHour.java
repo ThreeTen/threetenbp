@@ -42,7 +42,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeProvider;
+import javax.time.calendar.UnsupportedRuleException;
 
 /**
  * A representation of a minute of hour in the ISO-8601 calendar system.
@@ -111,18 +111,18 @@ public final class MinuteOfHour
         }
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MinuteOfHour</code> from a time provider.
+     * Obtains an instance of <code>MinuteOfHour</code> from a calendrical.
      * <p>
-     * This can be used extract the minute of hour directly from any implementation
-     * of TimeProvider, including those in other calendar systems.
+     * This can be used extract the minute-of-hour value directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param timeProvider  the time provider to use, not null
+     * @param calendrical  the calendrical to extract from, not null
      * @return the MinuteOfHour instance, never null
+     * @throws UnsupportedRuleException if the minute-of-hour cannot be obtained
      */
-    public static MinuteOfHour minuteOfHour(TimeProvider timeProvider) {
-        return LocalTime.time(timeProvider).toMinuteOfHour();
+    public static MinuteOfHour minuteOfHour(Calendrical calendrical) {
+        return minuteOfHour(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------

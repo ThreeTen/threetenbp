@@ -39,13 +39,13 @@ import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockDateProviderReturnsNull;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -98,7 +98,7 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_DateProvider() {
+    public void test_factory_Calendrical() {
         LocalDate date = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= 365; i++) {
             QuarterOfYear test = QuarterOfYear.quarterOfYear(date);
@@ -107,14 +107,14 @@ public class TestQuarterOfYear {
         }
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        QuarterOfYear.quarterOfYear((DateProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        DayOfWeek.dayOfWeek(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badDateProvider() {
-        QuarterOfYear.quarterOfYear(new MockDateProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        QuarterOfYear.quarterOfYear((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

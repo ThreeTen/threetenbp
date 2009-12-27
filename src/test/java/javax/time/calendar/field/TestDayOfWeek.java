@@ -42,12 +42,12 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -101,34 +101,10 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_LocalDate() {
-        LocalDate date = LocalDate.date(2007, 1, 1);  // Monday
-        for (int i = 0; i <= 1500; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek(date);
-            assertEquals(test.getValue(), (i % 7) + 1);
-            date = date.plusDays(1);
-        }
-    }
-
-    public void test_factory_LocalDate_oldDate() {
-        LocalDate date = LocalDate.date(2007, 1, 1).minusDays(70000);  // Monday
-        for (int i = 0; i <= 1500; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek(date);
-            assertEquals(test.getValue(), (i % 7) + 1);
-            date = date.plusDays(1);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        DayOfWeek.dayOfWeek((LocalDate) null);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_factory_Calendrical() {
         LocalDate date = LocalDate.date(2007, 1, 1);  // Monday
         for (int i = 0; i <= 1500; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek((Calendrical) date);
+            DayOfWeek test = DayOfWeek.dayOfWeek(date);
             assertEquals(test.getValue(), (i % 7) + 1);
             date = date.plusDays(1);
         }
@@ -137,15 +113,15 @@ public class TestDayOfWeek {
     public void test_factory_Calendrical_oldDate() {
         LocalDate date = LocalDate.date(2007, 1, 1).minusDays(70000);  // Monday
         for (int i = 0; i <= 1500; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek((Calendrical) date);
+            DayOfWeek test = DayOfWeek.dayOfWeek(date);
             assertEquals(test.getValue(), (i % 7) + 1);
             date = date.plusDays(1);
         }
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_unsupported() {
-        DayOfWeek.dayOfWeek(DateTimeFields.fields());
+    public void test_factory_Calendrical_noData() {
+        DayOfWeek.dayOfWeek(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)

@@ -47,13 +47,13 @@ import java.util.Iterator;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockDateProviderReturnsNull;
+import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -199,12 +199,12 @@ public class TestWeekBasedYear {
     }
 
     @Test(dataProvider="weekyearLocalDate")
-    public void test_factory_DateProvider(LocalDate date, int expectedWeekyear) {
+    public void test_factory_Calendrical(LocalDate date, int expectedWeekyear) {
         WeekBasedYear test = WeekBasedYear.weekyear(date);
         assertEquals(test.getValue(), expectedWeekyear);
     }
 
-    public void test_factory_DateProvider_simple_weekyear() {
+    public void test_factory_Calendrical_simple_weekyear() {
         LocalDate date = LocalDate.date(2008, 1, 4);
         LocalDate end = LocalDate.date(2008, 12, 28);
 
@@ -215,14 +215,14 @@ public class TestWeekBasedYear {
     }
 
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullDateProvider() {
-        WeekBasedYear.weekyear((DateProvider) null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void test_factory_Calendrical_noData() {
+        WeekBasedYear.weekyear(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_badDateProvider() {
-        WeekBasedYear.weekyear(new MockDateProviderReturnsNull());
+    public void test_factory_nullCalendrical() {
+        WeekBasedYear.weekyear((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

@@ -367,7 +367,7 @@ public final class LocalDate
      * @return the day of year, never null
      */
     public DayOfYear toDayOfYear() {
-        return DayOfYear.dayOfYear(this);
+        return DayOfYear.dayOfYear(getDayOfYear());
     }
 
     /**
@@ -381,7 +381,7 @@ public final class LocalDate
      * @return the day of week, never null
      */
     public DayOfWeek toDayOfWeek() {
-        return DayOfWeek.dayOfWeek(this);
+        return getDayOfWeek();
     }
 
     //-----------------------------------------------------------------------
@@ -446,7 +446,7 @@ public final class LocalDate
      * @return the day of year, from 1 to 365, or 366 in a leap year
      */
     public int getDayOfYear() {
-        return DayOfYear.dayOfYear(this).getValue();  // TODO: inline for performance? move code to chrono?
+        return ISOChronology.getDayOfYearFromDate(this);
     }
 
     /**
@@ -463,7 +463,7 @@ public final class LocalDate
      * @return the day of week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.dayOfWeek(this);
+        return ISOChronology.getDayOfWeekFromDate(this);
     }
 
 //    //-----------------------------------------------------------------------

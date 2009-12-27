@@ -108,15 +108,14 @@ public enum AmPmOfDay
         }
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>AmPmOfDay</code> from a calendrical.
      * <p>
      * This can be used extract the AM/PM value directly from any implementation
-     * of Calendrical, including those in other calendar systems.
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
      * @param calendrical  the calendrical to extract from, not null
-     * @return the AmPmOfDay enum instance, never null
+     * @return the AmPmOfDay singleton, never null
      * @throws UnsupportedRuleException if the AM/PM cannot be obtained
      */
     public static AmPmOfDay amPmOfDay(Calendrical calendrical) {
