@@ -49,7 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
-import javax.time.period.Period;
 import javax.time.period.PeriodUnit;
 
 /**
@@ -276,17 +275,17 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
 //        return value;
 //    }
 
-    /**
-     * Creates a period in the unit of this rule.
-     * <p>
-     * For example, if this represents the day of month, the the unit is the day
-     * and the period created will have the days field set.
-     *
-     * @param amount  the amount that the period should represent
-     */
-    protected Period createPeriod(int amount) {
-        throw new UnsupportedOperationException();
-    }
+//    /**
+//     * Creates a period in the unit of this rule.
+//     * <p>
+//     * For example, if this represents the day of month, the the unit is the day
+//     * and the period created will have the days field set.
+//     *
+//     * @param amount  the amount that the period should represent
+//     */
+//    protected Period createPeriod(int amount) {
+//        throw new UnsupportedOperationException();
+//    }
 
     //-----------------------------------------------------------------------
     /**
