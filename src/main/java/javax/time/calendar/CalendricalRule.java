@@ -324,19 +324,19 @@ public abstract class CalendricalRule<T> implements Comparable<CalendricalRule<T
      * this field if this method is called.
      * <p>
      * If the override successfully merged some fields then the following must be performed.
-     * The merged field must be stored using {@link Calendrical.Merger#storeMergedField}.
+     * The merged field must be stored using {@link CalendricalMerger#storeMerged}.
      * Each field used in the merge must be marked as being used by calling
-     * {@link Calendrical.Merger#markFieldAsProcessed}.
+     * {@link CalendricalMerger#removeProcessed}.
      * <p>
      * An example to merge two fields into one - hour of AM/PM and AM/PM:
      * <pre>
      *  Integer hapVal = merger.getValue(ISOChronology.hourOfAmPmRule());
      *  if (hapVal != null) {
-     *    int amPm = merger.getValueInt(this);
+     *    AmPmOfDay amPm = merger.getValue(this);
      *    int hourOfDay = MathUtils.safeAdd(MathUtils.safeMultiply(amPm, 12), hapVal);
-     *    merger.storeMergedField(ISOChronology.hourOfDayRule(), hourOfDay);
-     *    merger.markFieldAsProcessed(this);
-     *    merger.markFieldAsProcessed(ISOChronology.hourOfAmPmRule());
+     *    merger.storeMerged(ISOChronology.hourOfDayRule(), hourOfDay);
+     *    merger.removeProcessed(this);
+     *    merger.removeProcessed(ISOChronology.hourOfAmPmRule());
      *  }
      * </pre>
      *
