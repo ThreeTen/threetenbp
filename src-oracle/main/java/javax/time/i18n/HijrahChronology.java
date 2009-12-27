@@ -310,7 +310,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected HijrahEra deriveValue(Calendrical calendrical) {
+        protected HijrahEra derive(Calendrical calendrical) {
             HijrahDate date = calendrical.get(HijrahDate.rule());
             return date != null ? date.getEra() : null;
         }
@@ -360,7 +360,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         }
         // TODO: min/max years based on era
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             HijrahDate date = calendrical.get(HijrahDate.rule());
             return date != null ? date.getYearOfEra() : null;
         }
@@ -410,7 +410,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             HijrahDate date = calendrical.get(HijrahDate.rule());
             return date != null ? date.getMonthOfYear() : null;
         }
@@ -449,7 +449,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             HijrahDate date = calendrical.get(HijrahDate.rule());
             return date != null ? date.getDayOfMonth() : null;
         }
@@ -486,7 +486,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             HijrahDate date = calendrical.get(HijrahDate.rule());
             return date != null ? date.getDayOfYear() : null;
         }
@@ -509,7 +509,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             HijrahDate date = calendrical.get(HijrahDate.rule());
             return date != null ? date.getDayOfWeek() : null;
         }

@@ -581,7 +581,7 @@ public final class MinguoDate
             return INSTANCE;
         }
         @Override
-        protected MinguoDate deriveValue(Calendrical calendrical) {
+        protected MinguoDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
             return ld != null ? MinguoDate.minguoDate(ld) : null;
         }

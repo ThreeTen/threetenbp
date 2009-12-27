@@ -116,22 +116,22 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.date(2007, 6, 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), (Integer) 20);
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), (Integer) 20);
     }
 
     public void test_getValue_Calendrical_monthDay() {
         Calendrical cal = MonthDay.monthDay(6, 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), (Integer) 20);
     }
 
     public void test_getValue_Calendrical_dateTimeFields() {
         Calendrical cal = DateTimeFields.fields(rule(), 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 20);
+        assertEquals(rule().getValue(cal), (Integer) 20);
     }
 
 }

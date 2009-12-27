@@ -90,12 +90,12 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.date(2007, 6, 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
+        assertEquals(rule().getValue(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValueQuiet(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
+        assertEquals(rule().getValue(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
     }
 
 }

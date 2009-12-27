@@ -161,29 +161,33 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the <code>Integer</code> value of this field from the specified calendrical.
+     * Gets the <code>Integer</code> value of this field from the specified calendrical
+     * returning <code>null</code> if the value cannot be returned.
      * <p>
-     * This map uses {@link #getValueQuiet(Calendrical)} to find the value and
-     * then converts it to an <code>Integer</code>.
+     * This uses {@link #getValue(Calendrical)} to find the value and then
+     * converts it to an <code>Integer</code>.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, null if unable to extract the field
      */
-    public final Integer getIntQuiet(Calendrical calendrical) {
-        T value = getValueQuiet(calendrical);
+    public final Integer getInteger(Calendrical calendrical) {
+        T value = getValue(calendrical);
         return value == null ? null : convertValueToInteger(value);
     }
 
     /**
-     * Gets the value of the field from the specified calendrical throwing
-     * an exception if the field cannot be returned.
+     * Gets the <code>int</code> value of this field from the specified calendrical
+     * throwing an exception if the value cannot be returned.
+     * <p>
+     * This uses {@link #getValue(Calendrical)} to find the value and then
+     * converts it to an <code>int</code> ensuring it isn't <code>null</code>.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, never null
      * @throws UnsupportedRuleException if the field cannot be extracted
      */
     public final int getInt(Calendrical calendrical) {
-        T value = getValueQuiet(calendrical);
+        T value = getValue(calendrical);
         if (value == null) {
             throw new UnsupportedRuleException(this);
         }

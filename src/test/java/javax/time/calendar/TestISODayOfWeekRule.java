@@ -98,12 +98,12 @@ public class TestISODayOfWeekRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.date(2009, 12, 26);
-        assertEquals(rule().getValueQuiet(cal), DayOfWeek.SATURDAY);
+        assertEquals(rule().getValue(cal), DayOfWeek.SATURDAY);
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.dateTime(2009, 12, 26, 12, 30);
-        assertEquals(rule().getValueQuiet(cal), DayOfWeek.SATURDAY);
+        assertEquals(rule().getValue(cal), DayOfWeek.SATURDAY);
     }
 
 }

@@ -178,8 +178,8 @@ public final class MonthDay
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
     public static MonthDay monthDay(Calendrical calendrical) {
-        MonthOfYear month = ISOChronology.monthOfYearRule().getValue(calendrical);
-        Integer dom = ISOChronology.dayOfMonthRule().getValue(calendrical);
+        MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
+        Integer dom = ISOChronology.dayOfMonthRule().getValueChecked(calendrical);
         return monthDay(month, dom);
     }
 
@@ -637,7 +637,7 @@ public final class MonthDay
             return INSTANCE;
         }
         @Override
-        protected MonthDay deriveValue(Calendrical calendrical) {
+        protected MonthDay derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
             Integer dom = calendrical.get(ISOChronology.dayOfMonthRule());
             return moy != null && dom != null ? MonthDay.monthDay(moy, dom) : null;

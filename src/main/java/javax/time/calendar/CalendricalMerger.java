@@ -386,7 +386,7 @@ public final class CalendricalMerger implements Calendrical {
     private void interpret() {
         for (Entry<CalendricalRule<?>, Object> entry : inputMap.entrySet()) {
             CalendricalRule<?> rule = entry.getKey();
-            Object value = rule.interpret(this, entry.getValue());
+            Object value = rule.interpretValue(this, entry.getValue());
             processingMap.put(rule, value);
         }
     }
@@ -397,7 +397,7 @@ public final class CalendricalMerger implements Calendrical {
     private void removeDerivable() {
         Iterator<CalendricalRule<?>> it = processingMap.keySet().iterator();
         while (it.hasNext()) {
-            Object derivedValue = it.next().deriveValue(this);
+            Object derivedValue = it.next().derive(this);
             if (derivedValue != null) {
                 it.remove();
             }

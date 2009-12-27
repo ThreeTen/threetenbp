@@ -151,8 +151,8 @@ public final class YearMonth
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
     public static YearMonth yearMonth(Calendrical calendrical) {
-        Integer year = ISOChronology.yearRule().getValue(calendrical);
-        MonthOfYear month = ISOChronology.monthOfYearRule().getValue(calendrical);
+        Integer year = ISOChronology.yearRule().getValueChecked(calendrical);
+        MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
         return yearMonth(year, month);
     }
 
@@ -700,7 +700,7 @@ public final class YearMonth
             return INSTANCE;
         }
         @Override
-        protected YearMonth deriveValue(Calendrical calendrical) {
+        protected YearMonth derive(Calendrical calendrical) {
             Integer year = calendrical.get(ISOChronology.yearRule());
             MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
             return year != null && moy != null ? YearMonth.yearMonth(year, moy) : null;

@@ -645,7 +645,7 @@ public final class ZoneOffset
             return INSTANCE;
         }
         @Override
-        protected ZoneOffset deriveValue(Calendrical calendrical) {
+        protected ZoneOffset derive(Calendrical calendrical) {
             OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
             if (odt != null) {
                 return odt.getOffset();

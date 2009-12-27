@@ -65,7 +65,7 @@ public class TestCalendricalRule {
             super(BigInteger.class, ISOChronology.INSTANCE, "MockBigYearRule");
         }
         @Override
-        protected BigInteger deriveValue(Calendrical calendrical) {
+        protected BigInteger derive(Calendrical calendrical) {
             Integer year = calendrical.get(ISOChronology.yearRule());
             return year != null ? BigInteger.valueOf(year) : null;
         }

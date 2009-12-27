@@ -562,7 +562,7 @@ public final class ThaiBuddhistDate
             return INSTANCE;
         }
         @Override
-        protected ThaiBuddhistDate deriveValue(Calendrical calendrical) {
+        protected ThaiBuddhistDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
             return ld != null ? ThaiBuddhistDate.thaiBuddhistDate(ld) : null;
         }

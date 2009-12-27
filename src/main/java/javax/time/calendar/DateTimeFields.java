@@ -396,7 +396,7 @@ public final class DateTimeFields
     public boolean matchesDate(LocalDate date) {
         ISOChronology.checkNotNull(date, "LocalDate must not be null");
         for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
-            Integer dateValue = entry.getKey().getIntQuiet(date);
+            Integer dateValue = entry.getKey().getInteger(date);
             if (dateValue != null && dateValue.equals(entry.getValue()) == false) {
                 return false;
             }
@@ -415,7 +415,7 @@ public final class DateTimeFields
     public boolean matchesTime(LocalTime time) {
         ISOChronology.checkNotNull(time, "LocalTime must not be null");
         for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
-            Integer timeValue = entry.getKey().getIntQuiet(time);
+            Integer timeValue = entry.getKey().getInteger(time);
             if (timeValue != null && timeValue.equals(entry.getValue()) == false) {
                 return false;
             }

@@ -1930,7 +1930,7 @@ public final class HijrahDate
             return INSTANCE;
         }
         @Override
-        protected HijrahDate deriveValue(Calendrical calendrical) {
+        protected HijrahDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
             return ld != null ? HijrahDate.hijrahDate(ld) : null;
         }

@@ -134,7 +134,13 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the reified type of values of the rule.
+     * Gets the reified class representing the underlying type of the rule.
+     * <p>
+     * Each rule uses an underlying type to represent the data.
+     * This is captured in the generic type of the rule.
+     * Since the generic implementation is Java is limited to the compiler, the
+     * underlying type has been reified and made available through this method.
+     * It is expected, but not enforced, that the underlying type is {@link Comparable}.
      *
      * @return the reified type of values of the rule, never null
      */
@@ -145,9 +151,12 @@ public abstract class CalendricalRule<T>
     /**
      * Returns the input value cast to the correct generic type.
      * <p>
-     * The generics implementation in Java is limited to the compiler.
-     * This method is needed to assist the compiler in certain circumstances.
-     * The implementation simply returns the input value typed as the generic type.
+     * Each rule uses an underlying type to represent the data.
+     * This is captured in the generic type of the rule.
+     * Since the generic implementation is Java is limited to the compiler, the
+     * underlying type has been reified which allows this method to validate
+     * the generic type fully. The implementation simply returns the input value
+     * typed as the generic type.
      *
      * @param value  the value to reify, may be null
      * @return the type-cast input value, may be null
@@ -165,7 +174,8 @@ public abstract class CalendricalRule<T>
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the value of this rule from the specified calendrical.
+     * Gets the value of this rule from the specified calendrical returning
+     * <code>null</code> if the value cannot be returned.
      * <p>
      * This method queries the calendrical to determine if it provides the rule
      * value directly. If not, an attempt is made to {@link #deriveValue derive}
@@ -174,7 +184,7 @@ public abstract class CalendricalRule<T>
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, null if unable to extract the field
      */
-    public final T getValueQuiet(Calendrical calendrical) {
+    public final T getValue(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         return calendrical.get(this);
     }
@@ -182,13 +192,16 @@ public abstract class CalendricalRule<T>
     /**
      * Gets the value of the rule from the specified calendrical throwing
      * an exception if the rule cannot be returned.
+     * <p>
+     * This uses {@link #getValue(Calendrical)} to find the value and then
+     * ensures it isn't <code>null</code>.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, never null
      * @throws UnsupportedRuleException if the rule cannot be extracted
      */
-    public final T getValue(Calendrical calendrical) {
-        T value = getValueQuiet(calendrical);
+    public final T getValueChecked(Calendrical calendrical) {
+        T value = getValue(calendrical);
         if (value == null) {
             throw new UnsupportedRuleException(this);
         }
@@ -211,7 +224,7 @@ public abstract class CalendricalRule<T>
      * the second parameter may be a different representation, for example in {@link Year#get}.
      * <p>
      * If this rule and the specified rule are the same, then the value is returned.
-     * Otherwise, an attempt is made to {@link #deriveValue derive} the field value.
+     * Otherwise, an attempt is made to {@link #derive} the field value.
      *
      * @param rule  the rule to retrieve, not null
      * @param value  the value to return if this rule is the specified rule, not null
@@ -225,7 +238,7 @@ public abstract class CalendricalRule<T>
         if (rule.equals(this)) {
             return rule.reify(value);
         }
-        return rule.deriveValue(calendrical);
+        return rule.derive(calendrical);
     }
 
     /**
@@ -250,7 +263,7 @@ public abstract class CalendricalRule<T>
      */
     public final T deriveValueFrom(Calendrical calendrical) {
         ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
-        return deriveValue(calendrical);
+        return derive(calendrical);
     }
 
     /**
@@ -259,29 +272,28 @@ public abstract class CalendricalRule<T>
      * This method derives the value for this field from other fields in the calendrical
      * without directly querying the calendrical for the value.
      * <p>
-     * For example, if this field is QuarterOfYear, then the value can be derived
-     * from MonthOfYear. The implementation must not check to see of the map
-     * already contains a value for QuarterOfYear.
+     * For example, if this field is quarter-of-year, then the value can be derived
+     * from month-of-year.
      * <p>
-     * The derivation can be recursive depending on the hierarchy of fields.
-     * This is achieved by using {@link #getValueQuiet} to obtain the parent field rule.
+     * The implementation only needs to derive the value based on its immediate parents.
+     * The use of {@link Calendrical#get} will extract any further parents on demand.
      * <p>
      * A typical implementation of this method obtains the parent value and performs a calculation.
-     * For example, here is a simple implementation for the QuarterOfYear field
-     * (which doesn't handle negative numbers or leniency):
+     * For example, here is a simple implementation for the quarter-of-year field:
      * <pre>
-     * Integer moyVal = ISOChronology.monthOfYearRule().getValueQuiet(fieldValueMap);
-     * return (moyVal == null ? null : ((moyVal - 1) % 4) + 1);
+     * Integer moyVal = calendrical.get(ISOChronology.monthOfYearRule());
+     * return (moyVal != null ? ((moyVal - 1) % 4) + 1) : null;
      * </pre>
-     * Extracts the value for this field using information in the field map.
      * <p>
      * This method is designed to be overridden in subclasses.
      * The subclass implementation must be thread-safe.
+     * The subclass implementation must not request the value of this rule from
+     * the specified calendrical, otherwise a stack overflow error will occur.
      *
      * @param calendrical  the calendrical to derive from, not null
      * @return the derived value, null if unable to derive
      */
-    protected T deriveValue(Calendrical calendrical) {
+    protected T derive(Calendrical calendrical) {
         return null;  // do nothing - override if this field can derive
     }
 
@@ -293,11 +305,11 @@ public abstract class CalendricalRule<T>
      * @param merger  the merger instance controlling the merge process, not null
      * @param value  the value to interpret, not null
      */
-    final T interpret(CalendricalMerger merger, Object value) {
+    final T interpretValue(CalendricalMerger merger, Object value) {
         if (reified.isInstance(value)) {
             return reify(value);
         }
-        T result = interpretValue(merger, value);
+        T result = interpret(merger, value);
         if (result != null) {
             return result;
         }
@@ -315,7 +327,7 @@ public abstract class CalendricalRule<T>
      * @param merger  the merger instance controlling the merge process, not null
      * @param value  the value to interpret, null if unable to interpret the value
      */
-    protected T interpretValue(CalendricalMerger merger, Object value) {
+    protected T interpret(CalendricalMerger merger, Object value) {
         return null;
     }
 

@@ -80,17 +80,17 @@ public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
         Calendrical cal = LocalDate.date(2007, 6, 20);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 2007);
+        assertEquals(rule().getValue(cal), (Integer) 2007);
     }
 
     public void test_getValue_Calendrical_dateTime() {
         Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 2007);
+        assertEquals(rule().getValue(cal), (Integer) 2007);
     }
 
     public void test_getValue_Calendrical_yearMonth() {
         Calendrical cal = YearMonth.yearMonth(2007, 6);
-        assertEquals(rule().getValueQuiet(cal), (Integer) 2007);
+        assertEquals(rule().getValue(cal), (Integer) 2007);
     }
 
 }

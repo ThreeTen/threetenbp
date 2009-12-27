@@ -186,7 +186,7 @@ public enum MonthOfYear
      * @throws UnsupportedRuleException if the month of year cannot be obtained
      */
     public static MonthOfYear monthOfYear(Calendrical calendrical) {
-        return rule().getValue(calendrical);
+        return rule().getValueChecked(calendrical);
     }
 
     //-----------------------------------------------------------------------

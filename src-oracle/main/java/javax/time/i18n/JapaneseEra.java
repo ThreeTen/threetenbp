@@ -140,7 +140,7 @@ public enum JapaneseEra implements Calendrical {
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
     public static JapaneseEra japaneseEra(Calendrical calendrical) {
-        return rule().getValue(calendrical);
+        return rule().getValueChecked(calendrical);
     }
 
     //-----------------------------------------------------------------------

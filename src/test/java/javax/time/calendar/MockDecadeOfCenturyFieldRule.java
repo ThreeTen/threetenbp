@@ -57,7 +57,7 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule<Intege
         return INSTANCE;
     }
     @Override
-    protected Integer deriveValue(Calendrical calendrical) {
+    protected Integer derive(Calendrical calendrical) {
         Integer yocVal = calendrical.get(MockYearOfCenturyFieldRule.INSTANCE);
         return (yocVal == null ? null : yocVal / 10);
     }

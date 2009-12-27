@@ -213,41 +213,41 @@ public abstract class AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_fromTestingFields() {
-        assertEquals(rule().getValueQuiet(testingCalendrical), testingValue);
+        assertEquals(rule().getValue(testingCalendrical), testingValue);
     }
 
     public void test_getValue_Calendrical_cannotDerive() {
         Calendrical cal = new MockSimpleCalendrical();
-        assertEquals(rule().getValueQuiet(cal), null);
+        assertEquals(rule().getValue(cal), null);
     }
 
     //-----------------------------------------------------------------------
     // getValueChecked(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValueChecked_fromTestingFields() {
-        assertEquals(rule().getValue(testingCalendrical), testingValue);
+        assertEquals(rule().getValueChecked(testingCalendrical), testingValue);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_getValueChecked_Calendrical_cannotDerive() {
         Calendrical cal = new MockSimpleCalendrical();
-        rule().getValue(cal);
+        rule().getValueChecked(cal);
     }
 
     //-----------------------------------------------------------------------
     // getInteger(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getInteger_fromTestingFields() {
-        assertEquals(rule().getIntQuiet(testingCalendrical), (Integer) testingInt);
+        assertEquals(rule().getInteger(testingCalendrical), (Integer) testingInt);
     }
 
     public void test_getInteger_Calendrical_cannotDerive() {
         Calendrical cal = new MockSimpleCalendrical();
-        assertEquals(rule().getIntQuiet(cal), null);
+        assertEquals(rule().getInteger(cal), null);
     }
 
     //-----------------------------------------------------------------------
-    // getValueChecked(Calendrical)
+    // getInt(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getInt_fromTestingFields() {
         assertEquals(rule().getInt(testingCalendrical), testingInt);

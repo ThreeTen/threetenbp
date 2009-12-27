@@ -247,7 +247,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        protected ThaiBuddhistEra deriveValue(Calendrical calendrical) {
+        protected ThaiBuddhistEra derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getEra() : null;
         }
@@ -297,7 +297,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         }
         // TODO: min/max years based on era
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getYearOfEra() : null;
         }
@@ -347,7 +347,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getMonthOfYear() : null;
         }
@@ -386,7 +386,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getDayOfMonth() : null;
         }
@@ -424,7 +424,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getDayOfYear() : null;
         }
@@ -447,7 +447,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getDayOfWeek() : null;
         }

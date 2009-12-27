@@ -836,8 +836,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : date.getYear());
         }
 //        @Override
@@ -872,8 +872,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected MonthOfYear deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected MonthOfYear derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : date.getMonthOfYear());
         }
         @Override
@@ -885,7 +885,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return MonthOfYear.monthOfYear(value);
         }
         @Override
-        protected MonthOfYear interpretValue(CalendricalMerger merger, Object value) {
+        protected MonthOfYear interpret(CalendricalMerger merger, Object value) {
             if (value instanceof Integer) {
                 int val = (Integer) value;
                 if (val < 1 || val > 12) {
@@ -962,8 +962,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return year != null ? moy.lengthInDays(year) : moy.maxLengthInDays();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : date.getDayOfMonth());
         }
     }
@@ -994,8 +994,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (year != null && isLeapYear(year) == false ? 365 : 366);
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : date.getDayOfYear());
         }
 //        @Override
@@ -1031,8 +1031,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : WeekBasedYear.weekyear(date).getValue());
         }
 //        @Override
@@ -1080,8 +1080,8 @@ public final class ISOChronology extends Chronology implements Serializable {
 //            return getMaximumValue();
 //        }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : WeekOfWeekBasedYear.weekOfWeekyear(date).getValue());
         }
     }
@@ -1103,8 +1103,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected DayOfWeek deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected DayOfWeek derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : date.getDayOfWeek());
         }
         @Override
@@ -1116,7 +1116,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return DayOfWeek.dayOfWeek(value);
         }
         @Override
-        protected DayOfWeek interpretValue(CalendricalMerger merger, Object value) {
+        protected DayOfWeek interpret(CalendricalMerger merger, Object value) {
             if (value instanceof Integer) {
                 int val = (Integer) value;
                 if (val < 1 || val > 7) {
@@ -1170,8 +1170,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            Integer doyVal = dayOfYearRule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            Integer doyVal = dayOfYearRule().getValue(calendrical);
             if (doyVal == null) {
                 return null;
             }
@@ -1211,8 +1211,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            MonthOfYear moy = monthOfYearRule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            MonthOfYear moy = monthOfYearRule().getValue(calendrical);
             if (moy == null) {
                 return null;
             }
@@ -1254,8 +1254,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            MonthOfYear moy = monthOfYearRule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            MonthOfYear moy = monthOfYearRule().getValue(calendrical);
             if (moy == null) {
                 return null;
             }
@@ -1294,8 +1294,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalDate date = LocalDate.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalDate date = LocalDate.rule().getValue(calendrical);
             return (date == null ? null : ((date.getDayOfMonth() - 1) % 7) + 1);
         }
 //        @Override
@@ -1333,8 +1333,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : time.getHourOfDay());
         }
 //        @Override
@@ -1394,8 +1394,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : time.getMinuteOfHour());
         }
     }
@@ -1417,8 +1417,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : time.getSecondOfMinute());
         }
     }
@@ -1440,8 +1440,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : time.getNanoOfSecond());
         }
     }
@@ -1463,8 +1463,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : (int) (time.toSecondOfDay()));
         }
 //        @Override
@@ -1501,8 +1501,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : (int) (time.toNanoOfDay() / 1000000));
         }
 //        @Override
@@ -1534,8 +1534,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            LocalTime time = LocalTime.rule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            LocalTime time = LocalTime.rule().getValue(calendrical);
             return (time == null ? null : time.getNanoOfSecond() / 1000000);
         }
 //        @Override
@@ -1564,8 +1564,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected AmPmOfDay deriveValue(Calendrical calendrical) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(calendrical);
+        protected AmPmOfDay derive(Calendrical calendrical) {
+            Integer hourVal = hourOfDayRule().getValue(calendrical);
             if (hourVal == null) {
                 return null;
             }
@@ -1582,7 +1582,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             return AmPmOfDay.amPmOfDay(value);
         }
         @Override
-        protected AmPmOfDay interpretValue(CalendricalMerger merger, Object value) {
+        protected AmPmOfDay interpret(CalendricalMerger merger, Object value) {
             if (value instanceof Integer) {
                 int val = (Integer) value;
                 if (val < 0 || val > 1) {  // TODO: check this logic
@@ -1635,8 +1635,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            Integer hourVal = hourOfDayRule().getValue(calendrical);
             if (hourVal == null) {
                 return null;
             }
@@ -1663,8 +1663,8 @@ public final class ISOChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
-            Integer hourVal = hourOfDayRule().getValueQuiet(calendrical);
+        protected Integer derive(Calendrical calendrical) {
+            Integer hourVal = hourOfDayRule().getValue(calendrical);
             if (hourVal == null) {
                 return null;
             }

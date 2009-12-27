@@ -562,7 +562,7 @@ public final class JapaneseDate
             return INSTANCE;
         }
         @Override
-        protected JapaneseDate deriveValue(Calendrical calendrical) {
+        protected JapaneseDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
             return ld != null ? JapaneseDate.japaneseDate(ld) : null;
         }

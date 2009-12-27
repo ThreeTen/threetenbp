@@ -1417,7 +1417,7 @@ public final class LocalTime
             return INSTANCE;
         }
         @Override
-        protected LocalTime deriveValue(Calendrical calendrical) {
+        protected LocalTime derive(Calendrical calendrical) {
             LocalDateTime ldt = calendrical.get(LocalDateTime.rule());
             if (ldt != null) {
                 return ldt.toLocalTime();

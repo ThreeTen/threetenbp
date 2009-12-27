@@ -247,7 +247,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
             return cd != null ? cd.getYear() : null;
         }
@@ -289,7 +289,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
             return cd != null ? cd.getMonthOfYear() : null;
         }
@@ -329,7 +329,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
             return cd != null ? cd.getDayOfMonth() : null;
         }
@@ -364,7 +364,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
             return cd != null ? cd.getDayOfYear() : null;
         }
@@ -403,7 +403,7 @@ public final class CopticChronology extends Chronology implements Serializable {
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
             return cd != null ? cd.getDayOfWeek() : null;
         }

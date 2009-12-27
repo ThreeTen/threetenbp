@@ -251,7 +251,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        protected JapaneseEra deriveValue(Calendrical calendrical) {
+        protected JapaneseEra derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
             return date != null ? date.getEra() : null;
         }
@@ -329,7 +329,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
         }
         // TODO: min/max years based on era
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
             return date != null ? date.getYearOfEra() : null;
         }
@@ -352,7 +352,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
             return date != null ? date.getMonthOfYear() : null;
         }
@@ -391,7 +391,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
             return date != null ? date.getDayOfMonth() : null;
         }
@@ -429,7 +429,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return getMaximumValue();
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
             return date != null ? date.getDayOfYear() : null;
         }
@@ -452,7 +452,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             return INSTANCE;
         }
         @Override
-        protected Integer deriveValue(Calendrical calendrical) {
+        protected Integer derive(Calendrical calendrical) {
             JapaneseDate date = calendrical.get(JapaneseDate.rule());
             return date != null ? date.getDayOfWeek() : null;
         }

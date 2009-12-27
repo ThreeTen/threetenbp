@@ -170,7 +170,7 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
      * @throws UnsupportedRuleException if the day of week cannot be obtained
      */
     public static DayOfWeek dayOfWeek(Calendrical calendrical) {
-        return rule().getValue(calendrical);
+        return rule().getValueChecked(calendrical);
     }
 
     /**

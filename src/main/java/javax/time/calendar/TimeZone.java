@@ -767,7 +767,7 @@ public final class TimeZone implements Calendrical, Serializable {
             return INSTANCE;
         }
         @Override
-        protected TimeZone deriveValue(Calendrical calendrical) {
+        protected TimeZone derive(Calendrical calendrical) {
             ZonedDateTime zdt = calendrical.get(ZonedDateTime.rule());
             return zdt != null ? zdt.getZone() : null;
         }

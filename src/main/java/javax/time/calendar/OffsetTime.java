@@ -838,7 +838,7 @@ public final class OffsetTime
             return INSTANCE;
         }
         @Override
-        protected OffsetTime deriveValue(Calendrical calendrical) {
+        protected OffsetTime derive(Calendrical calendrical) {
             OffsetDateTime odt = calendrical.get(OffsetDateTime.rule());
             return odt != null ? odt.toOffsetTime() : null;
         }

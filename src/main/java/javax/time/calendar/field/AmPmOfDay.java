@@ -120,7 +120,7 @@ public enum AmPmOfDay
      * @throws UnsupportedRuleException if the AM/PM cannot be obtained
      */
     public static AmPmOfDay amPmOfDay(Calendrical calendrical) {
-        return rule().getValue(calendrical);
+        return rule().getValueChecked(calendrical);
     }
 
     //-----------------------------------------------------------------------

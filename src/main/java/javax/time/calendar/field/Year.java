@@ -149,7 +149,7 @@ public final class Year
      * @return a Year object, never null
      */
     public static Year year(Calendrical calendrical) {
-        return Year.isoYear(rule().getValue(calendrical));
+        return Year.isoYear(rule().getValueChecked(calendrical));
     }
 
     //-----------------------------------------------------------------------

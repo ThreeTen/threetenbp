@@ -557,7 +557,7 @@ public final class CopticDate
             return INSTANCE;
         }
         @Override
-        protected CopticDate deriveValue(Calendrical calendrical) {
+        protected CopticDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
             return ld != null ? CopticDate.copticDate(ld) : null;
         }
