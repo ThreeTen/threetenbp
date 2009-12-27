@@ -58,14 +58,9 @@ import org.testng.annotations.Test;
 public class TestDuration {
 
     //-----------------------------------------------------------------------
-    public void test_isSerializable() {
-        Duration t = Duration.seconds(0L, 0);
-        assertTrue(t instanceof Serializable);
-    }
-
-    public void test_isComparable() {
-        Duration t = Duration.seconds(0L, 0);
-        assertTrue(t instanceof Comparable);
+    public void test_interfaces() {
+        assertTrue(Serializable.class.isAssignableFrom(Duration.class));
+        assertTrue(Comparable.class.isAssignableFrom(Duration.class));
     }
 
     public void test_zero() {
