@@ -72,7 +72,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class LocalDate
-        implements Calendrical, DateProvider, DateMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
+        implements Calendrical, DateProvider, CalendricalMatcher, DateAdjuster, Comparable<LocalDate>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -392,7 +392,7 @@ public final class LocalDate
      * <p>
      * Additional information about the year can be obtained from via {@link #toYear()}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -425,7 +425,7 @@ public final class LocalDate
      * This method returns the primitive <code>int</code> value for the day of month.
      * <p>
      * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of month, from 1 to 31
@@ -440,7 +440,7 @@ public final class LocalDate
      * This method returns the primitive <code>int</code> value for the day of year.
      * <p>
      * Additional information about the day of year can be obtained from via {@link #toDayOfYear()}.
-     * This returns a <code>DayOfYear</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfYear</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of year, from 1 to 365, or 366 in a leap year
@@ -1007,28 +1007,26 @@ public final class LocalDate
     /**
      * Checks whether this date matches the specified matcher.
      * <p>
-     * Matchers can be used to query the date in unusual ways. Examples might
-     * be a matcher that checks if the date is a weekend or holiday, or
-     * Friday the Thirteenth.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * Matchers can be used to query the date.
+     * A simple matcher might simply compare one of the fields, such as the year field.
+     * A more complex matcher might check if the date is the last day of the month.
      *
      * @param matcher  the matcher to use, not null
      * @return true if this date matches the matcher, false otherwise
      */
-    public boolean matches(DateMatcher matcher) {
-        return matcher.matchesDate(this);
+    public boolean matches(CalendricalMatcher matcher) {
+        return matcher.matchesCalendrical(this);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this date is equal to the input date
+     * Checks if the date extracted from the calendrical matches this.
      *
-     * @param date  the date to match, not null
-     * @return true if the two dates are equal, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
      */
-    public boolean matchesDate(LocalDate date) {
-        return (year == date.year && month == date.month && day == date.day);
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
     }
 
     /**
@@ -1038,7 +1036,8 @@ public final class LocalDate
      * @return the adjusted date, never null
      */
     public LocalDate adjustDate(LocalDate date) {
-        return matchesDate(date) ? date : this;
+        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+        return this.equals(date) ? date : this;
     }
 
     //-----------------------------------------------------------------------
@@ -1244,7 +1243,7 @@ public final class LocalDate
         }
         if (other instanceof LocalDate) {
             LocalDate otherDate = (LocalDate) other;
-            return matchesDate(otherDate);
+            return (year == otherDate.year && month == otherDate.month && day == otherDate.day);
         }
         return false;
     }

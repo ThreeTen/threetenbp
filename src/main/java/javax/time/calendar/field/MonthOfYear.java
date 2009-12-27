@@ -34,9 +34,9 @@ package javax.time.calendar.field;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -63,7 +63,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Stephen Colebourne
  */
 public enum MonthOfYear
-        implements Calendrical, DateAdjuster, DateMatcher {
+        implements Calendrical, DateAdjuster, CalendricalMatcher {
 
     /**
      * The singleton instance for the month of January.
@@ -310,6 +310,16 @@ public enum MonthOfYear
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the month-of-year extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
+    }
+
+    /**
      * Adjusts a date to have the value of this month of year, returning a new date.
      * <p>
      * If the day of month is invalid for the new month then the
@@ -341,16 +351,6 @@ public enum MonthOfYear
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         return date.withMonthOfYear(monthOfYear, resolver);
-    }
-
-    /**
-     * Checks if the value of this month of year matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getMonthOfYear() == this;
     }
 
     //-----------------------------------------------------------------------

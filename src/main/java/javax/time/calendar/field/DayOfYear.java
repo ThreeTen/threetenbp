@@ -38,7 +38,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
@@ -61,7 +61,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfYear
-        implements Calendrical, Comparable<DayOfYear>, DateAdjuster, DateMatcher, Serializable {
+        implements Calendrical, Comparable<DayOfYear>, DateAdjuster, CalendricalMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -232,6 +232,18 @@ public final class DayOfYear
 //        return DayOfMonth.dayOfMonth(dayOfYear - array[month - 1]);
 //    }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the day-of-year extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
+    }
+
     /**
      * Adjusts a date to have the value of this day of year, returning a new date.
      * <p>
@@ -246,16 +258,6 @@ public final class DayOfYear
      */
     public LocalDate adjustDate(LocalDate date) {
         return atYear(date.toYear());
-    }
-
-    /**
-     * Checks if the value of this day of year matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getDayOfYear() == dayOfYear;
     }
 
     //-----------------------------------------------------------------------

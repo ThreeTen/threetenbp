@@ -41,7 +41,7 @@ import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -50,6 +50,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockDateResolverReturnsNull;
 import javax.time.calendar.MockDecadeOfCenturyFieldRule;
 import javax.time.calendar.MonthDay;
@@ -83,7 +84,7 @@ public class TestYear {
         assertTrue(Serializable.class.isAssignableFrom(Year.class));
         assertTrue(Comparable.class.isAssignableFrom(Year.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(Year.class));
-        assertTrue(DateMatcher.class.isAssignableFrom(Year.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(Year.class));
     }
 
     //-----------------------------------------------------------------------
@@ -493,23 +494,27 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate(LocalDate)
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesDate_notLeapYear() {
+    public void test_matchesCalendrical_notLeapYear() {
         LocalDate work = LocalDate.date(2007, 3, 2);
         for (int i = -4; i <= 2104; i++) {
             for (int j = -4; j <= 2104; j++) {
                 Year test = Year.isoYear(j);
-                assertEquals(test.matchesDate(work), work.getYear() == j);
+                assertEquals(test.matchesCalendrical(work), work.getYear() == j);
             }
             work = work.plusYears(1);
         }
     }
 
+    public void test_matchesCalendrical_noData() {
+        assertEquals(Year.isoYear(2009).matchesCalendrical(LocalTime.time(12, 30)), false);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_nullLocalDate() {
+    public void test_matchesCalendrical_nullLocalDate() {
         Year test = Year.isoYear(1);
-        test.matchesDate((LocalDate) null);
+        test.matchesCalendrical((LocalDate) null);
     }
 
     //-----------------------------------------------------------------------

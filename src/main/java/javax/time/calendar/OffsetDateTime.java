@@ -66,7 +66,7 @@ import javax.time.period.PeriodProvider;
  */
 public final class OffsetDateTime
         implements Calendrical, InstantProvider, DateTimeProvider,
-        DateMatcher, TimeMatcher, DateAdjuster, TimeAdjuster,
+        CalendricalMatcher, DateAdjuster, TimeAdjuster,
         Comparable<OffsetDateTime>, Serializable {
 
     /**
@@ -709,7 +709,7 @@ public final class OffsetDateTime
      * <p>
      * Additional information about the year can be obtained from via {@link #toYear()}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -742,7 +742,7 @@ public final class OffsetDateTime
      * This method returns the primitive <code>int</code> value for the day of month.
      * <p>
      * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of month, from 1 to 31
@@ -757,7 +757,7 @@ public final class OffsetDateTime
      * This method returns the primitive <code>int</code> value for the day of year.
      * <p>
      * Additional information about the day of year can be obtained from via {@link #toDayOfYear()}.
-     * This returns a <code>DayOfYear</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfYear</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of year, from 1 to 365, or 366 in a leap year
@@ -1514,38 +1514,30 @@ public final class OffsetDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether the date matches the specified matcher.
+     * Checks whether this date-time matches the specified matcher.
      * <p>
-     * Matchers can be used to query the date.
-     * A simple matcher might simply query one of the fields, such as the year field.
-     * A more complex matcher might query if the date is the last day of the month.
-     * <p>
-     * The time and offset have no effect on the matching.
+     * Matchers can be used to query the date-time.
+     * A simple matcher might simply compare one of the fields, such as the year field.
+     * A more complex matcher might check if the date is the last day of the month.
      *
      * @param matcher  the matcher to use, not null
-     * @return true if this date matches the matcher, false otherwise
+     * @return true if this date-time matches the matcher, false otherwise
      */
-    public boolean matches(DateMatcher matcher) {
-        return dateTime.matches(matcher);
-    }
-
-    /**
-     * Checks whether the time matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the time.
-     * A simple matcher might simply query one of the fields, such as the hour field.
-     * A more complex matcher might query if the time is during opening hours.
-     * <p>
-     * The date and offset have no effect on the matching.
-     *
-     * @param matcher  the matcher to use, not null
-     * @return true if this time matches the matcher, false otherwise
-     */
-    public boolean matches(TimeMatcher matcher) {
-        return dateTime.matches(matcher);
+    public boolean matches(CalendricalMatcher matcher) {
+        return matcher.matchesCalendrical(this);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the date-time extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
+    }
+
     /**
      * Adjusts a date to have the value of the date part of this object.
      *
@@ -1564,27 +1556,6 @@ public final class OffsetDateTime
      */
     public LocalTime adjustTime(LocalTime time) {
         return dateTime.adjustTime(time);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the date part of this object is equal to the input date
-     *
-     * @param otherDate  the date to match, not null
-     * @return true if the date part matches the other date, false otherwise
-     */
-    public boolean matchesDate(LocalDate otherDate) {
-        return dateTime.matchesDate(otherDate);
-    }
-
-    /**
-     * Checks if the time part of this object is equal to the input time
-     *
-     * @param otherTime the time to match, not null
-     * @return true if the time part matches the other time, false otherwise
-     */
-    public boolean matchesTime(LocalTime otherTime) {
-        return dateTime.matchesTime(otherTime);
     }
 
     //-----------------------------------------------------------------------

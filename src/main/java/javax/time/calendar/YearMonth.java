@@ -61,7 +61,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class YearMonth
-        implements Calendrical, Comparable<YearMonth>, Serializable, DateAdjuster, DateMatcher {
+        implements Calendrical, Comparable<YearMonth>, Serializable, DateAdjuster, CalendricalMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -272,7 +272,7 @@ public final class YearMonth
      * <p>
      * Additional information about the year can be obtained from via {@link #toYear()}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -502,6 +502,16 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the year-month extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
+    }
+
+    /**
      * Adjusts a date to have the value of this year-month, returning a new date.
      * <p>
      * If the day of month is invalid for the new year then the
@@ -536,16 +546,6 @@ public final class YearMonth
         LocalDate resolved = resolver.resolveDate(toYear(), month, date.toDayOfMonth());
         ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
-    }
-
-    /**
-     * Checks if the year-month represented by this object matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return year == date.getYear() && month == date.getMonthOfYear();
     }
 
     //-----------------------------------------------------------------------

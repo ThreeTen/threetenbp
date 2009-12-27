@@ -38,7 +38,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
@@ -62,7 +62,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class DayOfMonth
-        implements Calendrical, Comparable<DayOfMonth>, DateAdjuster, DateMatcher, Serializable {
+        implements Calendrical, Comparable<DayOfMonth>, DateAdjuster, CalendricalMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -175,6 +175,17 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the day-of-month extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
+    }
+
+    /**
      * Adjusts a date to have the value of this day of month, returning a new date.
      * <p>
      * If the day of month is invalid for the year and month then an exception
@@ -202,16 +213,6 @@ public final class DayOfMonth
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         return date.withDayOfMonth(dayOfMonth, resolver);
-    }
-
-    /**
-     * Checks if the value of this day of month matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getDayOfMonth() == dayOfMonth;
     }
 
     //-----------------------------------------------------------------------

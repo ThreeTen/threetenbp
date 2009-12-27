@@ -34,13 +34,13 @@ package javax.time.calendar.field;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Stephen Colebourne
  */
 public enum AmPmOfDay
-        implements Calendrical, TimeAdjuster, TimeMatcher {
+        implements Calendrical, TimeAdjuster, CalendricalMatcher {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
@@ -209,7 +209,17 @@ public enum AmPmOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Adjusts a time to have the the am/pm value represented by this object,
+     * Checks if the AM/PM extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
+    }
+
+    /**
+     * Adjusts a time to have the the AM/PM value represented by this object,
      * returning a new time.
      * <p>
      * Only the AM/PM value is adjusted. The other date and time fields are
@@ -224,17 +234,6 @@ public enum AmPmOfDay
     public LocalTime adjustTime(LocalTime time) {
         int hourOfDay = getValue() * 12 + time.toHourOfDay().getHourOfAmPm();
         return time.withHourOfDay(hourOfDay);
-    }
-
-    /**
-     * Checks if the input time has the same AM/PM value that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return this == time.toHourOfDay().getAmPm();
     }
 
 }

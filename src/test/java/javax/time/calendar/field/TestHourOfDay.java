@@ -44,13 +44,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockTimeProviderReturnsNull;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
 import org.testng.annotations.BeforeMethod;
@@ -78,7 +79,7 @@ public class TestHourOfDay {
         assertTrue(Serializable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(HourOfDay.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(HourOfDay.class));
-        assertTrue(TimeMatcher.class.isAssignableFrom(HourOfDay.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(HourOfDay.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -196,23 +197,27 @@ public class TestHourOfDay {
     }
 
     //-----------------------------------------------------------------------
-    // matchesTime()
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesTime() {
+    public void test_matchesCalendrical() {
         LocalTime work = LocalTime.time(0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             for (int j = 0; j <= MAX_LENGTH; j++) {
                 HourOfDay test = HourOfDay.hourOfDay(j);
-                assertEquals(test.matchesTime(work), i == j);
+                assertEquals(test.matchesCalendrical(work), i == j, i + " " + j);
             }
             work = work.plusHours(1);
         }
     }
 
+    public void test_matchesCalendrical_noData() {
+        assertEquals(HourOfDay.hourOfDay(12).matchesCalendrical(LocalDate.date(2008, 6, 30)), false);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesTime_nullLocalTime() {
+    public void test_matchesCalendrical_null() {
         HourOfDay test = HourOfDay.hourOfDay(1);
-        test.matchesTime((LocalTime) null);
+        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

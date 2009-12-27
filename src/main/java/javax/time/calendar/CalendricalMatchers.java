@@ -37,20 +37,25 @@ import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 
 /**
- * Provides common implementations of <code>DateMatchers</code>.
+ * Provides common implementations of <code>CalendricalMatcher</code>.
  * <p>
- * DateMatchers is a utility class.
+ * These matchers are useful and common implementations of {@link CalendricalMatcher}.
+ * A matcher allows any type of matching to be performed against a calendrical.
+ * Examples might be checking of the calendrical represents Friday the Thirteenth,
+ * or the last day of the month, or one of the American continent time zones.
+ * <p>
+ * CalendricalMatchers is a utility class.
  * All matchers returned are immutable and thread-safe.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public final class DateMatchers {
+public final class CalendricalMatchers {
 
     /**
      * Private constructor since this is a utility class
      */
-    private DateMatchers() {
+    private CalendricalMatchers() {
     }
 
     //-----------------------------------------------------------------------
@@ -60,7 +65,7 @@ public final class DateMatchers {
      *
      * @return the leap year matcher, never null
      */
-    public static DateMatcher leapYear() {
+    public static CalendricalMatcher leapYear() {
         return Impl.LEAP_YEAR;
     }
 
@@ -70,7 +75,7 @@ public final class DateMatchers {
      *
      * @return the leap day matcher, never null
      */
-    public static DateMatcher leapDay() {
+    public static CalendricalMatcher leapDay() {
         return Impl.LEAP_DAY;
     }
 
@@ -80,7 +85,7 @@ public final class DateMatchers {
      *
      * @return the last day of month matcher, never null
      */
-    public static DateMatcher lastDayOfMonth() {
+    public static CalendricalMatcher lastDayOfMonth() {
         return Impl.LAST_DAY_OF_MONTH;
     }
 
@@ -90,7 +95,7 @@ public final class DateMatchers {
      *
      * @return the last day of year matcher, never null
      */
-    public static DateMatcher lastDayOfYear() {
+    public static CalendricalMatcher lastDayOfYear() {
         return Impl.LAST_DAY_OF_YEAR;
     }
 
@@ -104,7 +109,7 @@ public final class DateMatchers {
      *
      * @return the non weekend day matcher, never null
      */
-    public static DateMatcher weekendDay() {
+    public static CalendricalMatcher weekendDay() {
         return Impl.WEEKEND_DAY;
     }
 
@@ -118,7 +123,7 @@ public final class DateMatchers {
      *
      * @return the non weekend day matcher, never null
      */
-    public static DateMatcher nonWeekendDay() {
+    public static CalendricalMatcher nonWeekendDay() {
         return Impl.NON_WEEKEND_DAY;
     }
 
@@ -126,60 +131,70 @@ public final class DateMatchers {
     /**
      * Enum implementing the adjusters.
      */
-    private static enum Impl implements DateMatcher {
+    private static enum Impl implements CalendricalMatcher {
         /** Leap year matcher. */
         LEAP_YEAR {
             /** {@inheritDoc} */
-            public boolean matchesDate(LocalDate date) {
-                return ISOChronology.isLeapYear(date.getYear());
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                Integer yearVal = calendrical.get(ISOChronology.yearRule());
+                return yearVal != null && ISOChronology.isLeapYear(yearVal);
             }
         },
         /** Leap day matcher. */
         LEAP_DAY {
             /** {@inheritDoc} */
-            public boolean matchesDate(LocalDate date) {
-                return date.getDayOfMonth() == 29 && date.getMonthOfYear() == MonthOfYear.FEBRUARY;
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
+                Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                return domVal != null && domVal == 29 && moy == MonthOfYear.FEBRUARY;
             }
         },
         /** Last day of month matcher. */
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
-            public boolean matchesDate(LocalDate date) {
-                return date.getDayOfMonth() == date.getMonthOfYear().lengthInDays(date.getYear());
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                Integer yearVal = calendrical.get(ISOChronology.yearRule());
+                MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
+                Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                return yearVal != null && moy != null && domVal != null && domVal == moy.lengthInDays(yearVal);
             }
         },
         /** Last day of year matcher. */
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
-            public boolean matchesDate(LocalDate date) {
-                return date.getMonthOfYear() == MonthOfYear.DECEMBER && date.getDayOfMonth() == 31;
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
+                Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+                return domVal != null && domVal == 31 && moy == MonthOfYear.DECEMBER;
             }
         },
         /** Non weekend matcher. */
         WEEKEND_DAY {
             /** {@inheritDoc} */
-            public boolean matchesDate(LocalDate date) {
-                return date.getDayOfWeek().getValue() >= 6;  // hard code value for performance
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
+                return dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY;
             }
         },
         /** Non weekend matcher. */
         NON_WEEKEND_DAY {
             /** {@inheritDoc} */
-            public boolean matchesDate(LocalDate date) {
-                return date.getDayOfWeek().getValue() < 6;  // hard code value for performance
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
+                return dow != null && dow != DayOfWeek.SATURDAY && dow != DayOfWeek.SUNDAY;
             }
         },
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the first in month matcher, which retuns true if the date
-     * is the first occurence of day of week in the month.
+     * Returns the first in month matcher, which returns true if the date
+     * is the first occurrence of day of week in the month.
      *
      * @param dayOfWeek  the day of week, not null
      * @return the first in month matcher, never null
      */
-    public static DateMatcher firstInMonth(DayOfWeek dayOfWeek) {
+    public static CalendricalMatcher firstInMonth(DayOfWeek dayOfWeek) {
         if (dayOfWeek == null) {
             throw new NullPointerException("DayOfWeek must not be null");
         }
@@ -187,15 +202,15 @@ public final class DateMatchers {
     }
 
     /**
-     * Returns the day of week in month matcher, which retuns true if the
-     * date is the ordinal occurence of the day of week in the month.
+     * Returns the day of week in month matcher, which returns true if the
+     * date is the ordinal occurrence of the day of week in the month.
      *
      * @param ordinal  ordinal, from 1 to 5
      * @param dayOfWeek  the day of week, not null
      * @return the day of week in month matcher, never null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
-    public static DateMatcher dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
+    public static CalendricalMatcher dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         if (ordinal < 1 || ordinal > 5) {
             throw new IllegalArgumentException("Illegal value for ordinal, value " + ordinal +
                     " is not in the range 1 to 5");
@@ -209,12 +224,9 @@ public final class DateMatchers {
     /**
      * Class implementing day of week in month matcher.
      */
-    private static final class DayOfWeekInMonth implements DateMatcher, Serializable {
-        /**
-         * A serialization identifier for this class.
-         */
+    private static final class DayOfWeekInMonth implements CalendricalMatcher, Serializable {
+        /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
-
         /** The ordinal, from 1 to 5. */
         private final int ordinal;
         /** The day of week. */
@@ -230,15 +242,15 @@ public final class DateMatchers {
             this.ordinal = ordinal;
             this.dayOfWeek = dayOfWeek;
         }
-
         /** {@inheritDoc} */
-        public boolean matchesDate(LocalDate date) {
-            if (date.getDayOfWeek() != dayOfWeek) {
+        public boolean matchesCalendrical(Calendrical calendrical) {
+            Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
+            DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
+            if (dow != dayOfWeek || domVal == null) {
                 return false;
             }
-            return (date.getDayOfMonth() - 1) / 7 == ordinal - 1;
+            return (domVal - 1) / 7 == ordinal - 1;
         }
-
         /** {@inheritDoc} */
         @Override
         public boolean equals(Object obj) {
@@ -248,7 +260,6 @@ public final class DateMatchers {
             }
             return false;
         }
-
         /** {@inheritDoc} */
         @Override
         public int hashCode() {

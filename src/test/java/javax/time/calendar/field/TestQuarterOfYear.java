@@ -38,12 +38,13 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockDateProviderReturnsNull;
 
 import org.testng.annotations.BeforeMethod;
@@ -69,7 +70,7 @@ public class TestQuarterOfYear {
         assertTrue(Calendrical.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(QuarterOfYear.class));
-        assertTrue(DateMatcher.class.isAssignableFrom(QuarterOfYear.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(QuarterOfYear.class));
     }
 
     //-----------------------------------------------------------------------
@@ -137,18 +138,22 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate()
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesDate() {
-        assertEquals(QuarterOfYear.Q1.matchesDate(LocalDate.date(2008, 1, 1)), true);
-        assertEquals(QuarterOfYear.Q2.matchesDate(LocalDate.date(2008, 4, 1)), true);
-        assertEquals(QuarterOfYear.Q3.matchesDate(LocalDate.date(2008, 7, 1)), true);
-        assertEquals(QuarterOfYear.Q4.matchesDate(LocalDate.date(2008, 10, 1)), true);
+    public void test_matchesCalendrical() {
+        assertEquals(QuarterOfYear.Q1.matchesCalendrical(LocalDate.date(2008, 1, 1)), true);
+        assertEquals(QuarterOfYear.Q2.matchesCalendrical(LocalDate.date(2008, 4, 1)), true);
+        assertEquals(QuarterOfYear.Q3.matchesCalendrical(LocalDate.date(2008, 7, 1)), true);
+        assertEquals(QuarterOfYear.Q4.matchesCalendrical(LocalDate.date(2008, 10, 1)), true);
+    }
+
+    public void test_matchesCalendrical_noData() {
+        assertEquals(QuarterOfYear.Q1.matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_nullLocalDate() {
-        QuarterOfYear.Q1.matchesDate((LocalDate) null);
+    public void test_matchesCalendrical_null() {
+        QuarterOfYear.Q1.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

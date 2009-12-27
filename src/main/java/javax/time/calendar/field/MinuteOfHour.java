@@ -35,13 +35,13 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
 /**
@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class MinuteOfHour
-        implements Calendrical, Comparable<MinuteOfHour>, TimeAdjuster, TimeMatcher, Serializable {
+        implements Calendrical, Comparable<MinuteOfHour>, TimeAdjuster, CalendricalMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -171,6 +171,17 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the minute-of-hour extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
+    }
+
+    /**
      * Adjusts a time to have the the minute of hour represented by this object,
      * returning a new time.
      * <p>
@@ -184,17 +195,6 @@ public final class MinuteOfHour
      */
     public LocalTime adjustTime(LocalTime time) {
         return time.withMinuteOfHour(minuteOfHour);
-    }
-
-    /**
-     * Checks if the input time has the same minute of hour that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return minuteOfHour == time.getMinuteOfHour();
     }
 
     //-----------------------------------------------------------------------

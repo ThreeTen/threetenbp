@@ -61,7 +61,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class LocalTime
-        implements Calendrical, TimeProvider, TimeMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
+        implements Calendrical, TimeProvider, CalendricalMatcher, TimeAdjuster, Comparable<LocalTime>, Serializable {
 
     /**
      * Constants for the local time of each hour.
@@ -887,20 +887,30 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether the time matches the specified matcher.
+     * Checks whether this time matches the specified matcher.
      * <p>
      * Matchers can be used to query the time.
-     * A simple matcher might simply query one of the fields, such as the hour field.
-     * A more complex matcher might query if the time is during opening hours.
+     * A simple matcher might simply compare one of the fields, such as the hour field.
+     * A more complex matcher might check if the time is the last second of the day.
      *
      * @param matcher  the matcher to use, not null
      * @return true if this time matches the matcher, false otherwise
      */
-    public boolean matches(TimeMatcher matcher) {
-        return matcher.matchesTime(this);
+    public boolean matches(CalendricalMatcher matcher) {
+        return matcher.matchesCalendrical(this);
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Checks if the time extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
+    }
+
     /**
      * Adjusts a time to have the value of this time.
      *
@@ -908,19 +918,8 @@ public final class LocalTime
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        return matchesTime(time) ? time : this;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if this time is equal to the input time
-     *
-     * @param time the time to match, not null
-     * @return true if the two times are equal, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return hour == time.hour && minute == time.minute &&
-                second == time.second && nano == time.nano;
+        ISOChronology.checkNotNull(time, "LocalTime must not be null");
+        return this.equals(time) ? time : this;
     }
 
     //-----------------------------------------------------------------------
@@ -1062,7 +1061,8 @@ public final class LocalTime
         }
         if (other instanceof LocalTime) {
             LocalTime localTime = (LocalTime) other;
-            return matchesTime(localTime);
+            return hour == localTime.hour && minute == localTime.minute &&
+                    second == localTime.second && nano == localTime.nano;
         }
         return false;
     }

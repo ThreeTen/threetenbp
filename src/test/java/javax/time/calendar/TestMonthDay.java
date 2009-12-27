@@ -83,7 +83,7 @@ public class TestMonthDay {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateAdjuster);
-        assertTrue(obj instanceof DateMatcher);
+        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -588,16 +588,16 @@ public class TestMonthDay {
     // matchesDate()
     //-----------------------------------------------------------------------
     public void test_matchesDate() {
-        assertEquals(MonthDay.monthDay(1, 1).matchesDate(LocalDate.date(2007, 1, 1)), true);
-        assertEquals(MonthDay.monthDay(1, 1).matchesDate(LocalDate.date(2008, 1, 1)), true);
+        assertEquals(MonthDay.monthDay(1, 1).matchesCalendrical(LocalDate.date(2007, 1, 1)), true);
+        assertEquals(MonthDay.monthDay(1, 1).matchesCalendrical(LocalDate.date(2008, 1, 1)), true);
         
-        assertEquals(MonthDay.monthDay(2, 1).matchesDate(LocalDate.date(2007, 1, 1)), false);
-        assertEquals(MonthDay.monthDay(1, 2).matchesDate(LocalDate.date(2008, 1, 1)), false);
+        assertEquals(MonthDay.monthDay(2, 1).matchesCalendrical(LocalDate.date(2007, 1, 1)), false);
+        assertEquals(MonthDay.monthDay(1, 2).matchesCalendrical(LocalDate.date(2008, 1, 1)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesDate_null() {
-        TEST_07_15.matchesDate(null);
+        TEST_07_15.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

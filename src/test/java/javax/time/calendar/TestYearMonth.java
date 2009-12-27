@@ -87,7 +87,7 @@ public class TestYearMonth {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateAdjuster);
-        assertTrue(obj instanceof DateMatcher);
+        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -771,17 +771,17 @@ public class TestYearMonth {
     // matchesDate()
     //-----------------------------------------------------------------------
     public void test_matchesDate() {
-        assertEquals(YearMonth.yearMonth(2008, 6).matchesDate(LocalDate.date(2008, 6, 1)), true);
-        assertEquals(YearMonth.yearMonth(2007, 6).matchesDate(LocalDate.date(2007, 6, 1)), true);
-        assertEquals(YearMonth.yearMonth(2008, 5).matchesDate(LocalDate.date(2008, 5, 1)), true);
+        assertEquals(YearMonth.yearMonth(2008, 6).matchesCalendrical(LocalDate.date(2008, 6, 1)), true);
+        assertEquals(YearMonth.yearMonth(2007, 6).matchesCalendrical(LocalDate.date(2007, 6, 1)), true);
+        assertEquals(YearMonth.yearMonth(2008, 5).matchesCalendrical(LocalDate.date(2008, 5, 1)), true);
         
-        assertEquals(YearMonth.yearMonth(2007, 6).matchesDate(LocalDate.date(2008, 6, 1)), false);
-        assertEquals(YearMonth.yearMonth(2008, 5).matchesDate(LocalDate.date(2008, 6, 1)), false);
+        assertEquals(YearMonth.yearMonth(2007, 6).matchesCalendrical(LocalDate.date(2008, 6, 1)), false);
+        assertEquals(YearMonth.yearMonth(2008, 5).matchesCalendrical(LocalDate.date(2008, 6, 1)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matchesDate_null() {
-        TEST_2008_06.matchesDate(null);
+        TEST_2008_06.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

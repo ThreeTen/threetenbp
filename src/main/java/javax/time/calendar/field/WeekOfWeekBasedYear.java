@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
@@ -63,7 +63,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class WeekOfWeekBasedYear
-        implements Calendrical, Comparable<WeekOfWeekBasedYear>, DateMatcher, Serializable {
+        implements Calendrical, Comparable<WeekOfWeekBasedYear>, CalendricalMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -181,15 +181,16 @@ public final class WeekOfWeekBasedYear
         return weekOfWeekyear;
     }
 
-
+    //-----------------------------------------------------------------------
     /**
-     * Checks if the value of this week of week-based-year matches the input date.
+     * Checks if the week-of-week-based-year extracted from the calendrical matches this.
      *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
      */
-    public boolean matchesDate(LocalDate date) {
-        return WeekOfWeekBasedYear.weekOfWeekyear(date).equals(this);
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
     }
 
     //-----------------------------------------------------------------------

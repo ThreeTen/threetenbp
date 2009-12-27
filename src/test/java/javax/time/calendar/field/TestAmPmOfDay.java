@@ -39,14 +39,15 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
@@ -73,7 +74,7 @@ public class TestAmPmOfDay {
         assertTrue(Serializable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(Comparable.class.isAssignableFrom(AmPmOfDay.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(AmPmOfDay.class));
-        assertTrue(TimeMatcher.class.isAssignableFrom(AmPmOfDay.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(AmPmOfDay.class));
     }
 
     //-----------------------------------------------------------------------
@@ -211,18 +212,22 @@ public class TestAmPmOfDay {
     }
 
     //-----------------------------------------------------------------------
-    // matchesTime()
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesTime() {
-        assertEquals(AmPmOfDay.AM.matchesTime(LocalTime.time(11, 30)), true);
-        assertEquals(AmPmOfDay.PM.matchesTime(LocalTime.time(11, 30)), false);
-        assertEquals(AmPmOfDay.AM.matchesTime(LocalTime.time(23, 30)), false);
-        assertEquals(AmPmOfDay.PM.matchesTime(LocalTime.time(23, 30)), true);
+    public void test_matchesCalendrical() {
+        assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.time(11, 30)), true);
+        assertEquals(AmPmOfDay.PM.matchesCalendrical(LocalTime.time(11, 30)), false);
+        assertEquals(AmPmOfDay.AM.matchesCalendrical(LocalTime.time(23, 30)), false);
+        assertEquals(AmPmOfDay.PM.matchesCalendrical(LocalTime.time(23, 30)), true);
+    }
+
+    public void test_matchesCalendrical_noData() {
+        assertEquals(AmPmOfDay.PM.matchesCalendrical(LocalDate.date(2008, 6, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesTime_nullLocalTime() {
-        AmPmOfDay.AM.matchesTime((LocalTime) null);
+    public void test_matchesCalendrical_null() {
+        AmPmOfDay.AM.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

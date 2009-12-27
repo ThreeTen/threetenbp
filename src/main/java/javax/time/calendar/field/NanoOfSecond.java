@@ -35,12 +35,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
 /**
@@ -58,7 +58,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class NanoOfSecond
-        implements Calendrical, Comparable<NanoOfSecond>, Serializable, TimeAdjuster, TimeMatcher {
+        implements Calendrical, Comparable<NanoOfSecond>, TimeAdjuster, CalendricalMatcher, Serializable {
 
     /**
      * A singleton instance for zero nanoseconds.
@@ -165,6 +165,17 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the nano-of-second extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
+    }
+
+    /**
      * Adjusts a time to have the the nano of second represented by this object,
      * returning a new time.
      * <p>
@@ -178,17 +189,6 @@ public final class NanoOfSecond
      */
     public LocalTime adjustTime(LocalTime time) {
         return time.withNanoOfSecond(nanoOfSecond);
-    }
-
-    /**
-     * Checks if the input time has the same nano of second that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return nanoOfSecond == time.getNanoOfSecond();
     }
 
     //-----------------------------------------------------------------------

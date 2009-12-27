@@ -46,6 +46,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
+import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -99,7 +100,7 @@ public class TestOffsetDate {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateProvider);
-        assertTrue(obj instanceof DateMatcher);
+        assertTrue(obj instanceof CalendricalMatcher);
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -1630,6 +1631,9 @@ public class TestOffsetDate {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
+        assertTrue(TEST_2007_07_15_PONE.matches(TEST_2007_07_15_PONE));
+        assertFalse(TEST_2007_07_15_PONE.matches(AmPmOfDay.AM));
+        
         assertTrue(TEST_2007_07_15_PONE.matches(Year.isoYear(2007)));
         assertFalse(TEST_2007_07_15_PONE.matches(Year.isoYear(2006)));
         assertTrue(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q3));
@@ -1863,42 +1867,29 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate()
+    // matchesCalendrical() - parameter is larger calendrical
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleDates")
-    public void test_matchesDate_true(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.date(y, m, d, offset);
-        LocalDate b = LocalDate.date(y, m, d);
-        assertEquals(a.matchesDate(b), true);
-    }
-    @Test(dataProvider="sampleDates")
-    public void test_matchesDate_false_year_differs(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.date(y, m, d, offset);
-        LocalDate b = LocalDate.date(y + 1, m, d);
-        assertEquals(a.matchesDate(b), false);
-    }
-    @Test(dataProvider="sampleDates")
-    public void test_matchesDate_false_month_differs(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.date(y, m, d, offset);
-        LocalDate b = LocalDate.date(y, m + 1, d);
-        assertEquals(a.matchesDate(b), false);
-    }
-    @Test(dataProvider="sampleDates")
-    public void test_matchesDate_false_day_differs(int y, int m, int d, ZoneOffset offset) {
-        OffsetDate a = OffsetDate.date(y, m, d, offset);
-        LocalDate b = LocalDate.date(y, m, d + 1);
-        assertEquals(a.matchesDate(b), false);
+    public void test_matchesCalendrical_true_date() {
+        OffsetDate test = TEST_2007_07_15_PONE;
+        OffsetDateTime cal = TEST_2007_07_15_PONE.atMidnight();
+        assertEquals(test.matchesCalendrical(cal), true);
     }
 
-    public void test_matchesDate_itself_true() {
-        assertEquals(TEST_2007_07_15_PONE.matchesDate(TEST_2007_07_15_PONE.toLocalDate()), true);
+    public void test_matchesCalendrical_false_date() {
+        OffsetDate test = TEST_2007_07_15_PONE;
+        OffsetDateTime cal = TEST_2007_07_15_PONE.plusYears(1).atMidnight();
+        assertEquals(test.matchesCalendrical(cal), false);
+    }
+
+    public void test_matchesCalendrical_itself_true() {
+        assertEquals(TEST_2007_07_15_PONE.matchesCalendrical(TEST_2007_07_15_PONE), true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_null() {
-        TEST_2007_07_15_PONE.matchesDate(null);
+    public void test_matchesCalendrical_null() {
+        TEST_2007_07_15_PONE.matchesCalendrical(null);
     }
-    
+
     //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,15 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDate.*;
-import static javax.time.calendar.field.DayOfWeek.*;
-import static org.testng.Assert.*;
+import static javax.time.calendar.LocalDate.date;
+import static javax.time.calendar.field.DayOfWeek.MONDAY;
+import static javax.time.calendar.field.DayOfWeek.SUNDAY;
+import static javax.time.calendar.field.DayOfWeek.TUESDAY;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,11 +63,11 @@ import org.testng.annotations.Test;
  * @author Stephen Colebourne
  */
 @Test
-public class TestDateMatchers {
+public class TestCalendricalMatchers {
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {
-        for (Constructor constructor : DateMatchers.class.getDeclaredConstructors()) {
+        for (Constructor constructor : CalendricalMatchers.class.getDeclaredConstructors()) {
             assertTrue(Modifier.isPrivate(constructor.getModifiers()));
             constructor.setAccessible(true);
             constructor.newInstance(Collections.nCopies(constructor.getParameterTypes().length, null).toArray());
@@ -72,7 +78,7 @@ public class TestDateMatchers {
     // leapYear()
     //-----------------------------------------------------------------------
     public void test_leapYear_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher leapYear = DateMatchers.leapYear();
+        CalendricalMatcher leapYear = CalendricalMatchers.leapYear();
         assertTrue(leapYear instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -86,31 +92,35 @@ public class TestDateMatchers {
     }
 
     public void factory_leapYear() {
-        assertNotNull(DateMatchers.leapYear());
-        assertSame(DateMatchers.leapYear(), DateMatchers.leapYear());
+        assertNotNull(CalendricalMatchers.leapYear());
+        assertSame(CalendricalMatchers.leapYear(), CalendricalMatchers.leapYear());
     }
 
     public void test_leapYear() {
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1999, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2000, 1, 1)), true);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2001, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2002, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2003, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2004, 1, 1)), true);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(2005, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1999, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2000, 1, 1)), true);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2001, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2002, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2003, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2004, 1, 1)), true);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2005, 1, 1)), false);
         
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1500, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1600, 1, 1)), true);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1700, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1800, 1, 1)), false);
-        assertEquals(DateMatchers.leapYear().matchesDate(LocalDate.date(1900, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1500, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1600, 1, 1)), true);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1700, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1800, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1900, 1, 1)), false);
+    }
+
+    public void test_leapYear_noData() {
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
     // leapDay()
     //-----------------------------------------------------------------------
     public void test_leapDay_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher leapDay = DateMatchers.leapDay();
+        CalendricalMatcher leapDay = CalendricalMatchers.leapDay();
         assertTrue(leapDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -124,14 +134,14 @@ public class TestDateMatchers {
     }
 
     public void factory_leapDay() {
-        assertNotNull(DateMatchers.leapDay());
-        assertSame(DateMatchers.leapDay(), DateMatchers.leapDay());
+        assertNotNull(CalendricalMatchers.leapDay());
+        assertSame(CalendricalMatchers.leapDay(), CalendricalMatchers.leapDay());
     }
 
     public void test_leapDay_nonLeap() {
         LocalDate date = date(2007, 1, 1);
         for (int i = 1; i <= 365; i++) {
-            assertEquals(DateMatchers.leapDay().matchesDate(date), false);
+            assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(date), false);
             date = date.plusDays(1);
         }
     }
@@ -139,16 +149,20 @@ public class TestDateMatchers {
     public void test_leapDay_leap() {
         LocalDate date = date(2008, 1, 1);
         for (int i = 1; i <= 366; i++) {
-            assertEquals(DateMatchers.leapDay().matchesDate(date), i == 60);
+            assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(date), i == 60);
             date = date.plusDays(1);
         }
+    }
+
+    public void test_leapDay_noData() {
+        assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
     // lastDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_lastDayOfMonth_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher lastDayOfMonth = DateMatchers.lastDayOfMonth();
+        CalendricalMatcher lastDayOfMonth = CalendricalMatchers.lastDayOfMonth();
         assertTrue(lastDayOfMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -162,8 +176,8 @@ public class TestDateMatchers {
     }
 
     public void factory_lastDayOfMonth() {
-        assertNotNull(DateMatchers.lastDayOfMonth());
-        assertSame(DateMatchers.lastDayOfMonth(), DateMatchers.lastDayOfMonth());
+        assertNotNull(CalendricalMatchers.lastDayOfMonth());
+        assertSame(CalendricalMatchers.lastDayOfMonth(), CalendricalMatchers.lastDayOfMonth());
     }
 
     public void test_lastDayOfMonth_nonLeap() {
@@ -171,7 +185,7 @@ public class TestDateMatchers {
             int lastDayOfMonthValue = month.lengthInDays(2007);
             for (int i = 1; i <= lastDayOfMonthValue; i++) {
                 LocalDate date = date(2007, month, i);
-                assertEquals(DateMatchers.lastDayOfMonth().matchesDate(date), lastDayOfMonthValue == i);
+                assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(date), lastDayOfMonthValue == i);
             }
         }
     }
@@ -181,16 +195,20 @@ public class TestDateMatchers {
             int lastDayOfMonthValue = month.lengthInDays(2008);
             for (int i = 1; i <= month.lengthInDays(2008); i++) {
                 LocalDate date = date(2008, month, i);
-                assertEquals(DateMatchers.lastDayOfMonth().matchesDate(date), lastDayOfMonthValue == i);
+                assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(date), lastDayOfMonthValue == i);
             }
         }
+    }
+
+    public void test_lastDayOfMonth_noData() {
+        assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
     // lastDayOfYear()
     //-----------------------------------------------------------------------
     public void test_lastDayOfYear_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher lastDayOfYear = DateMatchers.lastDayOfYear();
+        CalendricalMatcher lastDayOfYear = CalendricalMatchers.lastDayOfYear();
         assertTrue(lastDayOfYear instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -204,15 +222,15 @@ public class TestDateMatchers {
     }
 
     public void factory_lastDayOfYear() {
-        assertNotNull(DateMatchers.lastDayOfYear());
-        assertSame(DateMatchers.lastDayOfYear(), DateMatchers.lastDayOfYear());
+        assertNotNull(CalendricalMatchers.lastDayOfYear());
+        assertSame(CalendricalMatchers.lastDayOfYear(), CalendricalMatchers.lastDayOfYear());
     }
 
     public void test_lastDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(2007); i++) {
                 LocalDate date = date(2007, month, i);
-                assertEquals(DateMatchers.lastDayOfYear().matchesDate(date), month == MonthOfYear.DECEMBER && i == 31);
+                assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(date), month == MonthOfYear.DECEMBER && i == 31);
             }
         }
     }
@@ -221,16 +239,20 @@ public class TestDateMatchers {
         for (MonthOfYear month : MonthOfYear.values()) {
             for (int i = 1; i <= month.lengthInDays(2008); i++) {
                 LocalDate date = date(2008, month, i);
-                assertEquals(DateMatchers.lastDayOfYear().matchesDate(date), month == MonthOfYear.DECEMBER && i == 31);
+                assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(date), month == MonthOfYear.DECEMBER && i == 31);
             }
         }
+    }
+
+    public void test_lastDayOfYear_noData() {
+        assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
     // dayOfWeekInMonth()
     //-----------------------------------------------------------------------
     public void test_dayOfWeekInMonth_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher dayOfWeekInMonth = DateMatchers.dayOfWeekInMonth(1, SUNDAY);
+        CalendricalMatcher dayOfWeekInMonth = CalendricalMatchers.dayOfWeekInMonth(1, SUNDAY);
         assertTrue(dayOfWeekInMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -244,41 +266,41 @@ public class TestDateMatchers {
     }
 
     public void factory_dayOfWeekInMonth() {
-        assertNotNull(DateMatchers.dayOfWeekInMonth(1, MONDAY));
-        assertEquals(DateMatchers.dayOfWeekInMonth(1, MONDAY), DateMatchers.dayOfWeekInMonth(1, MONDAY));
-        assertEquals(DateMatchers.dayOfWeekInMonth(2, MONDAY), DateMatchers.dayOfWeekInMonth(2, MONDAY));
+        assertNotNull(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY));
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY), CalendricalMatchers.dayOfWeekInMonth(1, MONDAY));
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(2, MONDAY), CalendricalMatchers.dayOfWeekInMonth(2, MONDAY));
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_dayOfWeekInMonth_ordinalTooSmall() {
-        DateMatchers.dayOfWeekInMonth(0, MONDAY);
+        CalendricalMatchers.dayOfWeekInMonth(0, MONDAY);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void factory_dayOfWeekInMonth_ordinalTooBig() {
-        DateMatchers.dayOfWeekInMonth(6, MONDAY);
+        CalendricalMatchers.dayOfWeekInMonth(6, MONDAY);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dayOfWeekInMonth_nullDayOfWeek() {
-        DateMatchers.dayOfWeekInMonth(1, null);
+        CalendricalMatchers.dayOfWeekInMonth(1, null);
     }
 
     public void test_dayOfWeekInMonth_equals() {
-        final DateMatcher mondayInFirstWeek = DateMatchers.dayOfWeekInMonth(1, MONDAY);
+        final CalendricalMatcher mondayInFirstWeek = CalendricalMatchers.dayOfWeekInMonth(1, MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateMatchers.lastDayOfMonth()));
-        assertFalse(mondayInFirstWeek.equals(DateMatchers.dayOfWeekInMonth(2, MONDAY)));
-        assertFalse(mondayInFirstWeek.equals(DateMatchers.dayOfWeekInMonth(1, TUESDAY)));
+        assertFalse(mondayInFirstWeek.equals(CalendricalMatchers.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(CalendricalMatchers.dayOfWeekInMonth(2, MONDAY)));
+        assertFalse(mondayInFirstWeek.equals(CalendricalMatchers.dayOfWeekInMonth(1, TUESDAY)));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateMatchers.dayOfWeekInMonth(1, MONDAY)));
+        assertTrue(mondayInFirstWeek.equals(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY)));
     }
 
     public void test_dayOfWeekInMonth_hashCode() {
-        assertEquals(DateMatchers.dayOfWeekInMonth(1, MONDAY).hashCode(), DateMatchers.dayOfWeekInMonth(1, MONDAY).hashCode());
-        assertEquals(DateMatchers.dayOfWeekInMonth(1, TUESDAY).hashCode(), DateMatchers.dayOfWeekInMonth(1, TUESDAY).hashCode());
-        assertEquals(DateMatchers.dayOfWeekInMonth(2, MONDAY).hashCode(), DateMatchers.dayOfWeekInMonth(2, MONDAY).hashCode());
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY).hashCode(), CalendricalMatchers.dayOfWeekInMonth(1, MONDAY).hashCode());
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(1, TUESDAY).hashCode(), CalendricalMatchers.dayOfWeekInMonth(1, TUESDAY).hashCode());
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(2, MONDAY).hashCode(), CalendricalMatchers.dayOfWeekInMonth(2, MONDAY).hashCode());
     }
 
     public void test_dayOfWeekInMonth() {
@@ -298,7 +320,7 @@ public class TestDateMatchers {
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
                     for (int ordinal = 1; ordinal <= 5; ordinal++) {
-                        assertEquals(DateMatchers.dayOfWeekInMonth(ordinal, dow).matchesDate(date), ordinal == expectedOrdinal && 
+                        assertEquals(CalendricalMatchers.dayOfWeekInMonth(ordinal, dow).matchesCalendrical(date), ordinal == expectedOrdinal && 
                                 dow == expectedDOW);
                     }
                 }
@@ -306,11 +328,15 @@ public class TestDateMatchers {
         }
     }
 
+    public void test_dayOfWeekInMonth_noData() {
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY).matchesCalendrical(LocalTime.time(12, 30)), false);
+    }
+
     //-----------------------------------------------------------------------
     // firstInMonth()
     //-----------------------------------------------------------------------
     public void test_firstInMonth_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher firstInMonth = DateMatchers.firstInMonth(SUNDAY);
+        CalendricalMatcher firstInMonth = CalendricalMatchers.firstInMonth(SUNDAY);
         assertTrue(firstInMonth instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -324,28 +350,28 @@ public class TestDateMatchers {
     }
 
     public void factory_firstInMonth() {
-        assertNotNull(DateMatchers.firstInMonth(MONDAY));
-        assertEquals(DateMatchers.firstInMonth(MONDAY), DateMatchers.firstInMonth(MONDAY));
+        assertNotNull(CalendricalMatchers.firstInMonth(MONDAY));
+        assertEquals(CalendricalMatchers.firstInMonth(MONDAY), CalendricalMatchers.firstInMonth(MONDAY));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_firstInMonth_nullDayOfWeek() {
-        DateMatchers.firstInMonth(null);
+        CalendricalMatchers.firstInMonth(null);
     }
 
     public void test_firstInMonth_equals() {
-        final DateMatcher mondayInFirstWeek = DateMatchers.firstInMonth(MONDAY);
+        final CalendricalMatcher mondayInFirstWeek = CalendricalMatchers.firstInMonth(MONDAY);
         assertFalse(mondayInFirstWeek.equals(null));
         assertFalse(mondayInFirstWeek.equals(new Object()));
-        assertFalse(mondayInFirstWeek.equals(DateMatchers.lastDayOfMonth()));
-        assertFalse(mondayInFirstWeek.equals(DateMatchers.firstInMonth(TUESDAY)));
+        assertFalse(mondayInFirstWeek.equals(CalendricalMatchers.lastDayOfMonth()));
+        assertFalse(mondayInFirstWeek.equals(CalendricalMatchers.firstInMonth(TUESDAY)));
         assertTrue(mondayInFirstWeek.equals(mondayInFirstWeek));
-        assertTrue(mondayInFirstWeek.equals(DateMatchers.firstInMonth(MONDAY)));
+        assertTrue(mondayInFirstWeek.equals(CalendricalMatchers.firstInMonth(MONDAY)));
     }
 
     public void test_firstInMonth_hashCode() {
-        assertEquals(DateMatchers.firstInMonth(MONDAY).hashCode(), DateMatchers.firstInMonth(MONDAY).hashCode());
-        assertEquals(DateMatchers.firstInMonth(TUESDAY).hashCode(), DateMatchers.firstInMonth(TUESDAY).hashCode());
+        assertEquals(CalendricalMatchers.firstInMonth(MONDAY).hashCode(), CalendricalMatchers.firstInMonth(MONDAY).hashCode());
+        assertEquals(CalendricalMatchers.firstInMonth(TUESDAY).hashCode(), CalendricalMatchers.firstInMonth(TUESDAY).hashCode());
     }
 
     public void test_firstInMonth() {
@@ -354,17 +380,21 @@ public class TestDateMatchers {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
-                    assertEquals(DateMatchers.firstInMonth(dow).matchesDate(date), i < 8 && dow == date.getDayOfWeek());
+                    assertEquals(CalendricalMatchers.firstInMonth(dow).matchesCalendrical(date), i < 8 && dow == date.getDayOfWeek());
                 }
             }
         }
+    }
+
+    public void test_firstInMonth_noData() {
+        assertEquals(CalendricalMatchers.firstInMonth(MONDAY).matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
     // weekendDay()
     //-----------------------------------------------------------------------
     public void test_weekendDay_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher weekendDay = DateMatchers.weekendDay();
+        CalendricalMatcher weekendDay = CalendricalMatchers.weekendDay();
         assertTrue(weekendDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -378,8 +408,8 @@ public class TestDateMatchers {
     }
 
     public void factory_weekendDay() {
-        assertNotNull(DateMatchers.weekendDay());
-        assertSame(DateMatchers.weekendDay(), DateMatchers.weekendDay());
+        assertNotNull(CalendricalMatchers.weekendDay());
+        assertSame(CalendricalMatchers.weekendDay(), CalendricalMatchers.weekendDay());
     }
 
     public void test_weekendDay() {
@@ -387,18 +417,22 @@ public class TestDateMatchers {
             for (int i = 1; i <= month.lengthInDays(2007); i++) {
                 LocalDate date = date(2007, month, i);
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
-                assertEquals(DateMatchers.weekendDay().matchesDate(date),
+                assertEquals(CalendricalMatchers.weekendDay().matchesCalendrical(date),
                         dayOfWeek == DayOfWeek.SATURDAY || 
                         dayOfWeek == DayOfWeek.SUNDAY);
             }
         }
     }
 
+    public void test_weekendDay_noData() {
+        assertEquals(CalendricalMatchers.weekendDay().matchesCalendrical(LocalTime.time(12, 30)), false);
+    }
+
     //-----------------------------------------------------------------------
     // nonWeekendDay()
     //-----------------------------------------------------------------------
     public void test_nonWeekendDay_serialization() throws IOException, ClassNotFoundException {
-        DateMatcher nonWeekendDay = DateMatchers.nonWeekendDay();
+        CalendricalMatcher nonWeekendDay = CalendricalMatchers.nonWeekendDay();
         assertTrue(nonWeekendDay instanceof Serializable);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -412,8 +446,8 @@ public class TestDateMatchers {
     }
 
     public void factory_nonWeekendDay() {
-        assertNotNull(DateMatchers.nonWeekendDay());
-        assertSame(DateMatchers.nonWeekendDay(), DateMatchers.nonWeekendDay());
+        assertNotNull(CalendricalMatchers.nonWeekendDay());
+        assertSame(CalendricalMatchers.nonWeekendDay(), CalendricalMatchers.nonWeekendDay());
     }
 
     public void test_nonWeekendDay() {
@@ -421,11 +455,15 @@ public class TestDateMatchers {
             for (int i = 1; i <= month.lengthInDays(2007); i++) {
                 LocalDate date = date(2007, month, i);
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
-                assertEquals(DateMatchers.nonWeekendDay().matchesDate(date),
+                assertEquals(CalendricalMatchers.nonWeekendDay().matchesCalendrical(date),
                         dayOfWeek != DayOfWeek.SATURDAY && 
                         dayOfWeek != DayOfWeek.SUNDAY);
             }
         }
+    }
+
+    public void test_nonWeekendDay_noData() {
+        assertEquals(CalendricalMatchers.nonWeekendDay().matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
 }

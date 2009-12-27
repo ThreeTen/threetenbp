@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, Comparable<MonthDay>, Serializable, DateAdjuster, DateMatcher {
+        implements Calendrical, Comparable<MonthDay>, Serializable, DateAdjuster, CalendricalMatcher {
 
     /**
      * A serialization identifier for this class.
@@ -315,7 +315,7 @@ public final class MonthDay
      * This method returns the primitive <code>int</code> value for the day of month.
      * <p>
      * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of month, from 1 to 31
@@ -451,6 +451,16 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the month-day extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
+    }
+
+    /**
      * Adjusts a date to have the value of this month-day, returning a new date.
      * <p>
      * If the day of month is invalid for the new year then an exception is thrown.
@@ -485,16 +495,6 @@ public final class MonthDay
         LocalDate resolved = resolver.resolveDate(date.toYear(), month, toDayOfMonth());
         ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
-    }
-
-    /**
-     * Checks if the month-day represented by this object matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return month == date.getMonthOfYear() && day == date.getDayOfMonth();
     }
 
     //-----------------------------------------------------------------------

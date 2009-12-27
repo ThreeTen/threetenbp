@@ -37,7 +37,7 @@ import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
-import javax.time.calendar.TestDateMatchers;
+import javax.time.calendar.TestCalendricalMatchers;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestISODayOfMonthRule;
@@ -129,11 +129,11 @@ public class AllTest {
             TestTimeSource_System.class,
             // calendar classes
 //            TestCalendricalMerger.class,
+            TestCalendricalMatchers.class,
             TestCalendricalRule.class,
             TestClock.class,
             TestClock_TimeSourceClock.class,
             TestDateAdjusters.class,
-            TestDateMatchers.class,
             TestDateResolvers.class,
 //            TestDateTimeFields.class,  // needs Comparable impl
             TestISOChronology.class,

@@ -38,7 +38,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -72,7 +72,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class Year
-        implements Calendrical, Comparable<Year>, Serializable, DateAdjuster, DateMatcher {
+        implements Calendrical, Comparable<Year>, Serializable, DateAdjuster, CalendricalMatcher {
 
     /**
      * Constant for the minimum year on the proleptic ISO calendar system.
@@ -345,6 +345,17 @@ public final class Year
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the year extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
+    }
+
+    /**
      * Adjusts a date to have the value of this year, returning a new date.
      * <p>
      * If the day of month is invalid for the new year then the
@@ -374,16 +385,6 @@ public final class Year
      */
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         return date.withYear(year, resolver);
-    }
-
-    /**
-     * Checks if the value of this year matches the input date.
-     *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
-     */
-    public boolean matchesDate(LocalDate date) {
-        return date.getYear() == year;
     }
 
     //-----------------------------------------------------------------------

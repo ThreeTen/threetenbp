@@ -46,7 +46,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
@@ -55,6 +55,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockDateProviderReturnsNull;
 import javax.time.calendar.MockDateResolverReturnsNull;
 
@@ -87,7 +88,7 @@ public class TestDayOfMonth {
         assertTrue(Serializable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfMonth.class));
         assertTrue(DateAdjuster.class.isAssignableFrom(DayOfMonth.class));
-        assertTrue(DateMatcher.class.isAssignableFrom(DayOfMonth.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(DayOfMonth.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -322,35 +323,38 @@ public class TestDayOfMonth {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate(LocalDate)
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesDate_notLeapYear() {
+    public void test_matchesCalendrical_notLeapYear() {
         LocalDate work = LocalDate.date(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
-                assertEquals(test.matchesDate(work), work.getDayOfMonth() == j);
+                assertEquals(test.matchesCalendrical(work), work.getDayOfMonth() == j);
             }
             work = work.plusDays(1);
         }
     }
 
-    public void test_matchesDate_leapYear() {
+    public void test_matchesCalendrical_leapYear() {
         LocalDate work = LocalDate.date(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
-                assertEquals(test.matchesDate(work), work.getDayOfMonth() == j);
+                assertEquals(test.matchesCalendrical(work), work.getDayOfMonth() == j);
             }
             work = work.plusDays(1);
         }
     }
 
+    public void test_matchesCalendrical_noData() {
+        assertEquals(DayOfMonth.dayOfMonth(20).matchesCalendrical(LocalTime.time(12, 30)), false);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_nullLocalDate() {
-        LocalDate date = null;
+    public void test_matchesCalendrical_null() {
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.matchesDate(date);
+        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

@@ -77,7 +77,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class ZonedDateTime
-        implements InstantProvider, DateTimeProvider, Calendrical, Comparable<ZonedDateTime>, Serializable {
+        implements InstantProvider, DateTimeProvider, Calendrical, CalendricalMatcher, Comparable<ZonedDateTime>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -752,7 +752,7 @@ public final class ZonedDateTime
      * <p>
      * Additional information about the year can be obtained from via {@link #toYear()}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link DateMatcher}
+     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
@@ -785,7 +785,7 @@ public final class ZonedDateTime
      * This method returns the primitive <code>int</code> value for the day of month.
      * <p>
      * Additional information about the day of month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of month, from 1 to 31
@@ -800,7 +800,7 @@ public final class ZonedDateTime
      * This method returns the primitive <code>int</code> value for the day of year.
      * <p>
      * Additional information about the day of year can be obtained from via {@link #toDayOfYear()}.
-     * This returns a <code>DayOfYear</code> object which can be used as a {@link DateMatcher}
+     * This returns a <code>DayOfYear</code> object which can be used as a {@link CalendricalMatcher}
      * and a {@link DateAdjuster}.
      *
      * @return the day of year, from 1 to 365, or 366 in a leap year
@@ -1620,35 +1620,28 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether the date matches the specified matcher.
+     * Checks whether this date-time matches the specified matcher.
      * <p>
-     * Matchers can be used to query the date.
-     * A simple matcher might simply query one of the fields, such as the year field.
-     * A more complex matcher might query if the date is the last day of the month.
-     * <p>
-     * The time and zone have no effect on the matching.
+     * Matchers can be used to query the date-time.
+     * A simple matcher might simply compare one of the fields, such as the year field.
+     * A more complex matcher might check if the date is the last day of the month.
      *
      * @param matcher  the matcher to use, not null
-     * @return true if this date matches the matcher, false otherwise
+     * @return true if this date-time matches the matcher, false otherwise
      */
-    public boolean matches(DateMatcher matcher) {
-        return dateTime.matches(matcher);
+    public boolean matches(CalendricalMatcher matcher) {
+        return matcher.matchesCalendrical(this);
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks whether the time matches the specified matcher.
-     * <p>
-     * Matchers can be used to query the time.
-     * A simple matcher might simply query one of the fields, such as the hour field.
-     * A more complex matcher might query if the time is during opening hours.
-     * <p>
-     * The date and zone have no effect on the matching.
+     * Checks if the date-time extracted from the calendrical matches this.
      *
-     * @param matcher  the matcher to use, not null
-     * @return true if this time matches the matcher, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
      */
-    public boolean matches(TimeMatcher matcher) {
-        return dateTime.matches(matcher);
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
     }
 
     //-----------------------------------------------------------------------

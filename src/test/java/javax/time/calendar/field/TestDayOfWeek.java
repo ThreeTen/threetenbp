@@ -39,13 +39,14 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateMatcher;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.UnsupportedRuleException;
 
 import org.testng.annotations.BeforeMethod;
@@ -72,7 +73,7 @@ public class TestDayOfWeek {
         assertTrue(Calendrical.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
-        assertTrue(DateMatcher.class.isAssignableFrom(DayOfWeek.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(DayOfWeek.class));
     }
 
     //-----------------------------------------------------------------------
@@ -333,28 +334,32 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate()
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesDate() {
-        assertEquals(DayOfWeek.MONDAY.matchesDate(LocalDate.date(2008, 5, 5)), true);
-        assertEquals(DayOfWeek.TUESDAY.matchesDate(LocalDate.date(2008, 5, 6)), true);
-        assertEquals(DayOfWeek.WEDNESDAY.matchesDate(LocalDate.date(2008, 5, 7)), true);
-        assertEquals(DayOfWeek.THURSDAY.matchesDate(LocalDate.date(2008, 5, 8)), true);
-        assertEquals(DayOfWeek.FRIDAY.matchesDate(LocalDate.date(2008, 5, 9)), true);
-        assertEquals(DayOfWeek.SATURDAY.matchesDate(LocalDate.date(2008, 5, 10)), true);
-        assertEquals(DayOfWeek.SUNDAY.matchesDate(LocalDate.date(2008, 5, 11)), true);
+    public void test_matchesCalendrical() {
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), true);
+        assertEquals(DayOfWeek.TUESDAY.matchesCalendrical(LocalDate.date(2008, 5, 6)), true);
+        assertEquals(DayOfWeek.WEDNESDAY.matchesCalendrical(LocalDate.date(2008, 5, 7)), true);
+        assertEquals(DayOfWeek.THURSDAY.matchesCalendrical(LocalDate.date(2008, 5, 8)), true);
+        assertEquals(DayOfWeek.FRIDAY.matchesCalendrical(LocalDate.date(2008, 5, 9)), true);
+        assertEquals(DayOfWeek.SATURDAY.matchesCalendrical(LocalDate.date(2008, 5, 10)), true);
+        assertEquals(DayOfWeek.SUNDAY.matchesCalendrical(LocalDate.date(2008, 5, 11)), true);
         
-        assertEquals(DayOfWeek.TUESDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.WEDNESDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.THURSDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.FRIDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.SATURDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.SUNDAY.matchesDate(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.TUESDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.WEDNESDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.THURSDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.FRIDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.SATURDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
+        assertEquals(DayOfWeek.SUNDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
+    }
+
+    public void test_matchesCalendrical_noData() {
+        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_nullLocalDate() {
-        DayOfWeek.MONDAY.matchesDate((LocalDate) null);
+    public void test_matchesCalendrical_null() {
+        DayOfWeek.MONDAY.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

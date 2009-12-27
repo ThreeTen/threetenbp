@@ -35,7 +35,7 @@ import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
@@ -57,7 +57,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek implements Calendrical, DateMatcher {
+public enum DayOfWeek implements Calendrical, CalendricalMatcher {
 
     /**
      * The singleton instance for the day of week of Monday.
@@ -317,13 +317,13 @@ public enum DayOfWeek implements Calendrical, DateMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the value of this day of week matches the input date.
+     * Checks if the day-of-week extracted from the calendrical matches this.
      *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
      */
-    public boolean matchesDate(LocalDate date) {
-        return date.getDayOfWeek() == this;
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
     }
 
 }

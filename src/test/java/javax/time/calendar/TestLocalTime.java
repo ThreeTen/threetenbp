@@ -52,6 +52,7 @@ import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MinuteOfHour;
+import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.format.CalendricalParseException;
@@ -96,7 +97,7 @@ public class TestLocalTime {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof TimeAdjuster);
-        assertTrue(obj instanceof TimeMatcher);
+        assertTrue(obj instanceof CalendricalMatcher);
         assertTrue(obj instanceof TimeProvider);
     }
 
@@ -1540,6 +1541,9 @@ public class TestLocalTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
+        assertTrue(TEST_12_30_40_987654321.matches(TEST_12_30_40_987654321));
+        assertFalse(TEST_12_30_40_987654321.matches(MonthOfYear.APRIL));
+        
         assertTrue(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(12)));
         assertFalse(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(0)));
         assertTrue(TEST_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(30)));
@@ -1548,10 +1552,13 @@ public class TestLocalTime {
         assertFalse(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
         assertTrue(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
         assertFalse(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-//        assertTrue(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(0)));
-//        assertFalse(TEST_12_30_40_987654321.matches(HourOfMeridiem.hourOfMeridiem(11)));
         assertTrue(TEST_12_30_40_987654321.matches(AmPmOfDay.PM));
         assertFalse(TEST_12_30_40_987654321.matches(AmPmOfDay.AM));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matches_null() {
+        TEST_12_30_40_987654321.matches(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1831,49 +1838,29 @@ public class TestLocalTime {
     }
 
     //-----------------------------------------------------------------------
-    // matchesTime()
+    // matchesCalendrical() - parameter is larger calendrical
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_true(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s, n);
-        assertEquals(a.matchesTime(b), true);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_hour_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h + 1, m, s, n);
-        assertEquals(a.matchesTime(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_minute_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m + 1, s, n);
-        assertEquals(a.matchesTime(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_second_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s + 1, n);
-        assertEquals(a.matchesTime(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_nano_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s, n + 1);
-        assertEquals(a.matchesTime(b), false);
+    public void test_matchesCalendrical_true_date() {
+        LocalTime test = TEST_12_30_40_987654321;
+        OffsetTime cal = TEST_12_30_40_987654321.atOffset(ZoneOffset.UTC);
+        assertEquals(test.matchesCalendrical(cal), true);
     }
 
-    public void test_matchesTime_itself_true() {
-        assertEquals(TEST_12_30_40_987654321.matchesTime(TEST_12_30_40_987654321), true);
+    public void test_matchesCalendrical_false_date() {
+        LocalTime test = TEST_12_30_40_987654321;
+        OffsetTime cal = TEST_12_30_40_987654321.plusHours(1).atOffset(ZoneOffset.UTC);
+        assertEquals(test.matchesCalendrical(cal), false);
+    }
+
+    public void test_matchesCalendrical_itself_true() {
+        assertEquals(TEST_12_30_40_987654321.matchesCalendrical(TEST_12_30_40_987654321), true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesTime_null() {
-        TEST_12_30_40_987654321.matchesTime(null);
+    public void test_matchesCalendrical_null() {
+        TEST_12_30_40_987654321.matchesCalendrical(null);
     }
 
-    
     //-----------------------------------------------------------------------
     // adjustTime()
     //-----------------------------------------------------------------------

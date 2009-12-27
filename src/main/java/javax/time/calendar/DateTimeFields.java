@@ -59,7 +59,7 @@ import java.util.Map.Entry;
  */
 public final class DateTimeFields
         implements Calendrical,
-            DateMatcher, TimeMatcher, Iterable<DateTimeFieldRule<?>>, Serializable {
+            CalendricalMatcher, Iterable<DateTimeFieldRule<?>>, Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -386,37 +386,18 @@ public final class DateTimeFields
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the date fields in this object match the specified date.
+     * Checks if the fields in this object match those in the specified calendrical.
      * <p>
-     * This implementation checks that all date fields in this object match the input date.
+     * This implementation checks that all calendrical fields in this object match.
      *
-     * @param date  the date to match, not null
-     * @return true if the date fields match, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical fields match, false otherwise
      */
-    public boolean matchesDate(LocalDate date) {
-        ISOChronology.checkNotNull(date, "LocalDate must not be null");
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        ISOChronology.checkNotNull(calendrical, "Calendrical must not be null");
         for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
-            Integer dateValue = entry.getKey().getInteger(date);
+            Integer dateValue = entry.getKey().getInteger(calendrical);
             if (dateValue != null && dateValue.equals(entry.getValue()) == false) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks if the time fields in this object match the specified time.
-     * <p>
-     * This implementation checks that all time fields in this object match the input time.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time fields match, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        ISOChronology.checkNotNull(time, "LocalTime must not be null");
-        for (Entry<DateTimeFieldRule<?>, Integer> entry : fieldValueMap.entrySet()) {
-            Integer timeValue = entry.getKey().getInteger(time);
-            if (timeValue != null && timeValue.equals(entry.getValue()) == false) {
                 return false;
             }
         }

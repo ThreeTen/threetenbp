@@ -36,7 +36,7 @@ import java.io.Serializable;
 import javax.time.MathUtils;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
@@ -76,7 +76,7 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class WeekBasedYear
-        implements Calendrical, Comparable<WeekBasedYear>, DateMatcher, Serializable {
+        implements Calendrical, Comparable<WeekBasedYear>, CalendricalMatcher, Serializable {
 
     /**
      * Constant for the minimum week-based-year.
@@ -203,14 +203,16 @@ public final class WeekBasedYear
         return weekyear;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Checks if the value of this week-based-year matches the input date.
+     * Checks if the week-based-year extracted from the calendrical matches this.
      *
-     * @param date  the date to match, not null
-     * @return true if the date matches, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
      */
-    public boolean matchesDate(LocalDate date) {
-        return WeekBasedYear.weekyear(date).equals(this);
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
     }
 
     //-----------------------------------------------------------------------

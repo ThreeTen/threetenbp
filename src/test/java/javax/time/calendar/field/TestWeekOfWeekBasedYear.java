@@ -46,12 +46,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
-import javax.time.calendar.DateMatcher;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockDateProviderReturnsNull;
 
 import org.testng.annotations.DataProvider;
@@ -74,7 +75,7 @@ public class TestWeekOfWeekBasedYear {
         assertTrue(Calendrical.class.isAssignableFrom(WeekOfWeekBasedYear.class));
         assertTrue(Serializable.class.isAssignableFrom(WeekOfWeekBasedYear.class));
         assertTrue(Comparable.class.isAssignableFrom(WeekOfWeekBasedYear.class));
-        assertTrue(DateMatcher.class.isAssignableFrom(WeekOfWeekBasedYear.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(WeekOfWeekBasedYear.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -164,11 +165,10 @@ public class TestWeekOfWeekBasedYear {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate(LocalDate)
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-
     @Test(dataProvider="dateProvider")
-    public void test_matchesDate(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
+    public void test_matchesCalendrical(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
         LocalDate date = LocalDate.date(startYear, startMonth, startDay);
         long offset = LocalDate.date(endYear, endMonth, endDay).toModifiedJulianDays() - date.toModifiedJulianDays();
         int week = 0;
@@ -178,10 +178,14 @@ public class TestWeekOfWeekBasedYear {
                 week++;
             }
 
-            assertTrue(WeekOfWeekBasedYear.weekOfWeekyear(week).matchesDate(date));
-            assertFalse(WeekOfWeekBasedYear.weekOfWeekyear(week).matchesDate(date.plusDays(7)));
+            assertTrue(WeekOfWeekBasedYear.weekOfWeekyear(week).matchesCalendrical(date));
+            assertFalse(WeekOfWeekBasedYear.weekOfWeekyear(week).matchesCalendrical(date.plusDays(7)));
             date = date.plusDays(1);
         }
+    }
+
+    public void test_matchesCalendrical_noData() {
+        assertEquals(WeekOfWeekBasedYear.weekOfWeekyear(12).matchesCalendrical(LocalTime.time(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------

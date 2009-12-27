@@ -1474,37 +1474,44 @@ public class TestZonedDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // matches(DateMatcher)
+    // matches()
     //-----------------------------------------------------------------------
-    public void test_matches_DateMatcher() {
+    public void test_matches() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
         assertEquals(test.matches(Year.isoYear(2008)), true);
         assertEquals(test.matches(Year.isoYear(2007)), false);
+        assertEquals(test.matches(AmPmOfDay.PM), true);
+        assertEquals(test.matches(AmPmOfDay.AM), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_matches_DateMatcher_null() {
+    public void test_matches_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        base.matches((DateMatcher) null);
+        base.matches((CalendricalMatcher) null);
     }
 
     //-----------------------------------------------------------------------
-    // matches(TimeMatcher)
+    // matchesCalendrical()
     //-----------------------------------------------------------------------
-    public void test_matches_TimeMatcher() {
-        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        assertEquals(test.matches(HourOfDay.hourOfDay(23)), true);
-        assertEquals(test.matches(HourOfDay.hourOfDay(10)), false);
+    public void test_matchesCalendrical_true() {
+        ZonedDateTime test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
+        ZonedDateTime cal = ZonedDateTime.dateTime(test, ZONE_0100);
+        assertEquals(test.matchesCalendrical(cal), true);
+    }
+
+    public void test_matchesCalendrical_false() {
+        ZonedDateTime test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0), ZONE_0100);
+        ZonedDateTime cal = ZonedDateTime.dateTime(test.plusHours(1), ZONE_0100);
+        assertEquals(test.matchesCalendrical(cal), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
-    public void test_matches_TimeMatcher_null() {
+    public void test_matchesCalendrical_null() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        base.matches((TimeMatcher) null);
+        base.matchesCalendrical((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------

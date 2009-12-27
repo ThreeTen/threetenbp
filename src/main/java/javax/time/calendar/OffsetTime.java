@@ -60,7 +60,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class OffsetTime
-        implements TimeProvider, Calendrical, Comparable<OffsetTime>, Serializable, TimeMatcher, TimeAdjuster {
+        implements TimeProvider, Calendrical, Comparable<OffsetTime>, Serializable, CalendricalMatcher, TimeAdjuster {
 
     /**
      * A serialization identifier for this class.
@@ -654,33 +654,30 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Checks whether the time matches the specified matcher.
+     * Checks whether this time matches the specified matcher.
      * <p>
      * Matchers can be used to query the time.
-     * A simple matcher might simply query one of the fields, such as the hour field.
-     * A more complex matcher might query if the time is during opening hours.
-     * <p>
-     * The offset has no effect on the matching.
+     * A simple matcher might simply compare one of the fields, such as the hour field.
+     * A more complex matcher might check if the time is the last second of the day.
      *
      * @param matcher  the matcher to use, not null
      * @return true if this time matches the matcher, false otherwise
      */
-    public boolean matches(TimeMatcher matcher) {
-        return time.matches(matcher);
+    public boolean matches(CalendricalMatcher matcher) {
+        return matcher.matchesCalendrical(this);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this time part of this object is equal to the input time
+     * Checks if the time extracted from the calendrical matches this.
      *
-     * @param time the time to match, not null
-     * @return true if the two times are equal, false otherwise
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
      */
-    public boolean matchesTime(LocalTime time) {
-        return this.time.matchesTime(time);
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        return this.equals(calendrical.get(rule()));
     }
 
-    //-----------------------------------------------------------------------
     /**
      * Adjusts a time to have the value of the time part of this object.
      *
@@ -688,7 +685,7 @@ public final class OffsetTime
      * @return the adjusted time, never null
      */
     public LocalTime adjustTime(LocalTime time) {
-        return matches(time) ? time : this.time;
+        return this.time.adjustTime(time);
     }
 
     //-----------------------------------------------------------------------

@@ -35,13 +35,13 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
 /**
@@ -59,7 +59,7 @@ import javax.time.calendar.TimeProvider;
  * @author Stephen Colebourne
  */
 public final class HourOfDay
-        implements Calendrical, Comparable<HourOfDay>, TimeAdjuster, TimeMatcher, Serializable {
+        implements Calendrical, Comparable<HourOfDay>, TimeAdjuster, CalendricalMatcher, Serializable {
 
     /**
      * A serialization identifier for this instance.
@@ -185,6 +185,17 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if the hour-of-day extracted from the calendrical matches this.
+     *
+     * @param calendrical  the calendrical to match, not null
+     * @return true if the calendrical matches, false otherwise
+     */
+    public boolean matchesCalendrical(Calendrical calendrical) {
+        Integer calValue = calendrical.get(rule());
+        return calValue != null && calValue == getValue();
+    }
+
+    /**
      * Adjusts a time to have the the hour of day represented by this object,
      * returning a new time.
      * <p>
@@ -198,17 +209,6 @@ public final class HourOfDay
      */
     public LocalTime adjustTime(LocalTime time) {
         return time.withHourOfDay(hourOfDay);
-    }
-
-    /**
-     * Checks if the input time has the same hour of day that is represented
-     * by this object.
-     *
-     * @param time  the time to match, not null
-     * @return true if the time matches, false otherwise
-     */
-    public boolean matchesTime(LocalTime time) {
-        return hourOfDay == time.getHourOfDay();
     }
 
     //-----------------------------------------------------------------------

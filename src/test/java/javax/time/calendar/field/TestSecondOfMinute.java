@@ -44,13 +44,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MockTimeProviderReturnsNull;
 import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.TimeMatcher;
 import javax.time.calendar.TimeProvider;
 
 import org.testng.annotations.BeforeMethod;
@@ -78,7 +79,7 @@ public class TestSecondOfMinute {
         assertTrue(Serializable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(Comparable.class.isAssignableFrom(SecondOfMinute.class));
         assertTrue(TimeAdjuster.class.isAssignableFrom(SecondOfMinute.class));
-        assertTrue(TimeMatcher.class.isAssignableFrom(SecondOfMinute.class));
+        assertTrue(CalendricalMatcher.class.isAssignableFrom(SecondOfMinute.class));
     }
 
     public void test_serialization() throws IOException, ClassNotFoundException {
@@ -172,23 +173,27 @@ public class TestSecondOfMinute {
     }
 
     //-----------------------------------------------------------------------
-    // matchesTime()
+    // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
-    public void test_matchesTime() {
+    public void test_matchesCalendrical() {
         LocalTime work = LocalTime.time(5, 10, 0, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             for (int j = 0; j <= MAX_LENGTH; j++) {
                 SecondOfMinute test = SecondOfMinute.secondOfMinute(j);
-                assertEquals(test.matchesTime(work), i == j);
+                assertEquals(test.matchesCalendrical(work), i == j);
             }
             work = work.plusSeconds(1);
         }
     }
 
+    public void test_matchesCalendrical_noData() {
+        assertEquals(SecondOfMinute.secondOfMinute(12).matchesCalendrical(LocalDate.date(2008, 6, 30)), false);
+    }
+
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesTime_nullLocalTime() {
+    public void test_matchesCalendrical_null() {
         SecondOfMinute test = SecondOfMinute.secondOfMinute(1);
-        test.matchesTime((LocalTime) null);
+        test.matchesCalendrical(null);
     }
 
     //-----------------------------------------------------------------------

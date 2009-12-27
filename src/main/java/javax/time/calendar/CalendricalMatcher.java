@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,29 +32,39 @@
 package javax.time.calendar;
 
 /**
- * Strategy for matching against a date.
+ * Strategy for matching against a calendrical.
  * <p>
- * Matchers can be used to query the date in unusual ways. Examples might
- * be a matcher that checks if the date is a weekend or holiday, or
- * Friday the Thirteenth.
+ * Matchers can be used to query the calendrical in unusual ways.
+ * Examples might be a matcher that checks if the date is a weekend or holiday,
+ * or Friday the Thirteenth.
  * <p>
- * DateMatcher is an interface and must be implemented with care
+ * CalendricalMatcher is an interface and must be implemented with care
  * to ensure other classes in the framework operate correctly.
  * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
-public interface DateMatcher {
+public interface CalendricalMatcher {
 
     /**
-     * Checks if the input date matches the rules of the implementation.
+     * Checks if the input calendrical matches the rules of the implementation.
      * <p>
      * This is a strategy pattern that allows a range of matches to be made
-     * against a date.
+     * against a calendrical. A typical implementation will query the calendrical
+     * to extract one of more values, and compare or check them in some way.
+     * <p>
+     * For example, an implementation to check if the calendrical represents a
+     * Saturday or Sunday:
+     * <pre>
+     *  public boolean matchesCalendrical(Calendrical calendrical) {
+     *    DayOfWeek dow = calendrical.get(ISOChronology.dayOfWeekRule());
+     *    return dow != null && (dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY);
+     *  }
+     * </pre>
      *
-     * @param date  the date to match, not null
+     * @param calendrical  the calendrical to match against, not null
      * @return true if the date matches, false otherwise
      */
-    boolean matchesDate(LocalDate date);
+    boolean matchesCalendrical(Calendrical calendrical);
 
 }

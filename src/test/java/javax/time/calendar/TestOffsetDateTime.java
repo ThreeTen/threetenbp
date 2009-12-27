@@ -96,8 +96,7 @@ public class TestOffsetDateTime {
         assertTrue(obj instanceof Serializable);
         assertTrue(obj instanceof Comparable<?>);
         assertTrue(obj instanceof DateTimeProvider);
-        assertTrue(obj instanceof DateMatcher);
-        assertTrue(obj instanceof TimeMatcher);
+        assertTrue(obj instanceof CalendricalMatcher);
         assertTrue(obj instanceof DateAdjuster);
         assertTrue(obj instanceof TimeAdjuster);
     }
@@ -1092,33 +1091,22 @@ public class TestOffsetDateTime {
         assertSame(test, base);
     }
     //-----------------------------------------------------------------------
-    // matches(DateMatcher)
+    // matches()
     //-----------------------------------------------------------------------
-    public void test_matches_DateMatcher() {
+    public void test_matches() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        assertEquals(test.matches(test), true);
+//        assertEquals(test.matches(TimeZone.UTC), false);  // TODO
         assertEquals(test.matches(Year.isoYear(2008)), true);
         assertEquals(test.matches(Year.isoYear(2007)), false);
+        assertEquals(test.matches(AmPmOfDay.AM), true);
+        assertEquals(test.matches(AmPmOfDay.PM), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_matches_DateMatcher_null() {
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_matches_null() {
         OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.matches((DateMatcher) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // matches(TimeMatcher)
-    //-----------------------------------------------------------------------
-    public void test_matches_TimeMatcher() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        assertEquals(test.matches(HourOfDay.hourOfDay(11)), true);
-        assertEquals(test.matches(HourOfDay.hourOfDay(10)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class )
-    public void test_matches_TimeMatcher_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.matches((TimeMatcher) null);
+        base.matches(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1445,85 +1433,29 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    // matchesDate()
+    // matchesCalendrical() - parameter is larger calendrical
     //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesDate_true(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withDate(y, m, d);
-        LocalDate b = LocalDate.date(y, m, d);
-        assertEquals(a.matchesDate(b), true);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesDate_false_year_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withDate(y, m, d);
-        LocalDate b = LocalDate.date(y + 1, m, d);
-        assertEquals(a.matchesDate(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesDate_false_month_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withDate(y, m, d);
-        LocalDate b = LocalDate.date(y, m + 1, d);
-        assertEquals(a.matchesDate(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesDate_false_day_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withDate(y, m, d);
-        LocalDate b = LocalDate.date(y, m, d).plusDays(1);
-        assertEquals(a.matchesDate(b), false);
+    public void test_matchesCalendrical_true_date() {
+        OffsetDateTime test = TEST_DATE_TIME;
+        ZonedDateTime cal = TEST_DATE_TIME.atZoneSimilarLocal(TimeZone.timeZone(TEST_DATE_TIME.getOffset()));
+        assertEquals(test.matchesCalendrical(cal), true);
     }
 
-    public void test_matchesDate_itself_true() {
-        assertTrue(TEST_DATE_TIME.matchesDate(TEST_DATE_TIME.toLocalDate()));
+    public void test_matchesCalendrical_false_date() {
+        OffsetDateTime test = TEST_DATE_TIME;
+        ZonedDateTime cal = TEST_DATE_TIME.plusYears(1).atZoneSimilarLocal(TimeZone.timeZone(TEST_DATE_TIME.getOffset()));
+        assertEquals(test.matchesCalendrical(cal), false);
+    }
+
+    public void test_matchesCalendrical_itself_true() {
+        assertEquals(TEST_DATE_TIME.matchesCalendrical(TEST_DATE_TIME), true);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesDate_null() {
-        TEST_DATE_TIME.matchesDate(null);
-    }
-    
-    //-----------------------------------------------------------------------
-    // matchesTime()
-    //-----------------------------------------------------------------------
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_true(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withTime(h, mi, s, n);
-        LocalTime b = LocalTime.time(h, mi, s, n);
-        assertEquals(a.matchesTime(b), true);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_hour_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withTime(h, mi, s, n);
-        LocalTime b = LocalTime.time(h, mi, s, n).plusHours(1);
-        assertEquals(a.matchesTime(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_minute_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withTime(h, mi, s, n);
-        LocalTime b = LocalTime.time(h, mi, s, n).plusMinutes(1);
-        assertEquals(a.matchesTime(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_second_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withTime(h, mi, s, n);
-        LocalTime b = LocalTime.time(h, mi, s, n).plusSeconds(1);
-        assertEquals(a.matchesTime(b), false);
-    }
-    @Test(dataProvider="sampleTimes")
-    public void test_matchesTime_false_nano_differs(int y, int m, int d, int h, int mi, int s, int n, ZoneOffset offset) {
-        OffsetDateTime a = TEST_DATE_TIME.withTime(h, mi, s, n);
-        LocalTime b = LocalTime.time(h, mi, s, n).plusNanos(1);
-        assertEquals(a.matchesTime(b), false);
+    public void test_matchesCalendrical_null() {
+        TEST_DATE_TIME.matchesCalendrical(null);
     }
 
-    public void test_matchesTime_itself_true() {
-        assertEquals(TEST_DATE_TIME.matchesTime(TEST_DATE_TIME.toLocalTime()), true);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesTime_null() {
-        TEST_DATE_TIME.matchesTime(null);
-    }
-    
     //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
