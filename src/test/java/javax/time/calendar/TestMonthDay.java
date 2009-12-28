@@ -220,22 +220,6 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_DateProvider() {
-        DateProvider provider = LocalDate.date(2007, 7, 15);
-        assertEquals(MonthDay.monthDay(provider), TEST_07_15);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_DateProvider_null() {
-        MonthDay.monthDay((DateProvider) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_DateProvider_badProvider() {
-        MonthDay.monthDay(new MockDateProviderReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
     public void factory_Calendrical() {
         Calendrical cal = new MockSimpleCalendrical(RULE_MONTH, MonthOfYear.JULY, RULE_DOM, 15);
         assertEquals(MonthDay.monthDay(cal), TEST_07_15);

@@ -59,7 +59,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder;
  * @author Stephen Colebourne
  */
 public final class MonthDay
-        implements Calendrical, Comparable<MonthDay>, Serializable, DateAdjuster, CalendricalMatcher {
+        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<MonthDay>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -150,20 +150,6 @@ public final class MonthDay
      */
     public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
         return monthDay(MonthOfYear.monthOfYear(monthOfYear), dayOfMonth);
-    }
-
-    /**
-     * Obtains an instance of <code>MonthDay</code> from a date provider.
-     * <p>
-     * This can be used extract a month-day object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
-     *
-     * @param dateProvider  the date provider to use, not null
-     * @return the month-day, never null
-     */
-    public static MonthDay monthDay(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        return new MonthDay(date.getMonthOfYear(), date.getDayOfMonth());
     }
 
     /**

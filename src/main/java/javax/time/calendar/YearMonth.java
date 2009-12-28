@@ -61,7 +61,7 @@ import javax.time.period.PeriodProvider;
  * @author Stephen Colebourne
  */
 public final class YearMonth
-        implements Calendrical, Comparable<YearMonth>, Serializable, DateAdjuster, CalendricalMatcher {
+        implements Calendrical, CalendricalMatcher, DateAdjuster, Comparable<YearMonth>, Serializable {
 
     /**
      * A serialization identifier for this class.
@@ -123,20 +123,6 @@ public final class YearMonth
      */
     public static YearMonth yearMonth(int year, int monthOfYear) {
         return yearMonth(year, MonthOfYear.monthOfYear(monthOfYear));
-    }
-
-    /**
-     * Obtains an instance of <code>YearMonth</code> from a date provider.
-     * <p>
-     * This can be used extract a year-month object directly from any implementation
-     * of DateProvider, including those in other calendar systems.
-     *
-     * @param dateProvider  the date provider to use, not null
-     * @return the year-month, never null
-     */
-    public static YearMonth yearMonth(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        return new YearMonth(date.getYear(), date.getMonthOfYear());
     }
 
     /**
