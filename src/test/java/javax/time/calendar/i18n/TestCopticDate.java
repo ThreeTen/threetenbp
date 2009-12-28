@@ -51,8 +51,9 @@ import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.MockDateProviderReturnsNull;
+import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -154,19 +155,19 @@ public class TestCopticDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_DateProvider() throws Exception {
+    public void factory_date_Calendrical() throws Exception {
         assertEquals(CopticDate.copticDate(TEST_1234_7_15), TEST_1234_7_15);
         assertCopticDate(CopticDate.copticDate(TEST_1234_7_15), 1234, 7, 15);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateProvider_null() throws Exception {
-        CopticDate.copticDate(null);
+    @Test(expectedExceptions=UnsupportedRuleException.class)
+    public void factory_date_Calendrical_noData() throws Exception {
+        CopticDate.copticDate(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_DateProvider_badProvider() throws Exception {
-        CopticDate.copticDate(new MockDateProviderReturnsNull());
+    public void factory_date_Calendrical_null() throws Exception {
+        CopticDate.copticDate(null);
     }
 
     //-----------------------------------------------------------------------

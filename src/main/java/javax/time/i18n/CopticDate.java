@@ -120,7 +120,7 @@ public final class CopticDate
      * @param copticYear  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param copticMonthOfYear  the month of year to represent, from 1 to 13
      * @param copticDayOfMonth  the day of month to represent, from 1 to 30
-     * @return a CopticDate object
+     * @return the Coptic date, never null
      */
     public static CopticDate copticDate(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
         CopticChronology.yearRule().checkValue(copticYear);
@@ -141,7 +141,7 @@ public final class CopticDate
      * @param year  the year to represent
      * @param monthOfYear  the month of year to represent
      * @param dayOfMonth  the day of month to represent
-     * @return a CopticDate object
+     * @return the Coptic date, never null
      */
     private static CopticDate copticDatePreviousValid(int year, int monthOfYear, int dayOfMonth) {
         CopticChronology.yearRule().checkValue(year);
@@ -155,15 +155,17 @@ public final class CopticDate
     }
 
     /**
-     * Obtains an instance of <code>CopticDate</code> from a date provider.
+     * Obtains an instance of <code>CopticDate</code> from a calendrical.
+     * <p>
+     * This can be used extract the date directly from any implementation
+     * of <code>Calendrical</code>, including those in other calendar systems.
      *
-     * @param dateProvider  the date provider to use, not null
-     * @return a CopticDate object, never null
+     * @param calendrical  the calendrical to extract from, not null
+     * @return the Coptic date, never null
+     * @throws UnsupportedRuleException if the day-of-week cannot be obtained
      */
-    public static CopticDate copticDate(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        long epochDays = date.toModifiedJulianDays() + MJD_TO_COPTIC;
-        return copticDateFromEopchDays((int) epochDays);
+    public static CopticDate copticDate(Calendrical calendrical) {
+        return rule().getValueChecked(calendrical);
     }
 
     /**
@@ -447,7 +449,7 @@ public final class CopticDate
      * Compares this instance to another.
      *
      * @param otherDate  the other date instance to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
+     * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherDay is null
      */
     public int compareTo(CopticDate otherDate) {
@@ -498,7 +500,7 @@ public final class CopticDate
     /**
      * A hash code for this object.
      *
-     * @return a suitable hashcode
+     * @return a suitable hash code
      */
     @Override
     public int hashCode() {
@@ -559,7 +561,11 @@ public final class CopticDate
         @Override
         protected CopticDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
-            return ld != null ? CopticDate.copticDate(ld) : null;
+            if (ld == null) {
+                return null;
+            }
+            long epochDays = ld.toModifiedJulianDays() + MJD_TO_COPTIC;
+            return copticDateFromEopchDays((int) epochDays);
         }
         @Override
         protected void merge(CalendricalMerger merger) {
