@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -124,7 +124,7 @@ public final class MockOtherDate
         private static final CalendricalRule<MockOtherDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate");
+            super(MockOtherDate.class, ISOChronology.INSTANCE, "MockOtherDate", ISOChronology.periodDays(), null);
         }
         private Object readResolve() {
             return INSTANCE;

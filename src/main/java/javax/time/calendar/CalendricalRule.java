@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -69,6 +69,10 @@ public abstract class CalendricalRule<T>
     private final String id;
     /** The name of the rule, not null. */
     private final String name;
+    /** The period unit, not null. */
+    private final PeriodRule periodUnit;
+    /** The period range, not null. */
+    private final PeriodRule periodRange;
 
     /**
      * Constructor used to create a rule.
@@ -76,11 +80,15 @@ public abstract class CalendricalRule<T>
      * @param reifiedClass  the reified class, not null
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
+     * @param periodUnit  the period unit, may be null
+     * @param periodRange  the period range, may be null
      */
     protected CalendricalRule(
             Class<T> reifiedClass,
             Chronology chronology,
-            String name) {
+            String name,
+            PeriodRule periodUnit,
+            PeriodRule periodRange) {
         // avoid possible circular references by using inline NPE checks
         if (reifiedClass == null) {
             throw new NullPointerException("Reified class must not be null");
@@ -91,10 +99,15 @@ public abstract class CalendricalRule<T>
         if (name == null) {
             throw new NullPointerException("Name must not be null");
         }
+        if (periodUnit == null && periodRange != null) {
+            throw new NullPointerException("Peiod unit must not be null if period range is non-null");
+        }
         this.reified = reifiedClass;
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
+        this.periodUnit = periodUnit;
+        this.periodRange = periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -130,6 +143,29 @@ public abstract class CalendricalRule<T>
      */
     public final String getName() {
         return name;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the period unit, which the element which alters within the range.
+     * <p>
+     * In the phrase 'hour of day', the unit is the hour.
+     *
+     * @return the rule for the unit period, null if the rule isn't based on a period
+     */
+    public PeriodRule getPeriodUnit() {
+        return periodUnit;
+    }
+
+    /**
+     * Gets the period range, which the field is bound by.
+     * <p>
+     * In the phrase 'hour of day', the range is the day.
+     *
+     * @return the rule for the range period, null if unbounded
+     */
+    public PeriodRule getPeriodRange() {
+        return periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -430,23 +466,32 @@ public abstract class CalendricalRule<T>
      * @throws NullPointerException if other is null
      */
     public int compareTo(CalendricalRule<T> other) {
-//        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
-//        if (cmp != 0) {
-//            return cmp;
-//        }
-//        if (this.getPeriodRange() == other.getPeriodRange()) {
-//            return chronology.getName().compareTo(other.chronology.getName());
-//        }
-//        if (this.getPeriodRange() == null) {
-//            return 1;
-//        }
-//        if (other.getPeriodRange() == null) {
-//            return -1;
-//        }
-//        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
-//        if (cmp != 0) {
-//            return cmp;
-//        }
+        if (this.getPeriodUnit() == null) {
+            if (other.getPeriodUnit() == null) {
+                return chronology.getName().compareTo(other.chronology.getName());
+            } else {
+                return 1;
+            }
+        } else if (other.getPeriodUnit() == null) {
+            return -1;
+        }
+        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
+        if (cmp != 0) {
+            return cmp;
+        }
+        if (this.getPeriodRange() == null) {
+            if (other.getPeriodRange() == null) {
+                return chronology.getName().compareTo(other.chronology.getName());
+            } else {
+                return 1;
+            }
+        } else if (other.getPeriodRange() == null) {
+            return -1;
+        }
+        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
+        if (cmp != 0) {
+            return cmp;
+        }
         return chronology.getName().compareTo(other.chronology.getName());
     }
 

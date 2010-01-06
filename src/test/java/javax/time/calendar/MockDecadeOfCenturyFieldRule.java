@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.CENTURIES;
-import static javax.time.period.PeriodUnits.DECADES;
-
 import java.io.Serializable;
 
 import javax.time.MathUtils;
@@ -51,7 +48,7 @@ public final class MockDecadeOfCenturyFieldRule extends DateTimeFieldRule<Intege
     private static final long serialVersionUID = 1L;
     /** Constructor. */
     private MockDecadeOfCenturyFieldRule() {
-        super(Integer.class, ISOChronology.INSTANCE, "DecadeOfCentury", DECADES, CENTURIES, 0, 9);
+        super(Integer.class, ISOChronology.INSTANCE, "DecadeOfCentury", ISOChronology.periodDecades(), ISOChronology.periodCenturies(), 0, 9);
     }
     private Object readResolve() {
         return INSTANCE;

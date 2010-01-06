@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -639,7 +639,7 @@ public final class ZoneOffset
         private static final CalendricalRule<ZoneOffset> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZoneOffset.class, ISOChronology.INSTANCE, "ZoneOffset");
+            super(ZoneOffset.class, ISOChronology.INSTANCE, "ZoneOffset", null, null);
         }
         private Object readResolve() {
             return INSTANCE;

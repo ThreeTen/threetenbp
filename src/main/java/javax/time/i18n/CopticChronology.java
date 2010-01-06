@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,16 @@
  */
 package javax.time.i18n;
 
-import static javax.time.period.PeriodUnits.DAYS;
-import static javax.time.period.PeriodUnits.MONTHS;
-import static javax.time.period.PeriodUnits.WEEKS;
-import static javax.time.period.PeriodUnits.YEARS;
-
 import java.io.Serializable;
 
+import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.PeriodRule;
 
 /**
  * The Coptic calendar system.
@@ -60,17 +58,11 @@ import javax.time.calendar.LocalDate;
  * @author Stephen Colebourne
  */
 public final class CopticChronology extends Chronology implements Serializable {
-    // TODO: PeriodUnit for years/months
 
     /**
      * The singleton instance of <code>CopticChronology</code>.
      */
     public static final CopticChronology INSTANCE = new CopticChronology();
-//    /**
-//     * The period unit for coptic years.
-//     * One coptic year is 13 coptic months.
-//     */
-//    public static final PeriodUnit COPTIC_YEARS = new PeriodUnit();
     /**
      * A serialization identifier for this class.
      */
@@ -232,6 +224,66 @@ public final class CopticChronology extends Chronology implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Gets the period rule for years.
+     * <p>
+     * The period rule defines the concept of a period of a year.
+     * This has an estimated duration equal to 365.25 days.
+     * <p>
+     * See {@link #yearRule()} for the main date-time field.
+     *
+     * @return the period rule for years, never null
+     */
+    public static PeriodRule periodYears() {
+        // TODO: should be JulianYears? Depends on add method
+        return YEARS;
+    }
+
+    /**
+     * Gets the period rule for months.
+     * <p>
+     * The period rule defines the concept of a period of a month.
+     * Coptic months are typically 30 days long, except for the 13th month which is
+     * 5 or 6 days long. The rule uses an estimated duration of 29.5 days.
+     * <p>
+     * See {@link #monthOfYearRule()} for the main date-time field.
+     *
+     * @return the period rule for months, never null
+     */
+    public static PeriodRule periodMonths() {
+        return MONTHS;
+    }
+
+    /**
+     * Gets the period rule for weeks.
+     * <p>
+     * The period rule defines the concept of a period of a week.
+     * This is equivalent to the ISO weeks period rule.
+     * <p>
+     * See {@link #weekOfWeekBasedYearRule()} and {@link #weekOfYearRule()} for
+     * the main date-time fields.
+     *
+     * @return the period rule for weeks, never null
+     */
+    public static PeriodRule periodWeeks() {
+        return ISOChronology.periodWeeks();
+    }
+
+    /**
+     * Gets the period rule for days.
+     * <p>
+     * The period rule defines the concept of a period of a day.
+     * This is equivalent to the ISO days period rule.
+     * <p>
+     * See {@link #dayOfMonthRule()} for the main date-time field.
+     *
+     * @return the period rule for days, never null
+     */
+    public static PeriodRule periodDays() {
+        return ISOChronology.periodDays();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Rule implementation.
      */
     private static final class YearRule extends DateTimeFieldRule<Integer> implements Serializable {
@@ -306,7 +358,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 30);
+            super(Integer.class, CopticChronology.INSTANCE, "DayOfMonth", periodDays(), MONTHS, 1, 30);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -346,7 +398,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
+            super(Integer.class, CopticChronology.INSTANCE, "DayOfYear", periodDays(), YEARS, 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -397,7 +449,7 @@ public final class CopticChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
+            super(Integer.class, CopticChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -408,4 +460,15 @@ public final class CopticChronology extends Chronology implements Serializable {
             return cd != null ? cd.getDayOfWeek() : null;
         }
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Period rule for years.
+     */
+    private static final PeriodRule YEARS = new PeriodRule(CopticChronology.INSTANCE, "CopticYears", Duration.seconds(31557600L));  // 365.25 days
+    /**
+     * Period rule for months.
+     */
+    private static final PeriodRule MONTHS = new PeriodRule(CopticChronology.INSTANCE, "CopticMonths", Duration.standardHours(24L * 30L - 12L));  // 29.5 days
+
 }

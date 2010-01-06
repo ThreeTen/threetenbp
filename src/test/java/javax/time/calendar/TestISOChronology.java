@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -46,8 +46,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.WeekBasedYear;
-import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
@@ -103,100 +101,10 @@ public class TestISOChronology {
 //        assertEquals(rule.getMaximumValue(), 99);
 //        assertEquals(rule.getSmallestMaximumValue(), 99);
 //        assertEquals(rule.isFixedValueSet(), true);
-//        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
-//        assertEquals(rule.getPeriodRange(), PeriodUnits.CENTURIES);
+//        assertEquals(rule.getPeriodUnit(), ISOChronology.YEARS);
+//        assertEquals(rule.getPeriodRange(), ISOChronology.CENTURIES);
 //        serialize(rule);
 //    }
-
-    public void test_weekyearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekBasedYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.WeekBasedYear");
-        assertEquals(rule.getName(), "WeekBasedYear");
-        assertEquals(rule.getMinimumValue(), WeekBasedYear.MIN_YEAR);
-        assertEquals(rule.getLargestMinimumValue(), WeekBasedYear.MIN_YEAR);
-        assertEquals(rule.getMaximumValue(), WeekBasedYear.MAX_YEAR);
-        assertEquals(rule.getSmallestMaximumValue(), WeekBasedYear.MAX_YEAR);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKYEARS);
-        assertEquals(rule.getPeriodRange(), null);
-        serialize(rule);
-    }
-
-    public void test_weekOfWeekyearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfWeekBasedYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.WeekOfWeekBasedYear");
-        assertEquals(rule.getName(), "WeekOfWeekBasedYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 53);
-        assertEquals(rule.getSmallestMaximumValue(), 52);
-        assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKYEARS);
-        serialize(rule);
-    }
-
-    public void test_weekOfYearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.WeekOfYear");
-        assertEquals(rule.getName(), "WeekOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 53);
-        assertEquals(rule.getSmallestMaximumValue(), 53);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        serialize(rule);
-    }
-
-    public void test_quarterOfYearRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.quarterOfYearRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.QuarterOfYear");
-        assertEquals(rule.getName(), "QuarterOfYear");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 4);
-        assertEquals(rule.getSmallestMaximumValue(), 4);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.QUARTERS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
-        serialize(rule);
-    }
-
-    public void test_monthOfQuarterRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.monthOfQuarterRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.MonthOfQuarter");
-        assertEquals(rule.getName(), "MonthOfQuarter");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 3);
-        assertEquals(rule.getSmallestMaximumValue(), 3);
-        assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.QUARTERS);
-        serialize(rule);
-    }
-
-    public void test_weekOfMonthRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = ISOChronology.weekOfMonthRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
-        assertEquals(rule.getID(), "ISO.WeekOfMonth");
-        assertEquals(rule.getName(), "WeekOfMonth");
-        assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getLargestMinimumValue(), 1);
-        assertEquals(rule.getMaximumValue(), 5);
-        assertEquals(rule.getSmallestMaximumValue(), 4);
-        assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.WEEKS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
-        serialize(rule);
-    }
 
     //-----------------------------------------------------------------------
     public void test_hourOfDayRule() throws Exception {
@@ -209,8 +117,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 23);
         assertEquals(rule.getSmallestMaximumValue(), 23);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.HOURS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.DAYS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
         serialize(rule);
     }
 
@@ -224,8 +132,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 59);
         assertEquals(rule.getSmallestMaximumValue(), 59);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MINUTES);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.HOURS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodMinutes());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodHours());
         serialize(rule);
     }
 
@@ -239,8 +147,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 59);
         assertEquals(rule.getSmallestMaximumValue(), 59);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.SECONDS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MINUTES);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodSeconds());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodMinutes());
         serialize(rule);
     }
 
@@ -254,8 +162,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 999999999);
         assertEquals(rule.getSmallestMaximumValue(), 999999999);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.NANOS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.SECONDS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodNanos());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodSeconds());
         serialize(rule);
     }
 
@@ -270,8 +178,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 24 * 60 * 60 - 1);
         assertEquals(rule.getSmallestMaximumValue(), 24 * 60 * 60 - 1);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.SECONDS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.DAYS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodSeconds());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
         serialize(rule);
     }
 
@@ -285,8 +193,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 24 * 60 * 60 * 1000 - 1);
         assertEquals(rule.getSmallestMaximumValue(), 24 * 60 * 60 * 1000 - 1);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MILLIS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.DAYS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodMillis());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
         serialize(rule);
     }
 
@@ -300,8 +208,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 999);
         assertEquals(rule.getSmallestMaximumValue(), 999);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MILLIS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.SECONDS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodMillis());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodSeconds());
         serialize(rule);
     }
 
@@ -315,8 +223,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 1);
         assertEquals(rule.getSmallestMaximumValue(), 1);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.TWELVE_HOURS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.DAYS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodTwelveHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodDays());
         serialize(rule);
     }
 
@@ -330,8 +238,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 11);
         assertEquals(rule.getSmallestMaximumValue(), 11);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.HOURS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.TWELVE_HOURS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodTwelveHours());
         serialize(rule);
     }
 
@@ -345,8 +253,8 @@ public class TestISOChronology {
         assertEquals(rule.getMaximumValue(), 12);
         assertEquals(rule.getSmallestMaximumValue(), 12);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.HOURS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.TWELVE_HOURS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodTwelveHours());
         serialize(rule);
     }
 

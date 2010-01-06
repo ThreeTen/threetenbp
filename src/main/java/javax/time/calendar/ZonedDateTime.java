@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1823,29 +1823,11 @@ public final class ZonedDateTime
         private static final CalendricalRule<ZonedDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime");
+            super(ZonedDateTime.class, ISOChronology.INSTANCE, "ZonedDateTime", ISOChronology.periodNanos(), null);
         }
         private Object readResolve() {
             return INSTANCE;
         }
-//        public Calendrical[] getChildren(ZonedDateTime calendrical) {
-//            return new Calendrical[] {calendrical.getZone(), calendrical.toOffsetDateTime()};
-//        }
-//        public ZonedDateTime createValue(Calendrical calendrical) {
-//            TimeZone zone = TimeZone.rule().createValue(calendrical);
-//            if (zone == null) {
-//                throw new CalendricalException("Unable to create ZonedDateTime as TimeZone not available");
-//            }
-//            OffsetDateTime odt = OffsetDateTime.rule().createValue(calendrical);
-//            if (odt != null) {
-//                return ZonedDateTime.dateTime(odt, zone);
-//            }
-//            LocalDateTime ldt = LocalDateTime.rule().createValue(calendrical);
-//            if (ldt != null) {
-//                return ZonedDateTime.dateTime(ldt, zone);
-//            }
-//            throw new CalendricalException("Unable to create ZonedDateTime as date-time not available");
-//        }
     }
 
 }

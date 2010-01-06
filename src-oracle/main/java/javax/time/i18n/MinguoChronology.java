@@ -3,12 +3,6 @@
  */
 package javax.time.i18n;
 
-import static javax.time.period.PeriodUnits.DAYS;
-import static javax.time.period.PeriodUnits.DECADES;
-import static javax.time.period.PeriodUnits.MONTHS;
-import static javax.time.period.PeriodUnits.WEEKS;
-import static javax.time.period.PeriodUnits.YEARS;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,6 +11,8 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.PeriodRule;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -181,6 +177,78 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the period rule for eras.
+     * <p>
+     * The period rule defines the concept of a period of an era.
+     * This is equivalent to the ISO eras period rule.
+     * <p>
+     * See {@link #eraRule()} for the main date-time field.
+     *
+     * @return the period rule for eras, never null
+     */
+    public static PeriodRule periodEras() {
+        return ISOChronology.periodEras();
+    }
+
+    /**
+     * Gets the period rule for years.
+     * <p>
+     * The period rule defines the concept of a period of a year.
+     * This is equivalent to the ISO years period rule.
+     * <p>
+     * See {@link #yearOfEraRule()} for the main date-time field.
+     *
+     * @return the period rule for years, never null
+     */
+    public static PeriodRule periodYears() {
+        return ISOChronology.periodYears();
+    }
+
+    /**
+     * Gets the period rule for months.
+     * <p>
+     * The period rule defines the concept of a period of a month.
+     * This is equivalent to the ISO months period rule.
+     * <p>
+     * See {@link #monthOfYearRule()} for the main date-time field.
+     *
+     * @return the period rule for months, never null
+     */
+    public static PeriodRule periodMonths() {
+        return ISOChronology.periodMonths();
+    }
+
+    /**
+     * Gets the period rule for weeks.
+     * <p>
+     * The period rule defines the concept of a period of a week.
+     * This is equivalent to the ISO weeks period rule.
+     * <p>
+     * See {@link #weekOfWeekBasedYearRule()} and {@link #weekOfYearRule()} for
+     * the main date-time fields.
+     *
+     * @return the period rule for weeks, never null
+     */
+    public static PeriodRule periodWeeks() {
+        return ISOChronology.periodWeeks();
+    }
+
+    /**
+     * Gets the period rule for days.
+     * <p>
+     * The period rule defines the concept of a period of a day.
+     * This is equivalent to the ISO days period rule.
+     * <p>
+     * See {@link #dayOfMonthRule()} for the main date-time field.
+     *
+     * @return the period rule for days, never null
+     */
+    public static PeriodRule periodDays() {
+        return ISOChronology.periodDays();
+    }
+
+    //-----------------------------------------------------------------------
 //    /**
 //     * Rule implementation.
 //     */
@@ -235,8 +303,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            // Use DECADES for now as there is no ERAS defined.
-            super(MinguoEra.class, MinguoChronology.INSTANCE, "Era", DECADES, null, 0, 1);
+            super(MinguoEra.class, MinguoChronology.INSTANCE, "Era", periodEras(), null, 0, 1);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -284,7 +351,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "YearOfEra", YEARS, null,
+            super(Integer.class, MinguoChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
                     MinguoDate.MIN_YEAR_OF_ERA, MinguoDate.MAX_YEAR_OF_ERA);
         }
         private Object readResolve() {
@@ -336,7 +403,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12);
+            super(Integer.class, MinguoChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -359,7 +426,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, 31);
+            super(Integer.class, MinguoChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, 31);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -398,7 +465,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, 366);
+            super(Integer.class, MinguoChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, 366);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -436,7 +503,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
+            super(Integer.class, MinguoChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;

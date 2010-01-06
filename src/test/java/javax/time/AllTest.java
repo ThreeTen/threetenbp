@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,17 +33,23 @@ package javax.time;
 
 import java.util.Arrays;
 
+import javax.time.calendar.TestCalendricalMatchers;
 import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
-import javax.time.calendar.TestCalendricalMatchers;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestISODayOfMonthRule;
 import javax.time.calendar.TestISODayOfWeekRule;
 import javax.time.calendar.TestISODayOfYearRule;
+import javax.time.calendar.TestISOMonthOfQuarterRule;
 import javax.time.calendar.TestISOMonthOfYearRule;
+import javax.time.calendar.TestISOQuarterOfYearRule;
+import javax.time.calendar.TestISOWeekBasedYearRule;
+import javax.time.calendar.TestISOWeekOfMonthRule;
+import javax.time.calendar.TestISOWeekOfWeekBasedYearRule;
+import javax.time.calendar.TestISOWeekOfYearRule;
 import javax.time.calendar.TestISOYearRule;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
@@ -141,7 +147,13 @@ public class AllTest {
             TestISODayOfMonthRule.class,
             TestISODayOfWeekRule.class,
             TestISODayOfYearRule.class,
+            TestISOMonthOfQuarterRule.class,
             TestISOMonthOfYearRule.class,
+            TestISOQuarterOfYearRule.class,
+            TestISOWeekBasedYearRule.class,
+            TestISOWeekOfMonthRule.class,
+            TestISOWeekOfWeekBasedYearRule.class,
+            TestISOWeekOfYearRule.class,
             TestISOYearRule.class,
             TestLocalDate.class,
             TestLocalDateTime.class,

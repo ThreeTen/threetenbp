@@ -125,10 +125,8 @@ public final class HijrahDate
      * Field name        Minimum   Minimum     Maximum     Maximum
      * ----------        -------   -------     -------     -------
      * ERA                     0         0           1           1
-     * YEAR                    1         1        9999        9999
-     * MONTH                   0         0          11          11
-     * WEEK_OF_YEAR            1         1          51          52
-     * WEEK_OF_MONTH           0         0           5           6
+     * YEAR_OF_ERA             1         1        9999        9999
+     * MONTH_OF_YEAR           1         1          12          12
      * DAY_OF_MONTH            1         1          29          30
      * DAY_OF_YEAR             1         1         354         355
      * </pre>
@@ -1924,7 +1922,7 @@ public final class HijrahDate
         private static final CalendricalRule<HijrahDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(HijrahDate.class, ISOChronology.INSTANCE, "HijrahDate");
+            super(HijrahDate.class, ISOChronology.INSTANCE, "HijrahDate", HijrahChronology.periodDays(), null);
         }
         private Object readResolve() {
             return INSTANCE;

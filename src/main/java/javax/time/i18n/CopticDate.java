@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -553,7 +553,7 @@ public final class CopticDate
         private static final CalendricalRule<CopticDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(CopticDate.class, ISOChronology.INSTANCE, "CopticDate");
+            super(CopticDate.class, ISOChronology.INSTANCE, "CopticDate", CopticChronology.periodDays(), null);
         }
         private Object readResolve() {
             return INSTANCE;

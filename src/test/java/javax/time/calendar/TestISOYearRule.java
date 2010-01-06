@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,7 +35,6 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.MockSimpleCalendrical;
-import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
@@ -71,7 +70,7 @@ public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(new MockSimpleCalendrical()), Year.MAX_YEAR);
         assertEquals(rule.getSmallestMaximumValue(), Year.MAX_YEAR);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodYears());
         assertEquals(rule.getPeriodRange(), null);
     }
 

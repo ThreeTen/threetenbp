@@ -556,7 +556,7 @@ public final class ThaiBuddhistDate
         private static final CalendricalRule<ThaiBuddhistDate> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(ThaiBuddhistDate.class, ISOChronology.INSTANCE, "ThaiBuddhistDate");
+            super(ThaiBuddhistDate.class, ISOChronology.INSTANCE, "ThaiBuddhistDate", ThaiBuddhistChronology.periodDays(), null);
         }
         private Object readResolve() {
             return INSTANCE;

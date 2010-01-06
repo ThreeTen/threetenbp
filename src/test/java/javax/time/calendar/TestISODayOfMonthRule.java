@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,7 +34,6 @@ package javax.time.calendar;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
@@ -69,8 +68,8 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getMaximumValue(), 31);
         assertEquals(rule.getSmallestMaximumValue(), 28);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
+        assertEquals(rule.getPeriodUnit(), ISOChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), ISOChronology.periodMonths());
     }
 
     //-----------------------------------------------------------------------

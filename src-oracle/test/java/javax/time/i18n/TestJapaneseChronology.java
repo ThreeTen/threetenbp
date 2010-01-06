@@ -15,7 +15,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
@@ -70,7 +69,7 @@ public class TestJapaneseChronology {
         assertEquals(rule.getMaximumValue(), 2);
         assertEquals(rule.getSmallestMaximumValue(), 2);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DECADES);
+        assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodEras());
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
     }
@@ -85,8 +84,8 @@ public class TestJapaneseChronology {
         assertEquals(rule.getMaximumValue(), JapaneseDate.MAX_YEAR_OF_ERA);
         assertEquals(rule.getSmallestMaximumValue(), JapaneseDate.MAX_YEAR_OF_ERA);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
-        assertEquals(rule.getPeriodRange(), null);
+        assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodYears());
+        assertEquals(rule.getPeriodRange(), JapaneseChronology.periodEras());
         serialize(rule);
     }
 
@@ -100,8 +99,8 @@ public class TestJapaneseChronology {
         assertEquals(rule.getMaximumValue(), 12);
         assertEquals(rule.getSmallestMaximumValue(), 12);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodMonths());
+        assertEquals(rule.getPeriodRange(), JapaneseChronology.periodYears());
     }
 
     @Test
@@ -114,8 +113,8 @@ public class TestJapaneseChronology {
         assertEquals(rule.getMaximumValue(), 31);
         assertEquals(rule.getSmallestMaximumValue(), 28);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
+        assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), JapaneseChronology.periodMonths());
         serialize(rule);
     }
 
@@ -129,8 +128,8 @@ public class TestJapaneseChronology {
         assertEquals(rule.getMaximumValue(), 366);
         assertEquals(rule.getSmallestMaximumValue(), 365);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), JapaneseChronology.periodYears());
         serialize(rule);
 
     }
@@ -145,8 +144,8 @@ public class TestJapaneseChronology {
         assertEquals(rule.getMaximumValue(), 7);
         assertEquals(rule.getSmallestMaximumValue(), 7);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
+        assertEquals(rule.getPeriodUnit(), JapaneseChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), JapaneseChronology.periodWeeks());
         serialize(rule);
     }
 

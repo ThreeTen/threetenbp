@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -46,6 +46,6 @@ public class MockRuleNoValue extends CalendricalRule<Integer> {
     public static final MockRuleNoValue INSTANCE = new MockRuleNoValue();
 
     private MockRuleNoValue() {
-        super(Integer.class, ISOChronology.INSTANCE, "Mock");
+        super(Integer.class, ISOChronology.INSTANCE, "Mock", null, null);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
-import javax.time.period.PeriodUnit;
 
 /**
  * The rule defining how a measurable field of time operates.
@@ -74,10 +73,6 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /** A Math context for calculating values from fractions. */
     private static final MathContext VALUE_CONTEXT = new MathContext(0, RoundingMode.FLOOR);
 
-    /** The period unit, not null. */
-    private final PeriodUnit periodUnit;
-    /** The period range, not null. */
-    private final PeriodUnit periodRange;
     /** The minimum value for the field. */
     private final int minimumValue;
     /** The maximum value for the field. */
@@ -100,8 +95,8 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             Class<T> reifiedClass,
             Chronology chronology,
             String name,
-            PeriodUnit periodUnit,
-            PeriodUnit periodRange,
+            PeriodRule periodUnit,
+            PeriodRule periodRange,
             int minimumValue,
             int maximumValue) {
         this(reifiedClass, chronology, name, periodUnit, periodRange, minimumValue, maximumValue, false);
@@ -123,40 +118,15 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
             Class<T> reifiedClass,
             Chronology chronology,
             String name,
-            PeriodUnit periodUnit,
-            PeriodUnit periodRange,
+            PeriodRule periodUnit,
+            PeriodRule periodRange,
             int minimumValue,
             int maximumValue,
             boolean hasText) {
-        super(reifiedClass, chronology, name);
-        this.periodUnit = periodUnit;
-        this.periodRange = periodRange;
+        super(reifiedClass, chronology, name, periodUnit, periodRange);
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
         this.textStores = (hasText ? new ConcurrentHashMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>>() : null);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the period unit, which the element which alters within the range.
-     * <p>
-     * In the phrase 'hour of day', the unit is the hour.
-     *
-     * @return the rule for the unit period, never null
-     */
-    public PeriodUnit getPeriodUnit() {
-        return periodUnit;
-    }
-
-    /**
-     * Gets the period range, which the field is bound by.
-     * <p>
-     * In the phrase 'hour of day', the range is the day.
-     *
-     * @return the rule for the range period, null if unbounded
-     */
-    public PeriodUnit getPeriodRange() {
-        return periodRange;
     }
 
     //-----------------------------------------------------------------------
@@ -211,7 +181,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     }
 
     /**
-     * Converts the typed value of the rule to the int value.
+     * Converts the typed value of the rule to the <code>int</code> equivalent.
      * <p>
      * This default implementation simply performs a cast.
      * Where the reified type is not <code>Integer</code>, this method must be overridden.
@@ -225,9 +195,13 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     }
 
     /**
-     * Converts the int to a typed value of the rule.
+     * Converts the <code>int</code> to a typed value of the rule.
      * <p>
-     * This default implementation simply calls {@link #reify(Object)}.
+     * The <code>int</code> will be checked to ensure that it is within the
+     * valid range of values for the field.
+     * <p>
+     * This default implementation simply calls {@link #checkValue(int)} and
+     * {@link #reify(Object)}.
      * Where the reified type is not <code>Integer</code>, this method must be overridden.
      *
      * @param value  the value to convert, not null
@@ -632,42 +606,6 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
                     " cannot be converted as it is not in the range 0 (inclusive) to 1 (exclusive)", this);
         }
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Compares this DateTimeFieldRule to another based on the period unit
-//     * followed by the period range followed by the chronology name.
-//     * <p>
-//     * The period unit is compared first, so MinuteOfHour will be less than
-//     * HourOfDay, which will be less than DayOfWeek. When the period unit is
-//     * the same, the period range is compared, so DayOfWeek is less than
-//     * DayOfMonth, which is less than DayOfYear. Finally, the chronology name
-//     * is compared.
-//     *
-//     * @param other  the other type to compare to, not null
-//     * @return the comparator result, negative if less, positive if greater, zero if equal
-//     * @throws NullPointerException if other is null
-//     */
-//    public int compareTo(DateTimeFieldRule<T> other) {
-//        int cmp = this.getPeriodUnit().compareTo(other.getPeriodUnit());
-//        if (cmp != 0) {
-//            return cmp;
-//        }
-//        if (this.getPeriodRange() == other.getPeriodRange()) {
-//            return chronology.getName().compareTo(other.chronology.getName());
-//        }
-//        if (this.getPeriodRange() == null) {
-//            return 1;
-//        }
-//        if (other.getPeriodRange() == null) {
-//            return -1;
-//        }
-//        cmp = this.getPeriodRange().compareTo(other.getPeriodRange());
-//        if (cmp != 0) {
-//            return cmp;
-//        }
-//        return chronology.getName().compareTo(other.chronology.getName());
-//    }
 
     //-----------------------------------------------------------------------
     /**

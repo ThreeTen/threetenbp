@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1411,7 +1411,7 @@ public final class LocalTime
         private static final CalendricalRule<LocalTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime");
+            super(LocalTime.class, ISOChronology.INSTANCE, "LocalTime", ISOChronology.periodNanos(), ISOChronology.periodDays());
         }
         private Object readResolve() {
             return INSTANCE;

@@ -3,20 +3,17 @@
  */
 package javax.time.i18n;
 
-import static javax.time.period.PeriodUnits.DAYS;
-import static javax.time.period.PeriodUnits.DECADES;
-import static javax.time.period.PeriodUnits.MONTHS;
-import static javax.time.period.PeriodUnits.WEEKS;
-import static javax.time.period.PeriodUnits.YEARS;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.time.Duration;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.PeriodRule;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
@@ -260,6 +257,80 @@ public final class HijrahChronology extends Chronology implements Serializable {
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the period rule for eras.
+     * <p>
+     * The period rule defines the concept of a period of an era.
+     * This is equivalent to the ISO eras period rule.
+     * <p>
+     * See {@link #eraRule()} for the main date-time field.
+     *
+     * @return the period rule for eras, never null
+     */
+    public static PeriodRule periodEras() {
+        return ISOChronology.periodEras();
+    }
+
+    /**
+     * Gets the period rule for years.
+     * <p>
+     * The period rule defines the concept of a period of a year.
+     * The Hijrah year varies from 354 to 355 days.
+     * The estimated duration of the year is 354.36... days (30617280 seconds).
+     * <p>
+     * See {@link #yearOfEraRule()} for the main date-time field.
+     *
+     * @return the period rule for years, never null
+     */
+    public static PeriodRule periodYears() {
+        return YEARS;
+    }
+
+    /**
+     * Gets the period rule for months.
+     * <p>
+     * The period rule defines the concept of a period of a month.
+     * The Hijrah month varies from 29 to 30 days.
+     * The estimated duration of the month is 29.5305... days (2551440 seconds).
+     * <p>
+     * See {@link #monthOfYearRule()} for the main date-time field.
+     *
+     * @return the period rule for months, never null
+     */
+    public static PeriodRule periodMonths() {
+        return MONTHS;
+    }
+
+    /**
+     * Gets the period rule for weeks.
+     * <p>
+     * The period rule defines the concept of a period of a week.
+     * This is equivalent to the ISO weeks period rule.
+     * <p>
+     * See {@link #weekOfWeekBasedYearRule()} and {@link #weekOfYearRule()} for
+     * the main date-time fields.
+     *
+     * @return the period rule for weeks, never null
+     */
+    public static PeriodRule periodWeeks() {
+        return ISOChronology.periodWeeks();
+    }
+
+    /**
+     * Gets the period rule for days.
+     * <p>
+     * The period rule defines the concept of a period of a day.
+     * This is equivalent to the ISO days period rule.
+     * <p>
+     * See {@link #dayOfMonthRule()} for the main date-time field.
+     *
+     * @return the period rule for days, never null
+     */
+    public static PeriodRule periodDays() {
+        return ISOChronology.periodDays();
+    }
+
+    //-----------------------------------------------------------------------
 //    /**
 //     * Rule implementation.
 //     */
@@ -303,8 +374,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private EraRule() {
-            // Use DECADES for now as there is no ERAS defined.
-            super(HijrahEra.class, HijrahChronology.INSTANCE, "Era", DECADES, null, 0, 1);
+            super(HijrahEra.class, HijrahChronology.INSTANCE, "Era", periodEras(), null, 0, 1);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -352,7 +422,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private YearOfEraRule() {
-            super(Integer.class, HijrahChronology.INSTANCE, "YearOfEra", YEARS, null,
+            super(Integer.class, HijrahChronology.INSTANCE, "YearOfEra", periodYears(), periodEras(),
                     HijrahDate.MIN_YEAR_OF_ERA, HijrahDate.MAX_YEAR_OF_ERA);
         }
         private Object readResolve() {
@@ -404,7 +474,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(Integer.class, HijrahChronology.INSTANCE, "MonthOfYear", MONTHS, YEARS, 1, 12);
+            super(Integer.class, HijrahChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -427,7 +497,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfMonthRule() {
-            super(Integer.class, HijrahChronology.INSTANCE, "DayOfMonth", DAYS, MONTHS, 1, HijrahDate.getMaximumDayOfMonth());
+            super(Integer.class, HijrahChronology.INSTANCE, "DayOfMonth", periodDays(), periodMonths(), 1, HijrahDate.getMaximumDayOfMonth());
         }
         private Object readResolve() {
             return INSTANCE;
@@ -466,7 +536,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfYearRule() {
-            super(Integer.class, HijrahChronology.INSTANCE, "DayOfYear", DAYS, YEARS, 1, HijrahDate.getMaximumDayOfYear());
+            super(Integer.class, HijrahChronology.INSTANCE, "DayOfYear", periodDays(), periodYears(), 1, HijrahDate.getMaximumDayOfYear());
         }
         private Object readResolve() {
             return INSTANCE;
@@ -503,7 +573,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(Integer.class, HijrahChronology.INSTANCE, "DayOfWeek", DAYS, WEEKS, 1, 7);
+            super(Integer.class, HijrahChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -514,5 +584,15 @@ public final class HijrahChronology extends Chronology implements Serializable {
             return date != null ? date.getDayOfWeek() : null;
         }
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Period rule for eras.
+     */
+    private static final PeriodRule YEARS = new PeriodRule(HijrahChronology.INSTANCE, "HijrahYears", Duration.seconds(30617280L));  // 354.36.... days
+    /**
+     * Period rule for eras.
+     */
+    private static final PeriodRule MONTHS = new PeriodRule(HijrahChronology.INSTANCE, "HijrahMonths", Duration.seconds(2551440L));  // 29.5305... days
 
 }

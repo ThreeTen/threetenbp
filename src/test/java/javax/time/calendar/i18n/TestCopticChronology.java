@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
  */
 package javax.time.calendar.i18n;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,7 +48,6 @@ import java.lang.reflect.Modifier;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
-import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
@@ -110,7 +111,7 @@ public class TestCopticChronology {
         assertEquals(rule.getMaximumValue(), CopticDate.MAX_YEAR);
         assertEquals(rule.getSmallestMaximumValue(), CopticDate.MAX_YEAR);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), CopticChronology.periodYears());
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
     }
@@ -125,8 +126,8 @@ public class TestCopticChronology {
         assertEquals(rule.getMaximumValue(), 13);
         assertEquals(rule.getSmallestMaximumValue(), 13);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), CopticChronology.periodMonths());
+        assertEquals(rule.getPeriodRange(), CopticChronology.periodYears());
         serialize(rule);
     }
 
@@ -140,8 +141,8 @@ public class TestCopticChronology {
         assertEquals(rule.getMaximumValue(), 30);
         assertEquals(rule.getSmallestMaximumValue(), 5);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
+        assertEquals(rule.getPeriodUnit(), CopticChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), CopticChronology.periodMonths());
         serialize(rule);
     }
 
@@ -155,8 +156,8 @@ public class TestCopticChronology {
         assertEquals(rule.getMaximumValue(), 366);
         assertEquals(rule.getSmallestMaximumValue(), 365);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), CopticChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), CopticChronology.periodYears());
         serialize(rule);
     }
 
@@ -170,8 +171,8 @@ public class TestCopticChronology {
         assertEquals(rule.getMaximumValue(), 7);
         assertEquals(rule.getSmallestMaximumValue(), 7);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
+        assertEquals(rule.getPeriodUnit(), CopticChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), CopticChronology.periodWeeks());
         serialize(rule);
     }
 

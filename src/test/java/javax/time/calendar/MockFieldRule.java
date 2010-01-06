@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,8 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.*;
-
 import java.io.Serializable;
 
 import javax.time.calendar.field.Year;
@@ -43,6 +41,7 @@ import javax.time.calendar.field.Year;
  * @author Stephen Colebourne
  */
 public class MockFieldRule extends DateTimeFieldRule<Integer> implements Serializable {
+
     /**
      * A serialization identifier for this class.
      */
@@ -50,6 +49,7 @@ public class MockFieldRule extends DateTimeFieldRule<Integer> implements Seriali
 
     /** Constructor. */
     MockFieldRule() {
-        super(Integer.class, ISOChronology.INSTANCE, "Century", CENTURIES, null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
+        super(Integer.class, ISOChronology.INSTANCE, "Century", ISOChronology.periodCenturies(), null, Year.MIN_YEAR / 100, Year.MAX_YEAR / 100);
     }
+
 }

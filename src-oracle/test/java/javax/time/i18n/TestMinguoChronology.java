@@ -15,7 +15,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.period.PeriodUnits;
 
 import org.testng.annotations.Test;
 
@@ -70,7 +69,7 @@ public class TestMinguoChronology {
         assertEquals(rule.getMaximumValue(), 1);
         assertEquals(rule.getSmallestMaximumValue(), 1);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DECADES);
+        assertEquals(rule.getPeriodUnit(), MinguoChronology.periodEras());
         assertEquals(rule.getPeriodRange(), null);
         serialize(rule);
     }
@@ -85,8 +84,8 @@ public class TestMinguoChronology {
         assertEquals(rule.getMaximumValue(), MinguoDate.MAX_YEAR_OF_ERA);
         assertEquals(rule.getSmallestMaximumValue(), MinguoDate.MAX_YEAR_OF_ERA);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.YEARS);
-        assertEquals(rule.getPeriodRange(), null);
+        assertEquals(rule.getPeriodUnit(), MinguoChronology.periodYears());
+        assertEquals(rule.getPeriodRange(), MinguoChronology.periodEras());
         serialize(rule);
     }
 
@@ -100,8 +99,8 @@ public class TestMinguoChronology {
         assertEquals(rule.getMaximumValue(), 12);
         assertEquals(rule.getSmallestMaximumValue(), 12);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.MONTHS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), MinguoChronology.periodMonths());
+        assertEquals(rule.getPeriodRange(), MinguoChronology.periodYears());
     }
 
     @Test
@@ -114,8 +113,8 @@ public class TestMinguoChronology {
         assertEquals(rule.getMaximumValue(), 31);
         assertEquals(rule.getSmallestMaximumValue(), 28);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.MONTHS);
+        assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), MinguoChronology.periodMonths());
         serialize(rule);
     }
 
@@ -129,8 +128,8 @@ public class TestMinguoChronology {
         assertEquals(rule.getMaximumValue(), 366);
         assertEquals(rule.getSmallestMaximumValue(), 365);
         assertEquals(rule.isFixedValueSet(), false);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.YEARS);
+        assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), MinguoChronology.periodYears());
         serialize(rule);
 
     }
@@ -145,8 +144,8 @@ public class TestMinguoChronology {
         assertEquals(rule.getMaximumValue(), 7);
         assertEquals(rule.getSmallestMaximumValue(), 7);
         assertEquals(rule.isFixedValueSet(), true);
-        assertEquals(rule.getPeriodUnit(), PeriodUnits.DAYS);
-        assertEquals(rule.getPeriodRange(), PeriodUnits.WEEKS);
+        assertEquals(rule.getPeriodUnit(), MinguoChronology.periodDays());
+        assertEquals(rule.getPeriodRange(), MinguoChronology.periodWeeks());
         serialize(rule);
     }
 

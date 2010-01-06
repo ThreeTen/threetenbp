@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -1865,7 +1865,7 @@ public final class OffsetDateTime
         private static final CalendricalRule<OffsetDateTime> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(OffsetDateTime.class, ISOChronology.INSTANCE, "OffsetDateTime");
+            super(OffsetDateTime.class, ISOChronology.INSTANCE, "OffsetDateTime", ISOChronology.periodNanos(), null);
         }
         private Object readResolve() {
             return INSTANCE;

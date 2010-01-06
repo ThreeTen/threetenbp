@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -617,7 +617,7 @@ public final class MonthDay
         private static final CalendricalRule<MonthDay> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay");
+            super(MonthDay.class, ISOChronology.INSTANCE, "MonthDay", ISOChronology.periodDays(), ISOChronology.periodYears());
         }
         private Object readResolve() {
             return INSTANCE;

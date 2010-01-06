@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -761,7 +761,7 @@ public final class TimeZone implements Calendrical, Serializable {
         private static final CalendricalRule<TimeZone> INSTANCE = new Rule();
         private static final long serialVersionUID = 1L;
         private Rule() {
-            super(TimeZone.class, ISOChronology.INSTANCE, "TimeZone");
+            super(TimeZone.class, ISOChronology.INSTANCE, "TimeZone", null, null);
         }
         private Object readResolve() {
             return INSTANCE;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,6 +52,7 @@ import org.testng.annotations.Test;
  *
  * @author Stephen Colebourne
  */
+@Test
 public abstract class AbstractTestDateTimeFieldRule {
 
     private Calendrical testingCalendrical;
@@ -134,7 +135,7 @@ public abstract class AbstractTestDateTimeFieldRule {
     public void test_convertIntToValue() {
         DateTimeFieldRule rule = rule();
         assertEquals(rule.convertIntToValue(1), 1);
-        assertEquals(rule.convertIntToValue(6), 6);
+        assertEquals(rule.convertIntToValue(3), 3);
     }
 
     //-----------------------------------------------------------------------

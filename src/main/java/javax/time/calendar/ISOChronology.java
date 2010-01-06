@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,19 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.period.PeriodUnits.DAYS;
-import static javax.time.period.PeriodUnits.HOURS;
-import static javax.time.period.PeriodUnits.MILLIS;
-import static javax.time.period.PeriodUnits.MINUTES;
-import static javax.time.period.PeriodUnits.MONTHS;
-import static javax.time.period.PeriodUnits.NANOS;
-import static javax.time.period.PeriodUnits.QUARTERS;
-import static javax.time.period.PeriodUnits.SECONDS;
-import static javax.time.period.PeriodUnits.TWELVE_HOURS;
-import static javax.time.period.PeriodUnits.WEEKS;
-import static javax.time.period.PeriodUnits.WEEKYEARS;
-import static javax.time.period.PeriodUnits.YEARS;
-
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
@@ -53,6 +40,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
@@ -290,7 +278,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      * @param date  the date to use, not null
      * @return the week
      */
-    public static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
+    static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
         int wby = getWeekBasedYearFromDate(date);
         LocalDate yearStart = LocalDate.date(wby, MonthOfYear.JANUARY, 4);
         return MathUtils.safeToInt((date.toModifiedJulianDays() - yearStart.toModifiedJulianDays() +
@@ -312,20 +300,6 @@ public final class ISOChronology extends Chronology implements Serializable {
     private Object readResolve() {
         return INSTANCE;
     }
-
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Checks if the specified year is a leap year.
-//     * <p>
-//     * ISO chronology leap years are every 4 years. A special rule applies
-//     * for years divisible by 100, which are only leap if also divisible by 400.
-//     *
-//     * @param year  the year to check
-//     * @return true if the year is a leap year
-//     */
-//    private boolean isLeapYear(int year) {
-//        return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -666,6 +640,230 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     public static DateTimeFieldRule<Integer> clockHourOfAmPmRule() {
         return ClockHourOfAmPmRule.INSTANCE;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the period rule for eras.
+     * <p>
+     * The period rule defines the concept of a period of a eras.
+     * An era, based on a simple before/after point on the time-line, is infinite
+     * in length. For this rule, an era has an estimated duration of 2,000,000,000 years.
+     * <p>
+     * See {@link #eraRule()} for the main date-time field.
+     *
+     * @return the period rule for eras, never null
+     */
+    public static PeriodRule periodEras() {
+        return ERAS;
+    }
+
+    /**
+     * Gets the period rule for centuries.
+     * <p>
+     * The period rule defines the concept of a period of a century.
+     * This is equal to 100 years.
+     * <p>
+     * See {@link #yearRule()} for the main date-time field.
+     *
+     * @return the period rule for centuries, never null
+     */
+    public static PeriodRule periodCenturies() {
+        return CENTURIES;
+    }
+
+    /**
+     * Gets the period rule for decades.
+     * <p>
+     * The period rule defines the concept of a period of a decade.
+     * This is equal to 10 years.
+     *
+     * @return the period rule for decades, never null
+     */
+    public static PeriodRule periodDecades() {
+        return DECADES;
+    }
+
+    /**
+     * Gets the period rule for years.
+     * <p>
+     * The period rule defines the concept of a period of a year.
+     * This is equal to 12 months and is defined with an estimated duration
+     * equal to 365.2425 days.
+     * <p>
+     * See {@link #yearRule()} for the main date-time field.
+     *
+     * @return the period rule for years, never null
+     */
+    public static PeriodRule periodYears() {
+        return YEARS;
+    }
+
+    /**
+     * Gets the period rule for week-based-years.
+     * <p>
+     * The period rule defines the concept of a period of a week-based-year.
+     * This is typically 52 weeks, and occasionally 53 weeks.
+     * The estimated duration is 364.5 days, which is just over 52 weeks.
+     * <p>
+     * See {@link #weekBasedYearRule()} for the main date-time field.
+     *
+     * @return the period rule for week-based-years, never null
+     */
+    public static PeriodRule periodWeekBasedYears() {
+        return WEEK_BASED_YEARS;
+    }
+
+    /**
+     * Gets the period rule for years.
+     * <p>
+     * The period rule defines the concept of a period of a quarter.
+     * This is equal to 3 months.
+     * <p>
+     * See {@link #quarterOfYearRule()} for the main date-time field.
+     *
+     * @return the period rule for quarters, never null
+     */
+    public static PeriodRule periodQuarters() {
+        return QUARTERS;
+    }
+
+    /**
+     * Gets the period rule for months.
+     * <p>
+     * The period rule defines the concept of a period of a month.
+     * The estimated duration is equal to one-twelth of a year.
+     * <p>
+     * See {@link #monthOfYearRule()} for the main date-time field.
+     *
+     * @return the period rule for months, never null
+     */
+    public static PeriodRule periodMonths() {
+        return MONTHS;
+    }
+
+    /**
+     * Gets the period rule for weeks.
+     * <p>
+     * The period rule defines the concept of a period of a week.
+     * This is equal to 7 days.
+     * <p>
+     * See {@link #weekOfWeekBasedYearRule()} and {@link #weekOfYearRule()} for
+     * the main date-time fields.
+     *
+     * @return the period rule for weeks, never null
+     */
+    public static PeriodRule periodWeeks() {
+        return WEEKS;
+    }
+
+    /**
+     * Gets the period rule for days.
+     * <p>
+     * The period rule defines the concept of a period of a day.
+     * This is typically equal to 24 hours, and the estimated duration is
+     * defined as such.
+     * <p>
+     * See {@link #dayOfMonthRule()} for the main date-time field.
+     *
+     * @return the period rule for days, never null
+     */
+    public static PeriodRule periodDays() {
+        return DAYS;
+    }
+
+    /**
+     * Gets the period rule for twelve hours, as used by AM/PM.
+     * <p>
+     * The period rule defines the concept of a period of twelve hours.
+     * <p>
+     * See {@link #amPmOfDayRule()} for the main date-time field.
+     *
+     * @return the period rule for twelve hours, never null
+     */
+    public static PeriodRule periodTwelveHours() {
+        return TWELVE_HOURS;
+    }
+
+    /**
+     * Gets the period rule for hours.
+     * <p>
+     * The period rule defines the concept of a period of a hour.
+     * This is equal to 60 minutes.
+     * <p>
+     * See {@link #hourOfDayRule()} for the main date-time field.
+     *
+     * @return the period rule for hours, never null
+     */
+    public static PeriodRule periodHours() {
+        return HOURS;
+    }
+
+    /**
+     * Gets the period rule for minutes.
+     * <p>
+     * The period rule defines the concept of a period of a minute.
+     * This is equal to 60 seconds.
+     * <p>
+     * See {@link #minuteOfHourRule()} for the main date-time field.
+     *
+     * @return the period rule for minutes, never null
+     */
+    public static PeriodRule periodMinutes() {
+        return MINUTES;
+    }
+
+    /**
+     * Gets the period rule for seconds.
+     * <p>
+     * The period rule defines the concept of a period of a second.
+     * This is equal to 1,000,000,000 nanoseconds.
+     * <p>
+     * See {@link #secondOfMinuteRule()} for the main date-time field.
+     *
+     * @return the period rule for seconds, never null
+     */
+    public static PeriodRule periodSeconds() {
+        return SECONDS;
+    }
+
+    /**
+     * Gets the period rule for milliseconds.
+     * <p>
+     * The period rule defines the concept of a period of a millisecond.
+     * This is equal to 1,000,000 nanoseconds.
+     * <p>
+     * See {@link #milliOfSecondRule()} for the main date-time field.
+     *
+     * @return the period rule for milliseconds, never null
+     */
+    public static PeriodRule periodMillis() {
+        return MILLIS;
+    }
+
+    /**
+     * Gets the period rule for microseconds.
+     * <p>
+     * The period rule defines the concept of a period of a microsecond.
+     * This is equal to 1,000 nanoseconds.
+     *
+     * @return the period rule for microseconds, never null
+     */
+    public static PeriodRule periodMicros() {
+        return MICROS;
+    }
+
+    /**
+     * Gets the period rule for nanoseconds.
+     * <p>
+     * The period rule defines the concept of a period of a nanosecond.
+     * <p>
+     * See {@link #nanoOfSecondRule()} for the main date-time field.
+     *
+     * @return the period rule for nanoseconds, never null
+     */
+    public static PeriodRule periodNanos() {
+        return NANOS;
     }
 
     //-----------------------------------------------------------------------
@@ -1101,7 +1299,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekBasedYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekBasedYear", WEEKYEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekBasedYear", WEEK_BASED_YEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1124,7 +1322,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekOfWeekBasedYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekOfWeekBasedYear", WEEKS, WEEKYEARS, 1, 53);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekOfWeekBasedYear", WEEKS, WEEK_BASED_YEARS, 1, 53);
         }
         private Object readResolve() {
             return INSTANCE;
@@ -1133,11 +1331,20 @@ public final class ISOChronology extends Chronology implements Serializable {
         public int getSmallestMaximumValue() {
             return 52;
         }
-//        @Override
-//        public int getMaximumValue(Calendrical calendrical) {
-//            // TODO
-//            return getMaximumValue();
-//        }
+        @Override
+        public int getMaximumValue(Calendrical calendrical) {
+            // TODO: derive from WeekBasedYear
+            LocalDate date = calendrical.get(LocalDate.rule());
+            if (date == null ) {
+                return 53;
+            }
+            date = date.withDayOfMonth(1).withMonthOfYear(1);
+            if (date.getDayOfWeek() == DayOfWeek.THURSDAY ||
+                    (date.getDayOfWeek() == DayOfWeek.WEDNESDAY && isLeapYear(date.getYear()))) {
+                return 53;
+            }
+            return 52;
+        }
         @Override
         protected Integer derive(Calendrical calendrical) {
             LocalDate date = calendrical.get(LocalDate.rule());
@@ -1304,7 +1511,8 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         public int getMaximumValue(Calendrical calendrical) {
             Integer year = calendrical.get(yearRule());
-            if (year != null) {  // TODO: check month
+            MonthOfYear moy = calendrical.get(monthOfYearRule());
+            if (year != null && moy == MonthOfYear.FEBRUARY) {
                 return Year.isoYear(year).isLeap() ? 5 : 4;
             }
             return getMaximumValue();
@@ -1594,5 +1802,71 @@ public final class ISOChronology extends Chronology implements Serializable {
             return (int) (hour == 0 ? 12 : hour);
         }
     }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Period rule for eras.
+     */
+    private static final PeriodRule ERAS = new PeriodRule(ISOChronology.INSTANCE, "Eras", Duration.seconds(31556952L * 2000000000L));
+    /**
+     * Period rule for centuries.
+     */
+    private static final PeriodRule CENTURIES = new PeriodRule(ISOChronology.INSTANCE, "Centuries", Duration.seconds(31556952L * 100L));
+    /**
+     * Period rule for decades.
+     */
+    private static final PeriodRule DECADES = new PeriodRule(ISOChronology.INSTANCE, "Decades", Duration.seconds(31556952L * 10L));
+    /**
+     * Period rule for years.
+     */
+    private static final PeriodRule YEARS = new PeriodRule(ISOChronology.INSTANCE, "Years", Duration.seconds(31556952L));  // 365.2425 days
+    /**
+     * Period rule for week-based-years.
+     */
+    private static final PeriodRule WEEK_BASED_YEARS = new PeriodRule(ISOChronology.INSTANCE, "WeekBasedYears", Duration.seconds(364L * 86400L + 43200L));  // 364.5 days
+    /**
+     * Period rule for quarters.
+     */
+    private static final PeriodRule QUARTERS = new PeriodRule(ISOChronology.INSTANCE, "Quarters", Duration.seconds(31556952L / 4));
+    /**
+     * Period rule for months.
+     */
+    private static final PeriodRule MONTHS = new PeriodRule(ISOChronology.INSTANCE, "Months", Duration.seconds(31556952L / 12L));
+    /**
+     * Period rule for weeks.
+     */
+    private static final PeriodRule WEEKS = new PeriodRule(ISOChronology.INSTANCE, "Weeks", Duration.standardDays(7));
+    /**
+     * Period rule for days.
+     */
+    private static final PeriodRule DAYS = new PeriodRule(ISOChronology.INSTANCE, "Days", Duration.standardDays(1));
+    /**
+     * Period rule for half days.
+     */
+    private static final PeriodRule TWELVE_HOURS = new PeriodRule(ISOChronology.INSTANCE, "TwelveHours", Duration.standardHours(12));
+    /**
+     * Period rule for hours.
+     */
+    private static final PeriodRule HOURS = new PeriodRule(ISOChronology.INSTANCE, "Hours", Duration.standardHours(1));
+    /**
+     * Period rule for minutes.
+     */
+    private static final PeriodRule MINUTES = new PeriodRule(ISOChronology.INSTANCE, "Minutes", Duration.standardMinutes(1));
+    /**
+     * Period rule for seconds.
+     */
+    private static final PeriodRule SECONDS = new PeriodRule(ISOChronology.INSTANCE, "Seconds", Duration.seconds(1));
+    /**
+     * Period rule for milliseconds.
+     */
+    private static final PeriodRule MILLIS = new PeriodRule(ISOChronology.INSTANCE, "Millis", Duration.nanos(1000000));
+    /**
+     * Period rule for microseconds.
+     */
+    private static final PeriodRule MICROS = new PeriodRule(ISOChronology.INSTANCE, "Micros", Duration.nanos(1000));
+    /**
+     * Period rule for nanoseconds.
+     */
+    private static final PeriodRule NANOS = new PeriodRule(ISOChronology.INSTANCE, "Nanos", Duration.nanos(1));
 
 }

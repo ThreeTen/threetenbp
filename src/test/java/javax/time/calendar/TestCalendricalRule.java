@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -62,7 +62,7 @@ public class TestCalendricalRule {
     static class MockBigYearRule extends CalendricalRule<BigInteger> {
         private static final long serialVersionUID = 1L;
         protected MockBigYearRule() {
-            super(BigInteger.class, ISOChronology.INSTANCE, "MockBigYearRule");
+            super(BigInteger.class, ISOChronology.INSTANCE, "MockBigYearRule", ISOChronology.periodYears(), null);
         }
         @Override
         protected BigInteger derive(Calendrical calendrical) {
@@ -124,7 +124,7 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     // comparator()
     //-----------------------------------------------------------------------
-    public void comparator() {
+    public void test_comparator() {
         List<Calendrical> list = new ArrayList<Calendrical>();
         LocalDate ld = LocalDate.date(2009, 6, 30);
         list.add(ld);
@@ -139,7 +139,7 @@ public class TestCalendricalRule {
         assertEquals(list.get(2), ld);
     }
 
-    public void comparator_noValueSortedLast() {
+    public void test_comparator_noValueSortedLast() {
         List<Calendrical> list = new ArrayList<Calendrical>();
         LocalTime lt = LocalTime.time(12, 30);
         list.add(lt);
@@ -154,7 +154,7 @@ public class TestCalendricalRule {
         assertEquals(list.get(2), lt);
     }
 
-    public void comparator_combinations() {
+    public void test_comparator_combinations() {
         Year year2008 = Year.isoYear(2008);
         Year year2009 = Year.isoYear(2009);
         assertEquals(new MockBigYearRule().compare(year2008, year2008), 0);
@@ -163,7 +163,7 @@ public class TestCalendricalRule {
         assertEquals(new MockBigYearRule().compare(year2009, year2009), 0);
     }
 
-    public void comparator_combinations_noValue() {
+    public void test_comparator_combinations_noValue() {
         Year year2008 = Year.isoYear(2008);
         assertEquals(new MockBigYearRule().compare(year2008, MonthOfYear.JANUARY), -1);
         assertEquals(new MockBigYearRule().compare(MonthOfYear.JANUARY, year2008), 1);
@@ -173,7 +173,20 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    // TODO
+    public void test_compareTo() {
+        List<Calendrical> list = new ArrayList<Calendrical>();
+        LocalDate ld = LocalDate.date(2009, 6, 30);
+        list.add(ld);
+        LocalDateTime ldt = LocalDateTime.dateTime(2007, 1, 1, 12, 30);
+        list.add(ldt);
+        OffsetDate od = OffsetDate.date(2008, 6, 30, ZoneOffset.zoneOffset("+01:00"));
+        list.add(od);
+        
+        Collections.sort(list, new MockBigYearRule());
+        assertEquals(list.get(0), ldt);
+        assertEquals(list.get(1), od);
+        assertEquals(list.get(2), ld);
+    }
 
     //-----------------------------------------------------------------------
     // equals()
