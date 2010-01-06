@@ -454,12 +454,11 @@ public abstract class CalendricalRule<T>
      * Compares this <code>CalendricalRule</code> to another.
      * <p>
      * The comparison is based on the period unit followed by the period range
-     * followed by the chronology name.
+     * followed by the rule ID.
      * The period unit is compared first, so MinuteOfHour will be less than
      * HourOfDay, which will be less than DayOfWeek. When the period unit is
      * the same, the period range is compared, so DayOfWeek is less than
-     * DayOfMonth, which is less than DayOfYear. Finally, the chronology name
-     * is compared.
+     * DayOfMonth, which is less than DayOfYear. Finally, the rule ID is compared.
      *
      * @param other  the other type to compare to, not null
      * @return the comparator result, negative if less, positive if greater, zero if equal
@@ -468,7 +467,7 @@ public abstract class CalendricalRule<T>
     public int compareTo(CalendricalRule<T> other) {
         if (this.getPeriodUnit() == null) {
             if (other.getPeriodUnit() == null) {
-                return chronology.getName().compareTo(other.chronology.getName());
+                return getID().compareTo(other.getID());
             } else {
                 return 1;
             }
@@ -481,7 +480,7 @@ public abstract class CalendricalRule<T>
         }
         if (this.getPeriodRange() == null) {
             if (other.getPeriodRange() == null) {
-                return chronology.getName().compareTo(other.chronology.getName());
+                return getID().compareTo(other.getID());
             } else {
                 return 1;
             }
@@ -492,7 +491,7 @@ public abstract class CalendricalRule<T>
         if (cmp != 0) {
             return cmp;
         }
-        return chronology.getName().compareTo(other.chronology.getName());
+        return getID().compareTo(other.getID());
     }
 
     //-----------------------------------------------------------------------

@@ -188,7 +188,7 @@ public class TestDateTimeParseContext {
         context.setParsed(ZoneOffset.rule(), ZoneOffset.zoneOffset(16));
         context.setParsed(TimeZone.rule(),TimeZone.timeZone(ZoneOffset.zoneOffset(18)));
         
-        assertEquals(context.toString(), "{ISO.Year=2008, ISO.MonthOfYear=6, ZoneOffset=+16:00, TimeZone=UTC+18:00}");
+        assertEquals(context.toString(), "{ISO.MonthOfYear=6, ISO.Year=2008, ISO.TimeZone=UTC+18:00, ISO.ZoneOffset=+16:00}");
     }
 
     public void test_toString_empty() throws Exception {

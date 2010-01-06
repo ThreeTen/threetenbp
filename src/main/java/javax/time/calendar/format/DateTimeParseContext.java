@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.time.calendar.CalendricalContext;
 import javax.time.calendar.CalendricalMerger;
@@ -273,7 +274,7 @@ public final class DateTimeParseContext {
         }
         @Override
         public String toString() {
-            return values.toString();
+            return new TreeMap<CalendricalRule<?>, Object>(values).toString();
         }
     }
 

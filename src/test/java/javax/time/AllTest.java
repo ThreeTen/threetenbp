@@ -39,6 +39,7 @@ import javax.time.calendar.TestClock;
 import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateResolvers;
+import javax.time.calendar.TestDateTimeFields;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestISODayOfMonthRule;
 import javax.time.calendar.TestISODayOfWeekRule;
@@ -82,6 +83,7 @@ import javax.time.calendar.format.TestCharLiteralPrinter;
 import javax.time.calendar.format.TestDateTimeFormatter;
 import javax.time.calendar.format.TestDateTimeFormatterBuilder;
 import javax.time.calendar.format.TestDateTimeFormatters;
+import javax.time.calendar.format.TestDateTimeParseContext;
 import javax.time.calendar.format.TestFractionPrinterParser;
 import javax.time.calendar.format.TestNumberParser;
 import javax.time.calendar.format.TestNumberPrinter;
@@ -142,7 +144,7 @@ public class AllTest {
             TestClock_TimeSourceClock.class,
             TestDateAdjusters.class,
             TestDateResolvers.class,
-//            TestDateTimeFields.class,  // needs Comparable impl
+            TestDateTimeFields.class,
             TestISOChronology.class,
             TestISODayOfMonthRule.class,
             TestISODayOfWeekRule.class,
@@ -189,7 +191,7 @@ public class AllTest {
             TestCharLiteralPrinter.class,
             TestDateTimeFormatter.class,
             TestDateTimeFormatters.class,
-//            TestDateTimeParseContext.class,  // needs Comparable impl
+            TestDateTimeParseContext.class,
             TestDateTimeFormatters.class,
             TestDateTimeFormatterBuilder.class,
             TestFractionPrinterParser.class,
