@@ -161,7 +161,7 @@ public class TestDayOfYear {
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_factory_Calendrical_noData() {
-        DayOfWeek.dayOfWeek(new MockSimpleCalendrical());
+        DayOfYear.dayOfYear(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
