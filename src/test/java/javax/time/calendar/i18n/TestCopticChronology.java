@@ -46,6 +46,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -162,8 +163,8 @@ public class TestCopticChronology {
     }
 
     public void test_dayOfWeekRule() throws Exception {
-        DateTimeFieldRule<Integer> rule = CopticChronology.dayOfWeekRule();
-        assertEquals(rule.getReifiedType(), Integer.class);
+        DateTimeFieldRule<DayOfWeek> rule = CopticChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DayOfWeek.class);
         assertEquals(rule.getID(), "Coptic.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);

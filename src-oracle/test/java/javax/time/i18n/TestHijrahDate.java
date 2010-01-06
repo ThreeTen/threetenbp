@@ -18,6 +18,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 
 import org.testng.annotations.BeforeTest;
@@ -141,7 +142,7 @@ public class TestHijrahDate {
         assertEquals(testDate.get(HijrahChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
         assertEquals(testDate.get(HijrahChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
         assertEquals(testDate.get(HijrahChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(HijrahChronology.dayOfWeekRule()), (Integer) testDate.getDayOfWeek());
+        assertEquals(testDate.get(HijrahChronology.dayOfWeekRule()), testDate.getDayOfWeek());
     }
     
     public void testGetUnsupported() throws Exception {
@@ -183,20 +184,20 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testGetDayOfWeek() {
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 5).getDayOfWeek(), 1);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 6).getDayOfWeek(), 2);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 7).getDayOfWeek(), 3);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 8).getDayOfWeek(), 4);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 9).getDayOfWeek(), 5);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 10).getDayOfWeek(), 6);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 11).getDayOfWeek(), 7);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 12).getDayOfWeek(), 1);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 10).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 11).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 12).getDayOfWeek(), DayOfWeek.MONDAY);
     }
     
     @Test
     public void testGetDayOfWeekCrossCheck() throws Exception {
         HijrahDate date = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
-        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek().getValue());
+        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek());
     }
 
     @Test

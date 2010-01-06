@@ -1,8 +1,6 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +16,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 
 import org.testng.annotations.BeforeTest;
@@ -139,7 +138,7 @@ public class TestThaiBuddhistDate {
         assertEquals(testDate.get(ThaiBuddhistChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
         assertEquals(testDate.get(ThaiBuddhistChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
         assertEquals(testDate.get(ThaiBuddhistChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfWeekRule()), (Integer) testDate.getDayOfWeek());
+        assertEquals(testDate.get(ThaiBuddhistChronology.dayOfWeekRule()), testDate.getDayOfWeek());
     }
     
     public void testGetUnsupported() throws Exception {
@@ -181,20 +180,20 @@ public class TestThaiBuddhistDate {
     //-----------------------------------------------------------------------
     @Test
     public void testGetDayOfWeek() {
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 2).getDayOfWeek(), 1);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 3).getDayOfWeek(), 2);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 4).getDayOfWeek(), 3);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 5).getDayOfWeek(), 4);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 6).getDayOfWeek(), 5);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 7).getDayOfWeek(), 6);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 8).getDayOfWeek(), 7);
-        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 9).getDayOfWeek(), 1);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 2).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 3).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 4).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.MONDAY);
     }
     
     @Test
     public void testGetDayOfWeekCrossCheck() throws Exception {
         ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, testDayOfMonth);
-        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek().getValue());
+        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek());
     }
 
     @Test

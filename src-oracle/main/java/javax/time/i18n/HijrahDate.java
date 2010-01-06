@@ -26,6 +26,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.DayOfWeek;
 
 /**
  * A date in the Hijrah calendar system.
@@ -402,7 +403,7 @@ public final class HijrahDate
     /**
      * The day of week.
      */
-    private final transient int dayOfWeek;
+    private final transient DayOfWeek dayOfWeek;
 
     /**
      * Gregorian days for this object. Holding number of days since 1970/01/01.
@@ -485,7 +486,7 @@ public final class HijrahDate
         this.monthOfYear = dateInfo[2];
         this.dayOfMonth = dateInfo[3];
         this.dayOfYear = dateInfo[4];
-        this.dayOfWeek = dateInfo[5];
+        this.dayOfWeek = DayOfWeek.dayOfWeek(dateInfo[5]);
         this.gregorianEpochDays = gregorianDay;
         this.isLeapYear = isLeapYear(this.yearOfEra);
     }
@@ -572,11 +573,11 @@ public final class HijrahDate
     }
 
     /**
-     * Gets the day of week value.
+     * Gets the day-of-week.
      *
-     * @return the day of week, from 1 (Monday) to 7 (Sunday)
+     * @return the day-of-week, never null
      */
-    public int getDayOfWeek() {
+    public DayOfWeek getDayOfWeek() {
         return this.dayOfWeek;
     }
 

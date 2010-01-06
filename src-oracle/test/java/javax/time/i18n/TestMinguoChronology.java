@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.field.DayOfWeek;
 
 import org.testng.annotations.Test;
 
@@ -136,7 +137,8 @@ public class TestMinguoChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule<Integer> rule = MinguoChronology.dayOfWeekRule();
+        DateTimeFieldRule<DayOfWeek> rule = MinguoChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DayOfWeek.class);
         assertEquals(rule.getID(), "Minguo.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);

@@ -13,6 +13,7 @@ import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodRule;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -172,7 +173,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the day of week field, never null
      */
-    public static DateTimeFieldRule<Integer> dayOfWeekRule() {
+    public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -496,20 +497,20 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfWeekRule();
+        private static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super(DayOfWeek.class, MinguoChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DayOfWeek derive(Calendrical calendrical) {
             MinguoDate date = calendrical.get(MinguoDate.rule());
             return date != null ? date.getDayOfWeek() : null;
         }

@@ -183,14 +183,17 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /**
      * Converts the typed value of the rule to the <code>int</code> equivalent.
      * <p>
-     * This default implementation simply performs a cast.
-     * Where the reified type is not <code>Integer</code>, this method must be overridden.
+     * This default implementation handles <code>Integer</code> and <code>Enum</code>.
+     * When the reified type is another type, this method must be overridden.
      *
      * @param value  the value to convert, not null
      * @return the int value of the field
      * @throws ClassCastException if the value cannot be converted
      */
     public int convertValueToInt(T value) {
+        if (value instanceof Enum<?>) {
+            return ((Enum<?>) value).ordinal() + getMinimumValue();
+        }
         return (Integer) value;
     }
 
@@ -200,9 +203,8 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * The <code>int</code> will be checked to ensure that it is within the
      * valid range of values for the field.
      * <p>
-     * This default implementation simply calls {@link #checkValue(int)} and
-     * {@link #reify(Object)}.
-     * Where the reified type is not <code>Integer</code>, this method must be overridden.
+     * This default implementation handles <code>Integer</code> and <code>Enum</code>.
+     * When the reified type is another type, this method must be overridden.
      *
      * @param value  the value to convert, not null
      * @return the int value of the field
@@ -211,6 +213,9 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      */
     public T convertIntToValue(int value) {
         checkValue(value);
+        if (Enum.class.isAssignableFrom(getReifiedType())) {
+            return getReifiedType().getEnumConstants()[value - getMinimumValue()];
+        }
         return reify(value);
     }
 

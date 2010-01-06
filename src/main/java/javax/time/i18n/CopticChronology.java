@@ -41,6 +41,7 @@ import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.PeriodRule;
+import javax.time.calendar.field.DayOfWeek;
 
 /**
  * The Coptic calendar system.
@@ -187,38 +188,38 @@ public final class CopticChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the month of year field in the Coptic chronology.
+     * Gets the rule for the month-of-year field in the Coptic chronology.
      *
-     * @return the rule for the month of year field, never null
+     * @return the rule for the month-of-year field, never null
      */
     public static DateTimeFieldRule<Integer> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
     /**
-     * Gets the rule for the day of month field in the Coptic chronology.
+     * Gets the rule for the day-of-month field in the Coptic chronology.
      *
-     * @return the rule for the day of month field, never null
+     * @return the rule for the day-of-month field, never null
      */
     public static DateTimeFieldRule<Integer> dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
     /**
-     * Gets the rule for the day of year field in the Coptic chronology.
+     * Gets the rule for the day-of-year field in the Coptic chronology.
      *
-     * @return the rule for the day of year field, never null
+     * @return the rule for the day-of-year field, never null
      */
     public static DateTimeFieldRule<Integer> dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
     /**
-     * Gets the rule for the day of week field in the Coptic chronology.
+     * Gets the rule for the day-of-week field in the Coptic chronology.
      *
-     * @return the rule for the day of week field, never null
+     * @return the rule for the day-of-week field, never null
      */
-    public static DateTimeFieldRule<Integer> dayOfWeekRule() {
+    public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;
     }
 
@@ -442,20 +443,20 @@ public final class CopticChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class DayOfWeekRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class DayOfWeekRule extends DateTimeFieldRule<DayOfWeek> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new DayOfWeekRule();
+        private static final DateTimeFieldRule<DayOfWeek> INSTANCE = new DayOfWeekRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private DayOfWeekRule() {
-            super(Integer.class, CopticChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
+            super(DayOfWeek.class, CopticChronology.INSTANCE, "DayOfWeek", periodDays(), periodWeeks(), 1, 7);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected DayOfWeek derive(Calendrical calendrical) {
             CopticDate cd = calendrical.get(CopticDate.rule());
             return cd != null ? cd.getDayOfWeek() : null;
         }

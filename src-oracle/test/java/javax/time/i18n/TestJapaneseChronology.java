@@ -1,8 +1,6 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.field.DayOfWeek;
 
 import org.testng.annotations.Test;
 
@@ -136,7 +135,8 @@ public class TestJapaneseChronology {
 
     @Test
     public void testDayOfWeek() throws Exception {
-        DateTimeFieldRule<Integer> rule = JapaneseChronology.dayOfWeekRule();
+        DateTimeFieldRule<DayOfWeek> rule = JapaneseChronology.dayOfWeekRule();
+        assertEquals(rule.getReifiedType(), DayOfWeek.class);
         assertEquals(rule.getID(), "Japanese.DayOfWeek");
         assertEquals(rule.getName(), "DayOfWeek");
         assertEquals(rule.getMinimumValue(), 1);

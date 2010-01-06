@@ -43,6 +43,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.field.DayOfWeek;
 
 /**
  * A date in the Coptic calendar system.
@@ -96,30 +97,30 @@ public final class CopticDate
     private static final int MAX_EPOCH_DAY = 3652134;  // (9999 - 1) * 365 + (9999 / 4) + 30 * (13 - 1) + 6 - 1
 
     /**
-     * The coptic epoch day count, 0001-01-01 = 0.
+     * The Coptic epoch day count, 0001-01-01 = 0.
      */
     private final int epochDays;
     /**
-     * The coptic year.
+     * The Coptic year.
      */
     private final transient int year;
     /**
-     * The coptic month.
+     * The Coptic month.
      */
     private final transient int month;
     /**
-     * The coptic day.
+     * The Coptic day.
      */
     private final transient int day;
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>CopticDate</code> from the coptic year,
-     * month of year and day of month.
+     * Obtains an instance of <code>CopticDate</code> from the Coptic year,
+     * month-of-year and day-of-month.
      *
      * @param copticYear  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param copticMonthOfYear  the month of year to represent, from 1 to 13
-     * @param copticDayOfMonth  the day of month to represent, from 1 to 30
+     * @param copticMonthOfYear  the month-of-year to represent, from 1 to 13
+     * @param copticDayOfMonth  the day-of-month to represent, from 1 to 30
      * @return the Coptic date, never null
      */
     public static CopticDate copticDate(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
@@ -139,8 +140,8 @@ public final class CopticDate
      * Obtains an instance of <code>CopticDate</code> using the previous valid algorithm.
      *
      * @param year  the year to represent
-     * @param monthOfYear  the month of year to represent
-     * @param dayOfMonth  the day of month to represent
+     * @param monthOfYear  the month-of-year to represent
+     * @param dayOfMonth  the day-of-month to represent
      * @return the Coptic date, never null
      */
     private static CopticDate copticDatePreviousValid(int year, int monthOfYear, int dayOfMonth) {
@@ -194,8 +195,8 @@ public final class CopticDate
      *
      * @param epochDays  the Coptic epoch days, caller checked to be one or greater
      * @param year  the year to represent, caller calculated
-     * @param month  the month of year to represent, caller calculated
-     * @param day  the day of month to represent, caller calculated
+     * @param month  the month-of-year to represent, caller calculated
+     * @param day  the day-of-month to represent, caller calculated
      */
     private CopticDate(int epochDays, int year, int month, int day) {
         this.epochDays = epochDays;
@@ -243,7 +244,7 @@ public final class CopticDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the coptic year value.
+     * Gets the Coptic year value.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -252,27 +253,27 @@ public final class CopticDate
     }
 
     /**
-     * Gets the coptic month of year value.
+     * Gets the Coptic month-of-year value.
      *
-     * @return the month of year, from 1 to 13
+     * @return the month-of-year, from 1 to 13
      */
     public int getMonthOfYear() {
         return month;
     }
 
     /**
-     * Gets the coptic day of month value.
+     * Gets the Coptic day-of-month value.
      *
-     * @return the day of month, from 1 to 30
+     * @return the day-of-month, from 1 to 30
      */
     public int getDayOfMonth() {
         return day;
     }
 
     /**
-     * Gets the coptic day of year value.
+     * Gets the Coptic day-of-year value.
      *
-     * @return the day of year, from 1 to 366
+     * @return the day-of-year, from 1 to 366
      */
     public int getDayOfYear() {
         int startYearEpochDays = (year - 1) * 365 + (year / 4);
@@ -280,12 +281,12 @@ public final class CopticDate
     }
 
     /**
-     * Gets the coptic day of week value.
+     * Gets the Coptic day-of-week.
      *
-     * @return the day of week, from 1 (Monday) to 7 (Sunday)
+     * @return the day-of-week, never null
      */
-    public int getDayOfWeek() {
-        return (epochDays + 4) % 7 + 1;
+    public DayOfWeek getDayOfWeek() {
+        return DayOfWeek.dayOfWeek((epochDays + 4) % 7 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -317,7 +318,7 @@ public final class CopticDate
      * <p>
      * If this date is the leap day (month 13, day 6) and the new year is not
      * a leap year, the resulting date will be invalid.
-     * To avoid this, the result day of month is changed from 6 to 5.
+     * To avoid this, the result day-of-month is changed from 6 to 5.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -330,15 +331,15 @@ public final class CopticDate
     }
 
     /**
-     * Returns a copy of this CopticDate with the month of year value altered.
+     * Returns a copy of this CopticDate with the month-of-year value altered.
      * <p>
      * If this month is from 1 to 12 and the new month is 13 then the
      * resulting date might be invalid. In this case, the last valid
-     * day of the month will be returned.
+     * day-of-the month will be returned.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 to 13
+     * @param monthOfYear  the month-of-year to represent, from 1 to 13
      * @return a new updated CopticDate instance, never null
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
@@ -347,28 +348,28 @@ public final class CopticDate
     }
 
     /**
-     * Returns a copy of this CopticDate with the day of month value altered.
+     * Returns a copy of this CopticDate with the day-of-month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 30
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 30
      * @return a new updated CopticDate instance, never null
      * @throws IllegalCalendarFieldValueException if the day is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year and month
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
     public CopticDate withDayOfMonth(int dayOfMonth) {
         return copticDate(getYear(), getMonthOfYear(), dayOfMonth);
     }
 
     /**
-     * Returns a copy of this CopticDate with the day of year value altered.
+     * Returns a copy of this CopticDate with the day-of-year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day of year to represent, from 1 to 366
+     * @param dayOfYear  the day-of-year to represent, from 1 to 366
      * @return a new updated CopticDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day of year is out of range
-     * @throws InvalidCalendarFieldException if the day of year is invalid for the year
+     * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public CopticDate withDayOfYear(int dayOfYear) {
         dayOfYear--;
@@ -381,7 +382,7 @@ public final class CopticDate
      * <p>
      * If this date is the leap day (month 13, day 6) and the calculated year is not
      * a leap year, the resulting date will be invalid.
-     * To avoid this, the result day of month is changed from 6 to 5.
+     * To avoid this, the result day-of-month is changed from 6 to 5.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -399,7 +400,7 @@ public final class CopticDate
      * <p>
      * If this month is from 1 to 12 and the calculated month is 13 then the
      * resulting date might be invalid. In this case, the last valid
-     * day of the month will be returned.
+     * day-of-the month will be returned.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *

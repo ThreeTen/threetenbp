@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -52,6 +52,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.i18n.CopticChronology;
@@ -181,7 +182,7 @@ public class TestCopticDate {
         assertEquals(TEST_1234_7_15.get(CopticChronology.monthOfYearRule()), (Integer) TEST_1234_7_15.getMonthOfYear());
         assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfMonthRule()), (Integer) TEST_1234_7_15.getDayOfMonth());
         assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfYearRule()), (Integer) TEST_1234_7_15.getDayOfYear());
-        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfWeekRule()), (Integer) TEST_1234_7_15.getDayOfWeek());
+        assertEquals(TEST_1234_7_15.get(CopticChronology.dayOfWeekRule()), TEST_1234_7_15.getDayOfWeek());
     }
 
     public void test_get_unsupported() throws Exception {
@@ -197,19 +198,19 @@ public class TestCopticDate {
     // getDayOfWeek()
     //-----------------------------------------------------------------------
     public void test_getDayOfWeek() throws Exception {
-        assertEquals(CopticDate.copticDate(1662, 3, 3).getDayOfWeek(), 1);
-        assertEquals(CopticDate.copticDate(1662, 3, 4).getDayOfWeek(), 2);
-        assertEquals(CopticDate.copticDate(1662, 3, 5).getDayOfWeek(), 3);
-        assertEquals(CopticDate.copticDate(1662, 3, 6).getDayOfWeek(), 4);
-        assertEquals(CopticDate.copticDate(1662, 3, 7).getDayOfWeek(), 5);
-        assertEquals(CopticDate.copticDate(1662, 3, 8).getDayOfWeek(), 6);
-        assertEquals(CopticDate.copticDate(1662, 3, 9).getDayOfWeek(), 7);
-        assertEquals(CopticDate.copticDate(1662, 3, 10).getDayOfWeek(), 1);
+        assertEquals(CopticDate.copticDate(1662, 3, 3).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 4).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 5).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 6).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 7).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 8).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 9).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(CopticDate.copticDate(1662, 3, 10).getDayOfWeek(), DayOfWeek.MONDAY);
     }
 
     public void test_getDayOfWeek_crossCheck() throws Exception {
         CopticDate test = CopticDate.copticDate(1662, 3, 3);
-        assertEquals(test.getDayOfWeek(), test.toLocalDate().getDayOfWeek().getValue());
+        assertEquals(test.getDayOfWeek(), test.toLocalDate().getDayOfWeek());
     }
 
     //-----------------------------------------------------------------------

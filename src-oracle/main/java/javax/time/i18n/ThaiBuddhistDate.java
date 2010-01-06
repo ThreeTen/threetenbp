@@ -14,6 +14,7 @@ import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
 
 /**
@@ -200,12 +201,12 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Gets the day of week value.
+     * Gets the day-of-week.
      *
-     * @return the day of week, from 1 (Monday) to 7 (Sunday)
+     * @return the day-of-week, never null
      */
-    public int getDayOfWeek() {
-        return date.getDayOfWeek().getValue();
+    public DayOfWeek getDayOfWeek() {
+        return date.getDayOfWeek();
     }
 
     /**

@@ -18,6 +18,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 
 import org.testng.annotations.BeforeTest;
@@ -139,7 +140,7 @@ public class TestMinguoDate {
         assertEquals(testDate.get(MinguoChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
         assertEquals(testDate.get(MinguoChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
         assertEquals(testDate.get(MinguoChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(MinguoChronology.dayOfWeekRule()), (Integer) testDate.getDayOfWeek());
+        assertEquals(testDate.get(MinguoChronology.dayOfWeekRule()), testDate.getDayOfWeek());
     }
     
     public void testGetUnsupported() throws Exception {
@@ -181,20 +182,20 @@ public class TestMinguoDate {
     //-----------------------------------------------------------------------
     @Test
     public void testGetDayOfWeek() {
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 2).getDayOfWeek(), 1);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 3).getDayOfWeek(), 2);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 4).getDayOfWeek(), 3);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 5).getDayOfWeek(), 4);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 6).getDayOfWeek(), 5);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 7).getDayOfWeek(), 6);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 8).getDayOfWeek(), 7);
-        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 9).getDayOfWeek(), 1);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 2).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 3).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 4).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(MinguoDate.minguoDate(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.MONDAY);
     }
     
     @Test
     public void testGetDayOfWeekCrossCheck() throws Exception {
         MinguoDate date = MinguoDate.minguoDate(testYear, testMonthOfYear, testDayOfMonth);
-        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek().getValue());
+        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek());
     }
 
     @Test

@@ -1,8 +1,6 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +16,7 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 
 import org.testng.annotations.BeforeTest;
@@ -139,7 +138,7 @@ public class TestJapaneseDate {
         assertEquals(testDate.get(JapaneseChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
         assertEquals(testDate.get(JapaneseChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
         assertEquals(testDate.get(JapaneseChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
-        assertEquals(testDate.get(JapaneseChronology.dayOfWeekRule()), (Integer) testDate.getDayOfWeek());
+        assertEquals(testDate.get(JapaneseChronology.dayOfWeekRule()), testDate.getDayOfWeek());
     }
     
     public void testGetUnsupported() throws Exception {
@@ -181,20 +180,20 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testGetDayOfWeek() {
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 2).getDayOfWeek(), 1);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 3).getDayOfWeek(), 2);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 4).getDayOfWeek(), 3);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 5).getDayOfWeek(), 4);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 6).getDayOfWeek(), 5);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 7).getDayOfWeek(), 6);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 8).getDayOfWeek(), 7);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 9).getDayOfWeek(), 1);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 2).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 3).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 4).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.MONDAY);
     }
-    
+
     @Test
     public void testGetDayOfWeekCrossCheck() throws Exception {
         JapaneseDate date = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
-        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek().getValue());
+        assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek());
     }
 
     @Test
