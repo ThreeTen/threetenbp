@@ -31,7 +31,11 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,7 +50,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
-import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -490,7 +493,7 @@ public class TestOffsetDate {
         OffsetDate a = OffsetDate.date(y, m, d, offset);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(y);
+            total += MonthOfYear.monthOfYear(i).lengthInDays(ISOChronology.isLeapYear(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -550,7 +553,7 @@ public class TestOffsetDate {
         ZoneOffset[] offsets = new ZoneOffset[] {OFFSET_PONE, OFFSET_PTWO};
 
         for (MonthOfYear month : MonthOfYear.values()) {
-            int length = month.lengthInDays(2007);
+            int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
                 OffsetDate d = OffsetDate.date(2007, month, i, offsets[i % 2]);
                 assertSame(d.getDayOfWeek(), dow);
@@ -631,7 +634,7 @@ public class TestOffsetDate {
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_null() {
         OffsetDate base = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
-        base.with(null);
+        base.with((DateAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -1632,18 +1635,18 @@ public class TestOffsetDate {
     //-----------------------------------------------------------------------
     public void test_matches() {
         assertTrue(TEST_2007_07_15_PONE.matches(TEST_2007_07_15_PONE));
-        assertFalse(TEST_2007_07_15_PONE.matches(AmPmOfDay.AM));
+        assertFalse(TEST_2007_07_15_PONE.matches(LocalTime.time(23, 5)));
         
         assertTrue(TEST_2007_07_15_PONE.matches(Year.isoYear(2007)));
         assertFalse(TEST_2007_07_15_PONE.matches(Year.isoYear(2006)));
         assertTrue(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q3));
         assertFalse(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q2));
-        assertTrue(TEST_2007_07_15_PONE.matches(MonthOfYear.JULY));
-        assertFalse(TEST_2007_07_15_PONE.matches(MonthOfYear.JUNE));
+//        assertTrue(TEST_2007_07_15_PONE.matches(MonthOfYear.JULY));
+//        assertFalse(TEST_2007_07_15_PONE.matches(MonthOfYear.JUNE));
         assertTrue(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(15)));
         assertFalse(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(14)));
-        assertTrue(TEST_2007_07_15_PONE.matches(DayOfWeek.SUNDAY));
-        assertFalse(TEST_2007_07_15_PONE.matches(DayOfWeek.MONDAY));
+//        assertTrue(TEST_2007_07_15_PONE.matches(DayOfWeek.SUNDAY));
+//        assertFalse(TEST_2007_07_15_PONE.matches(DayOfWeek.MONDAY));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

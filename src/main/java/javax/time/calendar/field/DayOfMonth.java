@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -247,7 +247,7 @@ public final class DayOfMonth
         if (monthOfYear == null) {
             throw new NullPointerException("MonthOfYear must not be null");
         }
-        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
+        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(ISOChronology.isLeapYear(year)));
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009 Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010 Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,116 +33,102 @@ package javax.time.calendar.field;
 
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateResolver;
-import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthDay;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
- * A representation of a month of year in the ISO-8601 calendar system.
+ * A month-of-year, such as 'July'.
  * <p>
- * MonthOfYear is an immutable time field that can only store a month of year.
- * It is a type-safe way of representing a month of year in an application.
+ * <code>MonthOfYear</code> is an enum representing the 12 months of the year -
+ * January, February, March, April, May, June, July, August, September, October,
+ * November and December.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a MonthOfYear
- * instance. Use getValue() instead.</b>
+ * In addition to the textual enum name, each month-of-year has an <code>int</code> value.
+ * The <code>int</code> value follows normal usage and the ISO-8601 standard,
+ * from 1 (January) to 12 (December). It is recommended that applications use the enum
+ * rather than the <code>int</code> value to ensure code clarity.
  * <p>
- * MonthOfYear is immutable and thread-safe.
+ * <b>Do not use ordinal() to obtain the numeric representation of <code>MonthOfYear</code>.
+ * Use getValue() instead.</b>
+ * <p>
+ * This enum represents a common concept that is found in many calendar systems.
+ * As such, this enum may be used by any calendar system that has the month-of-year
+ * concept with a twelve month year where the names are equivalent to those defined.
+ * Note that the implementation of {@link DateTimeFieldRule} for month-of-year may
+ * vary by calendar system.
+ * <p>
+ * MonthOfYear is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum MonthOfYear
-        implements Calendrical, DateAdjuster, CalendricalMatcher {
+public enum MonthOfYear {
 
     /**
      * The singleton instance for the month of January.
      */
-    JANUARY(1),
+    JANUARY,
     /**
      * The singleton instance for the month of February.
      */
-    FEBRUARY(2),
+    FEBRUARY,
     /**
      * The singleton instance for the month of March.
      */
-    MARCH(3),
+    MARCH,
     /**
      * The singleton instance for the month of April.
      */
-    APRIL(4),
+    APRIL,
     /**
      * The singleton instance for the month of May.
      */
-    MAY(5),
+    MAY,
     /**
      * The singleton instance for the month of June.
      */
-    JUNE(6),
+    JUNE,
     /**
      * The singleton instance for the month of July.
      */
-    JULY(7),
+    JULY,
     /**
      * The singleton instance for the month of August.
      */
-    AUGUST(8),
+    AUGUST,
     /**
      * The singleton instance for the month of September.
      */
-    SEPTEMBER(9),
+    SEPTEMBER,
     /**
      * The singleton instance for the month of October.
      */
-    OCTOBER(10),
+    OCTOBER,
     /**
      * The singleton instance for the month of November.
      */
-    NOVEMBER(11),
+    NOVEMBER,
     /**
      * The singleton instance for the month of December.
      */
-    DECEMBER(12),
-    ;
-
-    /**
-     * The month of year being represented.
-     */
-    private final int monthOfYear;
+    DECEMBER;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the month of year field operates.
+     * Obtains an instance of <code>MonthOfYear</code> from an <code>int</code> value.
      * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the month of year rule, never null
-     */
-    public static DateTimeFieldRule<MonthOfYear> rule() {
-        return ISOChronology.monthOfYearRule();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>MonthOfYear</code> from a value.
+     * <code>MonthOfYear</code> is an enum representing the 12 months of the year.
+     * This factory allows the enum to be obtained from the <code>int</code> value.
+     * The <code>int</code> value follows the ISO-8601 standard, from 1 (January) to 12 (December).
      * <p>
-     * Each month has an associated value, which ranges from 1 (January) to
-     * 12 (December).
+     * An exception is thrown if the value is invalid. The exception uses the
+     * {@link ISOChronology} month-of-year rule to indicate the failed rule.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the MonthOfYear singleton, never null
-     * @throws IllegalCalendarFieldValueException if the month of year is invalid
+     * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
      */
     public static MonthOfYear monthOfYear(int monthOfYear) {
         switch (monthOfYear) {
@@ -171,191 +157,105 @@ public enum MonthOfYear
             case 12:
                 return DECEMBER;
             default:
-                throw new IllegalCalendarFieldValueException(rule(), monthOfYear, 1, 12);
+                throw new IllegalCalendarFieldValueException(ISOChronology.monthOfYearRule(), monthOfYear, 1, 12);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>MonthOfYear</code> from a calendrical.
+     * Gets the month-of-year <code>int</code> value.
      * <p>
-     * This can be used extract the month-of-year value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
+     * The values are numbered following the ISO-8601 standard,
+     * from 1 (January) to 12 (December).
      *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the MonthOfYear singleton, never null
-     * @throws UnsupportedRuleException if the month-of-year cannot be obtained
-     */
-    public static MonthOfYear monthOfYear(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Constructs an instance with the specified month of year.
-     *
-     * @param monthOfYear  the month of year to represent
-     */
-    private MonthOfYear(int monthOfYear) {
-        this.monthOfYear = monthOfYear;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the month of year value.
-     *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month-of-year, from 1 (January) to 12 (December)
      */
     public int getValue() {
-        return monthOfYear;
+        return ordinal() + 1;
     }
 
     /**
-     * Gets the month of year value as short text.
+     * Gets the short textual representation of this month-of-year, such as 'Jan' or 'Dec'.
      * <p>
-     * In English, this will return text of the form 'Jan' or 'Dec'.
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the month-of-year rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all month-of-year rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
      * <p>
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the month of year, never null
+     * @return the short text value of the month-of-year, never null
      */
     public String getShortText(Locale locale) {
-        return rule().getText(monthOfYear, locale, TextStyle.SHORT);
+        return ISOChronology.monthOfYearRule().getText(getValue(), locale, TextStyle.SHORT);
     }
 
     /**
-     * Gets the month of year value as text.
+     * Gets the short textual representation of this month-of-year, such as 'January' or 'December'.
      * <p>
-     * In English, this will return text of the form 'January' or 'December'.
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the month-of-year rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all month-of-year rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
      * <p>
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the month of year, never null
+     * @return the long text value of the month-of-year, never null
      */
     public String getText(Locale locale) {
-        return rule().getText(monthOfYear, locale, TextStyle.FULL);
+        return ISOChronology.monthOfYearRule().getText(getValue(), locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next month of year wrapping so that the next month of year
-     * is always returned.
+     * Gets the next month-of-year.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the year. The next month after December is January.
      *
-     * @return the next month of year, never null
+     * @return the next month-of-year, never null
      */
     public MonthOfYear next() {
         return values()[(ordinal() + 1) % 12];
     }
 
     /**
-     * Gets the previous month of year wrapping so that the previous month of year
-     * is always returned.
+     * Gets the previous month-of-year.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the year. The previous month before January is December.
      *
-     * @return the previous month of year, never null
+     * @return the previous month-of-year, never null
      */
     public MonthOfYear previous() {
         return values()[(ordinal() + 12 - 1) % 12];
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Returns the MonthOfYear which is the specified number of months after
-     * this MonthOfYear.
+     * Rolls the month-of-year, adding the specified number of months.
      * <p>
-     * The calculation wraps around the end of the year from December to January.
-     * The days to add may be negative.
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the year from December to January. The months to roll by may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param months  the months to add, positive or negative
-     * @return the resulting MonthOfYear, never null
+     * @param months  the months to roll by, positive or negative
+     * @return the resulting month-of-year, never null
      */
-    public MonthOfYear plusMonths(int months) {
-        return values()[(ordinal() + (months % 12)) % 12];
-    }
-
-    /**
-     * Returns the MonthOfYear which is the specified number of days before
-     * this MonthOfYear.
-     * <p>
-     * The calculation wraps around the start of the week from January to December.
-     * The days to subtract may be negative.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, positive or negative
-     * @return the resulting MonthOfYear, never null
-     */
-    public MonthOfYear minusMonths(int months) {
-        return values()[(ordinal() + 12 - (months % 12)) % 12];
+    public MonthOfYear roll(int months) {
+        return values()[(ordinal() + (months % 12 + 12)) % 12];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the month-of-year extracted from the calendrical matches this.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    /**
-     * Adjusts a date to have the value of this month of year, returning a new date.
+     * Gets the length of this month in days using the ISO year.
      * <p>
-     * If the day of month is invalid for the new month then the
-     * {@link DateResolvers#previousValid()} resolver is used.
-     * <p>
-     * For example, if this object represents November, and the input date is
-     * the 31st December, then the result will be the 30th November. The result
-     * cannot be the 31st of November, so the previous valid date is chosen.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @return the adjusted date, never null
-     */
-    public LocalDate adjustDate(LocalDate date) {
-        return adjustDate(date, DateResolvers.previousValid());
-    }
-
-    /**
-     * Adjusts a date to have the value of this month of year, using a resolver to
-     * handle the case when the day of month becomes invalid.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use if the day of month becomes invalid, not null
-     * @return the adjusted date, never null
-     * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
-     */
-    public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
-        return date.withMonthOfYear(monthOfYear, resolver);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the length of this month in days.
+     * The year specified is the year from the {@link ISOChronology}.
+     * Other chronologies should use {@link #lengthInDays(boolean)}.
      *
      * @param year  the year to obtain the length for, not null
      * @return the length of this month in days, from 28 to 31
@@ -379,16 +279,16 @@ public enum MonthOfYear
 
     /**
      * Gets the length of this month in days.
+     * <p>
+     * This takes a flag to determine whether to return the length for a leap year or not.
      *
-     * @param year  the year to obtain the length for, from MIN_YEAR to MAX_YEAR
+     * @param leapYear  true if the length is required for a leap year
      * @return the length of this month in days, from 28 to 31
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
-    public int lengthInDays(int year) {
-        ISOChronology.yearRule().checkValue(year);
+    public int lengthInDays(boolean leapYear) {
         switch (this) {
             case FEBRUARY:
-                return (ISOChronology.isLeapYear(year) ? 29 : 28);
+                return (leapYear ? 29 : 28);
             case APRIL:
             case JUNE:
             case SEPTEMBER:
@@ -440,72 +340,42 @@ public enum MonthOfYear
     //-----------------------------------------------------------------------
     /**
      * Gets the last day of the month.
+     * <p>
+     * This is a synonym for {@link #lengthInDays(boolean)} and exists to provide
+     * a more meaningful API.
      *
-     * @param year  the year to obtain the last day of month for, not null
-     * @return an object representing the last day of this month
+     * @param leapYear  true if the length is required for a leap year
+     * @return the last day of this month, from 28 to 31
      */
-    public DayOfMonth getLastDayOfMonth(Year year) {
-        return DayOfMonth.dayOfMonth(lengthInDays(year));
+    public int getLastDayOfMonth(boolean leapYear) {
+        return lengthInDays(leapYear);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the quarter that this month falls in.
-     *
-     * @return the quarter of year, never null
-     */
-    public QuarterOfYear getQuarterOfYear() {
-        if (ordinal() < 3) {
-            return QuarterOfYear.Q1;
-        } else if (ordinal() < 6) {
-            return QuarterOfYear.Q2;
-        } else if (ordinal() < 9) {
-            return QuarterOfYear.Q3;
-        } else {
-            return QuarterOfYear.Q4;
-        }
-    }
-
-    /**
-     * Gets the index of the month within the quarter.
-     *
-     * @return the month of season, from 1 to 3
-     */
-    public int getMonthOfQuarter() {
-        return (ordinal() % 3) + 1;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a month-day formed from this month at the specified day of month.
-     * <p>
-     * This merges the two objects - <code>this</code> and the specified day -
-     * to form an instance of <code>MonthDay</code>.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day of month to use, not null
-     * @return the month-day formed from this month and the specified day, never null
-     * @throws InvalidCalendarFieldException when the day is invalid for the month
-     */
-    public MonthDay atDay(DayOfMonth dayOfMonth) {
-        return atDay(dayOfMonth.getValue());
-    }
-
-    /**
-     * Returns a month-day formed from this month at the specified day of month.
-     * <p>
-     * This merges the two objects - <code>this</code> and the specified day -
-     * to form an instance of <code>MonthDay</code>.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day of month to use, from 1 to 31
-     * @return the month-day formed from this month and the specified day, never null
-     * @throws InvalidCalendarFieldException when the day is invalid for the month
-     */
-    public MonthDay atDay(int dayOfMonth) {
-        return MonthDay.monthDay(this, dayOfMonth);
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the quarter that this month falls in.
+//     *
+//     * @return the quarter of year, never null
+//     */
+//    public QuarterOfYear getQuarterOfYear() {
+//        if (ordinal() < 3) {
+//            return QuarterOfYear.Q1;
+//        } else if (ordinal() < 6) {
+//            return QuarterOfYear.Q2;
+//        } else if (ordinal() < 9) {
+//            return QuarterOfYear.Q3;
+//        } else {
+//            return QuarterOfYear.Q4;
+//        }
+//    }
+//
+//    /**
+//     * Gets the index of the month within the quarter.
+//     *
+//     * @return the month of season, from 1 to 3
+//     */
+//    public int getMonthOfQuarter() {
+//        return (ordinal() % 3) + 1;
+//    }
 
 }

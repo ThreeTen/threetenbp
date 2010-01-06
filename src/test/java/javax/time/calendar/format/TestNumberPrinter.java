@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -319,7 +319,7 @@ public class TestNumberPrinter {
 
     public void test_isPrintDataAvailable_trueDerived() throws Exception {
         NumberPrinterParser pp = new NumberPrinterParser(quarterOfYearRule(), 2, 2, SignStyle.NOT_NEGATIVE);
-        assertEquals(pp.isPrintDataAvailable(MonthOfYear.APRIL), true);
+        assertEquals(pp.isPrintDataAvailable(new MockSimpleCalendrical(monthOfYearRule(), MonthOfYear.APRIL)), true);
     }
 
     public void test_isPrintDataAvailable_false() throws Exception {

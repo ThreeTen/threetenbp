@@ -481,6 +481,19 @@ public final class OffsetDateTime
         this.offset = offset;
     }
 
+    /**
+     * Returns a new date-time based on this one, returning <code>this</code> where possible.
+     *
+     * @param dateTime  the date-time to create with, not null
+     * @param offset  the zone offset to create with, not null
+     */
+    private OffsetDateTime with(LocalDateTime dateTime, ZoneOffset offset) {
+        if (this.dateTime == dateTime && this.offset.equals(offset)) {
+            return this;
+        }
+        return new OffsetDateTime(dateTime, offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology that this date-time uses, which is the ISO calendar system.
@@ -552,7 +565,7 @@ public final class OffsetDateTime
      * @return a new updated OffsetDateTime, never null
      */
     public OffsetDateTime withOffsetSameLocal(ZoneOffset offset) {
-        return offset == this.offset ? this : dateTime(dateTime, offset);
+        return with(dateTime, offset);
     }
 
     /**
@@ -828,17 +841,16 @@ public final class OffsetDateTime
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
      * <p>
-     * The adjustment has no effect on the time.
+     * The offset and time do not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated OffsetDateTime, never null
-     * @throws IllegalArgumentException if the adjuster returned null
+     * @return an <code>OffsetDateTime</code> based on this date-time adjusted as necessary, never null
+     * @throws NullPointerException if the adjuster returned null
      */
     public OffsetDateTime with(DateAdjuster adjuster) {
-        LocalDateTime newDT = dateTime.with(adjuster);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.with(adjuster), offset);
     }
 
     /**
@@ -848,103 +860,181 @@ public final class OffsetDateTime
      * A simple adjuster might simply set the one of the fields, such as the hour field.
      * A more complex adjuster might set the time to end of the working day.
      * <p>
-     * The adjustment has no effect on the date.
+     * The offset and date do not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated OffsetDateTime, never null
+     * @return an <code>OffsetDateTime</code> based on this date-time adjusted as necessary, never null
      * @throws IllegalArgumentException if the adjuster returned null
      */
     public OffsetDateTime with(TimeAdjuster adjuster) {
-        LocalDateTime newDT = dateTime.with(adjuster);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.with(adjuster), offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDateTime with the year value altered.
+     * Returns a copy of this OffsetDateTime with the year altered.
      * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated OffsetDateTime, never null
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
-     * @see #withYear(int,DateResolver)
      */
     public OffsetDateTime withYear(int year) {
-        LocalDateTime newDT = dateTime.withYear(year);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withYear(year), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the year value altered.
+     * Returns a copy of this OffsetDateTime with the year altered.
      * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDateTime, never null
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
-     * @throws InvalidCalendarFieldException if the year is invalid for the day-month combination
      */
     public OffsetDateTime withYear(int year, DateResolver dateResolver) {
-        LocalDateTime newDT = dateTime.withYear(year, dateResolver);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withYear(year, dateResolver), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the month of year value altered.
+     * Returns a copy of this OffsetDateTime with the month of year altered.
      * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated OffsetDateTime, never null
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
-     * @see #withMonthOfYear(int,DateResolver)
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear) {
-        LocalDateTime newDT = dateTime.withMonthOfYear(monthOfYear);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withMonthOfYear(monthOfYear), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the month of year value altered.
+     * Returns a copy of this OffsetDateTime with the month of year altered.
      * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDateTime, never null
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      */
     public OffsetDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
-        LocalDateTime newDT = dateTime.withMonthOfYear(monthOfYear, dateResolver);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withMonthOfYear(monthOfYear, dateResolver), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDateTime with the day of month value altered.
+     * Returns a copy of this OffsetDateTime with the month of year altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This method does the same as <code>with(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated OffsetDateTime, never null
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
+     */
+    public OffsetDateTime with(MonthOfYear monthOfYear) {
+        return with(dateTime.with(monthOfYear), offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the month of year altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested month, never null
+     */
+    public OffsetDateTime with(MonthOfYear monthOfYear, DateResolver dateResolver) {
+        return with(dateTime.with(monthOfYear, dateResolver), offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the day of month altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, an exception is thrown.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 28-31
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day of month value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public OffsetDateTime withDayOfMonth(int dayOfMonth) {
-        LocalDateTime newDT = dateTime.withDayOfMonth(dayOfMonth);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withDayOfMonth(dayOfMonth), offset);
     }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the day of month altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 31
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     */
+    public OffsetDateTime withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
+        return with(dateTime.withDayOfMonth(dayOfMonth, dateResolver), offset);
+    }
+
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this OffsetDateTime with a different local date.
+//     * <p>
+//     * This method changes the date stored to a different date.
+//     * No calculation is performed. The result simply represents the same
+//     * offset and the new date.
+//     *
+//     * @param dateProvider  the local date to change to, not null
+//     * @return a new updated OffsetDateTime, never null
+//     */
+//    public OffsetDateTime withDate(DateProvider dateProvider) {
+//        return with(dateTime.with(dateProvider), offset);
+//    }
+
+    /**
+     * Returns a copy of this OffsetDateTime with the date values altered.
+     * <p>
+     * This method will return a new instance with the same time fields,
+     * but altered date fields.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param monthOfYear  the month of year to represent, not null
+     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested date, never null
+     * @throws IllegalCalendarFieldValueException if any field value is invalid
+     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     */
+      public OffsetDateTime withDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+          return with(dateTime.withDate(year, monthOfYear, dayOfMonth), offset);
+      }
 
     /**
      * Returns a copy of this OffsetDateTime with the date values altered.
@@ -957,13 +1047,12 @@ public final class OffsetDateTime
      * @param year  the year to represent, from MIN_VALUE + 1 to MAX_VALUE
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated OffsetDateTime
+     * @return an <code>OffsetDateTime</code> based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public OffsetDateTime withDate(int year, int monthOfYear, int dayOfMonth) {
-        LocalDateTime newDT = dateTime.withDate(year, monthOfYear, dayOfMonth);
-        return (newDT == dateTime ? this : new OffsetDateTime(newDT, offset));
+        return with(dateTime.withDate(year, monthOfYear, dayOfMonth), offset);
     }
 
     //-----------------------------------------------------------------------

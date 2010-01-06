@@ -31,7 +31,10 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -898,7 +901,7 @@ public class TestLocalDateTime {
         LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12 ,30);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(y);
+            total += MonthOfYear.monthOfYear(i).lengthInDays(ISOChronology.isLeapYear(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -924,7 +927,7 @@ public class TestLocalDateTime {
     public void test_getDayOfWeek() {
         DayOfWeek dow = DayOfWeek.MONDAY;
         for (MonthOfYear month : MonthOfYear.values()) {
-            int length = month.lengthInDays(2007);
+            int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
                 LocalDateTime d = LocalDateTime.dateTime(LocalDate.date(2007, month, i),
                         TEST_2007_07_15_12_30_40_987654321);
@@ -950,10 +953,14 @@ public class TestLocalDateTime {
     }
 
     public void test_with_TimeAdjuster() {
-        TimeAdjuster timeAdjuster = AmPmOfDay.AM;
+        TimeAdjuster timeAdjuster = new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return LocalTime.time(23, 5);
+            }
+        };
         LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(timeAdjuster);
         assertSame(adjusted.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
-        assertSame(adjusted.toLocalTime().getHourOfDay(), 0);
+        assertEquals(adjusted.toLocalTime(), LocalTime.time(23, 5));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -3122,12 +3129,12 @@ public class TestLocalDateTime {
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(Year.isoYear(2006)));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(QuarterOfYear.Q3));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(QuarterOfYear.Q2));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(MonthOfYear.JULY));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(MonthOfYear.JUNE));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(MonthOfYear.JULY));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(MonthOfYear.JUNE));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(DayOfMonth.dayOfMonth(15)));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(DayOfMonth.dayOfMonth(14)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(DayOfWeek.SUNDAY));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(DayOfWeek.MONDAY));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(DayOfWeek.SUNDAY));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(DayOfWeek.MONDAY));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(HourOfDay.hourOfDay(12)));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(HourOfDay.hourOfDay(0)));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(30)));
@@ -3136,8 +3143,8 @@ public class TestLocalDateTime {
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
         assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
         assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.PM));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.AM));
+//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.PM));
+//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.AM));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

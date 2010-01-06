@@ -673,8 +673,12 @@ public class TestLocalTime {
     // with()
     //-----------------------------------------------------------------------
     public void test_with() {
-        TimeAdjuster timeAdjuster = AmPmOfDay.AM;
-        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster).getHourOfDay(), 0);
+        TimeAdjuster timeAdjuster = new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return LocalTime.time(23, 5);
+            }
+        };
+        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster), LocalTime.time(23, 5));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1542,7 +1546,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void test_matches() {
         assertTrue(TEST_12_30_40_987654321.matches(TEST_12_30_40_987654321));
-        assertFalse(TEST_12_30_40_987654321.matches(MonthOfYear.APRIL));
+        assertFalse(TEST_12_30_40_987654321.matches(MonthDay.monthDay(MonthOfYear.APRIL, 4)));
         
         assertTrue(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(12)));
         assertFalse(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(0)));
@@ -1552,8 +1556,8 @@ public class TestLocalTime {
         assertFalse(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
         assertTrue(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
         assertFalse(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-        assertTrue(TEST_12_30_40_987654321.matches(AmPmOfDay.PM));
-        assertFalse(TEST_12_30_40_987654321.matches(AmPmOfDay.AM));
+//        assertTrue(TEST_12_30_40_987654321.matches(AmPmOfDay.PM));
+//        assertFalse(TEST_12_30_40_987654321.matches(AmPmOfDay.AM));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

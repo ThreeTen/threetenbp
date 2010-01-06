@@ -46,8 +46,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.Test;
 
@@ -165,9 +165,9 @@ public class TestCalendricalRule {
 
     public void test_comparator_combinations_noValue() {
         Year year2008 = Year.isoYear(2008);
-        assertEquals(new MockBigYearRule().compare(year2008, MonthOfYear.JANUARY), -1);
-        assertEquals(new MockBigYearRule().compare(MonthOfYear.JANUARY, year2008), 1);
-        assertEquals(new MockBigYearRule().compare(MonthOfYear.JANUARY, MonthOfYear.JANUARY), 0);
+        assertEquals(new MockBigYearRule().compare(year2008, new MockSimpleCalendrical()), -1);
+        assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), year2008), 1);
+        assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), new MockSimpleCalendrical()), 0);
     }
 
     //-----------------------------------------------------------------------

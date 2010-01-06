@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,17 +32,19 @@
 package javax.time;
 
 import static javax.time.calendar.DateAdjusters.*;
-import static javax.time.calendar.LocalDate.*;
-import static javax.time.calendar.field.DayOfMonth.*;
+import static javax.time.calendar.LocalDate.date;
+import static javax.time.calendar.field.DayOfMonth.dayOfMonth;
 import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.calendar.field.HourOfDay.*;
-import static javax.time.calendar.field.MinuteOfHour.*;
+import static javax.time.calendar.field.HourOfDay.hourOfDay;
+import static javax.time.calendar.field.MinuteOfHour.minuteOfHour;
 import static javax.time.calendar.field.MonthOfYear.*;
-import static javax.time.calendar.field.Year.*;
+import static javax.time.calendar.field.Year.isoYear;
 import static javax.time.period.Period.*;
 
 import javax.time.calendar.Clock;
 import javax.time.calendar.DateResolvers;
+import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -51,7 +53,6 @@ import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
-import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
@@ -71,9 +72,9 @@ public class TestFluentAPI {
         LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6)).plus(minutes(2));
-        if (tod.matches(AmPmOfDay.AM)) {
-            tod = tod.with(hourOfDay(9));
-        }
+//        if (tod.getAmPm().isAm()) {
+//            tod = tod.with(hourOfDay(9));
+//        }
         
         LocalDate date = null;
         date = clock.today().plusDays(3);
@@ -102,9 +103,11 @@ public class TestFluentAPI {
         date = date.with(isoYear(2009));
         date = date.with(monthOfYear(6));
         date = date.with(MonthOfYear.AUGUST);
-        MonthOfYear.DECEMBER.adjustDate(date, DateResolvers.strict());
+        date.with(MonthOfYear.DECEMBER, DateResolvers.strict());
         
-        if (date.matches(FRIDAY) && date.matches(dayOfMonth(13))) {
+        DateTimeFields fri13 = DateTimeFields.fields(
+                ISOChronology.dayOfWeekRule(), FRIDAY.getValue(), ISOChronology.dayOfMonthRule(), 13);
+        if (date.matches(fri13)) {
             System.out.println("Spooky");
         }
         
@@ -154,7 +157,7 @@ public class TestFluentAPI {
         
         DayOfWeek dow = MONDAY;
         dow = dow.next();
-        dow = dow.plusDays(3);
+        dow = dow.roll(3);
 //        dow = dow.plusDaysSkipping(3, SATURDAY, SUNDAY);
         
 //        day = day.plusSkipping(days(3), WEDNESDAY_PM, SATURDAY, SUNDAY, FOURTH_JULY, XMAS_BREAK);

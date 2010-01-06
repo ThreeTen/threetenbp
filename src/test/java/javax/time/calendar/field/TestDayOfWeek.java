@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,16 +38,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -62,23 +53,15 @@ import org.testng.annotations.Test;
 @Test
 public class TestDayOfWeek {
 
-    private static final DateTimeFieldRule<DayOfWeek> RULE = ISOChronology.dayOfWeekRule();
-
     @BeforeMethod
     public void setUp() {
     }
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(DayOfWeek.class));
+        assertTrue(Enum.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Serializable.class.isAssignableFrom(DayOfWeek.class));
         assertTrue(Comparable.class.isAssignableFrom(DayOfWeek.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(DayOfWeek.class));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(DayOfWeek.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------
@@ -101,35 +84,6 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
-        LocalDate date = LocalDate.date(2007, 1, 1);  // Monday
-        for (int i = 0; i <= 1500; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek(date);
-            assertEquals(test.getValue(), (i % 7) + 1);
-            date = date.plusDays(1);
-        }
-    }
-
-    public void test_factory_Calendrical_oldDate() {
-        LocalDate date = LocalDate.date(2007, 1, 1).minusDays(70000);  // Monday
-        for (int i = 0; i <= 1500; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek(date);
-            assertEquals(test.getValue(), (i % 7) + 1);
-            date = date.plusDays(1);
-        }
-    }
-
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_noData() {
-        DayOfWeek.dayOfWeek(new MockSimpleCalendrical());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        DayOfWeek.dayOfWeek((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
     @DataProvider(name="localeFirstDay")
     Object[][] localeFirstDay() {
         return new Object[][] {
@@ -147,22 +101,6 @@ public class TestDayOfWeek {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_firstDayOfWeekFor_null() {
         DayOfWeek.firstDayOfWeekFor(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalField)
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(DayOfWeek.THURSDAY.get(RULE), DayOfWeek.THURSDAY);
-    }
-
-    public void test_get_unsupported() {
-        assertEquals(DayOfWeek.THURSDAY.get(ISOChronology.weekBasedYearRule()), null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_null() {
-        DayOfWeek.THURSDAY.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -260,82 +198,42 @@ public class TestDayOfWeek {
     }
 
     //-----------------------------------------------------------------------
-    // plusDays()
+    // roll(int)
     //-----------------------------------------------------------------------
     public void test_plusDays_monday() {
-        assertEquals(DayOfWeek.MONDAY.plusDays(0), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(1), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(2), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(3), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(4), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(5), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(6), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.MONDAY.plusDays(7), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-7), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-6), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-5), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-4), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-3), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-2), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(-1), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(0), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(1), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(2), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(3), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(4), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(5), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(6), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.MONDAY.roll(7), DayOfWeek.MONDAY);
     }
 
-    public void test_plusDays_thursday() {
-        assertEquals(DayOfWeek.THURSDAY.plusDays(0), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(1), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(2), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(3), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(4), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(5), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(6), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.THURSDAY.plusDays(7), DayOfWeek.THURSDAY);
-    }
-
-    //-----------------------------------------------------------------------
-    // minusDays()
-    //-----------------------------------------------------------------------
-    public void test_minusDays_monday() {
-        assertEquals(DayOfWeek.MONDAY.minusDays(0), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(1), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(2), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(3), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(4), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(5), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(6), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.MONDAY.minusDays(7), DayOfWeek.MONDAY);
-    }
-
-    public void test_minusDays_thursday() {
-        assertEquals(DayOfWeek.THURSDAY.minusDays(0), DayOfWeek.THURSDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(1), DayOfWeek.WEDNESDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(2), DayOfWeek.TUESDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(3), DayOfWeek.MONDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(4), DayOfWeek.SUNDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(5), DayOfWeek.SATURDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(6), DayOfWeek.FRIDAY);
-        assertEquals(DayOfWeek.THURSDAY.minusDays(7), DayOfWeek.THURSDAY);
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical() {
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), true);
-        assertEquals(DayOfWeek.TUESDAY.matchesCalendrical(LocalDate.date(2008, 5, 6)), true);
-        assertEquals(DayOfWeek.WEDNESDAY.matchesCalendrical(LocalDate.date(2008, 5, 7)), true);
-        assertEquals(DayOfWeek.THURSDAY.matchesCalendrical(LocalDate.date(2008, 5, 8)), true);
-        assertEquals(DayOfWeek.FRIDAY.matchesCalendrical(LocalDate.date(2008, 5, 9)), true);
-        assertEquals(DayOfWeek.SATURDAY.matchesCalendrical(LocalDate.date(2008, 5, 10)), true);
-        assertEquals(DayOfWeek.SUNDAY.matchesCalendrical(LocalDate.date(2008, 5, 11)), true);
-        
-        assertEquals(DayOfWeek.TUESDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.WEDNESDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.THURSDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.FRIDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.SATURDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
-        assertEquals(DayOfWeek.SUNDAY.matchesCalendrical(LocalDate.date(2008, 5, 5)), false);
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(DayOfWeek.MONDAY.matchesCalendrical(LocalTime.time(12, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        DayOfWeek.MONDAY.matchesCalendrical(null);
+    public void test_roll_thursday() {
+        assertEquals(DayOfWeek.THURSDAY.roll(-7), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(-6), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(-5), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(-4), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(-3), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(-2), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(-1), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(0), DayOfWeek.THURSDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(1), DayOfWeek.FRIDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(2), DayOfWeek.SATURDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(3), DayOfWeek.SUNDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(4), DayOfWeek.MONDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(5), DayOfWeek.TUESDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(6), DayOfWeek.WEDNESDAY);
+        assertEquals(DayOfWeek.THURSDAY.roll(7), DayOfWeek.THURSDAY);
     }
 
     //-----------------------------------------------------------------------

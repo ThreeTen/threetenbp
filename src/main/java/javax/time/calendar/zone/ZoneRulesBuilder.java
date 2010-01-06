@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -707,8 +707,7 @@ public class ZoneRulesBuilder {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
             if (dayOfMonth == -1) {
-                Year yr = Year.isoYear(year);
-                date = LocalDate.date(yr, month, month.getLastDayOfMonth(yr));
+                date = LocalDate.date(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)));
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }

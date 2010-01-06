@@ -443,7 +443,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             if (era != null && yoeVal != null && moyval != null) {
                 int isoYear = (era == MinguoEra.BEFORE_MINGUO ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
                 MonthOfYear month = MonthOfYear.monthOfYear(moyval);
-                return month.lengthInDays(isoYear);
+                return month.lengthInDays(ISOChronology.isLeapYear(isoYear));
             }
             return getMaximumValue();
         }

@@ -34,6 +34,7 @@ package javax.time.calendar;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.Test;
 
@@ -96,17 +97,17 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getMaximumValue_Calendrical_juneNoYear() {
-        Calendrical cal = MonthOfYear.JUNE;
+        Calendrical cal = new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.JUNE);
         assertEquals(rule().getMaximumValue(cal), 30);
     }
 
     public void test_getMaximumValue_Calendrical_julyNoYear() {
-        Calendrical cal = MonthOfYear.JULY;
+        Calendrical cal = new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.JULY);
         assertEquals(rule().getMaximumValue(cal), 31);
     }
 
     public void test_getMaximumValue_Calendrical_febNoYear() {
-        Calendrical cal = MonthOfYear.FEBRUARY;
+        Calendrical cal = new MockSimpleCalendrical(ISOChronology.monthOfYearRule(), MonthOfYear.FEBRUARY);
         assertEquals(rule().getMaximumValue(cal), 29);
     }
 

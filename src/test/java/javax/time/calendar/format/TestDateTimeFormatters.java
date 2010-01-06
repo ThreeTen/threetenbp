@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,7 +44,6 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
@@ -909,9 +908,9 @@ public class TestDateTimeFormatters {
 
     public void test_print_isoWeekDate_fields() {
         MockSimpleCalendrical test = new MockSimpleCalendrical();
-        test.put(WeekBasedYear.rule(), 2004);
-        test.put(WeekOfWeekBasedYear.rule(), 5);
-        test.put(DayOfWeek.rule(), DayOfWeek.TUESDAY);
+        test.put(ISOChronology.weekBasedYearRule(), 2004);
+        test.put(ISOChronology.weekOfWeekBasedYearRule(), 5);
+        test.put(ISOChronology.dayOfWeekRule(), DayOfWeek.TUESDAY);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "2004-W05-2");
     }
 

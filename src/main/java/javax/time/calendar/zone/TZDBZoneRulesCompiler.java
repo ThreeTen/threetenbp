@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -614,7 +614,7 @@ public final class TZDBZoneRulesCompiler {
             adjustToFowards(year);
             LocalDate date;
             if (dayOfMonth == -1) {
-                dayOfMonth = month.lengthInDays(year);
+                dayOfMonth = month.getLastDayOfMonth(ISOChronology.isLeapYear(year));
                 date = LocalDate.date(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));

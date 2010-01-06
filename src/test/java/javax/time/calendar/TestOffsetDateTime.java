@@ -1099,8 +1099,8 @@ public class TestOffsetDateTime {
 //        assertEquals(test.matches(TimeZone.UTC), false);  // TODO
         assertEquals(test.matches(Year.isoYear(2008)), true);
         assertEquals(test.matches(Year.isoYear(2007)), false);
-        assertEquals(test.matches(AmPmOfDay.AM), true);
-        assertEquals(test.matches(AmPmOfDay.PM), false);
+//        assertEquals(test.matches(AmPmOfDay.AM), true);
+//        assertEquals(test.matches(AmPmOfDay.PM), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

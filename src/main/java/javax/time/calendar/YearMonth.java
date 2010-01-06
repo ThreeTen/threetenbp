@@ -81,7 +81,7 @@ public final class YearMonth
      */
     private final int year;
     /**
-     * The month of year, not null.
+     * The month-of-year, not null.
      */
     private final MonthOfYear month;
 
@@ -90,7 +90,7 @@ public final class YearMonth
      * Obtains an instance of <code>YearMonth</code>.
      *
      * @param year  the year to represent, not null
-     * @param monthOfYear  the month of year to represent, not null
+     * @param monthOfYear  the month-of-year to represent, not null
      * @return the year-month, never null
      */
     public static YearMonth yearMonth(Year year, MonthOfYear monthOfYear) {
@@ -103,7 +103,7 @@ public final class YearMonth
      * Obtains an instance of <code>YearMonth</code>.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, not null
+     * @param monthOfYear  the month-of-year to represent, not null
      * @return the year-month, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
@@ -117,7 +117,7 @@ public final class YearMonth
      * Obtains an instance of <code>YearMonth</code>.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
      * @return the year-month, never null
      * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
@@ -129,7 +129,7 @@ public final class YearMonth
      * Obtains an instance of <code>YearMonth</code> from a Calendrical.
      * <p>
      * This method will create a YearMonth from the Calendrical by extracting
-     * the year and month of year fields.
+     * the year and month-of-year fields.
      *
      * @param calendricalProvider  the calendrical to use, not null
      * @return the year-month, never null
@@ -153,7 +153,7 @@ public final class YearMonth
      * If there are more than 4 digits then the year must be prefixed with the plus symbol.
      * Negative years are allowed, but not negative zero.
      * <p>
-     * The month of year has 2 digits and has values from 1 to 12.
+     * The month-of-year has 2 digits and has values from 1 to 12.
      *
      * @param text  the text to parse such as '2007-12', not null
      * @return the parsed year-month, never null
@@ -169,7 +169,7 @@ public final class YearMonth
      * Constructor.
      *
      * @param year  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to represent, not null
+     * @param monthOfYear  the month-of-year to represent, not null
      */
     private YearMonth(int year, MonthOfYear monthOfYear) {
         this.year = year;
@@ -181,10 +181,10 @@ public final class YearMonth
      * to see if a new object is in fact required.
      *
      * @param newYear  the year to represent, validated from MIN_YEAR to MAX_YEAR
-     * @param newMonth  the month of year to represent, validated not null
+     * @param newMonth  the month-of-year to represent, validated not null
      * @return the year-month, never null
      */
-    private YearMonth withYearMonth(int newYear, MonthOfYear newMonth) {
+    private YearMonth with(int newYear, MonthOfYear newMonth) {
         if (year == newYear && month == newMonth) {
             return this;
         }
@@ -237,14 +237,14 @@ public final class YearMonth
     }
 
     /**
-     * Gets the month of year field as a <code>MonthOfYear</code>.
+     * Gets the month-of-year field as a <code>MonthOfYear</code>.
      * <p>
-     * This method provides access to an object representing the month of year field.
+     * This method provides access to an object representing the month-of-year field.
      * This allows operations to be performed on this field in a type-safe manner.
      * <p>
      * This method is the same as {@link #getMonthOfYear()}.
      *
-     * @return the month of year, never null
+     * @return the month-of-year, never null
      */
     public MonthOfYear toMonthOfYear() {
         return month;
@@ -268,7 +268,7 @@ public final class YearMonth
     }
 
     /**
-     * Gets the month of year field, which is an enum <code>MonthOfYear</code>.
+     * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
      * This avoids confusion as to what <code>int</code> values mean.
@@ -279,7 +279,7 @@ public final class YearMonth
      * This includes month lengths, textual names and access to the quarter of year
      * and month of quarter values.
      *
-     * @return the month of year, never null
+     * @return the month-of-year, never null
      */
     public MonthOfYear getMonthOfYear() {
         return month;
@@ -291,8 +291,8 @@ public final class YearMonth
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, not null
-     * @return a new updated YearMonth, never null
+     * @param year  the year to set in the returned year-month, not null
+     * @return a <code>YearMonth</code> based on this one with the requested year, never null
      */
     public YearMonth with(Year year) {
         ISOChronology.checkNotNull(year, "Year must not be null");
@@ -300,41 +300,41 @@ public final class YearMonth
     }
 
     /**
-     * Returns a copy of this YearMonth with the month of year altered.
+     * Returns a copy of this YearMonth with the month-of-year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, not null
-     * @return a new updated YearMonth, never null
+     * @param monthOfYear  the month-of-year to set in the returned year-month, not null
+     * @return a <code>YearMonth</code> based on this one with the requested month, never null
      */
     public YearMonth with(MonthOfYear monthOfYear) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return withYearMonth(year, monthOfYear);
+        return with(year, monthOfYear);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth with the year value altered.
+     * Returns a copy of this <code>YearMonth</code> with the year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated YearMonth, never null
+     * @param year  the year to set in the returned year-month, from MIN_YEAR to MAX_YEAR
+     * @return a <code>YearMonth</code> based on this one with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public YearMonth withYear(int year) {
         ISOChronology.yearRule().checkValue(year);
-        return withYearMonth(year, month);
+        return with(year, month);
     }
 
     /**
-     * Returns a copy of this YearMonth with the month of year value altered.
+     * Returns a copy of this <code>YearMonth</code> with the month-of-year altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated YearMonth, never null
-     * @throws IllegalCalendarFieldValueException if the month value is invalid
+     * @param monthOfYear  the month-of-year to set in the returned year-month, from 1 (January) to 12 (December)
+     * @return a <code>YearMonth</code> based on this one with the requested month, never null
+     * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
         return with(MonthOfYear.monthOfYear(monthOfYear));
@@ -373,7 +373,7 @@ public final class YearMonth
             return this;
         }
         int newYear = ISOChronology.addYears(year, years);
-        return withYearMonth(newYear, month);
+        return with(newYear, month);
     }
 
     /**
@@ -399,7 +399,7 @@ public final class YearMonth
         }
         int newYear = ISOChronology.addYears(year, years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return withYearMonth(newYear, newMonth);
+        return with(newYear, newMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -435,7 +435,7 @@ public final class YearMonth
             return this;
         }
         int newYear = ISOChronology.subtractYears(year, years);
-        return withYearMonth(newYear, month);
+        return with(newYear, month);
     }
 
     /**
@@ -461,29 +461,25 @@ public final class YearMonth
         }
         int newYear = ISOChronology.subtractYears(year, -years);
         MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
-        return withYearMonth(newYear, newMonth);
+        return with(newYear, newMonth);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this YearMonth rolling the month of year field by the
-     * specified number of months.
+     * Rolls the month-of-year, adding the specified number of months to a copy
+     * of this <code>YearMonth</code>.
      * <p>
      * This method will add the specified number of months to the month-day,
      * rolling from December back to January if necessary.
+     * The year is not altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param months  the months to roll by, positive or negative
-     * @return a new updated YearMonth, never null
+     * @return a <code>YearMonth</code> based on this one with the month rolled, never null
      */
     public YearMonth rollMonthOfYear(int months) {
-        if (months == 0) {
-            return this;
-        }
-        int newMonth0 = (months % 12) + (month.getValue() - 1);
-        newMonth0 = (newMonth0 + 12) % 12;
-        return withMonthOfYear(++newMonth0);
+        return with(month.roll(months));
     }
 
     //-----------------------------------------------------------------------

@@ -455,7 +455,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             if (era != null && yoeVal != null && moyval != null) {
                 int isoYear = era.getYearOffset() + yoeVal;
                 MonthOfYear month = MonthOfYear.monthOfYear(moyval);
-                return month.lengthInDays(isoYear);
+                return month.lengthInDays(ISOChronology.isLeapYear(isoYear));
             }
             return getMaximumValue();
         }

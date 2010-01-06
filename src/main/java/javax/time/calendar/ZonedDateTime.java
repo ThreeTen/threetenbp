@@ -960,7 +960,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated ZonedDateTime, never null
+     * @return a <code>ZonedDateTime</code> based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public ZonedDateTime withYear(int year) {
@@ -978,7 +978,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated ZonedDateTime, never null
+     * @return a <code>ZonedDateTime</code> based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month value is invalid
      */
     public ZonedDateTime withMonthOfYear(int monthOfYear) {
@@ -996,7 +996,7 @@ public final class ZonedDateTime
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated ZonedDateTime, never null
+     * @return a <code>ZonedDateTime</code> based on this date-time with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day of month value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -1006,6 +1006,7 @@ public final class ZonedDateTime
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this ZonedDateTime with the date values altered.
      * <p>
@@ -1020,7 +1021,7 @@ public final class ZonedDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated ZonedDateTime
+     * @return a <code>ZonedDateTime</code> based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if the any field value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */

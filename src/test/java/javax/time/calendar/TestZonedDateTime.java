@@ -1481,8 +1481,8 @@ public class TestZonedDateTime {
         ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
         assertEquals(test.matches(Year.isoYear(2008)), true);
         assertEquals(test.matches(Year.isoYear(2007)), false);
-        assertEquals(test.matches(AmPmOfDay.PM), true);
-        assertEquals(test.matches(AmPmOfDay.AM), false);
+//        assertEquals(test.matches(AmPmOfDay.PM), true);
+//        assertEquals(test.matches(AmPmOfDay.AM), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class )

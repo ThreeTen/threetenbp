@@ -210,6 +210,19 @@ public final class OffsetDate
         this.offset = offset;
     }
 
+    /**
+     * Returns a new date based on this one, returning <code>this</code> where possible.
+     *
+     * @param date  the date to create with, not null
+     * @param offset  the zone offset to create with, not null
+     */
+    private OffsetDate with(LocalDate date, ZoneOffset offset) {
+        if (this.date == date && this.offset.equals(offset)) {
+            return this;
+        }
+        return new OffsetDate(date, offset);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the chronology that this date uses, which is the ISO calendar system.
@@ -237,22 +250,6 @@ public final class OffsetDate
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with a different local date.
-     * <p>
-     * This method changes the date stored to a different date.
-     * No calculation is performed. The result simply represents the same
-     * offset and the new date.
-     *
-     * @param dateProvider  the local date to change to, not null
-     * @return a new updated OffsetDate, never null
-     */
-    public OffsetDate withDate(DateProvider dateProvider) {
-        LocalDate localDate = LocalDate.date(dateProvider);
-        return localDate.equals(this.date) ? this : new OffsetDate(localDate, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the zone offset.
      *
      * @return the zone offset, never null
@@ -262,7 +259,7 @@ public final class OffsetDate
     }
 
     /**
-     * Returns a copy of this OffsetTime with a different zone offset.
+     * Returns a copy of this OffsetDate with a different zone offset.
      * <p>
      * This method changes the offset stored to a different offset.
      * No calculation is performed. The result simply represents the same
@@ -272,7 +269,8 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withOffset(ZoneOffset offset) {
-        return offset != null && offset.equals(this.offset) ? this : new OffsetDate(date, offset);
+        ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
+        return with(date, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -426,103 +424,169 @@ public final class OffsetDate
     /**
      * Returns a copy of this OffsetDate with the date altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the date in unusual ways. Examples might
-     * be an adjuster that set the date avoiding weekends, or one that sets the
-     * date to the last day of the month.
+     * Adjusters can be used to alter the date in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
      * <p>
-     * The offset has no effect on and is not affected by the adjustment.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated OffsetDate, never null
-     * @throws IllegalArgumentException if the adjuster returned null
+     * @return a <code>OffsetDate</code> based on this date adjusted as necessary, never null
+     * @throws NullPointerException if the adjuster returned null
      */
     public OffsetDate with(DateAdjuster adjuster) {
-        LocalDate newDate = date.with(adjuster);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.with(adjuster), offset);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetDate with the year value altered.
+     * Returns a copy of this OffsetDate with a different local date.
+     * <p>
+     * This method changes the date stored to a different date.
+     * No calculation is performed. The result simply represents the same
+     * offset and the new date.
+     *
+     * @param dateProvider  the local date to change to, not null
+     * @return a new updated OffsetDate, never null
+     */
+    public OffsetDate withDate(DateProvider dateProvider) {
+        LocalDate newDate = LocalDate.date(dateProvider);
+        if (newDate.equals(date)) {  // need .equals() for this case
+            return this;
+        }
+        return with(newDate, offset);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this OffsetDate with the year altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated OffsetDate, never null
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @return a <code>OffsetDate</code> based on this date with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
-     * @see #withYear(int,DateResolver)
      */
     public OffsetDate withYear(int year) {
-        LocalDate newDate = date.withYear(year);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.withYear(year), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDate with the year value altered.
+     * Returns a copy of this OffsetDate with the year altered.
      * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDate, never null
+     * @return a <code>OffsetDate</code> based on this date with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public OffsetDate withYear(int year, DateResolver dateResolver) {
-        LocalDate newDate = date.withYear(year, dateResolver);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.withYear(year, dateResolver), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDate with the month of year value altered.
+     * Returns a copy of this OffsetDate with the month of year altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated OffsetDate, never null
-     * @throws IllegalCalendarFieldValueException if the month value is invalid
-     * @see #withMonthOfYear(int,DateResolver)
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
+     * @return a <code>OffsetDate</code> based on this date with the requested month, never null
+     * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      */
     public OffsetDate withMonthOfYear(int monthOfYear) {
-        LocalDate newDate = date.withMonthOfYear(monthOfYear);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.withMonthOfYear(monthOfYear), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDate with the month of year value altered.
+     * Returns a copy of this OffsetDate with the month of year altered.
      * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated OffsetDate, never null
+     * @return a <code>OffsetDate</code> based on this date with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      */
     public OffsetDate withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
-        LocalDate newDate = date.withMonthOfYear(monthOfYear, dateResolver);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.withMonthOfYear(monthOfYear, dateResolver), offset);
     }
 
     /**
-     * Returns a copy of this OffsetDate with the day of month value altered.
+     * Returns a copy of this OffsetDate with the month of year altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This method does the same as <code>with(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated OffsetDate, never null
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @return a <code>OffsetDate</code> based on this date with the requested month, never null
+     */
+    public OffsetDate with(MonthOfYear monthOfYear) {
+        return with(date.with(monthOfYear), offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the month of year altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a <code>OffsetDate</code> based on this date with the requested month, never null
+     */
+    public OffsetDate with(MonthOfYear monthOfYear, DateResolver dateResolver) {
+        return with(date.with(monthOfYear, dateResolver), offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the day of month altered.
+     * If the resulting <code>OffsetDate</code> is invalid, an exception is thrown.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 28-31
+     * @return a <code>OffsetDate</code> based on this date with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day of month value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public OffsetDate withDayOfMonth(int dayOfMonth) {
-        LocalDate newDate = date.withDayOfMonth(dayOfMonth);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.withDayOfMonth(dayOfMonth), offset);
+    }
+
+    /**
+     * Returns a copy of this OffsetDate with the day of month altered.
+     * If the resulting <code>OffsetDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The offset does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 31
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a <code>OffsetDate</code> based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     */
+    public OffsetDate withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
+        return with(date.withDayOfMonth(dayOfMonth, dateResolver), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -539,8 +603,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plus(PeriodProvider periodProvider) {
-        LocalDate newDate = date.plus(periodProvider);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plus(periodProvider), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -568,8 +631,7 @@ public final class OffsetDate
      * @see #plusYears(int, javax.time.calendar.DateResolver)
      */
     public OffsetDate plusYears(int years) {
-        LocalDate newDate = date.plusYears(years);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plusYears(years), offset);
     }
 
     /**
@@ -590,8 +652,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusYears(int years, DateResolver dateResolver) {
-        LocalDate newDate = date.plusYears(years, dateResolver);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plusYears(years, dateResolver), offset);
     }
 
     /**
@@ -618,8 +679,7 @@ public final class OffsetDate
      * @see #plusMonths(int, javax.time.calendar.DateResolver)
      */
     public OffsetDate plusMonths(int months) {
-        LocalDate newDate = date.plusMonths(months);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plusMonths(months), offset);
     }
 
     /**
@@ -640,8 +700,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusMonths(int months, DateResolver dateResolver) {
-        LocalDate newDate = date.plusMonths(months, dateResolver);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plusMonths(months, dateResolver), offset);
     }
 
     /**
@@ -660,8 +719,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusWeeks(int weeks) {
-        LocalDate newDate = date.plusWeeks(weeks);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plusWeeks(weeks), offset);
     }
 
     /**
@@ -680,8 +738,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate plusDays(long days) {
-        LocalDate newDate = date.plusDays(days);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.plusDays(days), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -698,8 +755,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minus(PeriodProvider periodProvider) {
-        LocalDate newDate = date.minus(periodProvider);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minus(periodProvider), offset);
     }
 
     //-----------------------------------------------------------------------
@@ -727,8 +783,7 @@ public final class OffsetDate
      * @see #minusYears(int, javax.time.calendar.DateResolver)
      */
     public OffsetDate minusYears(int years) {
-        LocalDate newDate = date.minusYears(years);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minusYears(years), offset);
     }
 
     /**
@@ -749,8 +804,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minusYears(int years, DateResolver dateResolver) {
-        LocalDate newDate = date.minusYears(years, dateResolver);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minusYears(years, dateResolver), offset);
     }
 
     /**
@@ -777,8 +831,7 @@ public final class OffsetDate
      * @see #minusMonths(int, javax.time.calendar.DateResolver)
      */
     public OffsetDate minusMonths(int months) {
-        LocalDate newDate = date.minusMonths(months);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minusMonths(months), offset);
     }
 
     /**
@@ -799,8 +852,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minusMonths(int months, DateResolver dateResolver) {
-        LocalDate newDate = date.minusMonths(months, dateResolver);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minusMonths(months, dateResolver), offset);
     }
 
     /**
@@ -819,8 +871,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minusWeeks(int weeks) {
-        LocalDate newDate = date.minusWeeks(weeks);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minusWeeks(weeks), offset);
     }
 
     /**
@@ -839,8 +890,7 @@ public final class OffsetDate
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public OffsetDate minusDays(long days) {
-        LocalDate newDate = date.minusDays(days);
-        return newDate == date ? this : new OffsetDate(newDate, offset);
+        return with(date.minusDays(days), offset);
     }
 
     //-----------------------------------------------------------------------

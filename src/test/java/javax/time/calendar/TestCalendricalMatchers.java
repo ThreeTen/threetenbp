@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -182,7 +182,7 @@ public class TestCalendricalMatchers {
 
     public void test_lastDayOfMonth_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int lastDayOfMonthValue = month.lengthInDays(2007);
+            int lastDayOfMonthValue = month.lengthInDays(false);
             for (int i = 1; i <= lastDayOfMonthValue; i++) {
                 LocalDate date = date(2007, month, i);
                 assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(date), lastDayOfMonthValue == i);
@@ -192,8 +192,8 @@ public class TestCalendricalMatchers {
 
     public void test_lastDayOfMonth_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int lastDayOfMonthValue = month.lengthInDays(2008);
-            for (int i = 1; i <= month.lengthInDays(2008); i++) {
+            int lastDayOfMonthValue = month.lengthInDays(true);
+            for (int i = 1; i <= lastDayOfMonthValue; i++) {
                 LocalDate date = date(2008, month, i);
                 assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(date), lastDayOfMonthValue == i);
             }
@@ -228,7 +228,7 @@ public class TestCalendricalMatchers {
 
     public void test_lastDayOfYear_nonLeap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(date), month == MonthOfYear.DECEMBER && i == 31);
             }
@@ -237,7 +237,7 @@ public class TestCalendricalMatchers {
 
     public void test_lastDayOfYear_leap() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(2008); i++) {
+            for (int i = 1; i <= month.lengthInDays(true); i++) {
                 LocalDate date = date(2008, month, i);
                 assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(date), month == MonthOfYear.DECEMBER && i == 31);
             }
@@ -308,7 +308,7 @@ public class TestCalendricalMatchers {
             DayOfWeek firstReference = null;
             int expectedOrdinal = 1;
 
-            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 DayOfWeek expectedDOW = date.getDayOfWeek();
 
@@ -376,7 +376,7 @@ public class TestCalendricalMatchers {
 
     public void test_firstInMonth() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
 
                 for (DayOfWeek dow : DayOfWeek.values()) {
@@ -414,7 +414,7 @@ public class TestCalendricalMatchers {
 
     public void test_weekendDay() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
                 assertEquals(CalendricalMatchers.weekendDay().matchesCalendrical(date),
@@ -452,7 +452,7 @@ public class TestCalendricalMatchers {
 
     public void test_nonWeekendDay() {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= month.lengthInDays(2007); i++) {
+            for (int i = 1; i <= month.lengthInDays(false); i++) {
                 LocalDate date = date(2007, month, i);
                 DayOfWeek dayOfWeek = date.getDayOfWeek();
                 assertEquals(CalendricalMatchers.nonWeekendDay().matchesCalendrical(date),

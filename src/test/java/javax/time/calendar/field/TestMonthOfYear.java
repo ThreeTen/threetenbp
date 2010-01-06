@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,22 +38,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateResolver;
-import javax.time.calendar.DateResolvers;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockDateResolverReturnsNull;
-import javax.time.calendar.MonthDay;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -67,11 +52,8 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthOfYear {
 
-    private static final DateTimeFieldRule<MonthOfYear> RULE = ISOChronology.monthOfYearRule();
     private static final Year YEAR_STANDARD = Year.isoYear(2007);
     private static final Year YEAR_LEAP = Year.isoYear(2008);
-    private static final int STANDARD_YEAR_LENGTH = 365;
-    private static final int LEAP_YEAR_LENGTH = 366;
     private static final int MAX_LENGTH = 12;
 
     @BeforeMethod
@@ -80,17 +62,9 @@ public class TestMonthOfYear {
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(MonthOfYear.class));
+        assertTrue(Enum.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(MonthOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(MonthOfYear.class));
-        assertTrue(DateAdjuster.class.isAssignableFrom(MonthOfYear.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(MonthOfYear.class));
-        assertTrue(Enum.class.isAssignableFrom(MonthOfYear.class));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(MonthOfYear.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------
@@ -110,102 +84,6 @@ public class TestMonthOfYear {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooHigh() {
         MonthOfYear.monthOfYear(13);
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_factory_Calendrical_notLeapYear() {
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        for (int i = 1; i <= 31; i++) {  // Jan
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 1);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 28; i++) {  // Feb
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 2);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // Mar
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 3);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 30; i++) {  // Apr
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 4);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // May
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 5);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 30; i++) {  // Jun
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 6);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // Jul
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 7);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // Aug
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 8);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 30; i++) {  // Sep
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 9);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // Oct
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 10);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 30; i++) {  // Nov
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 11);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // Dec
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 12);
-            date = date.plusDays(1);
-        }
-    }
-
-    public void test_factory_Calendrical_leapYear() {
-        LocalDate date = LocalDate.date(2008, 1, 1);
-        for (int i = 1; i <= 31; i++) {  // Jan
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 1);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 29; i++) {  // Feb
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 2);
-            date = date.plusDays(1);
-        }
-        for (int i = 1; i <= 31; i++) {  // Mar
-            assertEquals(MonthOfYear.monthOfYear(date).getValue(), 3);
-            date = date.plusDays(1);
-        }
-    }
-
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_noData() {
-        MonthOfYear.monthOfYear(new MockSimpleCalendrical());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        MonthOfYear.monthOfYear((Calendrical) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // get(CalendricalField)
-    //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(MonthOfYear.APRIL.get(RULE), MonthOfYear.APRIL);
-        assertEquals(MonthOfYear.APRIL.get(ISOChronology.monthOfQuarterRule()), (Integer) 1);
-    }
-
-    public void test_get_unsupported() {
-        assertEquals(MonthOfYear.APRIL.get(ISOChronology.weekBasedYearRule()), null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_null() {
-        MonthOfYear.APRIL.get((CalendricalRule<?>) null);
     }
 
     //-----------------------------------------------------------------------
@@ -313,199 +191,62 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // plusMonths()
+    // roll(int)
     //-----------------------------------------------------------------------
-    public void test_plusMonths_january() {
-        assertEquals(MonthOfYear.JANUARY.plusMonths(0), MonthOfYear.JANUARY);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(1), MonthOfYear.FEBRUARY);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(2), MonthOfYear.MARCH);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(3), MonthOfYear.APRIL);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(4), MonthOfYear.MAY);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(5), MonthOfYear.JUNE);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(6), MonthOfYear.JULY);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(7), MonthOfYear.AUGUST);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(8), MonthOfYear.SEPTEMBER);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(9), MonthOfYear.OCTOBER);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(10), MonthOfYear.NOVEMBER);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(11), MonthOfYear.DECEMBER);
-        assertEquals(MonthOfYear.JANUARY.plusMonths(12), MonthOfYear.JANUARY);
+    public void test_roll_january() {
+        assertEquals(MonthOfYear.JANUARY.roll(-12), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.JANUARY.roll(-11), MonthOfYear.FEBRUARY);
+        assertEquals(MonthOfYear.JANUARY.roll(-10), MonthOfYear.MARCH);
+        assertEquals(MonthOfYear.JANUARY.roll(-9), MonthOfYear.APRIL);
+        assertEquals(MonthOfYear.JANUARY.roll(-8), MonthOfYear.MAY);
+        assertEquals(MonthOfYear.JANUARY.roll(-7), MonthOfYear.JUNE);
+        assertEquals(MonthOfYear.JANUARY.roll(-6), MonthOfYear.JULY);
+        assertEquals(MonthOfYear.JANUARY.roll(-5), MonthOfYear.AUGUST);
+        assertEquals(MonthOfYear.JANUARY.roll(-4), MonthOfYear.SEPTEMBER);
+        assertEquals(MonthOfYear.JANUARY.roll(-3), MonthOfYear.OCTOBER);
+        assertEquals(MonthOfYear.JANUARY.roll(-2), MonthOfYear.NOVEMBER);
+        assertEquals(MonthOfYear.JANUARY.roll(-1), MonthOfYear.DECEMBER);
+        assertEquals(MonthOfYear.JANUARY.roll(0), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.JANUARY.roll(1), MonthOfYear.FEBRUARY);
+        assertEquals(MonthOfYear.JANUARY.roll(2), MonthOfYear.MARCH);
+        assertEquals(MonthOfYear.JANUARY.roll(3), MonthOfYear.APRIL);
+        assertEquals(MonthOfYear.JANUARY.roll(4), MonthOfYear.MAY);
+        assertEquals(MonthOfYear.JANUARY.roll(5), MonthOfYear.JUNE);
+        assertEquals(MonthOfYear.JANUARY.roll(6), MonthOfYear.JULY);
+        assertEquals(MonthOfYear.JANUARY.roll(7), MonthOfYear.AUGUST);
+        assertEquals(MonthOfYear.JANUARY.roll(8), MonthOfYear.SEPTEMBER);
+        assertEquals(MonthOfYear.JANUARY.roll(9), MonthOfYear.OCTOBER);
+        assertEquals(MonthOfYear.JANUARY.roll(10), MonthOfYear.NOVEMBER);
+        assertEquals(MonthOfYear.JANUARY.roll(11), MonthOfYear.DECEMBER);
+        assertEquals(MonthOfYear.JANUARY.roll(12), MonthOfYear.JANUARY);
     }
 
-    public void test_plusMonths_july() {
-        assertEquals(MonthOfYear.JULY.plusMonths(0), MonthOfYear.JULY);
-        assertEquals(MonthOfYear.JULY.plusMonths(1), MonthOfYear.AUGUST);
-        assertEquals(MonthOfYear.JULY.plusMonths(2), MonthOfYear.SEPTEMBER);
-        assertEquals(MonthOfYear.JULY.plusMonths(3), MonthOfYear.OCTOBER);
-        assertEquals(MonthOfYear.JULY.plusMonths(4), MonthOfYear.NOVEMBER);
-        assertEquals(MonthOfYear.JULY.plusMonths(5), MonthOfYear.DECEMBER);
-        assertEquals(MonthOfYear.JULY.plusMonths(6), MonthOfYear.JANUARY);
-        assertEquals(MonthOfYear.JULY.plusMonths(7), MonthOfYear.FEBRUARY);
-        assertEquals(MonthOfYear.JULY.plusMonths(8), MonthOfYear.MARCH);
-        assertEquals(MonthOfYear.JULY.plusMonths(9), MonthOfYear.APRIL);
-        assertEquals(MonthOfYear.JULY.plusMonths(10), MonthOfYear.MAY);
-        assertEquals(MonthOfYear.JULY.plusMonths(11), MonthOfYear.JUNE);
-        assertEquals(MonthOfYear.JULY.plusMonths(12), MonthOfYear.JULY);
-    }
-
-    //-----------------------------------------------------------------------
-    // minusMonths()
-    //-----------------------------------------------------------------------
-    public void test_minusMonths_january() {
-        assertEquals(MonthOfYear.JANUARY.minusMonths(0), MonthOfYear.JANUARY);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(1), MonthOfYear.DECEMBER);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(2), MonthOfYear.NOVEMBER);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(3), MonthOfYear.OCTOBER);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(4), MonthOfYear.SEPTEMBER);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(5), MonthOfYear.AUGUST);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(6), MonthOfYear.JULY);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(7), MonthOfYear.JUNE);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(8), MonthOfYear.MAY);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(9), MonthOfYear.APRIL);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(10), MonthOfYear.MARCH);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(11), MonthOfYear.FEBRUARY);
-        assertEquals(MonthOfYear.JANUARY.minusMonths(12), MonthOfYear.JANUARY);
-    }
-
-    public void test_minusMonths_july() {
-        assertEquals(MonthOfYear.JULY.minusMonths(0), MonthOfYear.JULY);
-        assertEquals(MonthOfYear.JULY.minusMonths(1), MonthOfYear.JUNE);
-        assertEquals(MonthOfYear.JULY.minusMonths(2), MonthOfYear.MAY);
-        assertEquals(MonthOfYear.JULY.minusMonths(3), MonthOfYear.APRIL);
-        assertEquals(MonthOfYear.JULY.minusMonths(4), MonthOfYear.MARCH);
-        assertEquals(MonthOfYear.JULY.minusMonths(5), MonthOfYear.FEBRUARY);
-        assertEquals(MonthOfYear.JULY.minusMonths(6), MonthOfYear.JANUARY);
-        assertEquals(MonthOfYear.JULY.minusMonths(6), MonthOfYear.JANUARY);
-        assertEquals(MonthOfYear.JULY.minusMonths(7), MonthOfYear.DECEMBER);
-        assertEquals(MonthOfYear.JULY.minusMonths(8), MonthOfYear.NOVEMBER);
-        assertEquals(MonthOfYear.JULY.minusMonths(9), MonthOfYear.OCTOBER);
-        assertEquals(MonthOfYear.JULY.minusMonths(10), MonthOfYear.SEPTEMBER);
-        assertEquals(MonthOfYear.JULY.minusMonths(11), MonthOfYear.AUGUST);
-        assertEquals(MonthOfYear.JULY.minusMonths(12), MonthOfYear.JULY);
-    }
-
-    //-----------------------------------------------------------------------
-    // adjustDate(LocalDate)
-    //-----------------------------------------------------------------------
-    public void test_adjustDate() {
-        LocalDate base = LocalDate.date(2007, 1, 12);
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            LocalDate result = MonthOfYear.monthOfYear(i).adjustDate(base);
-            assertEquals(result, LocalDate.date(2007, i, 12));
-        }
-    }
-
-    public void test_adjustDate_adjustDayOfMonthFrom29() {
-        LocalDate base = LocalDate.date(2007, 1, 29);
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            LocalDate result = MonthOfYear.monthOfYear(i).adjustDate(base);
-            int dom = (i == 2 ? 28 : 29);
-            assertEquals(result, LocalDate.date(2007, i, dom));
-        }
-    }
-
-    public void test_adjustDate_adjustDayOfMonthFrom31() {
-        LocalDate base = LocalDate.date(2007, 1, 31);
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            LocalDate result = MonthOfYear.monthOfYear(i).adjustDate(base);
-            int dom = (i == 4 || i == 6 || i == 9 || i == 11) ? 30 : (i == 2 ? 28 : 31);
-            assertEquals(result, LocalDate.date(2007, i, dom));
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_nullLocalDate() {
-        MonthOfYear test = MonthOfYear.monthOfYear(1);
-        test.adjustDate((LocalDate) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // adjustDate(LocalDate,DateResolver)
-    //-----------------------------------------------------------------------
-    public void test_adjustDate_strictResolver() {
-        LocalDate base = LocalDate.date(2007, 1, 12);
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            LocalDate result = MonthOfYear.monthOfYear(i).adjustDate(base, DateResolvers.strict());
-            assertEquals(result, LocalDate.date(2007, i, 12));
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_adjustDate_strictResolver_april31() {
-        LocalDate base = LocalDate.date(2007, 1, 31);
-        MonthOfYear test = MonthOfYear.monthOfYear(4);
-        try {
-            test.adjustDate(base, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_adjustDate_strictResolver_february29_notLeapYear() {
-        LocalDate base = LocalDate.date(2007, 1, 29);
-        MonthOfYear test = MonthOfYear.monthOfYear(2);
-        try {
-            test.adjustDate(base, DateResolvers.strict());
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
-            throw ex;
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_resolver_nullLocalDate() {
-        MonthOfYear test = MonthOfYear.monthOfYear(1);
-        test.adjustDate((LocalDate) null, DateResolvers.strict());
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_resolver_nullResolver() {
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        MonthOfYear test = MonthOfYear.monthOfYear(1);
-        test.adjustDate(date, (DateResolver) null);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_adjustDate_resolver_badResolver() {
-        LocalDate date = LocalDate.date(2007, 1, 31);
-        MonthOfYear test = MonthOfYear.monthOfYear(2);
-        test.adjustDate(date, new MockDateResolverReturnsNull());
-    }
-
-    //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
-    //-----------------------------------------------------------------------
-    public void test_matchesCalendrical_notLeapYear() {
-        LocalDate work = LocalDate.date(2007, 1, 1);
-        for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
-            for (int j = 1; j <= MAX_LENGTH; j++) {
-                MonthOfYear test = MonthOfYear.monthOfYear(j);
-                assertEquals(test.matchesCalendrical(work), work.getMonthOfYear().getValue() == j);
-            }
-            work = work.plusDays(1);
-        }
-    }
-
-    public void test_matchesCalendrical_leapYear() {
-        LocalDate work = LocalDate.date(2008, 1, 1);
-        for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
-            for (int j = 1; j <= MAX_LENGTH; j++) {
-                MonthOfYear test = MonthOfYear.monthOfYear(j);
-                assertEquals(test.matchesCalendrical(work), work.getMonthOfYear().getValue() == j);
-            }
-            work = work.plusDays(1);
-        }
-    }
-
-    public void test_matchesCalendrical_noData() {
-        assertEquals(MonthOfYear.APRIL.matchesCalendrical(LocalTime.time(12, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        MonthOfYear test = MonthOfYear.monthOfYear(1);
-        test.matchesCalendrical(null);
+    public void test_roll_july() {
+        assertEquals(MonthOfYear.JULY.roll(-12), MonthOfYear.JULY);
+        assertEquals(MonthOfYear.JULY.roll(-11), MonthOfYear.AUGUST);
+        assertEquals(MonthOfYear.JULY.roll(-10), MonthOfYear.SEPTEMBER);
+        assertEquals(MonthOfYear.JULY.roll(-9), MonthOfYear.OCTOBER);
+        assertEquals(MonthOfYear.JULY.roll(-8), MonthOfYear.NOVEMBER);
+        assertEquals(MonthOfYear.JULY.roll(-7), MonthOfYear.DECEMBER);
+        assertEquals(MonthOfYear.JULY.roll(-6), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.JULY.roll(-5), MonthOfYear.FEBRUARY);
+        assertEquals(MonthOfYear.JULY.roll(-4), MonthOfYear.MARCH);
+        assertEquals(MonthOfYear.JULY.roll(-3), MonthOfYear.APRIL);
+        assertEquals(MonthOfYear.JULY.roll(-2), MonthOfYear.MAY);
+        assertEquals(MonthOfYear.JULY.roll(-1), MonthOfYear.JUNE);
+        assertEquals(MonthOfYear.JULY.roll(0), MonthOfYear.JULY);
+        assertEquals(MonthOfYear.JULY.roll(1), MonthOfYear.AUGUST);
+        assertEquals(MonthOfYear.JULY.roll(2), MonthOfYear.SEPTEMBER);
+        assertEquals(MonthOfYear.JULY.roll(3), MonthOfYear.OCTOBER);
+        assertEquals(MonthOfYear.JULY.roll(4), MonthOfYear.NOVEMBER);
+        assertEquals(MonthOfYear.JULY.roll(5), MonthOfYear.DECEMBER);
+        assertEquals(MonthOfYear.JULY.roll(6), MonthOfYear.JANUARY);
+        assertEquals(MonthOfYear.JULY.roll(7), MonthOfYear.FEBRUARY);
+        assertEquals(MonthOfYear.JULY.roll(8), MonthOfYear.MARCH);
+        assertEquals(MonthOfYear.JULY.roll(9), MonthOfYear.APRIL);
+        assertEquals(MonthOfYear.JULY.roll(10), MonthOfYear.MAY);
+        assertEquals(MonthOfYear.JULY.roll(11), MonthOfYear.JUNE);
+        assertEquals(MonthOfYear.JULY.roll(12), MonthOfYear.JULY);
     }
 
     //-----------------------------------------------------------------------
@@ -549,41 +290,36 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // lengthInDays(int)
+    // lengthInDays(boolean)
     //-----------------------------------------------------------------------
-    public void test_lengthInDays_int_notLeapYear() {
-        assertEquals(MonthOfYear.JANUARY.lengthInDays(2007), 31);
-        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(2007), 28);
-        assertEquals(MonthOfYear.MARCH.lengthInDays(2007), 31);
-        assertEquals(MonthOfYear.APRIL.lengthInDays(2007), 30);
-        assertEquals(MonthOfYear.MAY.lengthInDays(2007), 31);
-        assertEquals(MonthOfYear.JUNE.lengthInDays(2007), 30);
-        assertEquals(MonthOfYear.JULY.lengthInDays(2007), 31);
-        assertEquals(MonthOfYear.AUGUST.lengthInDays(2007), 31);
-        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(2007), 30);
-        assertEquals(MonthOfYear.OCTOBER.lengthInDays(2007), 31);
-        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(2007), 30);
-        assertEquals(MonthOfYear.DECEMBER.lengthInDays(2007), 31);
+    public void test_lengthInDays_boolean_notLeapYear() {
+        assertEquals(MonthOfYear.JANUARY.lengthInDays(false), 31);
+        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(false), 28);
+        assertEquals(MonthOfYear.MARCH.lengthInDays(false), 31);
+        assertEquals(MonthOfYear.APRIL.lengthInDays(false), 30);
+        assertEquals(MonthOfYear.MAY.lengthInDays(false), 31);
+        assertEquals(MonthOfYear.JUNE.lengthInDays(false), 30);
+        assertEquals(MonthOfYear.JULY.lengthInDays(false), 31);
+        assertEquals(MonthOfYear.AUGUST.lengthInDays(false), 31);
+        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(false), 30);
+        assertEquals(MonthOfYear.OCTOBER.lengthInDays(false), 31);
+        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(false), 30);
+        assertEquals(MonthOfYear.DECEMBER.lengthInDays(false), 31);
     }
 
-    public void test_lengthInDays_int_leapYear() {
-        assertEquals(MonthOfYear.JANUARY.lengthInDays(2008), 31);
-        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(2008), 29);
-        assertEquals(MonthOfYear.MARCH.lengthInDays(2008), 31);
-        assertEquals(MonthOfYear.APRIL.lengthInDays(2008), 30);
-        assertEquals(MonthOfYear.MAY.lengthInDays(2008), 31);
-        assertEquals(MonthOfYear.JUNE.lengthInDays(2008), 30);
-        assertEquals(MonthOfYear.JULY.lengthInDays(2008), 31);
-        assertEquals(MonthOfYear.AUGUST.lengthInDays(2008), 31);
-        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(2008), 30);
-        assertEquals(MonthOfYear.OCTOBER.lengthInDays(2008), 31);
-        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(2008), 30);
-        assertEquals(MonthOfYear.DECEMBER.lengthInDays(2008), 31);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_lengthInDays_int_invalidYear() {
-        MonthOfYear.JANUARY.lengthInDays(Integer.MIN_VALUE);
+    public void test_lengthInDays_boolean_leapYear() {
+        assertEquals(MonthOfYear.JANUARY.lengthInDays(true), 31);
+        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(true), 29);
+        assertEquals(MonthOfYear.MARCH.lengthInDays(true), 31);
+        assertEquals(MonthOfYear.APRIL.lengthInDays(true), 30);
+        assertEquals(MonthOfYear.MAY.lengthInDays(true), 31);
+        assertEquals(MonthOfYear.JUNE.lengthInDays(true), 30);
+        assertEquals(MonthOfYear.JULY.lengthInDays(true), 31);
+        assertEquals(MonthOfYear.AUGUST.lengthInDays(true), 31);
+        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(true), 30);
+        assertEquals(MonthOfYear.OCTOBER.lengthInDays(true), 31);
+        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(true), 30);
+        assertEquals(MonthOfYear.DECEMBER.lengthInDays(true), 31);
     }
 
     //-----------------------------------------------------------------------
@@ -623,124 +359,73 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // getLastDayOfMonth(Year)
+    // getLastDayOfMonth(boolean)
     //-----------------------------------------------------------------------
     public void test_getLastDayOfMonth_notLeapYear() {
-        Year year = YEAR_STANDARD;
-        assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(28));
-        assertEquals(MonthOfYear.MARCH.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.APRIL.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.MAY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.JUNE.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.JULY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.AUGUST.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.SEPTEMBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.OCTOBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.NOVEMBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
+        assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(false), 31);
+        assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(false), 28);
+        assertEquals(MonthOfYear.MARCH.getLastDayOfMonth(false), 31);
+        assertEquals(MonthOfYear.APRIL.getLastDayOfMonth(false), 30);
+        assertEquals(MonthOfYear.MAY.getLastDayOfMonth(false), 31);
+        assertEquals(MonthOfYear.JUNE.getLastDayOfMonth(false), 30);
+        assertEquals(MonthOfYear.JULY.getLastDayOfMonth(false), 31);
+        assertEquals(MonthOfYear.AUGUST.getLastDayOfMonth(false), 31);
+        assertEquals(MonthOfYear.SEPTEMBER.getLastDayOfMonth(false), 30);
+        assertEquals(MonthOfYear.OCTOBER.getLastDayOfMonth(false), 31);
+        assertEquals(MonthOfYear.NOVEMBER.getLastDayOfMonth(false), 30);
+        assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(false), 31);
     }
 
     public void test_getLastDayOfMonth_leapYear() {
-        Year year = YEAR_LEAP;
-        assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(29));
-        assertEquals(MonthOfYear.MARCH.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.APRIL.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.MAY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.JUNE.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.JULY.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.AUGUST.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.SEPTEMBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.OCTOBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
-        assertEquals(MonthOfYear.NOVEMBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(30));
-        assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(year), DayOfMonth.dayOfMonth(31));
+        assertEquals(MonthOfYear.JANUARY.getLastDayOfMonth(true), 31);
+        assertEquals(MonthOfYear.FEBRUARY.getLastDayOfMonth(true), 29);
+        assertEquals(MonthOfYear.MARCH.getLastDayOfMonth(true), 31);
+        assertEquals(MonthOfYear.APRIL.getLastDayOfMonth(true), 30);
+        assertEquals(MonthOfYear.MAY.getLastDayOfMonth(true), 31);
+        assertEquals(MonthOfYear.JUNE.getLastDayOfMonth(true), 30);
+        assertEquals(MonthOfYear.JULY.getLastDayOfMonth(true), 31);
+        assertEquals(MonthOfYear.AUGUST.getLastDayOfMonth(true), 31);
+        assertEquals(MonthOfYear.SEPTEMBER.getLastDayOfMonth(true), 30);
+        assertEquals(MonthOfYear.OCTOBER.getLastDayOfMonth(true), 31);
+        assertEquals(MonthOfYear.NOVEMBER.getLastDayOfMonth(true), 30);
+        assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(true), 31);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getLastDayOfMonth_nullYear() {
-        MonthOfYear.JANUARY.getLastDayOfMonth((Year) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // getQuarterOfYear()
-    //-----------------------------------------------------------------------
-    public void test_getQuarterOfYear() {
-        assertEquals(MonthOfYear.JANUARY.getQuarterOfYear(), QuarterOfYear.Q1);
-        assertEquals(MonthOfYear.FEBRUARY.getQuarterOfYear(), QuarterOfYear.Q1);
-        assertEquals(MonthOfYear.MARCH.getQuarterOfYear(), QuarterOfYear.Q1);
-        assertEquals(MonthOfYear.APRIL.getQuarterOfYear(), QuarterOfYear.Q2);
-        assertEquals(MonthOfYear.MAY.getQuarterOfYear(), QuarterOfYear.Q2);
-        assertEquals(MonthOfYear.JUNE.getQuarterOfYear(), QuarterOfYear.Q2);
-        assertEquals(MonthOfYear.JULY.getQuarterOfYear(), QuarterOfYear.Q3);
-        assertEquals(MonthOfYear.AUGUST.getQuarterOfYear(), QuarterOfYear.Q3);
-        assertEquals(MonthOfYear.SEPTEMBER.getQuarterOfYear(), QuarterOfYear.Q3);
-        assertEquals(MonthOfYear.OCTOBER.getQuarterOfYear(), QuarterOfYear.Q4);
-        assertEquals(MonthOfYear.NOVEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
-        assertEquals(MonthOfYear.DECEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
-    }
-
-    //-----------------------------------------------------------------------
-    // getMonthOfQuarter()
-    //-----------------------------------------------------------------------
-    public void test_getMonthOfQuarter() {
-        assertEquals(MonthOfYear.JANUARY.getMonthOfQuarter(), 1);
-        assertEquals(MonthOfYear.FEBRUARY.getMonthOfQuarter(), 2);
-        assertEquals(MonthOfYear.MARCH.getMonthOfQuarter(), 3);
-        assertEquals(MonthOfYear.APRIL.getMonthOfQuarter(), 1);
-        assertEquals(MonthOfYear.MAY.getMonthOfQuarter(), 2);
-        assertEquals(MonthOfYear.JUNE.getMonthOfQuarter(), 3);
-        assertEquals(MonthOfYear.JULY.getMonthOfQuarter(), 1);
-        assertEquals(MonthOfYear.AUGUST.getMonthOfQuarter(), 2);
-        assertEquals(MonthOfYear.SEPTEMBER.getMonthOfQuarter(), 3);
-        assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
-        assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
-        assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
-    }
-
-    //-----------------------------------------------------------------------
-    // atDay(DayOfMonth)
-    //-----------------------------------------------------------------------
-    public void test_atDay() {
-        MonthOfYear test = MonthOfYear.JUNE;
-        assertEquals(test.atDay(DayOfMonth.dayOfMonth(30)), MonthDay.monthDay(6, 30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_atDay_nullYear() {
-        MonthOfYear test = MonthOfYear.JUNE;
-        test.atDay((DayOfMonth) null);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_atDay_invalidDay() {
-        MonthOfYear test = MonthOfYear.JUNE;
-        try {
-            test.atDay(DayOfMonth.dayOfMonth(31));
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // atDay(int)
-    //-----------------------------------------------------------------------
-    public void test_atDay_int() {
-        MonthOfYear test = MonthOfYear.JUNE;
-        assertEquals(test.atDay(30), MonthDay.monthDay(6, 30));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_atDay_int_invalidDay() {
-        MonthOfYear test = MonthOfYear.JUNE;
-        try {
-            test.atDay(31);
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
-            throw ex;
-        }
-    }
+//    //-----------------------------------------------------------------------
+//    // getQuarterOfYear()
+//    //-----------------------------------------------------------------------
+//    public void test_getQuarterOfYear() {
+//        assertEquals(MonthOfYear.JANUARY.getQuarterOfYear(), QuarterOfYear.Q1);
+//        assertEquals(MonthOfYear.FEBRUARY.getQuarterOfYear(), QuarterOfYear.Q1);
+//        assertEquals(MonthOfYear.MARCH.getQuarterOfYear(), QuarterOfYear.Q1);
+//        assertEquals(MonthOfYear.APRIL.getQuarterOfYear(), QuarterOfYear.Q2);
+//        assertEquals(MonthOfYear.MAY.getQuarterOfYear(), QuarterOfYear.Q2);
+//        assertEquals(MonthOfYear.JUNE.getQuarterOfYear(), QuarterOfYear.Q2);
+//        assertEquals(MonthOfYear.JULY.getQuarterOfYear(), QuarterOfYear.Q3);
+//        assertEquals(MonthOfYear.AUGUST.getQuarterOfYear(), QuarterOfYear.Q3);
+//        assertEquals(MonthOfYear.SEPTEMBER.getQuarterOfYear(), QuarterOfYear.Q3);
+//        assertEquals(MonthOfYear.OCTOBER.getQuarterOfYear(), QuarterOfYear.Q4);
+//        assertEquals(MonthOfYear.NOVEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
+//        assertEquals(MonthOfYear.DECEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // getMonthOfQuarter()
+//    //-----------------------------------------------------------------------
+//    public void test_getMonthOfQuarter() {
+//        assertEquals(MonthOfYear.JANUARY.getMonthOfQuarter(), 1);
+//        assertEquals(MonthOfYear.FEBRUARY.getMonthOfQuarter(), 2);
+//        assertEquals(MonthOfYear.MARCH.getMonthOfQuarter(), 3);
+//        assertEquals(MonthOfYear.APRIL.getMonthOfQuarter(), 1);
+//        assertEquals(MonthOfYear.MAY.getMonthOfQuarter(), 2);
+//        assertEquals(MonthOfYear.JUNE.getMonthOfQuarter(), 3);
+//        assertEquals(MonthOfYear.JULY.getMonthOfQuarter(), 1);
+//        assertEquals(MonthOfYear.AUGUST.getMonthOfQuarter(), 2);
+//        assertEquals(MonthOfYear.SEPTEMBER.getMonthOfQuarter(), 3);
+//        assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
+//        assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
+//        assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
+//    }
 
     //-----------------------------------------------------------------------
     // toString()

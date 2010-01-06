@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.field.MonthOfYear.*;
+import static javax.time.calendar.field.MonthOfYear.DECEMBER;
 
 import java.io.Serializable;
 
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 
 /**
@@ -104,8 +103,8 @@ public final class DateAdjusters {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                DayOfMonth dom = date.getMonthOfYear().getLastDayOfMonth(date.toYear());
-                return date.with(dom);
+                int dom = date.getMonthOfYear().getLastDayOfMonth(date.toYear().isLeap());
+                return date.withDayOfMonth(dom);
             }
         },
         /** Last day of year adjuster. */

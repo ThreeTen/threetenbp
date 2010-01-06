@@ -443,7 +443,7 @@ public final class LocalDateTime
      * @param newTime  the time of the new date-time, not null
      * @return the date-time, never null
      */
-    private LocalDateTime withDateTime(LocalDate newDate, LocalTime newTime) {
+    private LocalDateTime with(LocalDate newDate, LocalTime newTime) {
         if (date == newDate && time == newTime) {
             return this;
         }
@@ -716,15 +716,16 @@ public final class LocalDateTime
      * A simple adjuster might simply set the one of the fields, such as the year field.
      * A more complex adjuster might set the date to the last day of the month.
      * <p>
-     * The adjustment has no effect on the time.
+     * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated LocalDateTime, never null
+     * @return a <code>LocalDateTime</code> based on this date-time adjusted as necessary, never null
+     * @throws NullPointerException if the adjuster returned null
      */
     public LocalDateTime with(DateAdjuster adjuster) {
-        return withDateTime(date.with(adjuster), time);
+        return with(date.with(adjuster), time);
     }
 
     /**
@@ -734,102 +735,149 @@ public final class LocalDateTime
      * A simple adjuster might simply set the one of the fields, such as the hour field.
      * A more complex adjuster might set the time to end of the working day.
      * <p>
-     * The adjustment has no effect on the date.
+     * The date does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated LocalDateTime, never null
+     * @return a <code>LocalDateTime</code> based on this date-time adjusted as necessary, never null
+     * @throws IllegalArgumentException if the adjuster returned null
      */
     public LocalDateTime with(TimeAdjuster adjuster) {
-        return withDateTime(date, time.with(adjuster));
+        return with(date, time.with(adjuster));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalDateTime with the year value altered.
+     * Returns a copy of this LocalDateTime with the year altered.
      * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated LocalDateTime, never null
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
-     * @see #withYear(int,DateResolver)
      */
     public LocalDateTime withYear(int year) {
-        LocalDate newDate = date.withYear(year);
-        return withDateTime(newDate, time);
+        return with(date.withYear(year), time);
     }
 
     /**
-     * Returns a copy of this LocalDateTime with the year value altered.
+     * Returns a copy of this LocalDateTime with the year altered.
      * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated LocalDateTime, never null
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
-     * @throws InvalidCalendarFieldException if the year is invalid for the day-month combination
      */
     public LocalDateTime withYear(int year, DateResolver dateResolver) {
-        LocalDate newDate = date.withYear(year, dateResolver);
-        return withDateTime(newDate, time);
+        return with(date.withYear(year, dateResolver), time);
     }
 
     /**
-     * Returns a copy of this LocalDateTime with the month of year value altered.
+     * Returns a copy of this LocalDateTime with the month of year altered.
      * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated LocalDateTime, never null
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
-     * @see #withMonthOfYear(int,DateResolver)
      */
     public LocalDateTime withMonthOfYear(int monthOfYear) {
-        LocalDate newDate = date.withMonthOfYear(monthOfYear);
-        return withDateTime(newDate, time);
+        return with(date.withMonthOfYear(monthOfYear), time);
     }
 
     /**
-     * Returns a copy of this LocalDateTime with the month of year value altered.
+     * Returns a copy of this LocalDateTime with the month of year altered.
      * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The time does not affect the calculation and will be the same in the result.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated LocalDateTime, never null
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      */
     public LocalDateTime withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
-        LocalDate newDate = date.withMonthOfYear(monthOfYear, dateResolver);
-        return withDateTime(newDate, time);
+        return with(date.withMonthOfYear(monthOfYear, dateResolver), time);
     }
 
     /**
-     * Returns a copy of this LocalDateTime with the day of month value altered.
+     * Returns a copy of this LocalDateTime with the month of year altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * The time does not affect the calculation and will be the same in the result.
+     * <p>
+     * This method does the same as <code>with(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated LocalDateTime, never null
-     * @throws IllegalCalendarFieldValueException if day of month value is invalid
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
+     */
+    public LocalDateTime with(MonthOfYear monthOfYear) {
+        return with(date.with(monthOfYear), time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the month of year altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The time does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested month, never null
+     */
+    public LocalDateTime with(MonthOfYear monthOfYear, DateResolver dateResolver) {
+        return with(date.with(monthOfYear, dateResolver), time);
+    }
+
+    /**
+     * Returns a copy of this LocalDateTime with the day of month altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, an exception is thrown.
+     * The time does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 28-31
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     public LocalDateTime withDayOfMonth(int dayOfMonth) {
-        LocalDate newDate = date.withDayOfMonth(dayOfMonth);
-        return withDateTime(newDate, time);
+        return with(date.withDayOfMonth(dayOfMonth), time);
     }
 
+    /**
+     * Returns a copy of this LocalDateTime with the day of month altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * The time does not affect the calculation and will be the same in the result.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 31
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day of month value is invalid
+     */
+    public LocalDateTime withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {
+        return with(date.withDayOfMonth(dayOfMonth, dateResolver), time);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDateTime with the date values altered.
      * <p>
@@ -841,7 +889,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated LocalDateTime, never null
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -852,7 +900,7 @@ public final class LocalDateTime
             return this;
         }
         LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -866,7 +914,7 @@ public final class LocalDateTime
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
      * @param dayOfMonth  the day of month to represent, from 1 to 31
-     * @return a new updated LocalDateTime, never null
+     * @return a <code>LocalDateTime</code> based on this date-time with the requested date, never null
      * @throws IllegalCalendarFieldValueException if any field value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -877,7 +925,7 @@ public final class LocalDateTime
             return this;
         }
         LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     //-----------------------------------------------------------------------
@@ -892,7 +940,7 @@ public final class LocalDateTime
      */
     public LocalDateTime withHourOfDay(int hourOfDay) {
         LocalTime newTime = time.withHourOfDay(hourOfDay);
-        return withDateTime(date, newTime);
+        return with(date, newTime);
     }
 
     /**
@@ -906,7 +954,7 @@ public final class LocalDateTime
      */
     public LocalDateTime withMinuteOfHour(int minuteOfHour) {
         LocalTime newTime = time.withMinuteOfHour(minuteOfHour);
-        return withDateTime(date, newTime);
+        return with(date, newTime);
     }
 
     /**
@@ -920,7 +968,7 @@ public final class LocalDateTime
      */
     public LocalDateTime withSecondOfMinute(int secondOfMinute) {
         LocalTime newTime = time.withSecondOfMinute(secondOfMinute);
-        return withDateTime(date, newTime);
+        return with(date, newTime);
     }
 
     /**
@@ -934,7 +982,7 @@ public final class LocalDateTime
      */
     public LocalDateTime withNanoOfSecond(int nanoOfSecond) {
         LocalTime newTime = time.withNanoOfSecond(nanoOfSecond);
-        return withDateTime(date, newTime);
+        return with(date, newTime);
     }
 
     /**
@@ -997,7 +1045,7 @@ public final class LocalDateTime
             return this;
         }
         LocalTime newTime = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-        return withDateTime(date, newTime);
+        return with(date, newTime);
     }
 
     //-----------------------------------------------------------------------
@@ -1015,7 +1063,7 @@ public final class LocalDateTime
     public LocalDateTime plus(PeriodProvider periodProvider) {
         LocalDate date = this.date.plus(periodProvider);
         LocalTime.Overflow overflow = this.time.plusWithOverflow(periodProvider);
-        return withDateTime(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
+        return with(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------
@@ -1044,7 +1092,7 @@ public final class LocalDateTime
      */
     public LocalDateTime plusYears(int years) {
         LocalDate newDate = date.plusYears(years);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1066,7 +1114,7 @@ public final class LocalDateTime
      */
     public LocalDateTime plusYears(int years, DateResolver dateResolver) {
         LocalDate newDate = date.plusYears(years, dateResolver);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1094,7 +1142,7 @@ public final class LocalDateTime
      */
     public LocalDateTime plusMonths(int months) {
         LocalDate newDate = date.plusMonths(months);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1116,7 +1164,7 @@ public final class LocalDateTime
      */
     public LocalDateTime plusMonths(int months, DateResolver dateResolver) {
         LocalDate newDate = date.plusMonths(months, dateResolver);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1136,7 +1184,7 @@ public final class LocalDateTime
      */
     public LocalDateTime plusWeeks(int weeks) {
         LocalDate newDate = date.plusWeeks(weeks);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1156,7 +1204,7 @@ public final class LocalDateTime
      */
     public LocalDateTime plusDays(long days) {
         LocalDate newDate = date.plusDays(days);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1171,7 +1219,7 @@ public final class LocalDateTime
     public LocalDateTime plusHours(int hours) {
         LocalTime.Overflow overflow = time.plusWithOverflow(hours, 0, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     /**
@@ -1186,7 +1234,7 @@ public final class LocalDateTime
     public LocalDateTime plusMinutes(int minutes) {
         LocalTime.Overflow overflow = time.plusWithOverflow(0, minutes, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     /**
@@ -1201,7 +1249,7 @@ public final class LocalDateTime
     public LocalDateTime plusSeconds(int seconds) {
         LocalTime.Overflow overflow = time.plusWithOverflow(0, 0, seconds, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     /**
@@ -1216,7 +1264,7 @@ public final class LocalDateTime
     public LocalDateTime plusNanos(long nanos) {
         LocalTime.Overflow overflow = time.plusNanosWithOverflow(nanos);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------
@@ -1234,7 +1282,7 @@ public final class LocalDateTime
     public LocalDateTime minus(PeriodProvider periodProvider) {
         LocalDate date = this.date.minus(periodProvider);
         LocalTime.Overflow overflow = this.time.minusWithOverflow(periodProvider);
-        return withDateTime(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
+        return with(date.plusDays(overflow.getOverflowDays()), overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------
@@ -1263,7 +1311,7 @@ public final class LocalDateTime
      */
     public LocalDateTime minusYears(int years) {
         LocalDate newDate = date.minusYears(years);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1285,7 +1333,7 @@ public final class LocalDateTime
      */
     public LocalDateTime minusYears(int years, DateResolver dateResolver) {
         LocalDate newDate = date.minusYears(years, dateResolver);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1313,7 +1361,7 @@ public final class LocalDateTime
      */
     public LocalDateTime minusMonths(int months) {
         LocalDate newDate = date.minusMonths(months);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1335,7 +1383,7 @@ public final class LocalDateTime
      */
     public LocalDateTime minusMonths(int months, DateResolver dateResolver) {
         LocalDate newDate = date.minusMonths(months, dateResolver);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1355,7 +1403,7 @@ public final class LocalDateTime
      */
     public LocalDateTime minusWeeks(int weeks) {
         LocalDate newDate = date.minusWeeks(weeks);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1375,7 +1423,7 @@ public final class LocalDateTime
      */
     public LocalDateTime minusDays(long days) {
         LocalDate newDate = date.minusDays(days);
-        return withDateTime(newDate, time);
+        return with(newDate, time);
     }
 
     /**
@@ -1390,7 +1438,7 @@ public final class LocalDateTime
     public LocalDateTime minusHours(int hours) {
         LocalTime.Overflow overflow = time.minusWithOverflow(hours, 0, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     /**
@@ -1405,7 +1453,7 @@ public final class LocalDateTime
     public LocalDateTime minusMinutes(int minutes) {
         LocalTime.Overflow overflow = time.minusWithOverflow(0, minutes, 0, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     /**
@@ -1420,7 +1468,7 @@ public final class LocalDateTime
     public LocalDateTime minusSeconds(int seconds) {
         LocalTime.Overflow overflow = time.minusWithOverflow(0, 0, seconds, 0);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     /**
@@ -1435,7 +1483,7 @@ public final class LocalDateTime
     public LocalDateTime minusNanos(long nanos) {
         LocalTime.Overflow overflow = time.minusNanosWithOverflow(nanos);
         LocalDate newDate = date.plusDays(overflow.getOverflowDays());
-        return withDateTime(newDate, overflow.getResultTime());
+        return with(newDate, overflow.getResultTime());
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -33,92 +33,81 @@ package javax.time.calendar.field;
 
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
- * A representation of a day of week in the ISO-8601 calendar system.
+ * A day-of-week, such as 'Tuesday'.
  * <p>
- * DayOfWeek is an immutable time field that can only store a day of week.
- * It is a type-safe way of representing a day of week in an application.
+ * <code>DayOfWeek</code> is an enum representing the 7 days of the week -
+ * Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a DayOfWeek
- * instance. Use getValue() instead.</b>
+ * The calendrical framework requires date-time fields to have an <code>int</code> value.
+ * The <code>int</code> value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
+ * It is recommended that applications use the enum rather than the <code>int</code> value
+ * to ensure code clarity.
  * <p>
- * DayOfWeek is immutable and thread-safe.
+ * <b>Do not use ordinal() to obtain the numeric representation of <code>DayOfWeek</code>.
+ * Use getValue() instead.</b>
+ * <p>
+ * This enum represents a common concept that is found in many calendar systems.
+ * As such, this enum may be used by any calendar system that has the day-of-week
+ * concept with a seven day week where the names are equivalent to those defined.
+ * Note that the implementation of {@link DateTimeFieldRule} for day-of-week may
+ * vary by calendar system.
+ * <p>
+ * DayOfWeek is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum DayOfWeek implements Calendrical, CalendricalMatcher {
+public enum DayOfWeek {
 
     /**
-     * The singleton instance for the day of week of Monday.
+     * The singleton instance for the day-of-week of Monday.
      */
-    MONDAY(1),
+    MONDAY,
     /**
-     * The singleton instance for the day of week of Tuesday.
+     * The singleton instance for the day-of-week of Tuesday.
      */
-    TUESDAY(2),
+    TUESDAY,
     /**
-     * The singleton instance for the day of week of Wednesday.
+     * The singleton instance for the day-of-week of Wednesday.
      */
-    WEDNESDAY(3),
+    WEDNESDAY,
     /**
-     * The singleton instance for the day of week of Thursday.
+     * The singleton instance for the day-of-week of Thursday.
      */
-    THURSDAY(4),
+    THURSDAY,
     /**
-     * The singleton instance for the day of week of Friday.
+     * The singleton instance for the day-of-week of Friday.
      */
-    FRIDAY(5),
+    FRIDAY,
     /**
-     * The singleton instance for the day of week of Saturday.
+     * The singleton instance for the day-of-week of Saturday.
      */
-    SATURDAY(6),
+    SATURDAY,
     /**
-     * The singleton instance for the day of week of Sunday.
+     * The singleton instance for the day-of-week of Sunday.
      */
-    SUNDAY(7),
-    ;
-
-    /**
-     * The day of week being represented.
-     */
-    private final int dayOfWeek;
+    SUNDAY;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the day of week field operates.
+     * Obtains an instance of <code>DayOfWeek</code> from an <code>int</code> value.
      * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * <code>DayOfWeek</code> is an enum representing the 7 days of the week.
+     * This factory allows the enum to be obtained from the <code>int</code> value.
+     * The <code>int</code> value follows the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
+     * <p>
+     * An exception is thrown if the value is invalid. The exception uses the
+     * {@link ISOChronology} day-of-week rule to indicate the failed rule.
      *
-     * @return the day of week rule, never null
-     */
-    public static DateTimeFieldRule<DayOfWeek> rule() {
-        return ISOChronology.dayOfWeekRule();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>DayOfWeek</code> from a value.
-     * <p>
-     * A day of week object represents one of the 7 days of the week. These
-     * are numbered following the ISO-8601 standard, from 1 (Monday) to 7 (Sunday).
-     * <p>
-     * DayOfWeek is an enum, thus each instance is a singleton.
-     * As a result, DayOfWeek instances can be compared using ==.
-     *
-     * @param dayOfWeek  the day of week to represent, from 1 (Monday) to 7 (Sunday)
+     * @param dayOfWeek  the day-of-week to represent, from 1 (Monday) to 7 (Sunday)
      * @return the DayOfWeek singleton, never null
-     * @throws IllegalCalendarFieldValueException if the day of week is invalid
+     * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
      */
     public static DayOfWeek dayOfWeek(int dayOfWeek) {
         switch (dayOfWeek) {
@@ -137,39 +126,25 @@ public enum DayOfWeek implements Calendrical, CalendricalMatcher {
             case 7:
                 return SUNDAY;
             default:
-                throw new IllegalCalendarFieldValueException(rule(), dayOfWeek, 1, 7);
+                throw new IllegalCalendarFieldValueException(ISOChronology.dayOfWeekRule(), dayOfWeek, 1, 7);
         }
     }
 
-    /**
-     * Obtains an instance of <code>DayOfWeek</code> from a calendrical.
-     * <p>
-     * This can be used extract the day-of-week value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the DayOfWeek singleton, never null
-     * @throws UnsupportedRuleException if the day-of-week cannot be obtained
-     */
-    public static DayOfWeek dayOfWeek(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
-    }
-
+    //-----------------------------------------------------------------------
     /**
      * Returns the <code>DayOfWeek</code> instance that corresponds to the first
-     * day of week for a given <code>locale</code>.
-     * <p>If there is no information for a locale, <code>MONDAY</code> is
-     * returned.
+     * day-of-week for a given <code>locale</code>.
+     * <p>
+     * If there is no information for a locale, <code>MONDAY</code> is returned.
      *
      * @param locale the locale to use, not null
      * @return the DayOfWeek singleton, never null
      */
     public static DayOfWeek firstDayOfWeekFor(Locale locale) {
+        // TODO: Move/reinvent method
         if (locale == null) {
             throw new NullPointerException("Locale must not be null");
         }
-
-        //TODO: Read it from resource bundle
         if (locale.equals(Locale.US) || (locale.getLanguage().equals("pt") &&
               locale.getCountry().equals("BR"))) {
             return SUNDAY;
@@ -180,132 +155,91 @@ public enum DayOfWeek implements Calendrical, CalendricalMatcher {
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified day of week.
-     *
-     * @param dayOfWeek  the day of week to represent
-     */
-    private DayOfWeek(int dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
+     * Gets the day-of-week <code>int</code> value.
      * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
+     * The values are numbered following the ISO-8601 standard,
+     * from 1 (Monday) to 7 (Sunday).
      *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the day of week value.
-     *
-     * @return the day of week, from 1 (Monday) to 7 (Sunday)
+     * @return the day-of-week, from 1 (Monday) to 7 (Sunday)
      */
     public int getValue() {
-        return dayOfWeek;
+        return ordinal() + 1;
     }
 
     /**
-     * Gets the day of week value as short text.
+     * Gets the short textual representation of this day-of-week, such as 'Mon' or 'Fri'.
      * <p>
-     * In English, this will return text of the form 'Mon' or 'Fri'.
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the day-of-week rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all day-of-week rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
      * <p>
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the short text value of the day of week, never null
+     * @return the short text value of the day-of-week, never null
      */
     public String getShortText(Locale locale) {
-        return rule().getText(dayOfWeek, locale, TextStyle.SHORT);
+        return ISOChronology.dayOfWeekRule().getText(getValue(), locale, TextStyle.SHORT);
     }
 
     /**
-     * Gets the day of week value as text.
+     * Gets the short textual representation of this day-of-week, such as 'Monday' or 'Friday'.
      * <p>
-     * In English, this will return text of the form 'Monday' or 'Friday'.
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the day-of-week rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all day-of-week rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
      * <p>
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the day of week, never null
+     * @return the long text value of the day-of-week, never null
      */
     public String getText(Locale locale) {
-        return rule().getText(dayOfWeek, locale, TextStyle.FULL);
+        return ISOChronology.dayOfWeekRule().getText(getValue(), locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next day of week wrapping so that the next day of week
-     * is always returned.
+     * Gets the next day-of-week.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the week. The next month after Sunday is Monday.
      *
-     * @return the next day of week, never null
+     * @return the next day-of-week, never null
      */
     public DayOfWeek next() {
         return values()[(ordinal() + 1) % 7];
     }
 
     /**
-     * Gets the previous day of week wrapping so that the previous day of week
-     * is always returned.
+     * Gets the previous day-of-week.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the week. The previous month before Monday is Sunday.
      *
-     * @return the previous day of week, never null
+     * @return the previous day-of-week, never null
      */
     public DayOfWeek previous() {
         return values()[(ordinal() + 7 - 1) % 7];
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Returns the DayOfWeek which is the specified number of days after
-     * this DayOfWeek.
+     * Rolls the day-of-week, adding the specified number of days.
      * <p>
-     * The calculation wraps around the end of the week from Sunday to Monday.
-     * The days to add may be negative.
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the week from Sunday to Monday. The days to roll by may be negative.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the days to add, positive or negative
-     * @return the resulting DayOfWeek, never null
+     * @param days  the months to roll by, positive or negative
+     * @return the resulting day-of-week, never null
      */
-    public DayOfWeek plusDays(int days) {
-        return values()[(ordinal() + (days % 7)) % 7];
-    }
-
-    /**
-     * Returns the DayOfWeek which is the specified number of days before
-     * this DayOfWeek.
-     * <p>
-     * The calculation wraps around the start of the week from Monday to Sunday.
-     * The days to subtract may be negative.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, positive or negative
-     * @return the resulting DayOfWeek, never null
-     */
-    public DayOfWeek minusDays(int days) {
-        return values()[(ordinal() + 7 - (days % 7)) % 7];
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the day-of-week extracted from the calendrical matches this.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
+    public DayOfWeek roll(int days) {
+        return values()[(ordinal() + (days % 7 + 7)) % 7];
     }
 
 }

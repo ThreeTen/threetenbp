@@ -269,7 +269,7 @@ public final class LocalDate
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
     private static LocalDate create(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        if (dayOfMonth > monthOfYear.lengthInDays(year)) {
+        if (dayOfMonth > 28 && dayOfMonth > monthOfYear.lengthInDays(ISOChronology.isLeapYear(year))) {
             if (dayOfMonth == 29) {
                 throw new InvalidCalendarFieldException("Illegal value for DayOfMonth field, value 29 is not valid as " +
                         year + " is not a leap year", ISOChronology.dayOfMonthRule());
@@ -509,14 +509,14 @@ public final class LocalDate
     /**
      * Returns a copy of this LocalDate with the date altered using the adjuster.
      * <p>
-     * Adjusters can be used to alter the date in unusual ways. Examples might
-     * be an adjuster that set the date avoiding weekends, or one that sets the
-     * date to the last day of the month.
+     * Adjusters can be used to alter the date in various ways.
+     * A simple adjuster might simply set the one of the fields, such as the year field.
+     * A more complex adjuster might set the date to the last day of the month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param adjuster  the adjuster to use, not null
-     * @return a new updated LocalDate, never null
+     * @return a <code>LocalDate</code> based on this date adjusted as necessary, never null
      * @throws NullPointerException if the adjuster returned null
      */
     public LocalDate with(DateAdjuster adjuster) {
@@ -526,32 +526,32 @@ public final class LocalDate
         return date;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalDate with the year value altered.
+     * Returns a copy of this LocalDate with the year altered.
      * If the resulting <code>LocalDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * <p>
      * This method does the same as <code>withYear(year, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
-     * @return a new updated LocalDate, never null
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
+     * @return a <code>LocalDate</code> based on this date with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
-     * @see #withYear(int,DateResolver)
      */
     public LocalDate withYear(int year) {
         return withYear(year, DateResolvers.previousValid());
     }
 
     /**
-     * Returns a copy of this LocalDate with the year value altered.
+     * Returns a copy of this LocalDate with the year altered.
      * If the resulting <code>LocalDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
+     * @param year  the year to set in the returned date, from MIN_YEAR to MAX_YEAR
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated LocalDate, never null
+     * @return a <code>LocalDate</code> based on this date with the requested year, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public LocalDate withYear(int year, DateResolver dateResolver) {
@@ -563,49 +563,78 @@ public final class LocalDate
     }
 
     /**
-     * Returns a copy of this LocalDate with the month of year value altered.
+     * Returns a copy of this LocalDate with the month of year altered.
      * If the resulting <code>LocalDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
      * <p>
      * This method does the same as <code>withMonthOfYear(monthOfYear, DateResolvers.previousValid())</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
-     * @return a new updated LocalDate, never null
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
+     * @return a <code>LocalDate</code> based on this date with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
-     * @see #withMonthOfYear(int,DateResolver)
      */
     public LocalDate withMonthOfYear(int monthOfYear) {
-        return withMonthOfYear(monthOfYear, DateResolvers.previousValid());
+        return with(MonthOfYear.monthOfYear(monthOfYear), DateResolvers.previousValid());
     }
 
     /**
-     * Returns a copy of this LocalDate with the month of year value altered.
+     * Returns a copy of this LocalDate with the month of year altered.
      * If the resulting <code>LocalDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to set in the returned date, from 1 (January) to 12 (December)
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated LocalDate, never null
+     * @return a <code>LocalDate</code> based on this date with the requested month, never null
      * @throws IllegalCalendarFieldValueException if the month of year value is invalid
      */
     public LocalDate withMonthOfYear(int monthOfYear, DateResolver dateResolver) {
-        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
-        if (this.month.getValue() == monthOfYear) {
-            return this;
-        }
-        return resolveDate(dateResolver, year, MonthOfYear.monthOfYear(monthOfYear), day);
+        return with(MonthOfYear.monthOfYear(monthOfYear), dateResolver);
     }
 
     /**
-     * Returns a copy of this LocalDate with the day of month value altered.
+     * Returns a copy of this LocalDate with the month of year altered.
+     * If the resulting <code>LocalDate</code> is invalid, it will be resolved using {@link DateResolvers#previousValid()}.
+     * <p>
+     * This method does the same as <code>with(monthOfYear, DateResolvers.previousValid())</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @return a <code>LocalDate</code> based on this date with the requested month, never null
+     */
+    public LocalDate with(MonthOfYear monthOfYear) {
+        return with(monthOfYear, DateResolvers.previousValid());
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the month of year altered.
+     * If the resulting <code>LocalDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param monthOfYear  the month of year to set in the returned date, not null
+     * @param dateResolver the DateResolver to be used if the resulting date would be invalid
+     * @return a <code>LocalDate</code> based on this date with the requested month, never null
+     */
+    public LocalDate with(MonthOfYear monthOfYear, DateResolver dateResolver) {
+        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        ISOChronology.checkNotNull(dateResolver, "DateResolver must not be null");
+        if (this.month == monthOfYear) {
+            return this;
+        }
+        return resolveDate(dateResolver, year, monthOfYear, day);
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the day of month altered.
      * If the resulting <code>LocalDate</code> is invalid, an exception is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 28-31
-     * @return a new updated LocalDate, never null
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 28-31
+     * @return a <code>LocalDate</code> based on this date with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day of month value is invalid
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
@@ -617,14 +646,14 @@ public final class LocalDate
     }
 
     /**
-     * Returns a copy of this LocalDate with the month of year value altered.
+     * Returns a copy of this LocalDate with the day of month altered.
      * If the resulting <code>LocalDate</code> is invalid, it will be resolved using <code>dateResolver</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param dayOfMonth  the day of month to set in the returned date, from 1 to 31
      * @param dateResolver the DateResolver to be used if the resulting date would be invalid
-     * @return a new updated LocalDate, never null
+     * @return a <code>LocalDate</code> based on this date with the requested day, never null
      * @throws IllegalCalendarFieldValueException if the day of month value is invalid
      */
     public LocalDate withDayOfMonth(int dayOfMonth, DateResolver dateResolver) {

@@ -448,7 +448,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             if (era != null && yoeVal != null && moyval != null) {
                 int isoYear = (era == ThaiBuddhistEra.BEFORE_BUDDHIST ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
                 MonthOfYear month = MonthOfYear.monthOfYear(moyval);
-                return month.lengthInDays(isoYear);
+                return month.lengthInDays(ISOChronology.isLeapYear(isoYear));
             }
             return getMaximumValue();
         }

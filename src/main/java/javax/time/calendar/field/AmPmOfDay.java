@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,70 +31,61 @@
  */
 package javax.time.calendar.field;
 
+import java.util.Calendar;
 import java.util.Locale;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.TimeAdjuster;
-import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
- * A representation of the half-day AM/PM value in the ISO-8601 calendar system.
+ * A half-day before or after midday, with the values 'AM' and 'PM'.
  * <p>
- * AmPmOfDay is an enum that represents the half-day concepts of AM and PM.
+ * <code>AmPmOfDay</code> is an enum representing the half-day concepts of AM and PM.
  * AM is defined as from 00:00 to 11:59, while PM is defined from 12:00 to 23:59.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a AmPmOfDay instance.
+ * The calendrical framework requires date-time fields to have an <code>int</code> value.
+ * The <code>int</code> value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
+ * It is recommended that applications use the enum rather than the <code>int</code> value
+ * to ensure code clarity.
+ * <p>
+ * <b>Do not use ordinal() to obtain the numeric representation of <code>AmPmOfDay</code>.
  * Use getValue() instead.</b>
  * <p>
- * AmPmOfDay is immutable and thread-safe.
+ * This enum represents a common concept that is found in many calendar systems.
+ * As such, this enum may be used by any calendar system that has the AM/PM concept.
+ * Note that the implementation of {@link DateTimeFieldRule} may vary by calendar system.
+ * <p>
+ * AmPmOfDay is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum AmPmOfDay
-        implements Calendrical, TimeAdjuster, CalendricalMatcher {
+public enum AmPmOfDay {
 
     /**
      * The singleton instance for the morning, AM - ante meridiem.
      */
-    AM(0),
+    AM,
     /**
      * The singleton instance for the afternoon, PM - post meridiem.
      */
-    PM(1),
-    ;
-
-    /**
-     * The AM/PM being represented.
-     */
-    private final int amPmOfDay;
+    PM;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the AM/PM field operates.
+     * Obtains an instance of <code>AmPmOfDay</code> from an <code>int</code> value.
      * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
-     *
-     * @return the AM/PM rule, never null
-     */
-    public static DateTimeFieldRule<AmPmOfDay> rule() {
-        return ISOChronology.amPmOfDayRule();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>AmPmOfDay</code>.
+     * <code>AmPmOfDay</code> is an enum representing before and after midday.
+     * This factory allows the enum to be obtained from the <code>int</code> value.
+     * The <code>int</code> value follows {@link Calendar}, assigning 0 to AM and 1 to PM.
+     * <p>
+     * An exception is thrown if the value is invalid. The exception uses the
+     * {@link ISOChronology} AM/PM rule to indicate the failed rule.
      *
      * @param amPmOfDay  the AM/PM value to represent, from 0 (AM) to 1 (PM)
-     * @return the AmPmOfDay enum instance, never null
+     * @return the AmPmOfDay singleton, never null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
     public static AmPmOfDay amPmOfDay(int amPmOfDay) {
@@ -104,94 +95,63 @@ public enum AmPmOfDay
             case 1:
                 return PM;
             default:
-                throw new IllegalCalendarFieldValueException(rule(), amPmOfDay, 0, 1);
+                throw new IllegalCalendarFieldValueException(ISOChronology.amPmOfDayRule(), amPmOfDay, 0, 1);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>AmPmOfDay</code> from a calendrical.
+     * Gets the AM/PM <code>int</code> value.
      * <p>
-     * This can be used extract the AM/PM value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
-     *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the AmPmOfDay singleton, never null
-     * @throws UnsupportedRuleException if the AM/PM cannot be obtained
-     */
-    public static AmPmOfDay amPmOfDay(Calendrical calendrical) {
-        return rule().getValueChecked(calendrical);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Constructs an instance with the specified AM/PM value.
-     *
-     * @param amPmOfDay  the AM/PM value to represent
-     */
-    private AmPmOfDay(int amPmOfDay) {
-        this.amPmOfDay = amPmOfDay;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, this, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the AM/PM numeric value.
+     * The values are numbered following {@link Calendar}, assigning 0 to AM and 1 to PM.
      *
      * @return the AM/PM value, from 0 (AM) to 1 (PM)
      */
     public int getValue() {
-        return amPmOfDay;
+        return ordinal();
     }
 
     /**
-     * Gets the AM/PM value as short text.
+     * Gets the short textual representation of this AM/PM, such as 'AM' or 'PM'.
      * <p>
-     * In English, this will return text of the form 'AM' or 'PM'.
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the AM/PM rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all AM/PM rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
      * <p>
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the day of week, never null
+     * @return the short text value of the AM/PM, never null
      */
     public String getShortText(Locale locale) {
-        return rule().getText(amPmOfDay, locale, TextStyle.SHORT);
+        return ISOChronology.amPmOfDayRule().getText(getValue(), locale, TextStyle.SHORT);
     }
 
     /**
-     * Gets the AM/PM value as text.
+     * Gets the short textual representation of this day-of-week, such as 'AM' or 'PM'.
      * <p>
-     * In English, this will return text of the form 'AM' or 'PM'.
+     * This method is notionally specific to {@link ISOChronology} as it uses
+     * the AM/PM rule to obtain the text. However, it is expected that
+     * the text will be equivalent for all AM/PM rules, thus this aspect
+     * of the implementation should be irrelevant to applications.
      * <p>
      * If there is no textual mapping for the locale, then the value is
      * returned as per {@link Integer#toString()}.
      *
      * @param locale  the locale to use, not null
-     * @return the long text value of the day of week, never null
+     * @return the long text value of the AM/PM, never null
      */
     public String getText(Locale locale) {
-        return rule().getText(amPmOfDay, locale, TextStyle.FULL);
+        return ISOChronology.amPmOfDayRule().getText(getValue(), locale, TextStyle.FULL);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Is this instance representing AM (ante-meridiem).
      *
-     * @return true is this instance represents AM
+     * @return true if this instance represents AM
      */
     public boolean isAm() {
         return (this == AM);
@@ -200,39 +160,10 @@ public enum AmPmOfDay
     /**
      * Is this instance representing PM (post-meridiem).
      *
-     * @return true is this instance represents PM
+     * @return true if this instance represents PM
      */
     public boolean isPm() {
         return (this == PM);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the AM/PM extracted from the calendrical matches this.
-     *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
-     */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        return this.equals(calendrical.get(rule()));
-    }
-
-    /**
-     * Adjusts a time to have the the AM/PM value represented by this object,
-     * returning a new time.
-     * <p>
-     * Only the AM/PM value is adjusted. The other date and time fields are
-     * unaffected. Changing from AM to PM will effectively add 12 hours,
-     * while changing from PM to AM will effectively subtract 12 hours.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param time  the time to be adjusted, not null
-     * @return the adjusted time, never null
-     */
-    public LocalTime adjustTime(LocalTime time) {
-        int hourOfDay = getValue() * 12 + time.toHourOfDay().getHourOfAmPm();
-        return time.withHourOfDay(hourOfDay);
     }
 
 }

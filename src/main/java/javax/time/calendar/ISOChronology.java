@@ -1247,7 +1247,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                 return 31;
             }
             Integer year = calendrical.get(yearRule());
-            return year != null ? moy.lengthInDays(year) : moy.maxLengthInDays();
+            return year != null ? moy.lengthInDays(isLeapYear(year)) : moy.maxLengthInDays();
         }
         @Override
         protected Integer derive(Calendrical calendrical) {
@@ -1461,7 +1461,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            return moy != null ? moy.getQuarterOfYear().getValue() : null;
+            return moy != null ? (moy.ordinal() / 3 + 1) : null;
         }
     }
 
@@ -1484,7 +1484,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected Integer derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            return moy != null ? moy.getMonthOfQuarter() : null;
+            return moy != null ? (moy.ordinal() % 3 + 1) : null;
        }
     }
 

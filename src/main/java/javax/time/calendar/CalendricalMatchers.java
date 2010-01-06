@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -156,7 +156,8 @@ public final class CalendricalMatchers {
                 Integer yearVal = calendrical.get(ISOChronology.yearRule());
                 MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
                 Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
-                return yearVal != null && moy != null && domVal != null && domVal == moy.lengthInDays(yearVal);
+                return yearVal != null && moy != null && domVal != null &&
+                        domVal == moy.lengthInDays(ISOChronology.isLeapYear(yearVal));
             }
         },
         /** Last day of year matcher. */

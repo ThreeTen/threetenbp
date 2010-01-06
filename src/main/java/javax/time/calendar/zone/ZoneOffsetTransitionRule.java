@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,6 +34,7 @@ package javax.time.calendar.zone;
 import java.io.Serializable;
 
 import javax.time.calendar.DateAdjusters;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -254,7 +255,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.date(year, month, month.lengthInDays(year) + 1 + dom);
+            date = LocalDate.date(year, month, month.lengthInDays(ISOChronology.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }

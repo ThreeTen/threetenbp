@@ -801,8 +801,8 @@ public class TestOffsetTime {
     public void test_matches() {
         OffsetTime test = OffsetTime.time(11, 30, 59, OFFSET_PONE);
         assertTrue(test.matches(test));
-        assertFalse(test.matches(MonthOfYear.APRIL));
-        
+        assertFalse(test.matches(MonthDay.monthDay(MonthOfYear.JUNE, 4)));
+
         assertTrue(test.matches(HourOfDay.hourOfDay(11)));
         assertFalse(test.matches(HourOfDay.hourOfDay(10)));
         assertTrue(test.matches(MinuteOfHour.minuteOfHour(30)));

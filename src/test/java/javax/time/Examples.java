@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,18 +31,22 @@
  */
 package javax.time;
 
-import static javax.time.calendar.DateAdjusters.*;
-import static javax.time.calendar.ISOChronology.*;
-import static javax.time.calendar.LocalDateTime.*;
-import static javax.time.calendar.TimeZone.*;
-import static javax.time.calendar.field.DayOfMonth.*;
-import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.calendar.field.MonthOfYear.*;
-import static javax.time.period.Period.*;
+import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
+import static javax.time.calendar.ISOChronology.dayOfMonthRule;
+import static javax.time.calendar.ISOChronology.monthOfYearRule;
+import static javax.time.calendar.ISOChronology.quarterOfYearRule;
+import static javax.time.calendar.ISOChronology.yearRule;
+import static javax.time.calendar.LocalDateTime.dateTime;
+import static javax.time.calendar.TimeZone.timeZone;
+import static javax.time.calendar.field.DayOfWeek.FRIDAY;
+import static javax.time.calendar.field.MonthOfYear.DECEMBER;
+import static javax.time.period.Period.yearsMonthsDays;
 
 import java.util.Locale;
 
 import javax.time.calendar.Clock;
+import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
@@ -111,7 +115,9 @@ public class Examples {
         System.out.println("Last day of month: " + lastDayOfMonth);
         
         LocalDate tempDate = clock.today();
-        boolean fri13 = tempDate.matches(FRIDAY) && tempDate.matches(dayOfMonth(13));
+        DateTimeFields fri13matcher = DateTimeFields.fields(
+                ISOChronology.dayOfWeekRule(), FRIDAY.getValue(), ISOChronology.dayOfMonthRule(), 13);
+        boolean fri13 = tempDate.matches(fri13matcher);
         System.out.println("Is Friday the Thirteenth: " + fri13);
         
         LocalDateTime dt = dateTime(2008, 3, 30, 1, 30);
