@@ -45,6 +45,7 @@ import javax.time.MathUtils;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
@@ -480,7 +481,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      *
      * @return the rule for the quarter of year field, never null
      */
-    public static DateTimeFieldRule<Integer> quarterOfYearRule() {
+    public static DateTimeFieldRule<QuarterOfYear> quarterOfYearRule() {
         return QuarterOfYearRule.INSTANCE;
     }
 
@@ -957,10 +958,10 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         
         // quarter-of-year and month-of-quarter
-        Integer qoyVal = merger.getValue(ISOChronology.quarterOfYearRule());
+        QuarterOfYear qoy = merger.getValue(ISOChronology.quarterOfYearRule());
         Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
-        if (qoyVal != null && moqVal != null) {
-            MonthOfYear moy = MonthOfYear.monthOfYear((qoyVal - 1) * 3 + moqVal);
+        if (qoy != null && moqVal != null) {
+            MonthOfYear moy = MonthOfYear.monthOfYear(qoy.getFirstMonthOfQuarter().ordinal() + moqVal);
             merger.storeMerged(ISOChronology.monthOfYearRule(), moy);
             merger.removeProcessed(ISOChronology.quarterOfYearRule());
             merger.removeProcessed(ISOChronology.monthOfQuarterRule());
@@ -1446,22 +1447,30 @@ public final class ISOChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    static final class QuarterOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    static final class QuarterOfYearRule extends DateTimeFieldRule<QuarterOfYear> implements Serializable {
         /** Singleton instance. */
-        static final DateTimeFieldRule<Integer> INSTANCE = new QuarterOfYearRule();
+        static final DateTimeFieldRule<QuarterOfYear> INSTANCE = new QuarterOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private QuarterOfYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "QuarterOfYear", QUARTERS, YEARS, 1, 4);
+            super(QuarterOfYear.class, ISOChronology.INSTANCE, "QuarterOfYear", QUARTERS, YEARS, 1, 4);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected QuarterOfYear derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            return moy != null ? (moy.ordinal() / 3 + 1) : null;
+            return moy != null ? QuarterOfYear.quarterOfYear(moy.ordinal() / 3 + 1) : null;
+        }
+        @Override
+        public int convertValueToInt(QuarterOfYear value) {
+            return value.getValue();
+        }
+        @Override
+        public QuarterOfYear convertIntToValue(int value) {
+            return QuarterOfYear.quarterOfYear(value);
         }
     }
 

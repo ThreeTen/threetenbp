@@ -204,10 +204,74 @@ public enum DayOfWeek {
 
     //-----------------------------------------------------------------------
     /**
+     * Is this instance representing Monday.
+     *
+     * @return true if this instance represents Monday
+     */
+    public boolean isMonday() {
+        return (this == MONDAY);
+    }
+
+    /**
+     * Is this instance representing Tuesday.
+     *
+     * @return true if this instance represents Tuesday
+     */
+    public boolean isTuesday() {
+        return (this == TUESDAY);
+    }
+
+    /**
+     * Is this instance representing Wednesday.
+     *
+     * @return true if this instance represents Wednesday
+     */
+    public boolean isWednesday() {
+        return (this == WEDNESDAY);
+    }
+
+    /**
+     * Is this instance representing Thursday.
+     *
+     * @return true if this instance represents Thursday
+     */
+    public boolean isThursday() {
+        return (this == THURSDAY);
+    }
+
+    /**
+     * Is this instance representing Friday.
+     *
+     * @return true if this instance represents Friday
+     */
+    public boolean isFriday() {
+        return (this == FRIDAY);
+    }
+
+    /**
+     * Is this instance representing Saturday.
+     *
+     * @return true if this instance represents Saturday
+     */
+    public boolean isSaturday() {
+        return (this == SATURDAY);
+    }
+
+    /**
+     * Is this instance representing Sunday.
+     *
+     * @return true if this instance represents Sunday
+     */
+    public boolean isSunday() {
+        return (this == SUNDAY);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the next day-of-week.
      * <p>
      * This calculates based on the time-line, thus it rolls around the end of
-     * the week. The next month after Sunday is Monday.
+     * the week. The next day after Sunday is Monday.
      *
      * @return the next day-of-week, never null
      */
@@ -219,7 +283,7 @@ public enum DayOfWeek {
      * Gets the previous day-of-week.
      * <p>
      * This calculates based on the time-line, thus it rolls around the end of
-     * the week. The previous month before Monday is Sunday.
+     * the week. The previous day before Monday is Sunday.
      *
      * @return the previous day-of-week, never null
      */
@@ -235,7 +299,7 @@ public enum DayOfWeek {
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param days  the months to roll by, positive or negative
+     * @param days  the days to roll by, positive or negative
      * @return the resulting day-of-week, never null
      */
     public DayOfWeek roll(int days) {

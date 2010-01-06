@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.field.QuarterOfYear;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 
@@ -63,8 +64,8 @@ public class TestInterCalendarSystem {
     public void test_get_ISO_quarterOfYear_with_Coptic() {
         LocalDate baseDate = LocalDate.date(2009, 6, 30);
         CopticDate copticDate = CopticDate.copticDate(baseDate);
-        Integer test = copticDate.get(ISOChronology.quarterOfYearRule());
-        assertEquals(test.intValue(), 2);
+        QuarterOfYear test = copticDate.get(ISOChronology.quarterOfYearRule());
+        assertEquals(test, QuarterOfYear.Q2);
     }
 
 }

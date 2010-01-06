@@ -31,9 +31,7 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -152,6 +150,189 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.OCTOBER.getText(ptBR), "Outubro");
         assertEquals(MonthOfYear.NOVEMBER.getText(ptBR), "Novembro");
         assertEquals(MonthOfYear.DECEMBER.getText(ptBR), "Dezembro");
+    }
+
+    //-----------------------------------------------------------------------
+    // is...()
+    //-----------------------------------------------------------------------
+    public void test_isJanuary() {
+        assertEquals(MonthOfYear.JANUARY.isJanuary(), true);
+        assertEquals(MonthOfYear.FEBRUARY.isJanuary(), false);
+        assertEquals(MonthOfYear.MARCH.isJanuary(), false);
+        assertEquals(MonthOfYear.APRIL.isJanuary(), false);
+        assertEquals(MonthOfYear.MAY.isJanuary(), false);
+        assertEquals(MonthOfYear.JUNE.isJanuary(), false);
+        assertEquals(MonthOfYear.JULY.isJanuary(), false);
+        assertEquals(MonthOfYear.AUGUST.isJanuary(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isJanuary(), false);
+        assertEquals(MonthOfYear.OCTOBER.isJanuary(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isJanuary(), false);
+        assertEquals(MonthOfYear.DECEMBER.isJanuary(), false);
+    }
+
+    public void test_isFebruary() {
+        assertEquals(MonthOfYear.JANUARY.isFebruary(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isFebruary(), true);
+        assertEquals(MonthOfYear.MARCH.isFebruary(), false);
+        assertEquals(MonthOfYear.APRIL.isFebruary(), false);
+        assertEquals(MonthOfYear.MAY.isFebruary(), false);
+        assertEquals(MonthOfYear.JUNE.isFebruary(), false);
+        assertEquals(MonthOfYear.JULY.isFebruary(), false);
+        assertEquals(MonthOfYear.AUGUST.isFebruary(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isFebruary(), false);
+        assertEquals(MonthOfYear.OCTOBER.isFebruary(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isFebruary(), false);
+        assertEquals(MonthOfYear.DECEMBER.isFebruary(), false);
+    }
+
+    public void test_isMarch() {
+        assertEquals(MonthOfYear.JANUARY.isMarch(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isMarch(), false);
+        assertEquals(MonthOfYear.MARCH.isMarch(), true);
+        assertEquals(MonthOfYear.APRIL.isMarch(), false);
+        assertEquals(MonthOfYear.MAY.isMarch(), false);
+        assertEquals(MonthOfYear.JUNE.isMarch(), false);
+        assertEquals(MonthOfYear.JULY.isMarch(), false);
+        assertEquals(MonthOfYear.AUGUST.isMarch(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isMarch(), false);
+        assertEquals(MonthOfYear.OCTOBER.isMarch(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isMarch(), false);
+        assertEquals(MonthOfYear.DECEMBER.isMarch(), false);
+    }
+
+    public void test_isApril() {
+        assertEquals(MonthOfYear.JANUARY.isApril(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isApril(), false);
+        assertEquals(MonthOfYear.MARCH.isApril(), false);
+        assertEquals(MonthOfYear.APRIL.isApril(), true);
+        assertEquals(MonthOfYear.MAY.isApril(), false);
+        assertEquals(MonthOfYear.JUNE.isApril(), false);
+        assertEquals(MonthOfYear.JULY.isApril(), false);
+        assertEquals(MonthOfYear.AUGUST.isApril(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isApril(), false);
+        assertEquals(MonthOfYear.OCTOBER.isApril(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isApril(), false);
+        assertEquals(MonthOfYear.DECEMBER.isApril(), false);
+    }
+
+    public void test_isMay() {
+        assertEquals(MonthOfYear.JANUARY.isMay(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isMay(), false);
+        assertEquals(MonthOfYear.MARCH.isMay(), false);
+        assertEquals(MonthOfYear.APRIL.isMay(), false);
+        assertEquals(MonthOfYear.MAY.isMay(), true);
+        assertEquals(MonthOfYear.JUNE.isMay(), false);
+        assertEquals(MonthOfYear.JULY.isMay(), false);
+        assertEquals(MonthOfYear.AUGUST.isMay(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isMay(), false);
+        assertEquals(MonthOfYear.OCTOBER.isMay(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isMay(), false);
+        assertEquals(MonthOfYear.DECEMBER.isMay(), false);
+    }
+
+    public void test_isJune() {
+        assertEquals(MonthOfYear.JANUARY.isJune(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isJune(), false);
+        assertEquals(MonthOfYear.MARCH.isJune(), false);
+        assertEquals(MonthOfYear.APRIL.isJune(), false);
+        assertEquals(MonthOfYear.MAY.isJune(), false);
+        assertEquals(MonthOfYear.JUNE.isJune(), true);
+        assertEquals(MonthOfYear.JULY.isJune(), false);
+        assertEquals(MonthOfYear.AUGUST.isJune(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isJune(), false);
+        assertEquals(MonthOfYear.OCTOBER.isJune(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isJune(), false);
+        assertEquals(MonthOfYear.DECEMBER.isJune(), false);
+    }
+
+    public void test_isJuly() {
+        assertEquals(MonthOfYear.JANUARY.isJuly(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isJuly(), false);
+        assertEquals(MonthOfYear.MARCH.isJuly(), false);
+        assertEquals(MonthOfYear.APRIL.isJuly(), false);
+        assertEquals(MonthOfYear.MAY.isJuly(), false);
+        assertEquals(MonthOfYear.JUNE.isJuly(), false);
+        assertEquals(MonthOfYear.JULY.isJuly(), true);
+        assertEquals(MonthOfYear.AUGUST.isJuly(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isJuly(), false);
+        assertEquals(MonthOfYear.OCTOBER.isJuly(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isJuly(), false);
+        assertEquals(MonthOfYear.DECEMBER.isJuly(), false);
+    }
+
+    public void test_isAugust() {
+        assertEquals(MonthOfYear.JANUARY.isAugust(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isAugust(), false);
+        assertEquals(MonthOfYear.MARCH.isAugust(), false);
+        assertEquals(MonthOfYear.APRIL.isAugust(), false);
+        assertEquals(MonthOfYear.MAY.isAugust(), false);
+        assertEquals(MonthOfYear.JUNE.isAugust(), false);
+        assertEquals(MonthOfYear.JULY.isAugust(), false);
+        assertEquals(MonthOfYear.AUGUST.isAugust(), true);
+        assertEquals(MonthOfYear.SEPTEMBER.isAugust(), false);
+        assertEquals(MonthOfYear.OCTOBER.isAugust(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isAugust(), false);
+        assertEquals(MonthOfYear.DECEMBER.isAugust(), false);
+    }
+
+    public void test_isSeptember() {
+        assertEquals(MonthOfYear.JANUARY.isSeptember(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isSeptember(), false);
+        assertEquals(MonthOfYear.MARCH.isSeptember(), false);
+        assertEquals(MonthOfYear.APRIL.isSeptember(), false);
+        assertEquals(MonthOfYear.MAY.isSeptember(), false);
+        assertEquals(MonthOfYear.JUNE.isSeptember(), false);
+        assertEquals(MonthOfYear.JULY.isSeptember(), false);
+        assertEquals(MonthOfYear.AUGUST.isSeptember(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isSeptember(), true);
+        assertEquals(MonthOfYear.OCTOBER.isSeptember(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isSeptember(), false);
+        assertEquals(MonthOfYear.DECEMBER.isSeptember(), false);
+    }
+
+    public void test_isOctober() {
+        assertEquals(MonthOfYear.JANUARY.isOctober(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isOctober(), false);
+        assertEquals(MonthOfYear.MARCH.isOctober(), false);
+        assertEquals(MonthOfYear.APRIL.isOctober(), false);
+        assertEquals(MonthOfYear.MAY.isOctober(), false);
+        assertEquals(MonthOfYear.JUNE.isOctober(), false);
+        assertEquals(MonthOfYear.JULY.isOctober(), false);
+        assertEquals(MonthOfYear.AUGUST.isOctober(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isOctober(), false);
+        assertEquals(MonthOfYear.OCTOBER.isOctober(), true);
+        assertEquals(MonthOfYear.NOVEMBER.isOctober(), false);
+        assertEquals(MonthOfYear.DECEMBER.isOctober(), false);
+    }
+
+    public void test_isNovember() {
+        assertEquals(MonthOfYear.JANUARY.isNovember(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isNovember(), false);
+        assertEquals(MonthOfYear.MARCH.isNovember(), false);
+        assertEquals(MonthOfYear.APRIL.isNovember(), false);
+        assertEquals(MonthOfYear.MAY.isNovember(), false);
+        assertEquals(MonthOfYear.JUNE.isNovember(), false);
+        assertEquals(MonthOfYear.JULY.isNovember(), false);
+        assertEquals(MonthOfYear.AUGUST.isNovember(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isNovember(), false);
+        assertEquals(MonthOfYear.OCTOBER.isNovember(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isNovember(), true);
+        assertEquals(MonthOfYear.DECEMBER.isNovember(), false);
+    }
+
+    public void test_isDecember() {
+        assertEquals(MonthOfYear.JANUARY.isDecember(), false);
+        assertEquals(MonthOfYear.FEBRUARY.isDecember(), false);
+        assertEquals(MonthOfYear.MARCH.isDecember(), false);
+        assertEquals(MonthOfYear.APRIL.isDecember(), false);
+        assertEquals(MonthOfYear.MAY.isDecember(), false);
+        assertEquals(MonthOfYear.JUNE.isDecember(), false);
+        assertEquals(MonthOfYear.JULY.isDecember(), false);
+        assertEquals(MonthOfYear.AUGUST.isDecember(), false);
+        assertEquals(MonthOfYear.SEPTEMBER.isDecember(), false);
+        assertEquals(MonthOfYear.OCTOBER.isDecember(), false);
+        assertEquals(MonthOfYear.NOVEMBER.isDecember(), false);
+        assertEquals(MonthOfYear.DECEMBER.isDecember(), true);
     }
 
     //-----------------------------------------------------------------------
@@ -391,41 +572,41 @@ public class TestMonthOfYear {
         assertEquals(MonthOfYear.DECEMBER.getLastDayOfMonth(true), 31);
     }
 
-//    //-----------------------------------------------------------------------
-//    // getQuarterOfYear()
-//    //-----------------------------------------------------------------------
-//    public void test_getQuarterOfYear() {
-//        assertEquals(MonthOfYear.JANUARY.getQuarterOfYear(), QuarterOfYear.Q1);
-//        assertEquals(MonthOfYear.FEBRUARY.getQuarterOfYear(), QuarterOfYear.Q1);
-//        assertEquals(MonthOfYear.MARCH.getQuarterOfYear(), QuarterOfYear.Q1);
-//        assertEquals(MonthOfYear.APRIL.getQuarterOfYear(), QuarterOfYear.Q2);
-//        assertEquals(MonthOfYear.MAY.getQuarterOfYear(), QuarterOfYear.Q2);
-//        assertEquals(MonthOfYear.JUNE.getQuarterOfYear(), QuarterOfYear.Q2);
-//        assertEquals(MonthOfYear.JULY.getQuarterOfYear(), QuarterOfYear.Q3);
-//        assertEquals(MonthOfYear.AUGUST.getQuarterOfYear(), QuarterOfYear.Q3);
-//        assertEquals(MonthOfYear.SEPTEMBER.getQuarterOfYear(), QuarterOfYear.Q3);
-//        assertEquals(MonthOfYear.OCTOBER.getQuarterOfYear(), QuarterOfYear.Q4);
-//        assertEquals(MonthOfYear.NOVEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
-//        assertEquals(MonthOfYear.DECEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    // getMonthOfQuarter()
-//    //-----------------------------------------------------------------------
-//    public void test_getMonthOfQuarter() {
-//        assertEquals(MonthOfYear.JANUARY.getMonthOfQuarter(), 1);
-//        assertEquals(MonthOfYear.FEBRUARY.getMonthOfQuarter(), 2);
-//        assertEquals(MonthOfYear.MARCH.getMonthOfQuarter(), 3);
-//        assertEquals(MonthOfYear.APRIL.getMonthOfQuarter(), 1);
-//        assertEquals(MonthOfYear.MAY.getMonthOfQuarter(), 2);
-//        assertEquals(MonthOfYear.JUNE.getMonthOfQuarter(), 3);
-//        assertEquals(MonthOfYear.JULY.getMonthOfQuarter(), 1);
-//        assertEquals(MonthOfYear.AUGUST.getMonthOfQuarter(), 2);
-//        assertEquals(MonthOfYear.SEPTEMBER.getMonthOfQuarter(), 3);
-//        assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
-//        assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
-//        assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
-//    }
+    //-----------------------------------------------------------------------
+    // getQuarterOfYear()
+    //-----------------------------------------------------------------------
+    public void test_getQuarterOfYear() {
+        assertEquals(MonthOfYear.JANUARY.getQuarterOfYear(), QuarterOfYear.Q1);
+        assertEquals(MonthOfYear.FEBRUARY.getQuarterOfYear(), QuarterOfYear.Q1);
+        assertEquals(MonthOfYear.MARCH.getQuarterOfYear(), QuarterOfYear.Q1);
+        assertEquals(MonthOfYear.APRIL.getQuarterOfYear(), QuarterOfYear.Q2);
+        assertEquals(MonthOfYear.MAY.getQuarterOfYear(), QuarterOfYear.Q2);
+        assertEquals(MonthOfYear.JUNE.getQuarterOfYear(), QuarterOfYear.Q2);
+        assertEquals(MonthOfYear.JULY.getQuarterOfYear(), QuarterOfYear.Q3);
+        assertEquals(MonthOfYear.AUGUST.getQuarterOfYear(), QuarterOfYear.Q3);
+        assertEquals(MonthOfYear.SEPTEMBER.getQuarterOfYear(), QuarterOfYear.Q3);
+        assertEquals(MonthOfYear.OCTOBER.getQuarterOfYear(), QuarterOfYear.Q4);
+        assertEquals(MonthOfYear.NOVEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
+        assertEquals(MonthOfYear.DECEMBER.getQuarterOfYear(), QuarterOfYear.Q4);
+    }
+
+    //-----------------------------------------------------------------------
+    // getMonthOfQuarter()
+    //-----------------------------------------------------------------------
+    public void test_getMonthOfQuarter() {
+        assertEquals(MonthOfYear.JANUARY.getMonthOfQuarter(), 1);
+        assertEquals(MonthOfYear.FEBRUARY.getMonthOfQuarter(), 2);
+        assertEquals(MonthOfYear.MARCH.getMonthOfQuarter(), 3);
+        assertEquals(MonthOfYear.APRIL.getMonthOfQuarter(), 1);
+        assertEquals(MonthOfYear.MAY.getMonthOfQuarter(), 2);
+        assertEquals(MonthOfYear.JUNE.getMonthOfQuarter(), 3);
+        assertEquals(MonthOfYear.JULY.getMonthOfQuarter(), 1);
+        assertEquals(MonthOfYear.AUGUST.getMonthOfQuarter(), 2);
+        assertEquals(MonthOfYear.SEPTEMBER.getMonthOfQuarter(), 3);
+        assertEquals(MonthOfYear.OCTOBER.getMonthOfQuarter(), 1);
+        assertEquals(MonthOfYear.NOVEMBER.getMonthOfQuarter(), 2);
+        assertEquals(MonthOfYear.DECEMBER.getMonthOfQuarter(), 3);
+    }
 
     //-----------------------------------------------------------------------
     // toString()

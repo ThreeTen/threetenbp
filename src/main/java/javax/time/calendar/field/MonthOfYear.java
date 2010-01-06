@@ -212,6 +212,115 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
+     * Is this instance representing January.
+     *
+     * @return true if this instance represents January
+     */
+    public boolean isJanuary() {
+        return (this == JANUARY);
+    }
+
+    /**
+     * Is this instance representing February.
+     *
+     * @return true if this instance represents February
+     */
+    public boolean isFebruary() {
+        return (this == FEBRUARY);
+    }
+
+    /**
+     * Is this instance representing March.
+     *
+     * @return true if this instance represents March
+     */
+    public boolean isMarch() {
+        return (this == MARCH);
+    }
+
+    /**
+     * Is this instance representing April.
+     *
+     * @return true if this instance represents April
+     */
+    public boolean isApril() {
+        return (this == APRIL);
+    }
+
+    /**
+     * Is this instance representing May.
+     *
+     * @return true if this instance represents May
+     */
+    public boolean isMay() {
+        return (this == MAY);
+    }
+
+    /**
+     * Is this instance representing June.
+     *
+     * @return true if this instance represents June
+     */
+    public boolean isJune() {
+        return (this == JUNE);
+    }
+
+    /**
+     * Is this instance representing July.
+     *
+     * @return true if this instance represents July
+     */
+    public boolean isJuly() {
+        return (this == JULY);
+    }
+
+    /**
+     * Is this instance representing August.
+     *
+     * @return true if this instance represents August
+     */
+    public boolean isAugust() {
+        return (this == AUGUST);
+    }
+
+    /**
+     * Is this instance representing September.
+     *
+     * @return true if this instance represents September
+     */
+    public boolean isSeptember() {
+        return (this == SEPTEMBER);
+    }
+
+    /**
+     * Is this instance representing October.
+     *
+     * @return true if this instance represents October
+     */
+    public boolean isOctober() {
+        return (this == OCTOBER);
+    }
+
+    /**
+     * Is this instance representing November.
+     *
+     * @return true if this instance represents November
+     */
+    public boolean isNovember() {
+        return (this == NOVEMBER);
+    }
+
+    /**
+     * Is this instance representing December.
+     *
+     * @return true if this instance represents December
+     */
+    public boolean isDecember() {
+        return (this == DECEMBER);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the next month-of-year.
      * <p>
      * This calculates based on the time-line, thus it rolls around the end of
@@ -351,31 +460,31 @@ public enum MonthOfYear {
         return lengthInDays(leapYear);
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the quarter that this month falls in.
-//     *
-//     * @return the quarter of year, never null
-//     */
-//    public QuarterOfYear getQuarterOfYear() {
-//        if (ordinal() < 3) {
-//            return QuarterOfYear.Q1;
-//        } else if (ordinal() < 6) {
-//            return QuarterOfYear.Q2;
-//        } else if (ordinal() < 9) {
-//            return QuarterOfYear.Q3;
-//        } else {
-//            return QuarterOfYear.Q4;
-//        }
-//    }
-//
-//    /**
-//     * Gets the index of the month within the quarter.
-//     *
-//     * @return the month of season, from 1 to 3
-//     */
-//    public int getMonthOfQuarter() {
-//        return (ordinal() % 3) + 1;
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the quarter that this month falls in.
+     *
+     * @return the quarter of year, never null
+     */
+    public QuarterOfYear getQuarterOfYear() {
+        if (ordinal() < 3) {
+            return QuarterOfYear.Q1;
+        } else if (ordinal() < 6) {
+            return QuarterOfYear.Q2;
+        } else if (ordinal() < 9) {
+            return QuarterOfYear.Q3;
+        } else {
+            return QuarterOfYear.Q4;
+        }
+    }
+
+    /**
+     * Gets the index of the month within the quarter.
+     *
+     * @return the month of season, from 1 to 3
+     */
+    public int getMonthOfQuarter() {
+        return (ordinal() % 3) + 1;
+    }
 
 }

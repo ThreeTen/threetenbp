@@ -44,6 +44,7 @@ import javax.time.CalendricalException;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.QuarterOfYear;
 import javax.time.period.Period;
 
 import org.testng.annotations.Test;
@@ -60,7 +61,7 @@ public class TestCalendricalMerger {
     private static final DateTimeFieldRule<Integer> DOM_RULE = ISOChronology.dayOfMonthRule();
     private static final DateTimeFieldRule<Integer> DOY_RULE = ISOChronology.dayOfYearRule();
     private static final DateTimeFieldRule<DayOfWeek> DOW_RULE = ISOChronology.dayOfWeekRule();
-    private static final DateTimeFieldRule<Integer> QOY_RULE = ISOChronology.quarterOfYearRule();
+    private static final DateTimeFieldRule<QuarterOfYear> QOY_RULE = ISOChronology.quarterOfYearRule();
     private static final DateTimeFieldRule<Integer> MOQ_RULE = ISOChronology.monthOfQuarterRule();
     private static final DateTimeFieldRule<Integer> HOUR_RULE = ISOChronology.hourOfDayRule();
     private static final DateTimeFieldRule<AmPmOfDay> AMPM_RULE = ISOChronology.amPmOfDayRule();

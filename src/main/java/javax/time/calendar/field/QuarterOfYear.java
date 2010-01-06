@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,80 +31,68 @@
  */
 package javax.time.calendar.field;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a quarter of year in the ISO-8601 calendar system.
+ * A quarter-of-year, such as 'Q2'.
  * <p>
- * QuarterOfYear is an immutable time field that can only store a quarter of year.
- * It is a type-safe way of representing a quarter of year in an application.
+ * <code>QuarterOfYear</code> is an enum representing the 4 quarters of the year -
+ * Q1, Q2, Q3 and Q4.
  * <p>
- * <b>Do not use ordinal() to obtain the numeric representation of a QuarterOfYear
- * instance. Use getValue() instead.</b>
+ * The calendrical framework requires date-time fields to have an <code>int</code> value.
+ * The <code>int</code> value follows the quarter, from 1 (Q1) to 4 (Q4).
+ * It is recommended that applications use the enum rather than the <code>int</code> value
+ * to ensure code clarity.
  * <p>
- * QuarterOfYear is immutable and thread-safe.
+ * <b>Do not use ordinal() to obtain the numeric representation of <code>QuarterOfYear</code>.
+ * Use getValue() instead.</b>
+ * <p>
+ * This enum represents a common concept that is found in many calendar systems.
+ * As such, this enum may be used by any calendar system that has the quarter-of-year
+ * concept with a 4 quarter year where the names are equivalent to those defined.
+ * Note that the implementation of {@link DateTimeFieldRule} for quarter-of-year may
+ * vary by calendar system.
+ * <p>
+ * QuarterOfYear is an immutable and thread-safe enum.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
  */
-public enum QuarterOfYear implements Calendrical, CalendricalMatcher {
+public enum QuarterOfYear {
 
     /**
-     * The singleton instance for the first quarter of year, from January to March.
+     * The singleton instance for the first quarter-of-year, from January to March.
      */
-    Q1(1),
+    Q1,
     /**
-     * The singleton instance for the second quarter of year, from April to June.
+     * The singleton instance for the second quarter-of-year, from April to June.
      */
-    Q2(2),
+    Q2,
     /**
-     * The singleton instance for the third quarter of year, from July to September.
+     * The singleton instance for the third quarter-of-year, from July to September.
      */
-    Q3(3),
+    Q3,
     /**
-     * The singleton instance for the fourth quarter of year, from October to December.
+     * The singleton instance for the fourth quarter-of-year, from October to December.
      */
-    Q4(4),
-    ;
-    /**
-
-    /**
-     * The quarter of year being represented.
-     */
-    private final int quarterOfYear;
+    Q4;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the quarter of year field operates.
+     * Obtains an instance of <code>QuarterOfYear</code> from an <code>int</code> value.
      * <p>
-     * The rule provides access to the minimum and maximum values, and a
-     * generic way to access values within a calendrical.
+     * <code>QuarterOfYear</code> is an enum representing the 4 quarters of the year.
+     * This factory allows the enum to be obtained from the <code>int</code> value.
+     * The <code>int</code> value follows the quarter, from 1 (Q1) to 4 (Q4).
+     * <p>
+     * An exception is thrown if the value is invalid. The exception uses the
+     * {@link ISOChronology} quarter-of-year rule to indicate the failed rule.
      *
-     * @return the quarter of year rule, never null
-     */
-    public static DateTimeFieldRule<Integer> rule() {
-        return ISOChronology.quarterOfYearRule();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>QuarterOfYear</code> from a value.
-     * <p>
-     * A quarter of year object represents one of the 4 quarters of the year.
-     * These are numbered from 1 (Q1) to 4 (Q4).
-     * <p>
-     * QuarterOfYear is an enum, thus each instance is a singleton.
-     * As a result, QuarterOfYear instances can be compared using ==.
-     *
-     * @param quarterOfYear  the quarter of year to represent, from 1 to 4
+     * @param quarterOfYear  the quarter-of-year to represent, from 1 (Q1) to 4 (Q4)
      * @return the QuarterOfYear singleton, never null
-     * @throws IllegalCalendarFieldValueException if the quarter of year is invalid
+     * @throws IllegalCalendarFieldValueException if the quarter-of-year is invalid
      */
     public static QuarterOfYear quarterOfYear(int quarterOfYear) {
         switch (quarterOfYear) {
@@ -117,101 +105,126 @@ public enum QuarterOfYear implements Calendrical, CalendricalMatcher {
             case 4:
                 return Q4;
             default:
-                throw new IllegalCalendarFieldValueException(rule(), quarterOfYear, 1, 4);
+                throw new IllegalCalendarFieldValueException(ISOChronology.quarterOfYearRule(), quarterOfYear, 1, 4);
         }
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of <code>QuarterOfYear</code> from a calendrical.
+     * Gets the quarter-of-year <code>int</code> value.
      * <p>
-     * This can be used extract the quarter-of-year value directly from any implementation
-     * of <code>Calendrical</code>, including those in other calendar systems.
+     * The values are numbered following the ISO-8601 standard,
+     * from 1 (Q1) to 4 (Q4).
      *
-     * @param calendrical  the calendrical to extract from, not null
-     * @return the QuarterOfYear singleton, never null
-     * @throws UnsupportedRuleException if the quarter-of-year cannot be obtained
-     */
-    public static QuarterOfYear quarterOfYear(Calendrical calendrical) {
-        return QuarterOfYear.quarterOfYear(rule().getInt(calendrical));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Constructs an instance with the specified quarter of year.
-     *
-     * @param quarterOfYear  the quarter of year to represent
-     */
-    private QuarterOfYear(int quarterOfYear) {
-        this.quarterOfYear = quarterOfYear;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the value of the specified calendrical rule.
-     * <p>
-     * This method queries the value of the specified calendrical rule.
-     * If the value cannot be returned for the rule from this instance then
-     * <code>null</code> will be returned.
-     *
-     * @param rule  the rule to use, not null
-     * @return the value for the rule, null if the value cannot be returned
-     */
-    public <T> T get(CalendricalRule<T> rule) {
-        return rule().deriveValueFor(rule, quarterOfYear, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the quarter of year value.
-     *
-     * @return the quarter of year, from 1 to 4
+     * @return the quarter-of-year, from 1 (Q1) to 4 (Q4)
      */
     public int getValue() {
-        return quarterOfYear;
+        return ordinal() + 1;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the next quarter of year wrapping so that the next quarter of year
-     * is always returned.
+     * Is this instance representing Q1, from January to March inclusive.
      *
-     * @return the next quarter of year, never null
+     * @return true if this instance represents Q1
+     */
+    public boolean isQ1() {
+        return (this == Q1);
+    }
+
+    /**
+     * Is this instance representing Q2, from April to June inclusive.
+     *
+     * @return true if this instance represents Q2
+     */
+    public boolean isQ2() {
+        return (this == Q2);
+    }
+
+    /**
+     * Is this instance representing Q3, from July to September inclusive.
+     *
+     * @return true if this instance represents Q3
+     */
+    public boolean isQ3() {
+        return (this == Q3);
+    }
+
+    /**
+     * Is this instance representing Q4, from October to December inclusive.
+     *
+     * @return true if this instance represents Q4
+     */
+    public boolean isQ4() {
+        return (this == Q4);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the next quarter-of-year.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the week. The next quarter after Q4 is Q1.
+     *
+     * @return the next quarter-of-year, never null
      */
     public QuarterOfYear next() {
         return values()[(ordinal() + 1) % 4];
     }
 
     /**
-     * Gets the previous quarter of year wrapping so that the previous quarter of year
-     * is always returned.
+     * Gets the previous quarter-of-year.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the year. The previous quarter before Q1 is Q4.
      *
-     * @return the previous quarter of year, never null
+     * @return the previous quarter-of-year, never null
      */
     public QuarterOfYear previous() {
         return values()[(ordinal() + 4 - 1) % 4];
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Checks if the quarter-of-year extracted from the calendrical matches this.
+     * Rolls the quarter-of-year, adding the specified number of quarters.
+     * <p>
+     * This calculates based on the time-line, thus it rolls around the end of
+     * the year from Q4 to Q1. The quarters to roll by may be negative.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
      *
-     * @param calendrical  the calendrical to match, not null
-     * @return true if the calendrical matches, false otherwise
+     * @param quarters  the quarters to roll by, positive or negative
+     * @return the resulting quarter-of-year, never null
      */
-    public boolean matchesCalendrical(Calendrical calendrical) {
-        Integer calValue = calendrical.get(rule());
-        return calValue != null && calValue == getValue();
+    public QuarterOfYear roll(int quarters) {
+        return values()[(ordinal() + (quarters % 4 + 4)) % 4];
     }
 
     //-----------------------------------------------------------------------
     /**
-     * A string describing the quarter of year object.
+     * Gets the first of the three months that this quarter refers to.
+     * <p>
+     * Q1 will return January.<br />
+     * Q2 will return April.<br />
+     * Q3 will return July.<br />
+     * Q4 will return October.
+     * <p>
+     * To obtain the other two months of the quarter, simply use {@link MonthOfYear#next()}
+     * on the returned month.
      *
-     * @return a string describing this object
+     * @return the first month in the quarter, never null
      */
-    @Override
-    public String toString() {
-        return "QuarterOfYear=" + name();
+    public MonthOfYear getFirstMonthOfQuarter() {
+        switch (this) {
+            case Q1:
+                return MonthOfYear.JANUARY;
+            case Q2:
+                return MonthOfYear.APRIL;
+            case Q3:
+                return MonthOfYear.JULY;
+            case Q4:
+            default:
+                return MonthOfYear.OCTOBER;
+        }
     }
 
 }

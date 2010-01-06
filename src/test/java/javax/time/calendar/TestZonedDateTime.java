@@ -43,6 +43,7 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.QuarterOfYear;
 import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
@@ -610,7 +611,7 @@ public class TestZonedDateTime {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 12, 30, 40, 987654321);
         ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
-        assertEquals(test.get(ISOChronology.quarterOfYearRule()), (Integer) 2);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
         assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
         assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);

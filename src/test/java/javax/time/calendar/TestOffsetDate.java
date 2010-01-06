@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -505,7 +501,7 @@ public class TestOffsetDate {
     public void test_get_CalendricalRule() {
         OffsetDate test = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
-        assertEquals(test.get(ISOChronology.quarterOfYearRule()), (Integer) 2);
+        assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
         assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
         assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
@@ -1639,8 +1635,8 @@ public class TestOffsetDate {
         
         assertTrue(TEST_2007_07_15_PONE.matches(Year.isoYear(2007)));
         assertFalse(TEST_2007_07_15_PONE.matches(Year.isoYear(2006)));
-        assertTrue(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q3));
-        assertFalse(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q2));
+//        assertTrue(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q3));
+//        assertFalse(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q2));
 //        assertTrue(TEST_2007_07_15_PONE.matches(MonthOfYear.JULY));
 //        assertFalse(TEST_2007_07_15_PONE.matches(MonthOfYear.JUNE));
         assertTrue(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(15)));

@@ -31,21 +31,11 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.Serializable;
 
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.LocalTime;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,23 +49,15 @@ import org.testng.annotations.Test;
 @Test
 public class TestQuarterOfYear {
 
-    private static final DateTimeFieldRule<Integer> RULE = ISOChronology.quarterOfYearRule();
-
     @BeforeMethod
     public void setUp() {
     }
 
     //-----------------------------------------------------------------------
     public void test_interfaces() {
-        assertTrue(Calendrical.class.isAssignableFrom(QuarterOfYear.class));
+        assertTrue(Enum.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Serializable.class.isAssignableFrom(QuarterOfYear.class));
         assertTrue(Comparable.class.isAssignableFrom(QuarterOfYear.class));
-        assertTrue(CalendricalMatcher.class.isAssignableFrom(QuarterOfYear.class));
-    }
-
-    //-----------------------------------------------------------------------
-    public void test_rule() {
-        assertEquals(QuarterOfYear.rule(), RULE);
     }
 
     //-----------------------------------------------------------------------
@@ -98,23 +80,34 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    public void test_factory_Calendrical() {
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        for (int i = 1; i <= 365; i++) {
-            QuarterOfYear test = QuarterOfYear.quarterOfYear(date);
-            assertEquals(test.getValue(), ((date.getMonthOfYear().getValue() - 1) / 3) + 1);
-            date = date.plusDays(1);
-        }
+    // is...()
+    //-----------------------------------------------------------------------
+    public void test_isQ1() {
+        assertEquals(QuarterOfYear.Q1.isQ1(), true);
+        assertEquals(QuarterOfYear.Q2.isQ1(), false);
+        assertEquals(QuarterOfYear.Q3.isQ1(), false);
+        assertEquals(QuarterOfYear.Q4.isQ1(), false);
     }
 
-    @Test(expectedExceptions=UnsupportedRuleException.class)
-    public void test_factory_Calendrical_noData() {
-        QuarterOfYear.quarterOfYear(new MockSimpleCalendrical());
+    public void test_isQ2() {
+        assertEquals(QuarterOfYear.Q1.isQ2(), false);
+        assertEquals(QuarterOfYear.Q2.isQ2(), true);
+        assertEquals(QuarterOfYear.Q3.isQ2(), false);
+        assertEquals(QuarterOfYear.Q4.isQ2(), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_factory_nullCalendrical() {
-        QuarterOfYear.quarterOfYear((Calendrical) null);
+    public void test_isQ3() {
+        assertEquals(QuarterOfYear.Q1.isQ3(), false);
+        assertEquals(QuarterOfYear.Q2.isQ3(), false);
+        assertEquals(QuarterOfYear.Q3.isQ3(), true);
+        assertEquals(QuarterOfYear.Q4.isQ3(), false);
+    }
+
+    public void test_isQ4() {
+        assertEquals(QuarterOfYear.Q1.isQ4(), false);
+        assertEquals(QuarterOfYear.Q2.isQ4(), false);
+        assertEquals(QuarterOfYear.Q3.isQ4(), false);
+        assertEquals(QuarterOfYear.Q4.isQ4(), true);
     }
 
     //-----------------------------------------------------------------------
@@ -138,32 +131,38 @@ public class TestQuarterOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // matchesCalendrical(Calendrical)
+    // roll(int)
     //-----------------------------------------------------------------------
-    public void test_matchesCalendrical() {
-        assertEquals(QuarterOfYear.Q1.matchesCalendrical(LocalDate.date(2008, 1, 1)), true);
-        assertEquals(QuarterOfYear.Q2.matchesCalendrical(LocalDate.date(2008, 4, 1)), true);
-        assertEquals(QuarterOfYear.Q3.matchesCalendrical(LocalDate.date(2008, 7, 1)), true);
-        assertEquals(QuarterOfYear.Q4.matchesCalendrical(LocalDate.date(2008, 10, 1)), true);
+    public void test_roll() {
+        assertEquals(QuarterOfYear.Q1.roll(-4), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.Q1.roll(-3), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.Q1.roll(-2), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.Q1.roll(-1), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.Q1.roll(0), QuarterOfYear.Q1);
+        assertEquals(QuarterOfYear.Q1.roll(1), QuarterOfYear.Q2);
+        assertEquals(QuarterOfYear.Q1.roll(2), QuarterOfYear.Q3);
+        assertEquals(QuarterOfYear.Q1.roll(3), QuarterOfYear.Q4);
+        assertEquals(QuarterOfYear.Q1.roll(4), QuarterOfYear.Q1);
     }
 
-    public void test_matchesCalendrical_noData() {
-        assertEquals(QuarterOfYear.Q1.matchesCalendrical(LocalTime.time(12, 30)), false);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_matchesCalendrical_null() {
-        QuarterOfYear.Q1.matchesCalendrical(null);
+    //-----------------------------------------------------------------------
+    // getFirstMonthOfQuarter()
+    //-----------------------------------------------------------------------
+    public void test_getFirstMonthOfQuarter() {
+        assertEquals(QuarterOfYear.Q1.getFirstMonthOfQuarter(), MonthOfYear.JANUARY);
+        assertEquals(QuarterOfYear.Q2.getFirstMonthOfQuarter(), MonthOfYear.APRIL);
+        assertEquals(QuarterOfYear.Q3.getFirstMonthOfQuarter(), MonthOfYear.JULY);
+        assertEquals(QuarterOfYear.Q4.getFirstMonthOfQuarter(), MonthOfYear.OCTOBER);
     }
 
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        assertEquals(QuarterOfYear.Q1.toString(), "QuarterOfYear=Q1");
-        assertEquals(QuarterOfYear.Q2.toString(), "QuarterOfYear=Q2");
-        assertEquals(QuarterOfYear.Q3.toString(), "QuarterOfYear=Q3");
-        assertEquals(QuarterOfYear.Q4.toString(), "QuarterOfYear=Q4");
+        assertEquals(QuarterOfYear.Q1.toString(), "Q1");
+        assertEquals(QuarterOfYear.Q2.toString(), "Q2");
+        assertEquals(QuarterOfYear.Q3.toString(), "Q3");
+        assertEquals(QuarterOfYear.Q4.toString(), "Q4");
     }
 
     //-----------------------------------------------------------------------
