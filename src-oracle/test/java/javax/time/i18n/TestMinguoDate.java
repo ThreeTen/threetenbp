@@ -20,6 +20,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -29,7 +30,7 @@ public class TestMinguoDate {
     private MinguoEra testEra = MinguoEra.MINGUO;
     private int testYear = 98;
     private int testGregorianYear = 2009;
-    private int testMonthOfYear = 3;
+    private MonthOfYear testMonthOfYear = MonthOfYear.MARCH;
     private int testDayOfMonth = 3;
     private int testDayOfYear = 62;
     private boolean testLeapYear = false;
@@ -108,14 +109,9 @@ public class TestMinguoDate {
         }
     }
     
-    @Test
+    @Test(expectedExceptions=NullPointerException.class)
     public void testMinguoDateInvalidMonth() throws Exception{
-        try {
-            MinguoDate.minguoDate(testYear, 13, testDayOfMonth);// Invalid month of year
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MinguoChronology.monthOfYearRule());
-        }
+        MinguoDate.minguoDate(testYear, null, testDayOfMonth);
     }
     
     @Test
@@ -137,7 +133,7 @@ public class TestMinguoDate {
     public void testGet() throws Exception {
         assertEquals(testDate.get(MinguoChronology.eraRule()), testDate.getEra());
         assertEquals(testDate.get(MinguoChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
-        assertEquals(testDate.get(MinguoChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
+        assertEquals(testDate.get(MinguoChronology.monthOfYearRule()), testDate.getMonthOfYear());
         assertEquals(testDate.get(MinguoChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
         assertEquals(testDate.get(MinguoChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
         assertEquals(testDate.get(MinguoChronology.dayOfWeekRule()), testDate.getDayOfWeek());
@@ -266,28 +262,13 @@ public class TestMinguoDate {
     //-----------------------------------------------------------------------
     @Test
     public void testWithMonthOfYear() {
-        MinguoDate date = testDate.withMonthOfYear(4);
-        assertEquals(date, MinguoDate.minguoDate(testYear, 4, testDayOfMonth));
+        MinguoDate date = testDate.withMonthOfYear(MonthOfYear.APRIL);
+        assertEquals(date, MinguoDate.minguoDate(testYear, MonthOfYear.APRIL, testDayOfMonth));
     }
-    
-    @Test
-    public void testWithMonthOfYearInvalidTooSmall() throws Exception {
-        try {
-            testDate.withMonthOfYear(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MinguoChronology.monthOfYearRule());
-        }
-    }
-    
-    @Test
-    public void testWithMonthOfYearInvalidTooBig() throws Exception {
-        try {
-            testDate.withMonthOfYear(13);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), MinguoChronology.monthOfYearRule());
-        }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void testWithMonthOfYearInvalidNull() throws Exception {
+        testDate.withMonthOfYear(null);
     }
 
     //-----------------------------------------------------------------------
@@ -325,7 +306,7 @@ public class TestMinguoDate {
     @Test
     public void testWithDayOfYear() {
         MinguoDate date = testDate.withDayOfYear(15);
-        assertEquals(date, MinguoDate.minguoDate(testYear, 1, 15));
+        assertEquals(date, MinguoDate.minguoDate(testYear, MonthOfYear.JANUARY, 15));
     }
     
     @Test
@@ -366,7 +347,7 @@ public class TestMinguoDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusMonths() {
-        assertEquals(testDate.plusMonths(5), MinguoDate.minguoDate(testYear, testMonthOfYear+5, testDayOfMonth));
+        assertEquals(testDate.plusMonths(5), MinguoDate.minguoDate(testYear, testMonthOfYear.roll(5), testDayOfMonth));
     }
     
     @Test
@@ -433,7 +414,7 @@ public class TestMinguoDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusMonths() {
-        assertEquals(testDate.minusMonths(1), MinguoDate.minguoDate(testYear, testMonthOfYear-1, testDayOfMonth));
+        assertEquals(testDate.minusMonths(1), MinguoDate.minguoDate(testYear, testMonthOfYear.previous(), testDayOfMonth));
     }
     
     @Test
@@ -469,7 +450,7 @@ public class TestMinguoDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusWeeks() {
-        assertEquals(testDate.minusWeeks(2), MinguoDate.minguoDate(testYear, testMonthOfYear-1, 28+testDayOfMonth-(2*7)));
+        assertEquals(testDate.minusWeeks(2), MinguoDate.minguoDate(testYear, testMonthOfYear.previous(), 28+testDayOfMonth-(2*7)));
     }
     
     @Test
@@ -497,18 +478,18 @@ public class TestMinguoDate {
     @Test
     public void testCompareTo() throws Exception {
         doTestComparisons(
-            MinguoDate.minguoDate(1, 1, 1),
-            MinguoDate.minguoDate(1, 1, 2),
-            MinguoDate.minguoDate(1, 1, 31),
-            MinguoDate.minguoDate(1, 2, 1),
-            MinguoDate.minguoDate(1, 2, 28),
-            MinguoDate.minguoDate(1, 12, 31),
-            MinguoDate.minguoDate(2, 1, 1),
-            MinguoDate.minguoDate(2, 12, 31),
-            MinguoDate.minguoDate(3, 1, 1),
-            MinguoDate.minguoDate(3, 12, 31),
-            MinguoDate.minguoDate(9999, 1, 1),
-            MinguoDate.minguoDate(9999, 12, 31)
+            MinguoDate.minguoDate(1, MonthOfYear.JANUARY, 1),
+            MinguoDate.minguoDate(1, MonthOfYear.JANUARY, 2),
+            MinguoDate.minguoDate(1, MonthOfYear.JANUARY, 31),
+            MinguoDate.minguoDate(1, MonthOfYear.FEBRUARY, 1),
+            MinguoDate.minguoDate(1, MonthOfYear.FEBRUARY, 28),
+            MinguoDate.minguoDate(1, MonthOfYear.DECEMBER, 31),
+            MinguoDate.minguoDate(2, MonthOfYear.JANUARY, 1),
+            MinguoDate.minguoDate(2, MonthOfYear.DECEMBER, 31),
+            MinguoDate.minguoDate(3, MonthOfYear.JANUARY, 1),
+            MinguoDate.minguoDate(3, MonthOfYear.DECEMBER, 31),
+            MinguoDate.minguoDate(9999, MonthOfYear.JANUARY, 1),
+            MinguoDate.minguoDate(9999, MonthOfYear.DECEMBER, 31)
         );
     }
 
@@ -585,7 +566,7 @@ public class TestMinguoDate {
     @Test
     public void testEqualsNotEqualMonth() throws Exception {
         MinguoDate a = MinguoDate.minguoDate(testYear, testMonthOfYear, testDayOfMonth);
-        MinguoDate b = MinguoDate.minguoDate(testYear, testMonthOfYear+1, testDayOfMonth);
+        MinguoDate b = MinguoDate.minguoDate(testYear, testMonthOfYear.next(), testDayOfMonth);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -618,8 +599,8 @@ public class TestMinguoDate {
 
     @Test
     public void testHashCode() throws Exception {
-        MinguoDate a = MinguoDate.minguoDate(1, 1, 1);
-        MinguoDate b = MinguoDate.minguoDate(1, 1, 1);
+        MinguoDate a = MinguoDate.minguoDate(1, MonthOfYear.JANUARY, 1);
+        MinguoDate b = MinguoDate.minguoDate(1, MonthOfYear.JANUARY, 1);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(b.hashCode(), b.hashCode());
@@ -635,7 +616,7 @@ public class TestMinguoDate {
         assertEquals(expected, actual);
     }
     
-    private void assertMinguoDate(MinguoDate test, MinguoEra era, int year, int month, int day) throws Exception {
+    private void assertMinguoDate(MinguoDate test, MinguoEra era, int year, MonthOfYear month, int day) throws Exception {
         assertEquals(test.getEra(), era);
         assertEquals(test.getYearOfEra(), year);
         assertEquals(test.getMonthOfYear(), month);

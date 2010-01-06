@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.Test;
 
@@ -90,7 +91,7 @@ public class TestJapaneseChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule<Integer> rule = JapaneseChronology.monthOfYearRule();
+        DateTimeFieldRule<MonthOfYear> rule = JapaneseChronology.monthOfYearRule();
         assertEquals(rule.getID(), "Japanese.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);

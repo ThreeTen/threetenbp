@@ -16,6 +16,7 @@ import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.MonthOfYear;
 
 /**
  * A date in the Thai Buddhist calendar system.
@@ -65,13 +66,13 @@ public final class ThaiBuddhistDate
      * month of year and day of month. This uses the Thai Buddhist era.
      *
      * @param yearOfThaiBuddhistEra  the year to represent in the Thai Buddhist era, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the created ThaiBuddhistDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static ThaiBuddhistDate thaiBuddhistDate(int yearOfThaiBuddhistEra, int monthOfYear, int dayOfMonth) {
+    public static ThaiBuddhistDate thaiBuddhistDate(int yearOfThaiBuddhistEra, MonthOfYear monthOfYear, int dayOfMonth) {
         return ThaiBuddhistDate.thaiBuddhistDate(ThaiBuddhistEra.BUDDHIST, yearOfThaiBuddhistEra, monthOfYear, dayOfMonth);
     }
 
@@ -81,16 +82,16 @@ public final class ThaiBuddhistDate
      *
      * @param era  the era to represent, not null
      * @param yearOfEra  the year to represent, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the created ThaiBuddhistDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static ThaiBuddhistDate thaiBuddhistDate(ThaiBuddhistEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public static ThaiBuddhistDate thaiBuddhistDate(ThaiBuddhistEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "ThaiBuddhistEra must not be null");
         ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
-        ThaiBuddhistChronology.monthOfYearRule().checkValue(monthOfYear);
+        I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
         int year = yearOfEra;
         if (era == ThaiBuddhistEra.BEFORE_BUDDHIST) {
@@ -174,12 +175,12 @@ public final class ThaiBuddhistDate
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month-of-year.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month-of-year, never null
      */
-    public int getMonthOfYear() {
-        return date.getMonthOfYear().getValue();
+    public MonthOfYear getMonthOfYear() {
+        return date.getMonthOfYear();
     }
 
     /**
@@ -266,13 +267,12 @@ public final class ThaiBuddhistDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to represent, not null
      * @return a new updated ThaiBuddhistDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the month is out of range
      */
-    public ThaiBuddhistDate withMonthOfYear(int monthOfYear) {
-        ThaiBuddhistChronology.monthOfYearRule().checkValue(monthOfYear);
-        return ThaiBuddhistDate.thaiBuddhistDate(date.withMonthOfYear(monthOfYear));
+    public ThaiBuddhistDate withMonthOfYear(MonthOfYear monthOfYear) {
+        I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        return ThaiBuddhistDate.thaiBuddhistDate(date.with(monthOfYear));
     }
 
     /**
@@ -529,7 +529,7 @@ public final class ThaiBuddhistDate
         boolean currentEra = getEra() == ThaiBuddhistEra.BUDDHIST;
         int yearValue = getYearOfEra();
         yearValue = Math.abs(currentEra ? yearValue : -yearValue);
-        int monthValue = getMonthOfYear();
+        int monthValue = getMonthOfYear().getValue();
         int dayValue = getDayOfMonth();
         StringBuilder buf = new StringBuilder();
         return buf.append(currentEra ? "" : "-")

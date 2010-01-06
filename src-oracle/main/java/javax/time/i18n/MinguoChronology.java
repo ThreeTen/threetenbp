@@ -146,7 +146,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
      *
      * @return the rule for the month of year field, never null
      */
-    public static DateTimeFieldRule<Integer> monthOfYearRule() {
+    public static DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -370,10 +370,10 @@ public final class MinguoChronology extends Chronology implements Serializable {
             era = (era != null ? era : MinguoEra.MINGUO);
             Integer yoeVal = merger.getValue(this);
             // era, year, month, day-of-month
-            Integer moyVal = merger.getValue(MinguoChronology.monthOfYearRule());
+            MonthOfYear moy = merger.getValue(MinguoChronology.monthOfYearRule());
             Integer domVal = merger.getValue(MinguoChronology.dayOfMonthRule());
-            if (moyVal != null && domVal != null) {
-                MinguoDate date = MinguoDate.minguoDate(era, yoeVal, moyVal, domVal);
+            if (moy != null && domVal != null) {
+                MinguoDate date = MinguoDate.minguoDate(era, yoeVal, moy, domVal);
                 merger.storeMerged(MinguoDate.rule(), date);
                 merger.removeProcessed(MinguoChronology.eraRule());
                 merger.removeProcessed(this);
@@ -383,7 +383,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             // era, year, day-of-year
             Integer doyVal = merger.getValue(MinguoChronology.dayOfYearRule());
             if (doyVal != null) {
-                MinguoDate date = MinguoDate.minguoDate(era, yoeVal, 1, 1).plusDays(doyVal);
+                MinguoDate date = MinguoDate.minguoDate(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
                 merger.storeMerged(MinguoDate.rule(), date);
                 merger.removeProcessed(MinguoChronology.eraRule());
                 merger.removeProcessed(this);
@@ -397,20 +397,20 @@ public final class MinguoChronology extends Chronology implements Serializable {
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfYearRule();
+        private static final DateTimeFieldRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(Integer.class, MinguoChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super(MonthOfYear.class, MinguoChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected MonthOfYear derive(Calendrical calendrical) {
             MinguoDate date = calendrical.get(MinguoDate.rule());
             return date != null ? date.getMonthOfYear() : null;
         }
@@ -438,13 +438,16 @@ public final class MinguoChronology extends Chronology implements Serializable {
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            MinguoEra era = calendrical.get(MinguoEra.rule());
-            Integer yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
-            Integer moyval = calendrical.get(MinguoChronology.monthOfYearRule());
-            if (era != null && yoeVal != null && moyval != null) {
-                int isoYear = (era == MinguoEra.BEFORE_MINGUO ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
-                MonthOfYear month = MonthOfYear.monthOfYear(moyval);
-                return month.lengthInDays(ISOChronology.isLeapYear(isoYear));
+            MonthOfYear moy = calendrical.get(MinguoChronology.monthOfYearRule());
+            if (moy != null) {
+                MinguoEra era = calendrical.get(MinguoEra.rule());
+                Integer yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
+                if (era != null && yoeVal != null) {
+                    int isoYear = (era == MinguoEra.BEFORE_MINGUO ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
+                    return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
+                } else {
+                    return moy.maxLengthInDays();
+                }
             }
             return getMaximumValue();
         }

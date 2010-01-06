@@ -18,6 +18,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.HourOfDay;
+import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -27,7 +28,7 @@ public class TestThaiBuddhistDate {
     private ThaiBuddhistEra testEra = ThaiBuddhistEra.BUDDHIST;
     private int testYear = 2552;
     private int testGregorianYear = 2009;
-    private int testMonthOfYear = 3;
+    private MonthOfYear testMonthOfYear = MonthOfYear.MARCH;
     private int testDayOfMonth = 3;
     private int testDayOfYear = 62;
     private boolean testLeapYear = false;
@@ -106,14 +107,9 @@ public class TestThaiBuddhistDate {
         }
     }
     
-    @Test
+    @Test(expectedExceptions=NullPointerException.class)
     public void testThaiBuddhistDateInvalidMonth() throws Exception{
-        try {
-            ThaiBuddhistDate.thaiBuddhistDate(testYear, 13, testDayOfMonth);// Invalid month of year
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ThaiBuddhistChronology.monthOfYearRule());
-        }
+        ThaiBuddhistDate.thaiBuddhistDate(testYear, null, testDayOfMonth);
     }
     
     @Test
@@ -135,7 +131,7 @@ public class TestThaiBuddhistDate {
     public void testGet() throws Exception {
         assertEquals(testDate.get(ThaiBuddhistChronology.eraRule()), testDate.getEra());
         assertEquals(testDate.get(ThaiBuddhistChronology.yearOfEraRule()), (Integer) testDate.getYearOfEra());
-        assertEquals(testDate.get(ThaiBuddhistChronology.monthOfYearRule()), (Integer) testDate.getMonthOfYear());
+        assertEquals(testDate.get(ThaiBuddhistChronology.monthOfYearRule()), testDate.getMonthOfYear());
         assertEquals(testDate.get(ThaiBuddhistChronology.dayOfMonthRule()), (Integer) testDate.getDayOfMonth());
         assertEquals(testDate.get(ThaiBuddhistChronology.dayOfYearRule()), (Integer) testDate.getDayOfYear());
         assertEquals(testDate.get(ThaiBuddhistChronology.dayOfWeekRule()), testDate.getDayOfWeek());
@@ -264,28 +260,13 @@ public class TestThaiBuddhistDate {
     //-----------------------------------------------------------------------
     @Test
     public void testWithMonthOfYear() {
-        ThaiBuddhistDate date = testDate.withMonthOfYear(4);
-        assertEquals(date, ThaiBuddhistDate.thaiBuddhistDate(testYear, 4, testDayOfMonth));
+        ThaiBuddhistDate date = testDate.withMonthOfYear(MonthOfYear.APRIL);
+        assertEquals(date, ThaiBuddhistDate.thaiBuddhistDate(testYear, MonthOfYear.APRIL, testDayOfMonth));
     }
     
-    @Test
-    public void testWithMonthOfYearInvalidTooSmall() throws Exception {
-        try {
-            testDate.withMonthOfYear(-1);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ThaiBuddhistChronology.monthOfYearRule());
-        }
-    }
-    
-    @Test
-    public void testWithMonthOfYearInvalidTooBig() throws Exception {
-        try {
-            testDate.withMonthOfYear(13);
-            fail();
-        } catch (IllegalCalendarFieldValueException ex) {
-            assertEquals(ex.getRule(), ThaiBuddhistChronology.monthOfYearRule());
-        }
+    @Test(expectedExceptions=NullPointerException.class)
+    public void testWithMonthOfYearInvalidNull() throws Exception {
+        testDate.withMonthOfYear(null);
     }
 
     //-----------------------------------------------------------------------
@@ -323,7 +304,7 @@ public class TestThaiBuddhistDate {
     @Test
     public void testWithDayOfYear() {
         ThaiBuddhistDate date = testDate.withDayOfYear(15);
-        assertEquals(date, ThaiBuddhistDate.thaiBuddhistDate(testYear, 1, 15));
+        assertEquals(date, ThaiBuddhistDate.thaiBuddhistDate(testYear, MonthOfYear.JANUARY, 15));
     }
     
     @Test
@@ -364,7 +345,7 @@ public class TestThaiBuddhistDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusMonths() {
-        assertEquals(testDate.plusMonths(5), ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear+5, testDayOfMonth));
+        assertEquals(testDate.plusMonths(5), ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear.roll(5), testDayOfMonth));
     }
     
     @Test
@@ -431,7 +412,7 @@ public class TestThaiBuddhistDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusMonths() {
-        assertEquals(testDate.minusMonths(1), ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear-1, testDayOfMonth));
+        assertEquals(testDate.minusMonths(1), ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear.previous(), testDayOfMonth));
     }
     
     @Test
@@ -467,7 +448,7 @@ public class TestThaiBuddhistDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusWeeks() {
-        assertEquals(testDate.minusWeeks(2), ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear-1, 28+testDayOfMonth-(2*7)));
+        assertEquals(testDate.minusWeeks(2), ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear.previous(), 28+testDayOfMonth-(2*7)));
     }
     
     @Test
@@ -495,18 +476,18 @@ public class TestThaiBuddhistDate {
     @Test
     public void testCompareTo() throws Exception {
         doTestComparisons(
-            ThaiBuddhistDate.thaiBuddhistDate(1, 1, 1),
-            ThaiBuddhistDate.thaiBuddhistDate(1, 1, 2),
-            ThaiBuddhistDate.thaiBuddhistDate(1, 1, 31),
-            ThaiBuddhistDate.thaiBuddhistDate(1, 2, 1),
-            ThaiBuddhistDate.thaiBuddhistDate(1, 2, 28),
-            ThaiBuddhistDate.thaiBuddhistDate(1, 12, 31),
-            ThaiBuddhistDate.thaiBuddhistDate(2, 1, 1),
-            ThaiBuddhistDate.thaiBuddhistDate(2, 12, 31),
-            ThaiBuddhistDate.thaiBuddhistDate(3, 1, 1),
-            ThaiBuddhistDate.thaiBuddhistDate(3, 12, 31),
-            ThaiBuddhistDate.thaiBuddhistDate(9999, 1, 1),
-            ThaiBuddhistDate.thaiBuddhistDate(9999, 12, 31)
+            ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.JANUARY, 1),
+            ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.JANUARY, 2),
+            ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.JANUARY, 31),
+            ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.FEBRUARY, 1),
+            ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.FEBRUARY, 28),
+            ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.DECEMBER, 31),
+            ThaiBuddhistDate.thaiBuddhistDate(2, MonthOfYear.JANUARY, 1),
+            ThaiBuddhistDate.thaiBuddhistDate(2, MonthOfYear.DECEMBER, 31),
+            ThaiBuddhistDate.thaiBuddhistDate(3, MonthOfYear.JANUARY, 1),
+            ThaiBuddhistDate.thaiBuddhistDate(3, MonthOfYear.DECEMBER, 31),
+            ThaiBuddhistDate.thaiBuddhistDate(9999, MonthOfYear.JANUARY, 1),
+            ThaiBuddhistDate.thaiBuddhistDate(9999, MonthOfYear.DECEMBER, 31)
         );
     }
 
@@ -583,7 +564,7 @@ public class TestThaiBuddhistDate {
     @Test
     public void testEqualsNotEqualMonth() throws Exception {
         ThaiBuddhistDate a = ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear, testDayOfMonth);
-        ThaiBuddhistDate b = ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear+1, testDayOfMonth);
+        ThaiBuddhistDate b = ThaiBuddhistDate.thaiBuddhistDate(testYear, testMonthOfYear.next(), testDayOfMonth);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -616,8 +597,8 @@ public class TestThaiBuddhistDate {
 
     @Test
     public void testHashCode() throws Exception {
-        ThaiBuddhistDate a = ThaiBuddhistDate.thaiBuddhistDate(1, 1, 1);
-        ThaiBuddhistDate b = ThaiBuddhistDate.thaiBuddhistDate(1, 1, 1);
+        ThaiBuddhistDate a = ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.JANUARY, 1);
+        ThaiBuddhistDate b = ThaiBuddhistDate.thaiBuddhistDate(1, MonthOfYear.JANUARY, 1);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(b.hashCode(), b.hashCode());
@@ -633,7 +614,7 @@ public class TestThaiBuddhistDate {
         assertEquals(expected, actual);
     }
     
-    private void assertThaiBuddhistDate(ThaiBuddhistDate test, ThaiBuddhistEra era, int year, int month, int day) throws Exception {
+    private void assertThaiBuddhistDate(ThaiBuddhistDate test, ThaiBuddhistEra era, int year, MonthOfYear month, int day) throws Exception {
         assertEquals(test.getEra(), era);
         assertEquals(test.getYearOfEra(), year);
         assertEquals(test.getMonthOfYear(), month);

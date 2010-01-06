@@ -16,6 +16,7 @@ import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.MonthOfYear;
 
 /**
  * A date in the Japanese calendar system.
@@ -65,13 +66,13 @@ public final class JapaneseDate
      * month of year and day of month. This uses the Japanese era.
      *
      * @param yearOfJapaneseEra  the year to represent in the Japanese era, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the created JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static JapaneseDate japaneseDate(int yearOfJapaneseEra, int monthOfYear, int dayOfMonth) {
+    public static JapaneseDate japaneseDate(int yearOfJapaneseEra, MonthOfYear monthOfYear, int dayOfMonth) {
         return JapaneseDate.japaneseDate(JapaneseEra.HEISEI, yearOfJapaneseEra, monthOfYear, dayOfMonth);
     }
 
@@ -81,16 +82,16 @@ public final class JapaneseDate
      *
      * @param era  the era to represent, not null
      * @param yearOfEra  the year to represent, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the created JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static JapaneseDate japaneseDate(JapaneseEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public static JapaneseDate japaneseDate(JapaneseEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "JapaneseEra must not be null");
         JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
-        JapaneseChronology.monthOfYearRule().checkValue(monthOfYear);
+        I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
         int year = yearOfEra + era.getYearOffset();
         LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
@@ -168,12 +169,12 @@ public final class JapaneseDate
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month-of-year.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month-of-year, never null
      */
-    public int getMonthOfYear() {
-        return date.getMonthOfYear().getValue();
+    public MonthOfYear getMonthOfYear() {
+        return date.getMonthOfYear();
     }
 
     /**
@@ -256,13 +257,13 @@ public final class JapaneseDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to represent, not null
      * @return a new updated JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
-    public JapaneseDate withMonthOfYear(int monthOfYear) {
-        JapaneseChronology.monthOfYearRule().checkValue(monthOfYear);
-        return JapaneseDate.japaneseDate(date.withMonthOfYear(monthOfYear));
+    public JapaneseDate withMonthOfYear(MonthOfYear monthOfYear) {
+        I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        return JapaneseDate.japaneseDate(date.with(monthOfYear));
     }
 
     /**
@@ -516,7 +517,7 @@ public final class JapaneseDate
     public String toString() {
         String era = getEra().name();
         int yearValue = getYearOfEra();
-        int monthValue = getMonthOfYear();
+        int monthValue = getMonthOfYear().getValue();
         int dayValue = getDayOfMonth();
         StringBuilder buf = new StringBuilder();
         return buf.append(era + " ")

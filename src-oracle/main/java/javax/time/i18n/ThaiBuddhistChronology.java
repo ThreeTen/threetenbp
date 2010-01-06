@@ -151,7 +151,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      *
      * @return the rule for the month of year field, never null
      */
-    public static DateTimeFieldRule<Integer> monthOfYearRule() {
+    public static DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
@@ -375,10 +375,10 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             era = (era != null ? era : ThaiBuddhistEra.BUDDHIST);
             Integer yoeVal = merger.getValue(this);
             // era, year, month, day-of-month
-            Integer moyVal = merger.getValue(ThaiBuddhistChronology.monthOfYearRule());
+            MonthOfYear moy = merger.getValue(ThaiBuddhistChronology.monthOfYearRule());
             Integer domVal = merger.getValue(ThaiBuddhistChronology.dayOfMonthRule());
-            if (moyVal != null && domVal != null) {
-                ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(era, yoeVal, moyVal, domVal);
+            if (moy != null && domVal != null) {
+                ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(era, yoeVal, moy, domVal);
                 merger.storeMerged(ThaiBuddhistDate.rule(), date);
                 merger.removeProcessed(ThaiBuddhistChronology.eraRule());
                 merger.removeProcessed(this);
@@ -388,7 +388,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             // era, year, day-of-year
             Integer doyVal = merger.getValue(ThaiBuddhistChronology.dayOfYearRule());
             if (doyVal != null) {
-                ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(era, yoeVal, 1, 1).plusDays(doyVal);
+                ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
                 merger.storeMerged(ThaiBuddhistDate.rule(), date);
                 merger.removeProcessed(ThaiBuddhistChronology.eraRule());
                 merger.removeProcessed(this);
@@ -402,20 +402,20 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
     /**
      * Rule implementation.
      */
-    private static final class MonthOfYearRule extends DateTimeFieldRule<Integer> implements Serializable {
+    private static final class MonthOfYearRule extends DateTimeFieldRule<MonthOfYear> implements Serializable {
         /** Singleton instance. */
-        private static final DateTimeFieldRule<Integer> INSTANCE = new MonthOfYearRule();
+        private static final DateTimeFieldRule<MonthOfYear> INSTANCE = new MonthOfYearRule();
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private MonthOfYearRule() {
-            super(Integer.class, ThaiBuddhistChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
+            super(MonthOfYear.class, ThaiBuddhistChronology.INSTANCE, "MonthOfYear", periodMonths(), periodYears(), 1, 12);
         }
         private Object readResolve() {
             return INSTANCE;
         }
         @Override
-        protected Integer derive(Calendrical calendrical) {
+        protected MonthOfYear derive(Calendrical calendrical) {
             ThaiBuddhistDate date = calendrical.get(ThaiBuddhistDate.rule());
             return date != null ? date.getMonthOfYear() : null;
         }
@@ -443,13 +443,16 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
         }
         @Override
         public int getMaximumValue(Calendrical calendrical) {
-            ThaiBuddhistEra era = calendrical.get(ThaiBuddhistEra.rule());
-            Integer yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
-            Integer moyval = calendrical.get(ThaiBuddhistChronology.monthOfYearRule());
-            if (era != null && yoeVal != null && moyval != null) {
-                int isoYear = (era == ThaiBuddhistEra.BEFORE_BUDDHIST ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
-                MonthOfYear month = MonthOfYear.monthOfYear(moyval);
-                return month.lengthInDays(ISOChronology.isLeapYear(isoYear));
+            MonthOfYear moy = calendrical.get(ThaiBuddhistChronology.monthOfYearRule());
+            if (moy != null) {
+                ThaiBuddhistEra era = calendrical.get(ThaiBuddhistEra.rule());
+                Integer yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
+                if (era != null && yoeVal != null) {
+                    int isoYear = (era == ThaiBuddhistEra.BEFORE_BUDDHIST ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
+                    return moy.lengthInDays(ISOChronology.isLeapYear(isoYear));
+                } else {
+                    return moy.maxLengthInDays();
+                }
             }
             return getMaximumValue();
         }

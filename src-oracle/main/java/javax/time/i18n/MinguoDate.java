@@ -16,6 +16,7 @@ import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.DayOfYear;
+import javax.time.calendar.field.MonthOfYear;
 
 /**
  * A date in the Minguo calendar system.
@@ -65,13 +66,13 @@ public final class MinguoDate
      * month of year and day of month. This uses the Minguo era.
      *
      * @param yearOfMinguoEra  the year to represent in the Minguo era, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the created MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static MinguoDate minguoDate(int yearOfMinguoEra, int monthOfYear, int dayOfMonth) {
+    public static MinguoDate minguoDate(int yearOfMinguoEra, MonthOfYear monthOfYear, int dayOfMonth) {
         return MinguoDate.minguoDate(MinguoEra.MINGUO, yearOfMinguoEra, monthOfYear, dayOfMonth);
     }
 
@@ -81,16 +82,16 @@ public final class MinguoDate
      *
      * @param era  the era to represent, not null
      * @param yearOfEra  the year to represent, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month of year to represent, not null
      * @param dayOfMonth  the day of month to represent, from 1 to 31
      * @return the created MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
      */
-    public static MinguoDate minguoDate(MinguoEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public static MinguoDate minguoDate(MinguoEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "MinguoEra must not be null");
         MinguoChronology.yearOfEraRule().checkValue(yearOfEra);
-        MinguoChronology.monthOfYearRule().checkValue(monthOfYear);
+        I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
         int year = yearOfEra;
         if (era == MinguoEra.BEFORE_MINGUO) {
@@ -193,12 +194,12 @@ public final class MinguoDate
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month-of-year.
      *
-     * @return the month of year, from 1 (January) to 12 (December)
+     * @return the month-of-year, never null
      */
-    public int getMonthOfYear() {
-        return date.getMonthOfYear().getValue();
+    public MonthOfYear getMonthOfYear() {
+        return date.getMonthOfYear();
     }
 
     /**
@@ -285,13 +286,13 @@ public final class MinguoDate
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month of year to represent, not nullo
      * @return a new updated MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
-    public MinguoDate withMonthOfYear(int monthOfYear) {
-        MinguoChronology.monthOfYearRule().checkValue(monthOfYear);
-        return MinguoDate.minguoDate(date.withMonthOfYear(monthOfYear));
+    public MinguoDate withMonthOfYear(MonthOfYear monthOfYear) {
+        I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
+        return MinguoDate.minguoDate(date.with(monthOfYear));
     }
 
     /**
@@ -548,7 +549,7 @@ public final class MinguoDate
         boolean currentEra = getEra() == MinguoEra.MINGUO;
         int yearValue = getYearOfEra();
         yearValue = Math.abs(currentEra ? yearValue : -yearValue);
-        int monthValue = getMonthOfYear();
+        int monthValue = getMonthOfYear().getValue();
         int dayValue = getDayOfMonth();
         StringBuilder buf = new StringBuilder();
         return buf.append(currentEra ? "" : "-")

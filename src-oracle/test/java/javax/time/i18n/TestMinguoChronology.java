@@ -16,6 +16,7 @@ import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.Test;
 
@@ -92,7 +93,7 @@ public class TestMinguoChronology {
 
     @Test
     public void testMonthOfYear() throws Exception {
-        DateTimeFieldRule<Integer> rule = MinguoChronology.monthOfYearRule();
+        DateTimeFieldRule<MonthOfYear> rule = MinguoChronology.monthOfYearRule();
         assertEquals(rule.getID(), "Minguo.MonthOfYear");
         assertEquals(rule.getName(), "MonthOfYear");
         assertEquals(rule.getMinimumValue(), 1);
