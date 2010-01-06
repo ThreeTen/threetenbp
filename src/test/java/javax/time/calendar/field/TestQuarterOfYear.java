@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -109,7 +109,7 @@ public class TestQuarterOfYear {
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_factory_Calendrical_noData() {
-        DayOfWeek.dayOfWeek(new MockSimpleCalendrical());
+        QuarterOfYear.quarterOfYear(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
