@@ -464,7 +464,7 @@ public enum MonthOfYear {
     /**
      * Gets the quarter that this month falls in.
      *
-     * @return the quarter of year, never null
+     * @return the quarter-of-year, never null
      */
     public QuarterOfYear getQuarterOfYear() {
         if (ordinal() < 3) {

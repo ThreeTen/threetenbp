@@ -132,8 +132,8 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param hourOfDay  the hour-of-day to represent, not null
+     * @param minuteOfHour  the minute-of-hour to represent, not null
      * @return the local time, never null
      */
     public static LocalTime time(HourOfDay hourOfDay, MinuteOfHour minuteOfHour) {
@@ -146,9 +146,9 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
-     * @param secondOfMinute  the second of minute to represent, not null
+     * @param hourOfDay  the hour-of-day to represent, not null
+     * @param minuteOfHour  the minute-of-hour to represent, not null
+     * @param secondOfMinute  the second-of-minute to represent, not null
      * @return the local time, never null
      */
     public static LocalTime time(
@@ -162,10 +162,10 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
-     * @param secondOfMinute  the second of minute to represent, not null
-     * @param nanoOfSecond  the nano of second to represent, not null
+     * @param hourOfDay  the hour-of-day to represent, not null
+     * @param minuteOfHour  the minute-of-hour to represent, not null
+     * @param secondOfMinute  the second-of-minute to represent, not null
+     * @param nanoOfSecond  the nano-of-second to represent, not null
      * @return the local time, never null
      */
     public static LocalTime time(
@@ -194,8 +194,8 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
@@ -215,9 +215,9 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
@@ -234,9 +234,9 @@ public final class LocalTime
 //    /**
 //     * Obtains an instance of <code>LocalTime</code>.
 //     *
-//     * @param hourOfDay  the hour of day to represent, from 0 to 23
-//     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-//     * @param secondOfMinute  the second of minute to represent, from 0 to 59.999,999,999
+//     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+//     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+//     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59.999,999,999
 //     * @return a LocalTime object, never null
 //     * @throws IllegalCalendarFieldValueException if any field is invalid
 //     */
@@ -257,10 +257,10 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
@@ -294,13 +294,13 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Converts a second of day value to a time.
+     * Converts a second-of-day value to a time.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param secondOfDay  the second of day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
+     * @param secondOfDay  the second-of-day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
      * @return the local time, never null
-     * @throws IllegalCalendarFieldValueException if the second of day value is invalid
+     * @throws IllegalCalendarFieldValueException if the second-of-day value is invalid
      */
     public static LocalTime fromSecondOfDay(long secondOfDay) {
         ISOChronology.secondOfDayRule().checkValue(secondOfDay);
@@ -312,12 +312,12 @@ public final class LocalTime
     }
 
     /**
-     * Converts a second of day value, with associated nanos of second, to a time.
+     * Converts a second-of-day value, with associated nanos of second, to a time.
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param secondOfDay  the second of day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
-     * @param nanoOfSecond  the nano of second, from 0 to 999,999,999
+     * @param secondOfDay  the second-of-day, from <code>0</code> to <code>24 * 60 * 60 - 1</code>
+     * @param nanoOfSecond  the nano-of-second, from 0 to 999,999,999
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the either input value is invalid
      */
@@ -389,12 +389,12 @@ public final class LocalTime
      * <p>
      * This factory may return a cached value, but applications must not rely on this.
      *
-     * @param hourOfDay  the hour of day to represent, validated from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, validated from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, validated from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, validated from 0 to 999,999,999
+     * @param hourOfDay  the hour-of-day to represent, validated from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, validated from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, validated from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, validated from 0 to 999,999,999
      * @return the local time, never null
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     private static LocalTime create(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         if ((minuteOfHour | secondOfMinute | nanoOfSecond) == 0) {
@@ -406,10 +406,10 @@ public final class LocalTime
     /**
      * Constructor, previously validated.
      *
-     * @param hourOfDay  the hour of day to represent, validated from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, validated from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, validated from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, validated from 0 to 999,999,999
+     * @param hourOfDay  the hour-of-day to represent, validated from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, validated from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, validated from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, validated from 0 to 999,999,999
      */
     private LocalTime(
             int hourOfDay, int minuteOfHour,
@@ -455,48 +455,48 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day field as an <code>HourOfDay</code>.
+     * Gets the hour-of-day field as an <code>HourOfDay</code>.
      * <p>
-     * This method provides access to an object representing the hour of day field.
+     * This method provides access to an object representing the hour-of-day field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the hour of day, never null
+     * @return the hour-of-day, never null
      */
     public HourOfDay toHourOfDay() {
         return HourOfDay.hourOfDay(hour);
     }
 
     /**
-     * Gets the minute of hour field as a <code>MinuteOfHour</code>.
+     * Gets the minute-of-hour field as a <code>MinuteOfHour</code>.
      * <p>
-     * This method provides access to an object representing the minute of hour field.
+     * This method provides access to an object representing the minute-of-hour field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the minute of hour, never null
+     * @return the minute-of-hour, never null
      */
     public MinuteOfHour toMinuteOfHour() {
         return MinuteOfHour.minuteOfHour(minute);
     }
 
     /**
-     * Gets the second of minute field as a <code>SecondOfMinute</code>.
+     * Gets the second-of-minute field as a <code>SecondOfMinute</code>.
      * <p>
-     * This method provides access to an object representing the second of minute field.
+     * This method provides access to an object representing the second-of-minute field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the second of minute, never null
+     * @return the second-of-minute, never null
      */
     public SecondOfMinute toSecondOfMinute() {
         return SecondOfMinute.secondOfMinute(second);
     }
 
     /**
-     * Gets the nano of second field as a <code>NanoOfSecond</code>.
+     * Gets the nano-of-second field as a <code>NanoOfSecond</code>.
      * <p>
-     * This method provides access to an object representing the nano of second field.
+     * This method provides access to an object representing the nano-of-second field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the nano of second, never null
+     * @return the nano-of-second, never null
      */
     public NanoOfSecond toNanoOfSecond() {
         return NanoOfSecond.nanoOfSecond(nano);
@@ -504,36 +504,36 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day field.
+     * Gets the hour-of-day field.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour-of-day, from 0 to 23
      */
     public int getHourOfDay() {
         return hour;
     }
 
     /**
-     * Gets the minute of hour field.
+     * Gets the minute-of-hour field.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute-of-hour, from 0 to 59
      */
     public int getMinuteOfHour() {
         return minute;
     }
 
     /**
-     * Gets the second of minute field.
+     * Gets the second-of-minute field.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second-of-minute, from 0 to 59
      */
     public int getSecondOfMinute() {
         return second;
     }
 
     /**
-     * Gets the nano of second field.
+     * Gets the nano-of-second field.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano-of-second, from 0 to 999,999,999
      */
     public int getNanoOfSecond() {
         return nano;
@@ -542,7 +542,7 @@ public final class LocalTime
 //    /**
 //     * Gets the second and nanosecond, expressed as a double in seconds.
 //     *
-//     * @return the nano of second, from 0 to 59.999,999,999
+//     * @return the nano-of-second, from 0 to 59.999,999,999
 //     */
 //    public double getFractionalSecondOfMinute() {
 //        // TODO: check maths and write tests
@@ -552,7 +552,7 @@ public final class LocalTime
 //    /**
 //     * Gets the time as a fraction of a day, expressed as a double in days.
 //     *
-//     * @return the nano of second, from 0 to &lt; 1
+//     * @return the nano-of-second, from 0 to &lt; 1
 //     */
 //    public double getFractionalDay() {
 //        // TODO: check maths and write tests
@@ -582,11 +582,11 @@ public final class LocalTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this LocalTime with the hour of day value altered.
+     * Returns a copy of this LocalTime with the hour-of-day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a new updated LocalTime, never null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
@@ -598,11 +598,11 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the minute of hour value altered.
+     * Returns a copy of this LocalTime with the minute-of-hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a new updated LocalTime, never null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
@@ -614,11 +614,11 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the second of minute value altered.
+     * Returns a copy of this LocalTime with the second-of-minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a new updated LocalTime, never null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
@@ -630,11 +630,11 @@ public final class LocalTime
     }
 
     /**
-     * Returns a copy of this LocalTime with the nano of second value altered.
+     * Returns a copy of this LocalTime with the nano-of-second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a new updated LocalTime, never null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */
@@ -969,7 +969,7 @@ public final class LocalTime
      * Extracts the time as seconds of day,
      * from <code>0</code> to <code>24 * 60 * 60 - 1</code>.
      *
-     * @return the second of day equivalent to this time
+     * @return the second-of-day equivalent to this time
      */
     public int toSecondOfDay() {
         int total = hour * SECONDS_PER_HOUR;

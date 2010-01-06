@@ -276,8 +276,8 @@ public final class YearMonth
      * provides the {@link MonthOfYear#getValue() int value}.
      * <p>
      * Additional information can be obtained from the <code>MonthOfYear</code>.
-     * This includes month lengths, textual names and access to the quarter of year
-     * and month of quarter values.
+     * This includes month lengths, textual names and access to the quarter-of-year
+     * and month-of-quarter values.
      *
      * @return the month-of-year, never null
      */
@@ -496,7 +496,7 @@ public final class YearMonth
     /**
      * Adjusts a date to have the value of this year-month, returning a new date.
      * <p>
-     * If the day of month is invalid for the new year then the
+     * If the day-of-month is invalid for the new year then the
      * {@link DateResolvers#previousValid()} resolver is used.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -510,12 +510,12 @@ public final class YearMonth
 
     /**
      * Adjusts a date to have the value of this year-month, using a resolver to
-     * handle the case when the day of month becomes invalid.
+     * handle the case when the day-of-month becomes invalid.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use if the day of month becomes invalid, not null
+     * @param resolver  the date resolver to use if the day-of-month becomes invalid, not null
      * @return the adjusted date, never null
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
@@ -532,14 +532,14 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this year-month at the specified day of month.
+     * Returns a date formed from this year-month at the specified day-of-month.
      * <p>
      * This merges the two objects - <code>this</code> and the specified day -
      * to form an instance of <code>LocalDate</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to use, not null
+     * @param dayOfMonth  the day-of-month to use, not null
      * @return the local date formed from this year-month and the specified day, never null
      * @throws InvalidCalendarFieldException when the day is invalid for the year-month
      */
@@ -548,14 +548,14 @@ public final class YearMonth
     }
 
     /**
-     * Returns a date formed from this year-month at the specified day of month.
+     * Returns a date formed from this year-month at the specified day-of-month.
      * <p>
      * This method merges <code>this</code> and the specified day to form an
      * instance of <code>LocalDate</code>.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to use, from 1 to 31
+     * @param dayOfMonth  the day-of-month to use, from 1 to 31
      * @return the local date formed from this year-month and the specified day, never null
      * @throws InvalidCalendarFieldException when the day is invalid for the year-month
      */

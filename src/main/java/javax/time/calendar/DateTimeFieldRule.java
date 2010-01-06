@@ -53,7 +53,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 /**
  * The rule defining how a measurable field of time operates.
  * <p>
- * Rule implementations define how a field like 'day of month' operates.
+ * Rule implementations define how a field like day-of-month operates.
  * This includes the field name and minimum/maximum values.
  * <p>
  * DateTimeFieldRule is an abstract class and must be implemented with care to
@@ -261,7 +261,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
 //    /**
 //     * Creates a period in the unit of this rule.
 //     * <p>
-//     * For example, if this represents the day of month, the the unit is the day
+//     * For example, if this represents the day-of-month, the the unit is the day
 //     * and the period created will have the days field set.
 //     *
 //     * @param amount  the amount that the period should represent
@@ -420,7 +420,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * The result of this method will still be inaccurate if there is insufficient
      * information in the calendrical.
      * <p>
-     * For example, if this field is the ISO day of month field, then the number
+     * For example, if this field is the ISO day-of-month field, then the number
      * of days in the month varies depending on the month and year. If both the
      * month and year can be derived from the calendrical, then the maximum value
      * returned will be accurate. Otherwise the 'best guess' value from
@@ -440,8 +440,8 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /**
      * Gets the text for this field.
      * <p>
-     * Some fields have a textual representation, such as day of week or
-     * month of year. This method provides a convenient way to convert a value
+     * Some fields have a textual representation, such as day-of-week or
+     * month-of-year. This method provides a convenient way to convert a value
      * to such a textual representation.
      * More control is available using {@link #getTextStore}.
      * <p>
@@ -464,8 +464,8 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /**
      * Gets the text map for this field with the specified locale and style.
      * <p>
-     * Some fields have a textual representation, such as day of week or
-     * month of year. The text store provides details of those textual representations.
+     * Some fields have a textual representation, such as day-of-week or
+     * month-of-year. The text store provides details of those textual representations.
      * <p>
      * To supply text, subclasses should pass true in the constructor and
      * override {@link #createTextStore}. This method is not normally overridden.
@@ -549,7 +549,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * The fraction is obtained by calculation from the field range using 9 decimal
      * places and a rounding mode of {@link RoundingMode#FLOOR FLOOR}.
      * <p>
-     * For example, the second of minute value of 15 would be returned as 0.25,
+     * For example, the second-of-minute value of 15 would be returned as 0.25,
      * assuming the standard definition of 60 seconds in a minute.
      *
      * @param value  the value to convert, valid for this field
@@ -582,7 +582,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * The value is obtained by calculation from the field range and a rounding
      * mode of {@link RoundingMode#FLOOR FLOOR}.
      * <p>
-     * For example, the fractional second of minute of 0.25 would be converted to 15,
+     * For example, the fractional second-of-minute of 0.25 would be converted to 15,
      * assuming the standard definition of 60 seconds in a minute.
      *
      * @param fraction  the fraction to convert, not null
@@ -616,7 +616,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /**
      * The mapping between integer values and textual representations.
      * <p>
-     * Some fields have a textual representation, such as day of week or month of year.
+     * Some fields have a textual representation, such as day-of-week or month-of-year.
      * These textual representations can be captured in this class for printing
      * and parsing.
      * <p>

@@ -63,14 +63,14 @@ public final class MinguoDate
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>MinguoDate</code> from the Minguo year,
-     * month of year and day of month. This uses the Minguo era.
+     * month-of-year and day-of-month. This uses the Minguo era.
      *
      * @param yearOfMinguoEra  the year to represent in the Minguo era, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the created MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static MinguoDate minguoDate(int yearOfMinguoEra, MonthOfYear monthOfYear, int dayOfMonth) {
         return MinguoDate.minguoDate(MinguoEra.MINGUO, yearOfMinguoEra, monthOfYear, dayOfMonth);
@@ -78,15 +78,15 @@ public final class MinguoDate
 
     /**
      * Obtains an instance of <code>MinguoDate</code> from the Minguo era,
-     * Minguo year, month of year and day of month.
+     * Minguo year, month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
      * @param yearOfEra  the year to represent, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the created MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static MinguoDate minguoDate(MinguoEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "MinguoEra must not be null");
@@ -107,7 +107,7 @@ public final class MinguoDate
 //     *
 //     * @param era  the era to represent, caller calulated, BM(Before-Minguo) or AM After-Minguo)
 //     * @param year  the year to represent, caller calculated
-//     * @param dayOfYear  the month of year to represent, caller calculated
+//     * @param dayOfYear  the month-of-year to represent, caller calculated
 //     * @return a MinguoDate object
 //     */
 //    static MinguoDate minguoDateFromDoY(MinguoEra era, int year, int dayOfYear) {
@@ -203,18 +203,18 @@ public final class MinguoDate
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the day-of-month value.
      *
-     * @return the day of month, from 1 to 28-31
+     * @return the day-of-month, from 1 to 28-31
      */
     public int getDayOfMonth() {
         return date.getDayOfMonth();
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the day-of-year value.
      *
-     * @return the day of year, from 1 to 365-366
+     * @return the day-of-year, from 1 to 365-366
      */
     public int getDayOfYear() {
         return date.getDayOfYear();
@@ -279,14 +279,14 @@ public final class MinguoDate
     }
 
     /**
-     * Returns a copy of this MinguoDate with the month of year value altered.
+     * Returns a copy of this MinguoDate with the month-of-year value altered.
      * <p>
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, not nullo
+     * @param monthOfYear  the month-of-year to represent, not nullo
      * @return a new updated MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
@@ -296,14 +296,14 @@ public final class MinguoDate
     }
 
     /**
-     * Returns a copy of this MinguoDate with the day of month value altered.
+     * Returns a copy of this MinguoDate with the day-of-month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 28-31
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 28-31
      * @return a new updated MinguoDate instance, never null
      * @throws IllegalCalendarFieldValueException if the day is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year and month
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
     public MinguoDate withDayOfMonth(int dayOfMonth) {
         MinguoChronology.dayOfMonthRule().checkValue(dayOfMonth);
@@ -311,14 +311,14 @@ public final class MinguoDate
     }
 
     /**
-     * Returns a copy of this MinguoDate with the day of year value altered.
+     * Returns a copy of this MinguoDate with the day-of-year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day of year to represent, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to represent, from 1 to 365-366
      * @return a new updated MinguoDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day of year is out of range
-     * @throws InvalidCalendarFieldException if the day of year is invalid for the year
+     * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public MinguoDate withDayOfYear(int dayOfYear) {
         MinguoChronology.dayOfYearRule().checkValue(dayOfYear);

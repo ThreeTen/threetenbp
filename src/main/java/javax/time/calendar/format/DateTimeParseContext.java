@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -165,7 +165,7 @@ public final class DateTimeParseContext {
      * <p>
      * The value returned is directly obtained from the stored map of values.
      * It may be of any type and any value.
-     * For example, the day of month might be set to 50, or the hour to 1000.
+     * For example, the day-of-month might be set to 50, or the hour to 1000.
      *
      * @param rule  the rule to query from the map, not null
      * @return the value mapped to the specified rule, null if rule not in the map

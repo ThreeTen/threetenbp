@@ -74,7 +74,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     private final MonthOfYear month;
     /**
-     * The day of month of the month-day of the cutover week.
+     * The day-of-month of the month-day of the cutover week.
      * If positive, it is the start of the week where the cutover can occur.
      * If negative, it represents the end of the week where cutover can occur.
      * The value is the number of days from the end of the month, such that
@@ -83,7 +83,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      */
     private final int dom;
     /**
-     * The cutover day of week, null to retain the day of month.
+     * The cutover day-of-week, null to retain the day-of-month.
      */
     private final DayOfWeek dow;
     /**
@@ -113,7 +113,7 @@ public final class ZoneOffsetTransitionRule implements Serializable {
      * @param month  the month of the month-day of the first day of the cutover week, not null
      * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
      *  day or later, negative if the week is that day or earlier, counting from the last day of the month
-     * @param dayOfWeek  the required day of week, null if the month-day should not be changed
+     * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
      * @param time  the cutover time in the 'before' offset, not null
      * @param timeDefnition  how to interpret the cutover
      * @param standardOffset  the standard offset in force at the cutover, not null
@@ -161,35 +161,35 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     }
 
     /**
-     * Gets the indicator of the day of month of the transition.
+     * Gets the indicator of the day-of-month of the transition.
      * <p>
      * If the rule defines an exact date then the day is the month of that date.
      * <p>
      * If the rule defines a week where the transition might occur, then the day
      * defines either the start of the end of the transition week.
-     * If the value is positive, then it represents a normal day of month, and is the
+     * If the value is positive, then it represents a normal day-of-month, and is the
      * earliest possible date that the transition can be.
      * If the value is negative, then it represents the number of days back from the
      * end of the month where <code>-1</code> is the last day of the month.
      * In this case, the day identified is the latest possible date that the transition can be.
      *
-     * @return the day of month indicator, from -31 to 31 excluding 0
+     * @return the day-of-month indicator, from -31 to 31 excluding 0
      */
     public int getDayOfMonthIndicator() {
         return dom;
     }
 
     /**
-     * Gets the day of week of the transition.
+     * Gets the day-of-week of the transition.
      * <p>
      * If the rule defines an exact date then this returns null.
      * <p>
      * If the rule defines a week where the cutover might occur, then this method
-     * returns the day of week that the month-day will be adjusted to.
+     * returns the day-of-week that the month-day will be adjusted to.
      * If the day is positive then the adjustment is later.
      * If the day is negative then the adjustment is earlier.
      *
-     * @return the day of week that the transition occurs, null if the rule defines an exact date
+     * @return the day-of-week that the transition occurs, null if the rule defines an exact date
      */
     public DayOfWeek getDayOfWeek() {
         return dow;

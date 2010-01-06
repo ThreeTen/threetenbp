@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -204,7 +204,7 @@ public final class DateTimeFormatSymbols {
 //        map.put(MonthOfYear.DECEMBER.getValue(), array[Calendar.DECEMBER]);
 //        textMap.get(id).put(TextStyle.SHORT, new TextStore(map));
 //        
-//        // day of week
+//        // day-of-week
 //        id = ISOChronology.dayOfWeekRule().getID();
 //        textMap.put(id, new HashMap<TextStyle, TextStore>());
 //        map.clear();

@@ -40,7 +40,7 @@ import javax.time.calendar.field.Year;
 /**
  * The rule defining how a single well-defined calendrical operates.
  * <p>
- * Calendrical rules may be fields like day of month, or combinations like date-time.
+ * Calendrical rules may be fields like day-of-month, or combinations like date-time.
  * <p>
  * Each rule uses an underlying type to represent the data.
  * This is captured in the generic type of the rule.

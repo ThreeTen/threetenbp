@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -54,7 +54,7 @@ public interface Calendrical {
      * <p>
      * Where this method returns numeric values, Integer is the preferred type.
      * The values should be within the range of the field wherever possible.
-     * For example, minute of hour should be from 0 to 59 inclusive.
+     * For example, minute-of-hour should be from 0 to 59 inclusive.
      * The calling code must validate the value however and not trust it to be valid.
      *
      * @param rule  the rule to query, not null

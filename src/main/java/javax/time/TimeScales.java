@@ -62,7 +62,7 @@ public final class TimeScales {
      * Enum implementing the scales.
      */
     private static enum Impl implements TimeScale {
-        /** Last day of month adjuster. */
+        /** TAI. */
         TAI {
             /** {@inheritDoc} */
             public Instant toInstant(TimeScaleInstant tsInstant) {

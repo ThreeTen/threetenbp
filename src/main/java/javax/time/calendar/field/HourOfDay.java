@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,13 +45,13 @@ import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a hour of day in the ISO-8601 calendar system.
+ * A representation of a hour-of-day in the ISO-8601 calendar system.
  * <p>
- * HourOfDay is an immutable time field that can only store a hour of day.
- * It is a type-safe way of representing a hour of day in an application.
+ * HourOfDay is an immutable time field that can only store a hour-of-day.
+ * It is a type-safe way of representing a hour-of-day in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The hour of day may be queried using getValue().
+ * The hour-of-day may be queried using getValue().
  * <p>
  * HourOfDay is immutable and thread-safe.
  *
@@ -71,18 +71,18 @@ public final class HourOfDay
     private static final AtomicReferenceArray<HourOfDay> CACHE = new AtomicReferenceArray<HourOfDay>(24);
 
     /**
-     * The hour of day being represented.
+     * The hour-of-day being represented.
      */
     private final int hourOfDay;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the hour of day field operates.
+     * Gets the rule that defines how the hour-of-day field operates.
      * <p>
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the hour of day rule, never null
+     * @return the hour-of-day rule, never null
      */
     public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.hourOfDayRule();
@@ -92,7 +92,7 @@ public final class HourOfDay
     /**
      * Obtains an instance of <code>HourOfDay</code>.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return the HourOfDay instance, never null
      * @throws IllegalCalendarFieldValueException if the hourOfDay is invalid
      */
@@ -141,9 +141,9 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified hour of day.
+     * Constructs an instance with the specified hour-of-day.
      *
-     * @param hourOfDay  the hour of day to represent
+     * @param hourOfDay  the hour-of-day to represent
      */
     private HourOfDay(int hourOfDay) {
         this.hourOfDay = hourOfDay;
@@ -175,9 +175,9 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day value.
+     * Gets the hour-of-day value.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour-of-day, from 0 to 23
      */
     public int getValue() {
         return hourOfDay;
@@ -196,10 +196,10 @@ public final class HourOfDay
     }
 
     /**
-     * Adjusts a time to have the the hour of day represented by this object,
+     * Adjusts a time to have the the hour-of-day represented by this object,
      * returning a new time.
      * <p>
-     * Only the hour of day field is adjusted in the result. The other time
+     * Only the hour-of-day field is adjusted in the result. The other time
      * fields are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -260,7 +260,7 @@ public final class HourOfDay
     }
 
     /**
-     * Gets the clock hour of day, from 1 to 24.
+     * Gets the clock hour-of-day, from 1 to 24.
      * <p>
      * This method returns the same as {@link #hourOfDay}, unless the
      * hour is 0, when this method returns 24.
@@ -278,9 +278,9 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this hour of day instance to another.
+     * Compares this hour-of-day instance to another.
      *
-     * @param otherHourOfDay  the other hour of day instance, not null
+     * @param otherHourOfDay  the other hour-of-day instance, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherHourOfDay is null
      */
@@ -292,10 +292,10 @@ public final class HourOfDay
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the hour of day.
+     * Is this instance equal to that specified, evaluating the hour-of-day.
      *
-     * @param otherHourOfDay  the other hour of day instance, null returns false
-     * @return true if the hour of day is the same
+     * @param otherHourOfDay  the other hour-of-day instance, null returns false
+     * @return true if the hour-of-day is the same
      */
     @Override
     public boolean equals(Object otherHourOfDay) {
@@ -303,7 +303,7 @@ public final class HourOfDay
     }
 
     /**
-     * A hash code for the hour of day object.
+     * A hash code for the hour-of-day object.
      *
      * @return a suitable hash code
      */
@@ -313,7 +313,7 @@ public final class HourOfDay
     }
 
     /**
-     * A string describing the hour of day object.
+     * A string describing the hour-of-day object.
      *
      * @return a string describing this object
      */

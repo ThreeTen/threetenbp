@@ -427,7 +427,7 @@ public final class TZDBZoneRulesCompiler {
     private DayOfWeek parseDayOfWeek(String str) {
         int index = "MonTueWedThuFriSatSun".indexOf(str);
         if (index == -1) {
-            throw new IllegalArgumentException("Unknown day of week: " + str);
+            throw new IllegalArgumentException("Unknown day-of-week: " + str);
         }
         int dow = index / 3 + 1;
         return DayOfWeek.dayOfWeek(dow);
@@ -599,11 +599,11 @@ public final class TZDBZoneRulesCompiler {
     private abstract class TZDBMonthDayTime {
         /** The month of the cutover. */
         MonthOfYear month = MonthOfYear.JANUARY;
-        /** The day of month of the cutover. */
+        /** The day-of-month of the cutover. */
         int dayOfMonth = 1;
         /** Whether to adjust forwards. */
         boolean adjustForwards = true;
-        /** The day of week of the cutover. */
+        /** The day-of-week of the cutover. */
         DayOfWeek dayOfWeek;
         /** The time of the cutover. */
         LocalTime time = LocalTime.MIDNIGHT;

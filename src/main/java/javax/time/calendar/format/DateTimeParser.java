@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -38,7 +38,7 @@ import javax.time.calendar.CalendricalMerger;
  * <p>
  * The parser may parse any piece of text from the input, storing the result
  * in the context. Typically, each individual parser will just parse one
- * field, such as the day of month, storing the value in the context.
+ * field, such as the day-of-month, storing the value in the context.
  * Once the parse is complete, the caller will then convert the context
  * to a {@link CalendricalMerger} to merge the parsed values to create the
  * desired object, such as a <code>LocalDate</code>.

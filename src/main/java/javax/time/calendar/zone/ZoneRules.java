@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -375,7 +375,7 @@ public abstract class ZoneRules {
      * @param month  the month of the month-day of the first day of the cutover week, not null
      * @param dayOfMonthIndicator  the day of the month-day of the cutover week, positive if the week is that
      *  day or later, negative if the week is that day or earlier, counting from the last day of the month
-     * @param dayOfWeek  the required day of week, null if the month-day should not be changed
+     * @param dayOfWeek  the required day-of-week, null if the month-day should not be changed
      * @param time  the cutover time in the 'before' offset, not null
      * @param timeDefnition  how to interpret the cutover
      * @param standardOffset  the standard offset in force at the cutover, not null

@@ -81,8 +81,8 @@ public final class OffsetTime
      * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
      * and offset, setting the second and nanosecond to zero.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
+     * @param hourOfDay  the hour-of-day to represent, not null
+     * @param minuteOfHour  the minute-of-hour to represent, not null
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      */
@@ -96,9 +96,9 @@ public final class OffsetTime
      * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
      * second, and offset, setting the nanosecond to zero.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
-     * @param secondOfMinute  the second of minute to represent, not null
+     * @param hourOfDay  the hour-of-day to represent, not null
+     * @param minuteOfHour  the minute-of-hour to represent, not null
+     * @param secondOfMinute  the second-of-minute to represent, not null
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      */
@@ -113,10 +113,10 @@ public final class OffsetTime
      * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
      * second, nanosecond, and offset.
      *
-     * @param hourOfDay  the hour of day to represent, not null
-     * @param minuteOfHour  the minute of hour to represent, not null
-     * @param secondOfMinute  the second of minute to represent, not null
-     * @param nanoOfSecond  the nano of second to represent, not null
+     * @param hourOfDay  the hour-of-day to represent, not null
+     * @param minuteOfHour  the minute-of-hour to represent, not null
+     * @param secondOfMinute  the second-of-minute to represent, not null
+     * @param nanoOfSecond  the nano-of-second to represent, not null
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      */
@@ -132,8 +132,8 @@ public final class OffsetTime
      * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
@@ -148,9 +148,9 @@ public final class OffsetTime
      * <p>
      * The second field will be set to zero by this factory method.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
@@ -163,10 +163,10 @@ public final class OffsetTime
     /**
      * Obtains an instance of <code>OffsetTime</code>.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
@@ -352,48 +352,48 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day field as an <code>HourOfDay</code>.
+     * Gets the hour-of-day field as an <code>HourOfDay</code>.
      * <p>
-     * This method provides access to an object representing the hour of day field.
+     * This method provides access to an object representing the hour-of-day field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the hour of day, never null
+     * @return the hour-of-day, never null
      */
     public HourOfDay toHourOfDay() {
         return time.toHourOfDay();
     }
 
     /**
-     * Gets the minute of hour field as a <code>MinuteOfHour</code>.
+     * Gets the minute-of-hour field as a <code>MinuteOfHour</code>.
      * <p>
-     * This method provides access to an object representing the minute of hour field.
+     * This method provides access to an object representing the minute-of-hour field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the minute of hour, never null
+     * @return the minute-of-hour, never null
      */
     public MinuteOfHour toMinuteOfHour() {
         return time.toMinuteOfHour();
     }
 
     /**
-     * Gets the second of minute field as a <code>SecondOfMinute</code>.
+     * Gets the second-of-minute field as a <code>SecondOfMinute</code>.
      * <p>
-     * This method provides access to an object representing the second of minute field.
+     * This method provides access to an object representing the second-of-minute field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the second of minute, never null
+     * @return the second-of-minute, never null
      */
     public SecondOfMinute toSecondOfMinute() {
         return time.toSecondOfMinute();
     }
 
     /**
-     * Gets the nano of second field as a <code>NanoOfSecond</code>.
+     * Gets the nano-of-second field as a <code>NanoOfSecond</code>.
      * <p>
-     * This method provides access to an object representing the nano of second field.
+     * This method provides access to an object representing the nano-of-second field.
      * This allows operations to be performed on this field in a type-safe manner.
      *
-     * @return the nano of second, never null
+     * @return the nano-of-second, never null
      */
     public NanoOfSecond toNanoOfSecond() {
         return time.toNanoOfSecond();
@@ -401,36 +401,36 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the hour of day field.
+     * Gets the hour-of-day field.
      *
-     * @return the hour of day, from 0 to 23
+     * @return the hour-of-day, from 0 to 23
      */
     public int getHourOfDay() {
         return time.getHourOfDay();
     }
 
     /**
-     * Gets the minute of hour field.
+     * Gets the minute-of-hour field.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute-of-hour, from 0 to 59
      */
     public int getMinuteOfHour() {
         return time.getMinuteOfHour();
     }
 
     /**
-     * Gets the second of minute field.
+     * Gets the second-of-minute field.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second-of-minute, from 0 to 59
      */
     public int getSecondOfMinute() {
         return time.getSecondOfMinute();
     }
 
     /**
-     * Gets the nano of second field.
+     * Gets the nano-of-second field.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano-of-second, from 0 to 999,999,999
      */
     public int getNanoOfSecond() {
         return time.getNanoOfSecond();
@@ -457,11 +457,11 @@ public final class OffsetTime
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this OffsetTime with the hour of day value altered.
+     * Returns a copy of this OffsetTime with the hour-of-day value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param hourOfDay  the hour of day to represent, from 0 to 23
+     * @param hourOfDay  the hour-of-day to represent, from 0 to 23
      * @return a new updated OffsetTime, never null
      * @throws IllegalCalendarFieldValueException if the hour value is invalid
      */
@@ -471,11 +471,11 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the minute of hour value altered.
+     * Returns a copy of this OffsetTime with the minute-of-hour value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return a new updated OffsetTime, never null
      * @throws IllegalCalendarFieldValueException if the minute value is invalid
      */
@@ -485,11 +485,11 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the second of minute value altered.
+     * Returns a copy of this OffsetTime with the second-of-minute value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return a new updated OffsetTime, never null
      * @throws IllegalCalendarFieldValueException if the second value is invalid
      */
@@ -499,11 +499,11 @@ public final class OffsetTime
     }
 
     /**
-     * Returns a copy of this OffsetTime with the nano of second value altered.
+     * Returns a copy of this OffsetTime with the nano-of-second value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return a new updated OffsetTime, never null
      * @throws IllegalCalendarFieldValueException if the nanos value is invalid
      */

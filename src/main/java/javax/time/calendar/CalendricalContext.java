@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -118,7 +118,7 @@ public final class CalendricalContext
     }
 
     /**
-     * Resolves the year, month and day of month to a date using ISO chronology rules.
+     * Resolves the year, month and day-of-month to a date using ISO chronology rules.
      * <p>
      * The three input parameters are resolved to a date.
      * If the context specifies a date resolver, then that is used.
@@ -126,7 +126,7 @@ public final class CalendricalContext
      *
      * @param year  the year to resolve
      * @param month  the month to resolve
-     * @param dayOfMonth  the day of month to resolve
+     * @param dayOfMonth  the day-of-month to resolve
      * @return the resolved date, never null
      * @throws IllegalCalendarFieldValueException if one of the fields has an invalid value
      * @throws CalendricalException if the input date does not match the stored date

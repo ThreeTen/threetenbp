@@ -63,14 +63,14 @@ public final class JapaneseDate
     //-----------------------------------------------------------------------
     /**
      * Obtains an instance of <code>JapaneseDate</code> from the Japanese year,
-     * month of year and day of month. This uses the Japanese era.
+     * month-of-year and day-of-month. This uses the Japanese era.
      *
      * @param yearOfJapaneseEra  the year to represent in the Japanese era, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the created JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static JapaneseDate japaneseDate(int yearOfJapaneseEra, MonthOfYear monthOfYear, int dayOfMonth) {
         return JapaneseDate.japaneseDate(JapaneseEra.HEISEI, yearOfJapaneseEra, monthOfYear, dayOfMonth);
@@ -78,15 +78,15 @@ public final class JapaneseDate
 
     /**
      * Obtains an instance of <code>JapaneseDate</code> from the Japanese era,
-     * Japanese year, month of year and day of month.
+     * Japanese year, month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
      * @param yearOfEra  the year to represent, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, not null
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param monthOfYear  the month-of-year to represent, not null
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the created JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static JapaneseDate japaneseDate(JapaneseEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "JapaneseEra must not be null");
@@ -178,18 +178,18 @@ public final class JapaneseDate
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the day-of-month value.
      *
-     * @return the day of month, from 1 to 28-31
+     * @return the day-of-month, from 1 to 28-31
      */
     public int getDayOfMonth() {
         return date.getDayOfMonth();
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the day-of-year value.
      *
-     * @return the day of year, from 1 to 365-366
+     * @return the day-of-year, from 1 to 365-366
      */
     public int getDayOfYear() {
         return date.getDayOfYear();
@@ -250,14 +250,14 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the month of year value altered.
+     * Returns a copy of this JapaneseDate with the month-of-year value altered.
      * <p>
      * If the month-day is invalid for the year, then the previous valid day
      * will be selected instead.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, not null
+     * @param monthOfYear  the month-of-year to represent, not null
      * @return a new updated JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
@@ -267,14 +267,14 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the day of month value altered.
+     * Returns a copy of this JapaneseDate with the day-of-month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 28-31
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 28-31
      * @return a new updated JapaneseDate instance, never null
      * @throws IllegalCalendarFieldValueException if the day is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year and month
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
     public JapaneseDate withDayOfMonth(int dayOfMonth) {
         JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
@@ -282,14 +282,14 @@ public final class JapaneseDate
     }
 
     /**
-     * Returns a copy of this JapaneseDate with the day of year value altered.
+     * Returns a copy of this JapaneseDate with the day-of-year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day of year to represent, from 1 to 365-366
+     * @param dayOfYear  the day-of-year to represent, from 1 to 365-366
      * @return a new updated JapaneseDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day of year is out of range
-     * @throws InvalidCalendarFieldException if the day of year is invalid for the year
+     * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public JapaneseDate withDayOfYear(int dayOfYear) {
         JapaneseChronology.dayOfYearRule().checkValue(dayOfYear);

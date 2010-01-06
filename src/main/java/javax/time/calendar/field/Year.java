@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -347,7 +347,7 @@ public final class Year
     /**
      * Adjusts a date to have the value of this year, returning a new date.
      * <p>
-     * If the day of month is invalid for the new year then the
+     * If the day-of-month is invalid for the new year then the
      * {@link DateResolvers#previousValid()} resolver is used.
      * This occurs if the input date is 29th February in a leap year, and this
      * object represents a non-leap year.
@@ -363,12 +363,12 @@ public final class Year
 
     /**
      * Adjusts a date to have the value of this year, using a resolver to
-     * handle the case when the day of month becomes invalid.
+     * handle the case when the day-of-month becomes invalid.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
-     * @param resolver  the date resolver to use if the day of month becomes invalid, not null
+     * @param resolver  the date resolver to use if the day-of-month becomes invalid, not null
      * @return the adjusted date, never null
      * @throws IllegalCalendarFieldValueException if the date cannot be resolved using the resolver
      */
@@ -481,7 +481,7 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to use, not null
+     * @param monthOfYear  the month-of-year to use, not null
      * @return the year-month formed from this year and the specified month, never null
      */
     public YearMonth atMonth(MonthOfYear monthOfYear) {
@@ -501,7 +501,7 @@ public final class Year
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to use, from 1 (January) to 12 (December)
+     * @param monthOfYear  the month-of-year to use, from 1 (January) to 12 (December)
      * @return the year-month formed from this year and the specified month, never null
      */
     public YearMonth atMonth(int monthOfYear) {
@@ -515,7 +515,7 @@ public final class Year
      * to form an instance of <code>LocalDate</code>.
      * <p>
      * As an alternative to this method if you only have separate values for
-     * the month and day of month you can chain using <code>atMonth</code>:
+     * the month and day-of-month you can chain using <code>atMonth</code>:
      * <pre>
      * LocalDate date = year.atMonth(month).atDay(day);
      * </pre>

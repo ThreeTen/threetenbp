@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,13 +45,13 @@ import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a second of minute in the ISO-8601 calendar system.
+ * A representation of a second-of-minute in the ISO-8601 calendar system.
  * <p>
- * SecondOfMinute is an immutable time field that can only store a second of minute.
- * It is a type-safe way of representing a second of minute in an application.
+ * SecondOfMinute is an immutable time field that can only store a second-of-minute.
+ * It is a type-safe way of representing a second-of-minute in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The second of minute may be queried using getValue().
+ * The second-of-minute may be queried using getValue().
  * <p>
  * SecondOfMinute is immutable and thread-safe.
  *
@@ -71,18 +71,18 @@ public final class SecondOfMinute
     private static final AtomicReferenceArray<SecondOfMinute> CACHE = new AtomicReferenceArray<SecondOfMinute>(60);
 
     /**
-     * The second of minute being represented.
+     * The second-of-minute being represented.
      */
     private final int secondOfMinute;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the second of minute field operates.
+     * Gets the rule that defines how the second-of-minute field operates.
      * <p>
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the second of minute rule, never null
+     * @return the second-of-minute rule, never null
      */
     public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.secondOfMinuteRule();
@@ -92,7 +92,7 @@ public final class SecondOfMinute
     /**
      * Obtains an instance of <code>SecondOfMinute</code>.
      *
-     * @param secondOfMinute  the second of minute to represent, from 0 to 59
+     * @param secondOfMinute  the second-of-minute to represent, from 0 to 59
      * @return the created SecondOfMinute
      * @throws IllegalCalendarFieldValueException if the secondOfMinute is invalid
      */
@@ -127,9 +127,9 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified second of minute.
+     * Constructs an instance with the specified second-of-minute.
      *
-     * @param secondOfMinute  the second of minute to represent
+     * @param secondOfMinute  the second-of-minute to represent
      */
     private SecondOfMinute(int secondOfMinute) {
         this.secondOfMinute = secondOfMinute;
@@ -161,9 +161,9 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the second of minute value.
+     * Gets the second-of-minute value.
      *
-     * @return the second of minute, from 0 to 59
+     * @return the second-of-minute, from 0 to 59
      */
     public int getValue() {
         return secondOfMinute;
@@ -182,10 +182,10 @@ public final class SecondOfMinute
     }
 
     /**
-     * Adjusts a time to have the the second of minute represented by this object,
+     * Adjusts a time to have the the second-of-minute represented by this object,
      * returning a new time.
      * <p>
-     * Only the second of minute field is adjusted in the result. The other time
+     * Only the second-of-minute field is adjusted in the result. The other time
      * fields are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -199,9 +199,9 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this second of minute instance to another.
+     * Compares this second-of-minute instance to another.
      *
-     * @param otherSecondOfMinute  the other second of minute instance, not null
+     * @param otherSecondOfMinute  the other second-of-minute instance, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherSecondOfMinute is null
      */
@@ -213,10 +213,10 @@ public final class SecondOfMinute
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the second of minute.
+     * Is this instance equal to that specified, evaluating the second-of-minute.
      *
-     * @param otherSecondOfMinute  the other second of minute instance, null returns false
-     * @return true if the second of minute is the same
+     * @param otherSecondOfMinute  the other second-of-minute instance, null returns false
+     * @return true if the second-of-minute is the same
      */
     @Override
     public boolean equals(Object otherSecondOfMinute) {
@@ -224,7 +224,7 @@ public final class SecondOfMinute
     }
 
     /**
-     * A hash code for the second of minute object.
+     * A hash code for the second-of-minute object.
      *
      * @return a suitable hash code
      */
@@ -234,7 +234,7 @@ public final class SecondOfMinute
     }
 
     /**
-     * A string describing the second of minute object.
+     * A string describing the second-of-minute object.
      *
      * @return a string describing this object
      */

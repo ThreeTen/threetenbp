@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,13 +45,13 @@ import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a minute of hour in the ISO-8601 calendar system.
+ * A representation of a minute-of-hour in the ISO-8601 calendar system.
  * <p>
- * MinuteOfHour is an immutable time field that can only store a minute of hour.
- * It is a type-safe way of representing a minute of hour in an application.
+ * MinuteOfHour is an immutable time field that can only store a minute-of-hour.
+ * It is a type-safe way of representing a minute-of-hour in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The minute of hour may be queried using getValue().
+ * The minute-of-hour may be queried using getValue().
  * <p>
  * MinuteOfHour is immutable and thread-safe.
  *
@@ -71,18 +71,18 @@ public final class MinuteOfHour
     private static final AtomicReferenceArray<MinuteOfHour> CACHE = new AtomicReferenceArray<MinuteOfHour>(60);
 
     /**
-     * The minute of hour being represented.
+     * The minute-of-hour being represented.
      */
     private final int minuteOfHour;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the minute of hour field operates.
+     * Gets the rule that defines how the minute-of-hour field operates.
      * <p>
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the minute of hour rule, never null
+     * @return the minute-of-hour rule, never null
      */
     public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.minuteOfHourRule();
@@ -92,7 +92,7 @@ public final class MinuteOfHour
     /**
      * Obtains an instance of <code>MinuteOfHour</code>.
      *
-     * @param minuteOfHour  the minute of hour to represent, from 0 to 59
+     * @param minuteOfHour  the minute-of-hour to represent, from 0 to 59
      * @return the created MinuteOfHour
      * @throws IllegalCalendarFieldValueException if the minuteOfHour is invalid
      */
@@ -127,9 +127,9 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified minute of hour.
+     * Constructs an instance with the specified minute-of-hour.
      *
-     * @param minuteOfHour  the minute of hour to represent
+     * @param minuteOfHour  the minute-of-hour to represent
      */
     private MinuteOfHour(int minuteOfHour) {
         this.minuteOfHour = minuteOfHour;
@@ -161,9 +161,9 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the minute of hour value.
+     * Gets the minute-of-hour value.
      *
-     * @return the minute of hour, from 0 to 59
+     * @return the minute-of-hour, from 0 to 59
      */
     public int getValue() {
         return minuteOfHour;
@@ -182,10 +182,10 @@ public final class MinuteOfHour
     }
 
     /**
-     * Adjusts a time to have the the minute of hour represented by this object,
+     * Adjusts a time to have the the minute-of-hour represented by this object,
      * returning a new time.
      * <p>
-     * Only the minute of hour field is adjusted in the result. The other time
+     * Only the minute-of-hour field is adjusted in the result. The other time
      * fields are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -199,9 +199,9 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this minute of hour instance to another.
+     * Compares this minute-of-hour instance to another.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, not null
+     * @param otherMinuteOfHour  the other minute-of-hour instance, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherMinuteOfHour is null
      */
@@ -213,10 +213,10 @@ public final class MinuteOfHour
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the minute of hour.
+     * Is this instance equal to that specified, evaluating the minute-of-hour.
      *
-     * @param otherMinuteOfHour  the other minute of hour instance, null returns false
-     * @return true if the minute of hour is the same
+     * @param otherMinuteOfHour  the other minute-of-hour instance, null returns false
+     * @return true if the minute-of-hour is the same
      */
     @Override
     public boolean equals(Object otherMinuteOfHour) {
@@ -224,7 +224,7 @@ public final class MinuteOfHour
     }
 
     /**
-     * A hash code for the minute of hour object.
+     * A hash code for the minute-of-hour object.
      *
      * @return a suitable hash code
      */
@@ -234,7 +234,7 @@ public final class MinuteOfHour
     }
 
     /**
-     * A string describing the minute of hour object.
+     * A string describing the minute-of-hour object.
      *
      * @return a string describing this object
      */

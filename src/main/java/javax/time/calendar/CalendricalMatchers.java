@@ -80,20 +80,20 @@ public final class CalendricalMatchers {
     }
 
     /**
-     * Returns the last day of month matcher, which returns true if the date
+     * Returns the last day-of-month matcher, which returns true if the date
      * is the last valid day of the month.
      *
-     * @return the last day of month matcher, never null
+     * @return the last day-of-month matcher, never null
      */
     public static CalendricalMatcher lastDayOfMonth() {
         return Impl.LAST_DAY_OF_MONTH;
     }
 
     /**
-     * Returns the last day of year matcher, which returns true if the date is
+     * Returns the last day-of-year matcher, which returns true if the date is
      * the last valid day of the year.
      *
-     * @return the last day of year matcher, never null
+     * @return the last day-of-year matcher, never null
      */
     public static CalendricalMatcher lastDayOfYear() {
         return Impl.LAST_DAY_OF_YEAR;
@@ -149,7 +149,7 @@ public final class CalendricalMatchers {
                 return domVal != null && domVal == 29 && moy == MonthOfYear.FEBRUARY;
             }
         },
-        /** Last day of month matcher. */
+        /** Last day-of-month matcher. */
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
@@ -160,7 +160,7 @@ public final class CalendricalMatchers {
                         domVal == moy.lengthInDays(ISOChronology.isLeapYear(yearVal));
             }
         },
-        /** Last day of year matcher. */
+        /** Last day-of-year matcher. */
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public boolean matchesCalendrical(Calendrical calendrical) {
@@ -190,9 +190,9 @@ public final class CalendricalMatchers {
     //-----------------------------------------------------------------------
     /**
      * Returns the first in month matcher, which returns true if the date
-     * is the first occurrence of day of week in the month.
+     * is the first occurrence of day-of-week in the month.
      *
-     * @param dayOfWeek  the day of week, not null
+     * @param dayOfWeek  the day-of-week, not null
      * @return the first in month matcher, never null
      */
     public static CalendricalMatcher firstInMonth(DayOfWeek dayOfWeek) {
@@ -203,12 +203,12 @@ public final class CalendricalMatchers {
     }
 
     /**
-     * Returns the day of week in month matcher, which returns true if the
-     * date is the ordinal occurrence of the day of week in the month.
+     * Returns the day-of-week in month matcher, which returns true if the
+     * date is the ordinal occurrence of the day-of-week in the month.
      *
      * @param ordinal  ordinal, from 1 to 5
-     * @param dayOfWeek  the day of week, not null
-     * @return the day of week in month matcher, never null
+     * @param dayOfWeek  the day-of-week, not null
+     * @return the day-of-week in month matcher, never null
      * @throws IllegalArgumentException if the ordinal is invalid
      */
     public static CalendricalMatcher dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
@@ -223,20 +223,20 @@ public final class CalendricalMatchers {
     }
 
     /**
-     * Class implementing day of week in month matcher.
+     * Class implementing day-of-week in month matcher.
      */
     private static final class DayOfWeekInMonth implements CalendricalMatcher, Serializable {
         /** A serialization identifier for this class. */
         private static final long serialVersionUID = 1L;
         /** The ordinal, from 1 to 5. */
         private final int ordinal;
-        /** The day of week. */
+        /** The day-of-week. */
         private final DayOfWeek dayOfWeek;
 
         /**
          * Constructor.
          * @param ordinal  ordinal, from 1 to 5
-         * @param dayOfWeek  the day of week, not null
+         * @param dayOfWeek  the day-of-week, not null
          */
         private DayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
             super();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -696,32 +696,32 @@ public final class DateTimeFormatterBuilder {
      *  Symbol  Meaning                     Presentation     Examples
      *  ------  -------                     ------------     -------
      *   y       year                        year             1996
-     *   D       day of year                 number           189
-     *   M       month of year               month            July; Jul; 07
-     *   d       day of month                number           10
+     *   D       day-of-year                 number           189
+     *   M       month-of-year               month            July; Jul; 07
+     *   d       day-of-month                number           10
      *
-     *   Q       quarter of year             number           3
-     *   q       month of quarter            number           2
+     *   Q       quarter-of-year             number           3
+     *   q       month-of-quarter            number           2
      *
      *   x       week-based-year             year             1996
-     *   w       week of week-based-year     number           27
-     *   e       day of week                 number           2
-     *   E       day of week                 text             Tuesday; Tue
-     *   F       week of month               number           3
+     *   w       week-of-week-based-year     number           27
+     *   e       day-of-week                 number           2
+     *   E       day-of-week                 text             Tuesday; Tue
+     *   F       week-of-month               number           3
      *
-     *   a       am-pm of day                text             PM
-     *   h       clockhour of am-pm  (1~12)  number           12
-     *   K       hour of am-pm (0~11)        number/fraction  0
+     *   a       am-pm-of-day                text             PM
+     *   h       clockhour-of-am-pm  (1~12)  number           12
+     *   K       hour-of-am-pm (0~11)        number/fraction  0
      *
-     *   H       hour of day (0~23)          number/fraction  0
-     *   m       minute of hour              number/fraction  30
-     *   s       second of minute            number/fraction  55
-     *   S       milli of second             number/fraction  978
-     *   n       nano of second              number/fraction  987654321
+     *   H       hour-of-day (0~23)          number/fraction  0
+     *   m       minute-of-hour              number/fraction  30
+     *   s       second-of-minute            number/fraction  55
+     *   S       milli-of-second             number/fraction  978
+     *   n       nano-of-second              number/fraction  987654321
      *
-     *   I       time zone ID                zoneID           America/Los_Angeles
-     *   z       time zone name              text             Pacific Standard Time; PST
-     *   Z       zone offset                 offset           -0800; -08:00;
+     *   I       time-zone ID                zoneID           America/Los_Angeles
+     *   z       time-zone name              text             Pacific Standard Time; PST
+     *   Z       zone-offset                 offset           -0800; -08:00;
      *
      *   f       make next a fraction        fraction modifier  .123
      *   p       pad next                    pad modifier      1
@@ -776,7 +776,7 @@ public final class DateTimeFormatterBuilder {
      * The pad width is determined by the number of pattern letters.
      * This is the same as calling {@link #padNext(int)}.
      * <p>
-     * For example, 'ppH' outputs the hour of day padded on the left with spaces to a width of 2.
+     * For example, 'ppH' outputs the hour-of-day padded on the left with spaces to a width of 2.
      * <p>
      * Any unrecognized letter will be output directly.
      * However, since these are reserved, that may change in future versions.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,13 +44,13 @@ import javax.time.calendar.TimeAdjuster;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a nano of second in the ISO-8601 calendar system.
+ * A representation of a nano-of-second in the ISO-8601 calendar system.
  * <p>
- * NanoOfSecond is an immutable time field that can only store a nano of second.
- * It is a type-safe way of representing a nano of second in an application.
+ * NanoOfSecond is an immutable time field that can only store a nano-of-second.
+ * It is a type-safe way of representing a nano-of-second in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The nano of second may be queried using getValue().
+ * The nano-of-second may be queried using getValue().
  * <p>
  * NanoOfSecond is immutable and thread-safe.
  *
@@ -70,18 +70,18 @@ public final class NanoOfSecond
     private static final long serialVersionUID = 1L;
 
     /**
-     * The nano of second being represented.
+     * The nano-of-second being represented.
      */
     private final int nanoOfSecond;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the nano of second field operates.
+     * Gets the rule that defines how the nano-of-second field operates.
      * <p>
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the nano of second rule, never null
+     * @return the nano-of-second rule, never null
      */
     public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.nanoOfSecondRule();
@@ -91,7 +91,7 @@ public final class NanoOfSecond
     /**
      * Obtains an instance of <code>NanoOfSecond</code>.
      *
-     * @param nanoOfSecond  the nano of second to represent, from 0 to 999,999,999
+     * @param nanoOfSecond  the nano-of-second to represent, from 0 to 999,999,999
      * @return the created NanoOfSecond
      */
     public static NanoOfSecond nanoOfSecond(int nanoOfSecond) {
@@ -118,9 +118,9 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified nano of second.
+     * Constructs an instance with the specified nano-of-second.
      *
-     * @param nanoOfSecond  the nano of second to represent
+     * @param nanoOfSecond  the nano-of-second to represent
      */
     private NanoOfSecond(int nanoOfSecond) {
         this.nanoOfSecond = nanoOfSecond;
@@ -143,9 +143,9 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the nano of second value.
+     * Gets the nano-of-second value.
      *
-     * @return the nano of second, from 0 to 999,999,999
+     * @return the nano-of-second, from 0 to 999,999,999
      */
     public int getValue() {
         return nanoOfSecond;
@@ -157,7 +157,7 @@ public final class NanoOfSecond
      * The fractional value is between 0 (inclusive) and 1 (exclusive).
      * The fraction will have the minimum scale necessary to represent the fraction.
      *
-     * @return the nano of second, from 0 to 0.999,999,999, never null
+     * @return the nano-of-second, from 0 to 0.999,999,999, never null
      */
     public BigDecimal getFractionalValue() {
         return rule().convertIntToFraction(nanoOfSecond);
@@ -176,10 +176,10 @@ public final class NanoOfSecond
     }
 
     /**
-     * Adjusts a time to have the the nano of second represented by this object,
+     * Adjusts a time to have the the nano-of-second represented by this object,
      * returning a new time.
      * <p>
-     * Only the nano of second field is adjusted in the result. The other time
+     * Only the nano-of-second field is adjusted in the result. The other time
      * fields are unaffected.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -193,9 +193,9 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this nano of second instance to another.
+     * Compares this nano-of-second instance to another.
      *
-     * @param otherNanoOfSecond  the other nano of second instance, not null
+     * @param otherNanoOfSecond  the other nano-of-second instance, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherNanoOfSecond is null
      */
@@ -207,10 +207,10 @@ public final class NanoOfSecond
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the nano of second.
+     * Is this instance equal to that specified, evaluating the nano-of-second.
      *
-     * @param otherNanoOfSecond  the other nano of second instance, null returns false
-     * @return true if the nano of second is the same
+     * @param otherNanoOfSecond  the other nano-of-second instance, null returns false
+     * @return true if the nano-of-second is the same
      */
     @Override
     public boolean equals(Object otherNanoOfSecond) {
@@ -224,7 +224,7 @@ public final class NanoOfSecond
     }
 
     /**
-     * A hash code for the nano of second object.
+     * A hash code for the nano-of-second object.
      *
      * @return a suitable hash code
      */
@@ -234,7 +234,7 @@ public final class NanoOfSecond
     }
 
     /**
-     * A string describing the nano of second object.
+     * A string describing the nano-of-second object.
      *
      * @return a string describing this object
      */

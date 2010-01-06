@@ -48,13 +48,13 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a day of month in the ISO-8601 calendar system.
+ * A representation of a day-of-month in the ISO-8601 calendar system.
  * <p>
- * DayOfMonth is an immutable time field that can only store a day of month.
- * It is a type-safe way of representing a day of month in an application.
+ * DayOfMonth is an immutable time field that can only store a day-of-month.
+ * It is a type-safe way of representing a day-of-month in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The day of month may be queried using getValue().
+ * The day-of-month may be queried using getValue().
  * <p>
  * DayOfMonth is immutable and thread-safe.
  *
@@ -74,18 +74,18 @@ public final class DayOfMonth
     private static final AtomicReferenceArray<DayOfMonth> CACHE = new AtomicReferenceArray<DayOfMonth>(31);
 
     /**
-     * The day of month being represented, from 1 to 31.
+     * The day-of-month being represented, from 1 to 31.
      */
     private final int dayOfMonth;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the day of month field operates.
+     * Gets the rule that defines how the day-of-month field operates.
      * <p>
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the day of month rule, never null
+     * @return the day-of-month rule, never null
      */
     public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.dayOfMonthRule();
@@ -95,10 +95,10 @@ public final class DayOfMonth
     /**
      * Obtains an instance of <code>DayOfMonth</code> from a value.
      * <p>
-     * A day of month object represents one of the 31 days of the month, from
+     * A day-of-month object represents one of the 31 days of the month, from
      * 1 to 31.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the DayOfMonth singleton, never null
      * @throws IllegalCalendarFieldValueException if the dayOfMonth is invalid
      */
@@ -132,9 +132,9 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified day of month.
+     * Constructs an instance with the specified day-of-month.
      *
-     * @param dayOfMonth  the day of month to represent
+     * @param dayOfMonth  the day-of-month to represent
      */
     private DayOfMonth(int dayOfMonth) {
         this.dayOfMonth = dayOfMonth;
@@ -166,9 +166,9 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of month value.
+     * Gets the day-of-month value.
      *
-     * @return the day of month, from 1 to 31
+     * @return the day-of-month, from 1 to 31
      */
     public int getValue() {
         return dayOfMonth;
@@ -187,9 +187,9 @@ public final class DayOfMonth
     }
 
     /**
-     * Adjusts a date to have the value of this day of month, returning a new date.
+     * Adjusts a date to have the value of this day-of-month, returning a new date.
      * <p>
-     * If the day of month is invalid for the year and month then an exception
+     * If the day-of-month is invalid for the year and month then an exception
      * is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
@@ -202,8 +202,8 @@ public final class DayOfMonth
     }
 
     /**
-     * Adjusts a date to have the value of this day of month, using a resolver
-     * to handle the case when the day of month is invalid for the year and month.
+     * Adjusts a date to have the value of this day-of-month, using a resolver
+     * to handle the case when the day-of-month is invalid for the year and month.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
@@ -218,11 +218,11 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this day of month is valid for the specified year and month.
+     * Checks if this day-of-month is valid for the specified year and month.
      *
      * @param year  the year to validate against, not null
-     * @param monthOfYear  the month of year to validate against, not null
-     * @return true if this day of month is valid for the month and year
+     * @param monthOfYear  the month-of-year to validate against, not null
+     * @return true if this day-of-month is valid for the month and year
      */
     public boolean isValid(Year year, MonthOfYear monthOfYear) {
         if (year == null) {
@@ -235,11 +235,11 @@ public final class DayOfMonth
     }
 
     /**
-     * Checks if this day of month is valid for the specified year and month.
+     * Checks if this day-of-month is valid for the specified year and month.
      *
      * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month of year to validate against, not null
-     * @return true if this day of month is valid for the month and year
+     * @param monthOfYear  the month-of-year to validate against, not null
+     * @return true if this day-of-month is valid for the month and year
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
     public boolean isValid(int year, MonthOfYear monthOfYear) {
@@ -252,9 +252,9 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this day of month instance to another.
+     * Compares this day-of-month instance to another.
      *
-     * @param otherDayOfMonth  the other day of month instance, not null
+     * @param otherDayOfMonth  the other day-of-month instance, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherDayOfMonth is null
      */
@@ -264,10 +264,10 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the day of month.
+     * Is this instance equal to that specified, evaluating the day-of-month.
      *
-     * @param otherDayOfMonth  the other day of month instance, null returns false
-     * @return true if the day of month is the same
+     * @param otherDayOfMonth  the other day-of-month instance, null returns false
+     * @return true if the day-of-month is the same
      */
     @Override
     public boolean equals(Object otherDayOfMonth) {
@@ -275,7 +275,7 @@ public final class DayOfMonth
     }
 
     /**
-     * A hash code for the day of month object.
+     * A hash code for the day-of-month object.
      *
      * @return a suitable hash code
      */
@@ -285,7 +285,7 @@ public final class DayOfMonth
     }
 
     /**
-     * A string describing the day of month object.
+     * A string describing the day-of-month object.
      *
      * @return a string describing this object
      */

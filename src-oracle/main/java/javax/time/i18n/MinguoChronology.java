@@ -142,36 +142,36 @@ public final class MinguoChronology extends Chronology implements Serializable {
     }
 
     /**
-     * Gets the rule for the month of year field in the Minguo chronology.
+     * Gets the rule for the month-of-year field in the Minguo chronology.
      *
-     * @return the rule for the month of year field, never null
+     * @return the rule for the month-of-year field, never null
      */
     public static DateTimeFieldRule<MonthOfYear> monthOfYearRule() {
         return MonthOfYearRule.INSTANCE;
     }
 
     /**
-     * Gets the rule for the day of month field in the Minguo chronology.
+     * Gets the rule for the day-of-month field in the Minguo chronology.
      *
-     * @return the rule for the day of month field, never null
+     * @return the rule for the day-of-month field, never null
      */
     public static DateTimeFieldRule<Integer> dayOfMonthRule() {
         return DayOfMonthRule.INSTANCE;
     }
 
     /**
-     * Gets the rule for the day of year field in the Minguo chronology.
+     * Gets the rule for the day-of-year field in the Minguo chronology.
      *
-     * @return the rule for the day of year field, never null
+     * @return the rule for the day-of-year field, never null
      */
     public static DateTimeFieldRule<Integer> dayOfYearRule() {
         return DayOfYearRule.INSTANCE;
     }
 
     /**
-     * Gets the rule for the day of week field in the Minguo chronology.
+     * Gets the rule for the day-of-week field in the Minguo chronology.
      *
-     * @return the rule for the day of week field, never null
+     * @return the rule for the day-of-week field, never null
      */
     public static DateTimeFieldRule<DayOfWeek> dayOfWeekRule() {
         return DayOfWeekRule.INSTANCE;

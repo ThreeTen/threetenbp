@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,7 @@ package javax.time.calendar;
  * time.
  * <p>
  * Calendar systems describe a set of fields that can be used to describe time
- * in a human-scale. Typical fields include year, month and day of month.
+ * in a human-scale. Typical fields include year, month-of-year and day-of-month.
  * <p>
  * This abstract base class provides a common mechanism to access the standard
  * fields which are supported in the vast majority of calendar systems.

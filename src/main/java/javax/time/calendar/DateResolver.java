@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -51,12 +51,12 @@ public interface DateResolver {
      * Resolves the combination of year, month and day into a date.
      * <p>
      * The purpose of resolution is to avoid invalid dates. Each of the three
-     * fields are individually valid. However, the day of month may not be
+     * fields are individually valid. However, the day-of-month may not be
      * valid for the associated month and year.
      *
      * @param year  the year that was input, not null
-     * @param monthOfYear  the month of year, not null
-     * @param dayOfMonth  the proposed day of month, not null
+     * @param monthOfYear  the month-of-year, not null
+     * @param dayOfMonth  the proposed day-of-month, not null
      * @return the resolved date, never null
      * @throws InvalidCalendarFieldException if the date cannot be resolved
      */

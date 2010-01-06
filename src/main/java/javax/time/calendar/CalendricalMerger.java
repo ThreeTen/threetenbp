@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -108,9 +108,9 @@ public final class CalendricalMerger implements Calendrical {
      * The map returned is the live data from this instance.
      * Updating the map will update the data held by the merger.
      * <p>
-     * Values in this map may be invalid, for example the day of month may be
+     * Values in this map may be invalid, for example the day-of-month may be
      * an invalid negative value, or the hour represented as a currency.
-     * Some of these, like a negative day of month, may be capable of being
+     * Some of these, like a negative day-of-month, may be capable of being
      * interpreted by a lenient merger. Others, like a currency, cannot.
      * <p>
      * The map must only be updated before merging starts.

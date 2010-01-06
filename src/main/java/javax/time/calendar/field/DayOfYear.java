@@ -47,13 +47,13 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * A representation of a day of year in the ISO-8601 calendar system.
+ * A representation of a day-of-year in the ISO-8601 calendar system.
  * <p>
- * DayOfYear is an immutable time field that can only store a day of year.
- * It is a type-safe way of representing a day of year in an application.
+ * DayOfYear is an immutable time field that can only store a day-of-year.
+ * It is a type-safe way of representing a day-of-year in an application.
  * <p>
  * Static factory methods allow you to construct instances.
- * The day of year may be queried using getValue().
+ * The day-of-year may be queried using getValue().
  * <p>
  * DayOfYear is immutable and thread-safe.
  *
@@ -73,18 +73,18 @@ public final class DayOfYear
     private static final AtomicReferenceArray<DayOfYear> CACHE = new AtomicReferenceArray<DayOfYear>(366);
 
     /**
-     * The day of year being represented.
+     * The day-of-year being represented.
      */
     private final int dayOfYear;
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the rule that defines how the day of year field operates.
+     * Gets the rule that defines how the day-of-year field operates.
      * <p>
      * The rule provides access to the minimum and maximum values, and a
      * generic way to access values within a calendrical.
      *
-     * @return the day of year rule, never null
+     * @return the day-of-year rule, never null
      */
     public static DateTimeFieldRule<Integer> rule() {
         return ISOChronology.dayOfYearRule();
@@ -94,10 +94,10 @@ public final class DayOfYear
     /**
      * Obtains an instance of <code>DayOfYear</code> from a value.
      * <p>
-     * A day of year object represents one of the 366 days of the year, from
+     * A day-of-year object represents one of the 366 days of the year, from
      * 1 to 366.
      *
-     * @param dayOfYear  the day of year to represent, from 1 to 366
+     * @param dayOfYear  the day-of-year to represent, from 1 to 366
      * @return the DayOfYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the dayOfYear is invalid
      */
@@ -131,9 +131,9 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Constructs an instance with the specified day of year.
+     * Constructs an instance with the specified day-of-year.
      *
-     * @param dayOfYear  the day of year to represent
+     * @param dayOfYear  the day-of-year to represent
      */
     private DayOfYear(int dayOfYear) {
         this.dayOfYear = dayOfYear;
@@ -165,9 +165,9 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the day of year value.
+     * Gets the day-of-year value.
      *
-     * @return the day of year, from 1 to 366
+     * @return the day-of-year, from 1 to 366
      */
     public int getValue() {
         return dayOfYear;
@@ -177,7 +177,7 @@ public final class DayOfYear
 //    /**
 //     * Gets the month that this day falls in given a year.
 //     *
-//     * @param year  the year that the day of year occurs in, not null
+//     * @param year  the year that the day-of-year occurs in, not null
 //     * @return the month, never null
 //     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
 //     */
@@ -197,10 +197,10 @@ public final class DayOfYear
 //    }
 //
 //    /**
-//     * Gets the day of month that this day falls in given a year.
+//     * Gets the day-of-month that this day falls in given a year.
 //     *
-//     * @param year  the year that the day of year occurs in, not null
-//     * @return the day of month, never null
+//     * @param year  the year that the day-of-year occurs in, not null
+//     * @return the day-of-month, never null
 //     * @throws IllegalCalendarFieldValueException if the day does not occur in the year
 //     */
 //    public DayOfMonth getDayOfMonth(Year year) {
@@ -231,16 +231,16 @@ public final class DayOfYear
     }
 
     /**
-     * Adjusts a date to have the value of this day of year, returning a new date.
+     * Adjusts a date to have the value of this day-of-year, returning a new date.
      * <p>
-     * If the day of year is invalid for the year and month then an exception
+     * If the day-of-year is invalid for the year and month then an exception
      * is thrown.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param date  the date to be adjusted, not null
      * @return the adjusted date, never null
-     * @throws IllegalCalendarFieldValueException if the day of year is invalid for the input year
+     * @throws IllegalCalendarFieldValueException if the day-of-year is invalid for the input year
      */
     public LocalDate adjustDate(LocalDate date) {
         return atYear(date.toYear());
@@ -248,10 +248,10 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this day of year is valid for the specified year.
+     * Checks if this day-of-year is valid for the specified year.
      *
      * @param year  the year to validate against, not null
-     * @return true if this day of year is valid for the year
+     * @return true if this day-of-year is valid for the year
      */
     public boolean isValid(Year year) {
         if (year == null) {
@@ -261,10 +261,10 @@ public final class DayOfYear
     }
 
     /**
-     * Checks if this day of year is valid for the specified year.
+     * Checks if this day-of-year is valid for the specified year.
      *
      * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
-     * @return true if this day of year is valid for the year
+     * @return true if this day-of-year is valid for the year
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public boolean isValid(int year) {
@@ -274,7 +274,7 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this day of year at the specified year.
+     * Returns a date formed from this day-of-year at the specified year.
      * <p>
      * This merges the two objects - <code>this</code> and the specified year -
      * to form an instance of <code>LocalDate</code>.
@@ -293,7 +293,7 @@ public final class DayOfYear
     }
 
     /**
-     * Returns a date formed from this day of year at the specified year.
+     * Returns a date formed from this day-of-year at the specified year.
      * <p>
      * This merges the two objects - <code>this</code> and the specified year -
      * to form an instance of <code>LocalDate</code>.
@@ -314,9 +314,9 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Compares this day of year instance to another.
+     * Compares this day-of-year instance to another.
      *
-     * @param otherDayOfYear  the other day of year instance, not null
+     * @param otherDayOfYear  the other day-of-year instance, not null
      * @return the comparator value, negative if less, positive if greater
      * @throws NullPointerException if otherDayOfYear is null
      */
@@ -326,10 +326,10 @@ public final class DayOfYear
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified, evaluating the day of year.
+     * Is this instance equal to that specified, evaluating the day-of-year.
      *
-     * @param otherDayOfYear  the other day of year instance, null returns false
-     * @return true if the day of year is the same
+     * @param otherDayOfYear  the other day-of-year instance, null returns false
+     * @return true if the day-of-year is the same
      */
     @Override
     public boolean equals(Object otherDayOfYear) {
@@ -337,7 +337,7 @@ public final class DayOfYear
     }
 
     /**
-     * A hash code for the day of year object.
+     * A hash code for the day-of-year object.
      *
      * @return a suitable hash code
      */
@@ -347,7 +347,7 @@ public final class DayOfYear
     }
 
     /**
-     * A string describing the day of year object.
+     * A string describing the day-of-year object.
      *
      * @return a string describing this object
      */

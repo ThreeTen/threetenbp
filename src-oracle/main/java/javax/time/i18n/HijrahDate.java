@@ -99,23 +99,23 @@ public final class HijrahDate
      */
     public static final int MAX_YEAR_OF_ERA = 9999;
     /**
-     * 0-based, for number of day of year in the beginning of month in normal
+     * 0-based, for number of day-of-year in the beginning of month in normal
      * year.
      */
     private static final int NUM_DAYS[] =
         {0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325};
     /**
-     * 0-based, for number of day of year in the beginning of month in leap year.
+     * 0-based, for number of day-of-year in the beginning of month in leap year.
      */
     private static final int LEAP_NUM_DAYS[] =
         {0, 30, 59, 89, 118, 148, 177, 207, 236, 266, 295, 325};
     /**
-     * 0-based, for day of month in normal year.
+     * 0-based, for day-of-month in normal year.
      */
     private static final int MONTH_LENGTH[] =
         {30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29};
     /**
-     * 0-based, for day of month in leap year.
+     * 0-based, for day-of-month in leap year.
      */
     private static final int LEAP_MONTH_LENGTH[] =
         {30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 30};
@@ -174,13 +174,13 @@ public final class HijrahDate
         };
   
    /**
-     * Position of day of month. This value is used to get the min/max value
+     * Position of day-of-month. This value is used to get the min/max value
      * from an array.
      */
     private static final int POSITION_DAY_OF_MONTH = 5;
 
     /**
-     * Position of day of year. This value is used to get the min/max value from
+     * Position of day-of-year. This value is used to get the min/max value from
      * an array.
      */
     private static final int POSITION_DAY_OF_YEAR = 6;
@@ -386,22 +386,22 @@ public final class HijrahDate
     private final transient int yearOfEra;
 
     /**
-     * The month of year.
+     * The month-of-year.
      */
     private final transient int monthOfYear;
 
     /**
-     * The day of month.
+     * The day-of-month.
      */
     private final transient int dayOfMonth;
 
     /**
-     * The day of year.
+     * The day-of-year.
      */
     private final transient int dayOfYear;
 
     /**
-     * The day of week.
+     * The day-of-week.
      */
     private final transient DayOfWeek dayOfWeek;
 
@@ -419,14 +419,14 @@ public final class HijrahDate
 
     /**
      * Obtains an instance of <code>HijrahDate</code> from the Hijrah year,
-     * month of year and day of month. This uses the Hijrah era.
+     * month-of-year and day-of-month. This uses the Hijrah era.
      *
      * @param yearOfHijrahEra  the year to represent in the Hijrah era, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param monthOfYear  the month-of-year to represent, from 1 to 12
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the created ThaiBuddhistDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HijrahDate hijrahDate(int yearOfHijrahEra, int monthOfYear, int dayOfMonth) {
         return HijrahDate.hijrahDate(HijrahEra.HIJRAH, yearOfHijrahEra, monthOfYear,
@@ -435,15 +435,15 @@ public final class HijrahDate
     
     /**
      * Obtains an instance of <code>HijrahDate</code> from the Hijrah era,
-     * Hijrah year, month of year and day of month.
+     * Hijrah year, month-of-year and day-of-month.
      *
      * @param era  the era to represent, not null
      * @param yearOfEra  the year to represent, from 1 to 9999
-     * @param monthOfYear  the month of year to represent, from 1 to 12
-     * @param dayOfMonth  the day of month to represent, from 1 to 31
+     * @param monthOfYear  the month-of-year to represent, from 1 to 12
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 31
      * @return the created ThaiBuddhistDate instance, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the month-year
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
     public static HijrahDate hijrahDate(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "HijrahEra must not be null");
@@ -546,27 +546,27 @@ public final class HijrahDate
     }
 
     /**
-     * Gets the month of year value.
+     * Gets the month-of-year value.
      *
-     * @return the month of year, from 1 to 12
+     * @return the month-of-year, from 1 to 12
      */
     public int getMonthOfYear() {
         return this.monthOfYear;
     }
 
     /**
-     * Gets the day of month value.
+     * Gets the day-of-month value.
      *
-     * @return the day of month, from 1 to 29-30 (it changes depending on deviation configuration)
+     * @return the day-of-month, from 1 to 29-30 (it changes depending on deviation configuration)
      */
     public int getDayOfMonth() {
         return this.dayOfMonth;
     }
 
     /**
-     * Gets the day of year value.
+     * Gets the day-of-year value.
      *
-     * @return the day of year, from 1 to 354-355 (it changes depending on deviation configuration)
+     * @return the day-of-year, from 1 to 354-355 (it changes depending on deviation configuration)
      */
     public int getDayOfYear() {
         return this.dayOfYear;
@@ -619,11 +619,11 @@ public final class HijrahDate
     }
 
     /**
-     * Returns a copy of this HijrahDate with the month of year value altered.
+     * Returns a copy of this HijrahDate with the month-of-year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param monthOfYear  the month of year to represent, from 1 to 12
+     * @param monthOfYear  the month-of-year to represent, from 1 to 12
      * @return a new updated HijrahDate instance, never null
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
@@ -632,28 +632,28 @@ public final class HijrahDate
     }
 
     /**
-     * Returns a copy of this HijrahDate with the day of month value altered.
+     * Returns a copy of this HijrahDate with the day-of-month value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfMonth  the day of month to represent, from 1 to 29-30 (it changes depending on deviation configuration)
+     * @param dayOfMonth  the day-of-month to represent, from 1 to 29-30 (it changes depending on deviation configuration)
      * @return a new updated HijrahDate instance, never null
      * @throws IllegalCalendarFieldValueException if the day is out of range
-     * @throws InvalidCalendarFieldException if the day of month is invalid for the year and month
+     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
     public HijrahDate withDayOfMonth(int dayOfMonth) {
         return HijrahDate.hijrahDate(this.era, this.yearOfEra, this.monthOfYear, dayOfMonth);
     }
 
     /**
-     * Returns a copy of this HijrahDate with the day of year value altered.
+     * Returns a copy of this HijrahDate with the day-of-year value altered.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param dayOfYear  the day of year to represent, from 1 to 354-355 (it changes depending on deviation configuration)
+     * @param dayOfYear  the day-of-year to represent, from 1 to 354-355 (it changes depending on deviation configuration)
      * @return a new updated HijrahDate instance, never null
-     * @throws IllegalCalendarFieldValueException if the day of year is out of range
-     * @throws InvalidCalendarFieldException if the day of year is invalid for the year
+     * @throws IllegalCalendarFieldValueException if the day-of-year is out of range
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
      */
     public HijrahDate withDayOfYear(int dayOfYear) {
         HijrahChronology.dayOfYearRule().checkValue(dayOfYear);
@@ -950,7 +950,7 @@ public final class HijrahDate
             dayOfYear = getDayOfYear(cycleNumber, dayOfCycle, yearInCycle);
             // 0 - 354/355
             year = cycleNumber * 30 + yearInCycle + 1; // 1-based year.
-            month = getMonthOfYear(dayOfYear, year); // 0-based month of year
+            month = getMonthOfYear(dayOfYear, year); // 0-based month-of-year
             date = getDayOfMonth(dayOfYear, month, year); // 0-based date
             ++date; // Convert from 0-based to 1-based
             era = HijrahEra.HIJRAH.getValue();
@@ -991,8 +991,8 @@ public final class HijrahDate
      *
      * @param era  the era to represent, caller calculated
      * @param year  the year to represent, caller calculated
-     * @param monthOfYear  the month of year to represent, caller calculated
-     * @param dayOfMonth  the day of month to represent, caller calculated
+     * @param monthOfYear  the month-of-year to represent, caller calculated
+     * @param dayOfMonth  the day-of-month to represent, caller calculated
      * @return a julian day
      */
     private static long getGregorianEpochDays(int era, int year, int monthOfYear, int dayOfMonth) {
@@ -1181,12 +1181,12 @@ public final class HijrahDate
     }
 
     /**
-     * Returns day of year.
+     * Returns day-of-year.
      *
      * @param cycleNumber  a cycle number
      * @param dayOfCycle  day of cycle
      * @param yearInCycle  year in cycle
-     * @return day of year
+     * @return day-of-year
      */
     private static int getDayOfYear(int cycleNumber, int dayOfCycle, int yearInCycle) {
         Integer[] cycles = getAdjustedCycle(cycleNumber);
@@ -1199,11 +1199,11 @@ public final class HijrahDate
     }
 
     /**
-     * Returns month of year. 0-based.
+     * Returns month-of-year. 0-based.
      *
-     * @param dayOfYear  day of year
+     * @param dayOfYear  day-of-year
      * @param year  a year
-     * @return month of year
+     * @return month-of-year
      */
     private static int getMonthOfYear(int dayOfYear, int year) {
 
@@ -1229,12 +1229,12 @@ public final class HijrahDate
     }
 
     /**
-     * Returns day of month.
+     * Returns day-of-month.
      *
      * @param dayOfYear  day of  year
      * @param month  month
      * @param year  year
-     * @return day of month
+     * @return day-of-month
      */
     private static int getDayOfMonth(int dayOfYear, int month, int year) {
 
@@ -1321,36 +1321,36 @@ public final class HijrahDate
     }
 
     /**
-     * Returns maximum day of month.
+     * Returns maximum day-of-month.
      *
-     * @return maximum day of month
+     * @return maximum day-of-month
      */
     static int getMaximumDayOfMonth() {
         return ADJUSTED_MAX_VALUES[POSITION_DAY_OF_MONTH];
     }
 
     /**
-     * Returns smallest maximum day of month.
+     * Returns smallest maximum day-of-month.
      *
-     * @return smallest maximum day of month
+     * @return smallest maximum day-of-month
      */
     static int getSmallestMaximumDayOfMonth() {
         return ADJUSTED_LEAST_MAX_VALUES[POSITION_DAY_OF_MONTH];
     }
 
     /**
-     * Returns maximum day of year.
+     * Returns maximum day-of-year.
      *
-     * @return maximum day of year
+     * @return maximum day-of-year
      */
     static int getMaximumDayOfYear() {
         return ADJUSTED_MAX_VALUES[POSITION_DAY_OF_YEAR];
     }
 
     /**
-     * Returns smallest maximum day of year.
+     * Returns smallest maximum day-of-year.
      *
-     * @return smallest maximum day of year
+     * @return smallest maximum day-of-year
      */
     static int getSmallestMaximumDayOfYear() {
         return ADJUSTED_LEAST_MAX_VALUES[POSITION_DAY_OF_YEAR];

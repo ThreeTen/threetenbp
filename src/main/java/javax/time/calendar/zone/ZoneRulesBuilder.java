@@ -243,7 +243,7 @@ public class ZoneRulesBuilder {
      *
      * @param year  the year of the transition, from MIN_YEAR to MAX_YEAR
      * @param month  the month of the transition, not null
-     * @param dayOfMonth  the day of month of the transition, from 1 to 31, or -1 for the last day of month
+     * @param dayOfMonth  the day-of-month of the transition, from 1 to 31, or -1 for the last day-of-month
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition, not null
@@ -272,9 +272,9 @@ public class ZoneRulesBuilder {
      * @param startYear  the start year of the rule, from MIN_YEAR to MAX_YEAR
      * @param endYear  the end year of the rule, from MIN_YEAR to MAX_YEAR
      * @param month  the month of the transition, not null
-     * @param dayOfMonth  the day of month of the transition, adjusted by dayOfWeek,
+     * @param dayOfMonth  the day-of-month of the transition, adjusted by dayOfWeek,
      *   from 1 to 31 adjusted later, or -1 adjusted earlier from the last day of the month
-     * @param dayOfWeek  the day of week to adjust to, null if day of month should not be adjusted
+     * @param dayOfWeek  the day-of-week to adjust to, null if day-of-month should not be adjusted
      * @param time  the time that the transition occurs as defined by timeDefintion, not null
      * @param timeDefinition  the definition of how to convert local to actual time, not null
      * @param savingAmount  the amount of saving from the standard offset after the transition, not null
@@ -537,9 +537,9 @@ public class ZoneRulesBuilder {
          * @param startYear  the start year of the rule, from MIN_YEAR to MAX_YEAR
          * @param endYear  the end year of the rule, from MIN_YEAR to MAX_YEAR
          * @param month  the month of the transition, not null
-         * @param dayOfMonth  the day of month of the transition, adjusted by dayOfWeek,
+         * @param dayOfMonth  the day-of-month of the transition, adjusted by dayOfWeek,
          *   from 1 to 31 adjusted later, or -1 adjusted earlier from the last day of the month
-         * @param dayOfWeek  the day of week to adjust to, null if day of month should not be adjusted
+         * @param dayOfWeek  the day-of-week to adjust to, null if day-of-month should not be adjusted
          * @param time  the time that the transition occurs as defined by timeDefintion, not null
          * @param timeDefinition  the definition of how to convert local to actual time, not null
          * @param savingAmount  the amount of saving from the standard offset, not null
@@ -661,9 +661,9 @@ public class ZoneRulesBuilder {
         private int year;
         /** The month. */
         private final MonthOfYear month;
-        /** The day of month. */
+        /** The day-of-month. */
         private final int dayOfMonth;
-        /** The day of month. */
+        /** The day-of-month. */
         private final DayOfWeek dayOfWeek;
         /** The local time. */
         private final LocalTime time;
@@ -677,8 +677,8 @@ public class ZoneRulesBuilder {
          *
          * @param year  the year
          * @param month  the month, not null
-         * @param dayOfMonth  the day of month
-         * @param dayOfWeek  the day of week, null if day of month is exact
+         * @param dayOfMonth  the day-of-month
+         * @param dayOfWeek  the day-of-week, null if day-of-month is exact
          * @param time  the time, not null
          * @param timeDefinition  the time definition, not null
          * @param savingAfter  the savings amount, not null
