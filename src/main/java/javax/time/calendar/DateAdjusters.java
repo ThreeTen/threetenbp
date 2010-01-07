@@ -31,11 +31,10 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.field.MonthOfYear.DECEMBER;
-
 import java.io.Serializable;
 
 import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.field.MonthOfYear;
 
 /**
  * Provides common implementations of <code>DateAdjuster</code>.
@@ -111,7 +110,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.date(date.getYear(), DECEMBER, 31);
+                return LocalDate.date(date.getYear(), MonthOfYear.DECEMBER, 31);
             }
         },
         /** Next non weekend day adjuster. */
