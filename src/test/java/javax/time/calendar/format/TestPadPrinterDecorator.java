@@ -31,15 +31,15 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Locale;
 
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFields;
+import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.field.DayOfMonth;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -68,7 +68,7 @@ public class TestPadPrinterDecorator {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = DateTimeFields.fields(DayOfMonth.rule(), 3);
+        Calendrical calendrical = DateTimeFields.fields(ISOChronology.dayOfMonthRule(), 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, (Appendable) null, symbols);
     }

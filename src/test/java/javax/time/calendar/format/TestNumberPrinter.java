@@ -32,7 +32,8 @@
 package javax.time.calendar.format;
 
 import static javax.time.calendar.ISOChronology.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -40,7 +41,6 @@ import java.util.Locale;
 import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateTimeFields;
 import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 
@@ -72,14 +72,14 @@ public class TestNumberPrinter {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullAppendable() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), 3);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), 3);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         pp.print(calendrical, (Appendable) null, symbols);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_nullDateTime() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         pp.print((Calendrical) null, buf, symbols);
     }
 
@@ -94,13 +94,13 @@ public class TestNumberPrinter {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void test_print_emptyCalendrical() throws Exception {
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         pp.print(emptyCalendrical, buf, symbols);
     }
 
     public void test_print_append() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), 3);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), 3);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         buf.append("EXISTING");
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "EXISTING3");
@@ -108,8 +108,8 @@ public class TestNumberPrinter {
 
     @Test(expectedExceptions=IOException.class)
     public void test_print_appendIO() throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), 3);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), 1, 2, SignStyle.NEVER);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), 3);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), 1, 2, SignStyle.NEVER);
         pp.print(calendrical, exceptionAppenable, symbols);
     }
 
@@ -206,8 +206,8 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NOT_NEGATIVE(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), value);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NOT_NEGATIVE);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), value);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), minPad, maxPad, SignStyle.NOT_NEGATIVE);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null || value < 0) {
@@ -216,7 +216,7 @@ public class TestNumberPrinter {
             assertEquals(buf.toString(), result);
         } catch (CalendricalFormatFieldException ex) {
             if (result == null || value < 0) {
-                assertEquals(ex.getRule(), DayOfMonth.rule());
+                assertEquals(ex.getRule(), dayOfMonthRule());
                 assertEquals(ex.getValue(), (Integer) value);
             } else {
                 throw ex;
@@ -226,8 +226,8 @@ public class TestNumberPrinter {
 
     @Test(dataProvider="Pad") 
     public void test_pad_NEVER(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), value);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NEVER);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), value);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), minPad, maxPad, SignStyle.NEVER);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null) {
@@ -238,15 +238,15 @@ public class TestNumberPrinter {
             if (result != null) {
                 throw ex;
             }
-            assertEquals(ex.getRule(), DayOfMonth.rule());
+            assertEquals(ex.getRule(), dayOfMonthRule());
             assertEquals(ex.getValue(), (Integer) value);
         }
     }
 
     @Test(dataProvider="Pad") 
     public void test_pad_NORMAL(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), value);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.NORMAL);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), value);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), minPad, maxPad, SignStyle.NORMAL);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null) {
@@ -257,15 +257,15 @@ public class TestNumberPrinter {
             if (result != null) {
                 throw ex;
             }
-            assertEquals(ex.getRule(), DayOfMonth.rule());
+            assertEquals(ex.getRule(), dayOfMonthRule());
             assertEquals(ex.getValue(), (Integer) value);
         }
     }
 
     @Test(dataProvider="Pad") 
     public void test_pad_ALWAYS(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), value);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.ALWAYS);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), value);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), minPad, maxPad, SignStyle.ALWAYS);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null) {
@@ -276,15 +276,15 @@ public class TestNumberPrinter {
             if (result != null) {
                 throw ex;
             }
-            assertEquals(ex.getRule(), DayOfMonth.rule());
+            assertEquals(ex.getRule(), dayOfMonthRule());
             assertEquals(ex.getValue(), (Integer) value);
         }
     }
 
     @Test(dataProvider="Pad") 
     public void test_pad_EXCEEDS_PAD(int minPad, int maxPad, int value, String result) throws Exception {
-        Calendrical calendrical = new MockSimpleCalendrical(DayOfMonth.rule(), value);
-        NumberPrinterParser pp = new NumberPrinterParser(DayOfMonth.rule(), minPad, maxPad, SignStyle.EXCEEDS_PAD);
+        Calendrical calendrical = new MockSimpleCalendrical(dayOfMonthRule(), value);
+        NumberPrinterParser pp = new NumberPrinterParser(dayOfMonthRule(), minPad, maxPad, SignStyle.EXCEEDS_PAD);
         try {
             pp.print(calendrical, buf, symbols);
             if (result == null) {
@@ -298,7 +298,7 @@ public class TestNumberPrinter {
             if (result != null) {
                 throw ex;
             }
-            assertEquals(ex.getRule(), DayOfMonth.rule());
+            assertEquals(ex.getRule(), dayOfMonthRule());
             assertEquals(ex.getValue(), (Integer) value);
         }
     }
