@@ -32,6 +32,7 @@
 package javax.time;
 
 import static javax.time.calendar.DateAdjusters.*;
+import static javax.time.calendar.ISOChronology.*;
 import static javax.time.calendar.LocalDate.date;
 import static javax.time.calendar.field.DayOfMonth.dayOfMonth;
 import static javax.time.calendar.field.DayOfWeek.*;
@@ -44,18 +45,19 @@ import static javax.time.period.Period.*;
 import javax.time.calendar.Clock;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFields;
-import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.OffsetDateTime;
 import javax.time.calendar.TimeZone;
+import javax.time.calendar.YearMonth;
 import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.field.QuarterOfYear;
+import javax.time.calendar.field.Year;
 import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.period.Period;
 
@@ -72,9 +74,9 @@ public class TestFluentAPI {
         LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6)).plus(minutes(2));
-//        if (tod.getAmPm().isAm()) {
-//            tod = tod.with(hourOfDay(9));
-//        }
+        if (tod.toHourOfDay().getAmPm().isAm()) {
+            tod = tod.with(hourOfDay(9));
+        }
         
         LocalDate date = null;
         date = clock.today().plusDays(3);
@@ -106,7 +108,7 @@ public class TestFluentAPI {
         date.with(MonthOfYear.DECEMBER, DateResolvers.strict());
         
         DateTimeFields fri13 = DateTimeFields.fields(
-                ISOChronology.dayOfWeekRule(), FRIDAY.getValue(), ISOChronology.dayOfMonthRule(), 13);
+                dayOfWeekRule(), FRIDAY.getValue(), dayOfMonthRule(), 13);
         if (date.matches(fri13)) {
             System.out.println("Spooky");
         }
@@ -127,16 +129,12 @@ public class TestFluentAPI {
         tod.with(hourOfDay(12)).with(minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
         
-//        if (tod.hourOfDay().getAmPm().isAm()) {
-//            // handle morning
-//        }
-        
 //        CORBADate c = null;
 //        c.year = date.year().getValue();
 //        c.month = date.month().getText(symbols);
 //        c.day = date.day().getValue();
         
-        //int q = date.get(QuarterOfYear.class);
+        QuarterOfYear q = date.get(quarterOfYearRule());
         //int hourOfDay = HourOfDay.of(tod).get();
         
 //        CalendarDateTime dt = CalendarDateTime.calendarDateTime(2007, february(), 21, 12, 30);
@@ -149,9 +147,9 @@ public class TestFluentAPI {
         md = md.with(MARCH);
         md = md.rollDayOfMonth(3);
         
-        DayOfMonth.rule().getMaximumValue();
+        dayOfMonthRule().getMaximumValue();
         date.getMonthOfYear().maxLengthInDays();
-//        DayOfMonth.RULE.getMaximumValue(date);
+        dayOfMonthRule().getMaximumValue(date);
         FEBRUARY.maxLengthInDays();
 //        DayOfMonth.RULE.getMaximumValue(february());
         
@@ -205,16 +203,12 @@ public class TestFluentAPI {
         ZonedDateTime zdt1 = date.atStartOfDayInZone(paris);
         ZonedDateTime zdt2 = date.atMidnight().atZone(paris);
         
-        
-//        {
-//            Year year = Year.isoYear(2002);
-//            YearMonth sixNationsMonth = year.append(FEBRUARY);
-//            LocalDate englandWales = sixNationsMonth.appendDayOfMonth(12);
-//            
-//            LocalDate engWal = Year.isoYear(2009).append(MARCH).appendDayOfMonth(12);
-//            LocalDate engWal = Year.isoYear(2009).toYearMonth(FEBRUARY).toLocalDate(12);
-//        }
-        
+        {
+            Year year = Year.isoYear(2002);
+            YearMonth sixNationsMonth = year.atMonth(FEBRUARY);
+            LocalDate englandWales = sixNationsMonth.atDay(12);
+            LocalDate engWal = Year.isoYear(2009).atMonth(FEBRUARY).atDay(12);
+        }
     }
 
 }
