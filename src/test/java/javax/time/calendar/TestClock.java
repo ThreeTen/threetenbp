@@ -38,7 +38,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import javax.time.TimeSource;
-import javax.time.calendar.field.Year;
 
 import org.testng.annotations.Test;
 

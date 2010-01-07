@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar.field;
+package javax.time.calendar;
 
 import static org.testng.Assert.*;
 
@@ -49,10 +49,10 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalTime;
-import javax.time.calendar.MockDateResolverReturnsNull;
-import javax.time.calendar.MockDecadeOfCenturyFieldRule;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.Year;
 import javax.time.calendar.YearMonth;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;

@@ -29,7 +29,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar.field;
+package javax.time.calendar;
 
 import static org.testng.Assert.*;
 
@@ -37,6 +37,8 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.time.calendar.IllegalCalendarFieldValueException;
+import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.QuarterOfYear;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

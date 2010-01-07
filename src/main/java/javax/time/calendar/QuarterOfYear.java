@@ -29,11 +29,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar.field;
+package javax.time.calendar;
 
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
 
 /**
  * A quarter-of-year, such as 'Q2'.

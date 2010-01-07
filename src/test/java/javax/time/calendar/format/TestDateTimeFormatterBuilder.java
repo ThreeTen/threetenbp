@@ -35,9 +35,9 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.SignStyle;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 

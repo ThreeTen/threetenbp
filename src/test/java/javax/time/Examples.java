@@ -32,9 +32,9 @@
 package javax.time;
 
 import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
+import static javax.time.calendar.DayOfWeek.FRIDAY;
 import static javax.time.calendar.ISOChronology.*;
-import static javax.time.calendar.field.DayOfWeek.FRIDAY;
-import static javax.time.calendar.field.MonthOfYear.DECEMBER;
+import static javax.time.calendar.MonthOfYear.DECEMBER;
 import static javax.time.period.Period.yearsMonthsDays;
 
 import java.util.Locale;
@@ -47,9 +47,9 @@ import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
 import javax.time.calendar.TimeZone;
+import javax.time.calendar.Year;
 import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 import javax.time.calendar.format.DateTimeFormatters;

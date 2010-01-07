@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import java.io.Serializable;
 
-import javax.time.calendar.field.MonthOfYear;
-
 /**
  * Provides common implementations of <code>DateResolver</code>.
  * <p>

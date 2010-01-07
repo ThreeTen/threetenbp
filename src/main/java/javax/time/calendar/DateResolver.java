@@ -31,8 +31,6 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.field.MonthOfYear;
-
 /**
  * Strategy for resolving an invalid year-month-day to a valid one.
  * <p>

@@ -46,7 +46,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.Test;

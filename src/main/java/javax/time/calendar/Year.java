@@ -29,26 +29,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar.field;
+package javax.time.calendar;
 
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.Calendrical;
-import javax.time.calendar.CalendricalMatcher;
-import javax.time.calendar.CalendricalRule;
-import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.DateResolver;
-import javax.time.calendar.DateResolvers;
-import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.ISOChronology;
-import javax.time.calendar.IllegalCalendarFieldValueException;
-import javax.time.calendar.InvalidCalendarFieldException;
-import javax.time.calendar.LocalDate;
-import javax.time.calendar.MonthDay;
-import javax.time.calendar.UnsupportedRuleException;
-import javax.time.calendar.YearMonth;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 

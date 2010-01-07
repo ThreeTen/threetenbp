@@ -36,7 +36,6 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.TimeSource;
-import javax.time.calendar.field.Year;
 
 /**
  * A clock providing access to the current date and time.

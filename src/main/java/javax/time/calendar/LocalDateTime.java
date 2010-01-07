@@ -34,9 +34,6 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodProvider;

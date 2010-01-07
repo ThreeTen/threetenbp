@@ -38,10 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.QuarterOfYear;
 import javax.time.period.Period;
 
 import org.testng.annotations.Test;

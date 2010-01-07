@@ -31,7 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.field.DayOfWeek.*;
+import static javax.time.calendar.DayOfWeek.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -44,8 +44,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.Test;
 

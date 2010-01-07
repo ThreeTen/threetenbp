@@ -31,17 +31,17 @@
  */
 package javax.time.calendar.zone;
 
-import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.calendar.field.MonthOfYear.*;
+import static javax.time.calendar.DayOfWeek.*;
+import static javax.time.calendar.MonthOfYear.*;
 import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.*;
 import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
+import javax.time.calendar.MonthOfYear;
+import javax.time.calendar.Year;
 import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 import javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition;
 import javax.time.period.Period;

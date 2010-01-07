@@ -42,11 +42,6 @@ import java.util.Map;
 import javax.time.CalendricalException;
 import javax.time.Duration;
 import javax.time.MathUtils;
-import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.Period;
 

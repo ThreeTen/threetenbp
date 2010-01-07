@@ -34,7 +34,6 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.calendar.field.Year;
 
 /**
  * Mock rule.

@@ -45,6 +45,7 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.UnsupportedRuleException;
+import javax.time.calendar.Year;
 
 /**
  * A representation of a day-of-year in the ISO-8601 calendar system.

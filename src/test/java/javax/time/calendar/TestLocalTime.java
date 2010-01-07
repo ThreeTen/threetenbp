@@ -45,7 +45,6 @@ import java.util.Iterator;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.LocalTime.Overflow;
-import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;

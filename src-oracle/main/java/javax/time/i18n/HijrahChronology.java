@@ -12,9 +12,9 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.CalendricalMerger;
 import javax.time.calendar.Chronology;
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodRule;
-import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**

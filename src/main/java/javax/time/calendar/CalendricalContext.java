@@ -34,7 +34,6 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.field.MonthOfYear;
 
 /**
  * Context for aspects of date-time calculations that frequently change.

@@ -34,8 +34,6 @@ package javax.time.calendar;
 import static org.testng.Assert.*;
 
 import javax.time.Instant;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 
 import org.testng.annotations.Test;
 

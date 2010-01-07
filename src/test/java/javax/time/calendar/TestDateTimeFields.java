@@ -47,9 +47,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 
-import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

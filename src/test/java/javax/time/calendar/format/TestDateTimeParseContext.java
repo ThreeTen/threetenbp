@@ -39,9 +39,9 @@ import java.util.Map;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateTimeFieldRule;
 import javax.time.calendar.ISOChronology;
+import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
-import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

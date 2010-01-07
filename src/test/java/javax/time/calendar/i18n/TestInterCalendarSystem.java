@@ -35,7 +35,7 @@ import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.LocalDate;
-import javax.time.calendar.field.QuarterOfYear;
+import javax.time.calendar.QuarterOfYear;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
 

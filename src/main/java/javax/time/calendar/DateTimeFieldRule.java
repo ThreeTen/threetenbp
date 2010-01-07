@@ -65,6 +65,7 @@ import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
  * @author Stephen Colebourne
  */
 public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
+    // TODO: broken serialization
 
     /** A serialization identifier for this class. */
     private static final long serialVersionUID = 837528753278L;
@@ -78,7 +79,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
     /** The maximum value for the field. */
     private final int maximumValue;
     /** The cached text for this rule. */
-    private final ConcurrentMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>> textStores;
+    private transient final ConcurrentMap<Locale, SoftReference<EnumMap<TextStyle, TextStore>>> textStores;
 
     /**
      * Constructor.

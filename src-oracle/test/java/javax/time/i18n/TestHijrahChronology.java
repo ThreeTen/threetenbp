@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import javax.time.calendar.DateTimeFieldRule;
-import javax.time.calendar.field.DayOfWeek;
+import javax.time.calendar.DayOfWeek;
 
 import org.testng.annotations.Test;
 

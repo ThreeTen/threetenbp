@@ -36,9 +36,9 @@ import static org.testng.Assert.*;
 import java.util.Locale;
 
 import javax.time.calendar.DateTimeFieldRule;
+import javax.time.calendar.DayOfWeek;
 import javax.time.calendar.ISOChronology;
-import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.MonthOfYear;
+import javax.time.calendar.MonthOfYear;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 import org.testng.annotations.BeforeMethod;

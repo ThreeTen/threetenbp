@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.field.MonthOfYear;
 
 /**
  * Mock DateResolver implementation that returns null.

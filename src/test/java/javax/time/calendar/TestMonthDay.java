@@ -44,7 +44,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.MockSimpleCalendrical;
 

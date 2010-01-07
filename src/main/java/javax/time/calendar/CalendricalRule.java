@@ -35,7 +35,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.field.Year;
 
 /**
  * The rule defining how a single well-defined calendrical operates.

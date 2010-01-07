@@ -43,8 +43,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 
 import org.testng.annotations.Test;
 

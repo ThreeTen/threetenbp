@@ -33,7 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.MockSimpleCalendrical;
 
 import org.testng.annotations.Test;

@@ -33,6 +33,7 @@ package javax.time;
 
 import java.util.Arrays;
 
+import javax.time.calendar.TestAmPmOfDay;
 import javax.time.calendar.TestCalendricalMatchers;
 import javax.time.calendar.TestCalendricalRule;
 import javax.time.calendar.TestClock;
@@ -40,6 +41,7 @@ import javax.time.calendar.TestClock_TimeSourceClock;
 import javax.time.calendar.TestDateAdjusters;
 import javax.time.calendar.TestDateResolvers;
 import javax.time.calendar.TestDateTimeFields;
+import javax.time.calendar.TestDayOfWeek;
 import javax.time.calendar.TestISOChronology;
 import javax.time.calendar.TestISODayOfMonthRule;
 import javax.time.calendar.TestISODayOfWeekRule;
@@ -55,19 +57,17 @@ import javax.time.calendar.TestISOYearRule;
 import javax.time.calendar.TestLocalDate;
 import javax.time.calendar.TestLocalDateTime;
 import javax.time.calendar.TestLocalTime;
+import javax.time.calendar.TestMonthOfYear;
 import javax.time.calendar.TestOffsetDate;
 import javax.time.calendar.TestOffsetDateTime;
 import javax.time.calendar.TestOffsetDateTime_instants;
 import javax.time.calendar.TestOffsetTime;
+import javax.time.calendar.TestQuarterOfYear;
 import javax.time.calendar.TestTimeZone;
+import javax.time.calendar.TestYear;
 import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.TestZoneResolvers;
 import javax.time.calendar.TestZonedDateTime;
-import javax.time.calendar.field.TestAmPmOfDay;
-import javax.time.calendar.field.TestDayOfWeek;
-import javax.time.calendar.field.TestMonthOfYear;
-import javax.time.calendar.field.TestQuarterOfYear;
-import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCalendricalPrintException;
 import javax.time.calendar.format.TestCaseSensitivePrinterParser;
 import javax.time.calendar.format.TestCharLiteralParser;
@@ -129,6 +129,7 @@ public class AllTest {
             TestTimeSource_OffsetSystem.class,
             TestTimeSource_System.class,
             // calendar classes
+            TestAmPmOfDay.class,
 //            TestCalendricalMerger.class,
             TestCalendricalMatchers.class,
             TestCalendricalRule.class,
@@ -137,6 +138,7 @@ public class AllTest {
             TestDateAdjusters.class,
             TestDateResolvers.class,
             TestDateTimeFields.class,
+            TestDayOfWeek.class,
             TestISOChronology.class,
             TestISODayOfMonthRule.class,
             TestISODayOfWeekRule.class,
@@ -153,21 +155,18 @@ public class AllTest {
             TestLocalDateTime.class,
             TestLocalTime.class,
 //            TestMonthDay.class,  // needs strict to block overflow leftovers
+            TestMonthOfYear.class,
             TestOffsetDate.class,
             TestOffsetDateTime.class,
             TestOffsetDateTime_instants.class,
             TestOffsetTime.class,
+            TestQuarterOfYear.class,
             TestTimeZone.class,
+            TestYear.class,
 //            TestYearMonth.class,  // needs strict to block overflow leftovers
             TestZonedDateTime.class,
             TestZoneOffset.class,
             TestZoneResolvers.class,
-            // calendar fields
-            TestAmPmOfDay.class,
-            TestDayOfWeek.class,
-            TestMonthOfYear.class,
-            TestQuarterOfYear.class,
-            TestYear.class,
             // format
             TestCalendricalPrintException.class,
             TestCaseSensitivePrinterParser.class,
