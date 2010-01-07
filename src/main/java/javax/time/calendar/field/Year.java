@@ -387,13 +387,10 @@ public final class Year
     }
 
     /**
-     * Gets the length of this month in days using the ISO year.
-     * <p>
-     * The year specified is the year from the {@link ISOChronology}.
-     * Other chronologies should use {@link #lengthInDays(boolean)}.
+     * Gets the length of the specified month in days.
      *
-     * @param year  the year to obtain the length for, not null
-     * @return the length of this month in days, from 28 to 31
+     * @param monthOfYear  the month-of-year to obtain the length for, not null
+     * @return the length of the month in days, from 28 to 31
      */
     public int monthLengthInDays(MonthOfYear monthOfYear) {
         if (monthOfYear == null) {
