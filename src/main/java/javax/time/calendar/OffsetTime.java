@@ -35,10 +35,6 @@ import java.io.Serializable;
 
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
-import javax.time.calendar.field.NanoOfSecond;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.PeriodProvider;
@@ -77,56 +73,6 @@ public final class OffsetTime
     private final ZoneOffset offset;
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
-     * and offset, setting the second and nanosecond to zero.
-     *
-     * @param hourOfDay  the hour-of-day to represent, not null
-     * @param minuteOfHour  the minute-of-hour to represent, not null
-     * @param offset  the zone offset, not null
-     * @return the offset time, never null
-     */
-    public static OffsetTime time(
-            HourOfDay hourOfDay, MinuteOfHour minuteOfHour, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
-        return new OffsetTime(time, offset);
-    }
-
-    /**
-     * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
-     * second, and offset, setting the nanosecond to zero.
-     *
-     * @param hourOfDay  the hour-of-day to represent, not null
-     * @param minuteOfHour  the minute-of-hour to represent, not null
-     * @param secondOfMinute  the second-of-minute to represent, not null
-     * @param offset  the zone offset, not null
-     * @return the offset time, never null
-     */
-    public static OffsetTime time(
-            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
-            SecondOfMinute secondOfMinute, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
-        return new OffsetTime(time, offset);
-    }
-
-    /**
-     * Obtains an instance of <code>OffsetTime</code> from an hour, minute,
-     * second, nanosecond, and offset.
-     *
-     * @param hourOfDay  the hour-of-day to represent, not null
-     * @param minuteOfHour  the minute-of-hour to represent, not null
-     * @param secondOfMinute  the second-of-minute to represent, not null
-     * @param nanoOfSecond  the nano-of-second to represent, not null
-     * @param offset  the zone offset, not null
-     * @return the offset time, never null
-     */
-    public static OffsetTime time(
-            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
-            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
-        return new OffsetTime(time, offset);
-    }
-
     /**
      * Obtains an instance of <code>OffsetTime</code>.
      * <p>
@@ -348,55 +294,6 @@ public final class OffsetTime
         int difference = offset.getAmountSeconds() - this.offset.getAmountSeconds();
         LocalTime adjusted = time.plusSeconds(difference);
         return new OffsetTime(adjusted, offset);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the hour-of-day field as an <code>HourOfDay</code>.
-     * <p>
-     * This method provides access to an object representing the hour-of-day field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the hour-of-day, never null
-     */
-    public HourOfDay toHourOfDay() {
-        return time.toHourOfDay();
-    }
-
-    /**
-     * Gets the minute-of-hour field as a <code>MinuteOfHour</code>.
-     * <p>
-     * This method provides access to an object representing the minute-of-hour field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the minute-of-hour, never null
-     */
-    public MinuteOfHour toMinuteOfHour() {
-        return time.toMinuteOfHour();
-    }
-
-    /**
-     * Gets the second-of-minute field as a <code>SecondOfMinute</code>.
-     * <p>
-     * This method provides access to an object representing the second-of-minute field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the second-of-minute, never null
-     */
-    public SecondOfMinute toSecondOfMinute() {
-        return time.toSecondOfMinute();
-    }
-
-    /**
-     * Gets the nano-of-second field as a <code>NanoOfSecond</code>.
-     * <p>
-     * This method provides access to an object representing the nano-of-second field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the nano-of-second, never null
-     */
-    public NanoOfSecond toNanoOfSecond() {
-        return time.toNanoOfSecond();
     }
 
     //-----------------------------------------------------------------------

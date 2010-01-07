@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,7 @@
  */
 package javax.time.calendar;
 
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 
 /**
  * Mock DateResolver implementation that returns null.
@@ -41,7 +39,7 @@ import javax.time.calendar.field.Year;
  * @author Michael Nascimento Santos
  */
 public class MockDateResolverReturnsNull implements DateResolver {
-    public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+    public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
         return null;
     }
 }

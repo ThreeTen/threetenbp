@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -45,16 +45,9 @@ import java.util.Iterator;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -124,27 +117,6 @@ public class TestLocalDateTime {
             assertTrue(Modifier.isPrivate(field.getModifiers()));
             assertTrue(Modifier.isFinal(field.getModifiers()));
         }
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateMidnight_objects() {
-        LocalDateTime dateTime = LocalDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
-        check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_objects_nullYear() {
-        LocalDateTime.dateMidnight(null, MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_objects_nullMonth() {
-        LocalDateTime.dateMidnight(Year.isoYear(2008), null, DayOfMonth.dayOfMonth(29));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_objects_nullDay() {
-        LocalDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.FEBRUARY, null);
     }
 
     //-----------------------------------------------------------------------
@@ -229,132 +201,6 @@ public class TestLocalDateTime {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
         LocalDateTime test = LocalDateTime.dateMidnight(mmp);
         check(test, 2008, 6, 30, 0, 0, 0, 0);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_5objects() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.
-                hourOfDay(12), MinuteOfHour.minuteOfHour(30));
-        check(dateTime, 2008, 2, 29, 12, 30, 0, 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_5objects_nullYear() {
-        LocalDateTime.dateTime(null, MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12),
-                MinuteOfHour.minuteOfHour(30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_5objects_nullMonth() {
-        LocalDateTime.dateTime(Year.isoYear(2008), null, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), 
-                MinuteOfHour.minuteOfHour(30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_5objects_nullDay() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, null, HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_5objects_nullHour() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), null, MinuteOfHour.minuteOfHour(30));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_5objects_nullMinute() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_6objects() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.
-                hourOfDay(12), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40));
-        check(dateTime, 2008, 2, 29, 12, 30, 40, 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6objects_nullYear() {
-        LocalDateTime.dateTime(null, MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12),
-                MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6objects_nullMonth() {
-        LocalDateTime.dateTime(Year.isoYear(2008), null, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), 
-                MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6objects_nullDay() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, null, HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30),
-                SecondOfMinute.secondOfMinute(40));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6objects_nullHour() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), null, MinuteOfHour.minuteOfHour(30),
-                SecondOfMinute.secondOfMinute(40));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6objects_nullMinute() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), null,
-                SecondOfMinute.secondOfMinute(40));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_6objects_nullSecond() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), 
-                MinuteOfHour.minuteOfHour(30), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_7objects() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.
-                hourOfDay(12), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40), NanoOfSecond.nanoOfSecond(987654321));
-        check(dateTime, 2008, 2, 29, 12, 30, 40, 987654321);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullYear() {
-        LocalDateTime.dateTime(null, MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12),
-                MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40), NanoOfSecond.nanoOfSecond(987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullMonth() {
-        LocalDateTime.dateTime(Year.isoYear(2008), null, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), 
-                MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40), NanoOfSecond.nanoOfSecond(987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullDay() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, null, HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30),
-                SecondOfMinute.secondOfMinute(40), NanoOfSecond.nanoOfSecond(987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullHour() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), null, MinuteOfHour.minuteOfHour(30),
-                SecondOfMinute.secondOfMinute(40), NanoOfSecond.nanoOfSecond(987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullMinute() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), null,
-                SecondOfMinute.secondOfMinute(40), NanoOfSecond.nanoOfSecond(987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullSecond() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), 
-                MinuteOfHour.minuteOfHour(30), null, NanoOfSecond.nanoOfSecond(987654321));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateTime_7objects_nullNano() {
-        LocalDateTime.dateTime(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), HourOfDay.hourOfDay(12), 
-                MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(40), null);
     }
 
     //-----------------------------------------------------------------------
@@ -811,8 +657,8 @@ public class TestLocalDateTime {
         assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
         assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
         assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekBasedYear(test).getValue());
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekBasedYear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) 27);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) 2008);
         
         assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
         assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
@@ -887,10 +733,6 @@ public class TestLocalDateTime {
         assertEquals(a.getYear(), y);
         assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
         assertEquals(a.getDayOfMonth(), d);
-        
-        assertEquals(a.toYear(), Year.isoYear(y));
-        assertEquals(a.toMonthOfYear(), MonthOfYear.monthOfYear(m));
-        assertEquals(a.toDayOfMonth(), DayOfMonth.dayOfMonth(d));
     }
 
     @Test(dataProvider="sampleDates")
@@ -911,11 +753,6 @@ public class TestLocalDateTime {
         assertEquals(a.getMinuteOfHour(), m);
         assertEquals(a.getSecondOfMinute(), s);
         assertEquals(a.getNanoOfSecond(), ns);
-        
-        assertEquals(a.toHourOfDay(), HourOfDay.hourOfDay(h));
-        assertEquals(a.toMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
-        assertEquals(a.toSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
-        assertEquals(a.toNanoOfSecond(), NanoOfSecond.nanoOfSecond(ns));
     }
 
     //-----------------------------------------------------------------------
@@ -3120,28 +2957,16 @@ public class TestLocalDateTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(TEST_2007_07_15_12_30_40_987654321));
-        
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(Year.isoYear(2007)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(Year.isoYear(2006)));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(QuarterOfYear.Q3));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(QuarterOfYear.Q2));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(MonthOfYear.JULY));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(MonthOfYear.JUNE));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(DayOfMonth.dayOfMonth(15)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(DayOfMonth.dayOfMonth(14)));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(DayOfWeek.SUNDAY));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(DayOfWeek.MONDAY));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(HourOfDay.hourOfDay(12)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(HourOfDay.hourOfDay(0)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(30)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(0)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(40)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
-        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
-        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-//        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.PM));
-//        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(AmPmOfDay.AM));
+        assertTrue(TEST_2007_07_15_12_30_40_987654321.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return true;
+            }
+        }));
+        assertFalse(TEST_2007_07_15_12_30_40_987654321.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return false;
+            }
+        }));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -3239,6 +3064,16 @@ public class TestLocalDateTime {
         LocalTime t = LocalTime.time(h, m, s, ns);
         LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
         assertSame(dt.toLocalTime(), t);
+    }
+
+    //-----------------------------------------------------------------------
+    // toYear()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toYear(int year, int month, int day) {
+        LocalDate d = LocalDate.date(year, month, day);
+        LocalDateTime dt = LocalDateTime.dateMidnight(d);
+        assertEquals(dt.toYear(), Year.isoYear(year));
     }
 
     //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,11 +46,6 @@ import java.lang.reflect.Modifier;
 
 import javax.time.Instant;
 import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.NanoOfSecond;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
@@ -124,89 +115,6 @@ public class TestOffsetTime {
         assertEquals(test.getSecondOfMinute(), s);
         assertEquals(test.getNanoOfSecond(), n);
         assertEquals(test.getOffset(), offset);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_objectsHM() {
-        OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
-        check(test, 11, 30, 0, 0, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHM_nullHour() {
-        OffsetTime.time(null, MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHM_nullMinute() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), null, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHM_nullOffset() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_objectsHMS() {
-        OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
-        check(test, 11, 30, 10, 0, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMS_nullHour() {
-        OffsetTime.time(null, MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMS_nullMinute() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), null, SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMS_nullSecond() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), null, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMS_nullOffset() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_objectsHMSN() {
-        OffsetTime test = OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30),
-                SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
-        check(test, 11, 30, 10, 500, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMSN_nullHour() {
-        OffsetTime.time(null, MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), 
-                OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMSN_nullMinute() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), null, SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), 
-                OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMSN_nullSecond() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), null, NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMSN_nullNano() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), null, 
-                OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objectsHMSN_nullOffset() {
-        OffsetTime.time(HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), 
-                NanoOfSecond.nanoOfSecond(500), null);
     }
 
     //-----------------------------------------------------------------------
@@ -409,11 +317,6 @@ public class TestOffsetTime {
         assertEquals(a.getSecondOfMinute(), localTime.getSecondOfMinute());
         assertEquals(a.getNanoOfSecond(), localTime.getNanoOfSecond());
         
-        assertEquals(a.toHourOfDay(), localTime.toHourOfDay());
-        assertEquals(a.toMinuteOfHour(), localTime.toMinuteOfHour());
-        assertEquals(a.toSecondOfMinute(), localTime.toSecondOfMinute());
-        assertEquals(a.toNanoOfSecond(), localTime.toNanoOfSecond());
-        
         assertSame(a.toLocalTime(), localTime);
         assertEquals(a.toString(), localTime.toString() + offset.toString());
     }
@@ -543,7 +446,11 @@ public class TestOffsetTime {
     //-----------------------------------------------------------------------
     public void test_with() {
         OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
-        OffsetTime test = base.with(HourOfDay.hourOfDay(1));
+        OffsetTime test = base.with(new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return time.withHourOfDay(1);
+            }
+        });
         assertEquals(test.toLocalTime(), LocalTime.time(1, 30, 59));
         assertSame(test.getOffset(), base.getOffset());
     }
@@ -799,24 +706,21 @@ public class TestOffsetTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        OffsetTime test = OffsetTime.time(11, 30, 59, OFFSET_PONE);
-        assertTrue(test.matches(test));
-        assertFalse(test.matches(MonthDay.monthDay(MonthOfYear.JUNE, 4)));
-
-        assertTrue(test.matches(HourOfDay.hourOfDay(11)));
-        assertFalse(test.matches(HourOfDay.hourOfDay(10)));
-        assertTrue(test.matches(MinuteOfHour.minuteOfHour(30)));
-        assertFalse(test.matches(MinuteOfHour.minuteOfHour(0)));
-        assertTrue(test.matches(SecondOfMinute.secondOfMinute(59)));
-        assertFalse(test.matches(SecondOfMinute.secondOfMinute(50)));
-        assertTrue(test.matches(NanoOfSecond.nanoOfSecond(0)));
-        assertFalse(test.matches(NanoOfSecond.nanoOfSecond(1)));
+        assertTrue(TEST_TIME.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return true;
+            }
+        }));
+        assertFalse(TEST_TIME.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return false;
+            }
+        }));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_matches_null() {
-        OffsetTime base = OffsetTime.time(11, 30, 59, OFFSET_PONE);
-        base.matches(null);
+        TEST_TIME.matches(null);
     }
 
     //-----------------------------------------------------------------------

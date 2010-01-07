@@ -35,9 +35,7 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
@@ -93,22 +91,6 @@ public final class LocalDate
     private final int day;
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>LocalDate</code> from a year, month and day.
-     *
-     * @param year  the year to represent, not null
-     * @param monthOfYear  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, not null
-     * @return the local date, never null
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
-     */
-    public static LocalDate date(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        ISOChronology.checkNotNull(year, "Year must not be null");
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        ISOChronology.checkNotNull(dayOfMonth, "DayOfMonth must not be null");
-        return create(year.getValue(), monthOfYear, dayOfMonth.getValue());
-    }
-
     /**
      * Obtains an instance of <code>LocalDate</code> from a year, month and day.
      *
@@ -321,79 +303,13 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field as a <code>Year</code>.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return Year.isoYear(year);
-    }
-
-    /**
-     * Gets the month-of-year field as a <code>MonthOfYear</code>.
-     * <p>
-     * This method provides access to an object representing the month-of-year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     * <p>
-     * This method is the same as {@link #getMonthOfYear()}.
-     *
-     * @return the month-of-year, never null
-     */
-    public MonthOfYear toMonthOfYear() {
-        return month;
-    }
-
-    /**
-     * Gets the day-of-month field as a <code>DayOfMonth</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-month field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the day-of-month, never null
-     */
-    public DayOfMonth toDayOfMonth() {
-        return DayOfMonth.dayOfMonth(day);
-    }
-
-    /**
-     * Gets the day-of-year field as a <code>DayOfYear</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the day-of-year, never null
-     */
-    public DayOfYear toDayOfYear() {
-        return DayOfYear.dayOfYear(getDayOfYear());
-    }
-
-    /**
-     * Gets the day-of-week field as a <code>DayOfWeek</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-week field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     * <p>
-     * This method is the same as {@link #getDayOfWeek()}.
-     *
-     * @return the day-of-week, never null
-     */
-    public DayOfWeek toDayOfWeek() {
-        return getDayOfWeek();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from via {@link #toYear()}.
+     * Additional information about the year can be obtained from {@link Year#toYear}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
+     * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -423,10 +339,6 @@ public final class LocalDate
      * Gets the day-of-month field.
      * <p>
      * This method returns the primitive <code>int</code> value for the day-of-month.
-     * <p>
-     * Additional information about the day-of-month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
      *
      * @return the day-of-month, from 1 to 31
      */
@@ -438,10 +350,6 @@ public final class LocalDate
      * Gets the day-of-year field.
      * <p>
      * This method returns the primitive <code>int</code> value for the day-of-year.
-     * <p>
-     * Additional information about the day-of-year can be obtained from via {@link #toDayOfYear()}.
-     * This returns a <code>DayOfYear</code> object which can be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
      *
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
@@ -494,14 +402,16 @@ public final class LocalDate
      * Resolves the date, handling incorrectly implemented resolvers.
      *
      * @param dateResolver  the resolver, not null
-     * @param year  the year, not null
+     * @param year  the year, from MIN_YEAR to MAX_YEAR
      * @param month  the month, not null
-     * @param day  the day-of-month, not null
+     * @param day  the day-of-month, from 1 to 31
      * @return the resolved date, never null
      * @throws NullPointerException if the resolver returned null
      */
     private LocalDate resolveDate(DateResolver dateResolver, int year, MonthOfYear month, int day) {
-        LocalDate date = dateResolver.resolveDate(Year.isoYear(year), month, DayOfMonth.dayOfMonth(day));
+        ISOChronology.yearRule().checkValue(year);  // TODO: make resolver handle this
+        ISOChronology.dayOfMonthRule().checkValue(day);  // TODO: make resolver handle this
+        LocalDate date = dateResolver.resolveDate(year, month, day);
         ISOChronology.checkNotNull(date, "DateResolver implementation must not return null");
         return date;
     }
@@ -662,6 +572,24 @@ public final class LocalDate
             return this;
         }
         return resolveDate(dateResolver, year, month, dayOfMonth);
+    }
+
+    /**
+     * Returns a copy of this LocalDate with the day-of-year altered.
+     * If the resulting <code>LocalDate</code> is invalid, an exception is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @return a <code>LocalDate</code> based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     */
+    public LocalDate withDayOfYear(int dayOfYear) {
+        if (this.getDayOfYear() == dayOfYear) {
+            return this;
+        }
+        return ISOChronology.getDateFromDayOfYear(year, dayOfYear);
     }
 
     //-----------------------------------------------------------------------
@@ -1161,6 +1089,18 @@ public final class LocalDate
      */
     public LocalDate toLocalDate() {
         return this;
+    }
+
+    /**
+     * Gets the year field as a <code>Year</code>.
+     * <p>
+     * This method provides access to an object representing the year field.
+     * <code>Year</code> has methods for querying addition year-based information.
+     *
+     * @return the year, never null
+     */
+    public Year toYear() {
+        return Year.isoYear(year);
     }
 
     //-----------------------------------------------------------------------

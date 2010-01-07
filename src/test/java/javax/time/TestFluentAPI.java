@@ -34,10 +34,7 @@ package javax.time;
 import static javax.time.calendar.DateAdjusters.*;
 import static javax.time.calendar.ISOChronology.*;
 import static javax.time.calendar.LocalDate.date;
-import static javax.time.calendar.field.DayOfMonth.dayOfMonth;
 import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.calendar.field.HourOfDay.hourOfDay;
-import static javax.time.calendar.field.MinuteOfHour.minuteOfHour;
 import static javax.time.calendar.field.MonthOfYear.*;
 import static javax.time.calendar.field.Year.isoYear;
 import static javax.time.period.Period.*;
@@ -74,9 +71,9 @@ public class TestFluentAPI {
         LocalTime tod = clock.time();
         tod.plusHours(6).plusMinutes(2);
         tod.plus(hours(6)).plus(minutes(2));
-        if (tod.toHourOfDay().getAmPm().isAm()) {
-            tod = tod.with(hourOfDay(9));
-        }
+//        if (tod.toHourOfDay().getAmPm().isAm()) {
+//            tod = tod.withHourOfDay(9);
+//        }
         
         LocalDate date = null;
         date = clock.today().plusDays(3);
@@ -84,7 +81,10 @@ public class TestFluentAPI {
 //        date = Clock.system().today().plus(Days.days(3));
         
         date = date(2007, 3, 20);
-        date = date(isoYear(2007), MARCH, dayOfMonth(20));
+        date = date(2007, MARCH, 20);
+        date = Year.isoYear(2007).atMonth(3).atDay(20);
+        date = Year.isoYear(2007).atMonth(MARCH).atDay(20);
+        
 //        date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
 //        date = calendar().year(1972).december().dayOfMonth(3).build();
 //        date = calendar().currentYear().december().dayOfMonth(20).buildLenient();
@@ -126,7 +126,7 @@ public class TestFluentAPI {
         System.out.println(d2);
         System.out.println(d3);
         
-        tod.with(hourOfDay(12)).with(minuteOfHour(30));
+//        tod.with(hourOfDay(12)).with(minuteOfHour(30));
         tod.withHourOfDay(12).withMinuteOfHour(30);
         
 //        CORBADate c = null;
@@ -143,7 +143,7 @@ public class TestFluentAPI {
 //        CalendarDT<LocalTime> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
 //        int min = dtime.time().getMinuteOfHour();
         
-        MonthDay md = MonthDay.monthDay(FEBRUARY, dayOfMonth(4));
+        MonthDay md = MonthDay.monthDay(FEBRUARY, 4);
         md = md.with(MARCH);
         md = md.rollDayOfMonth(3);
         

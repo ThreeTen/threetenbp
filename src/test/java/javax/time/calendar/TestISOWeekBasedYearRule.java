@@ -33,8 +33,6 @@ package javax.time.calendar;
 
 import static org.testng.Assert.assertEquals;
 
-import javax.time.calendar.field.WeekBasedYear;
-
 import org.testng.annotations.Test;
 
 /**
@@ -62,12 +60,12 @@ public class TestISOWeekBasedYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getReifiedType(), Integer.class);
         assertEquals(rule.getID(), "ISO.WeekBasedYear");
         assertEquals(rule.getName(), "WeekBasedYear");
-        assertEquals(rule.getMinimumValue(), WeekBasedYear.MIN_YEAR);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), WeekBasedYear.MIN_YEAR);
-        assertEquals(rule.getLargestMinimumValue(), WeekBasedYear.MIN_YEAR);
-        assertEquals(rule.getMaximumValue(), WeekBasedYear.MAX_YEAR);
-        assertEquals(rule.getMaximumValue(LocalDate.date(2007, 6, 20)), WeekBasedYear.MAX_YEAR);
-        assertEquals(rule.getSmallestMaximumValue(), WeekBasedYear.MAX_YEAR);
+        assertEquals(rule.getMinimumValue(), ISOChronology.MIN_WEEK_BASED_YEAR);
+        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), ISOChronology.MIN_WEEK_BASED_YEAR);
+        assertEquals(rule.getLargestMinimumValue(), ISOChronology.MIN_WEEK_BASED_YEAR);
+        assertEquals(rule.getMaximumValue(), ISOChronology.MAX_WEEK_BASED_YEAR);
+        assertEquals(rule.getMaximumValue(LocalDate.date(2007, 6, 20)), ISOChronology.MAX_WEEK_BASED_YEAR);
+        assertEquals(rule.getSmallestMaximumValue(), ISOChronology.MAX_WEEK_BASED_YEAR);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodWeekBasedYears());
         assertEquals(rule.getPeriodRange(), null);

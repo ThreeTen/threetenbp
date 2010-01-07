@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -44,7 +44,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.MockSimpleCalendrical;
@@ -109,43 +108,14 @@ public class TestMonthDay {
         assertEquals(test.getMonthOfYear().getValue(), m);
         assertEquals(test.getDayOfMonth(), d);
     }
-    
-    public void factory_objects() {
-        assertEquals(TEST_07_15, MonthDay.monthDay(MonthOfYear.JULY, DayOfMonth.dayOfMonth(15)));
-    }
-
-    public void factory_objects_leapDay() {
-        MonthDay test = MonthDay.monthDay(MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29));
-        check(test, 2, 29);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objects_nullMonth() {
-        MonthDay.monthDay(null, DayOfMonth.dayOfMonth(15));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objects_nullDay() {
-        MonthDay.monthDay(MonthOfYear.JULY, null);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void factory_objects_invalidDayOfMonth() {
-        try {
-            MonthDay.monthDay(MonthOfYear.APRIL, DayOfMonth.dayOfMonth(31));
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
-            throw ex;
-        }
-    }
 
     //-----------------------------------------------------------------------
-    public void factory_intsMonth() {
+    public void factory_intMonth() {
         assertEquals(TEST_07_15, MonthDay.monthDay(MonthOfYear.JULY, 15));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_intsMonth_dayTooLow() {
+    public void test_factory_intMonth_dayTooLow() {
         try {
             MonthDay.monthDay(MonthOfYear.JANUARY, 0);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -155,7 +125,7 @@ public class TestMonthDay {
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_factory_intsMonth_dayTooHigh() {
+    public void test_factory_intMonth_dayTooHigh() {
         try {
             MonthDay.monthDay(MonthOfYear.JANUARY, 32);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -165,7 +135,7 @@ public class TestMonthDay {
     }
 
     @Test(expectedExceptions=NullPointerException.class)
-    public void factory_intsMonth_nullMonth() {
+    public void factory_intMonth_nullMonth() {
         MonthDay.monthDay(null, 15);
     }
 
@@ -309,37 +279,6 @@ public class TestMonthDay {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_MonthOfYear_null() {
         MonthDay.monthDay(6, 30).with((MonthOfYear) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // with(DayOfMonth)
-    //-----------------------------------------------------------------------
-    public void test_with_DayOfMonth() {
-        assertEquals(MonthDay.monthDay(6, 30).with(DayOfMonth.dayOfMonth(1)), MonthDay.monthDay(6, 1));
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_with_DayOfMonth_invalid() {
-        try {
-            MonthDay.monthDay(6, 30).with(DayOfMonth.dayOfMonth(31));
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), RULE_DOM);
-            throw ex;
-        }
-    }
-
-    public void test_with_DayOfMonth_adjustToValidFeb() {
-        assertEquals(MonthDay.monthDay(2, 1).with(DayOfMonth.dayOfMonth(29)), MonthDay.monthDay(2, 29));
-    }
-
-    public void test_with_DayOfMonth_noChange() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        assertSame(test.with(DayOfMonth.dayOfMonth(30)), test);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_with_DayOfMonth_null() {
-        MonthDay.monthDay(6, 30).with((DayOfMonth) null);
     }
 
     //-----------------------------------------------------------------------

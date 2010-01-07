@@ -34,9 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 
 /**
  * Context for aspects of date-time calculations that frequently change.
@@ -133,7 +131,9 @@ public final class CalendricalContext
      */
     public LocalDate resolveDate(int year, int month, int dayOfMonth) {
         if (dateResolver != null) {
-            return dateResolver.resolveDate(Year.isoYear(year), MonthOfYear.monthOfYear(month), DayOfMonth.dayOfMonth(dayOfMonth));
+            ISOChronology.yearRule().checkValue(year);  // TODO: make resolver handle this
+            ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);  // TODO: make resolver handle this
+            return dateResolver.resolveDate(year, MonthOfYear.monthOfYear(month), dayOfMonth);
         }
         if (strict) {
             return LocalDate.date(year, month, dayOfMonth);

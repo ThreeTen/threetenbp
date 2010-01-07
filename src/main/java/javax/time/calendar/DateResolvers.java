@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,9 +32,8 @@
 package javax.time.calendar;
 
 import java.io.Serializable;
-import javax.time.calendar.field.DayOfMonth;
+
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 
 /**
  * Provides common implementations of <code>DateResolver</code>.
@@ -80,7 +79,7 @@ public final class DateResolvers {
         }
 
         /** {@inheritDoc} */
-        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
             return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
     }
@@ -113,10 +112,10 @@ public final class DateResolvers {
         }
 
         /** {@inheritDoc} */
-        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-            int len = monthOfYear.lengthInDays(year.isLeap());
-            if (dayOfMonth.getValue() > len) {
-                return LocalDate.date(year, monthOfYear, DayOfMonth.dayOfMonth(len));
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            int lastDay = monthOfYear.getLastDayOfMonth(ISOChronology.isLeapYear(year));
+            if (dayOfMonth > lastDay) {
+                return LocalDate.date(year, monthOfYear, lastDay);
             }
             return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
@@ -150,10 +149,10 @@ public final class DateResolvers {
         }
 
         /** {@inheritDoc} */
-        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-            int len = monthOfYear.lengthInDays(year.isLeap());
-            if (dayOfMonth.getValue() > len) {
-                return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(1));
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
+            if (dayOfMonth > len) {
+                return LocalDate.date(year, monthOfYear.next(), 1);
             }
             return LocalDate.date(year, monthOfYear, dayOfMonth);
         }
@@ -188,10 +187,10 @@ public final class DateResolvers {
         }
 
         /** {@inheritDoc} */
-        public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-            int len = monthOfYear.lengthInDays(year.isLeap());
-            if (dayOfMonth.getValue() > len) {
-                return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(dayOfMonth.getValue() - len));
+        public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+            int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
+            if (dayOfMonth > len) {
+                return LocalDate.date(year, monthOfYear.next(), dayOfMonth - len);
             }
             return LocalDate.date(year, monthOfYear, dayOfMonth);
         }

@@ -35,10 +35,6 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
-import javax.time.calendar.field.NanoOfSecond;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
 import javax.time.period.Period;
@@ -126,67 +122,6 @@ public final class LocalTime
     private final int nano;
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>LocalTime</code> from an hour and minute,
-     * setting the second and nanosecond to zero.
-     * <p>
-     * This factory may return a cached value, but applications must not rely on this.
-     *
-     * @param hourOfDay  the hour-of-day to represent, not null
-     * @param minuteOfHour  the minute-of-hour to represent, not null
-     * @return the local time, never null
-     */
-    public static LocalTime time(HourOfDay hourOfDay, MinuteOfHour minuteOfHour) {
-        return time(hourOfDay, minuteOfHour, SecondOfMinute.secondOfMinute(0), NanoOfSecond.ZERO);
-    }
-
-    /**
-     * Obtains an instance of <code>LocalTime</code> from an hour, minute and
-     * second, setting the nanosecond to zero.
-     * <p>
-     * This factory may return a cached value, but applications must not rely on this.
-     *
-     * @param hourOfDay  the hour-of-day to represent, not null
-     * @param minuteOfHour  the minute-of-hour to represent, not null
-     * @param secondOfMinute  the second-of-minute to represent, not null
-     * @return the local time, never null
-     */
-    public static LocalTime time(
-            HourOfDay hourOfDay, MinuteOfHour minuteOfHour, SecondOfMinute secondOfMinute) {
-        return time(hourOfDay, minuteOfHour, secondOfMinute, NanoOfSecond.ZERO);
-    }
-
-    /**
-     * Obtains an instance of <code>LocalTime</code> from an hour, minute,
-     * second and nanosecond.
-     * <p>
-     * This factory may return a cached value, but applications must not rely on this.
-     *
-     * @param hourOfDay  the hour-of-day to represent, not null
-     * @param minuteOfHour  the minute-of-hour to represent, not null
-     * @param secondOfMinute  the second-of-minute to represent, not null
-     * @param nanoOfSecond  the nano-of-second to represent, not null
-     * @return the local time, never null
-     */
-    public static LocalTime time(
-            HourOfDay hourOfDay, MinuteOfHour minuteOfHour,
-            SecondOfMinute secondOfMinute, NanoOfSecond nanoOfSecond) {
-        if (hourOfDay == null) {
-            throw new NullPointerException("HourOfDay must not be null");
-        }
-        if (minuteOfHour == null) {
-            throw new NullPointerException("MinuteOfHour must not be null");
-        }
-        if (secondOfMinute == null) {
-            throw new NullPointerException("SecondOfMinute must not be null");
-        }
-        if (nanoOfSecond == null) {
-            throw new NullPointerException("NanoOfSecond must not be null");
-        }
-        return time(hourOfDay.getValue(), minuteOfHour.getValue(),
-                            secondOfMinute.getValue(), nanoOfSecond.getValue());
-    }
-
     /**
      * Obtains an instance of <code>LocalTime</code>.
      * <p>
@@ -451,55 +386,6 @@ public final class LocalTime
      */
     public <T> T get(CalendricalRule<T> rule) {
         return rule().deriveValueFor(rule, this, this);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the hour-of-day field as an <code>HourOfDay</code>.
-     * <p>
-     * This method provides access to an object representing the hour-of-day field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the hour-of-day, never null
-     */
-    public HourOfDay toHourOfDay() {
-        return HourOfDay.hourOfDay(hour);
-    }
-
-    /**
-     * Gets the minute-of-hour field as a <code>MinuteOfHour</code>.
-     * <p>
-     * This method provides access to an object representing the minute-of-hour field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the minute-of-hour, never null
-     */
-    public MinuteOfHour toMinuteOfHour() {
-        return MinuteOfHour.minuteOfHour(minute);
-    }
-
-    /**
-     * Gets the second-of-minute field as a <code>SecondOfMinute</code>.
-     * <p>
-     * This method provides access to an object representing the second-of-minute field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the second-of-minute, never null
-     */
-    public SecondOfMinute toSecondOfMinute() {
-        return SecondOfMinute.secondOfMinute(second);
-    }
-
-    /**
-     * Gets the nano-of-second field as a <code>NanoOfSecond</code>.
-     * <p>
-     * This method provides access to an object representing the nano-of-second field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the nano-of-second, never null
-     */
-    public NanoOfSecond toNanoOfSecond() {
-        return NanoOfSecond.nanoOfSecond(nano);
     }
 
     //-----------------------------------------------------------------------

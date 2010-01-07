@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -46,12 +46,9 @@ import java.lang.reflect.Modifier;
 
 import javax.time.CalendricalException;
 import javax.time.Instant;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.Period;
@@ -135,12 +132,6 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_date_YMD() {
-        OffsetDate test = OffsetDate.date(Year.isoYear(2007), MonthOfYear.JULY, DayOfMonth.dayOfMonth(15), OFFSET_PONE);
-        check(test, 2007, 7, 15, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
     public void factory_date_intMonthInt() {
         OffsetDate test = OffsetDate.date(2007, MonthOfYear.JULY, 15, OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
@@ -150,43 +141,6 @@ public class TestOffsetDate {
     public void factory_date_ints() {
         OffsetDate test = OffsetDate.date(2007, 7, 15, OFFSET_PONE);
         check(test, 2007, 7, 15, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_date_objects_leapYear() {
-        OffsetDate test_2008_02_29 = OffsetDate.date(Year.isoYear(2008), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), 
-                OFFSET_PONE);
-        check(test_2008_02_29, 2008, 2, 29, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_objects_nullYear() {
-        OffsetDate.date(null, MonthOfYear.JULY, DayOfMonth.dayOfMonth(15), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_objects_nullMonth() {
-        OffsetDate.date(Year.isoYear(2007), null, DayOfMonth.dayOfMonth(15), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_objects_nullDay() {
-        OffsetDate.date(Year.isoYear(2007), MonthOfYear.JULY, null, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_date_objects_nullOffset() {
-        OffsetDate.date(Year.isoYear(2007), MonthOfYear.JULY, DayOfMonth.dayOfMonth(15), null);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void factory_date_objects_nonleapYear() {
-        OffsetDate.date(Year.isoYear(2007), MonthOfYear.FEBRUARY, DayOfMonth.dayOfMonth(29), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void factory_date_objects_dayTooBig() {
-        OffsetDate.date(Year.isoYear(2007), MonthOfYear.APRIL, DayOfMonth.dayOfMonth(31), OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -474,11 +428,6 @@ public class TestOffsetDate {
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         
         assertEquals(a.toYear(), localDate.toYear());
-        assertEquals(a.toMonthOfYear(), localDate.toMonthOfYear());
-        assertEquals(a.toDayOfMonth(), localDate.toDayOfMonth());
-        assertEquals(a.toDayOfYear(), localDate.toDayOfYear());
-        assertEquals(a.toDayOfWeek(), localDate.toDayOfWeek());
-        
         assertSame(a.toLocalDate(), localDate);
         assertEquals(a.toString(), localDate.toString() + offset.toString());
         assertEquals(a.getOffset(), y % 2 == 0 ? OFFSET_PTWO : OFFSET_PONE);
@@ -507,8 +456,8 @@ public class TestOffsetDate {
         assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
         assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
         assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekBasedYear(test).getValue());
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekBasedYear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) 27);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) 2008);
         
         assertEquals(test.get(ISOChronology.hourOfDayRule()), null);
         assertEquals(test.get(ISOChronology.minuteOfHourRule()), null);
@@ -611,12 +560,12 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
-    // with()
+    // with(DateAdjuster)
     //-----------------------------------------------------------------------
     public void test_with() {
         OffsetDate base = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
-        OffsetDate test = base.with(DayOfMonth.dayOfMonth(1));
-        assertEquals(test.toLocalDate(), LocalDate.date(2008, 6, 1));
+        OffsetDate test = base.with(Year.isoYear(2007));
+        assertEquals(test.toLocalDate(), LocalDate.date(2007, 6, 30));
         assertSame(test.getOffset(), base.getOffset());
     }
 
@@ -1630,25 +1579,21 @@ public class TestOffsetDate {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        assertTrue(TEST_2007_07_15_PONE.matches(TEST_2007_07_15_PONE));
-        assertFalse(TEST_2007_07_15_PONE.matches(LocalTime.time(23, 5)));
-        
-        assertTrue(TEST_2007_07_15_PONE.matches(Year.isoYear(2007)));
-        assertFalse(TEST_2007_07_15_PONE.matches(Year.isoYear(2006)));
-//        assertTrue(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q3));
-//        assertFalse(TEST_2007_07_15_PONE.matches(QuarterOfYear.Q2));
-//        assertTrue(TEST_2007_07_15_PONE.matches(MonthOfYear.JULY));
-//        assertFalse(TEST_2007_07_15_PONE.matches(MonthOfYear.JUNE));
-        assertTrue(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(15)));
-        assertFalse(TEST_2007_07_15_PONE.matches(DayOfMonth.dayOfMonth(14)));
-//        assertTrue(TEST_2007_07_15_PONE.matches(DayOfWeek.SUNDAY));
-//        assertFalse(TEST_2007_07_15_PONE.matches(DayOfWeek.MONDAY));
+        assertTrue(TEST_2007_07_15_PONE.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return true;
+            }
+        }));
+        assertFalse(TEST_2007_07_15_PONE.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return false;
+            }
+        }));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matches_null() {
-        OffsetDate base = OffsetDate.date(2008, 6, 30, OFFSET_PONE);
-        base.matches(null);
+        TEST_2007_07_15_PONE.matches(null);
     }
 
     //-----------------------------------------------------------------------
@@ -1701,6 +1646,15 @@ public class TestOffsetDate {
     public void test_toLocalDate(int year, int month, int day, ZoneOffset offset) {
         LocalDate t = LocalDate.date(year, month, day);
         assertEquals(OffsetDate.date(year, month, day, offset).toLocalDate(), t);
+    }
+
+    //-----------------------------------------------------------------------
+    // toYear()
+    //-----------------------------------------------------------------------
+    @Test(dataProvider="sampleDates")
+    public void test_toLocalYear(int year, int month, int day, ZoneOffset offset) {
+        OffsetDate t = OffsetDate.date(year, month, day, offset);
+        assertEquals(t.toYear(), Year.isoYear(year));
     }
 
     //-----------------------------------------------------------------------

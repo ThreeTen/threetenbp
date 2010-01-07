@@ -15,7 +15,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 
 /**
@@ -302,7 +301,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
         ThaiBuddhistChronology.dayOfYearRule().checkValue(dayOfYear);
-        return ThaiBuddhistDate.thaiBuddhistDate(date.with(DayOfYear.dayOfYear(dayOfYear)));
+        return ThaiBuddhistDate.thaiBuddhistDate(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------

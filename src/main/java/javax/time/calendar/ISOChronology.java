@@ -46,7 +46,6 @@ import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.WeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 import javax.time.period.Period;
@@ -70,6 +69,14 @@ public final class ISOChronology extends Chronology implements Serializable {
      * The singleton instance of <code>ISOChronology</code>.
      */
     public static final ISOChronology INSTANCE = new ISOChronology();
+    /**
+     * Constant for the minimum week-based-year.
+     */
+    public static final int MIN_WEEK_BASED_YEAR = Year.MIN_YEAR;
+    /**
+     * Constant for the maximum week-based-year.
+     */
+    public static final int MAX_WEEK_BASED_YEAR = Year.MAX_YEAR;
     /**
      * A serialization identifier for this class.
      */
@@ -1300,7 +1307,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         private static final long serialVersionUID = 1L;
         /** Constructor. */
         private WeekBasedYearRule() {
-            super(Integer.class, ISOChronology.INSTANCE, "WeekBasedYear", WEEK_BASED_YEARS, null, WeekBasedYear.MIN_YEAR, WeekBasedYear.MAX_YEAR);
+            super(Integer.class, ISOChronology.INSTANCE, "WeekBasedYear", WEEK_BASED_YEARS, null, MIN_WEEK_BASED_YEAR, MAX_WEEK_BASED_YEAR);
         }
         private Object readResolve() {
             return INSTANCE;

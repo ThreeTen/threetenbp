@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,11 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,11 +46,6 @@ import java.util.Iterator;
 import javax.time.CalendricalException;
 import javax.time.calendar.LocalTime.Overflow;
 import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
-import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.NanoOfSecond;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.period.MockPeriodProviderReturnsNull;
 import javax.time.period.Period;
@@ -138,102 +129,6 @@ public class TestLocalTime {
         check(LocalTime.MIDDAY, 12, 0, 0, 0);
         assertSame(LocalTime.MIDDAY, LocalTime.MIDDAY);
         assertSame(LocalTime.MIDDAY, LocalTime.time(12, 0));
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_time_2objects() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30));
-        check(test, 12, 30, 0, 0);
-    }
-
-    public void factory_time_2objects_singletons() {
-        for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0));
-            LocalTime test2 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0));
-            assertSame(test1, test2);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_2objects_nullHour() {
-       LocalTime.time(null, MinuteOfHour.minuteOfHour(0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_2objects_nullMinute() {
-       LocalTime.time(HourOfDay.hourOfDay(0), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_time_3objects() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(59));
-        check(test, 12, 30, 59, 0);
-    }
-
-    public void factory_time_3objects_singletons() {
-        for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
-            LocalTime test2 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
-            assertSame(test1, test2);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_3objects_nullHour() {
-       LocalTime.time(null, MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_3objects_nullMinute() {
-       LocalTime.time(HourOfDay.hourOfDay(0), null, SecondOfMinute.secondOfMinute(0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_3objects_nullSecond() {
-       LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), null);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_time_4objects() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(59), NanoOfSecond.nanoOfSecond(300));
-        check(test, 12, 30, 59, 300);
-    }
-
-    public void factory_time_4objects_nonSingletons() {
-        LocalTime test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(1), NanoOfSecond.nanoOfSecond(0));
-        check(test, 0, 0, 1, 0);
-        test = LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(1));
-        check(test, 0, 0, 0, 1);
-        test = LocalTime.time(HourOfDay.hourOfDay(12), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(1));
-        check(test, 12, 0, 0, 1);
-    }
-
-    public void factory_time_4objects_singletons() {
-        for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
-            LocalTime test2 = LocalTime.time(HourOfDay.hourOfDay(i), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
-            assertSame(test1, test2);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_4objects_nullHour() {
-       LocalTime.time(null, MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_4objects_nullMinute() {
-       LocalTime.time(HourOfDay.hourOfDay(0), null, SecondOfMinute.secondOfMinute(0), NanoOfSecond.nanoOfSecond(0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_4objects_nullSecond() {
-       LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), null, NanoOfSecond.nanoOfSecond(0));
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_time_4objects_nullNano() {
-       LocalTime.time(HourOfDay.hourOfDay(0), MinuteOfHour.minuteOfHour(0), SecondOfMinute.secondOfMinute(0), null);
     }
 
     //-----------------------------------------------------------------------
@@ -662,11 +557,6 @@ public class TestLocalTime {
         assertEquals(a.getMinuteOfHour(), m);
         assertEquals(a.getSecondOfMinute(), s);
         assertEquals(a.getNanoOfSecond(), ns);
-        
-        assertEquals(a.toHourOfDay(), HourOfDay.hourOfDay(h));
-        assertEquals(a.toMinuteOfHour(), MinuteOfHour.minuteOfHour(m));
-        assertEquals(a.toSecondOfMinute(), SecondOfMinute.secondOfMinute(s));
-        assertEquals(a.toNanoOfSecond(), NanoOfSecond.nanoOfSecond(ns));
     }
 
     //-----------------------------------------------------------------------
@@ -1545,19 +1435,16 @@ public class TestLocalTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        assertTrue(TEST_12_30_40_987654321.matches(TEST_12_30_40_987654321));
-        assertFalse(TEST_12_30_40_987654321.matches(MonthDay.monthDay(MonthOfYear.APRIL, 4)));
-        
-        assertTrue(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(12)));
-        assertFalse(TEST_12_30_40_987654321.matches(HourOfDay.hourOfDay(0)));
-        assertTrue(TEST_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(30)));
-        assertFalse(TEST_12_30_40_987654321.matches(MinuteOfHour.minuteOfHour(0)));
-        assertTrue(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(40)));
-        assertFalse(TEST_12_30_40_987654321.matches(SecondOfMinute.secondOfMinute(50)));
-        assertTrue(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(987654321)));
-        assertFalse(TEST_12_30_40_987654321.matches(NanoOfSecond.nanoOfSecond(0)));
-//        assertTrue(TEST_12_30_40_987654321.matches(AmPmOfDay.PM));
-//        assertFalse(TEST_12_30_40_987654321.matches(AmPmOfDay.AM));
+        assertTrue(TEST_12_30_40_987654321.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return true;
+            }
+        }));
+        assertFalse(TEST_12_30_40_987654321.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return false;
+            }
+        }));
     }
 
     @Test(expectedExceptions=NullPointerException.class)

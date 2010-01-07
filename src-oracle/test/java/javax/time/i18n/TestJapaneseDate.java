@@ -16,8 +16,8 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.BeforeTest;
@@ -139,7 +139,7 @@ public class TestJapaneseDate {
     }
     
     public void testGetUnsupported() throws Exception {
-        assertEquals(testDate.get(HourOfDay.rule()), null);
+        assertEquals(testDate.get(LocalTime.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

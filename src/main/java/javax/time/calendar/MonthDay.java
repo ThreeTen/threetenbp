@@ -34,7 +34,6 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.MathUtils;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
@@ -92,27 +91,6 @@ public final class MonthDay
     private final int day;
 
     //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of <code>MonthDay</code>.
-     * <p>
-     * The day-of-month must be valid for the month within a leap year.
-     * Hence, for February, day 29 is valid.
-     * <p>
-     * For example, passing in April and day 31 will throw an exception, as
-     * there can never be a 31st April in any year. Alternately, passing in
-     * 29th February is valid, as that month-day can be valid.
-     *
-     * @param monthOfYear  the month-of-year to represent, not null
-     * @param dayOfMonth  the day-of-month to represent, not null
-     * @return the month-day, never null
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
-     */
-    public static MonthDay monthDay(MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        ISOChronology.checkNotNull(dayOfMonth, "DayOfMonth must not be null");
-        return monthDay(monthOfYear, dayOfMonth.getValue());
-    }
-
     /**
      * Obtains an instance of <code>MonthDay</code>.
      * <p>
@@ -258,33 +236,6 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the month-of-year field as a <code>MonthOfYear</code>.
-     * <p>
-     * This method provides access to an object representing the month-of-year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     * <p>
-     * This method is the same as {@link #getMonthOfYear()}.
-     *
-     * @return the month-of-year, never null
-     */
-    public MonthOfYear toMonthOfYear() {
-        return month;
-    }
-
-    /**
-     * Gets the day-of-month field as a <code>DayOfMonth</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-month field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the day-of-month, never null
-     */
-    public DayOfMonth toDayOfMonth() {
-        return DayOfMonth.dayOfMonth(day);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the month-of-year field, which is an enum <code>MonthOfYear</code>.
      * <p>
      * This method returns the enum {@link MonthOfYear} for the month.
@@ -336,23 +287,6 @@ public final class MonthDay
             return with(monthOfYear, maxDays);
         }
         return with(monthOfYear, day);
-    }
-
-    /**
-     * Returns a copy of this <code>MonthDay</code> with the day-of-month altered.
-     * <p>
-     * If the day-of-month is invalid for the current month, an exception
-     * will be thrown.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param dayOfMonth  the day-of-month to set in the return month-day, not null
-     * @return a <code>MonthDay</code> based on this one with the requested day, never null
-     * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
-     */
-    public MonthDay with(DayOfMonth dayOfMonth) {
-        ISOChronology.checkNotNull(dayOfMonth, "DayOfMonth must not be null");
-        return withDayOfMonth(dayOfMonth.getValue());
     }
 
     //-----------------------------------------------------------------------
@@ -477,10 +411,10 @@ public final class MonthDay
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         ISOChronology.checkNotNull(date, "LocalDate must not be null");
         ISOChronology.checkNotNull(resolver, "DateResolver must not be null");
-        if (month == date.getMonthOfYear() && day == date.getDayOfMonth()) {
+        if (date.getMonthOfYear() == month && date.getDayOfMonth() == day) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(date.toYear(), month, toDayOfMonth());
+        LocalDate resolved = resolver.resolveDate(date.getYear(), month, day);
         ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }

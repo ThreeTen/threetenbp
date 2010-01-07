@@ -1,8 +1,6 @@
 package javax.time.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,8 +16,8 @@ import javax.time.calendar.Calendrical;
 import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 
 import org.testng.annotations.BeforeTest;
@@ -140,7 +138,7 @@ public class TestMinguoDate {
     }
     
     public void testGetUnsupported() throws Exception {
-        assertEquals(testDate.get(HourOfDay.rule()), null);
+        assertEquals(testDate.get(LocalTime.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

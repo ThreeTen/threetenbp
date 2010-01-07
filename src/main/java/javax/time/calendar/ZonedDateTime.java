@@ -36,14 +36,8 @@ import java.io.Serializable;
 import javax.time.CalendricalException;
 import javax.time.Instant;
 import javax.time.InstantProvider;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.NanoOfSecond;
-import javax.time.calendar.field.SecondOfMinute;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.DateTimeFormatters;
@@ -632,128 +626,13 @@ public final class ZonedDateTime
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field as a <code>Year</code>.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return dateTime.toYear();
-    }
-
-    /**
-     * Gets the month-of-year field as a <code>MonthOfYear</code>.
-     * <p>
-     * This method provides access to an object representing the month-of-year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     * <p>
-     * This method is the same as {@link #getMonthOfYear()}.
-     *
-     * @return the month-of-year, never null
-     */
-    public MonthOfYear toMonthOfYear() {
-        return dateTime.toMonthOfYear();
-    }
-
-    /**
-     * Gets the day-of-month field as a <code>DayOfMonth</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-month field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the day-of-month, never null
-     */
-    public DayOfMonth toDayOfMonth() {
-        return dateTime.toDayOfMonth();
-    }
-
-    /**
-     * Gets the day-of-year field as a <code>DayOfYear</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the day-of-year, never null
-     */
-    public DayOfYear toDayOfYear() {
-        return dateTime.toDayOfYear();
-    }
-
-    /**
-     * Gets the day-of-week field as a <code>DayOfWeek</code>.
-     * <p>
-     * This method provides access to an object representing the day-of-week field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     * <p>
-     * This method is the same as {@link #getDayOfWeek()}.
-     *
-     * @return the day-of-week, never null
-     */
-    public DayOfWeek toDayOfWeek() {
-        return dateTime.toDayOfWeek();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the hour-of-day field as an <code>HourOfDay</code>.
-     * <p>
-     * This method provides access to an object representing the hour-of-day field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the hour-of-day, never null
-     */
-    public HourOfDay toHourOfDay() {
-        return dateTime.toHourOfDay();
-    }
-
-    /**
-     * Gets the minute-of-hour field as a <code>MinuteOfHour</code>.
-     * <p>
-     * This method provides access to an object representing the minute-of-hour field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the minute-of-hour, never null
-     */
-    public MinuteOfHour toMinuteOfHour() {
-        return dateTime.toMinuteOfHour();
-    }
-
-    /**
-     * Gets the second-of-minute field as a <code>SecondOfMinute</code>.
-     * <p>
-     * This method provides access to an object representing the second-of-minute field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the second-of-minute, never null
-     */
-    public SecondOfMinute toSecondOfMinute() {
-        return dateTime.toSecondOfMinute();
-    }
-
-    /**
-     * Gets the nano-of-second field as a <code>NanoOfSecond</code>.
-     * <p>
-     * This method provides access to an object representing the nano-of-second field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the nano-of-second, never null
-     */
-    public NanoOfSecond toNanoOfSecond() {
-        return dateTime.toNanoOfSecond();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from via {@link #toYear()}.
+     * Additional information about the year can be obtained from {@link Year#toYear}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
+     * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -783,10 +662,6 @@ public final class ZonedDateTime
      * Gets the day-of-month field.
      * <p>
      * This method returns the primitive <code>int</code> value for the day-of-month.
-     * <p>
-     * Additional information about the day-of-month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
      *
      * @return the day-of-month, from 1 to 31
      */
@@ -798,10 +673,6 @@ public final class ZonedDateTime
      * Gets the day-of-year field.
      * <p>
      * This method returns the primitive <code>int</code> value for the day-of-year.
-     * <p>
-     * Additional information about the day-of-year can be obtained from via {@link #toDayOfYear()}.
-     * This returns a <code>DayOfYear</code> object which can be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
      *
      * @return the day-of-year, from 1 to 365, or 366 in a leap year
      */
@@ -1707,6 +1578,18 @@ public final class ZonedDateTime
      */
     public OffsetDateTime toOffsetDateTime() {
         return dateTime;
+    }
+
+    /**
+     * Gets the year field as a <code>Year</code>.
+     * <p>
+     * This method provides access to an object representing the year field.
+     * <code>Year</code> has methods for querying addition year-based information.
+     *
+     * @return the year, never null
+     */
+    public Year toYear() {
+        return dateTime.toYear();
     }
 
     //-----------------------------------------------------------------------

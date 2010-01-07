@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,16 +47,9 @@ import java.lang.reflect.Modifier;
 import javax.time.CalendricalException;
 import javax.time.InstantProvider;
 import javax.time.calendar.field.AmPmOfDay;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
-import javax.time.calendar.field.MinuteOfHour;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.NanoOfSecond;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.SecondOfMinute;
-import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -140,32 +131,6 @@ public class TestOffsetDateTime {
     }
 
     //-----------------------------------------------------------------------
-    public void factory_dateMidnight_YMD() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.JUNE, DayOfMonth.dayOfMonth(30), OFFSET_PONE);
-        check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_YMD_nullYear() {
-        OffsetDateTime.dateMidnight(null, MonthOfYear.JUNE, DayOfMonth.dayOfMonth(30), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_YMD_nullMonth() {
-        OffsetDateTime.dateMidnight(Year.isoYear(2008), null, DayOfMonth.dayOfMonth(30), OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_YMD_nullDay() {
-        OffsetDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.JUNE, null, OFFSET_PONE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_dateMidnight_YMD_nullOffset() {
-        OffsetDateTime.dateMidnight(Year.isoYear(2008), MonthOfYear.JUNE, DayOfMonth.dayOfMonth(30), null);
-    }
-
-    //-----------------------------------------------------------------------
     public void factory_dateMidnight_intMonthInt() {
         OffsetDateTime test = OffsetDateTime.dateMidnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
@@ -193,31 +158,6 @@ public class TestOffsetDateTime {
 
     //-----------------------------------------------------------------------
     // dateTime factories
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_objectsHM() {
-        OffsetDateTime test = OffsetDateTime.dateTime(
-                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
-                HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), OFFSET_PONE);
-        check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_objectsHMS() {
-        OffsetDateTime test = OffsetDateTime.dateTime(
-                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
-                HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30), SecondOfMinute.secondOfMinute(10), OFFSET_PONE);
-        check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
-    }
-
-    //-----------------------------------------------------------------------
-    public void factory_dateTime_objectsHMSN() {
-        OffsetDateTime test = OffsetDateTime.dateTime(
-                Year.isoYear(2008), MonthOfYear.monthOfYear(6), DayOfMonth.dayOfMonth(30),
-                HourOfDay.hourOfDay(11), MinuteOfHour.minuteOfHour(30),
-                SecondOfMinute.secondOfMinute(10), NanoOfSecond.nanoOfSecond(500), OFFSET_PONE);
-        check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
-    }
-
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHM() {
         OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, OFFSET_PONE);
@@ -387,27 +327,17 @@ public class TestOffsetDateTime {
         assertEquals(a.getDayOfYear(), localDate.getDayOfYear());
         assertEquals(a.getDayOfWeek(), localDate.getDayOfWeek());
         
-        assertEquals(a.toYear(), localDate.toYear());
-        assertEquals(a.toMonthOfYear(), localDate.toMonthOfYear());
-        assertEquals(a.toDayOfMonth(), localDate.toDayOfMonth());
-        assertEquals(a.toDayOfYear(), localDate.toDayOfYear());
-        assertEquals(a.toDayOfWeek(), localDate.toDayOfWeek());
-        
         assertEquals(a.getHourOfDay(), localDateTime.getHourOfDay());
         assertEquals(a.getMinuteOfHour(), localDateTime.getMinuteOfHour());
         assertEquals(a.getSecondOfMinute(), localDateTime.getSecondOfMinute());
         assertEquals(a.getNanoOfSecond(), localDateTime.getNanoOfSecond());
-        
-        assertEquals(a.toHourOfDay(), localDateTime.toHourOfDay());
-        assertEquals(a.toMinuteOfHour(), localDateTime.toMinuteOfHour());
-        assertEquals(a.toSecondOfMinute(), localDateTime.toSecondOfMinute());
-        assertEquals(a.toNanoOfSecond(), localDateTime.toNanoOfSecond());
         
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);
         assertSame(a.toLocalDateTime(), localDateTime);
         assertEquals(a.toOffsetDate(), OffsetDate.date(localDate, offset));
         assertEquals(a.toOffsetTime(), OffsetTime.time(localTime, offset));
+        assertEquals(a.toYear(), localDate.toYear());
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
 
@@ -423,8 +353,8 @@ public class TestOffsetDateTime {
         assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
         assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
         assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekBasedYear(test).getValue());
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekBasedYear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) 27);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) 2008);
         
         assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
         assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
@@ -564,7 +494,11 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     public void test_with_TimeAdjuster() {
         OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.with(HourOfDay.hourOfDay(1));
+        OffsetDateTime test = base.with(new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return time.withHourOfDay(1);
+            }
+        });
         assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
     }
 
@@ -1095,19 +1029,21 @@ public class TestOffsetDateTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        assertEquals(test.matches(test), true);
-//        assertEquals(test.matches(TimeZone.UTC), false);  // TODO
-        assertEquals(test.matches(Year.isoYear(2008)), true);
-        assertEquals(test.matches(Year.isoYear(2007)), false);
-//        assertEquals(test.matches(AmPmOfDay.AM), true);
-//        assertEquals(test.matches(AmPmOfDay.PM), false);
+        assertTrue(TEST_DATE_TIME.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return true;
+            }
+        }));
+        assertFalse(TEST_DATE_TIME.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return false;
+            }
+        }));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_matches_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        base.matches(null);
+        TEST_DATE_TIME.matches(null);
     }
 
     //-----------------------------------------------------------------------

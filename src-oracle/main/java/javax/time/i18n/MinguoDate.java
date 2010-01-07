@@ -15,7 +15,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 
 /**
@@ -322,7 +321,7 @@ public final class MinguoDate
      */
     public MinguoDate withDayOfYear(int dayOfYear) {
         MinguoChronology.dayOfYearRule().checkValue(dayOfYear);
-        return MinguoDate.minguoDate(date.with(DayOfYear.dayOfYear(dayOfYear)));
+        return MinguoDate.minguoDate(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------

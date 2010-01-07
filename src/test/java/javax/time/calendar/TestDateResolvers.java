@@ -31,8 +31,7 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.field.DayOfMonth.*;
-import static javax.time.calendar.field.Year.*;
+import static javax.time.calendar.field.Year.isoYear;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +44,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 
@@ -102,16 +100,14 @@ public class TestDateResolvers {
 
     private void test_strict(Year year) {
         for (MonthOfYear month : MonthOfYear.values()) {
-            for (int i = 1; i <= 31;
-                    i++) {
-                DayOfMonth dayOfMonth = dayOfMonth(i);
+            for (int dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
                 try {
-                    LocalDate test = DateResolvers.strict().resolveDate(year, month, dayOfMonth);
+                    LocalDate test = DateResolvers.strict().resolveDate(year.getValue(), month, dayOfMonth);
                     assertEquals(test.getYear(), year.getValue());
                     assertSame(test.getMonthOfYear(), month);
-                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
+                    assertEquals(test.getDayOfMonth(), dayOfMonth);
                 } catch (InvalidCalendarFieldException icfe) {
-                    assertTrue(month.lengthInDays(year.isLeap()) < dayOfMonth.getValue(), "M" + month + "D" + dayOfMonth);
+                    assertTrue(month.lengthInDays(year.isLeap()) < dayOfMonth, "M" + month + "D" + dayOfMonth);
                 }
             }
         }
@@ -151,21 +147,20 @@ public class TestDateResolvers {
         for (MonthOfYear month : MonthOfYear.values()) {
             int monthLength = month.lengthInDays(year.isLeap());
 
-            for (int i = 1; i <= 31; i++) {
-                DayOfMonth dayOfMonth = dayOfMonth(i);
-                LocalDate test = DateResolvers.previousValid().resolveDate(year, month, dayOfMonth);
+            for (int dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
+                LocalDate test = DateResolvers.previousValid().resolveDate(year.getValue(), month, dayOfMonth);
                 assertEquals(test.getYear(), year.getValue());
                 assertSame(test.getMonthOfYear(), month);
 
-                if (dayOfMonth.getValue() <= monthLength) {
-                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
+                if (dayOfMonth <= monthLength) {
+                    assertEquals(test.getDayOfMonth(), dayOfMonth);
                 } else {
                     assertEquals(test.getDayOfMonth(), monthLength);
                 }
             }
         }
     }
-    
+
     //-----------------------------------------------------------------------
     // nextValid()
     //-----------------------------------------------------------------------
@@ -200,15 +195,14 @@ public class TestDateResolvers {
         for (MonthOfYear month : MonthOfYear.values()) {
             int monthLength = month.lengthInDays(year.isLeap());
 
-            for (int i = 1; i <= 31; i++) {
-                DayOfMonth dayOfMonth = dayOfMonth(i);
-                LocalDate test = DateResolvers.nextValid().resolveDate(year, month, dayOfMonth);
+            for (int dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
+                LocalDate test = DateResolvers.nextValid().resolveDate(year.getValue(), month, dayOfMonth);
 
                 assertEquals(test.getYear(), year.getValue());
 
-                if (dayOfMonth.getValue() <= monthLength) {
+                if (dayOfMonth <= monthLength) {
                     assertSame(test.getMonthOfYear(), month);
-                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
+                    assertEquals(test.getDayOfMonth(), dayOfMonth);
                 } else {
                     assertEquals(test.getDayOfMonth(), 1);
                     assertSame(test.getMonthOfYear(), month.next());
@@ -216,7 +210,7 @@ public class TestDateResolvers {
             }
         }
     }
-    
+
     //-----------------------------------------------------------------------
     // partLenient()
     //-----------------------------------------------------------------------
@@ -251,20 +245,20 @@ public class TestDateResolvers {
         for (MonthOfYear month : MonthOfYear.values()) {
             int monthLength = month.lengthInDays(year.isLeap());
 
-            for (int i = 1; i <= 31; i++) {
-                DayOfMonth dayOfMonth = dayOfMonth(i);
-                LocalDate test = DateResolvers.partLenient().resolveDate(year, month, dayOfMonth);
+            for (int dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
+                LocalDate test = DateResolvers.partLenient().resolveDate(year.getValue(), month, dayOfMonth);
 
                 assertEquals(test.getYear(), year.getValue());
 
-                if (dayOfMonth.getValue() <= monthLength) {
+                if (dayOfMonth <= monthLength) {
                     assertSame(test.getMonthOfYear(), month);
-                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
+                    assertEquals(test.getDayOfMonth(), dayOfMonth);
                 } else {
-                    assertEquals(test.getDayOfMonth(), dayOfMonth.getValue() - monthLength);
+                    assertEquals(test.getDayOfMonth(), dayOfMonth - monthLength);
                     assertSame(test.getMonthOfYear(), month.next());
                 }
             }
         }
     }
+
 }

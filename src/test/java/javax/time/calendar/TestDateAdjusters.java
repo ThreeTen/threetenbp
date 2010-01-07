@@ -31,10 +31,8 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDate.*;
-import static javax.time.calendar.field.DayOfMonth.*;
+import static javax.time.calendar.LocalDate.date;
 import static javax.time.calendar.field.DayOfWeek.*;
-import static javax.time.calendar.field.Year.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -394,13 +392,13 @@ public class TestDateAdjusters {
     }
 
     public void test_nextNonWeekendDay_yearChange() {
-        LocalDate friday = LocalDate.date(isoYear(2010), MonthOfYear.DECEMBER, dayOfMonth(31));
+        LocalDate friday = LocalDate.date(2010, MonthOfYear.DECEMBER, 31);
         LocalDate monday = DateAdjusters.nextNonWeekendDay().adjustDate(friday);
-        assertEquals(LocalDate.date(isoYear(2011), MonthOfYear.JANUARY, dayOfMonth(3)), monday);
+        assertEquals(LocalDate.date(2011, MonthOfYear.JANUARY, 3), monday);
 
-        LocalDate saturday = LocalDate.date(isoYear(2011), MonthOfYear.DECEMBER, dayOfMonth(31));
+        LocalDate saturday = LocalDate.date(2011, MonthOfYear.DECEMBER, 31);
         monday = DateAdjusters.nextNonWeekendDay().adjustDate(saturday);
-        assertEquals(LocalDate.date(isoYear(2012), MonthOfYear.JANUARY, dayOfMonth(2)), monday);
+        assertEquals(LocalDate.date(2012, MonthOfYear.JANUARY, 2), monday);
     }
 
 //    //-----------------------------------------------------------------------

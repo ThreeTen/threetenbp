@@ -230,41 +230,13 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the year field as a <code>Year</code>.
-     * <p>
-     * This method provides access to an object representing the year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     *
-     * @return the year, never null
-     */
-    public Year toYear() {
-        return Year.isoYear(year);
-    }
-
-    /**
-     * Gets the month-of-year field as a <code>MonthOfYear</code>.
-     * <p>
-     * This method provides access to an object representing the month-of-year field.
-     * This allows operations to be performed on this field in a type-safe manner.
-     * <p>
-     * This method is the same as {@link #getMonthOfYear()}.
-     *
-     * @return the month-of-year, never null
-     */
-    public MonthOfYear toMonthOfYear() {
-        return month;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the year field.
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from via {@link #toYear()}.
+     * Additional information about the year can be obtained from {@link Year#toYear}.
      * This returns a <code>Year</code> object which includes information on whether
-     * this is a leap year and its length in days. It can also be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
+     * this is a leap year and its length in days.
      *
      * @return the year, from MIN_YEAR to MAX_YEAR
      */
@@ -527,10 +499,10 @@ public final class YearMonth
     public LocalDate adjustDate(LocalDate date, DateResolver resolver) {
         ISOChronology.checkNotNull(date, "LocalDate must not be null");
         ISOChronology.checkNotNull(resolver, "DateResolver must not be null");
-        if (year == date.getYear() && month == date.getMonthOfYear()) {
+        if (date.getYear() == year && date.getMonthOfYear() == month) {
             return date;
         }
-        LocalDate resolved = resolver.resolveDate(toYear(), month, date.toDayOfMonth());
+        LocalDate resolved = resolver.resolveDate(year, month, date.getDayOfMonth());
         ISOChronology.checkNotNull(resolved, "The implementation of DateResolver must not return null");
         return resolved;
     }
@@ -582,6 +554,19 @@ public final class YearMonth
      */
     public LocalDate atDay(int dayOfMonth) {
         return LocalDate.date(year, month, dayOfMonth);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the year field as a <code>Year</code>.
+     * <p>
+     * This method provides access to an object representing the year field.
+     * <code>Year</code> has methods for querying addition year-based information.
+     *
+     * @return the year, never null
+     */
+    public Year toYear() {
+        return Year.isoYear(year);
     }
 
     //-----------------------------------------------------------------------

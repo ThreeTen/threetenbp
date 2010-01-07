@@ -15,7 +15,6 @@ import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.DayOfYear;
 import javax.time.calendar.field.MonthOfYear;
 
 /**
@@ -293,7 +292,7 @@ public final class JapaneseDate
      */
     public JapaneseDate withDayOfYear(int dayOfYear) {
         JapaneseChronology.dayOfYearRule().checkValue(dayOfYear);
-        return JapaneseDate.japaneseDate(date.with(DayOfYear.dayOfYear(dayOfYear)));
+        return JapaneseDate.japaneseDate(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------

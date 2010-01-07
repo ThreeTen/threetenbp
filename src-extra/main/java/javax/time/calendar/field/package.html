@@ -1,5 +1,6 @@
+<!--
 /*
- * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -29,35 +30,11 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package javax.time.calendar;
-
-import javax.time.calendar.field.MonthOfYear;
-
-/**
- * Strategy for resolving an invalid year-month-day to a valid one.
- * <p>
- * DateResolver is an abstract class and must be implemented with care
- * to ensure other classes in the framework operate correctly.
- * All instantiable subclasses must be final, immutable and thread-safe.
- *
- * @author Michael Nascimento Santos
- * @author Stephen Colebourne
- */
-public interface DateResolver {
-
-    /**
-     * Resolves the combination of year, month and day into a date.
-     * <p>
-     * The purpose of resolution is to avoid invalid dates. Each of the three
-     * fields are individually valid. However, the day-of-month may not be
-     * valid for the associated month and year.
-     *
-     * @param year  the year that was input, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year, not null
-     * @param dayOfMonth  the proposed day-of-month, from 1 to 31
-     * @return the resolved date, never null
-     * @throws InvalidCalendarFieldException if the date cannot be resolved
-     */
-    LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth);
-
-}
+ -->
+<body>
+<p>
+Provides classes representing a single field in the human time scale including
+year, month-of-year and day-of-week.
+</p>
+</body>
+ 

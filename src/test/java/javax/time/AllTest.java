@@ -64,17 +64,9 @@ import javax.time.calendar.TestZoneOffset;
 import javax.time.calendar.TestZoneResolvers;
 import javax.time.calendar.TestZonedDateTime;
 import javax.time.calendar.field.TestAmPmOfDay;
-import javax.time.calendar.field.TestDayOfMonth;
 import javax.time.calendar.field.TestDayOfWeek;
-import javax.time.calendar.field.TestDayOfYear;
-import javax.time.calendar.field.TestHourOfDay;
-import javax.time.calendar.field.TestMinuteOfHour;
 import javax.time.calendar.field.TestMonthOfYear;
-import javax.time.calendar.field.TestNanoOfSecond;
 import javax.time.calendar.field.TestQuarterOfYear;
-import javax.time.calendar.field.TestSecondOfMinute;
-import javax.time.calendar.field.TestWeekBasedYear;
-import javax.time.calendar.field.TestWeekOfWeekBasedYear;
 import javax.time.calendar.field.TestYear;
 import javax.time.calendar.format.TestCalendricalFormatException;
 import javax.time.calendar.format.TestCaseSensitivePrinterParser;
@@ -172,17 +164,9 @@ public class AllTest {
             TestZoneResolvers.class,
             // calendar fields
             TestAmPmOfDay.class,
-            TestDayOfMonth.class,
             TestDayOfWeek.class,
-            TestDayOfYear.class,
-            TestHourOfDay.class,
-            TestMinuteOfHour.class,
             TestMonthOfYear.class,
-            TestNanoOfSecond.class,
             TestQuarterOfYear.class,
-            TestSecondOfMinute.class,
-            TestWeekOfWeekBasedYear.class,
-            TestWeekBasedYear.class,
             TestYear.class,
             // format
             TestCalendricalFormatException.class,

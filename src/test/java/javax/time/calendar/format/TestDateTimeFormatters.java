@@ -31,9 +31,7 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -54,8 +52,6 @@ import javax.time.calendar.ZoneOffset;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.field.DayOfWeek;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 
 import org.testng.annotations.BeforeMethod;
@@ -916,7 +912,7 @@ public class TestDateTimeFormatters {
 
     public void test_print_isoWeekDate_missingField() {
         try {
-            Calendrical test = new MockSimpleCalendrical(WeekBasedYear.rule(), 2004, WeekOfWeekBasedYear.rule(), 1);
+            Calendrical test = new MockSimpleCalendrical(ISOChronology.weekBasedYearRule(), 2004, ISOChronology.weekOfWeekBasedYearRule(), 1);
             DateTimeFormatters.isoWeekDate().print(test);
             fail();
         } catch (CalendricalFormatFieldException ex) {

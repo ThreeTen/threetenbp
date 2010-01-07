@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -280,7 +280,6 @@ public class TestYearMonth {
         assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
         
         assertEquals(a.toYear(), Year.isoYear(y));
-        assertEquals(a.toMonthOfYear(), MonthOfYear.monthOfYear(m));
     }
 
     //-----------------------------------------------------------------------

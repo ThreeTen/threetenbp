@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,11 +41,8 @@ import javax.time.Instant;
 import javax.time.InstantProvider;
 import javax.time.calendar.field.AmPmOfDay;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.QuarterOfYear;
-import javax.time.calendar.field.WeekBasedYear;
-import javax.time.calendar.field.WeekOfWeekBasedYear;
 import javax.time.calendar.field.Year;
 import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
@@ -590,11 +587,6 @@ public class TestZonedDateTime {
         assertEquals(a.getSecondOfMinute(), localDateTime.getSecondOfMinute());
         assertEquals(a.getNanoOfSecond(), localDateTime.getNanoOfSecond());
         
-        assertEquals(a.toHourOfDay(), localDateTime.toHourOfDay());
-        assertEquals(a.toMinuteOfHour(), localDateTime.toMinuteOfHour());
-        assertEquals(a.toSecondOfMinute(), localDateTime.toSecondOfMinute());
-        assertEquals(a.toNanoOfSecond(), localDateTime.toNanoOfSecond());
-        
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);
         assertSame(a.toLocalDateTime(), localDateTime);
@@ -617,8 +609,8 @@ public class TestZonedDateTime {
         assertEquals(test.get(ISOChronology.dayOfMonthRule()),  (Integer) 30);
         assertEquals(test.get(ISOChronology.dayOfWeekRule()), DayOfWeek.MONDAY);
         assertEquals(test.get(ISOChronology.dayOfYearRule()),  (Integer) 182);
-        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) WeekOfWeekBasedYear.weekOfWeekBasedYear(test).getValue());
-        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) WeekBasedYear.weekBasedYear(test).getValue());
+        assertEquals(test.get(ISOChronology.weekOfWeekBasedYearRule()), (Integer) 27);
+        assertEquals(test.get(ISOChronology.weekBasedYearRule()), (Integer) 2008);
         
         assertEquals(test.get(ISOChronology.hourOfDayRule()), (Integer) 12);
         assertEquals(test.get(ISOChronology.minuteOfHourRule()), (Integer) 30);
@@ -941,7 +933,11 @@ public class TestZonedDateTime {
     public void test_with_TimeAdjuster() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        ZonedDateTime test = base.with(HourOfDay.hourOfDay(1));
+        ZonedDateTime test = base.with(new TimeAdjuster() {
+            public LocalTime adjustTime(LocalTime time) {
+                return time.withHourOfDay(1);
+            }
+        });
         assertEquals(test, ZonedDateTime.dateTime(ldt.withHourOfDay(1), ZONE_0100));
     }
 
@@ -1478,19 +1474,21 @@ public class TestZonedDateTime {
     // matches()
     //-----------------------------------------------------------------------
     public void test_matches() {
-        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime test = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        assertEquals(test.matches(Year.isoYear(2008)), true);
-        assertEquals(test.matches(Year.isoYear(2007)), false);
-//        assertEquals(test.matches(AmPmOfDay.PM), true);
-//        assertEquals(test.matches(AmPmOfDay.AM), false);
+        assertTrue(TEST_DATE_TIME.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return true;
+            }
+        }));
+        assertFalse(TEST_DATE_TIME.matches(new CalendricalMatcher() {
+            public boolean matchesCalendrical(Calendrical calendrical) {
+                return false;
+            }
+        }));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_matches_null() {
-        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
-        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
-        base.matches((CalendricalMatcher) null);
+        TEST_DATE_TIME.matches(null);
     }
 
     //-----------------------------------------------------------------------

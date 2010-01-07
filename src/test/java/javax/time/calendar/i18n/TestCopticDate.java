@@ -31,10 +31,7 @@
  */
 package javax.time.calendar.i18n;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,9 +48,9 @@ import javax.time.calendar.DateProvider;
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.InvalidCalendarFieldException;
 import javax.time.calendar.LocalDate;
+import javax.time.calendar.LocalTime;
 import javax.time.calendar.UnsupportedRuleException;
 import javax.time.calendar.field.DayOfWeek;
-import javax.time.calendar.field.HourOfDay;
 import javax.time.calendar.format.MockSimpleCalendrical;
 import javax.time.i18n.CopticChronology;
 import javax.time.i18n.CopticDate;
@@ -186,7 +183,7 @@ public class TestCopticDate {
     }
 
     public void test_get_unsupported() throws Exception {
-        assertEquals(TEST_1234_7_15.get(HourOfDay.rule()), null);
+        assertEquals(TEST_1234_7_15.get(LocalTime.rule()), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
