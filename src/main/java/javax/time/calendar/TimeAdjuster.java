@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ public interface TimeAdjuster {
     /**
      * Adjusts the input time returning the adjusted time.
      * <p>
-     * This is a strategy pattern that allows a range of adjustents to be made
+     * This is a strategy pattern that allows a range of adjustments to be made
      * to a time.
      *
      * @param time  the time to adjust, not null
