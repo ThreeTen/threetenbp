@@ -157,7 +157,7 @@ public final class CalendricalMatchers {
                 MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
                 Integer domVal = calendrical.get(ISOChronology.dayOfMonthRule());
                 return yearVal != null && moy != null && domVal != null &&
-                        domVal == moy.lengthInDays(ISOChronology.isLeapYear(yearVal));
+                        domVal == moy.getLastDayOfMonth(ISOChronology.isLeapYear(yearVal));
             }
         },
         /** Last day-of-year matcher. */
