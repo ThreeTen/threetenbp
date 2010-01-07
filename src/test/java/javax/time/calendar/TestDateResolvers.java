@@ -111,7 +111,7 @@ public class TestDateResolvers {
                     assertSame(test.getMonthOfYear(), month);
                     assertEquals(test.getDayOfMonth(), dayOfMonth.getValue());
                 } catch (InvalidCalendarFieldException icfe) {
-                    assertTrue(year.monthLengthInDays(month) < dayOfMonth.getValue(), "M" + month + "D" + dayOfMonth);
+                    assertTrue(month.lengthInDays(year.isLeap()) < dayOfMonth.getValue(), "M" + month + "D" + dayOfMonth);
                 }
             }
         }
@@ -149,7 +149,7 @@ public class TestDateResolvers {
 
     private void test_previousValid(Year year) {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int monthLength = year.monthLengthInDays(month);
+            int monthLength = month.lengthInDays(year.isLeap());
 
             for (int i = 1; i <= 31; i++) {
                 DayOfMonth dayOfMonth = dayOfMonth(i);
@@ -198,7 +198,7 @@ public class TestDateResolvers {
 
     private void test_nextValid(Year year) {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int monthLength = year.monthLengthInDays(month);
+            int monthLength = month.lengthInDays(year.isLeap());
 
             for (int i = 1; i <= 31; i++) {
                 DayOfMonth dayOfMonth = dayOfMonth(i);
@@ -249,7 +249,7 @@ public class TestDateResolvers {
 
     private void test_partLenient(Year year) {
         for (MonthOfYear month : MonthOfYear.values()) {
-            int monthLength = year.monthLengthInDays(month);
+            int monthLength = month.lengthInDays(year.isLeap());
 
             for (int i = 1; i <= 31; i++) {
                 DayOfMonth dayOfMonth = dayOfMonth(i);

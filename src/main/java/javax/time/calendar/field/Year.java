@@ -387,35 +387,6 @@ public final class Year
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Checks if the month and day are valid for this year.
-//     * <p>
-//     * This method checks whether this year and the input month and day form
-//     * a valid date.
-//     *
-//     * @param monthOfYear  the month-of-year to validate, null returns false
-//     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
-//     * @return true if the month and day are valid for this year
-//     */
-//    public boolean isValidMonthDay(MonthOfYear monthOfYear, int dayOfMonth) {
-//        return monthOfYear != null && dayOfMonth >= 1 && dayOfMonth <= monthOfYear.lengthInDays(isLeap());
-//    }
-//
-//    /**
-//     * Checks if the month and day are valid for this year.
-//     * <p>
-//     * This method checks whether this year and the input month and day form
-//     * a valid date.
-//     *
-//     * @param monthOfYear  the month-of-year to validate, from 1 to 12, invalid value returns false
-//     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
-//     * @return true if the month and day are valid for this year
-//     */
-//    public boolean isValidMonthDay(int monthOfYear, int dayOfMonth) {
-//        return monthOfYear >= 1 && monthOfYear <= 12 &&
-//                isValidMonthDay(MonthOfYear.monthOfYear(monthOfYear), dayOfMonth);
-//    }
-
     /**
      * Checks if the month-day is valid for this year.
      * <p>
