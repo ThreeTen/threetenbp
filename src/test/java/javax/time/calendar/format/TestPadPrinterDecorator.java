@@ -96,7 +96,7 @@ public class TestPadPrinterDecorator {
     }
 
     public void test_print_fullDateTime() throws Exception {
-        Calendrical calendrical = LocalDate.date(2008, 12, 3);
+        Calendrical calendrical = LocalDate.of(2008, 12, 3);
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new CharLiteralPrinterParser('Z'), null, 3, '-');
         pp.print(calendrical, buf, symbols);
         assertEquals(buf.toString(), "--Z");

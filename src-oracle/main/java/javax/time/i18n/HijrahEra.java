@@ -56,7 +56,7 @@ public enum HijrahEra implements Calendrical {
      * @return the HijrahEra singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
-    public static HijrahEra hijrahEra(int hijrahEra) {
+    public static HijrahEra of(int hijrahEra) {
         switch (hijrahEra) {
             case 0:
                 return BEFORE_HIJRAH;
@@ -78,7 +78,7 @@ public enum HijrahEra implements Calendrical {
      * @return the HijrahEra enum instance, never null
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
-    public static HijrahEra hijrahEra(Calendrical calendrical) {
+    public static HijrahEra from(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
     }
 

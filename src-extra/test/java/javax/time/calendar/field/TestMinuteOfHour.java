@@ -135,7 +135,7 @@ public class TestMinuteOfHour {
 
     //-----------------------------------------------------------------------
     public void test_factory_Calendrical() {
-        LocalTime time = LocalTime.time(5, 0, 10, 20);
+        LocalTime time = LocalTime.of(5, 0, 10, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             MinuteOfHour test = MinuteOfHour.minuteOfHour(time);
             assertEquals(test.getValue(), i);
@@ -157,7 +157,7 @@ public class TestMinuteOfHour {
     // adjustTime()
     //-----------------------------------------------------------------------
     public void test_adjustTime() {
-        LocalTime base = LocalTime.time(5, 0, 10, 20);
+        LocalTime base = LocalTime.of(5, 0, 10, 20);
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i++) {
             MinuteOfHour test = MinuteOfHour.minuteOfHour(i);
@@ -176,7 +176,7 @@ public class TestMinuteOfHour {
     // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical() {
-        LocalTime work = LocalTime.time(5, 0, 10, 20);
+        LocalTime work = LocalTime.of(5, 0, 10, 20);
         for (int i = 0; i <= MAX_LENGTH; i++) {
             for (int j = 0; j <= MAX_LENGTH; j++) {
                 MinuteOfHour test = MinuteOfHour.minuteOfHour(j);
@@ -187,7 +187,7 @@ public class TestMinuteOfHour {
     }
 
     public void test_matchesCalendrical_noData() {
-        assertEquals(MinuteOfHour.minuteOfHour(12).matchesCalendrical(LocalDate.date(2008, 6, 30)), false);
+        assertEquals(MinuteOfHour.minuteOfHour(12).matchesCalendrical(LocalDate.of(2008, 6, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

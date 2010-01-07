@@ -67,17 +67,17 @@ import org.testng.annotations.Test;
 @Test
 public class TestOffsetDateTime {
 
-    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
-    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
-    private static final ZoneOffset OFFSET_PONE = ZoneOffset.zoneOffset(1);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
-    private static final ZoneOffset OFFSET_MONE = ZoneOffset.zoneOffset(-1);
-    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.zoneOffset(-2);
+    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
+    private static final ZoneOffset OFFSET_PONE = ZoneOffset.hours(1);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_MONE = ZoneOffset.hours(-1);
+    private static final ZoneOffset OFFSET_MTWO = ZoneOffset.hours(-2);
     private OffsetDateTime TEST_2008_6_30_11_30_59_000000500;
 
     @BeforeMethod
     public void setUp() {
-        TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
+        TEST_2008_6_30_11_30_59_000000500 = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
@@ -132,27 +132,27 @@ public class TestOffsetDateTime {
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_intMonthInt() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.midnight(2008, MonthOfYear.JUNE, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_ints() {
-        OffsetDateTime test = OffsetDateTime.dateMidnight(2008, 6, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.midnight(2008, 6, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_DateProvider() {
-        DateProvider provider = LocalDate.date(2008, 6, 30);
-        OffsetDateTime test = OffsetDateTime.dateMidnight(provider, OFFSET_PONE);
+        DateProvider provider = LocalDate.of(2008, 6, 30);
+        OffsetDateTime test = OffsetDateTime.midnightFrom(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.dateMidnight(mmp, OFFSET_PTWO);
+        OffsetDateTime test = OffsetDateTime.midnightFrom(mmp, OFFSET_PTWO);
         check(test, 2008, 6, 30, 0, 0, 0, 0, OFFSET_PTWO);
     }
 
@@ -160,88 +160,88 @@ public class TestOffsetDateTime {
     // dateTime factories
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHM() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHMS() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, 10, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intMonthIntHMSN() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, MonthOfYear.JUNE, 30, 11, 30, 10, 500, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intsHM() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intsHMS() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 0, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_intsHMSN() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateProviderTimeProvider() {
-        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
-        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.dateTime(dateProvider, timeProvider, OFFSET_PONE);
+        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
+        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
+        OffsetDateTime test = OffsetDateTime.from(dateProvider, timeProvider, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProviderTimeProvider_nullDateProvider() {
-        TimeProvider timeProvider = LocalTime.time(11, 30, 10, 500);
-        OffsetDateTime.dateTime((DateProvider) null, timeProvider, OFFSET_PONE);
+        TimeProvider timeProvider = LocalTime.of(11, 30, 10, 500);
+        OffsetDateTime.from((DateProvider) null, timeProvider, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProviderTimeProvider_nullTimeProvider() {
-        DateProvider dateProvider = LocalDate.date(2008, 6, 30);
-        OffsetDateTime.dateTime(dateProvider, (TimeProvider) null, OFFSET_PONE);
+        DateProvider dateProvider = LocalDate.of(2008, 6, 30);
+        OffsetDateTime.from(dateProvider, (TimeProvider) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProviderTimeProvider_nullOffset() {
-        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime.dateTime(provider, (ZoneOffset) null);
+        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime.from(provider, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateTimeProvider() {
-        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.dateTime(provider, OFFSET_PONE);
+        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime test = OffsetDateTime.from(provider, OFFSET_PONE);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateTimeProvider_nullProvider() {
-        OffsetDateTime.dateTime((DateTimeProvider) null, OFFSET_PONE);
+        OffsetDateTime.from((DateTimeProvider) null, OFFSET_PONE);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateTimeProvider_nullOffset() {
-        DateTimeProvider provider = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime.dateTime(provider, (ZoneOffset) null);
+        DateTimeProvider provider = LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500);
+        OffsetDateTime.from(provider, (ZoneOffset) null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        OffsetDateTime test = OffsetDateTime.dateTime(mmp, OFFSET_PTWO);
+        OffsetDateTime test = OffsetDateTime.from(mmp, OFFSET_PTWO);
         check(test, 2008, 6, 30, 11, 30, 10, 500, OFFSET_PTWO);
     }
 
@@ -293,7 +293,7 @@ public class TestOffsetDateTime {
         Constructor<OffsetDateTime> con = OffsetDateTime.class.getDeclaredConstructor(LocalDateTime.class, ZoneOffset.class);
         con.setAccessible(true);
         try {
-            con.newInstance(LocalDateTime.dateTime(2008, 6, 30, 11, 30), null);
+            con.newInstance(LocalDateTime.of(2008, 6, 30, 11, 30), null);
         } catch (InvocationTargetException ex) {
             throw ex.getCause();
         }
@@ -314,10 +314,10 @@ public class TestOffsetDateTime {
 
     @Test(dataProvider="sampleTimes")
     public void test_get(int y, int o, int d, int h, int m, int s, int n, ZoneOffset offset) {
-        LocalDate localDate = LocalDate.date(y, o, d);
-        LocalTime localTime = LocalTime.time(h, m, s, n);
-        LocalDateTime localDateTime = LocalDateTime.dateTime(localDate, localTime);
-        OffsetDateTime a = OffsetDateTime.dateTime(localDateTime, offset);
+        LocalDate localDate = LocalDate.of(y, o, d);
+        LocalTime localTime = LocalTime.of(h, m, s, n);
+        LocalDateTime localDateTime = LocalDateTime.from(localDate, localTime);
+        OffsetDateTime a = OffsetDateTime.from(localDateTime, offset);
         assertSame(a.getOffset(), offset);
         assertEquals(a.getChronology(), ISOChronology.INSTANCE);
         
@@ -335,8 +335,8 @@ public class TestOffsetDateTime {
         assertSame(a.toLocalDate(), localDate);
         assertSame(a.toLocalTime(), localTime);
         assertSame(a.toLocalDateTime(), localDateTime);
-        assertEquals(a.toOffsetDate(), OffsetDate.date(localDate, offset));
-        assertEquals(a.toOffsetTime(), OffsetTime.time(localTime, offset));
+        assertEquals(a.toOffsetDate(), OffsetDate.from(localDate, offset));
+        assertEquals(a.toOffsetTime(), OffsetTime.from(localTime, offset));
         assertEquals(a.toYear(), localDate.toYear());
         assertEquals(a.toString(), localDateTime.toString() + offset.toString());
     }
@@ -345,7 +345,7 @@ public class TestOffsetDateTime {
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 12, 30, 40, 987654321, OFFSET_PONE);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
@@ -372,18 +372,18 @@ public class TestOffsetDateTime {
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), test.getOffset());
         assertEquals(test.get(TimeZone.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), YearMonth.yearMonth(2008, 6));
-        assertEquals(test.get(MonthDay.rule()), MonthDay.monthDay(6, 30));
+        assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
+        assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_get_CalendricalRule_null() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         test.get((CalendricalRule<?>) null);
     }
 
     public void test_get_unsupported() {
-        OffsetDateTime test = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime test = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
@@ -391,29 +391,29 @@ public class TestOffsetDateTime {
     // withDateTime()
     //-----------------------------------------------------------------------
     public void test_withDateTime() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        LocalDateTime dt = LocalDateTime.dateTime(2008, 6, 30, 11, 31, 0);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 31, 0);
         OffsetDateTime test = base.withDateTime(dt);
         assertSame(test.toLocalDateTime(), dt);
         assertSame(test.getOffset(), base.getOffset());
     }
 
     public void test_withDateTime_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        LocalDateTime dt = LocalDateTime.dateTime(2008, 6, 30, 11, 30, 59);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        LocalDateTime dt = LocalDateTime.of(2008, 6, 30, 11, 30, 59);
         OffsetDateTime test = base.withDateTime(dt);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withDateTime_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.withDateTime(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withDateTime_badProvider() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.withDateTime(new MockDateTimeProviderReturnsNull());
     }
 
@@ -421,21 +421,21 @@ public class TestOffsetDateTime {
     // withOffsetSameLocal()
     //-----------------------------------------------------------------------
     public void test_withOffsetSameLocal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameLocal(OFFSET_PTWO);
         assertSame(test.toLocalDateTime(), base.toLocalDateTime());
         assertSame(test.getOffset(), OFFSET_PTWO);
     }
 
     public void test_withOffsetSameLocal_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameLocal(OFFSET_PONE);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withOffsetSameLocal_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.withOffsetSameLocal(null);
     }
 
@@ -443,21 +443,21 @@ public class TestOffsetDateTime {
     // withOffsetSameInstant()
     //-----------------------------------------------------------------------
     public void test_withOffsetSameInstant() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameInstant(OFFSET_PTWO);
-        OffsetDateTime expected = OffsetDateTime.dateTime(2008, 6, 30, 12, 30, 59, OFFSET_PTWO);
+        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 30, 59, OFFSET_PTWO);
         assertEquals(test, expected);
     }
 
     public void test_withOffsetSameInstant_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withOffsetSameInstant(OFFSET_PONE);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_withOffsetSameInstant_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.withOffsetSameInstant(null);
     }
 
@@ -465,27 +465,27 @@ public class TestOffsetDateTime {
     // with(DateAdjuster)
     //-----------------------------------------------------------------------
     public void test_with_DateAdjuster() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
-        OffsetDateTime test = base.with(Year.isoYear(2007));
-        assertEquals(test, OffsetDateTime.dateTime(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime test = base.with(Year.of(2007));
+        assertEquals(test, OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_with_DateAdjuster_noChange() {
-        DateAdjuster adjuster = LocalDate.date(2008, 6, 30);
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
+        DateAdjuster adjuster = LocalDate.of(2008, 6, 30);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 0, 0, OFFSET_PONE);
         OffsetDateTime test = base.with(adjuster);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_DateAdjuster_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.with((DateAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_DateAdjuster_badAdjuster() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.with(new MockDateAdjusterReturnsNull());
     }
 
@@ -493,31 +493,31 @@ public class TestOffsetDateTime {
     // with(TimeAdjuster)
     //-----------------------------------------------------------------------
     public void test_with_TimeAdjuster() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.with(new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
                 return time.withHourOfDay(1);
             }
         });
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 1, 30, 59, OFFSET_PONE));
     }
 
     public void test_with_TimeAdjuster_noChange() {
-        TimeAdjuster adjuster = LocalTime.time(11, 30, 59, 0);
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
+        TimeAdjuster adjuster = LocalTime.of(11, 30, 59, 0);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         OffsetDateTime test = base.with(adjuster);
         assertSame(test, base);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_TimeAdjuster_null() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.with((TimeAdjuster) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_with_TimeAdjuster_badAdjuster() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         base.with(new MockTimeAdjusterReturnsNull());
     }
 
@@ -525,25 +525,25 @@ public class TestOffsetDateTime {
     // withYear()
     //-----------------------------------------------------------------------
     public void test_withYear_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withYear(2007);
-        assertEquals(test, OffsetDateTime.dateTime(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_withYear_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withYear(2008);
         assertSame(test, base);
     }
 
     public void test_withYear_DateResolver_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withYear(2007, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.dateTime(2007, 2, 28, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2007, 2, 28, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_withYear_DateResolver_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withYear(2008, DateResolvers.previousValid());
         assertSame(test, base);
     }
@@ -552,25 +552,25 @@ public class TestOffsetDateTime {
     // withMonthOfYear()
     //-----------------------------------------------------------------------
     public void test_withMonthOfYear_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMonthOfYear(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 1, 30, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 1, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_withMonthOfYear_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMonthOfYear(6);
         assertSame(test, base);
     }
 
     public void test_withMonthOfYear_DateResolver_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMonthOfYear(2, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_withMonthOfYear_DateResolver_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMonthOfYear(6, DateResolvers.previousValid());
         assertSame(test, base);
     }
@@ -579,13 +579,13 @@ public class TestOffsetDateTime {
     // withDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_withDayOfMonth_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withDayOfMonth(15);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 15, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 15, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_withDayOfMonth_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withDayOfMonth(30);
         assertSame(test, base);
     }
@@ -595,7 +595,7 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     public void test_withDayOfYear_normal() {
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.withDayOfYear(33);
-        assertEquals(t, OffsetDateTime.dateTime(2008, 2, 2, 11, 30, 59, 500, OFFSET_PONE));
+        assertEquals(t, OffsetDateTime.of(2008, 2, 2, 11, 30, 59, 500, OFFSET_PONE));
     }
 
     public void test_withDayOfYear_noChange() {
@@ -610,21 +610,21 @@ public class TestOffsetDateTime {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withDayOfYear_invalid() {
-        OffsetDateTime.dateTime(2007, 2, 2, 11, 30, OFFSET_PONE).withDayOfYear(366);
+        OffsetDateTime.of(2007, 2, 2, 11, 30, OFFSET_PONE).withDayOfYear(366);
     }
 
     //-----------------------------------------------------------------------
     // withDate()
     //-----------------------------------------------------------------------
     public void test_withDate() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withDate(2007, 1, 1);
-        OffsetDateTime expected = OffsetDateTime.dateTime(2007, 1, 1, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime expected = OffsetDateTime.of(2007, 1, 1, 11, 30, 59, OFFSET_PONE);
         assertEquals(test, expected);
     }
 
     public void test_withDate_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);
         OffsetDateTime test = base.withDate(2008, 6, 30);
         assertSame(test, base);
     }
@@ -633,13 +633,13 @@ public class TestOffsetDateTime {
     // withHourOfDay()
     //-----------------------------------------------------------------------
     public void test_withHourOfDay_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withHourOfDay(15);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 15, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 15, 30, 59, OFFSET_PONE));
     }
 
     public void test_withHourOfDay_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withHourOfDay(11);
         assertSame(test, base);
     }
@@ -648,13 +648,13 @@ public class TestOffsetDateTime {
     // withMinuteOfHour()
     //-----------------------------------------------------------------------
     public void test_withMinuteOfHour_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMinuteOfHour(15);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 15, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 15, 59, OFFSET_PONE));
     }
 
     public void test_withMinuteOfHour_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withMinuteOfHour(30);
         assertSame(test, base);
     }
@@ -663,13 +663,13 @@ public class TestOffsetDateTime {
     // withSecondOfMinute()
     //-----------------------------------------------------------------------
     public void test_withSecondOfMinute_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withSecondOfMinute(15);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 15, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 15, OFFSET_PONE));
     }
 
     public void test_withSecondOfMinute_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withSecondOfMinute(59);
         assertSame(test, base);
     }
@@ -678,13 +678,13 @@ public class TestOffsetDateTime {
     // withNanoOfSecond()
     //-----------------------------------------------------------------------
     public void test_withNanoOfSecond_normal() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
         OffsetDateTime test = base.withNanoOfSecond(15);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 15, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 15, OFFSET_PONE));
     }
 
     public void test_withNanoOfSecond_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE);
         OffsetDateTime test = base.withNanoOfSecond(1);
         assertSame(test, base);
     }
@@ -693,42 +693,42 @@ public class TestOffsetDateTime {
     // withTime()
     //-----------------------------------------------------------------------
     public void test_withTime_HM() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         OffsetDateTime test = base.withTime(12, 10);
-        OffsetDateTime expected = OffsetDateTime.dateTime(2008, 6, 30, 12, 10, 0, 0, OFFSET_PONE);
+        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 10, 0, 0, OFFSET_PONE);
         assertEquals(test, expected);
     }
 
     public void test_withTime_HM_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);
         OffsetDateTime test = base.withTime(11, 30);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
     public void test_withTime_HMS() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         OffsetDateTime test = base.withTime(12, 10, 9);
-        OffsetDateTime expected = OffsetDateTime.dateTime(2008, 6, 30, 12, 10, 9, 0, OFFSET_PONE);
+        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 10, 9, 0, OFFSET_PONE);
         assertEquals(test, expected);
     }
 
     public void test_withTime_HMS_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withTime(11, 30, 59);
         assertSame(test, base);
     }
 
     //-----------------------------------------------------------------------
     public void test_withTime_HMSN() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.withTime(12, 10, 9, 8);
-        OffsetDateTime expected = OffsetDateTime.dateTime(2008, 6, 30, 12, 10, 9, 8, OFFSET_PONE);
+        OffsetDateTime expected = OffsetDateTime.of(2008, 6, 30, 12, 10, 9, 8, OFFSET_PONE);
         assertEquals(test, expected);
     }
 
     public void test_withTime_HMSN_noChange() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 500, OFFSET_PONE);
         OffsetDateTime test = base.withTime(11, 30, 59, 500);
         assertSame(test, base);
     }
@@ -737,9 +737,9 @@ public class TestOffsetDateTime {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.plus(provider);
-        assertEquals(t, OffsetDateTime.dateTime(2009, 9, 2, 15, 36, 5, 507, OFFSET_PONE));
+        assertEquals(t, OffsetDateTime.of(2009, 9, 2, 15, 36, 5, 507, OFFSET_PONE));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -751,25 +751,25 @@ public class TestOffsetDateTime {
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusYears(1);
-        assertEquals(test, OffsetDateTime.dateTime(2009, 6, 30, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2009, 6, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusYears_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusYears(0);
         assertSame(test, base);
     }
 
     public void test_plusYears_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusYears(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.dateTime(2009, 2, 28, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2009, 2, 28, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusYears_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusYears(0, DateResolvers.previousValid());
         assertSame(test, base);
     }
@@ -778,25 +778,25 @@ public class TestOffsetDateTime {
     // plusMonths()
     //-----------------------------------------------------------------------
     public void test_plusMonths() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMonths(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 7, 30, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 7, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusMonths_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMonths(0);
         assertSame(test, base);
     }
 
     public void test_plusMonths_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 1, 31, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 1, 31, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMonths(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusMonths_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMonths(0, DateResolvers.previousValid());
         assertSame(test, base);
     }
@@ -805,13 +805,13 @@ public class TestOffsetDateTime {
     // plusWeeks()
     //-----------------------------------------------------------------------
     public void test_plusWeeks() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusWeeks(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 7, 7, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 7, 7, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusWeeks_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusWeeks(0);
         assertSame(test, base);
     }
@@ -820,13 +820,13 @@ public class TestOffsetDateTime {
     // plusDays()
     //-----------------------------------------------------------------------
     public void test_plusDays() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusDays(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 7, 1, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 7, 1, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusDays_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusDays(0);
         assertSame(test, base);
     }
@@ -835,13 +835,13 @@ public class TestOffsetDateTime {
     // plusHours()
     //-----------------------------------------------------------------------
     public void test_plusHours() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusHours(13);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 7, 1, 0, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 7, 1, 0, 30, 59, OFFSET_PONE));
     }
 
     public void test_plusHours_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusHours(0);
         assertSame(test, base);
     }
@@ -850,13 +850,13 @@ public class TestOffsetDateTime {
     // plusMinutes()
     //-----------------------------------------------------------------------
     public void test_plusMinutes() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMinutes(30);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 12, 0, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 12, 0, 59, OFFSET_PONE));
     }
 
     public void test_plusMinutes_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusMinutes(0);
         assertSame(test, base);
     }
@@ -865,13 +865,13 @@ public class TestOffsetDateTime {
     // plusSeconds()
     //-----------------------------------------------------------------------
     public void test_plusSeconds() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusSeconds(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 31, 0, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 31, 0, OFFSET_PONE));
     }
 
     public void test_plusSeconds_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusSeconds(0);
         assertSame(test, base);
     }
@@ -880,13 +880,13 @@ public class TestOffsetDateTime {
     // plusNanos()
     //-----------------------------------------------------------------------
     public void test_plusNanos() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         OffsetDateTime test = base.plusNanos(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 1, OFFSET_PONE));
     }
 
     public void test_plusNanos_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.plusNanos(0);
         assertSame(test, base);
     }
@@ -895,9 +895,9 @@ public class TestOffsetDateTime {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         OffsetDateTime t = TEST_2008_6_30_11_30_59_000000500.minus(provider);
-        assertEquals(t, OffsetDateTime.dateTime(2007, 4, 27, 7, 25, 53, 493, OFFSET_PONE));
+        assertEquals(t, OffsetDateTime.of(2007, 4, 27, 7, 25, 53, 493, OFFSET_PONE));
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -909,25 +909,25 @@ public class TestOffsetDateTime {
     // minusYears()
     //-----------------------------------------------------------------------
     public void test_minusYears() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusYears(1);
-        assertEquals(test, OffsetDateTime.dateTime(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusYears_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2007, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2007, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusYears(0);
         assertSame(test, base);
     }
 
     public void test_minusYears_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusYears(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.dateTime(2007, 2, 28, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2007, 2, 28, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusYears_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusYears(0, DateResolvers.previousValid());
         assertSame(test, base);
     }
@@ -936,25 +936,25 @@ public class TestOffsetDateTime {
     // minusMonths()
     //-----------------------------------------------------------------------
     public void test_minusMonths() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMonths(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 5, 30, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 5, 30, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusMonths_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMonths(0);
         assertSame(test, base);
     }
 
     public void test_minusMonths_DateResolver() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 3, 31, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 3, 31, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMonths(1, DateResolvers.previousValid());
-        assertEquals(test, OffsetDateTime.dateTime(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 2, 29, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusMonths_DateResolver_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMonths(0, DateResolvers.previousValid());
         assertSame(test, base);
     }
@@ -963,13 +963,13 @@ public class TestOffsetDateTime {
     // minusWeeks()
     //-----------------------------------------------------------------------
     public void test_minusWeeks() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusWeeks(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 23, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 23, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusWeeks_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusWeeks(0);
         assertSame(test, base);
     }
@@ -978,13 +978,13 @@ public class TestOffsetDateTime {
     // minusDays()
     //-----------------------------------------------------------------------
     public void test_minusDays() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusDays(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 29, 11, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 29, 11, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusDays_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusDays(0);
         assertSame(test, base);
     }
@@ -993,13 +993,13 @@ public class TestOffsetDateTime {
     // minusHours()
     //-----------------------------------------------------------------------
     public void test_minusHours() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusHours(13);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 29, 22, 30, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 29, 22, 30, 59, OFFSET_PONE));
     }
 
     public void test_minusHours_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusHours(0);
         assertSame(test, base);
     }
@@ -1008,13 +1008,13 @@ public class TestOffsetDateTime {
     // minusMinutes()
     //-----------------------------------------------------------------------
     public void test_minusMinutes() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMinutes(30);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 0, 59, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 0, 59, OFFSET_PONE));
     }
 
     public void test_minusMinutes_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusMinutes(0);
         assertSame(test, base);
     }
@@ -1023,13 +1023,13 @@ public class TestOffsetDateTime {
     // minusSeconds()
     //-----------------------------------------------------------------------
     public void test_minusSeconds() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusSeconds(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 58, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 58, OFFSET_PONE));
     }
 
     public void test_minusSeconds_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusSeconds(0);
         assertSame(test, base);
     }
@@ -1038,13 +1038,13 @@ public class TestOffsetDateTime {
     // minusNanos()
     //-----------------------------------------------------------------------
     public void test_minusNanos() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 0, OFFSET_PONE);
         OffsetDateTime test = base.minusNanos(1);
-        assertEquals(test, OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 58, 999999999, OFFSET_PONE));
+        assertEquals(test, OffsetDateTime.of(2008, 6, 30, 11, 30, 58, 999999999, OFFSET_PONE));
     }
 
     public void test_minusNanos_zero() {
-        OffsetDateTime base = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime base = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         OffsetDateTime test = base.minusNanos(0);
         assertSame(test, base);
     }
@@ -1073,14 +1073,14 @@ public class TestOffsetDateTime {
     // atZoneSameInstant()
     //-----------------------------------------------------------------------
     public void test_atZone() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_MTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_MTWO);
         assertEquals(t.atZoneSameInstant(ZONE_PARIS),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 15, 30), ZONE_PARIS));
+                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 15, 30), ZONE_PARIS));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZone_nullTimeZone() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
         t.atZoneSameInstant((TimeZone) null);
     }
 
@@ -1088,57 +1088,57 @@ public class TestOffsetDateTime {
     // atZoneSimilarLocal()
     //-----------------------------------------------------------------------
     public void test_atZoneSimilarLocal() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_MTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_MTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
     }
 
     public void test_atZoneSimilarLocal_dstGap() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
+        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_MTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_GAZA),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZoneSimilarLocal_nullTimeZone() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
         t.atZoneSimilarLocal((TimeZone) null);
     }
 
     //-----------------------------------------------------------------------
     public void test_atZoneSimilarLocal_resolver() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_MTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_MTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_PARIS, ZoneResolvers.postTransition()),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
     }
 
     public void test_atZoneSimilarLocal_resolver_dstGap() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
+        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_MTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.postTransition()),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     public void test_atZoneSimilarLocal_resolver_dstGap_pre() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_MTWO);
+        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_MTWO);
         assertEquals(t.atZoneSimilarLocal(ZONE_GAZA, ZoneResolvers.preTransition()),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZoneSimilarLocal_resolver_nullTimeZone() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
         t.atZoneSimilarLocal((TimeZone) null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZoneSimilarLocal_resolver_nullResolver() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        OffsetDateTime t = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
         t.atZoneSimilarLocal(ZONE_PARIS, (ZoneResolver) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_atZoneSimilarLocal_resolver_badResolver() {
-        OffsetDateTime t = OffsetDateTime.dateTime(2007, 4, 1, 0, 0, OFFSET_PTWO);
+        OffsetDateTime t = OffsetDateTime.of(2007, 4, 1, 0, 0, OFFSET_PTWO);
         t.atZoneSimilarLocal(ZONE_GAZA, new MockZoneResolverReturnsNull());
     }
 
@@ -1146,8 +1146,8 @@ public class TestOffsetDateTime {
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo_time1() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, 3, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 2, OFFSET_PONE);  // a is before b due to time
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 29, 3, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 30, 2, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1155,8 +1155,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_time2() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, 2, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 29, 3, OFFSET_PONE);  // a is before b due to time
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 29, 2, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 29, 3, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1164,8 +1164,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_offset() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PONE);  // a is before b due to offset
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1173,8 +1173,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_both() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 50, OFFSET_PTWO);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 20, OFFSET_PONE);  // a is before b on instant scale
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 50, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 20, OFFSET_PONE);  // a is before b on instant scale
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1182,8 +1182,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_hourDifference() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 10, 0, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is before b despite being same time-line time
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 10, 0, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is before b despite being same time-line time
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1191,8 +1191,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_max() {
-        OffsetDateTime a = OffsetDateTime.dateTime(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MTWO);  // a is before b due to offset
+        OffsetDateTime a = OffsetDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MONE);
+        OffsetDateTime b = OffsetDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, OFFSET_MTWO);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1200,8 +1200,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_compareTo_min() {
-        OffsetDateTime a = OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PTWO);
-        OffsetDateTime b = OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PONE);  // a is before b due to offset
+        OffsetDateTime a = OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PTWO);
+        OffsetDateTime b = OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, OFFSET_PONE);  // a is before b due to offset
         assertEquals(a.compareTo(b) < 0, true);
         assertEquals(b.compareTo(a) > 0, true);
         assertEquals(a.compareTo(a) == 0, true);
@@ -1210,7 +1210,7 @@ public class TestOffsetDateTime {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_compareTo_null() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         a.compareTo(null);
     }
 
@@ -1225,8 +1225,8 @@ public class TestOffsetDateTime {
     // isAfter() / isBefore() / equalInstant()
     //-----------------------------------------------------------------------
     public void test_isBeforeIsAfterIsEqual1() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 58, 3, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 2, OFFSET_PONE);  // a is before b due to time
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 58, 3, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 2, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
@@ -1246,8 +1246,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_isBeforeIsAfterIsEqual2() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 2, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, 3, OFFSET_PONE);  // a is before b due to time
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 2, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, 3, OFFSET_PONE);  // a is before b due to time
         assertEquals(a.isBefore(b), true);
         assertEquals(a.equalInstant(b), false);
         assertEquals(a.isAfter(b), false);
@@ -1267,8 +1267,8 @@ public class TestOffsetDateTime {
     }
 
     public void test_isBeforeIsAfterIsEqual_instantComparison() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 10, 0, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is same instant as b
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 10, 0, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(2008, 6, 30, 11, 0, OFFSET_PTWO);  // a is same instant as b
         assertEquals(a.isBefore(b), false);
         assertEquals(a.equalInstant(b), true);
         assertEquals(a.isAfter(b), false);
@@ -1289,19 +1289,19 @@ public class TestOffsetDateTime {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isBefore_null() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         a.isBefore(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isEqual_null() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         a.equalInstant(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_isAfter_null() {
-        OffsetDateTime a = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(2008, 6, 30, 11, 30, 59, OFFSET_PONE);
         a.isAfter(null);
     }
 
@@ -1310,49 +1310,49 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_equals_true(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), true);
         assertEquals(a.hashCode() == b.hashCode(), true);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_year_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y + 1, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y + 1, o, d, h, m, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_hour_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         h = (h == 23 ? 22 : h);
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y, o, d, h + 1, m, s, n, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y, o, d, h + 1, m, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_minute_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         m = (m == 59 ? 58 : m);
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y, o, d, h, m + 1, s, n, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m + 1, s, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_second_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         s = (s == 59 ? 58 : s);
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y, o, d, h, m, s + 1, n, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s + 1, n, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_nano_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
         n = (n == 999999999 ? 999999998 : n);
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y, o, d, h, m, s, n + 1, OFFSET_PONE);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s, n + 1, OFFSET_PONE);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_offset_differs(int y, int o, int d, int h, int m, int s, int n, ZoneOffset ignored) {
-        OffsetDateTime a = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PONE);
-        OffsetDateTime b = OffsetDateTime.dateTime(y, o, d, h, m, s, n, OFFSET_PTWO);
+        OffsetDateTime a = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PONE);
+        OffsetDateTime b = OffsetDateTime.of(y, o, d, h, m, s, n, OFFSET_PTWO);
         assertEquals(a.equals(b), false);
     }
 
@@ -1387,7 +1387,7 @@ public class TestOffsetDateTime {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int y, int o, int d, int h, int m, int s, int n, String offsetId, String expected) {
-        OffsetDateTime t = OffsetDateTime.dateTime(y, o, d, h, m, s, n, ZoneOffset.zoneOffset(offsetId));
+        OffsetDateTime t = OffsetDateTime.of(y, o, d, h, m, s, n, ZoneOffset.of(offsetId));
         String str = t.toString();
         assertEquals(str, expected);
     }
@@ -1397,13 +1397,13 @@ public class TestOffsetDateTime {
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_true_date() {
         OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500;
-        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.atZoneSimilarLocal(TimeZone.timeZone(TEST_2008_6_30_11_30_59_000000500.getOffset()));
+        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.atZoneSimilarLocal(TimeZone.of(TEST_2008_6_30_11_30_59_000000500.getOffset()));
         assertEquals(test.matchesCalendrical(cal), true);
     }
 
     public void test_matchesCalendrical_false_date() {
         OffsetDateTime test = TEST_2008_6_30_11_30_59_000000500;
-        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.plusYears(1).atZoneSimilarLocal(TimeZone.timeZone(TEST_2008_6_30_11_30_59_000000500.getOffset()));
+        ZonedDateTime cal = TEST_2008_6_30_11_30_59_000000500.plusYears(1).atZoneSimilarLocal(TimeZone.of(TEST_2008_6_30_11_30_59_000000500.getOffset()));
         assertEquals(test.matchesCalendrical(cal), false);
     }
 
@@ -1427,7 +1427,7 @@ public class TestOffsetDateTime {
     }
 
     public void test_adjustDate_same() {
-        assertSame(OffsetDateTime.dateMidnight(2008, 6, 30, OFFSET_PONE).adjustDate(TEST_2008_6_30_11_30_59_000000500.toLocalDate()), 
+        assertSame(OffsetDateTime.midnight(2008, 6, 30, OFFSET_PONE).adjustDate(TEST_2008_6_30_11_30_59_000000500.toLocalDate()), 
                 TEST_2008_6_30_11_30_59_000000500.toLocalDate());
     }
 
@@ -1447,7 +1447,7 @@ public class TestOffsetDateTime {
     }
 
     public void test_adjustTime_same() {
-        assertSame(OffsetDateTime.dateTime(1, 1, 1, 11, 30, 59, 500, OFFSET_PONE).adjustTime(TEST_2008_6_30_11_30_59_000000500.toLocalTime()), 
+        assertSame(OffsetDateTime.of(1, 1, 1, 11, 30, 59, 500, OFFSET_PONE).adjustTime(TEST_2008_6_30_11_30_59_000000500.toLocalTime()), 
                 TEST_2008_6_30_11_30_59_000000500.toLocalTime());
     }
 

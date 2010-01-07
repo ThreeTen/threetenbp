@@ -547,7 +547,7 @@ public class TestDateTimeFields {
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(test.matchesCalendrical(date), true);
         // check original immutable
         assertFields(test, YEAR_RULE, 2008, MOY_RULE, 6, DOM_RULE, 30);
@@ -559,7 +559,7 @@ public class TestDateTimeFields {
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30)
             .with(DOW_RULE, 1);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(test.matchesCalendrical(date), true);
     }
 
@@ -569,7 +569,7 @@ public class TestDateTimeFields {
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30)
             .with(DOW_RULE, 2);  // 2008-06-30 is Monday not Tuesday
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(test.matchesCalendrical(date), false);
     }
 
@@ -577,7 +577,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.fields()
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(test.matchesCalendrical(date), true);
     }
 
@@ -587,7 +587,7 @@ public class TestDateTimeFields {
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 30)
             .with(HOUR_RULE, 12);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(test.matchesCalendrical(date), true);
     }
 
@@ -596,7 +596,7 @@ public class TestDateTimeFields {
             .with(YEAR_RULE, 2008)
             .with(MOY_RULE, 6)
             .with(DOM_RULE, 31);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertEquals(test.matchesCalendrical(date), false);
     }
 
@@ -604,7 +604,7 @@ public class TestDateTimeFields {
         DateTimeFields test = DateTimeFields.fields()
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30);
-        LocalTime time = LocalTime.time(11, 30);
+        LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), true);
         // check original immutable
         assertFields(test, HOUR_RULE, 11, MIN_RULE, 30);
@@ -615,7 +615,7 @@ public class TestDateTimeFields {
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30)
             .with(AMPM_RULE, 0);
-        LocalTime time = LocalTime.time(11, 30);
+        LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), true);
     }
 
@@ -624,14 +624,14 @@ public class TestDateTimeFields {
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30)
             .with(AMPM_RULE, 1);  // time is 11:30, but this says PM
-        LocalTime time = LocalTime.time(11, 30);
+        LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), false);
     }
 
     public void test_matchesCalendrical_h_time_partialMatch() {
         DateTimeFields test = DateTimeFields.fields()
             .with(HOUR_RULE, 11);
-        LocalTime time = LocalTime.time(11, 30);
+        LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), true);
     }
 
@@ -640,7 +640,7 @@ public class TestDateTimeFields {
             .with(HOUR_RULE, 11)
             .with(MIN_RULE, 30)
             .with(YEAR_RULE, 2008);
-        LocalTime time = LocalTime.time(11, 30);
+        LocalTime time = LocalTime.of(11, 30);
         assertEquals(test.matchesCalendrical(time), true);
     }
 

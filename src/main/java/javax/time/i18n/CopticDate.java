@@ -123,7 +123,7 @@ public final class CopticDate
      * @param copticDayOfMonth  the day-of-month to represent, from 1 to 30
      * @return the Coptic date, never null
      */
-    public static CopticDate copticDate(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
+    public static CopticDate of(int copticYear, int copticMonthOfYear, int copticDayOfMonth) {
         CopticChronology.yearRule().checkValue(copticYear);
         CopticChronology.monthOfYearRule().checkValue(copticMonthOfYear);
         CopticChronology.dayOfMonthRule().checkValue(copticDayOfMonth);
@@ -165,7 +165,7 @@ public final class CopticDate
      * @return the Coptic date, never null
      * @throws UnsupportedRuleException if the day-of-week cannot be obtained
      */
-    public static CopticDate copticDate(Calendrical calendrical) {
+    public static CopticDate from(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
     }
 
@@ -286,7 +286,7 @@ public final class CopticDate
      * @return the day-of-week, never null
      */
     public DayOfWeek getDayOfWeek() {
-        return DayOfWeek.dayOfWeek((epochDays + 4) % 7 + 1);
+        return DayOfWeek.of((epochDays + 4) % 7 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -358,7 +358,7 @@ public final class CopticDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
     public CopticDate withDayOfMonth(int dayOfMonth) {
-        return copticDate(getYear(), getMonthOfYear(), dayOfMonth);
+        return of(getYear(), getMonthOfYear(), dayOfMonth);
     }
 
     /**
@@ -373,7 +373,7 @@ public final class CopticDate
      */
     public CopticDate withDayOfYear(int dayOfYear) {
         dayOfYear--;
-        return copticDate(getYear(), dayOfYear / 30 + 1, dayOfYear % 30 + 1);
+        return of(getYear(), dayOfYear / 30 + 1, dayOfYear % 30 + 1);
     }
 
     //-----------------------------------------------------------------------

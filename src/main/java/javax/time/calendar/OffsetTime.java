@@ -84,8 +84,8 @@ public final class OffsetTime
      * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static OffsetTime time(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+    public static OffsetTime of(int hourOfDay, int minuteOfHour, ZoneOffset offset) {
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
         return new OffsetTime(time, offset);
     }
 
@@ -101,8 +101,8 @@ public final class OffsetTime
      * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+    public static OffsetTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, ZoneOffset offset) {
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
         return new OffsetTime(time, offset);
     }
 
@@ -117,8 +117,8 @@ public final class OffsetTime
      * @return the offset time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static OffsetTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+    public static OffsetTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond, ZoneOffset offset) {
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new OffsetTime(time, offset);
     }
 
@@ -129,8 +129,8 @@ public final class OffsetTime
      * @param offset  the zone offset, not null
      * @return the offset time, never null
      */
-    public static OffsetTime time(TimeProvider timeProvider, ZoneOffset offset) {
-        LocalTime time = LocalTime.time(timeProvider);
+    public static OffsetTime from(TimeProvider timeProvider, ZoneOffset offset) {
+        LocalTime time = LocalTime.from(timeProvider);
         return new OffsetTime(time, offset);
     }
 
@@ -241,7 +241,7 @@ public final class OffsetTime
      * @return a new updated OffsetTime, never null
      */
     public OffsetTime withTime(TimeProvider timeProvider) {
-        LocalTime localTime = LocalTime.time(timeProvider);
+        LocalTime localTime = LocalTime.from(timeProvider);
         return localTime.equals(this.time) ? this : new OffsetTime(localTime, offset);
     }
 

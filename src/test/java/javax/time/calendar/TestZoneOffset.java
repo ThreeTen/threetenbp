@@ -77,7 +77,7 @@ public class TestZoneOffset {
     }
 
     public void test_serialization() throws Exception {
-        ZoneOffset test = ZoneOffset.zoneOffset("+01:30");
+        ZoneOffset test = ZoneOffset.of("+01:30");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -107,7 +107,7 @@ public class TestZoneOffset {
             "-00","-0000","-00:00","-000000","-00:00:00",
         };
         for (int i = 0; i < values.length; i++) {
-            ZoneOffset test = ZoneOffset.zoneOffset(values[i]);
+            ZoneOffset test = ZoneOffset.of(values[i]);
             assertSame(test, ZoneOffset.UTC);
         }
     }
@@ -130,7 +130,7 @@ public class TestZoneOffset {
         };
         for (int i = 0; i < values.length; i++) {
             try {
-                ZoneOffset.zoneOffset(values[i]);
+                ZoneOffset.of(values[i]);
                 fail("Should have failed:" + values[i]);
             } catch (IllegalArgumentException ex) {
                 // expected
@@ -140,14 +140,14 @@ public class TestZoneOffset {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_string_null() {
-        ZoneOffset.zoneOffset((String) null);
+        ZoneOffset.of((String) null);
     }
 
     //-----------------------------------------------------------------------
     public void test_factory_string_hours() {
         for (int i = -18; i <= 18; i++) {
             String str = (i < 0 ? "-" : "+") + Integer.toString(Math.abs(i) + 100).substring(1);
-            ZoneOffset test = ZoneOffset.zoneOffset(str);
+            ZoneOffset test = ZoneOffset.of(str);
             doTestOffset(test, i, 0, 0);
         }
     }
@@ -159,14 +159,14 @@ public class TestZoneOffset {
                     String str = (i < 0 || j < 0 ? "-" : "+") +
                         Integer.toString(Math.abs(i) + 100).substring(1) +
                         Integer.toString(Math.abs(j) + 100).substring(1);
-                    ZoneOffset test = ZoneOffset.zoneOffset(str);
+                    ZoneOffset test = ZoneOffset.of(str);
                     doTestOffset(test, i, j, 0);
                 }
             }
         }
-        ZoneOffset test1 = ZoneOffset.zoneOffset("-1800");
+        ZoneOffset test1 = ZoneOffset.of("-1800");
         doTestOffset(test1, -18, 0, 0);
-        ZoneOffset test2 = ZoneOffset.zoneOffset("+1800");
+        ZoneOffset test2 = ZoneOffset.of("+1800");
         doTestOffset(test2, 18, 0, 0);
     }
 
@@ -177,14 +177,14 @@ public class TestZoneOffset {
                     String str = (i < 0 || j < 0 ? "-" : "+") +
                         Integer.toString(Math.abs(i) + 100).substring(1) + ":" +
                         Integer.toString(Math.abs(j) + 100).substring(1);
-                    ZoneOffset test = ZoneOffset.zoneOffset(str);
+                    ZoneOffset test = ZoneOffset.of(str);
                     doTestOffset(test, i, j, 0);
                 }
             }
         }
-        ZoneOffset test1 = ZoneOffset.zoneOffset("-18:00");
+        ZoneOffset test1 = ZoneOffset.of("-18:00");
         doTestOffset(test1, -18, 0, 0);
-        ZoneOffset test2 = ZoneOffset.zoneOffset("+18:00");
+        ZoneOffset test2 = ZoneOffset.of("+18:00");
         doTestOffset(test2, 18, 0, 0);
     }
 
@@ -198,15 +198,15 @@ public class TestZoneOffset {
                             Integer.toString(Math.abs(i) + 100).substring(1) +
                             Integer.toString(Math.abs(j) + 100).substring(1) +
                             Integer.toString(Math.abs(k) + 100).substring(1);
-                        ZoneOffset test = ZoneOffset.zoneOffset(str);
+                        ZoneOffset test = ZoneOffset.of(str);
                         doTestOffset(test, i, j, k);
                     }
                 }
             }
         }
-        ZoneOffset test1 = ZoneOffset.zoneOffset("-180000");
+        ZoneOffset test1 = ZoneOffset.of("-180000");
         doTestOffset(test1, -18, 0, 0);
-        ZoneOffset test2 = ZoneOffset.zoneOffset("+180000");
+        ZoneOffset test2 = ZoneOffset.of("+180000");
         doTestOffset(test2, 18, 0, 0);
     }
 
@@ -220,22 +220,22 @@ public class TestZoneOffset {
                             Integer.toString(Math.abs(i) + 100).substring(1) + ":" +
                             Integer.toString(Math.abs(j) + 100).substring(1) + ":" +
                             Integer.toString(Math.abs(k) + 100).substring(1);
-                        ZoneOffset test = ZoneOffset.zoneOffset(str);
+                        ZoneOffset test = ZoneOffset.of(str);
                         doTestOffset(test, i, j, k);
                     }
                 }
             }
         }
-        ZoneOffset test1 = ZoneOffset.zoneOffset("-18:00:00");
+        ZoneOffset test1 = ZoneOffset.of("-18:00:00");
         doTestOffset(test1, -18, 0, 0);
-        ZoneOffset test2 = ZoneOffset.zoneOffset("+18:00:00");
+        ZoneOffset test2 = ZoneOffset.of("+18:00:00");
         doTestOffset(test2, 18, 0, 0);
     }
 
     //-----------------------------------------------------------------------
     public void test_factory_int_hours() {
         for (int i = -18; i <= 18; i++) {
-            ZoneOffset test = ZoneOffset.zoneOffset(i);
+            ZoneOffset test = ZoneOffset.hours(i);
             doTestOffset(test, i, 0, 0);
         }
     }
@@ -245,14 +245,14 @@ public class TestZoneOffset {
         for (int i = -17; i <= 17; i++) {
             for (int j = -59; j <= 59; j++) {
                 if ((i < 0 && j <= 0) || (i > 0 && j >= 0) || i == 0) {
-                    ZoneOffset test = ZoneOffset.zoneOffset(i, j);
+                    ZoneOffset test = ZoneOffset.hoursMinutes(i, j);
                     doTestOffset(test, i, j, 0);
                 }
             }
         }
-        ZoneOffset test1 = ZoneOffset.zoneOffset(-18, 0);
+        ZoneOffset test1 = ZoneOffset.hoursMinutes(-18, 0);
         doTestOffset(test1, -18, 0, 0);
-        ZoneOffset test2 = ZoneOffset.zoneOffset(18, 0);
+        ZoneOffset test2 = ZoneOffset.hoursMinutes(18, 0);
         doTestOffset(test2, 18, 0, 0);
     }
 
@@ -263,91 +263,91 @@ public class TestZoneOffset {
                 for (int k = -59; k <= 59; k++) {
                     if ((i < 0 && j <= 0 && k <= 0) || (i > 0 && j >= 0 && k >= 0) ||
                             (i == 0 && ((j < 0 && k <= 0) || (j > 0 && k >= 0) || j == 0))) {
-                        ZoneOffset test = ZoneOffset.zoneOffset(i, j, k);
+                        ZoneOffset test = ZoneOffset.hoursMinutesSeconds(i, j, k);
                         doTestOffset(test, i, j, k);
                     }
                 }
             }
         }
-        ZoneOffset test1 = ZoneOffset.zoneOffset(-18, 0, 0);
+        ZoneOffset test1 = ZoneOffset.hoursMinutesSeconds(-18, 0, 0);
         doTestOffset(test1, -18, 0, 0);
-        ZoneOffset test2 = ZoneOffset.zoneOffset(18, 0, 0);
+        ZoneOffset test2 = ZoneOffset.hoursMinutesSeconds(18, 0, 0);
         doTestOffset(test2, 18, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusMinutes() {
-        ZoneOffset.zoneOffset(1, -1, 0);
+        ZoneOffset.hoursMinutesSeconds(1, -1, 0);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_plusHoursMinusSeconds() {
-        ZoneOffset.zoneOffset(1, 0, -1);
+        ZoneOffset.hoursMinutesSeconds(1, 0, -1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusMinutes() {
-        ZoneOffset.zoneOffset(-1, 1, 0);
+        ZoneOffset.hoursMinutesSeconds(-1, 1, 0);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_minusHoursPlusSeconds() {
-        ZoneOffset.zoneOffset(-1, 0, 1);
+        ZoneOffset.hoursMinutesSeconds(-1, 0, 1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_zeroHoursMinusMinutesPlusSeconds() {
-        ZoneOffset.zoneOffset(0, -1, 1);
+        ZoneOffset.hoursMinutesSeconds(0, -1, 1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_zeroHoursPlusMinutesMinusSeconds() {
-        ZoneOffset.zoneOffset(0, 1, -1);
+        ZoneOffset.hoursMinutesSeconds(0, 1, -1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_minutesTooLarge() {
-        ZoneOffset.zoneOffset(0, 60, 0);
+        ZoneOffset.hoursMinutesSeconds(0, 60, 0);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_minutesTooSmall() {
-        ZoneOffset.zoneOffset(0, -60, 0);
+        ZoneOffset.hoursMinutesSeconds(0, -60, 0);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_secondsTooLarge() {
-        ZoneOffset.zoneOffset(0, 0, 60);
+        ZoneOffset.hoursMinutesSeconds(0, 0, 60);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_factory_int_hours_minutes_seconds_secondsTooSmall() {
-        ZoneOffset.zoneOffset(0, 0, 60);
+        ZoneOffset.hoursMinutesSeconds(0, 0, 60);
     }
 
     //-----------------------------------------------------------------------
     public void test_forTotalSeconds() {
-        assertSame(ZoneOffset.forTotalSeconds(0), ZoneOffset.UTC);
-        assertEquals(ZoneOffset.forTotalSeconds(60 * 60 + 1), ZoneOffset.zoneOffset(1, 0, 1));
-        assertEquals(ZoneOffset.forTotalSeconds(18 * 60 * 60), ZoneOffset.zoneOffset(18));
-        assertEquals(ZoneOffset.forTotalSeconds(-18 * 60 * 60), ZoneOffset.zoneOffset(-18));
+        assertSame(ZoneOffset.fromTotalSeconds(0), ZoneOffset.UTC);
+        assertEquals(ZoneOffset.fromTotalSeconds(60 * 60 + 1), ZoneOffset.hoursMinutesSeconds(1, 0, 1));
+        assertEquals(ZoneOffset.fromTotalSeconds(18 * 60 * 60), ZoneOffset.hours(18));
+        assertEquals(ZoneOffset.fromTotalSeconds(-18 * 60 * 60), ZoneOffset.hours(-18));
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_forTotalSeconds_tooLarge() {
-        ZoneOffset.forTotalSeconds(18 * 60 * 60 + 1);
+        ZoneOffset.fromTotalSeconds(18 * 60 * 60 + 1);
     }
 
     @Test(expectedExceptions=IllegalArgumentException.class)
     public void test_forTotalSeconds_tooSmall() {
-        ZoneOffset.forTotalSeconds(-18 * 60 * 60 - 1);
+        ZoneOffset.fromTotalSeconds(-18 * 60 * 60 - 1);
     }
 
     //-----------------------------------------------------------------------
     // getAmountSeconds()
     //-----------------------------------------------------------------------
     public void test_getAmountSeconds() {
-        ZoneOffset offset = ZoneOffset.forTotalSeconds(60 * 60 + 1);
+        ZoneOffset offset = ZoneOffset.fromTotalSeconds(60 * 60 + 1);
         assertEquals(offset.getAmountSeconds(), 60 * 60 + 1);
     }
 
@@ -355,9 +355,9 @@ public class TestZoneOffset {
     // getID()
     //-----------------------------------------------------------------------
     public void test_getID() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(1, 0, 0);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(1, 0, 0);
         assertEquals(offset.getID(), "+01:00");
-        offset = ZoneOffset.zoneOffset(1, 2, 3);
+        offset = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getID(), "+01:02:03");
         offset = ZoneOffset.UTC;
         assertEquals(offset.getID(), "Z");
@@ -367,12 +367,12 @@ public class TestZoneOffset {
     // getHoursField()
     //-----------------------------------------------------------------------
     public void test_getHoursField() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getHoursField(), 1);
     }
 
     public void test_getHoursField_negative() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(-1, -2, -3);
         assertEquals(offset.getHoursField(), -1);
     }
 
@@ -380,12 +380,12 @@ public class TestZoneOffset {
     // getMinutesField()
     //-----------------------------------------------------------------------
     public void test_getMinutesField() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getMinutesField(), 2);
     }
 
     public void test_getMinutesField_negative() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(-1, -2, -3);
         assertEquals(offset.getMinutesField(), -2);
     }
 
@@ -393,12 +393,12 @@ public class TestZoneOffset {
     // getSecondsField()
     //-----------------------------------------------------------------------
     public void test_getSecondsField() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.getSecondsField(), 3);
     }
 
     public void test_getSecondsField_negative() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(-1, -2, -3);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(-1, -2, -3);
         assertEquals(offset.getSecondsField(), -3);
     }
 
@@ -406,33 +406,33 @@ public class TestZoneOffset {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        ZoneOffset offset = ZoneOffset.of("+01:02:03");
         Period p = Period.hoursMinutesSeconds(4, 6, 8);
-        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+05:08:11"));
+        assertEquals(offset.plus(p), ZoneOffset.of("+05:08:11"));
     }
 
     public void test_plus_PeriodProvider_overflowSecs() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        ZoneOffset offset = ZoneOffset.of("+01:02:03");
         Period p = Period.hoursMinutesSeconds(4, 6, 68);
-        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+05:09:11"));
+        assertEquals(offset.plus(p), ZoneOffset.of("+05:09:11"));
     }
 
     public void test_plus_PeriodProvider_overflowMins() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        ZoneOffset offset = ZoneOffset.of("+01:02:03");
         Period p = Period.hoursMinutesSeconds(4, 66, 8);
-        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+06:08:11"));
+        assertEquals(offset.plus(p), ZoneOffset.of("+06:08:11"));
     }
 
     public void test_plus_PeriodProvider_negative() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("-02:04:06");
+        ZoneOffset offset = ZoneOffset.of("-02:04:06");
         Period p = Period.hoursMinutesSeconds(1, 2, 3);
-        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("-01:02:03"));
+        assertEquals(offset.plus(p), ZoneOffset.of("-01:02:03"));
     }
 
     public void test_plus_PeriodProvider_negativeToPositive() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("-01:02:03");
+        ZoneOffset offset = ZoneOffset.of("-01:02:03");
         Period p = Period.hoursMinutesSeconds(4, 6, 8);
-        assertEquals(offset.plus(p), ZoneOffset.zoneOffset("+03:04:05"));
+        assertEquals(offset.plus(p), ZoneOffset.of("+03:04:05"));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -444,12 +444,12 @@ public class TestZoneOffset {
     // toPeriod()
     //-----------------------------------------------------------------------
     public void test_toPeriod() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("+01:02:03");
+        ZoneOffset offset = ZoneOffset.of("+01:02:03");
         assertEquals(offset.toPeriod(), Period.hoursMinutesSeconds(1, 2, 3));
     }
 
     public void test_toPeriod_negative() {
-        ZoneOffset offset = ZoneOffset.zoneOffset("-01:02:03");
+        ZoneOffset offset = ZoneOffset.of("-01:02:03");
         assertEquals(offset.toPeriod(), Period.hoursMinutesSeconds(-1, -2, -3));
     }
 
@@ -462,16 +462,16 @@ public class TestZoneOffset {
     // toTimeZone()
     //-----------------------------------------------------------------------
     public void test_toTimeZone() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(1, 2, 3);
-        assertEquals(offset.toTimeZone(), TimeZone.timeZone(offset));
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
+        assertEquals(offset.toTimeZone(), TimeZone.of(offset));
     }
 
     //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        ZoneOffset offset1 = ZoneOffset.zoneOffset(1, 2, 3);
-        ZoneOffset offset2 = ZoneOffset.zoneOffset(2, 3, 4);
+        ZoneOffset offset1 = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
+        ZoneOffset offset2 = ZoneOffset.hoursMinutesSeconds(2, 3, 4);
         assertTrue(offset1.compareTo(offset2) > 0);
         assertTrue(offset2.compareTo(offset1) < 0);
         assertTrue(offset1.compareTo(offset1) == 0);
@@ -482,9 +482,9 @@ public class TestZoneOffset {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        ZoneOffset offset1 = ZoneOffset.zoneOffset(1, 2, 3);
-        ZoneOffset offset2 = ZoneOffset.zoneOffset(2, 3, 4);
-        ZoneOffset offset2b = ZoneOffset.zoneOffset(2, 3, 4);
+        ZoneOffset offset1 = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
+        ZoneOffset offset2 = ZoneOffset.hoursMinutesSeconds(2, 3, 4);
+        ZoneOffset offset2b = ZoneOffset.hoursMinutesSeconds(2, 3, 4);
         assertEquals(offset1.equals(offset2), false);
         assertEquals(offset2.equals(offset1), false);
         
@@ -501,9 +501,9 @@ public class TestZoneOffset {
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
-        ZoneOffset offset = ZoneOffset.zoneOffset(1, 0, 0);
+        ZoneOffset offset = ZoneOffset.hoursMinutesSeconds(1, 0, 0);
         assertEquals(offset.toString(), "+01:00");
-        offset = ZoneOffset.zoneOffset(1, 2, 3);
+        offset = ZoneOffset.hoursMinutesSeconds(1, 2, 3);
         assertEquals(offset.toString(), "+01:02:03");
         offset = ZoneOffset.UTC;
         assertEquals(offset.toString(), "Z");
@@ -535,15 +535,15 @@ public class TestZoneOffset {
 //        assertEquals(offset.toPeriod().getHours(), hours);
 //        assertEquals(offset.toPeriod().getMinutes(), minutes);
 //        assertEquals(offset.toPeriod().getSeconds(), seconds);
-        assertEquals(offset, ZoneOffset.zoneOffset(hours, minutes, seconds));
+        assertEquals(offset, ZoneOffset.hoursMinutesSeconds(hours, minutes, seconds));
         if (seconds == 0) {
-            assertEquals(offset, ZoneOffset.zoneOffset(hours, minutes));
+            assertEquals(offset, ZoneOffset.hoursMinutes(hours, minutes));
             if (minutes == 0) {
-                assertEquals(offset, ZoneOffset.zoneOffset(hours));
+                assertEquals(offset, ZoneOffset.hours(hours));
             }
         }
-        assertEquals(ZoneOffset.zoneOffset(id), offset);
-        assertEquals(offset.toTimeZone(), TimeZone.timeZone(offset));
+        assertEquals(ZoneOffset.of(id), offset);
+        assertEquals(offset.toTimeZone(), TimeZone.of(offset));
         assertEquals(offset.toString(), id);
     }
 

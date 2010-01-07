@@ -65,15 +65,15 @@ import org.testng.annotations.Test;
 @Test
 public class TestLocalDateTime {
 
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
-    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
-    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
 
     private LocalDateTime TEST_2007_07_15_12_30_40_987654321;
 
     @BeforeMethod
     public void setUp() {
-        TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.dateTime(2007, 7, 15, 12, 30, 40, 987654321);
+        TEST_2007_07_15_12_30_40_987654321 = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     //-----------------------------------------------------------------------
@@ -121,75 +121,75 @@ public class TestLocalDateTime {
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_intsMonth() {
-        LocalDateTime dateTime = LocalDateTime.dateMidnight(2008, MonthOfYear.FEBRUARY, 29);
+        LocalDateTime dateTime = LocalDateTime.midnight(2008, MonthOfYear.FEBRUARY, 29);
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_intsMonth_yearTooLow() {
-        LocalDateTime.dateMidnight(Integer.MIN_VALUE, MonthOfYear.FEBRUARY, 29);
+        LocalDateTime.midnight(Integer.MIN_VALUE, MonthOfYear.FEBRUARY, 29);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateMidnight_intsMonth_nullMonth() {
-        LocalDateTime.dateMidnight(2008, null, 29);
+        LocalDateTime.midnight(2008, null, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_intsMonth_dayTooLow() {
-        LocalDateTime.dateMidnight(2008, MonthOfYear.FEBRUARY, -1);
+        LocalDateTime.midnight(2008, MonthOfYear.FEBRUARY, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_intsMonth_dayTooHigh() {
-        LocalDateTime.dateMidnight(2008, MonthOfYear.MARCH, 32);
+        LocalDateTime.midnight(2008, MonthOfYear.MARCH, 32);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_ints() {
-        LocalDateTime dateTime = LocalDateTime.dateMidnight(2008, 2, 29);
+        LocalDateTime dateTime = LocalDateTime.midnight(2008, 2, 29);
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_ints_yearTooLow() {
-        LocalDateTime.dateMidnight(Integer.MIN_VALUE, 2, 29);
+        LocalDateTime.midnight(Integer.MIN_VALUE, 2, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_ints_monthTooLow() {
-        LocalDateTime.dateMidnight(2008, 0, 29);
+        LocalDateTime.midnight(2008, 0, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_ints_monthTooHigh() {
-        LocalDateTime.dateMidnight(2008, 13, 29);
+        LocalDateTime.midnight(2008, 13, 29);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_ints_dayTooLow() {
-        LocalDateTime.dateMidnight(2008, 2, -1);
+        LocalDateTime.midnight(2008, 2, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateMidnight_ints_dayTooHigh() {
-        LocalDateTime.dateMidnight(2008, 3, 32);
+        LocalDateTime.midnight(2008, 3, 32);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_DateProvider() {
-        LocalDateTime dateTime = LocalDateTime.dateMidnight(LocalDate.date(2008, 2, 29));
+        LocalDateTime dateTime = LocalDateTime.midnightFrom(LocalDate.of(2008, 2, 29));
         check(dateTime, 2008, 2, 29, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateMidnight_DateProvider_null() {
-        LocalDateTime.dateMidnight(null);
+        LocalDateTime.midnightFrom(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateMidnight_DateProvider_null_toLocalDate() {
-        LocalDateTime.dateMidnight(new DateProvider() {
+        LocalDateTime.midnightFrom(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
             }
@@ -199,389 +199,389 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     public void factory_dateMidnight_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDateTime test = LocalDateTime.dateMidnight(mmp);
+        LocalDateTime test = LocalDateTime.midnightFrom(mmp);
         check(test, 2008, 6, 30, 0, 0, 0, 0);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_4intsMonth() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30);
+        LocalDateTime dateTime = LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30);
         check(dateTime, 2007, 7, 15, 12, 30, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_yearTooLow() {
-        LocalDateTime.dateTime(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30);
+        LocalDateTime.of(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_4intsMonth_nullMonth() {
-        LocalDateTime.dateTime(2007, null, 15, 12, 30);
+        LocalDateTime.of(2007, null, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_dayTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, -1, 12, 30);
+        LocalDateTime.of(2007, MonthOfYear.JULY, -1, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_dayTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 32, 12, 30);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 32, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_hourTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, -1, 30);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, -1, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_hourTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 24, 30);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 24, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_minuteTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, -1);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_4intsMonth_minuteTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 60);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 60);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_5intsMonth() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, 40);
+        LocalDateTime dateTime = LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_yearTooLow() {
-        LocalDateTime.dateTime(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30, 40);
+        LocalDateTime.of(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_5intsMonth_nullMonth() {
-        LocalDateTime.dateTime(2007, null, 15, 12, 30, 40);
+        LocalDateTime.of(2007, null, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_dayTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, -1, 12, 30, 40);
+        LocalDateTime.of(2007, MonthOfYear.JULY, -1, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_dayTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 32, 12, 30, 40);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 32, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_hourTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, -1, 30, 40);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, -1, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_hourTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 24, 30, 40);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 24, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_minuteTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, -1, 40);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, -1, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_minuteTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 60, 40);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 60, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_secondTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, -1);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5intsMonth_secondTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, 60);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 60);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_6intsMonth() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, 40, 987654321);
+        LocalDateTime dateTime = LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40, 987654321);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_yearTooLow() {
-        LocalDateTime.dateTime(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30, 40, 987654321);
+        LocalDateTime.of(Integer.MIN_VALUE, MonthOfYear.JULY, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_6intsMonth_nullMonth() {
-        LocalDateTime.dateTime(2007, null, 15, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, null, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_dayTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, -1, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, -1, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_dayTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 32, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 32, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_hourTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, -1, 30, 40, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, -1, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_hourTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 24, 30, 40, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 24, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_minuteTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, -1, 40, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, -1, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_minuteTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 60, 40, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 60, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_secondTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, -1, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, -1, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_secondTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, 60, 987654321);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 60, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_nanoTooLow() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, 40, -1);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6intsMonth_nanoTooHigh() {
-        LocalDateTime.dateTime(2007, MonthOfYear.JULY, 15, 12, 30, 40, 1000000000);
+        LocalDateTime.of(2007, MonthOfYear.JULY, 15, 12, 30, 40, 1000000000);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_5ints() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(2007, 7, 15, 12, 30);
+        LocalDateTime dateTime = LocalDateTime.of(2007, 7, 15, 12, 30);
         check(dateTime, 2007, 7, 15, 12, 30, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_yearTooLow() {
-        LocalDateTime.dateTime(Integer.MIN_VALUE, 7, 15, 12, 30);
+        LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_monthTooLow() {
-        LocalDateTime.dateTime(2007, 0, 15, 12, 30);
+        LocalDateTime.of(2007, 0, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_monthTooHigh() {
-        LocalDateTime.dateTime(2007, 13, 15, 12, 30);
+        LocalDateTime.of(2007, 13, 15, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_dayTooLow() {
-        LocalDateTime.dateTime(2007, 7, -1, 12, 30);
+        LocalDateTime.of(2007, 7, -1, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_dayTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 32, 12, 30);
+        LocalDateTime.of(2007, 7, 32, 12, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_hourTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, -1, 30);
+        LocalDateTime.of(2007, 7, 15, -1, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_hourTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 24, 30);
+        LocalDateTime.of(2007, 7, 15, 24, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_minuteTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, -1);
+        LocalDateTime.of(2007, 7, 15, 12, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_5ints_minuteTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 60);
+        LocalDateTime.of(2007, 7, 15, 12, 60);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_6ints() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(2007, 7, 15, 12, 30, 40);
+        LocalDateTime dateTime = LocalDateTime.of(2007, 7, 15, 12, 30, 40);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_yearTooLow() {
-        LocalDateTime.dateTime(Integer.MIN_VALUE, 7, 15, 12, 30, 40);
+        LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_monthTooLow() {
-        LocalDateTime.dateTime(2007, 0, 15, 12, 30, 40);
+        LocalDateTime.of(2007, 0, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_monthTooHigh() {
-        LocalDateTime.dateTime(2007, 13, 15, 12, 30, 40);
+        LocalDateTime.of(2007, 13, 15, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_dayTooLow() {
-        LocalDateTime.dateTime(2007, 7, -1, 12, 30, 40);
+        LocalDateTime.of(2007, 7, -1, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_dayTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 32, 12, 30, 40);
+        LocalDateTime.of(2007, 7, 32, 12, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_hourTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, -1, 30, 40);
+        LocalDateTime.of(2007, 7, 15, -1, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_hourTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 24, 30, 40);
+        LocalDateTime.of(2007, 7, 15, 24, 30, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_minuteTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, -1, 40);
+        LocalDateTime.of(2007, 7, 15, 12, -1, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_minuteTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 60, 40);
+        LocalDateTime.of(2007, 7, 15, 12, 60, 40);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_secondTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 30, -1);
+        LocalDateTime.of(2007, 7, 15, 12, 30, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_6ints_secondTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 30, 60);
+        LocalDateTime.of(2007, 7, 15, 12, 30, 60);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_7ints() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(2007, 7, 15, 12, 30, 40, 987654321);
+        LocalDateTime dateTime = LocalDateTime.of(2007, 7, 15, 12, 30, 40, 987654321);
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_yearTooLow() {
-        LocalDateTime.dateTime(Integer.MIN_VALUE, 7, 15, 12, 30, 40, 987654321);
+        LocalDateTime.of(Integer.MIN_VALUE, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_monthTooLow() {
-        LocalDateTime.dateTime(2007, 0, 15, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, 0, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_monthTooHigh() {
-        LocalDateTime.dateTime(2007, 13, 15, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, 13, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_dayTooLow() {
-        LocalDateTime.dateTime(2007, 7, -1, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, 7, -1, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_dayTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 32, 12, 30, 40, 987654321);
+        LocalDateTime.of(2007, 7, 32, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_hourTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, -1, 30, 40, 987654321);
+        LocalDateTime.of(2007, 7, 15, -1, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_hourTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 24, 30, 40, 987654321);
+        LocalDateTime.of(2007, 7, 15, 24, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_minuteTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, -1, 40, 987654321);
+        LocalDateTime.of(2007, 7, 15, 12, -1, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_minuteTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 60, 40, 987654321);
+        LocalDateTime.of(2007, 7, 15, 12, 60, 40, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_secondTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 30, -1, 987654321);
+        LocalDateTime.of(2007, 7, 15, 12, 30, -1, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_secondTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 30, 60, 987654321);
+        LocalDateTime.of(2007, 7, 15, 12, 30, 60, 987654321);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_nanoTooLow() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 30, 40, -1);
+        LocalDateTime.of(2007, 7, 15, 12, 30, 40, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_dateTime_7ints_nanoTooHigh() {
-        LocalDateTime.dateTime(2007, 7, 15, 12, 30, 40, 1000000000);
+        LocalDateTime.of(2007, 7, 15, 12, 30, 40, 1000000000);
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_DateProvider_TimeProvider() {
-        LocalDateTime dateTime = LocalDateTime.dateTime(LocalDate.date(2007, 7, 15), LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime dateTime = LocalDateTime.from(LocalDate.of(2007, 7, 15), LocalTime.of(12, 30, 40, 987654321));
         check(dateTime, 2007, 7, 15, 12, 30, 40, 987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_nullDateProvider() {
-        LocalDateTime.dateTime(null, LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime.from(null, LocalTime.of(12, 30, 40, 987654321));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_null_toLocalDate() {
-        LocalDateTime.dateTime(new DateProvider() {
+        LocalDateTime.from(new DateProvider() {
             public LocalDate toLocalDate() {
                 return null;
             }
-        }, LocalTime.time(12, 30, 40, 987654321));
+        }, LocalTime.of(12, 30, 40, 987654321));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_nullTimeProvider() {
-        LocalDateTime.dateTime(LocalDate.date(2007, 7, 15), null);
+        LocalDateTime.from(LocalDate.of(2007, 7, 15), null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_dateTime_DateProvider_TimeProvider_null_toLocalTime() {
-        LocalDateTime.dateTime(LocalDate.date(2007, 7, 15), new TimeProvider() {
+        LocalDateTime.from(LocalDate.of(2007, 7, 15), new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
             }
@@ -590,23 +590,23 @@ public class TestLocalDateTime {
 
     //-----------------------------------------------------------------------
     public void factory_date_DateTimeProvider() {
-        assertSame(LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321), TEST_2007_07_15_12_30_40_987654321);
+        assertSame(LocalDateTime.from(TEST_2007_07_15_12_30_40_987654321), TEST_2007_07_15_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateTimeProvider_null() {
-        LocalDateTime.dateTime(null);
+        LocalDateTime.from(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateTimeProvider_null_toLocalDateTime() {
-        LocalDateTime.dateTime(new MockDateTimeProviderReturnsNull());
+        LocalDateTime.from(new MockDateTimeProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
     public void factory_dateTime_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDateTime test = LocalDateTime.dateTime(mmp);
+        LocalDateTime test = LocalDateTime.from(mmp);
         check(test, 2008, 6, 30, 11, 30, 10, 500);
     }
 
@@ -649,7 +649,7 @@ public class TestLocalDateTime {
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
-        LocalDateTime test = LocalDateTime.dateTime(2008, 6, 30, 12, 30, 40, 987654321);
+        LocalDateTime test = LocalDateTime.of(2008, 6, 30, 12, 30, 40, 987654321);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
@@ -676,8 +676,8 @@ public class TestLocalDateTime {
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), null);
         assertEquals(test.get(TimeZone.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), YearMonth.yearMonth(2008, 6));
-        assertEquals(test.get(MonthDay.rule()), MonthDay.monthDay(6, 30));
+        assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
+        assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -729,18 +729,18 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_get(int y, int m, int d) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12, 30);
+        LocalDateTime a = LocalDateTime.of(y, m, d, 12, 30);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
     @Test(dataProvider="sampleDates")
     public void test_getDOY(int y, int m, int d) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, 12 ,30);
+        LocalDateTime a = LocalDateTime.of(y, m, d, 12 ,30);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -748,7 +748,7 @@ public class TestLocalDateTime {
 
     @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int ns) {
-        LocalDateTime a = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, LocalTime.time(h, m, s, ns));
+        LocalDateTime a = LocalDateTime.from(TEST_2007_07_15_12_30_40_987654321, LocalTime.of(h, m, s, ns));
         assertEquals(a.getHourOfDay(), h);
         assertEquals(a.getMinuteOfHour(), m);
         assertEquals(a.getSecondOfMinute(), s);
@@ -763,7 +763,7 @@ public class TestLocalDateTime {
         for (MonthOfYear month : MonthOfYear.values()) {
             int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
-                LocalDateTime d = LocalDateTime.dateTime(LocalDate.date(2007, month, i),
+                LocalDateTime d = LocalDateTime.from(LocalDate.of(2007, month, i),
                         TEST_2007_07_15_12_30_40_987654321);
                 assertSame(d.getDayOfWeek(), dow);
                 dow = dow.next();
@@ -789,12 +789,12 @@ public class TestLocalDateTime {
     public void test_with_TimeAdjuster() {
         TimeAdjuster timeAdjuster = new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
-                return LocalTime.time(23, 5);
+                return LocalTime.of(23, 5);
             }
         };
         LocalDateTime adjusted = TEST_2007_07_15_12_30_40_987654321.with(timeAdjuster);
         assertSame(adjusted.toLocalDate(), TEST_2007_07_15_12_30_40_987654321.toLocalDate());
-        assertEquals(adjusted.toLocalTime(), LocalTime.time(23, 5));
+        assertEquals(adjusted.toLocalTime(), LocalTime.of(23, 5));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -822,8 +822,8 @@ public class TestLocalDateTime {
     }
 
     public void test_withYear_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007);
-        LocalDateTime expected = LocalDateTime.dateTime(2007, 2, 28, 12, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 2, 29, 12, 30).withYear(2007);
+        LocalDateTime expected = LocalDateTime.of(2007, 2, 28, 12, 30);
         assertEquals(t, expected);
     }
 
@@ -843,8 +843,8 @@ public class TestLocalDateTime {
     }
 
     public void test_withYear_int_DateResolver_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.nextValid());
-        LocalDateTime expected = LocalDateTime.dateTime(2007, 3, 1, 12, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.nextValid());
+        LocalDateTime expected = LocalDateTime.of(2007, 3, 1, 12, 30);
         assertEquals(t, expected);
     }
 
@@ -855,7 +855,7 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withYear_int_DateResolver_adjustDay_invalid() {
-        LocalDateTime.dateTime(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.strict());
+        LocalDateTime.of(2008, 2, 29, 12, 30).withYear(2007, DateResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -878,8 +878,8 @@ public class TestLocalDateTime {
     }
 
     public void test_withMonthOfYear_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11);
-        LocalDateTime expected = LocalDateTime.dateTime(2007, 11, 30, 12, 30);
+        LocalDateTime t = LocalDateTime.of(2007, 12, 31, 12, 30).withMonthOfYear(11);
+        LocalDateTime expected = LocalDateTime.of(2007, 11, 30, 12, 30);
         assertEquals(t, expected);
     }
 
@@ -899,8 +899,8 @@ public class TestLocalDateTime {
     }
 
     public void test_withMonthOfYear_int_DateResolver_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.nextValid());
-        LocalDateTime expected = LocalDateTime.dateTime(2007, 12, 1, 12, 30);
+        LocalDateTime t = LocalDateTime.of(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.nextValid());
+        LocalDateTime expected = LocalDateTime.of(2007, 12, 1, 12, 30);
         assertEquals(t, expected);
     }
 
@@ -911,7 +911,7 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
-        LocalDateTime.dateTime(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.strict());
+        LocalDateTime.of(2007, 12, 31, 12, 30).withMonthOfYear(11, DateResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -929,12 +929,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDayOfMonth_invalid() {
-        LocalDateTime.dateTime(2007, 11, 30, 12, 30).withDayOfMonth(32);
+        LocalDateTime.of(2007, 11, 30, 12, 30).withDayOfMonth(32);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withDayOfMonth_invalidCombination() {
-        LocalDateTime.dateTime(2007, 11, 30, 12, 30).withDayOfMonth(31);
+        LocalDateTime.of(2007, 11, 30, 12, 30).withDayOfMonth(31);
     }
 
     //-----------------------------------------------------------------------
@@ -942,7 +942,7 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     public void test_withDayOfYear_normal() {
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDayOfYear(33);
-        assertEquals(t, LocalDateTime.dateTime(2007, 2, 2, 12, 30, 40, 987654321));
+        assertEquals(t, LocalDateTime.of(2007, 2, 2, 12, 30, 40, 987654321));
     }
 
     public void test_withDayOfYear_noChange() {
@@ -1088,12 +1088,12 @@ public class TestLocalDateTime {
     }
 
     public void test_withHourOfDay_toMidnight() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(1, 0)).withHourOfDay(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(1, 0)).withHourOfDay(0);
         assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
     }
 
     public void test_withHourOfDay_toMidday() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(1, 0)).withHourOfDay(12);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(1, 0)).withHourOfDay(12);
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
@@ -1124,12 +1124,12 @@ public class TestLocalDateTime {
     }
 
     public void test_withMinuteOfHour_toMidnight() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(0, 1)).withMinuteOfHour(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(0, 1)).withMinuteOfHour(0);
         assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
     }
 
     public void test_withMinuteOfHour_toMidday() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 1)).withMinuteOfHour(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 1)).withMinuteOfHour(0);
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
@@ -1160,12 +1160,12 @@ public class TestLocalDateTime {
     }
 
     public void test_withSecondOfMinute_toMidnight() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(0, 0, 1)).withSecondOfMinute(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(0, 0, 1)).withSecondOfMinute(0);
         assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
     }
 
     public void test_withSecondOfMinute_toMidday() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 0, 1)).withSecondOfMinute(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 0, 1)).withSecondOfMinute(0);
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
@@ -1200,12 +1200,12 @@ public class TestLocalDateTime {
     }
 
     public void test_withNanoOfSecond_toMidnight() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(0, 0, 0, 1)).withNanoOfSecond(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(0, 0, 0, 1)).withNanoOfSecond(0);
         assertSame(t.toLocalTime(), LocalTime.MIDNIGHT);
     }
 
     public void test_withNanoOfSecond_toMidday() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 0, 0, 1)).withNanoOfSecond(0);
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 0, 0, 1)).withNanoOfSecond(0);
         assertSame(t.toLocalTime(), LocalTime.MIDDAY);
     }
 
@@ -1228,19 +1228,19 @@ public class TestLocalDateTime {
     }
 
     public void test_withTime_2ints_noChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30));
         LocalDateTime wt = t.withTime(12, 30);
         assertSame(t, wt);
     }
 
     public void test_withTime_2ints_sameHour() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20);
         check(t, 2007, 7, 15, 12, 20, 0, 0);
     }
 
     public void test_withTime_2ints_sameMinute() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30);
         check(t, 2007, 7, 15, 11, 30, 0, 0);
     }
@@ -1272,25 +1272,25 @@ public class TestLocalDateTime {
     }
 
     public void test_withTime_3ints_noChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
         LocalDateTime wt = t.withTime(12, 30, 40);
         assertSame(t, wt);
     }
 
     public void test_withTime_3ints_sameHour() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20, 30);
         check(t, 2007, 7, 15, 12, 20, 30, 0);
     }
 
     public void test_withTime_3ints_sameMinute() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30, 30);
         check(t, 2007, 7, 15, 11, 30, 30, 0);
     }
 
     public void test_withTime_3ints_sameSecond() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 40);
         check(t, 2007, 7, 15, 11, 20, 40, 0);
     }
@@ -1332,31 +1332,31 @@ public class TestLocalDateTime {
     }
 
     public void test_withTime_4ints_noChange() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
         LocalDateTime wt = t.withTime(12, 30, 40, 987654321);
         assertSame(t, wt);
     }
 
     public void test_withTime_4ints_sameHour() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(12, 20, 30, 987654320);
         check(t, 2007, 7, 15, 12, 20, 30, 987654320);
     }
 
     public void test_withTime_4ints_sameMinute() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 30, 30, 987654320);
         check(t, 2007, 7, 15, 11, 30, 30, 987654320);
     }
 
     public void test_withTime_4ints_sameSecond() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 40, 987654320);
         check(t, 2007, 7, 15, 11, 20, 40, 987654320);
     }
 
     public void test_withTime_4ints_sameNano() {
-        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.time(12, 30, 40, 987654321));
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.of(12, 30, 40, 987654321));
         t = TEST_2007_07_15_12_30_40_987654321.withTime(11, 20, 30, 987654321);
         check(t, 2007, 7, 15, 11, 20, 30, 987654321);
     }
@@ -1405,15 +1405,15 @@ public class TestLocalDateTime {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.plus(provider);
-        assertEquals(t, LocalDateTime.dateTime(2008, 9, 18, 16, 35, 46, 987654328));
+        assertEquals(t, LocalDateTime.of(2008, 9, 18, 16, 35, 46, 987654328));
     }
 
     public void test_plus_PeriodProvider_daysOverflow() {
         PeriodProvider provider = Period.hours(1);
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 23, 30).plus(provider);
-        assertEquals(t, LocalDateTime.dateTime(2008, 7, 1, 0, 30));
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 23, 30).plus(provider);
+        assertEquals(t, LocalDateTime.of(2008, 7, 1, 0, 30));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -1440,18 +1440,18 @@ public class TestLocalDateTime {
     }
 
     public void test_plusYears_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusYears(1);
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).plusYears(1);
         check(t, 2009, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 1, 1).plusYears(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1);
     }
 
     public void test_plusYears_int_DateResolver_normal() {
@@ -1470,7 +1470,7 @@ public class TestLocalDateTime {
     }
 
     public void test_plusYears_int_DateResolver_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
         check(t, 2009, 3, 1, 0, 0, 0, 0);
     }
 
@@ -1481,12 +1481,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1523,23 +1523,23 @@ public class TestLocalDateTime {
     }
 
     public void test_plusMonths_int_adjustDayFromLeapYear() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusMonths(12);
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).plusMonths(12);
         check(t, 2009, 2, 28, 0, 0, 0, 0);
     }
 
     public void test_plusMonths_int_adjustDayFromMonthLength() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).plusMonths(1);
+        LocalDateTime t = LocalDateTime.midnight(2007, 3, 31).plusMonths(1);
         check(t, 2007, 4, 30, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusMonths_int_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 1).plusMonths(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusMonths_int_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).plusMonths(-1);
     }
 
     public void test_plusMonths_int_DateResolver_normal() {
@@ -1573,12 +1573,12 @@ public class TestLocalDateTime {
     }
 
     public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
         check(t, 2009, 3, 1, 0, 0, 0, 0);
     }
 
     public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
+        LocalDateTime t = LocalDateTime.midnight(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
         check(t, 2007, 5, 1, 0, 0, 0, 0);
     }
 
@@ -1589,12 +1589,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusMonths_int_DateResolver_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusMonths_int_DateResolver_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1603,32 +1603,32 @@ public class TestLocalDateTime {
     @DataProvider(name="samplePlusWeeksSymmetry")
     Object[][] provider_samplePlusWeeksSymmetry() {
         return new Object[][] {
-            {LocalDateTime.dateMidnight(-1, 1, 1)},
-            {LocalDateTime.dateMidnight(-1, 2, 28)},
-            {LocalDateTime.dateMidnight(-1, 3, 1)},
-            {LocalDateTime.dateMidnight(-1, 12, 31)},
-            {LocalDateTime.dateMidnight(0, 1, 1)},
-            {LocalDateTime.dateMidnight(0, 2, 28)},
-            {LocalDateTime.dateMidnight(0, 2, 29)},
-            {LocalDateTime.dateMidnight(0, 3, 1)},
-            {LocalDateTime.dateMidnight(0, 12, 31)},
-            {LocalDateTime.dateMidnight(2007, 1, 1)},
-            {LocalDateTime.dateMidnight(2007, 2, 28)},
-            {LocalDateTime.dateMidnight(2007, 3, 1)},
-            {LocalDateTime.dateMidnight(2007, 12, 31)},
-            {LocalDateTime.dateMidnight(2008, 1, 1)},
-            {LocalDateTime.dateMidnight(2008, 2, 28)},
-            {LocalDateTime.dateMidnight(2008, 2, 29)},
-            {LocalDateTime.dateMidnight(2008, 3, 1)},
-            {LocalDateTime.dateMidnight(2008, 12, 31)},
-            {LocalDateTime.dateMidnight(2099, 1, 1)},
-            {LocalDateTime.dateMidnight(2099, 2, 28)},
-            {LocalDateTime.dateMidnight(2099, 3, 1)},
-            {LocalDateTime.dateMidnight(2099, 12, 31)},
-            {LocalDateTime.dateMidnight(2100, 1, 1)},
-            {LocalDateTime.dateMidnight(2100, 2, 28)},
-            {LocalDateTime.dateMidnight(2100, 3, 1)},
-            {LocalDateTime.dateMidnight(2100, 12, 31)},
+            {LocalDateTime.midnight(-1, 1, 1)},
+            {LocalDateTime.midnight(-1, 2, 28)},
+            {LocalDateTime.midnight(-1, 3, 1)},
+            {LocalDateTime.midnight(-1, 12, 31)},
+            {LocalDateTime.midnight(0, 1, 1)},
+            {LocalDateTime.midnight(0, 2, 28)},
+            {LocalDateTime.midnight(0, 2, 29)},
+            {LocalDateTime.midnight(0, 3, 1)},
+            {LocalDateTime.midnight(0, 12, 31)},
+            {LocalDateTime.midnight(2007, 1, 1)},
+            {LocalDateTime.midnight(2007, 2, 28)},
+            {LocalDateTime.midnight(2007, 3, 1)},
+            {LocalDateTime.midnight(2007, 12, 31)},
+            {LocalDateTime.midnight(2008, 1, 1)},
+            {LocalDateTime.midnight(2008, 2, 28)},
+            {LocalDateTime.midnight(2008, 2, 29)},
+            {LocalDateTime.midnight(2008, 3, 1)},
+            {LocalDateTime.midnight(2008, 12, 31)},
+            {LocalDateTime.midnight(2099, 1, 1)},
+            {LocalDateTime.midnight(2099, 2, 28)},
+            {LocalDateTime.midnight(2099, 3, 1)},
+            {LocalDateTime.midnight(2099, 12, 31)},
+            {LocalDateTime.midnight(2100, 1, 1)},
+            {LocalDateTime.midnight(2100, 2, 28)},
+            {LocalDateTime.midnight(2100, 3, 1)},
+            {LocalDateTime.midnight(2100, 12, 31)},
         };
     }
     
@@ -1659,7 +1659,7 @@ public class TestLocalDateTime {
     }
 
     public void test_plusWeeks_overYears() {
-        LocalDateTime t = LocalDateTime.dateTime(2006, 7, 16, 12, 30, 40, 987654321).plusWeeks(52);
+        LocalDateTime t = LocalDateTime.of(2006, 7, 16, 12, 30, 40, 987654321).plusWeeks(52);
         assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
@@ -1684,23 +1684,23 @@ public class TestLocalDateTime {
     }
 
     public void test_plusWeeks_maximum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 24).plusWeeks(1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MAX_YEAR, 12, 24).plusWeeks(1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     public void test_plusWeeks_minimum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusWeeks_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 25).plusWeeks(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusWeeks_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -1709,32 +1709,32 @@ public class TestLocalDateTime {
     @DataProvider(name="samplePlusDaysSymmetry")
     Object[][] provider_samplePlusDaysSymmetry() {
         return new Object[][] {
-            {LocalDateTime.dateMidnight(-1, 1, 1)},
-            {LocalDateTime.dateMidnight(-1, 2, 28)},
-            {LocalDateTime.dateMidnight(-1, 3, 1)},
-            {LocalDateTime.dateMidnight(-1, 12, 31)},
-            {LocalDateTime.dateMidnight(0, 1, 1)},
-            {LocalDateTime.dateMidnight(0, 2, 28)},
-            {LocalDateTime.dateMidnight(0, 2, 29)},
-            {LocalDateTime.dateMidnight(0, 3, 1)},
-            {LocalDateTime.dateMidnight(0, 12, 31)},
-            {LocalDateTime.dateMidnight(2007, 1, 1)},
-            {LocalDateTime.dateMidnight(2007, 2, 28)},
-            {LocalDateTime.dateMidnight(2007, 3, 1)},
-            {LocalDateTime.dateMidnight(2007, 12, 31)},
-            {LocalDateTime.dateMidnight(2008, 1, 1)},
-            {LocalDateTime.dateMidnight(2008, 2, 28)},
-            {LocalDateTime.dateMidnight(2008, 2, 29)},
-            {LocalDateTime.dateMidnight(2008, 3, 1)},
-            {LocalDateTime.dateMidnight(2008, 12, 31)},
-            {LocalDateTime.dateMidnight(2099, 1, 1)},
-            {LocalDateTime.dateMidnight(2099, 2, 28)},
-            {LocalDateTime.dateMidnight(2099, 3, 1)},
-            {LocalDateTime.dateMidnight(2099, 12, 31)},
-            {LocalDateTime.dateMidnight(2100, 1, 1)},
-            {LocalDateTime.dateMidnight(2100, 2, 28)},
-            {LocalDateTime.dateMidnight(2100, 3, 1)},
-            {LocalDateTime.dateMidnight(2100, 12, 31)},
+            {LocalDateTime.midnight(-1, 1, 1)},
+            {LocalDateTime.midnight(-1, 2, 28)},
+            {LocalDateTime.midnight(-1, 3, 1)},
+            {LocalDateTime.midnight(-1, 12, 31)},
+            {LocalDateTime.midnight(0, 1, 1)},
+            {LocalDateTime.midnight(0, 2, 28)},
+            {LocalDateTime.midnight(0, 2, 29)},
+            {LocalDateTime.midnight(0, 3, 1)},
+            {LocalDateTime.midnight(0, 12, 31)},
+            {LocalDateTime.midnight(2007, 1, 1)},
+            {LocalDateTime.midnight(2007, 2, 28)},
+            {LocalDateTime.midnight(2007, 3, 1)},
+            {LocalDateTime.midnight(2007, 12, 31)},
+            {LocalDateTime.midnight(2008, 1, 1)},
+            {LocalDateTime.midnight(2008, 2, 28)},
+            {LocalDateTime.midnight(2008, 2, 29)},
+            {LocalDateTime.midnight(2008, 3, 1)},
+            {LocalDateTime.midnight(2008, 12, 31)},
+            {LocalDateTime.midnight(2099, 1, 1)},
+            {LocalDateTime.midnight(2099, 2, 28)},
+            {LocalDateTime.midnight(2099, 3, 1)},
+            {LocalDateTime.midnight(2099, 12, 31)},
+            {LocalDateTime.midnight(2100, 1, 1)},
+            {LocalDateTime.midnight(2100, 2, 28)},
+            {LocalDateTime.midnight(2100, 3, 1)},
+            {LocalDateTime.midnight(2100, 12, 31)},
         };
     }
     
@@ -1765,7 +1765,7 @@ public class TestLocalDateTime {
     }
 
     public void test_plusDays_overYears() {
-        LocalDateTime t = LocalDateTime.dateTime(2006, 7, 14, 12, 30, 40, 987654321).plusDays(366);
+        LocalDateTime t = LocalDateTime.of(2006, 7, 14, 12, 30, 40, 987654321).plusDays(366);
         assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
@@ -1790,33 +1790,33 @@ public class TestLocalDateTime {
     }
 
     public void test_plusDays_maximum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 30).plusDays(1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MAX_YEAR, 12, 30).plusDays(1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     public void test_plusDays_minimum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 2).plusDays(-1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MIN_YEAR, 1, 2).plusDays(-1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).plusDays(1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 31).plusDays(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_overflowTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_overflowTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1841,7 +1841,7 @@ public class TestLocalDateTime {
     public void test_plusHours_fromZero() {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
         LocalDate d = base.toLocalDate().minusDays(3);
-        LocalTime t = LocalTime.time(21, 0);
+        LocalTime t = LocalTime.of(21, 0);
         
         for (int i = -50; i < 50; i++) {
             LocalDateTime dt = base.plusHours(i);
@@ -1859,7 +1859,7 @@ public class TestLocalDateTime {
     public void test_plusHours_fromOne() {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.withTime(1, 0);
         LocalDate d = base.toLocalDate().minusDays(3);
-        LocalTime t = LocalTime.time(22, 0);
+        LocalTime t = LocalTime.of(22, 0);
 
         for (int i = -50; i < 50; i++) {
             LocalDateTime dt = base.plusHours(i);
@@ -1917,7 +1917,7 @@ public class TestLocalDateTime {
     public void test_plusMinutes_fromZero() {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
         LocalDate d = base.toLocalDate().minusDays(1);
-        LocalTime t = LocalTime.time(22, 49);
+        LocalTime t = LocalTime.of(22, 49);
 
         for (int i = -70; i < 70; i++) {
             LocalDateTime dt = base.plusMinutes(i);
@@ -2185,15 +2185,15 @@ public class TestLocalDateTime {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.minus(provider);
-        assertEquals(t, LocalDateTime.dateTime(2006, 5, 12, 8, 25, 34, 987654314));
+        assertEquals(t, LocalDateTime.of(2006, 5, 12, 8, 25, 34, 987654314));
     }
 
     public void test_minus_PeriodProvider_daysOverflow() {
         PeriodProvider provider = Period.hours(1);
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 1, 0, 30).minus(provider);
-        assertEquals(t, LocalDateTime.dateTime(2008, 5, 31, 23, 30));
+        LocalDateTime t = LocalDateTime.of(2008, 6, 1, 0, 30).minus(provider);
+        assertEquals(t, LocalDateTime.of(2008, 5, 31, 23, 30));
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -2220,18 +2220,18 @@ public class TestLocalDateTime {
     }
 
     public void test_minusYears_int_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).minusYears(1);
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).minusYears(1);
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 1, 1).minusYears(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusYears(1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).minusYears(1);
     }
 
     public void test_minusYears_int_DateResolver_normal() {
@@ -2250,7 +2250,7 @@ public class TestLocalDateTime {
     }
 
     public void test_minusYears_int_DateResolver_adjustDay() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).minusYears(1, DateResolvers.nextValid());
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).minusYears(1, DateResolvers.nextValid());
         check(t, 2007, 3, 1, 0, 0, 0, 0);
     }
 
@@ -2261,12 +2261,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_DateResolver_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_DateResolver_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -2303,23 +2303,23 @@ public class TestLocalDateTime {
     }
 
     public void test_minusMonths_int_adjustDayFromLeapYear() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).minusMonths(12);
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).minusMonths(12);
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
     public void test_minusMonths_int_adjustDayFromMonthLength() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).minusMonths(1);
+        LocalDateTime t = LocalDateTime.midnight(2007, 3, 31).minusMonths(1);
         check(t, 2007, 2, 28, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusMonths_int_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 1).minusMonths(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusMonths_int_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
     public void test_minusMonths_int_DateResolver_normal() {
@@ -2353,12 +2353,12 @@ public class TestLocalDateTime {
     }
 
     public void test_minusMonths_int_DateResolver_adjustDayFromLeapYear() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2008, 2, 29).minusMonths(12, DateResolvers.nextValid());
+        LocalDateTime t = LocalDateTime.midnight(2008, 2, 29).minusMonths(12, DateResolvers.nextValid());
         check(t, 2007, 3, 1, 0, 0, 0, 0);
     }
 
     public void test_minusMonths_int_DateResolver_adjustDayFromMonthLength() {
-        LocalDateTime t = LocalDateTime.dateMidnight(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
+        LocalDateTime t = LocalDateTime.midnight(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
         check(t, 2007, 3, 1, 0, 0, 0, 0);
     }
 
@@ -2369,12 +2369,12 @@ public class TestLocalDateTime {
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusMonths_int_DateResolver_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusMonths_int_DateResolver_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -2383,32 +2383,32 @@ public class TestLocalDateTime {
     @DataProvider(name="sampleMinusWeeksSymmetry")
     Object[][] provider_sampleMinusWeeksSymmetry() {
         return new Object[][] {
-            {LocalDateTime.dateMidnight(-1, 1, 1)},
-            {LocalDateTime.dateMidnight(-1, 2, 28)},
-            {LocalDateTime.dateMidnight(-1, 3, 1)},
-            {LocalDateTime.dateMidnight(-1, 12, 31)},
-            {LocalDateTime.dateMidnight(0, 1, 1)},
-            {LocalDateTime.dateMidnight(0, 2, 28)},
-            {LocalDateTime.dateMidnight(0, 2, 29)},
-            {LocalDateTime.dateMidnight(0, 3, 1)},
-            {LocalDateTime.dateMidnight(0, 12, 31)},
-            {LocalDateTime.dateMidnight(2007, 1, 1)},
-            {LocalDateTime.dateMidnight(2007, 2, 28)},
-            {LocalDateTime.dateMidnight(2007, 3, 1)},
-            {LocalDateTime.dateMidnight(2007, 12, 31)},
-            {LocalDateTime.dateMidnight(2008, 1, 1)},
-            {LocalDateTime.dateMidnight(2008, 2, 28)},
-            {LocalDateTime.dateMidnight(2008, 2, 29)},
-            {LocalDateTime.dateMidnight(2008, 3, 1)},
-            {LocalDateTime.dateMidnight(2008, 12, 31)},
-            {LocalDateTime.dateMidnight(2099, 1, 1)},
-            {LocalDateTime.dateMidnight(2099, 2, 28)},
-            {LocalDateTime.dateMidnight(2099, 3, 1)},
-            {LocalDateTime.dateMidnight(2099, 12, 31)},
-            {LocalDateTime.dateMidnight(2100, 1, 1)},
-            {LocalDateTime.dateMidnight(2100, 2, 28)},
-            {LocalDateTime.dateMidnight(2100, 3, 1)},
-            {LocalDateTime.dateMidnight(2100, 12, 31)},
+            {LocalDateTime.midnight(-1, 1, 1)},
+            {LocalDateTime.midnight(-1, 2, 28)},
+            {LocalDateTime.midnight(-1, 3, 1)},
+            {LocalDateTime.midnight(-1, 12, 31)},
+            {LocalDateTime.midnight(0, 1, 1)},
+            {LocalDateTime.midnight(0, 2, 28)},
+            {LocalDateTime.midnight(0, 2, 29)},
+            {LocalDateTime.midnight(0, 3, 1)},
+            {LocalDateTime.midnight(0, 12, 31)},
+            {LocalDateTime.midnight(2007, 1, 1)},
+            {LocalDateTime.midnight(2007, 2, 28)},
+            {LocalDateTime.midnight(2007, 3, 1)},
+            {LocalDateTime.midnight(2007, 12, 31)},
+            {LocalDateTime.midnight(2008, 1, 1)},
+            {LocalDateTime.midnight(2008, 2, 28)},
+            {LocalDateTime.midnight(2008, 2, 29)},
+            {LocalDateTime.midnight(2008, 3, 1)},
+            {LocalDateTime.midnight(2008, 12, 31)},
+            {LocalDateTime.midnight(2099, 1, 1)},
+            {LocalDateTime.midnight(2099, 2, 28)},
+            {LocalDateTime.midnight(2099, 3, 1)},
+            {LocalDateTime.midnight(2099, 12, 31)},
+            {LocalDateTime.midnight(2100, 1, 1)},
+            {LocalDateTime.midnight(2100, 2, 28)},
+            {LocalDateTime.midnight(2100, 3, 1)},
+            {LocalDateTime.midnight(2100, 12, 31)},
         };
     }
     
@@ -2439,7 +2439,7 @@ public class TestLocalDateTime {
     }
 
     public void test_minusWeeks_overYears() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 7, 13, 12, 30, 40, 987654321).minusWeeks(52);
+        LocalDateTime t = LocalDateTime.of(2008, 7, 13, 12, 30, 40, 987654321).minusWeeks(52);
         assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
@@ -2464,23 +2464,23 @@ public class TestLocalDateTime {
     }
 
     public void test_minusWeeks_maximum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     public void test_minusWeeks_minimum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 8).minusWeeks(1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MIN_YEAR, 1, 8).minusWeeks(1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusWeeks_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusWeeks_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 7).minusWeeks(1);
     }
 
     //-----------------------------------------------------------------------
@@ -2489,32 +2489,32 @@ public class TestLocalDateTime {
     @DataProvider(name="sampleMinusDaysSymmetry")
     Object[][] provider_sampleMinusDaysSymmetry() {
         return new Object[][] {
-            {LocalDateTime.dateMidnight(-1, 1, 1)},
-            {LocalDateTime.dateMidnight(-1, 2, 28)},
-            {LocalDateTime.dateMidnight(-1, 3, 1)},
-            {LocalDateTime.dateMidnight(-1, 12, 31)},
-            {LocalDateTime.dateMidnight(0, 1, 1)},
-            {LocalDateTime.dateMidnight(0, 2, 28)},
-            {LocalDateTime.dateMidnight(0, 2, 29)},
-            {LocalDateTime.dateMidnight(0, 3, 1)},
-            {LocalDateTime.dateMidnight(0, 12, 31)},
-            {LocalDateTime.dateMidnight(2007, 1, 1)},
-            {LocalDateTime.dateMidnight(2007, 2, 28)},
-            {LocalDateTime.dateMidnight(2007, 3, 1)},
-            {LocalDateTime.dateMidnight(2007, 12, 31)},
-            {LocalDateTime.dateMidnight(2008, 1, 1)},
-            {LocalDateTime.dateMidnight(2008, 2, 28)},
-            {LocalDateTime.dateMidnight(2008, 2, 29)},
-            {LocalDateTime.dateMidnight(2008, 3, 1)},
-            {LocalDateTime.dateMidnight(2008, 12, 31)},
-            {LocalDateTime.dateMidnight(2099, 1, 1)},
-            {LocalDateTime.dateMidnight(2099, 2, 28)},
-            {LocalDateTime.dateMidnight(2099, 3, 1)},
-            {LocalDateTime.dateMidnight(2099, 12, 31)},
-            {LocalDateTime.dateMidnight(2100, 1, 1)},
-            {LocalDateTime.dateMidnight(2100, 2, 28)},
-            {LocalDateTime.dateMidnight(2100, 3, 1)},
-            {LocalDateTime.dateMidnight(2100, 12, 31)},
+            {LocalDateTime.midnight(-1, 1, 1)},
+            {LocalDateTime.midnight(-1, 2, 28)},
+            {LocalDateTime.midnight(-1, 3, 1)},
+            {LocalDateTime.midnight(-1, 12, 31)},
+            {LocalDateTime.midnight(0, 1, 1)},
+            {LocalDateTime.midnight(0, 2, 28)},
+            {LocalDateTime.midnight(0, 2, 29)},
+            {LocalDateTime.midnight(0, 3, 1)},
+            {LocalDateTime.midnight(0, 12, 31)},
+            {LocalDateTime.midnight(2007, 1, 1)},
+            {LocalDateTime.midnight(2007, 2, 28)},
+            {LocalDateTime.midnight(2007, 3, 1)},
+            {LocalDateTime.midnight(2007, 12, 31)},
+            {LocalDateTime.midnight(2008, 1, 1)},
+            {LocalDateTime.midnight(2008, 2, 28)},
+            {LocalDateTime.midnight(2008, 2, 29)},
+            {LocalDateTime.midnight(2008, 3, 1)},
+            {LocalDateTime.midnight(2008, 12, 31)},
+            {LocalDateTime.midnight(2099, 1, 1)},
+            {LocalDateTime.midnight(2099, 2, 28)},
+            {LocalDateTime.midnight(2099, 3, 1)},
+            {LocalDateTime.midnight(2099, 12, 31)},
+            {LocalDateTime.midnight(2100, 1, 1)},
+            {LocalDateTime.midnight(2100, 2, 28)},
+            {LocalDateTime.midnight(2100, 3, 1)},
+            {LocalDateTime.midnight(2100, 12, 31)},
         };
     }
     
@@ -2545,7 +2545,7 @@ public class TestLocalDateTime {
     }
 
     public void test_minusDays_overYears() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 7, 16, 12, 30, 40, 987654321).minusDays(367);
+        LocalDateTime t = LocalDateTime.of(2008, 7, 16, 12, 30, 40, 987654321).minusDays(367);
         assertEquals(t, TEST_2007_07_15_12_30_40_987654321);
     }
 
@@ -2570,33 +2570,33 @@ public class TestLocalDateTime {
     }
 
     public void test_minusDays_maximum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 30).minusDays(-1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MAX_YEAR, 12, 30).minusDays(-1);
         check(t, Year.MAX_YEAR, 12, 31, 0, 0, 0, 0);
     }
 
     public void test_minusDays_minimum() {
-        LocalDateTime t = LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 2).minusDays(1);
+        LocalDateTime t = LocalDateTime.midnight(Year.MIN_YEAR, 1, 2).minusDays(1);
         check(t, Year.MIN_YEAR, 1, 1, 0, 0, 0, 0);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusDays_invalidTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 31).minusDays(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusDays_invalidTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusDays(1);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusDays_overflowTooLarge() {
-        LocalDateTime.dateMidnight(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
+        LocalDateTime.midnight(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusDays_overflowTooSmall() {
-        LocalDateTime.dateMidnight(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
+        LocalDateTime.midnight(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -2621,7 +2621,7 @@ public class TestLocalDateTime {
     public void test_minusHours_fromZero() {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
         LocalDate d = base.toLocalDate().plusDays(2);
-        LocalTime t = LocalTime.time(3, 0);
+        LocalTime t = LocalTime.of(3, 0);
 
         for (int i = -50; i < 50; i++) {
             LocalDateTime dt = base.minusHours(i);
@@ -2639,7 +2639,7 @@ public class TestLocalDateTime {
     public void test_minusHours_fromOne() {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.withTime(1, 0);
         LocalDate d = base.toLocalDate().plusDays(2);
-        LocalTime t = LocalTime.time(4, 0);
+        LocalTime t = LocalTime.of(4, 0);
 
         for (int i = -50; i < 50; i++) {
             LocalDateTime dt = base.minusHours(i);
@@ -2700,7 +2700,7 @@ public class TestLocalDateTime {
     public void test_minusMinutes_fromZero() {
         LocalDateTime base = TEST_2007_07_15_12_30_40_987654321.with(LocalTime.MIDNIGHT);
         LocalDate d = base.toLocalDate().minusDays(1);
-        LocalTime t = LocalTime.time(22, 49);
+        LocalTime t = LocalTime.of(22, 49);
 
         for (int i = 70; i > -70; i--) {
             LocalDateTime dt = base.minusMinutes(i);
@@ -3001,13 +3001,13 @@ public class TestLocalDateTime {
     // atOffset()
     //-----------------------------------------------------------------------
     public void test_atOffset() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
-        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET_PTWO));
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
+        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET_PTWO));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atOffset_nullZoneOffset() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         t.atOffset((ZoneOffset) null);
     }
 
@@ -3015,57 +3015,57 @@ public class TestLocalDateTime {
     // atZone()
     //-----------------------------------------------------------------------
     public void test_atZone() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         assertEquals(t.atZone(ZONE_PARIS),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
     }
 
     public void test_atZone_dstGap() {
-        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         assertEquals(t.atZone(ZONE_GAZA),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZone_nullTimeZone() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         t.atZone((TimeZone) null);
     }
 
     //-----------------------------------------------------------------------
     public void test_atZone_resolver() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         assertEquals(t.atZone(ZONE_PARIS, ZoneResolvers.postTransition()),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE_PARIS));
+                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE_PARIS));
     }
 
     public void test_atZone_resolver_dstGap() {
-        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         assertEquals(t.atZone(ZONE_GAZA, ZoneResolvers.postTransition()),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     public void test_atZone_resolver_dstGap_pre() {
-        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         assertEquals(t.atZone(ZONE_GAZA, ZoneResolvers.preTransition()),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 3, 31, 23, 59, 59, 999999999), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZone_resolver_nullTimeZone() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         t.atZone((TimeZone) null, ZoneResolvers.strict());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atZone_resolver_nullResolver() {
-        LocalDateTime t = LocalDateTime.dateTime(2008, 6, 30, 11, 30);
+        LocalDateTime t = LocalDateTime.of(2008, 6, 30, 11, 30);
         t.atZone(ZONE_PARIS, (ZoneResolver) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_atZone_resolver_badResolver() {
-        LocalDateTime t = LocalDateTime.dateTime(2007, 4, 1, 0, 0);
+        LocalDateTime t = LocalDateTime.of(2007, 4, 1, 0, 0);
         t.atZone(ZONE_GAZA, new MockZoneResolverReturnsNull());
     }
 
@@ -3074,8 +3074,8 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_toLocalDate(int year, int month, int day) {
-        LocalDate d = LocalDate.date(year, month, day);
-        LocalDateTime dt = LocalDateTime.dateMidnight(d);
+        LocalDate d = LocalDate.of(year, month, day);
+        LocalDateTime dt = LocalDateTime.midnightFrom(d);
         assertSame(dt.toLocalDate(), d);
     }
 
@@ -3084,8 +3084,8 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_toLocalTime(int h, int m, int s, int ns) {
-        LocalTime t = LocalTime.time(h, m, s, ns);
-        LocalDateTime dt = LocalDateTime.dateTime(TEST_2007_07_15_12_30_40_987654321, t);
+        LocalTime t = LocalTime.of(h, m, s, ns);
+        LocalDateTime dt = LocalDateTime.from(TEST_2007_07_15_12_30_40_987654321, t);
         assertSame(dt.toLocalTime(), t);
     }
 
@@ -3094,9 +3094,9 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_toYear(int year, int month, int day) {
-        LocalDate d = LocalDate.date(year, month, day);
-        LocalDateTime dt = LocalDateTime.dateMidnight(d);
-        assertEquals(dt.toYear(), Year.isoYear(year));
+        LocalDate d = LocalDate.of(year, month, day);
+        LocalDateTime dt = LocalDateTime.midnightFrom(d);
+        assertEquals(dt.toYear(), Year.of(year));
     }
 
     //-----------------------------------------------------------------------
@@ -3104,19 +3104,19 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     public void test_comparisons() {
         test_comparisons_LocalDateTime(
-            LocalDate.date(Year.MIN_YEAR, 1, 1),
-            LocalDate.date(Year.MIN_YEAR, 12, 31),
-            LocalDate.date(-1, 1, 1),
-            LocalDate.date(-1, 12, 31),
-            LocalDate.date(0, 1, 1),
-            LocalDate.date(0, 12, 31),
-            LocalDate.date(1, 1, 1),
-            LocalDate.date(1, 12, 31),
-            LocalDate.date(2008, 1, 1),
-            LocalDate.date(2008, 2, 29),
-            LocalDate.date(2008, 12, 31),
-            LocalDate.date(Year.MAX_YEAR, 1, 1),
-            LocalDate.date(Year.MAX_YEAR, 12, 31)
+            LocalDate.of(Year.MIN_YEAR, 1, 1),
+            LocalDate.of(Year.MIN_YEAR, 12, 31),
+            LocalDate.of(-1, 1, 1),
+            LocalDate.of(-1, 12, 31),
+            LocalDate.of(0, 1, 1),
+            LocalDate.of(0, 12, 31),
+            LocalDate.of(1, 1, 1),
+            LocalDate.of(1, 12, 31),
+            LocalDate.of(2008, 1, 1),
+            LocalDate.of(2008, 2, 29),
+            LocalDate.of(2008, 12, 31),
+            LocalDate.of(Year.MAX_YEAR, 1, 1),
+            LocalDate.of(Year.MAX_YEAR, 12, 31)
         );
     }
 
@@ -3124,23 +3124,23 @@ public class TestLocalDateTime {
         test_comparisons_LocalDateTime(
             localDates,
             LocalTime.MIDNIGHT,
-            LocalTime.time(0, 0, 0, 999999999),
-            LocalTime.time(0, 0, 59, 0),
-            LocalTime.time(0, 0, 59, 999999999),
-            LocalTime.time(0, 59, 0, 0),
-            LocalTime.time(0, 59, 59, 999999999),
+            LocalTime.of(0, 0, 0, 999999999),
+            LocalTime.of(0, 0, 59, 0),
+            LocalTime.of(0, 0, 59, 999999999),
+            LocalTime.of(0, 59, 0, 0),
+            LocalTime.of(0, 59, 59, 999999999),
             LocalTime.MIDDAY,
-            LocalTime.time(12, 0, 0, 999999999),
-            LocalTime.time(12, 0, 59, 0),
-            LocalTime.time(12, 0, 59, 999999999),
-            LocalTime.time(12, 59, 0, 0),
-            LocalTime.time(12, 59, 59, 999999999),
-            LocalTime.time(23, 0, 0, 0),
-            LocalTime.time(23, 0, 0, 999999999),
-            LocalTime.time(23, 0, 59, 0),
-            LocalTime.time(23, 0, 59, 999999999),
-            LocalTime.time(23, 59, 0, 0),
-            LocalTime.time(23, 59, 59, 999999999)
+            LocalTime.of(12, 0, 0, 999999999),
+            LocalTime.of(12, 0, 59, 0),
+            LocalTime.of(12, 0, 59, 999999999),
+            LocalTime.of(12, 59, 0, 0),
+            LocalTime.of(12, 59, 59, 999999999),
+            LocalTime.of(23, 0, 0, 0),
+            LocalTime.of(23, 0, 0, 999999999),
+            LocalTime.of(23, 0, 59, 0),
+            LocalTime.of(23, 0, 59, 999999999),
+            LocalTime.of(23, 59, 0, 0),
+            LocalTime.of(23, 59, 59, 999999999)
         );
     }
 
@@ -3150,7 +3150,7 @@ public class TestLocalDateTime {
 
         for (LocalDate localDate : localDates) {
             for (LocalTime localTime : localTimes) {
-                localDateTimes[i++] = LocalDateTime.dateTime(localDate, localTime);
+                localDateTimes[i++] = LocalDateTime.from(localDate, localTime);
             }
         }
 
@@ -3244,57 +3244,57 @@ public class TestLocalDateTime {
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_true(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s, n);
         assertTrue(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_year_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y + 1, m, d, h, mi, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y + 1, m, d, h, mi, s, n);
         assertFalse(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_month_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m + 1, d, h, mi, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m + 1, d, h, mi, s, n);
         assertFalse(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_day_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d + 1, h, mi, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d + 1, h, mi, s, n);
         assertFalse(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_hour_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h + 1, mi, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d, h + 1, mi, s, n);
         assertFalse(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_minute_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi + 1, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d, h, mi + 1, s, n);
         assertFalse(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_second_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s + 1, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s + 1, n);
         assertFalse(a.equals(b));
     }
 
     @Test(dataProvider="sampleDateTimes")
     public void test_equals_false_nano_differs(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s, n + 1);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s, n + 1);
         assertFalse(a.equals(b));
     }
     
@@ -3315,9 +3315,9 @@ public class TestLocalDateTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDateTimes")
     public void test_hashCode(int y, int m, int d, int h, int mi, int s, int n) {
-        LocalDateTime a = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime a = LocalDateTime.of(y, m, d, h, mi, s, n);
         assertEquals(a.hashCode(), a.hashCode());
-        LocalDateTime b = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime b = LocalDateTime.of(y, m, d, h, mi, s, n);
         assertEquals(a.hashCode(), b.hashCode());
     }
 
@@ -3337,7 +3337,7 @@ public class TestLocalDateTime {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int y, int m, int d, int h, int mi, int s, int n, String expected) {
-        LocalDateTime t = LocalDateTime.dateTime(y, m, d, h, mi, s, n);
+        LocalDateTime t = LocalDateTime.of(y, m, d, h, mi, s, n);
         String str = t.toString();
         assertEquals(str, expected);
     }
@@ -3377,7 +3377,7 @@ public class TestLocalDateTime {
     }
 
     public void test_adjustDate_same() {
-        assertSame(LocalDateTime.dateMidnight(2007, 7, 15).adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), 
+        assertSame(LocalDateTime.midnight(2007, 7, 15).adjustDate(TEST_2007_07_15_12_30_40_987654321.toLocalDate()), 
                 TEST_2007_07_15_12_30_40_987654321.toLocalDate());
     }
 
@@ -3397,7 +3397,7 @@ public class TestLocalDateTime {
     }
 
     public void test_adjustTime_same() {
-        assertSame(LocalDateTime.dateTime(1, 1, 1, 12, 30, 40, 987654321).adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), 
+        assertSame(LocalDateTime.of(1, 1, 1, 12, 30, 40, 987654321).adjustTime(TEST_2007_07_15_12_30_40_987654321.toLocalTime()), 
                 TEST_2007_07_15_12_30_40_987654321.toLocalTime());
     }
 

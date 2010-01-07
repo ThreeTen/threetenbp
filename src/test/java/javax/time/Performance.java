@@ -70,7 +70,7 @@ public class Performance {
      * @param args  the arguments
      */
     public static void main(String[] args) {
-        LocalTime time = LocalTime.time(12, 30, 20);
+        LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
         
 //        List<LocalDateTime> jsrs = setupDateTime();
@@ -102,7 +102,7 @@ public class Performance {
         List<LocalDateTime> list = new ArrayList<LocalDateTime>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            LocalDateTime t = LocalDateTime.dateTime(
+            LocalDateTime t = LocalDateTime.of(
                     random.nextInt(10000), random.nextInt(12) + 1, random.nextInt(28) + 1,
                     random.nextInt(24), random.nextInt(60), random.nextInt(60));
             list.add(t);
@@ -148,12 +148,12 @@ public class Performance {
 
     //-----------------------------------------------------------------------
     private static List<ZonedDateTime> setupZonedDateTime() {
-        TimeZone tz = TimeZone.timeZone("Europe/London");
+        TimeZone tz = TimeZone.of("Europe/London");
         Random random = new Random(47658758756875687L);
         List<ZonedDateTime> list = new ArrayList<ZonedDateTime>(SIZE);
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
-            ZonedDateTime t = ZonedDateTime.dateTime(LocalDateTime.dateTime(
+            ZonedDateTime t = ZonedDateTime.from(LocalDateTime.of(
                     2008/*random.nextInt(10000)*/, random.nextInt(12) + 1, random.nextInt(28) + 1,
                     random.nextInt(24), random.nextInt(60), random.nextInt(60)),
                     tz, ZoneResolvers.postTransition());

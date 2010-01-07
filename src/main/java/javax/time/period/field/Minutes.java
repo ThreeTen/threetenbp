@@ -74,7 +74,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
      * @param minutes  the number of minutes the instance will represent
      * @return the created Minutes
      */
-    public static Minutes minutes(int minutes) {
+    public static Minutes of(int minutes) {
         if (minutes == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Minutes.minutes(minutes);
+        return Minutes.of(minutes);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
      */
     @Override
     public Minutes withAmount(int amount) {
-        return Minutes.minutes(amount);
+        return Minutes.of(amount);
     }
 
     //-----------------------------------------------------------------------

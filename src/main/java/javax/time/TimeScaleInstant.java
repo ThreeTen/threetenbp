@@ -98,7 +98,7 @@ public final class TimeScaleInstant
      * @param instantProvider  a provider of instant information, not null
      * @return the created instant, never null
      */
-    public static TimeScaleInstant instant(TimeScale timeScale, InstantProvider instantProvider) {
+    public static TimeScaleInstant from(TimeScale timeScale, InstantProvider instantProvider) {
         Instant.checkNotNull(timeScale, "TimeScale must not be null");
         Instant.checkNotNull(instantProvider, "InstantProvider must not be null");
         return timeScale.toTimeScaleInstant(instantProvider);
@@ -111,7 +111,7 @@ public final class TimeScaleInstant
      * @param epochSeconds  the number of seconds from the epoch of the time-scale
      * @return the created instant, never null
      */
-    public static TimeScaleInstant instant(TimeScale timeScale, long epochSeconds) {
+    public static TimeScaleInstant seconds(TimeScale timeScale, long epochSeconds) {
         return new TimeScaleInstant(timeScale, epochSeconds, 0);
     }
 
@@ -136,7 +136,7 @@ public final class TimeScaleInstant
      * @return the created instant, never null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
-    public static TimeScaleInstant instant(TimeScale timeScale, long epochSeconds, int nanoOfSecond) {
+    public static TimeScaleInstant seconds(TimeScale timeScale, long epochSeconds, int nanoOfSecond) {
         // TODO: does this need to move to TimeScale ?
         
         if (nanoOfSecond >= NANOS_PER_SECOND) {

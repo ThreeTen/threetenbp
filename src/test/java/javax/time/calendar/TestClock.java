@@ -82,10 +82,10 @@ public class TestClock {
     static class MockClockNoOverrides extends Clock {
     }
 
-    private static final ZoneOffset OFFSET = ZoneOffset.zoneOffset(2);
-    private static final OffsetDateTime DATE_TIME = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET);
+    private static final ZoneOffset OFFSET = ZoneOffset.hours(2);
+    private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
     private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
-    private static final TimeZone ZONE = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE = TimeZone.of("Europe/Paris");
     private static final Clock MOCK = new MockClock(TIME_SOURCE, ZONE);
     private static final Clock MOCK_NO_OVERRIDES = new MockClockNoOverrides();
 
@@ -143,7 +143,7 @@ public class TestClock {
     }
 
     public void test_mockClock_withZone() {
-        TimeZone london = TimeZone.timeZone("Europe/London");
+        TimeZone london = TimeZone.of("Europe/London");
         Clock changed = MOCK.withZone(london);
         assertEquals(changed.getSource(), TIME_SOURCE);
         assertEquals(changed.getZone(), london);
@@ -151,34 +151,34 @@ public class TestClock {
 
     //-----------------------------------------------------------------------
     public void test_mockClock_dateAndTime() {
-        assertEquals(MOCK.today(), LocalDate.date(2008, 6, 30));
-        assertEquals(MOCK.yesterday(), LocalDate.date(2008, 6, 29));
-        assertEquals(MOCK.tomorrow(), LocalDate.date(2008, 7, 1));
+        assertEquals(MOCK.today(), LocalDate.of(2008, 6, 30));
+        assertEquals(MOCK.yesterday(), LocalDate.of(2008, 6, 29));
+        assertEquals(MOCK.tomorrow(), LocalDate.of(2008, 7, 1));
         
-        assertEquals(MOCK.year(), Year.isoYear(2008));
-        assertEquals(MOCK.yearMonth(), YearMonth.yearMonth(2008, 6));
+        assertEquals(MOCK.year(), Year.of(2008));
+        assertEquals(MOCK.yearMonth(), YearMonth.of(2008, 6));
         
-        assertEquals(MOCK.time(), LocalTime.time(11, 30, 10, 500));
-        assertEquals(MOCK.timeToSecond(), LocalTime.time(11, 30, 10));
-        assertEquals(MOCK.timeToMinute(), LocalTime.time(11, 30));
+        assertEquals(MOCK.time(), LocalTime.of(11, 30, 10, 500));
+        assertEquals(MOCK.timeToSecond(), LocalTime.of(11, 30, 10));
+        assertEquals(MOCK.timeToMinute(), LocalTime.of(11, 30));
         
-        assertEquals(MOCK.dateTime(), LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500));
-        assertEquals(MOCK.dateTimeToSecond(), LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10));
-        assertEquals(MOCK.dateTimeToMinute(), LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+        assertEquals(MOCK.dateTime(), LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500));
+        assertEquals(MOCK.dateTimeToSecond(), LocalDateTime.of(2008, 6, 30, 11, 30, 10));
+        assertEquals(MOCK.dateTimeToMinute(), LocalDateTime.of(2008, 6, 30, 11, 30));
         
-        assertEquals(MOCK.offsetDate(), OffsetDate.date(2008, 6, 30, OFFSET));
+        assertEquals(MOCK.offsetDate(), OffsetDate.of(2008, 6, 30, OFFSET));
         
-        assertEquals(MOCK.offsetTime(), OffsetTime.time(11, 30, 10, 500, OFFSET));
-        assertEquals(MOCK.offsetTimeToSecond(), OffsetTime.time(11, 30, 10, OFFSET));
-        assertEquals(MOCK.offsetTimeToMinute(), OffsetTime.time(11, 30, OFFSET));
+        assertEquals(MOCK.offsetTime(), OffsetTime.of(11, 30, 10, 500, OFFSET));
+        assertEquals(MOCK.offsetTimeToSecond(), OffsetTime.of(11, 30, 10, OFFSET));
+        assertEquals(MOCK.offsetTimeToMinute(), OffsetTime.of(11, 30, OFFSET));
         
-        assertEquals(MOCK.offsetDateTime(), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET));
-        assertEquals(MOCK.offsetDateTimeToSecond(), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, OFFSET));
-        assertEquals(MOCK.offsetDateTimeToMinute(), OffsetDateTime.dateTime(2008, 6, 30, 11, 30, OFFSET));
+        assertEquals(MOCK.offsetDateTime(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET));
+        assertEquals(MOCK.offsetDateTimeToSecond(), OffsetDateTime.of(2008, 6, 30, 11, 30, 10, OFFSET));
+        assertEquals(MOCK.offsetDateTimeToMinute(), OffsetDateTime.of(2008, 6, 30, 11, 30, OFFSET));
         
-        assertEquals(MOCK.zonedDateTime(), ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500), ZONE));
-        assertEquals(MOCK.zonedDateTimeToSecond(), ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30, 10), ZONE));
-        assertEquals(MOCK.zonedDateTimeToMinute(), ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 11, 30), ZONE));
+        assertEquals(MOCK.zonedDateTime(), ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30, 10, 500), ZONE));
+        assertEquals(MOCK.zonedDateTimeToSecond(), ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30, 10), ZONE));
+        assertEquals(MOCK.zonedDateTimeToMinute(), ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 11, 30), ZONE));
     }
 
 }

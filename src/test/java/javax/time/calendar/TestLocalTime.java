@@ -64,13 +64,13 @@ import org.testng.annotations.Test;
 @Test(timeOut=5000)
 public class TestLocalTime {
 
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
 
     private LocalTime TEST_12_30_40_987654321;
 
     @BeforeMethod
     public void setUp() {
-        TEST_12_30_40_987654321 = LocalTime.time(12, 30, 40, 987654321);
+        TEST_12_30_40_987654321 = LocalTime.of(12, 30, 40, 987654321);
     }
 
     //-----------------------------------------------------------------------
@@ -122,171 +122,171 @@ public class TestLocalTime {
     public void constant_MIDNIGHT() {
         check(LocalTime.MIDNIGHT, 0, 0, 0, 0);
         assertSame(LocalTime.MIDNIGHT, LocalTime.MIDNIGHT);
-        assertSame(LocalTime.MIDNIGHT, LocalTime.time(0, 0));
+        assertSame(LocalTime.MIDNIGHT, LocalTime.of(0, 0));
     }
 
     public void constant_MIDDAY() {
         check(LocalTime.MIDDAY, 12, 0, 0, 0);
         assertSame(LocalTime.MIDDAY, LocalTime.MIDDAY);
-        assertSame(LocalTime.MIDDAY, LocalTime.time(12, 0));
+        assertSame(LocalTime.MIDDAY, LocalTime.of(12, 0));
     }
 
     //-----------------------------------------------------------------------
     public void factory_time_2ints() {
-        LocalTime test = LocalTime.time(12, 30);
+        LocalTime test = LocalTime.of(12, 30);
         check(test, 12, 30, 0, 0);
     }
 
     public void factory_time_2ints_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(i, 0);
-            LocalTime test2 = LocalTime.time(i, 0);
+            LocalTime test1 = LocalTime.of(i, 0);
+            LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_2ints_hourTooLow() {
-        LocalTime.time(-1, 0);
+        LocalTime.of(-1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_2ints_hourTooHigh() {
-        LocalTime.time(24, 0);
+        LocalTime.of(24, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_2ints_minuteTooLow() {
-        LocalTime.time(0, -1);
+        LocalTime.of(0, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_2ints_minuteTooHigh() {
-        LocalTime.time(0, 60);
+        LocalTime.of(0, 60);
     }
 
     //-----------------------------------------------------------------------
     public void factory_time_3ints() {
-        LocalTime test = LocalTime.time(12, 30, 40);
+        LocalTime test = LocalTime.of(12, 30, 40);
         check(test, 12, 30, 40, 0);
     }
 
     public void factory_time_3ints_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(i, 0, 0);
-            LocalTime test2 = LocalTime.time(i, 0, 0);
+            LocalTime test1 = LocalTime.of(i, 0, 0);
+            LocalTime test2 = LocalTime.of(i, 0, 0);
             assertSame(test1, test2);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_3ints_hourTooLow() {
-        LocalTime.time(-1, 0, 0);
+        LocalTime.of(-1, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_3ints_hourTooHigh() {
-        LocalTime.time(24, 0, 0);
+        LocalTime.of(24, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_3ints_minuteTooLow() {
-        LocalTime.time(0, -1, 0);
+        LocalTime.of(0, -1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_3ints_minuteTooHigh() {
-        LocalTime.time(0, 60, 0);
+        LocalTime.of(0, 60, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_3ints_secondTooLow() {
-        LocalTime.time(0, 0, -1);
+        LocalTime.of(0, 0, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_3ints_secondTooHigh() {
-        LocalTime.time(0, 0, 60);
+        LocalTime.of(0, 0, 60);
     }
 
     //-----------------------------------------------------------------------
     public void factory_time_4ints() {
-        LocalTime test = LocalTime.time(12, 30, 40, 987654321);
+        LocalTime test = LocalTime.of(12, 30, 40, 987654321);
         check(test, 12, 30, 40, 987654321);
-        test = LocalTime.time(12, 0, 40, 987654321);
+        test = LocalTime.of(12, 0, 40, 987654321);
         check(test, 12, 0, 40, 987654321);
     }
 
     public void factory_time_4ints_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(i, 0, 0, 0);
-            LocalTime test2 = LocalTime.time(i, 0, 0, 0);
+            LocalTime test1 = LocalTime.of(i, 0, 0, 0);
+            LocalTime test2 = LocalTime.of(i, 0, 0, 0);
             assertSame(test1, test2);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_hourTooLow() {
-        LocalTime.time(-1, 0, 0, 0);
+        LocalTime.of(-1, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_hourTooHigh() {
-        LocalTime.time(24, 0, 0, 0);
+        LocalTime.of(24, 0, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_minuteTooLow() {
-        LocalTime.time(0, -1, 0, 0);
+        LocalTime.of(0, -1, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_minuteTooHigh() {
-        LocalTime.time(0, 60, 0, 0);
+        LocalTime.of(0, 60, 0, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_secondTooLow() {
-        LocalTime.time(0, 0, -1, 0);
+        LocalTime.of(0, 0, -1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_secondTooHigh() {
-        LocalTime.time(0, 0, 60, 0);
+        LocalTime.of(0, 0, 60, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_nanoTooLow() {
-        LocalTime.time(0, 0, 0, -1);
+        LocalTime.of(0, 0, 0, -1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_time_4ints_nanoTooHigh() {
-        LocalTime.time(0, 0, 0, 1000000000);
+        LocalTime.of(0, 0, 0, 1000000000);
     }
 
     //-----------------------------------------------------------------------
     public void factory_time_TimeProvider() {
-        LocalTime localTime = LocalTime.time(TEST_12_30_40_987654321);
+        LocalTime localTime = LocalTime.from(TEST_12_30_40_987654321);
         check(localTime, 12, 30, 40, 987654321);
     }
 
     public void factory_time_TimeProvider_singletons() {
         for (int i = 0; i < 24; i++) {
-            LocalTime test1 = LocalTime.time(LocalTime.time(i, 0));
-            LocalTime test2 = LocalTime.time(i, 0);
+            LocalTime test1 = LocalTime.from(LocalTime.of(i, 0));
+            LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_time_TimeProvider_null() {
-        LocalTime.time(null);
+        LocalTime.from(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_time_TimeProvider_null_toLocalTime() {
-        LocalTime.time(new TimeProvider() {
+        LocalTime.from(new TimeProvider() {
             public LocalTime toLocalTime() {
                 return null;
             }
@@ -296,7 +296,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     public void factory_time_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalTime test = LocalTime.time(mmp);
+        LocalTime test = LocalTime.from(mmp);
         check(test, 11, 30, 10, 500);
     }
 
@@ -311,7 +311,7 @@ public class TestLocalTime {
     public void factory_fromSecondOfDay_singletons() {
         for (int i = 0; i < 24; i++) {
             LocalTime test1 = LocalTime.fromSecondOfDay(i * 60L * 60L);
-            LocalTime test2 = LocalTime.time(i, 0);
+            LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
     }
@@ -347,7 +347,7 @@ public class TestLocalTime {
     public void factory_fromSecondOfDay7_long_int_singletons() {
         for (int i = 0; i < 24; i++) {
             LocalTime test1 = LocalTime.fromSecondOfDay(i * 60L * 60L, 0);
-            LocalTime test2 = LocalTime.time(i, 0);
+            LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
     }
@@ -403,7 +403,7 @@ public class TestLocalTime {
     public void factory_fromNanoOfDay_singletons() {
         for (int i = 0; i < 24; i++) {
             LocalTime test1 = LocalTime.fromNanoOfDay(i * 1000000000L * 60L * 60L);
-            LocalTime test2 = LocalTime.time(i, 0);
+            LocalTime test2 = LocalTime.of(i, 0);
             assertSame(test1, test2);
         }
     }
@@ -552,7 +552,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_get(int h, int m, int s, int ns) {
-        LocalTime a = LocalTime.time(h, m, s, ns);
+        LocalTime a = LocalTime.of(h, m, s, ns);
         assertEquals(a.getHourOfDay(), h);
         assertEquals(a.getMinuteOfHour(), m);
         assertEquals(a.getSecondOfMinute(), s);
@@ -565,10 +565,10 @@ public class TestLocalTime {
     public void test_with() {
         TimeAdjuster timeAdjuster = new TimeAdjuster() {
             public LocalTime adjustTime(LocalTime time) {
-                return LocalTime.time(23, 5);
+                return LocalTime.of(23, 5);
             }
         };
-        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster), LocalTime.time(23, 5));
+        assertEquals(TEST_12_30_40_987654321.with(timeAdjuster), LocalTime.of(23, 5));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -593,12 +593,12 @@ public class TestLocalTime {
     }
 
     public void test_withHourOfDay_toMidnight() {
-        LocalTime t = LocalTime.time(1, 0).withHourOfDay(0);
+        LocalTime t = LocalTime.of(1, 0).withHourOfDay(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_withHourOfDay_toMidday() {
-        LocalTime t = LocalTime.time(1, 0).withHourOfDay(12);
+        LocalTime t = LocalTime.of(1, 0).withHourOfDay(12);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -629,12 +629,12 @@ public class TestLocalTime {
     }
 
     public void test_withMinuteOfHour_toMidnight() {
-        LocalTime t = LocalTime.time(0, 1).withMinuteOfHour(0);
+        LocalTime t = LocalTime.of(0, 1).withMinuteOfHour(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_withMinuteOfHour_toMidday() {
-        LocalTime t = LocalTime.time(12, 1).withMinuteOfHour(0);
+        LocalTime t = LocalTime.of(12, 1).withMinuteOfHour(0);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -665,12 +665,12 @@ public class TestLocalTime {
     }
 
     public void test_withSecondOfMinute_toMidnight() {
-        LocalTime t = LocalTime.time(0, 0, 1).withSecondOfMinute(0);
+        LocalTime t = LocalTime.of(0, 0, 1).withSecondOfMinute(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_withSecondOfMinute_toMidday() {
-        LocalTime t = LocalTime.time(12, 0, 1).withSecondOfMinute(0);
+        LocalTime t = LocalTime.of(12, 0, 1).withSecondOfMinute(0);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -705,12 +705,12 @@ public class TestLocalTime {
     }
 
     public void test_withNanoOfSecond_toMidnight() {
-        LocalTime t = LocalTime.time(0, 0, 0, 1).withNanoOfSecond(0);
+        LocalTime t = LocalTime.of(0, 0, 0, 1).withNanoOfSecond(0);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_withNanoOfSecond_toMidday() {
-        LocalTime t = LocalTime.time(12, 0, 0, 1).withNanoOfSecond(0);
+        LocalTime t = LocalTime.of(12, 0, 0, 1).withNanoOfSecond(0);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -728,15 +728,15 @@ public class TestLocalTime {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         LocalTime t = TEST_12_30_40_987654321.plus(provider);
-        assertEquals(t, LocalTime.time(16, 35, 46, 987654328));
+        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
     }
 
     public void test_plus_PeriodProvider_dateIgnored() {
-        PeriodProvider provider = Period.period(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
         LocalTime t = TEST_12_30_40_987654321.plus(provider);
-        assertEquals(t, LocalTime.time(16, 35, 46, 987654328));
+        assertEquals(t, LocalTime.of(16, 35, 46, 987654328));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -746,8 +746,8 @@ public class TestLocalTime {
 
     public void test_plus_PeriodProvider_overflowIgnored() {
         PeriodProvider provider = Period.hours(1);
-        LocalTime t = LocalTime.time(23, 30).plus(provider);
-        assertEquals(t, LocalTime.time(0, 30));
+        LocalTime t = LocalTime.of(23, 30).plus(provider);
+        assertEquals(t, LocalTime.of(0, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -780,7 +780,7 @@ public class TestLocalTime {
     }
 
     public void test_plusHours_fromOne() {
-        LocalTime base = LocalTime.time(1, 0);
+        LocalTime base = LocalTime.of(1, 0);
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.plusHours(i);
             assertEquals(t.getHourOfDay(), (1 + i + 72) % 24);
@@ -793,12 +793,12 @@ public class TestLocalTime {
     }
 
     public void test_plusHours_toMidnight() {
-        LocalTime t = LocalTime.time(23, 0).plusHours(1);
+        LocalTime t = LocalTime.of(23, 0).plusHours(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_plusHours_toMidday() {
-        LocalTime t = LocalTime.time(11, 0).plusHours(1);
+        LocalTime t = LocalTime.of(11, 0).plusHours(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -856,12 +856,12 @@ public class TestLocalTime {
     }
 
     public void test_plusMinutes_toMidnight() {
-        LocalTime t = LocalTime.time(23, 59).plusMinutes(1);
+        LocalTime t = LocalTime.of(23, 59).plusMinutes(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_plusMinutes_toMidday() {
-        LocalTime t = LocalTime.time(11, 59).plusMinutes(1);
+        LocalTime t = LocalTime.of(11, 59).plusMinutes(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -952,12 +952,12 @@ public class TestLocalTime {
     }
 
     public void test_plusSeconds_toMidnight() {
-        LocalTime t = LocalTime.time(23, 59, 59).plusSeconds(1);
+        LocalTime t = LocalTime.of(23, 59, 59).plusSeconds(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_plusSeconds_toMidday() {
-        LocalTime t = LocalTime.time(11, 59, 59).plusSeconds(1);
+        LocalTime t = LocalTime.of(11, 59, 59).plusSeconds(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -1061,12 +1061,12 @@ public class TestLocalTime {
     }
 
     public void test_plusNanos_toMidnight() {
-        LocalTime t = LocalTime.time(23, 59, 59, 999999999).plusNanos(1);
+        LocalTime t = LocalTime.of(23, 59, 59, 999999999).plusNanos(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_plusNanos_toMidday() {
-        LocalTime t = LocalTime.time(11, 59, 59, 999999999).plusNanos(1);
+        LocalTime t = LocalTime.of(11, 59, 59, 999999999).plusNanos(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -1074,15 +1074,15 @@ public class TestLocalTime {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         LocalTime t = TEST_12_30_40_987654321.minus(provider);
-        assertEquals(t, LocalTime.time(8, 25, 34, 987654314));
+        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
     }
 
     public void test_minus_PeriodProvider_dateIgnored() {
-        PeriodProvider provider = Period.period(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, Integer.MAX_VALUE, 4, 5, 6, 7);
         LocalTime t = TEST_12_30_40_987654321.minus(provider);
-        assertEquals(t, LocalTime.time(8, 25, 34, 987654314));
+        assertEquals(t, LocalTime.of(8, 25, 34, 987654314));
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -1092,8 +1092,8 @@ public class TestLocalTime {
 
     public void test_minus_PeriodProvider_overflowIgnored() {
         PeriodProvider provider = Period.hours(1);
-        LocalTime t = LocalTime.time(0, 30).minus(provider);
-        assertEquals(t, LocalTime.time(23, 30));
+        LocalTime t = LocalTime.of(0, 30).minus(provider);
+        assertEquals(t, LocalTime.of(23, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1126,7 +1126,7 @@ public class TestLocalTime {
     }
 
     public void test_minusHours_fromOne() {
-        LocalTime base = LocalTime.time(1, 0);
+        LocalTime base = LocalTime.of(1, 0);
         for (int i = -50; i < 50; i++) {
             LocalTime t = base.minusHours(i);
             assertEquals(t.getHourOfDay(), (1 + (-i % 24) + 24) % 24);
@@ -1139,12 +1139,12 @@ public class TestLocalTime {
     }
 
     public void test_minusHours_toMidnight() {
-        LocalTime t = LocalTime.time(1, 0).minusHours(1);
+        LocalTime t = LocalTime.of(1, 0).minusHours(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_minusHours_toMidday() {
-        LocalTime t = LocalTime.time(13, 0).minusHours(1);
+        LocalTime t = LocalTime.of(13, 0).minusHours(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -1204,12 +1204,12 @@ public class TestLocalTime {
     }
 
     public void test_minusMinutes_toMidnight() {
-        LocalTime t = LocalTime.time(0, 1).minusMinutes(1);
+        LocalTime t = LocalTime.of(0, 1).minusMinutes(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_minusMinutes_toMidday() {
-        LocalTime t = LocalTime.time(12, 1).minusMinutes(1);
+        LocalTime t = LocalTime.of(12, 1).minusMinutes(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -1305,12 +1305,12 @@ public class TestLocalTime {
     }
 
     public void test_minusSeconds_toMidnight() {
-        LocalTime t = LocalTime.time(0, 0, 1).minusSeconds(1);
+        LocalTime t = LocalTime.of(0, 0, 1).minusSeconds(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_minusSeconds_toMidday() {
-        LocalTime t = LocalTime.time(12, 0, 1).minusSeconds(1);
+        LocalTime t = LocalTime.of(12, 0, 1).minusSeconds(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -1422,12 +1422,12 @@ public class TestLocalTime {
     }
 
     public void test_minusNanos_toMidnight() {
-        LocalTime t = LocalTime.time(0, 0, 0, 1).minusNanos(1);
+        LocalTime t = LocalTime.of(0, 0, 0, 1).minusNanos(1);
         assertSame(t, LocalTime.MIDNIGHT);
     }
 
     public void test_minusNanos_toMidday() {
-        LocalTime t = LocalTime.time(12, 0, 0, 1).minusNanos(1);
+        LocalTime t = LocalTime.of(12, 0, 0, 1).minusNanos(1);
         assertSame(t, LocalTime.MIDDAY);
     }
 
@@ -1456,13 +1456,13 @@ public class TestLocalTime {
     // atOffset()
     //-----------------------------------------------------------------------
     public void test_atOffset() {
-        LocalTime t = LocalTime.time(11, 30);
-        assertEquals(t.atOffset(OFFSET_PTWO), OffsetTime.time(11, 30, OFFSET_PTWO));
+        LocalTime t = LocalTime.of(11, 30);
+        assertEquals(t.atOffset(OFFSET_PTWO), OffsetTime.of(11, 30, OFFSET_PTWO));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atOffset_nullZoneOffset() {
-        LocalTime t = LocalTime.time(11, 30);
+        LocalTime t = LocalTime.of(11, 30);
         t.atOffset((ZoneOffset) null);
     }
 
@@ -1471,7 +1471,7 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_toLocalTime(int h, int m, int s, int ns) {
-        LocalTime t = LocalTime.time(h, m, s, ns);
+        LocalTime t = LocalTime.of(h, m, s, ns);
         assertSame(t.toLocalTime(), t);
     }
 
@@ -1479,7 +1479,7 @@ public class TestLocalTime {
     // toSecondOfDay()
     //-----------------------------------------------------------------------
     public void test_toSecondOfDay() {
-        LocalTime t = LocalTime.time(0, 0);
+        LocalTime t = LocalTime.of(0, 0);
         for (int i = 0; i < 24 * 60 * 60; i++) {
             assertEquals(t.toSecondOfDay(), i);
             t = t.plusSeconds(1);
@@ -1487,7 +1487,7 @@ public class TestLocalTime {
     }
 
     public void test_toSecondOfDay_fromNanoOfDay_symmetry() {
-        LocalTime t = LocalTime.time(0, 0);
+        LocalTime t = LocalTime.of(0, 0);
         for (int i = 0; i < 24 * 60 * 60; i++) {
             assertEquals(LocalTime.fromSecondOfDay(t.toSecondOfDay()), t);
             t = t.plusSeconds(1);
@@ -1498,12 +1498,12 @@ public class TestLocalTime {
     // toNanoOfDay()
     //-----------------------------------------------------------------------
     public void test_toNanoOfDay() {
-        LocalTime t = LocalTime.time(0, 0);
+        LocalTime t = LocalTime.of(0, 0);
         for (int i = 0; i < 1000000; i++) {
             assertEquals(t.toNanoOfDay(), i);
             t = t.plusNanos(1);
         }
-        t = LocalTime.time(0, 0);
+        t = LocalTime.of(0, 0);
         for (int i = 1; i <= 1000000; i++) {
             t = t.minusNanos(1);
             assertEquals(t.toNanoOfDay(), 24 * 60 * 60 * 1000000000L - i);
@@ -1511,12 +1511,12 @@ public class TestLocalTime {
     }
 
     public void test_toNanoOfDay_fromNanoOfDay_symmetry() {
-        LocalTime t = LocalTime.time(0, 0);
+        LocalTime t = LocalTime.of(0, 0);
         for (int i = 0; i < 1000000; i++) {
             assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
             t = t.plusNanos(1);
         }
-        t = LocalTime.time(0, 0);
+        t = LocalTime.of(0, 0);
         for (int i = 1; i <= 1000000; i++) {
             t = t.minusNanos(1);
             assertEquals(LocalTime.fromNanoOfDay(t.toNanoOfDay()), t);
@@ -1529,29 +1529,29 @@ public class TestLocalTime {
     public void test_comparisons() {
         doTest_comparisons_LocalTime(
             LocalTime.MIDNIGHT,
-            LocalTime.time(0, 0, 0, 999999999),
-            LocalTime.time(0, 0, 59, 0),
-            LocalTime.time(0, 0, 59, 999999999),
-            LocalTime.time(0, 59, 0, 0),
-            LocalTime.time(0, 59, 0, 999999999),
-            LocalTime.time(0, 59, 59, 0),
-            LocalTime.time(0, 59, 59, 999999999),
+            LocalTime.of(0, 0, 0, 999999999),
+            LocalTime.of(0, 0, 59, 0),
+            LocalTime.of(0, 0, 59, 999999999),
+            LocalTime.of(0, 59, 0, 0),
+            LocalTime.of(0, 59, 0, 999999999),
+            LocalTime.of(0, 59, 59, 0),
+            LocalTime.of(0, 59, 59, 999999999),
             LocalTime.MIDDAY,
-            LocalTime.time(12, 0, 0, 999999999),
-            LocalTime.time(12, 0, 59, 0),
-            LocalTime.time(12, 0, 59, 999999999),
-            LocalTime.time(12, 59, 0, 0),
-            LocalTime.time(12, 59, 0, 999999999),
-            LocalTime.time(12, 59, 59, 0),
-            LocalTime.time(12, 59, 59, 999999999),
-            LocalTime.time(23, 0, 0, 0),
-            LocalTime.time(23, 0, 0, 999999999),
-            LocalTime.time(23, 0, 59, 0),
-            LocalTime.time(23, 0, 59, 999999999),
-            LocalTime.time(23, 59, 0, 0),
-            LocalTime.time(23, 59, 0, 999999999),
-            LocalTime.time(23, 59, 59, 0),
-            LocalTime.time(23, 59, 59, 999999999)
+            LocalTime.of(12, 0, 0, 999999999),
+            LocalTime.of(12, 0, 59, 0),
+            LocalTime.of(12, 0, 59, 999999999),
+            LocalTime.of(12, 59, 0, 0),
+            LocalTime.of(12, 59, 0, 999999999),
+            LocalTime.of(12, 59, 59, 0),
+            LocalTime.of(12, 59, 59, 999999999),
+            LocalTime.of(23, 0, 0, 0),
+            LocalTime.of(23, 0, 0, 999999999),
+            LocalTime.of(23, 0, 59, 0),
+            LocalTime.of(23, 0, 59, 999999999),
+            LocalTime.of(23, 59, 0, 0),
+            LocalTime.of(23, 59, 0, 999999999),
+            LocalTime.of(23, 59, 59, 0),
+            LocalTime.of(23, 59, 59, 999999999)
         );
     }
 
@@ -1607,32 +1607,32 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_equals_true(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m, s, n);
         assertEquals(a.equals(b), true);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_hour_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h + 1, m, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h + 1, m, s, n);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_minute_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m + 1, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m + 1, s, n);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_second_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s + 1, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m, s + 1, n);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_equals_false_nano_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s, n + 1);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m, s, n + 1);
         assertEquals(a.equals(b), false);
     }
 
@@ -1653,36 +1653,36 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_hashCode_same(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m, s, n);
         assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_hashCode_hour_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h + 1, m, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h + 1, m, s, n);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_hashCode_minute_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m + 1, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m + 1, s, n);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_hashCode_second_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s + 1, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m, s + 1, n);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_hashCode_nano_differs(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
-        LocalTime b = LocalTime.time(h, m, s, n + 1);
+        LocalTime a = LocalTime.of(h, m, s, n);
+        LocalTime b = LocalTime.of(h, m, s, n + 1);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
@@ -1723,7 +1723,7 @@ public class TestLocalTime {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int h, int m, int s, int n, String expected) {
-        LocalTime t = LocalTime.time(h, m, s, n);
+        LocalTime t = LocalTime.of(h, m, s, n);
         String str = t.toString();
         assertEquals(str, expected);
     }
@@ -1757,13 +1757,13 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_adjustTime(int h, int m, int s, int n) {
-        LocalTime a = LocalTime.time(h, m, s, n);
+        LocalTime a = LocalTime.of(h, m, s, n);
         assertSame(a.adjustTime(TEST_12_30_40_987654321), a);
         assertSame(TEST_12_30_40_987654321.adjustTime(a), TEST_12_30_40_987654321);
     }
 
     public void test_adjustTime_same() {
-        assertSame(LocalTime.time(12, 30, 40, 987654321).adjustTime(TEST_12_30_40_987654321), TEST_12_30_40_987654321);
+        assertSame(LocalTime.of(12, 30, 40, 987654321).adjustTime(TEST_12_30_40_987654321), TEST_12_30_40_987654321);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -1776,39 +1776,39 @@ public class TestLocalTime {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_equals_true(int h, int m, int s, int n) {
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(999999999);
-        Overflow b = LocalTime.time(h, m, s, n).plusNanosWithOverflow(999999999);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(999999999);
+        Overflow b = LocalTime.of(h, m, s, n).plusNanosWithOverflow(999999999);
         assertEquals(a.equals(b), true);
         assertEquals(a.getResultTime().plusNanosWithOverflow(0).equals(a), true);
     }
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_equals_false_days_differs(int h, int m, int s, int n) {
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
-        Overflow b = LocalTime.time(h, m, s, n).plusNanosWithOverflow(1);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.of(h, m, s, n).plusNanosWithOverflow(1);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_equals_false_hour_differs(int h, int m, int s, int n) {
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
-        Overflow b = LocalTime.time(h + 1, m, s, n).plusNanosWithOverflow(0);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.of(h + 1, m, s, n).plusNanosWithOverflow(0);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_equals_false_minute_differs(int h, int m, int s, int n) {
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
-        Overflow b = LocalTime.time(h, m + 1, s, n).plusNanosWithOverflow(0);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.of(h, m + 1, s, n).plusNanosWithOverflow(0);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_equals_false_second_differs(int h, int m, int s, int n) {
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
-        Overflow b = LocalTime.time(h, m, s + 1, n).plusNanosWithOverflow(0);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.of(h, m, s + 1, n).plusNanosWithOverflow(0);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_equals_false_nano_differs(int h, int m, int s, int n) {
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(0);
-        Overflow b = LocalTime.time(h, m, s, n + 1).plusNanosWithOverflow(0);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(0);
+        Overflow b = LocalTime.of(h, m, s, n + 1).plusNanosWithOverflow(0);
         assertEquals(a.equals(b), false);
     }
 
@@ -1831,40 +1831,40 @@ public class TestLocalTime {
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_hashCode_same(int h, int m, int s, int n) {
         long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
-        Overflow b = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.of(h, m, s, n).plusNanosWithOverflow(days);
         assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_hashCode_hour_differs(int h, int m, int s, int n) {
         long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
-        Overflow b = LocalTime.time(h + 1, m, s, n).plusNanosWithOverflow(days);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.of(h + 1, m, s, n).plusNanosWithOverflow(days);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_hashCode_minute_differs(int h, int m, int s, int n) {
         long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
-        Overflow b = LocalTime.time(h, m + 1, s, n).plusNanosWithOverflow(days);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.of(h, m + 1, s, n).plusNanosWithOverflow(days);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_hashCode_second_differs(int h, int m, int s, int n) {
         long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
-        Overflow b = LocalTime.time(h, m, s + 1, n).plusNanosWithOverflow(days);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.of(h, m, s + 1, n).plusNanosWithOverflow(days);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 
     @Test(dataProvider="sampleTimes")
     public void test_Overflow_hashCode_nano_differs(int h, int m, int s, int n) {
         long days = (h + m + s + n) * 24 * 60 * 60 * 1000000000L;
-        Overflow a = LocalTime.time(h, m, s, n).plusNanosWithOverflow(days);
-        Overflow b = LocalTime.time(h, m, s, n + 1).plusNanosWithOverflow(days);
+        Overflow a = LocalTime.of(h, m, s, n).plusNanosWithOverflow(days);
+        Overflow b = LocalTime.of(h, m, s, n + 1).plusNanosWithOverflow(days);
         assertEquals(a.hashCode() == b.hashCode(), false);
     }
 }

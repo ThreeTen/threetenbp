@@ -74,7 +74,7 @@ public final class Weeks extends PeriodField implements Comparable<Weeks>, Seria
      * @param weeks  the number of weeks the instance will represent
      * @return the created Weeks
      */
-    public static Weeks weeks(int weeks) {
+    public static Weeks of(int weeks) {
         if (weeks == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Weeks extends PeriodField implements Comparable<Weeks>, Seria
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Weeks.weeks(weeks);
+        return Weeks.of(weeks);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Weeks extends PeriodField implements Comparable<Weeks>, Seria
      */
     @Override
     public Weeks withAmount(int amount) {
-        return Weeks.weeks(amount);
+        return Weeks.of(amount);
     }
 
     //-----------------------------------------------------------------------

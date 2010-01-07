@@ -238,9 +238,9 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDate(year, month, day);
             if (offsetId != null) {
-                expected.put(ZoneOffset.rule(), ZoneOffset.zoneOffset(offsetId));
+                expected.put(ZoneOffset.rule(), ZoneOffset.of(offsetId));
                 if (zoneId != null) {
-                    expected.put(TimeZone.rule(), TimeZone.timeZone(zoneId));
+                    expected.put(TimeZone.rule(), TimeZone.of(zoneId));
                 }
             }
             assertParseMatch(DateTimeFormatters.isoDate().parse(input), expected);
@@ -435,9 +435,9 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createTime(hour, min, sec, nano);
             if (offsetId != null) {
-                expected.put(ZoneOffset.rule(), ZoneOffset.zoneOffset(offsetId));
+                expected.put(ZoneOffset.rule(), ZoneOffset.of(offsetId));
                 if (zoneId != null) {
-                    expected.put(TimeZone.rule(), TimeZone.timeZone(zoneId));
+                    expected.put(TimeZone.rule(), TimeZone.of(zoneId));
                 }
             }
             assertParseMatch(DateTimeFormatters.isoTime().parse(input), expected);
@@ -735,9 +735,9 @@ public class TestDateTimeFormatters {
         if (input != null) {
             MockSimpleCalendrical expected = createDateTime(year, month, day, hour, min, sec, nano);
             if (offsetId != null) {
-                expected.put(ZoneOffset.rule(), ZoneOffset.zoneOffset(offsetId));
+                expected.put(ZoneOffset.rule(), ZoneOffset.of(offsetId));
                 if (zoneId != null) {
-                    expected.put(TimeZone.rule(), TimeZone.timeZone(zoneId));
+                    expected.put(TimeZone.rule(), TimeZone.of(zoneId));
                 }
             }
             assertParseMatch(DateTimeFormatters.isoDateTime().parse(input), expected);
@@ -748,22 +748,22 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_print_isoOrdinalDate() {
-        Calendrical test = LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30);
+        Calendrical test = LocalDateTime.of(2008, 6, 3, 11, 5, 30);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155");
     }
 
     public void test_print_isoOrdinalDate_offset() {
-        Calendrical test = OffsetDateTime.dateTime(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+        Calendrical test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z");
     }
 
     public void test_print_isoOrdinalDate_zoned() {
-        Calendrical test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "2008-155Z[UTC]");
     }
 
     public void test_print_isoOrdinalDate_zoned_largeYear() {
-        Calendrical test = ZonedDateTime.dateTime(LocalDateTime.dateTime(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.from(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoOrdinalDate().print(test), "+123456-155Z[UTC]");
     }
 
@@ -774,7 +774,7 @@ public class TestDateTimeFormatters {
 
     public void test_print_isoOrdinalDate_missingField() {
         try {
-            Calendrical test = Year.isoYear(2008);
+            Calendrical test = Year.of(2008);
             DateTimeFormatters.isoOrdinalDate().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
@@ -798,24 +798,24 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_print_basicIsoDate() {
-        Calendrical test = LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30);
+        Calendrical test = LocalDateTime.of(2008, 6, 3, 11, 5, 30);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603");
     }
 
     public void test_print_basicIsoDate_offset() {
-        Calendrical test = OffsetDateTime.dateTime(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
+        Calendrical test = OffsetDateTime.of(2008, 6, 3, 11, 5, 30, ZoneOffset.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z");
     }
 
     public void test_print_basicIsoDate_zoned() {
-        Calendrical test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080603Z[UTC]");
     }
 
     @Test(expectedExceptions=CalendricalPrintFieldException.class)
     public void test_print_basicIsoDate_largeYear() {
         try {
-            Calendrical test = ZonedDateTime.dateTime(LocalDateTime.dateTime(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
+            Calendrical test = ZonedDateTime.from(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
             DateTimeFormatters.basicIsoDate().print(test);
         } catch (CalendricalPrintFieldException ex) {
             assertEquals(ex.getRule(), ISOChronology.yearRule());
@@ -824,13 +824,13 @@ public class TestDateTimeFormatters {
     }
 
     public void test_print_basicIsoDate_fields() {
-        Calendrical test = LocalDate.date(2008, 6, 30);
+        Calendrical test = LocalDate.of(2008, 6, 30);
         assertEquals(DateTimeFormatters.basicIsoDate().print(test), "20080630");
     }
 
     public void test_print_basicIsoDate_missingField() {
         try {
-            Calendrical test = YearMonth.yearMonth(2008, 6);
+            Calendrical test = YearMonth.of(2008, 6);
             DateTimeFormatters.basicIsoDate().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
@@ -841,14 +841,14 @@ public class TestDateTimeFormatters {
 
     //-----------------------------------------------------------------------
     public void test_parse_basicIsoDate() {
-        LocalDate expected = LocalDate.date(2008, 6, 3);
+        LocalDate expected = LocalDate.of(2008, 6, 3);
         assertEquals(DateTimeFormatters.basicIsoDate().parse("20080603", LocalDate.rule()), expected);
     }
 
     @Test(expectedExceptions=CalendricalParseException.class)
     public void test_parse_basicIsoDate_largeYear() {
         try {
-            LocalDate expected = LocalDate.date(123456, 6, 3);
+            LocalDate expected = LocalDate.of(123456, 6, 3);
             assertEquals(DateTimeFormatters.basicIsoDate().parse("+1234560603", LocalDate.rule()), expected);
         } catch (CalendricalParseException ex) {
             assertEquals(ex.getErrorIndex(), 0);
@@ -863,7 +863,7 @@ public class TestDateTimeFormatters {
     @DataProvider(name="weekDate")
     Iterator<Object[]> weekDate() {
         return new Iterator<Object[]>() {
-            private ZonedDateTime date = ZonedDateTime.dateTime(LocalDateTime.dateTime(2003, 12, 29, 11, 5, 30), TimeZone.UTC);
+            private ZonedDateTime date = ZonedDateTime.from(LocalDateTime.of(2003, 12, 29, 11, 5, 30), TimeZone.UTC);
             private ZonedDateTime endDate = date.withDate(2005, 1, 2);
             private int week = 1;
             private int day = 1;
@@ -898,7 +898,7 @@ public class TestDateTimeFormatters {
     }
 
     public void test_print_isoWeekDate_zoned_largeYear() {
-        Calendrical test = ZonedDateTime.dateTime(LocalDateTime.dateTime(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.from(LocalDateTime.of(123456, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.isoWeekDate().print(test), "+123456-W23-2Z[UTC]");
     }
 
@@ -942,13 +942,13 @@ public class TestDateTimeFormatters {
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     public void test_print_rfc1123() {
-        Calendrical test = ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
+        Calendrical test = ZonedDateTime.from(LocalDateTime.of(2008, 6, 3, 11, 5, 30), TimeZone.UTC);
         assertEquals(DateTimeFormatters.rfc1123().print(test), "Tue, 03 Jun 2008 11:05:30 Z");
     }
 
     public void test_print_rfc1123_missingField() {
         try {
-            Calendrical test = YearMonth.yearMonth(2008, 6);
+            Calendrical test = YearMonth.of(2008, 6);
             DateTimeFormatters.rfc1123().print(test);
             fail();
         } catch (CalendricalPrintFieldException ex) {
@@ -966,7 +966,7 @@ public class TestDateTimeFormatters {
             test.put(ISOChronology.yearRule(), year);
         }
         if (month != null) {
-            test.put(ISOChronology.monthOfYearRule(), MonthOfYear.monthOfYear(month));
+            test.put(ISOChronology.monthOfYearRule(), MonthOfYear.of(month));
         }
         if (day != null) {
             test.put(ISOChronology.dayOfMonthRule(), day);
@@ -999,7 +999,7 @@ public class TestDateTimeFormatters {
             test.put(ISOChronology.yearRule(), year);
         }
         if (month != null) {
-            test.put(ISOChronology.monthOfYearRule(), MonthOfYear.monthOfYear(month));
+            test.put(ISOChronology.monthOfYearRule(), MonthOfYear.of(month));
         }
         if (day != null) {
             test.put(ISOChronology.dayOfMonthRule(), day);
@@ -1021,10 +1021,10 @@ public class TestDateTimeFormatters {
 
     private void buildCalendrical(MockSimpleCalendrical cal, String offsetId, String zoneId) {
         if (offsetId != null) {
-            cal.put(ZoneOffset.rule(), ZoneOffset.zoneOffset(offsetId));
+            cal.put(ZoneOffset.rule(), ZoneOffset.of(offsetId));
         }
         if (zoneId != null) {
-            cal.put(TimeZone.rule(), TimeZone.timeZone(zoneId));
+            cal.put(TimeZone.rule(), TimeZone.of(zoneId));
         }
     }
 

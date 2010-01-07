@@ -378,7 +378,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             MonthOfYear moy = merger.getValue(ThaiBuddhistChronology.monthOfYearRule());
             Integer domVal = merger.getValue(ThaiBuddhistChronology.dayOfMonthRule());
             if (moy != null && domVal != null) {
-                ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(era, yoeVal, moy, domVal);
+                ThaiBuddhistDate date = ThaiBuddhistDate.of(era, yoeVal, moy, domVal);
                 merger.storeMerged(ThaiBuddhistDate.rule(), date);
                 merger.removeProcessed(ThaiBuddhistChronology.eraRule());
                 merger.removeProcessed(this);
@@ -388,7 +388,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             // era, year, day-of-year
             Integer doyVal = merger.getValue(ThaiBuddhistChronology.dayOfYearRule());
             if (doyVal != null) {
-                ThaiBuddhistDate date = ThaiBuddhistDate.thaiBuddhistDate(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
+                ThaiBuddhistDate date = ThaiBuddhistDate.of(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
                 merger.storeMerged(ThaiBuddhistDate.rule(), date);
                 merger.removeProcessed(ThaiBuddhistChronology.eraRule());
                 merger.removeProcessed(this);
@@ -489,7 +489,7 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
             Integer yoeVal = calendrical.get(ThaiBuddhistChronology.yearOfEraRule());
             if (era != null && yoeVal != null) {
                 int isoYear = (era == ThaiBuddhistEra.BEFORE_BUDDHIST ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
-                Year year = Year.isoYear(isoYear);
+                Year year = Year.of(isoYear);
                 return year.lengthInDays();
             }
             return getMaximumValue();

@@ -74,7 +74,7 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
      * @param months  the number of months the instance will represent
      * @return the created Months
      */
-    public static Months months(int months) {
+    public static Months of(int months) {
         if (months == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Months.months(months);
+        return Months.of(months);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Months extends PeriodField implements Comparable<Months>, Ser
      */
     @Override
     public Months withAmount(int amount) {
-        return Months.months(amount);
+        return Months.of(amount);
     }
 
     //-----------------------------------------------------------------------

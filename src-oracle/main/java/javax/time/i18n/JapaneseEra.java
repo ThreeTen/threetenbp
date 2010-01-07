@@ -61,11 +61,11 @@ public enum JapaneseEra implements Calendrical {
      * Arrays containing the end date of era as LocalDate.
      */
     private static final LocalDate ERA_END_DATES[] = {
-        LocalDate.date(1865, 4, 6), // End of UNKOWN era
-        LocalDate.date(1868, 9, 7), // End of KEIO era
-        LocalDate.date(1912, 7, 29), // End of MEIJI era
-        LocalDate.date(1926, 12, 24), // End of TAISHO era
-        LocalDate.date(1989, 1, 7) // End of SHOWA era
+        LocalDate.of(1865, 4, 6), // End of UNKOWN era
+        LocalDate.of(1868, 9, 7), // End of KEIO era
+        LocalDate.of(1912, 7, 29), // End of MEIJI era
+        LocalDate.of(1926, 12, 24), // End of TAISHO era
+        LocalDate.of(1989, 1, 7) // End of SHOWA era
         };
 
     //-----------------------------------------------------------------------
@@ -93,7 +93,7 @@ public enum JapaneseEra implements Calendrical {
      * @return the JapaneseEra singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
-    public static JapaneseEra japaneseEra(int japaneseEra) {
+    public static JapaneseEra of(int japaneseEra) {
         switch (japaneseEra) {
             case -3:
                 return UNKNOWN;
@@ -119,11 +119,11 @@ public enum JapaneseEra implements Calendrical {
      * @param date  the date, not null
      * @return the JapaneseEra singleton, never null
      */
-    static JapaneseEra japaneseEra(LocalDate date) {
+    static JapaneseEra from(LocalDate date) {
         for (int i = ERA_END_DATES.length; i > 0; i--) {
             LocalDate eraEndingDate = ERA_END_DATES[i - 1];
             if (date.isAfter(eraEndingDate)) {
-                return japaneseEra(i - 3);
+                return of(i - 3);
             }
         }
         return UNKNOWN;
@@ -139,7 +139,7 @@ public enum JapaneseEra implements Calendrical {
      * @return the JapaneseEra enum instance, never null
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
-    public static JapaneseEra japaneseEra(Calendrical calendrical) {
+    public static JapaneseEra from(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
     }
 

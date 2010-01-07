@@ -78,10 +78,10 @@ public class TestFluentAPI {
         date = clock.today().plus(days(3));
 //        date = Clock.system().today().plus(Days.days(3));
         
-        date = LocalDate.date(2007, 3, 20);
-        date = LocalDate.date(2007, MARCH, 20);
-        date = Year.isoYear(2007).atMonth(3).atDay(20);
-        date = Year.isoYear(2007).atMonth(MARCH).atDay(20);
+        date = LocalDate.of(2007, 3, 20);
+        date = LocalDate.of(2007, MARCH, 20);
+        date = Year.of(2007).atMonth(3).atDay(20);
+        date = Year.of(2007).atMonth(MARCH).atDay(20);
         
 //        date = calendar().year(2007).december().dayOfMonth(20).buildLenient();
 //        date = calendar().year(1972).december().dayOfMonth(3).build();
@@ -100,8 +100,8 @@ public class TestFluentAPI {
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
-        date = date.with(Year.isoYear(2009));
-        date = date.with(monthOfYear(6));
+        date = date.with(Year.of(2009));
+        date = date.with(MonthOfYear.of(6));
         date = date.with(MonthOfYear.AUGUST);
         date.with(MonthOfYear.DECEMBER, DateResolvers.strict());
         
@@ -141,7 +141,7 @@ public class TestFluentAPI {
 //        CalendarDT<LocalTime> dtime = CalendarDT.calendarDateTime(2007, february(), 21, 12, 30);
 //        int min = dtime.time().getMinuteOfHour();
         
-        MonthDay md = MonthDay.monthDay(FEBRUARY, 4);
+        MonthDay md = MonthDay.of(FEBRUARY, 4);
         md = md.with(MARCH);
         md = md.rollDayOfMonth(3);
         
@@ -187,8 +187,8 @@ public class TestFluentAPI {
 //        secondOfMinute(sec);
 //        minuteOfHour(min);
         
-        ZoneOffset offset = ZoneOffset.zoneOffset(1);
-        TimeZone paris = TimeZone.timeZone("Europe/Paris");
+        ZoneOffset offset = ZoneOffset.hours(1);
+        TimeZone paris = TimeZone.of("Europe/Paris");
         
         for (ZoneOffsetTransition trans : paris.getRules().getTransitions()) {
             System.out.println("Paris transition: " + trans);
@@ -202,10 +202,10 @@ public class TestFluentAPI {
         ZonedDateTime zdt2 = date.atMidnight().atZone(paris);
         
         {
-            Year year = Year.isoYear(2002);
+            Year year = Year.of(2002);
             YearMonth sixNationsMonth = year.atMonth(FEBRUARY);
             LocalDate englandWales = sixNationsMonth.atDay(12);
-            LocalDate engWal = Year.isoYear(2009).atMonth(FEBRUARY).atDay(12);
+            LocalDate engWal = Year.of(2009).atMonth(FEBRUARY).atDay(12);
         }
     }
 

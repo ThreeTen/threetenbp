@@ -56,10 +56,10 @@ import org.testng.annotations.Test;
 @Test
 public class TestZoneRulesBuilder {
 
-    private static final ZoneOffset OFFSET_1 = ZoneOffset.zoneOffset(1);
-    private static final ZoneOffset OFFSET_2 = ZoneOffset.zoneOffset(2);
-    private static final ZoneOffset OFFSET_1_15 = ZoneOffset.zoneOffset(1, 15);
-    private static final ZoneOffset OFFSET_2_30 = ZoneOffset.zoneOffset(2, 30);
+    private static final ZoneOffset OFFSET_1 = ZoneOffset.hours(1);
+    private static final ZoneOffset OFFSET_2 = ZoneOffset.hours(2);
+    private static final ZoneOffset OFFSET_1_15 = ZoneOffset.hoursMinutes(1, 15);
+    private static final ZoneOffset OFFSET_2_30 = ZoneOffset.hoursMinutes(2, 30);
     private static final Period PERIOD_0 = Period.ZERO;
     private static final Period PERIOD_1HOUR = Period.hours(1);
     private static final Period PERIOD_1HOUR30MIN = Period.hoursMinutesSeconds(1, 30, 0);
@@ -324,8 +324,8 @@ public class TestZoneRulesBuilder {
 //                    -3:00   Arg AR%sT   1999 Oct  3
 //                    -4:00   Arg AR%sT   2000 Mar  3
         
-        ZoneOffset minus3 = ZoneOffset.zoneOffset(-3);
-        ZoneOffset minus4 = ZoneOffset.zoneOffset(-4);
+        ZoneOffset minus3 = ZoneOffset.hours(-3);
+        ZoneOffset minus4 = ZoneOffset.hours(-4);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(minus3, dateTime(1900, 1, 1, 0, 0), WALL);
         b.addWindow(minus3, dateTime(1999, 10, 3, 0, 0), WALL);
@@ -358,8 +358,8 @@ public class TestZoneRulesBuilder {
 //    Rule    Egypt   2008    max -   Aug lastThu 23:00s  0   -
 //    Zone    Africa/Cairo    2:05:00 -     LMT   1900  Oct
 //                            2:00    Egypt EE%sT
-        ZoneOffset plus2 = ZoneOffset.zoneOffset(2);
-        ZoneOffset plus3 = ZoneOffset.zoneOffset(3);
+        ZoneOffset plus2 = ZoneOffset.hours(2);
+        ZoneOffset plus3 = ZoneOffset.hours(3);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindowForever(plus2);
         b.addRuleToWindow(2008, Year.MAX_YEAR, APRIL, -1, FRIDAY, time(0, 0), STANDARD, PERIOD_1HOUR);
@@ -383,8 +383,8 @@ public class TestZoneRulesBuilder {
 //        Zone    Europe/Sofia
 //        2:00    E-Eur   EE%sT   1997
 //        2:00    EU      EE%sT
-          ZoneOffset plus2 = ZoneOffset.zoneOffset(2);
-          ZoneOffset plus3 = ZoneOffset.zoneOffset(3);
+          ZoneOffset plus2 = ZoneOffset.hours(2);
+          ZoneOffset plus3 = ZoneOffset.hours(3);
           ZoneRulesBuilder b = new ZoneRulesBuilder();
           b.addWindow(plus2, dateTime(1997, 1, 1, 0, 0), WALL);
           b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(1, 0), WALL, PERIOD_1HOUR);
@@ -418,8 +418,8 @@ public class TestZoneRulesBuilder {
 //                            1:00    C-Eur CE%sT 1944 Sep 17 2:00s
 //                            1:00    Czech CE%sT 1979
 //                            1:00    EU    CE%sT
-        ZoneOffset plus1 = ZoneOffset.zoneOffset(1);
-        ZoneOffset plus2 = ZoneOffset.zoneOffset(2);
+        ZoneOffset plus1 = ZoneOffset.hours(1);
+        ZoneOffset plus2 = ZoneOffset.hours(2);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(plus1, dateTime(1944, 9, 17, 2, 0), STANDARD);
         b.addRuleToWindow(1944, 1945, APRIL, 1, MONDAY, time(2, 0), STANDARD, PERIOD_1HOUR);
@@ -456,8 +456,8 @@ public class TestZoneRulesBuilder {
 //    4:00 E-EurAsia  GE%sT   2004 Jun 27
 //    3:00 RussiaAsia GE%sT   2005 Mar lastSun 2:00
 //    4:00    -   GET
-        ZoneOffset plus4 = ZoneOffset.zoneOffset(4);
-        ZoneOffset plus5 = ZoneOffset.zoneOffset(5);
+        ZoneOffset plus4 = ZoneOffset.hours(4);
+        ZoneOffset plus5 = ZoneOffset.hours(5);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(plus4, dateTime(1996, 10, 27, 0, 0), WALL);
         b.addRuleToWindow(1996, Year.MAX_YEAR, MARCH, -1, SUNDAY, time(0, 0), WALL, PERIOD_1HOUR);
@@ -493,8 +493,8 @@ public class TestZoneRulesBuilder {
 //    -5:00   -   EST 2006 Apr  2 2:00
 //    -6:00   US  C%sT    2007 Nov  4 2:00
 //    -5:00   US  E%sT
-        ZoneOffset minus5 = ZoneOffset.zoneOffset(-5);
-        ZoneOffset minus6 = ZoneOffset.zoneOffset(-6);
+        ZoneOffset minus5 = ZoneOffset.hours(-5);
+        ZoneOffset minus6 = ZoneOffset.hours(-6);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(minus6, dateTime(2007, 11, 4, 2, 0), WALL);
         b.addRuleToWindow(2007, Year.MAX_YEAR, MARCH, 8, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
@@ -523,9 +523,9 @@ public class TestZoneRulesBuilder {
 //      Rule    NT_YK   1980   2006 -   Oct lastSun 2:00    0     S
 //                    -5:00   NT_YK   E%sT    1999 Oct 31 2:00
 //                    -6:00   Canada  C%sT
-        ZoneOffset minus4 = ZoneOffset.zoneOffset(-4);
-        ZoneOffset minus5 = ZoneOffset.zoneOffset(-5);
-        ZoneOffset minus6 = ZoneOffset.zoneOffset(-6);
+        ZoneOffset minus4 = ZoneOffset.hours(-4);
+        ZoneOffset minus5 = ZoneOffset.hours(-5);
+        ZoneOffset minus6 = ZoneOffset.hours(-6);
         ZoneRulesBuilder b = new ZoneRulesBuilder();
         b.addWindow(minus5, dateTime(1999, 10, 31, 2, 0), WALL);
         b.addRuleToWindow(1987, Year.MAX_YEAR, APRIL, 1, SUNDAY, time(2, 0), WALL, PERIOD_1HOUR);
@@ -949,15 +949,15 @@ public class TestZoneRulesBuilder {
 
     //-----------------------------------------------------------------------
     private static LocalTime time(int h, int m) {
-        return LocalTime.time(h, m);
+        return LocalTime.of(h, m);
     }
 
     private static LocalDateTime dateTime(int year, int month, int day, int h, int m) {
-        return LocalDateTime.dateTime(year, month, day, h, m);
+        return LocalDateTime.of(year, month, day, h, m);
     }
 
     private static LocalDateTime dateTime(int year, MonthOfYear month, int day, int h, int m) {
-        return LocalDateTime.dateTime(year, month, day, h, m);
+        return LocalDateTime.of(year, month, day, h, m);
     }
 
 }

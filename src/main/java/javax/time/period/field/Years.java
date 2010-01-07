@@ -74,7 +74,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
      * @param years  the number of years the instance will represent
      * @return the created Years
      */
-    public static Years years(int years) {
+    public static Years of(int years) {
         if (years == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Years.years(years);
+        return Years.of(years);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
      */
     @Override
     public Years withAmount(int amount) {
-        return Years.years(amount);
+        return Years.of(amount);
     }
 
     //-----------------------------------------------------------------------

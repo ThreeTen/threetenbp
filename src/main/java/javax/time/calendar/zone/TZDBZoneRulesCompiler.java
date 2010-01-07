@@ -356,7 +356,7 @@ public final class TZDBZoneRulesCompiler {
         }
         zone.text = st.nextToken();
         if (st.hasMoreTokens()) {
-            zone.year = Year.isoYear(Integer.parseInt(st.nextToken()));
+            zone.year = Year.of(Integer.parseInt(st.nextToken()));
             if (st.hasMoreTokens()) {
                 parseMonthDayTime(st, zone);
             }
@@ -421,7 +421,7 @@ public final class TZDBZoneRulesCompiler {
             throw new IllegalArgumentException("Unknown month: " + str);
         }
         int month = index / 3 + 1;
-        return MonthOfYear.monthOfYear(month);
+        return MonthOfYear.of(month);
     }
 
     private DayOfWeek parseDayOfWeek(String str) {
@@ -430,7 +430,7 @@ public final class TZDBZoneRulesCompiler {
             throw new IllegalArgumentException("Unknown day-of-week: " + str);
         }
         int dow = index / 3 + 1;
-        return DayOfWeek.dayOfWeek(dow);
+        return DayOfWeek.of(dow);
     }
 
     private String parseOptional(String str) {
@@ -477,7 +477,7 @@ public final class TZDBZoneRulesCompiler {
 
     private ZoneOffset parseOffset(String str) {
         int secs = parseSecs(str);
-        return ZoneOffset.forTotalSeconds(secs);
+        return ZoneOffset.fromTotalSeconds(secs);
     }
 
     private Period parsePeriod(String str) {
@@ -615,23 +615,23 @@ public final class TZDBZoneRulesCompiler {
             LocalDate date;
             if (dayOfMonth == -1) {
                 dayOfMonth = month.getLastDayOfMonth(ISOChronology.isLeapYear(year));
-                date = LocalDate.date(year, month, dayOfMonth);
+                date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }
             } else {
-                date = LocalDate.date(year, month, dayOfMonth);
+                date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
                 }
             }
             date = deduplicate(date);
-            return LocalDateTime.dateTime(date, time);
+            return LocalDateTime.from(date, time);
         }
 
         void adjustToFowards(int year) {
             if (adjustForwards == false && dayOfMonth > 0) {
-                LocalDate adjustedDate = LocalDate.date(year, month, dayOfMonth).minusDays(6);
+                LocalDate adjustedDate = LocalDate.of(year, month, dayOfMonth).minusDays(6);
                 dayOfMonth = adjustedDate.getDayOfMonth();
                 month = adjustedDate.getMonthOfYear();
                 adjustForwards = true;

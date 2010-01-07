@@ -144,7 +144,7 @@ public class TestNanoOfSecond {
 
     //-----------------------------------------------------------------------
     public void test_factory_Calendrical() {
-        LocalTime time = LocalTime.time(5, 10, 20, 0);
+        LocalTime time = LocalTime.of(5, 10, 20, 0);
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             NanoOfSecond test = NanoOfSecond.nanoOfSecond(time);
             assertEquals(test.getValue(), i);
@@ -180,7 +180,7 @@ public class TestNanoOfSecond {
     // adjustTime()
     //-----------------------------------------------------------------------
     public void test_adjustTime() {
-        LocalTime base = LocalTime.time(5, 10, 20, 0);
+        LocalTime base = LocalTime.of(5, 10, 20, 0);
         LocalTime expected = base;
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             NanoOfSecond test = NanoOfSecond.nanoOfSecond(i);
@@ -199,7 +199,7 @@ public class TestNanoOfSecond {
     // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical() {
-        LocalTime work = LocalTime.time(5, 10, 20, 0);
+        LocalTime work = LocalTime.of(5, 10, 20, 0);
         for (int i = 0; i <= MAX_LENGTH; i += SKIP) {
             for (int j = 0; j <= MAX_LENGTH; j += SKIP) {
                 NanoOfSecond test = NanoOfSecond.nanoOfSecond(j);
@@ -210,7 +210,7 @@ public class TestNanoOfSecond {
     }
 
     public void test_matchesCalendrical_noData() {
-        assertEquals(NanoOfSecond.nanoOfSecond(12).matchesCalendrical(LocalDate.date(2008, 6, 30)), false);
+        assertEquals(NanoOfSecond.nanoOfSecond(12).matchesCalendrical(LocalDate.of(2008, 6, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

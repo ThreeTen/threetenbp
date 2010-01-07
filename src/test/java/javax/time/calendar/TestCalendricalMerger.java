@@ -1075,19 +1075,19 @@ public class TestCalendricalMerger {
     }
 
     private LocalDate date(int year, int month, int day) {
-        return LocalDate.date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     private LocalTime time(int hour, int minute) {
-        return LocalTime.time(hour, minute);
+        return LocalTime.of(hour, minute);
     }
 
     private LocalTime time(int hour, int minute, int second, int nano) {
-        return LocalTime.time(hour, minute, second, nano);
+        return LocalTime.of(hour, minute, second, nano);
     }
 
     private LocalDateTime dateTime(int year, int month, int day, int hour, int minute) {
-        return LocalDateTime.dateTime(year, month, day, hour, minute);
+        return LocalDateTime.of(year, month, day, hour, minute);
     }
 
 }

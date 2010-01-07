@@ -73,7 +73,7 @@ public class TestYearMonth {
 
     @BeforeMethod
     public void setUp() {
-        TEST_2008_06 = YearMonth.yearMonth(2008, 6);
+        TEST_2008_06 = YearMonth.of(2008, 6);
     }
 
     //-----------------------------------------------------------------------
@@ -113,32 +113,17 @@ public class TestYearMonth {
         assertEquals(test.getYear(), y);
         assertEquals(test.getMonthOfYear().getValue(), m);
     }
-    
-    public void factory_objects() {
-        YearMonth test = YearMonth.yearMonth(Year.isoYear(2008), MonthOfYear.FEBRUARY);
-        check(test, 2008, 2);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objects_nullYear() {
-        YearMonth.yearMonth(null, MonthOfYear.JUNE);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void factory_objects_nullMonth() {
-        YearMonth.yearMonth(Year.isoYear(2008), null);
-    }
 
     //-----------------------------------------------------------------------
     public void factory_intsMonth() {
-        YearMonth test = YearMonth.yearMonth(2008, MonthOfYear.FEBRUARY);
+        YearMonth test = YearMonth.of(2008, MonthOfYear.FEBRUARY);
         check(test, 2008, 2);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_intsMonth_yearTooLow() {
         try {
-            YearMonth.yearMonth(Year.MIN_YEAR - 1, MonthOfYear.JANUARY);
+            YearMonth.of(Year.MIN_YEAR - 1, MonthOfYear.JANUARY);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
@@ -151,7 +136,7 @@ public class TestYearMonth {
             throw new IllegalCalendarFieldValueException("", RULE_YEAR);
         }
         try {
-            YearMonth.yearMonth(Year.MAX_YEAR + 1, MonthOfYear.JANUARY);
+            YearMonth.of(Year.MAX_YEAR + 1, MonthOfYear.JANUARY);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
@@ -160,19 +145,19 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_intsMonth_nullMonth() {
-        YearMonth.yearMonth(2008, null);
+        YearMonth.of(2008, null);
     }
 
     //-----------------------------------------------------------------------
     public void factory_ints() {
-        YearMonth test = YearMonth.yearMonth(2008, 2);
+        YearMonth test = YearMonth.of(2008, 2);
         check(test, 2008, 2);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_yearTooLow() {
         try {
-            YearMonth.yearMonth(Year.MIN_YEAR - 1, 2);
+            YearMonth.of(Year.MIN_YEAR - 1, 2);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
@@ -185,7 +170,7 @@ public class TestYearMonth {
             throw new IllegalCalendarFieldValueException("", RULE_YEAR);
         }
         try {
-            YearMonth.yearMonth(Year.MAX_YEAR + 1, 2);
+            YearMonth.of(Year.MAX_YEAR + 1, 2);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_YEAR);
             throw ex;
@@ -195,7 +180,7 @@ public class TestYearMonth {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_monthTooLow() {
         try {
-            YearMonth.yearMonth(2008, 0);
+            YearMonth.of(2008, 0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
@@ -205,7 +190,7 @@ public class TestYearMonth {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_monthTooHigh() {
         try {
-            YearMonth.yearMonth(2008, 13);
+            YearMonth.of(2008, 13);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
@@ -215,23 +200,23 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void factory_Calendrical() {
         Calendrical cal = new MockSimpleCalendrical(RULE_YEAR, 2008, RULE_MONTH, MonthOfYear.JUNE);
-        assertEquals(YearMonth.yearMonth(cal), TEST_2008_06);
+        assertEquals(YearMonth.from(cal), TEST_2008_06);
     }
 
     public void factory_Calendrical_otherFieldsIgnored() {
-        Calendrical cal = LocalDate.date(2008, 6, 30);
-        assertEquals(YearMonth.yearMonth(cal), TEST_2008_06);
+        Calendrical cal = LocalDate.of(2008, 6, 30);
+        assertEquals(YearMonth.from(cal), TEST_2008_06);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void factory_Calendrical_unsupportedField() {
-        Calendrical cal = LocalTime.time(12, 30);
-        YearMonth.yearMonth(cal);
+        Calendrical cal = LocalTime.of(12, 30);
+        YearMonth.from(cal);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_Calendrical_null() {
-        YearMonth.yearMonth((Calendrical) null);
+        YearMonth.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -243,7 +228,7 @@ public class TestYearMonth {
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
         assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
@@ -251,12 +236,12 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_get_CalendricalRule_null() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         test.get((CalendricalRule<?>) null);
     }
 
     public void test_get_unsupported() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
@@ -275,29 +260,29 @@ public class TestYearMonth {
 
     @Test(dataProvider="sampleDates")
     public void test_get(int y, int m) {
-        YearMonth a = YearMonth.yearMonth(y, m);
+        YearMonth a = YearMonth.of(y, m);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
         
-        assertEquals(a.toYear(), Year.isoYear(y));
+        assertEquals(a.toYear(), Year.of(y));
     }
 
     //-----------------------------------------------------------------------
     // with(Year)
     //-----------------------------------------------------------------------
     public void test_with_Year() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.with(Year.isoYear(2000)), YearMonth.yearMonth(2000, 6));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.with(Year.of(2000)), YearMonth.of(2000, 6));
     }
 
     public void test_with_Year_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertSame(test.with(Year.isoYear(2008)), test);
+        YearMonth test = YearMonth.of(2008, 6);
+        assertSame(test.with(Year.of(2008)), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_Year_null() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         test.with((Year) null);
     }
 
@@ -305,18 +290,18 @@ public class TestYearMonth {
     // with(MonthOfYear)
     //-----------------------------------------------------------------------
     public void test_with_MonthOfYear() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.with(MonthOfYear.JANUARY), YearMonth.yearMonth(2008, 1));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.with(MonthOfYear.JANUARY), YearMonth.of(2008, 1));
     }
 
     public void test_with_MonthOfYear_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.with(MonthOfYear.JUNE), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_MonthOfYear_null() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         test.with((MonthOfYear) null);
     }
 
@@ -324,18 +309,18 @@ public class TestYearMonth {
     // withYear()
     //-----------------------------------------------------------------------
     public void test_withYear() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.withYear(1999), YearMonth.yearMonth(1999, 6));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.withYear(1999), YearMonth.of(1999, 6));
     }
 
     public void test_withYear_int_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.withYear(2008), test);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withYear_tooLow() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         try {
             test.withYear(Year.MIN_YEAR - 1);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -349,7 +334,7 @@ public class TestYearMonth {
         if (Year.MAX_YEAR == Integer.MAX_VALUE) {
             throw new IllegalCalendarFieldValueException("", RULE_YEAR);
         }
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         try {
             test.withYear(Year.MAX_YEAR + 1);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -362,18 +347,18 @@ public class TestYearMonth {
     // withMonthOfYear()
     //-----------------------------------------------------------------------
     public void test_withMonthOfYear() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.withMonthOfYear(1), YearMonth.yearMonth(2008, 1));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.withMonthOfYear(1), YearMonth.of(2008, 1));
     }
 
     public void test_withMonthOfYear_int_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.withMonthOfYear(6), test);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withMonthOfYear_tooLow() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         try {
             test.withMonthOfYear(0);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -384,7 +369,7 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withMonthOfYear_tooHigh() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         try {
             test.withMonthOfYear(13);
         } catch (IllegalCalendarFieldValueException ex) {
@@ -397,84 +382,84 @@ public class TestYearMonth {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
-        YearMonth test = YearMonth.yearMonth(2008, 6).plus(provider);
-        assertEquals(test, YearMonth.yearMonth(2009, 8));
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
+        YearMonth test = YearMonth.of(2008, 6).plus(provider);
+        assertEquals(test, YearMonth.of(2009, 8));
     }
 
     public void test_plus_PeriodProvider_timeIgnored() {
-        PeriodProvider provider = Period.period(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
-        YearMonth test = YearMonth.yearMonth(2008, 6).plus(provider);
-        assertEquals(test, YearMonth.yearMonth(2009, 8));
+        PeriodProvider provider = Period.of(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
+        YearMonth test = YearMonth.of(2008, 6).plus(provider);
+        assertEquals(test, YearMonth.of(2009, 8));
     }
 
     public void test_plus_PeriodProvider_zero() {
-        YearMonth base = YearMonth.yearMonth(2008, 6);
+        YearMonth base = YearMonth.of(2008, 6);
         YearMonth test = base.plus(Period.ZERO);
         assertSame(test, base);
     }
 
     public void test_plus_PeriodProvider_previousValidResolver_oneMonth() {
         PeriodProvider provider = Period.months(1);
-        YearMonth test = YearMonth.yearMonth(2008, 6).plus(provider);
-        assertEquals(test, YearMonth.yearMonth(2008, 7));
+        YearMonth test = YearMonth.of(2008, 6).plus(provider);
+        assertEquals(test, YearMonth.of(2008, 7));
     }
 
     public void test_plus_PeriodProvider_previousValidResolver_oneYear() {
         PeriodProvider provider = Period.years(1);
-        YearMonth test = YearMonth.yearMonth(2008, 6).plus(provider);
-        assertEquals(test, YearMonth.yearMonth(2009, 6));
+        YearMonth test = YearMonth.of(2008, 6).plus(provider);
+        assertEquals(test, YearMonth.of(2009, 6));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PeriodProvider_null() {
-        YearMonth.yearMonth(2008, 6).plus((PeriodProvider) null);
+        YearMonth.of(2008, 6).plus((PeriodProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_plus_PeriodProvider_badProvider() {
-        YearMonth.yearMonth(2008, 6).plus(new MockPeriodProviderReturnsNull());
+        YearMonth.of(2008, 6).plus(new MockPeriodProviderReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooLarge() {
         PeriodProvider provider = Period.years(1);
-        YearMonth.yearMonth(Year.MAX_YEAR, 6).plus(provider);
+        YearMonth.of(Year.MAX_YEAR, 6).plus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooSmall() {
         PeriodProvider provider = Period.years(-1);
-        YearMonth.yearMonth(Year.MIN_YEAR, 6).plus(provider);
+        YearMonth.of(Year.MIN_YEAR, 6).plus(provider);
     }
 
     //-----------------------------------------------------------------------
     // plusYears()
     //-----------------------------------------------------------------------
     public void test_plusYears_int() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.plusYears(1), YearMonth.yearMonth(2009, 6));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.plusYears(1), YearMonth.of(2009, 6));
     }
 
     public void test_plusYears_int_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.plusYears(0), test);
     }
 
     public void test_plusYears_int_negative() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.plusYears(-1), YearMonth.yearMonth(2007, 6));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.plusYears(-1), YearMonth.of(2007, 6));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooLarge() {
-        YearMonth test = YearMonth.yearMonth(Year.MAX_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MAX_YEAR, 6);
         test.plusYears(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooSmall() {
-        YearMonth test = YearMonth.yearMonth(Year.MIN_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MIN_YEAR, 6);
         test.plusYears(-1);
     }
 
@@ -482,39 +467,39 @@ public class TestYearMonth {
     // plusMonths()
     //-----------------------------------------------------------------------
     public void test_plusMonths_int() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.plusMonths(1), YearMonth.yearMonth(2008, 7));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.plusMonths(1), YearMonth.of(2008, 7));
     }
 
     public void test_plusMonths_int_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.plusMonths(0), test);
     }
 
     public void test_plusMonths_int_overYears() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.plusMonths(7), YearMonth.yearMonth(2009, 1));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.plusMonths(7), YearMonth.of(2009, 1));
     }
 
     public void test_plusMonths_int_negative() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.plusMonths(-1), YearMonth.yearMonth(2008, 5));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.plusMonths(-1), YearMonth.of(2008, 5));
     }
 
     public void test_plusMonths_int_negativeOverYear() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.plusMonths(-6), YearMonth.yearMonth(2007, 12));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.plusMonths(-6), YearMonth.of(2007, 12));
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_invalidTooLarge() {
-        YearMonth test = YearMonth.yearMonth(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
         test.plusMonths(1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_invalidTooSmall() {
-        YearMonth test = YearMonth.yearMonth(Year.MIN_YEAR, 1);
+        YearMonth test = YearMonth.of(Year.MIN_YEAR, 1);
         test.plusMonths(-1);
     }
 
@@ -522,84 +507,84 @@ public class TestYearMonth {
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
-        YearMonth test = YearMonth.yearMonth(2008, 6).minus(provider);
-        assertEquals(test, YearMonth.yearMonth(2007, 4));
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
+        YearMonth test = YearMonth.of(2008, 6).minus(provider);
+        assertEquals(test, YearMonth.of(2007, 4));
     }
 
     public void test_minus_PeriodProvider_timeIgnored() {
-        PeriodProvider provider = Period.period(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
-        YearMonth test = YearMonth.yearMonth(2008, 6).minus(provider);
-        assertEquals(test, YearMonth.yearMonth(2007, 4));
+        PeriodProvider provider = Period.of(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
+        YearMonth test = YearMonth.of(2008, 6).minus(provider);
+        assertEquals(test, YearMonth.of(2007, 4));
     }
 
     public void test_minus_PeriodProvider_zero() {
-        YearMonth base = YearMonth.yearMonth(2008, 6);
+        YearMonth base = YearMonth.of(2008, 6);
         YearMonth test = base.minus(Period.ZERO);
         assertSame(test, base);
     }
 
     public void test_minus_PeriodProvider_previousValidResolver_oneMonth() {
         PeriodProvider provider = Period.months(1);
-        YearMonth test = YearMonth.yearMonth(2008, 6).minus(provider);
-        assertEquals(test, YearMonth.yearMonth(2008, 5));
+        YearMonth test = YearMonth.of(2008, 6).minus(provider);
+        assertEquals(test, YearMonth.of(2008, 5));
     }
 
     public void test_minus_PeriodProvider_previousValidResolver_oneYear() {
         PeriodProvider provider = Period.years(1);
-        YearMonth test = YearMonth.yearMonth(2008, 6).minus(provider);
-        assertEquals(test, YearMonth.yearMonth(2007, 6));
+        YearMonth test = YearMonth.of(2008, 6).minus(provider);
+        assertEquals(test, YearMonth.of(2007, 6));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_PeriodProvider_null() {
-        YearMonth.yearMonth(2008, 6).minus((PeriodProvider) null);
+        YearMonth.of(2008, 6).minus((PeriodProvider) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_minus_PeriodProvider_badProvider() {
-        YearMonth.yearMonth(2008, 6).minus(new MockPeriodProviderReturnsNull());
+        YearMonth.of(2008, 6).minus(new MockPeriodProviderReturnsNull());
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooLarge() {
         PeriodProvider provider = Period.years(-1);
-        YearMonth.yearMonth(Year.MAX_YEAR, 6).minus(provider);
+        YearMonth.of(Year.MAX_YEAR, 6).minus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooSmall() {
         PeriodProvider provider = Period.years(1);
-        YearMonth.yearMonth(Year.MIN_YEAR, 6).minus(provider);
+        YearMonth.of(Year.MIN_YEAR, 6).minus(provider);
     }
 
     //-----------------------------------------------------------------------
     // minusYears()
     //-----------------------------------------------------------------------
     public void test_minusYears_int() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.minusYears(1), YearMonth.yearMonth(2007, 6));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.minusYears(1), YearMonth.of(2007, 6));
     }
 
     public void test_minusYears_int_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.minusYears(0), test);
     }
 
     public void test_minusYears_int_negative() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.minusYears(-1), YearMonth.yearMonth(2009, 6));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.minusYears(-1), YearMonth.of(2009, 6));
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooLarge() {
-        YearMonth test = YearMonth.yearMonth(Year.MAX_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MAX_YEAR, 6);
         test.minusYears(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooSmall() {
-        YearMonth test = YearMonth.yearMonth(Year.MIN_YEAR, 6);
+        YearMonth test = YearMonth.of(Year.MIN_YEAR, 6);
         test.minusYears(1);
     }
 
@@ -607,39 +592,39 @@ public class TestYearMonth {
     // minusMonths()
     //-----------------------------------------------------------------------
     public void test_minusMonths_int() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.minusMonths(1), YearMonth.yearMonth(2008, 5));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.minusMonths(1), YearMonth.of(2008, 5));
     }
 
     public void test_minusMonths_int_noChange() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         assertSame(test.minusMonths(0), test);
     }
 
     public void test_minusMonths_int_overYears() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.minusMonths(6), YearMonth.yearMonth(2007, 12));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.minusMonths(6), YearMonth.of(2007, 12));
     }
 
     public void test_minusMonths_int_negative() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.minusMonths(-1), YearMonth.yearMonth(2008, 7));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.minusMonths(-1), YearMonth.of(2008, 7));
     }
 
     public void test_minusMonths_int_negativeOverYear() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.minusMonths(-7), YearMonth.yearMonth(2009, 1));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.minusMonths(-7), YearMonth.of(2009, 1));
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooLarge() {
-        YearMonth test = YearMonth.yearMonth(Year.MAX_YEAR, 12);
+        YearMonth test = YearMonth.of(Year.MAX_YEAR, 12);
         test.minusMonths(-1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooSmall() {
-        YearMonth test = YearMonth.yearMonth(Year.MIN_YEAR, 1);
+        YearMonth test = YearMonth.of(Year.MIN_YEAR, 1);
         test.minusMonths(1);
     }
 
@@ -647,47 +632,47 @@ public class TestYearMonth {
     // rollMonthOfYear()
     //-----------------------------------------------------------------------
     public void test_rollMonthOfYear() {
-        YearMonth base = YearMonth.yearMonth(2008, 7);
+        YearMonth base = YearMonth.of(2008, 7);
         assertSame(base.rollMonthOfYear(0), base);
-        assertEquals(base.rollMonthOfYear(1), YearMonth.yearMonth(2008, 8));
-        assertEquals(base.rollMonthOfYear(2), YearMonth.yearMonth(2008, 9));
-        assertEquals(base.rollMonthOfYear(3), YearMonth.yearMonth(2008, 10));
-        assertEquals(base.rollMonthOfYear(4), YearMonth.yearMonth(2008, 11));
-        assertEquals(base.rollMonthOfYear(5), YearMonth.yearMonth(2008, 12));
-        assertEquals(base.rollMonthOfYear(6), YearMonth.yearMonth(2008, 1));
-        assertEquals(base.rollMonthOfYear(7), YearMonth.yearMonth(2008, 2));
-        assertEquals(base.rollMonthOfYear(8), YearMonth.yearMonth(2008, 3));
-        assertEquals(base.rollMonthOfYear(9), YearMonth.yearMonth(2008, 4));
-        assertEquals(base.rollMonthOfYear(10), YearMonth.yearMonth(2008, 5));
-        assertEquals(base.rollMonthOfYear(11), YearMonth.yearMonth(2008, 6));
-        assertEquals(base.rollMonthOfYear(12), YearMonth.yearMonth(2008, 7));
+        assertEquals(base.rollMonthOfYear(1), YearMonth.of(2008, 8));
+        assertEquals(base.rollMonthOfYear(2), YearMonth.of(2008, 9));
+        assertEquals(base.rollMonthOfYear(3), YearMonth.of(2008, 10));
+        assertEquals(base.rollMonthOfYear(4), YearMonth.of(2008, 11));
+        assertEquals(base.rollMonthOfYear(5), YearMonth.of(2008, 12));
+        assertEquals(base.rollMonthOfYear(6), YearMonth.of(2008, 1));
+        assertEquals(base.rollMonthOfYear(7), YearMonth.of(2008, 2));
+        assertEquals(base.rollMonthOfYear(8), YearMonth.of(2008, 3));
+        assertEquals(base.rollMonthOfYear(9), YearMonth.of(2008, 4));
+        assertEquals(base.rollMonthOfYear(10), YearMonth.of(2008, 5));
+        assertEquals(base.rollMonthOfYear(11), YearMonth.of(2008, 6));
+        assertEquals(base.rollMonthOfYear(12), YearMonth.of(2008, 7));
         
-        assertEquals(base.rollMonthOfYear(-1), YearMonth.yearMonth(2008, 6));
-        assertEquals(base.rollMonthOfYear(-2), YearMonth.yearMonth(2008, 5));
-        assertEquals(base.rollMonthOfYear(-3), YearMonth.yearMonth(2008, 4));
-        assertEquals(base.rollMonthOfYear(-4), YearMonth.yearMonth(2008, 3));
-        assertEquals(base.rollMonthOfYear(-5), YearMonth.yearMonth(2008, 2));
-        assertEquals(base.rollMonthOfYear(-6), YearMonth.yearMonth(2008, 1));
-        assertEquals(base.rollMonthOfYear(-7), YearMonth.yearMonth(2008, 12));
-        assertEquals(base.rollMonthOfYear(-8), YearMonth.yearMonth(2008, 11));
-        assertEquals(base.rollMonthOfYear(-9), YearMonth.yearMonth(2008, 10));
-        assertEquals(base.rollMonthOfYear(-10), YearMonth.yearMonth(2008, 9));
-        assertEquals(base.rollMonthOfYear(-11), YearMonth.yearMonth(2008, 8));
-        assertEquals(base.rollMonthOfYear(-12), YearMonth.yearMonth(2008, 7));
+        assertEquals(base.rollMonthOfYear(-1), YearMonth.of(2008, 6));
+        assertEquals(base.rollMonthOfYear(-2), YearMonth.of(2008, 5));
+        assertEquals(base.rollMonthOfYear(-3), YearMonth.of(2008, 4));
+        assertEquals(base.rollMonthOfYear(-4), YearMonth.of(2008, 3));
+        assertEquals(base.rollMonthOfYear(-5), YearMonth.of(2008, 2));
+        assertEquals(base.rollMonthOfYear(-6), YearMonth.of(2008, 1));
+        assertEquals(base.rollMonthOfYear(-7), YearMonth.of(2008, 12));
+        assertEquals(base.rollMonthOfYear(-8), YearMonth.of(2008, 11));
+        assertEquals(base.rollMonthOfYear(-9), YearMonth.of(2008, 10));
+        assertEquals(base.rollMonthOfYear(-10), YearMonth.of(2008, 9));
+        assertEquals(base.rollMonthOfYear(-11), YearMonth.of(2008, 8));
+        assertEquals(base.rollMonthOfYear(-12), YearMonth.of(2008, 7));
     }
 
     //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
     public void test_adjustDate() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        assertEquals(test.adjustDate(date), LocalDate.date(2008, 6, 1));
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        assertEquals(test.adjustDate(date), LocalDate.of(2008, 6, 1));
     }
 
     public void test_adjustDate_same() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertSame(test.adjustDate(date), date);
     }
 
@@ -698,27 +683,27 @@ public class TestYearMonth {
 
     //-----------------------------------------------------------------------
     public void test_adjustDate_DateResolver() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.date(2008, 6, 1));
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2008, 6, 1));
     }
 
     public void test_adjustDate_DateResolver_same() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2008, 6, 30);
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2008, 6, 30);
         assertSame(test.adjustDate(date, DateResolvers.nextValid()), date);
     }
 
     public void test_adjustDate_DateResolver_resolve() {
-        YearMonth test = YearMonth.yearMonth(2008, 2);
-        LocalDate date = LocalDate.date(2007, 1, 31);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.date(2008, 3, 1));
+        YearMonth test = YearMonth.of(2008, 2);
+        LocalDate date = LocalDate.of(2007, 1, 31);
+        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2008, 3, 1));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_DateResolver_invalid() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2007, 1, 31);
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2007, 1, 31);
         try {
             test.adjustDate(date, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
@@ -734,15 +719,15 @@ public class TestYearMonth {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_DateResolver_nullResolver() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2008, 6, 30);  // same year-month, should still NPE
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2008, 6, 30);  // same year-month, should still NPE
         test.adjustDate(date, (DateResolver) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_DateResolver_badResolver() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        YearMonth test = YearMonth.of(2008, 6);
+        LocalDate date = LocalDate.of(2007, 6, 30);
         test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
@@ -750,12 +735,12 @@ public class TestYearMonth {
     // matchesDate()
     //-----------------------------------------------------------------------
     public void test_matchesDate() {
-        assertEquals(YearMonth.yearMonth(2008, 6).matchesCalendrical(LocalDate.date(2008, 6, 1)), true);
-        assertEquals(YearMonth.yearMonth(2007, 6).matchesCalendrical(LocalDate.date(2007, 6, 1)), true);
-        assertEquals(YearMonth.yearMonth(2008, 5).matchesCalendrical(LocalDate.date(2008, 5, 1)), true);
+        assertEquals(YearMonth.of(2008, 6).matchesCalendrical(LocalDate.of(2008, 6, 1)), true);
+        assertEquals(YearMonth.of(2007, 6).matchesCalendrical(LocalDate.of(2007, 6, 1)), true);
+        assertEquals(YearMonth.of(2008, 5).matchesCalendrical(LocalDate.of(2008, 5, 1)), true);
         
-        assertEquals(YearMonth.yearMonth(2007, 6).matchesCalendrical(LocalDate.date(2008, 6, 1)), false);
-        assertEquals(YearMonth.yearMonth(2008, 5).matchesCalendrical(LocalDate.date(2008, 6, 1)), false);
+        assertEquals(YearMonth.of(2007, 6).matchesCalendrical(LocalDate.of(2008, 6, 1)), false);
+        assertEquals(YearMonth.of(2008, 5).matchesCalendrical(LocalDate.of(2008, 6, 1)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -767,17 +752,17 @@ public class TestYearMonth {
     // lengthInDays()
     //-----------------------------------------------------------------------
     public void test_lengthInDays_june() {
-        YearMonth test = YearMonth.yearMonth(2007, 6);
+        YearMonth test = YearMonth.of(2007, 6);
         assertEquals(test.lengthInDays(), 30);
     }
 
     public void test_lengthInDays_febNonLeap() {
-        YearMonth test = YearMonth.yearMonth(2007, 2);
+        YearMonth test = YearMonth.of(2007, 2);
         assertEquals(test.lengthInDays(), 28);
     }
 
     public void test_lengthInDays_febLeap() {
-        YearMonth test = YearMonth.yearMonth(2008, 2);
+        YearMonth test = YearMonth.of(2008, 2);
         assertEquals(test.lengthInDays(), 29);
     }
 
@@ -785,7 +770,7 @@ public class TestYearMonth {
     // isValidDay(int)
     //-----------------------------------------------------------------------
     public void test_isValidDay_int_june() {
-        YearMonth test = YearMonth.yearMonth(2007, 6);
+        YearMonth test = YearMonth.of(2007, 6);
         assertEquals(test.isValidDay(1), true);
         assertEquals(test.isValidDay(30), true);
         
@@ -796,7 +781,7 @@ public class TestYearMonth {
     }
 
     public void test_isValidDay_int_febNonLeap() {
-        YearMonth test = YearMonth.yearMonth(2007, 2);
+        YearMonth test = YearMonth.of(2007, 2);
         assertEquals(test.isValidDay(1), true);
         assertEquals(test.isValidDay(28), true);
         
@@ -807,7 +792,7 @@ public class TestYearMonth {
     }
 
     public void test_isValidDay_int_febLeap() {
-        YearMonth test = YearMonth.yearMonth(2008, 2);
+        YearMonth test = YearMonth.of(2008, 2);
         assertEquals(test.isValidDay(1), true);
         assertEquals(test.isValidDay(29), true);
         
@@ -821,13 +806,13 @@ public class TestYearMonth {
     // atDay(int)
     //-----------------------------------------------------------------------
     public void test_atDay_int() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.atDay(30), LocalDate.date(2008, 6, 30));
+        YearMonth test = YearMonth.of(2008, 6);
+        assertEquals(test.atDay(30), LocalDate.of(2008, 6, 30));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_atDay_int_invalidDay() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
+        YearMonth test = YearMonth.of(2008, 6);
         try {
             test.atDay(31);
         } catch (InvalidCalendarFieldException ex) {
@@ -841,15 +826,15 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     public void test_comparisons() {
         doTest_comparisons_YearMonth(
-            YearMonth.yearMonth(-1, 1),
-            YearMonth.yearMonth(0, 1),
-            YearMonth.yearMonth(0, 12),
-            YearMonth.yearMonth(1, 1),
-            YearMonth.yearMonth(1, 2),
-            YearMonth.yearMonth(1, 12),
-            YearMonth.yearMonth(2008, 1),
-            YearMonth.yearMonth(2008, 6),
-            YearMonth.yearMonth(2008, 12)
+            YearMonth.of(-1, 1),
+            YearMonth.of(0, 1),
+            YearMonth.of(0, 12),
+            YearMonth.of(1, 1),
+            YearMonth.of(1, 2),
+            YearMonth.of(1, 12),
+            YearMonth.of(2008, 1),
+            YearMonth.of(2008, 6),
+            YearMonth.of(2008, 12)
         );
     }
 
@@ -897,10 +882,10 @@ public class TestYearMonth {
     // equals()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        YearMonth a = YearMonth.yearMonth(2008, 6);
-        YearMonth b = YearMonth.yearMonth(2008, 6);
-        YearMonth c = YearMonth.yearMonth(2007, 6);
-        YearMonth d = YearMonth.yearMonth(2008, 5);
+        YearMonth a = YearMonth.of(2008, 6);
+        YearMonth b = YearMonth.of(2008, 6);
+        YearMonth c = YearMonth.of(2007, 6);
+        YearMonth d = YearMonth.of(2008, 5);
         
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), true);
@@ -940,9 +925,9 @@ public class TestYearMonth {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_hashCode(int y, int m) {
-        YearMonth a = YearMonth.yearMonth(y, m);
+        YearMonth a = YearMonth.of(y, m);
         assertEquals(a.hashCode(), a.hashCode());
-        YearMonth b = YearMonth.yearMonth(y, m);
+        YearMonth b = YearMonth.of(y, m);
         assertEquals(a.hashCode(), b.hashCode());
     }
 
@@ -950,7 +935,7 @@ public class TestYearMonth {
         Set<Integer> uniques = new HashSet<Integer>(201 * 12);
         for (int i = 1900; i <= 2100; i++) {
             for (int j = 1; j <= 12; j++) {
-                assertTrue(uniques.add(YearMonth.yearMonth(i, j).hashCode()));
+                assertTrue(uniques.add(YearMonth.of(i, j).hashCode()));
             }
         }
     }
@@ -971,7 +956,7 @@ public class TestYearMonth {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int y, int m, String expected) {
-        YearMonth test = YearMonth.yearMonth(y, m);
+        YearMonth test = YearMonth.of(y, m);
         String str = test.toString();
         assertEquals(str, expected);
     }
@@ -982,30 +967,30 @@ public class TestYearMonth {
     @DataProvider(name="goodParseData")
     Object[][] provider_goodParseData() {
     	return new Object[][] {
-    			{"0000-01", YearMonth.yearMonth(0, 1)},
-    			{"0000-12", YearMonth.yearMonth(0, 12)},
-    			{"9999-12", YearMonth.yearMonth(9999, 12)},
-    			{"2000-01", YearMonth.yearMonth(2000, 1)},
-    			{"2000-02", YearMonth.yearMonth(2000, 2)},
-    			{"2000-03", YearMonth.yearMonth(2000, 3)},
-    			{"2000-04", YearMonth.yearMonth(2000, 4)},
-    			{"2000-05", YearMonth.yearMonth(2000, 5)},
-    			{"2000-06", YearMonth.yearMonth(2000, 6)},
-    			{"2000-07", YearMonth.yearMonth(2000, 7)},
-    			{"2000-08", YearMonth.yearMonth(2000, 8)},
-    			{"2000-09", YearMonth.yearMonth(2000, 9)},
-    			{"2000-10", YearMonth.yearMonth(2000, 10)},
-    			{"2000-11", YearMonth.yearMonth(2000, 11)},
-    			{"2000-12", YearMonth.yearMonth(2000, 12)},
+    			{"0000-01", YearMonth.of(0, 1)},
+    			{"0000-12", YearMonth.of(0, 12)},
+    			{"9999-12", YearMonth.of(9999, 12)},
+    			{"2000-01", YearMonth.of(2000, 1)},
+    			{"2000-02", YearMonth.of(2000, 2)},
+    			{"2000-03", YearMonth.of(2000, 3)},
+    			{"2000-04", YearMonth.of(2000, 4)},
+    			{"2000-05", YearMonth.of(2000, 5)},
+    			{"2000-06", YearMonth.of(2000, 6)},
+    			{"2000-07", YearMonth.of(2000, 7)},
+    			{"2000-08", YearMonth.of(2000, 8)},
+    			{"2000-09", YearMonth.of(2000, 9)},
+    			{"2000-10", YearMonth.of(2000, 10)},
+    			{"2000-11", YearMonth.of(2000, 11)},
+    			{"2000-12", YearMonth.of(2000, 12)},
     			
-                {"+12345678-03", YearMonth.yearMonth(12345678, 3)},
-                {"+123456-03", YearMonth.yearMonth(123456, 3)},
-                {"0000-03", YearMonth.yearMonth(0, 3)},
-                {"-1234-03", YearMonth.yearMonth(-1234, 3)},
-                {"-12345678-03", YearMonth.yearMonth(-12345678, 3)},
+                {"+12345678-03", YearMonth.of(12345678, 3)},
+                {"+123456-03", YearMonth.of(123456, 3)},
+                {"0000-03", YearMonth.of(0, 3)},
+                {"-1234-03", YearMonth.of(-1234, 3)},
+                {"-12345678-03", YearMonth.of(-12345678, 3)},
                 
-                {"+" + Year.MAX_YEAR + "-03", YearMonth.yearMonth(Year.MAX_YEAR, 3)},
-                {Year.MIN_YEAR + "-03", YearMonth.yearMonth(Year.MIN_YEAR, 3)},
+                {"+" + Year.MAX_YEAR + "-03", YearMonth.of(Year.MAX_YEAR, 3)},
+                {Year.MIN_YEAR + "-03", YearMonth.of(Year.MIN_YEAR, 3)},
     	};
     }
 

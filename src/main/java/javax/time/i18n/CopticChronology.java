@@ -312,9 +312,9 @@ public final class CopticChronology extends Chronology implements Serializable {
                 int year = merger.getValue(this);
                 CopticDate date;
                 if (merger.getContext().isStrict()) {
-                    date = CopticDate.copticDate(year, moyVal, domVal);
+                    date = CopticDate.of(year, moyVal, domVal);
                 } else {
-                    date = CopticDate.copticDate(year, 1, 1)
+                    date = CopticDate.of(year, 1, 1)
                                 .plusMonths(moyVal).plusMonths(-1).plusDays(domVal).plusDays(-1);
                 }
                 merger.storeMerged(LocalDate.rule(), date.toLocalDate());
@@ -428,9 +428,9 @@ public final class CopticChronology extends Chronology implements Serializable {
                 int doy = merger.getValue(this);
                 CopticDate date;
                 if (merger.getContext().isStrict()) {
-                    date = CopticDate.copticDate(yearVal, 1, 1).withDayOfYear(doy);
+                    date = CopticDate.of(yearVal, 1, 1).withDayOfYear(doy);
                 } else {
-                    date = CopticDate.copticDate(yearVal, 1, 1).plusDays(doy).plusDays(-1);
+                    date = CopticDate.of(yearVal, 1, 1).plusDays(doy).plusDays(-1);
                 }
                 merger.storeMerged(LocalDate.rule(), date.toLocalDate());
                 merger.removeProcessed(this);

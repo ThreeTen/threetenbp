@@ -36,7 +36,7 @@ public class TestJapaneseDate {
 
     @BeforeTest
     public void setUp() throws Exception {
-        testDate = JapaneseDate.japaneseDate(testEra, testYear, testMonthOfYear, testDayOfMonth);
+        testDate = JapaneseDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
@@ -76,31 +76,31 @@ public class TestJapaneseDate {
 
     @Test
     public void testJapaneseDateDateProvider() throws Exception {
-        assertEquals(JapaneseDate.japaneseDate(testDate), testDate);
+        assertEquals(JapaneseDate.from(testDate), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test(expectedExceptions=NullPointerException.class)
     public void testJapaneseDateDateProviderNull() throws Exception {
-        JapaneseDate.japaneseDate(null);
+        JapaneseDate.from(null);
     }
 
     @Test
     public void testJapaneseDateIntIntInt() throws Exception{
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth), testDate);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
     public void testJapaneseDateIntIntIntInt() throws Exception{
-        assertEquals(JapaneseDate.japaneseDate(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
+        assertEquals(JapaneseDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertJapaneseDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
     public void testJapaneseDateInvalidYear() throws Exception{
         try {
-            JapaneseDate.japaneseDate(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
+            JapaneseDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), JapaneseChronology.yearOfEraRule());
@@ -109,13 +109,13 @@ public class TestJapaneseDate {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void testJapaneseDateInvalidMonth() throws Exception{
-        JapaneseDate.japaneseDate(testYear, null, testDayOfMonth);
+        JapaneseDate.of(testYear, null, testDayOfMonth);
     }
 
     @Test
     public void testJapaneseDateInvalidDay() throws Exception{
         try {
-            JapaneseDate.japaneseDate(testYear, testMonthOfYear, 40);// Invalid day of month.
+            JapaneseDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), JapaneseChronology.dayOfMonthRule());
@@ -177,19 +177,19 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testGetDayOfWeek() {
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 2).getDayOfWeek(), DayOfWeek.MONDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 3).getDayOfWeek(), DayOfWeek.TUESDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 4).getDayOfWeek(), DayOfWeek.WEDNESDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.THURSDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.FRIDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.SATURDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.SUNDAY);
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 2).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 3).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 4).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.MONDAY);
     }
 
     @Test
     public void testGetDayOfWeekCrossCheck() throws Exception {
-        JapaneseDate date = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
+        JapaneseDate date = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth);
         assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek());
     }
 
@@ -204,7 +204,7 @@ public class TestJapaneseDate {
     @Test
     public void testWithYearOfEra() {
         JapaneseDate date = testDate.withYearOfEra(2010);
-        assertEquals(date, JapaneseDate.japaneseDate(2010, testMonthOfYear, testDayOfMonth));
+        assertEquals(date, JapaneseDate.of(2010, testMonthOfYear, testDayOfMonth));
     }
     
     @Test
@@ -234,7 +234,7 @@ public class TestJapaneseDate {
     @Test
     public void testWithYear() {
         JapaneseDate date = testDate.withYear(JapaneseEra.SHOWA, 48);
-        assertEquals(date, JapaneseDate.japaneseDate(JapaneseEra.SHOWA, 48, testMonthOfYear, testDayOfMonth));
+        assertEquals(date, JapaneseDate.of(JapaneseEra.SHOWA, 48, testMonthOfYear, testDayOfMonth));
     }
     
     @Test
@@ -263,7 +263,7 @@ public class TestJapaneseDate {
     @Test
     public void testWithMonthOfYear() {
         JapaneseDate date = testDate.withMonthOfYear(MonthOfYear.APRIL);
-        assertEquals(date, JapaneseDate.japaneseDate(testYear, MonthOfYear.APRIL, testDayOfMonth));
+        assertEquals(date, JapaneseDate.of(testYear, MonthOfYear.APRIL, testDayOfMonth));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -277,7 +277,7 @@ public class TestJapaneseDate {
     @Test
     public void testWithDayOfMonth() {
         JapaneseDate date = testDate.withDayOfMonth(4);
-        assertEquals(date, JapaneseDate.japaneseDate(testYear, testMonthOfYear, 4));
+        assertEquals(date, JapaneseDate.of(testYear, testMonthOfYear, 4));
     }
     
     @Test
@@ -306,7 +306,7 @@ public class TestJapaneseDate {
     @Test
     public void testWithDayOfYear() {
         JapaneseDate date = testDate.withDayOfYear(15);
-        assertEquals(date, JapaneseDate.japaneseDate(testYear, MonthOfYear.JANUARY, 15));
+        assertEquals(date, JapaneseDate.of(testYear, MonthOfYear.JANUARY, 15));
     }
     
     @Test
@@ -334,7 +334,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusYears() {
-        assertEquals(testDate.plusYears(10), JapaneseDate.japaneseDate(testYear+10, testMonthOfYear, testDayOfMonth));
+        assertEquals(testDate.plusYears(10), JapaneseDate.of(testYear+10, testMonthOfYear, testDayOfMonth));
     }
     
     @Test (expectedExceptions=CalendricalException.class)
@@ -347,7 +347,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusMonths() {
-        assertEquals(testDate.plusMonths(5), JapaneseDate.japaneseDate(testYear, testMonthOfYear.roll(5), testDayOfMonth));
+        assertEquals(testDate.plusMonths(5), JapaneseDate.of(testYear, testMonthOfYear.roll(5), testDayOfMonth));
     }
     
     @Test
@@ -365,7 +365,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusDays() {
-        assertEquals(testDate.plusDays(2), JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth+2));
+        assertEquals(testDate.plusDays(2), JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth+2));
     }
     
     @Test
@@ -383,7 +383,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusWeeks() {
-        assertEquals(testDate.plusWeeks(2), JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth+(2*7)));
+        assertEquals(testDate.plusWeeks(2), JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth+(2*7)));
     }
     
     @Test
@@ -401,7 +401,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusYears() {
-        assertEquals(testDate.minusYears(10), JapaneseDate.japaneseDate(testYear-10, testMonthOfYear, testDayOfMonth));
+        assertEquals(testDate.minusYears(10), JapaneseDate.of(testYear-10, testMonthOfYear, testDayOfMonth));
     }
     
     @Test (expectedExceptions=CalendricalException.class)
@@ -414,7 +414,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusMonths() {
-        assertEquals(testDate.minusMonths(1), JapaneseDate.japaneseDate(testYear, testMonthOfYear.previous(), testDayOfMonth));
+        assertEquals(testDate.minusMonths(1), JapaneseDate.of(testYear, testMonthOfYear.previous(), testDayOfMonth));
     }
     
     @Test
@@ -432,7 +432,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusDays() {
-        assertEquals(testDate.minusDays(2), JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth-2));
+        assertEquals(testDate.minusDays(2), JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth-2));
     }
     
     @Test
@@ -450,7 +450,7 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusWeeks() {
-        assertEquals(testDate.minusWeeks(2), JapaneseDate.japaneseDate(testYear, testMonthOfYear.previous(), 28+testDayOfMonth-(2*7)));
+        assertEquals(testDate.minusWeeks(2), JapaneseDate.of(testYear, testMonthOfYear.previous(), 28+testDayOfMonth-(2*7)));
     }
     
     @Test
@@ -468,8 +468,8 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testToLocalDate() {
-        assertEquals(JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth).toLocalDate(),
-                LocalDate.date(testGregorianYear, testMonthOfYear, testDayOfMonth));
+        assertEquals(JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth).toLocalDate(),
+                LocalDate.of(testGregorianYear, testMonthOfYear, testDayOfMonth));
     }
 
     //-----------------------------------------------------------------------
@@ -478,18 +478,18 @@ public class TestJapaneseDate {
     @Test
     public void testCompareTo() throws Exception {
         doTestComparisons(
-            JapaneseDate.japaneseDate(1, MonthOfYear.JANUARY, 1),
-            JapaneseDate.japaneseDate(1, MonthOfYear.JANUARY, 2),
-            JapaneseDate.japaneseDate(1, MonthOfYear.JANUARY, 31),
-            JapaneseDate.japaneseDate(1, MonthOfYear.FEBRUARY, 1),
-            JapaneseDate.japaneseDate(1, MonthOfYear.FEBRUARY, 28),
-            JapaneseDate.japaneseDate(1, MonthOfYear.DECEMBER, 31),
-            JapaneseDate.japaneseDate(2, MonthOfYear.JANUARY, 1),
-            JapaneseDate.japaneseDate(2, MonthOfYear.DECEMBER, 31),
-            JapaneseDate.japaneseDate(3, MonthOfYear.JANUARY, 1),
-            JapaneseDate.japaneseDate(3, MonthOfYear.DECEMBER, 31),
-            JapaneseDate.japaneseDate(9999, MonthOfYear.JANUARY, 1),
-            JapaneseDate.japaneseDate(9999, MonthOfYear.DECEMBER, 31)
+            JapaneseDate.of(1, MonthOfYear.JANUARY, 1),
+            JapaneseDate.of(1, MonthOfYear.JANUARY, 2),
+            JapaneseDate.of(1, MonthOfYear.JANUARY, 31),
+            JapaneseDate.of(1, MonthOfYear.FEBRUARY, 1),
+            JapaneseDate.of(1, MonthOfYear.FEBRUARY, 28),
+            JapaneseDate.of(1, MonthOfYear.DECEMBER, 31),
+            JapaneseDate.of(2, MonthOfYear.JANUARY, 1),
+            JapaneseDate.of(2, MonthOfYear.DECEMBER, 31),
+            JapaneseDate.of(3, MonthOfYear.JANUARY, 1),
+            JapaneseDate.of(3, MonthOfYear.DECEMBER, 31),
+            JapaneseDate.of(9999, MonthOfYear.JANUARY, 1),
+            JapaneseDate.of(9999, MonthOfYear.DECEMBER, 31)
         );
     }
 
@@ -545,8 +545,8 @@ public class TestJapaneseDate {
     //-----------------------------------------------------------------------
     @Test
     public void testEqualsEaual() throws Exception {
-        JapaneseDate a = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
-        JapaneseDate b = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
+        JapaneseDate a = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        JapaneseDate b = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth);
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(a.equals(a), true);
@@ -555,8 +555,8 @@ public class TestJapaneseDate {
     
     @Test
     public void testEqualsNotEqualDay() throws Exception {
-        JapaneseDate a = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
-        JapaneseDate b = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth+1);
+        JapaneseDate a = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        JapaneseDate b = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth+1);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -565,8 +565,8 @@ public class TestJapaneseDate {
 
     @Test
     public void testEqualsNotEqualMonth() throws Exception {
-        JapaneseDate a = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
-        JapaneseDate b = JapaneseDate.japaneseDate(testYear, testMonthOfYear.next(), testDayOfMonth);
+        JapaneseDate a = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        JapaneseDate b = JapaneseDate.of(testYear, testMonthOfYear.next(), testDayOfMonth);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -575,8 +575,8 @@ public class TestJapaneseDate {
 
     @Test
     public void testEqualsNotEqualYear() throws Exception {
-        JapaneseDate a = JapaneseDate.japaneseDate(testYear, testMonthOfYear, testDayOfMonth);
-        JapaneseDate b = JapaneseDate.japaneseDate(testYear+1, testMonthOfYear, testDayOfMonth);
+        JapaneseDate a = JapaneseDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        JapaneseDate b = JapaneseDate.of(testYear+1, testMonthOfYear, testDayOfMonth);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -599,8 +599,8 @@ public class TestJapaneseDate {
 
     @Test
     public void testHashCode() throws Exception {
-        JapaneseDate a = JapaneseDate.japaneseDate(1, MonthOfYear.JANUARY, 1);
-        JapaneseDate b = JapaneseDate.japaneseDate(1, MonthOfYear.JANUARY, 1);
+        JapaneseDate a = JapaneseDate.of(1, MonthOfYear.JANUARY, 1);
+        JapaneseDate b = JapaneseDate.of(1, MonthOfYear.JANUARY, 1);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(b.hashCode(), b.hashCode());

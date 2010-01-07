@@ -101,14 +101,14 @@ public class TestPeriodParser {
             {"PT" + Integer.MAX_VALUE + "S", Period.seconds(Integer.MAX_VALUE)},
             {"PT" + Integer.MIN_VALUE + "S", Period.seconds(Integer.MIN_VALUE)},
             
-            {"PT0.1S", Period.period( 0, 0, 0, 0, 0, 0, 100000000 ) },
-            {"PT-0.1S", Period.period( 0, 0, 0, 0, 0, 0, -100000000 ) },
-            {"PT1.1S", Period.period( 0, 0, 0, 0, 0, 1, 100000000 ) },
-            {"PT-1.1S", Period.period( 0, 0, 0, 0, 0, -1, -100000000 ) },
+            {"PT0.1S", Period.of( 0, 0, 0, 0, 0, 0, 100000000 ) },
+            {"PT-0.1S", Period.of( 0, 0, 0, 0, 0, 0, -100000000 ) },
+            {"PT1.1S", Period.of( 0, 0, 0, 0, 0, 1, 100000000 ) },
+            {"PT-1.1S", Period.of( 0, 0, 0, 0, 0, -1, -100000000 ) },
             {"PT1.0001S", Period.seconds(1).plusNanos( 100000 ) },
             {"PT1.0000001S", Period.seconds(1).plusNanos( 100 ) },
-            {"PT1.123456789S", Period.period( 0, 0, 0, 0, 0, 1, 123456789 ) },
-            {"PT1.999999999S", Period.period( 0, 0, 0, 0, 0, 1, 999999999 ) },
+            {"PT1.123456789S", Period.of( 0, 0, 0, 0, 0, 1, 123456789 ) },
+            {"PT1.999999999S", Period.of( 0, 0, 0, 0, 0, 1, 999999999 ) },
 
         };
     }

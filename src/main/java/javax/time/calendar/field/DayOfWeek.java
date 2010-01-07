@@ -109,7 +109,7 @@ public enum DayOfWeek {
      * @return the DayOfWeek singleton, never null
      * @throws IllegalCalendarFieldValueException if the day-of-week is invalid
      */
-    public static DayOfWeek dayOfWeek(int dayOfWeek) {
+    public static DayOfWeek of(int dayOfWeek) {
         switch (dayOfWeek) {
             case 1:
                 return MONDAY;

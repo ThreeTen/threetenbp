@@ -81,6 +81,8 @@ public final class LocalDateTime
      * Obtains an instance of <code>LocalDateTime</code> from year, month and
      * day with the time set to midnight at the start of day.
      * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -90,8 +92,8 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateMidnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+    public static LocalDateTime midnight(int year, MonthOfYear monthOfYear, int dayOfMonth) {
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -99,6 +101,8 @@ public final class LocalDateTime
      * Obtains an instance of <code>LocalDateTime</code> from year, month and
      * day with the time set to midnight at the start of day.
      * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
      * The time fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -108,8 +112,8 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateMidnight(int year, int monthOfYear, int dayOfMonth) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+    public static LocalDateTime midnight(int year, int monthOfYear, int dayOfMonth) {
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -117,13 +121,15 @@ public final class LocalDateTime
      * Obtains an instance of <code>LocalDateTime</code> from a date with the
      * time set to midnight at the start of day.
      * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
      * The time fields will be set to zero by this factory method.
      *
      * @param dateProvider  the date provider to use, not null
      * @return the local date-time, never null
      */
-    public static LocalDateTime dateMidnight(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
+    public static LocalDateTime midnightFrom(DateProvider dateProvider) {
+        LocalDate date = LocalDate.of(dateProvider);
         return new LocalDateTime(date, LocalTime.MIDNIGHT);
     }
 
@@ -132,6 +138,8 @@ public final class LocalDateTime
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -143,17 +151,19 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateTime(
+    public static LocalDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
         return new LocalDateTime(date, time);
     }
 
     /**
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
      *
@@ -167,17 +177,19 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateTime(
+    public static LocalDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
         return new LocalDateTime(date, time);
     }
 
     /**
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
      * day, hour, minute, second and nanosecond.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
@@ -190,11 +202,11 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateTime(
+    public static LocalDateTime of(
             int year, MonthOfYear monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
 
@@ -203,6 +215,8 @@ public final class LocalDateTime
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
      * day, hour and minute, setting the second and nanosecond to zero.
      * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
+     * <p>
      * The second and nanosecond fields will be set to zero by this factory method.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
@@ -214,17 +228,19 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateTime(
+    public static LocalDateTime of(
             int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour);
         return new LocalDateTime(date, time);
     }
 
     /**
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
      * day, hour, minute and second, setting the nanosecond to zero.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
      * <p>
      * The nanosecond field will be set to zero by this factory method.
      *
@@ -238,17 +254,19 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateTime(
+    public static LocalDateTime of(
             int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute);
         return new LocalDateTime(date, time);
     }
 
     /**
      * Obtains an instance of <code>LocalDateTime</code> from year, month,
      * day, hour, minute, second and nanosecond.
+     * <p>
+     * The day must be valid for the year and month or an exception will be thrown.
      *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, from 1 (January) to 12 (December)
@@ -261,11 +279,11 @@ public final class LocalDateTime
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static LocalDateTime dateTime(
+    public static LocalDateTime of(
             int year, int monthOfYear, int dayOfMonth,
             int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
-        LocalTime time = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
+        LocalTime time = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return new LocalDateTime(date, time);
     }
 
@@ -277,9 +295,9 @@ public final class LocalDateTime
      * @param timeProvider  the time provider to use, not null
      * @return the local date-time, never null
      */
-    public static LocalDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
-        LocalTime time = LocalTime.time(timeProvider);
+    public static LocalDateTime from(DateProvider dateProvider, TimeProvider timeProvider) {
+        LocalDate date = LocalDate.of(dateProvider);
+        LocalTime time = LocalTime.from(timeProvider);
         return new LocalDateTime(date, time);
     }
 
@@ -294,7 +312,7 @@ public final class LocalDateTime
      * @param dateTimeProvider  the date-time provider to use, not null
      * @return the local date-time, never null
      */
-    public static LocalDateTime dateTime(DateTimeProvider dateTimeProvider) {
+    public static LocalDateTime from(DateTimeProvider dateTimeProvider) {
         ISOChronology.checkNotNull(dateTimeProvider, "DateTimeProvider must not be null");
         LocalDateTime result = dateTimeProvider.toLocalDateTime();
         ISOChronology.checkNotNull(result, "DateTimeProvider implementation must not return null");
@@ -703,7 +721,7 @@ public final class LocalDateTime
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }
-        LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalDate newDate = LocalDate.of(year, monthOfYear, dayOfMonth);
         return with(newDate, time);
     }
 
@@ -728,7 +746,7 @@ public final class LocalDateTime
                 dayOfMonth == getDayOfMonth()) {
             return this;
         }
-        LocalDate newDate = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalDate newDate = LocalDate.of(year, monthOfYear, dayOfMonth);
         return with(newDate, time);
     }
 
@@ -848,7 +866,7 @@ public final class LocalDateTime
                 secondOfMinute == getSecondOfMinute() && nanoOfSecond == getNanoOfSecond()) {
             return this;
         }
-        LocalTime newTime = LocalTime.time(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
+        LocalTime newTime = LocalTime.of(hourOfDay, minuteOfHour, secondOfMinute, nanoOfSecond);
         return with(date, newTime);
     }
 
@@ -1349,7 +1367,7 @@ public final class LocalDateTime
      * @return the offset date-time formed from this date-time and the specified offset, never null
      */
     public OffsetDateTime atOffset(ZoneOffset offset) {
-        return OffsetDateTime.dateTime(this, offset);
+        return OffsetDateTime.from(this, offset);
     }
 
     /**
@@ -1371,7 +1389,7 @@ public final class LocalDateTime
      * @return the zoned date-time formed from this date-time, never null
      */
     public ZonedDateTime atZone(TimeZone zone) {
-        return ZonedDateTime.dateTime(this, zone, ZoneResolvers.postTransition());
+        return ZonedDateTime.from(this, zone, ZoneResolvers.postTransition());
     }
 
     /**
@@ -1390,7 +1408,7 @@ public final class LocalDateTime
      * @throws CalendricalException if the date-time cannot be resolved
      */
     public ZonedDateTime atZone(TimeZone zone, ZoneResolver resolver) {
-        return ZonedDateTime.dateTime(this, zone, resolver);
+        return ZonedDateTime.from(this, zone, resolver);
     }
 
     //-----------------------------------------------------------------------
@@ -1557,7 +1575,7 @@ public final class LocalDateTime
             ZoneOffset offset = merger.getValue(ZoneOffset.rule());
             if (offset != null) {
                 LocalDateTime dateTime = merger.getValue(this);
-                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.dateTime(dateTime, offset));
+                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.from(dateTime, offset));
                 merger.removeProcessed(this);
                 merger.removeProcessed(ZoneOffset.rule());
             }

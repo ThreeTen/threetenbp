@@ -110,7 +110,7 @@ public abstract class Clock {
      * @return a clock that uses the system millisecond clock in the specified zone, never null
      */
     public static Clock systemDefaultZone() {
-        TimeZone zone = TimeZone.timeZone(java.util.TimeZone.getDefault().getID());
+        TimeZone zone = TimeZone.of(java.util.TimeZone.getDefault().getID());
         return new TimeSourceClock(TimeSource.system(), zone);
     }
 
@@ -142,7 +142,7 @@ public abstract class Clock {
      */
     public static Clock clockDefaultZone(TimeSource timeSource) {
         ISOChronology.checkNotNull(timeSource, "TimeSource must not be null");
-        TimeZone zone = TimeZone.timeZone(java.util.TimeZone.getDefault().getID());
+        TimeZone zone = TimeZone.of(java.util.TimeZone.getDefault().getID());
         return new TimeSourceClock(timeSource, zone);
     }
 
@@ -312,7 +312,7 @@ public abstract class Clock {
      */
     public YearMonth yearMonth() {
         LocalDate today = today();
-        return YearMonth.yearMonth(today.getYear(), today.getMonthOfYear());
+        return YearMonth.of(today.getYear(), today.getMonthOfYear());
     }
 
     /**
@@ -325,7 +325,7 @@ public abstract class Clock {
      * @throws CalendricalException if the year cannot be created
      */
     public Year year() {
-        return Year.isoYear(today().getYear());
+        return today().toYear();
     }
 
     //-----------------------------------------------------------------------

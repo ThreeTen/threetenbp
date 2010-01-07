@@ -68,7 +68,7 @@ public class TestMonthDay {
 
     @BeforeMethod
     public void setUp() {
-        TEST_07_15 = MonthDay.monthDay(7, 15);
+        TEST_07_15 = MonthDay.of(7, 15);
     }
 
     //-----------------------------------------------------------------------
@@ -111,13 +111,13 @@ public class TestMonthDay {
 
     //-----------------------------------------------------------------------
     public void factory_intMonth() {
-        assertEquals(TEST_07_15, MonthDay.monthDay(MonthOfYear.JULY, 15));
+        assertEquals(TEST_07_15, MonthDay.of(MonthOfYear.JULY, 15));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_intMonth_dayTooLow() {
         try {
-            MonthDay.monthDay(MonthOfYear.JANUARY, 0);
+            MonthDay.of(MonthOfYear.JANUARY, 0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -127,7 +127,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_intMonth_dayTooHigh() {
         try {
-            MonthDay.monthDay(MonthOfYear.JANUARY, 32);
+            MonthDay.of(MonthOfYear.JANUARY, 32);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -136,7 +136,7 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_intMonth_nullMonth() {
-        MonthDay.monthDay(null, 15);
+        MonthDay.of(null, 15);
     }
 
     //-----------------------------------------------------------------------
@@ -147,7 +147,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_dayTooLow() {
         try {
-            MonthDay.monthDay(1, 0);
+            MonthDay.of(1, 0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -157,7 +157,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_dayTooHigh() {
         try {
-            MonthDay.monthDay(1, 32);
+            MonthDay.of(1, 32);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -168,7 +168,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_monthTooLow() {
         try {
-            MonthDay.monthDay(0, 1);
+            MonthDay.of(0, 1);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
@@ -178,7 +178,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_ints_monthTooHigh() {
         try {
-            MonthDay.monthDay(13, 1);
+            MonthDay.of(13, 1);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
@@ -188,23 +188,23 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void factory_Calendrical() {
         Calendrical cal = new MockSimpleCalendrical(RULE_MONTH, MonthOfYear.JULY, RULE_DOM, 15);
-        assertEquals(MonthDay.monthDay(cal), TEST_07_15);
+        assertEquals(MonthDay.from(cal), TEST_07_15);
     }
 
     public void factory_Calendrical_otherFieldsIgnored() {
-        Calendrical cal = LocalDate.date(2007, 7, 15);
-        assertEquals(MonthDay.monthDay(cal), TEST_07_15);
+        Calendrical cal = LocalDate.of(2007, 7, 15);
+        assertEquals(MonthDay.from(cal), TEST_07_15);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void factory_Calendrical_unsupportedField() {
-        Calendrical cal = LocalTime.time(12, 30);
-        MonthDay.monthDay(cal);
+        Calendrical cal = LocalTime.of(12, 30);
+        MonthDay.from(cal);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_Calendrical_null() {
-        MonthDay.monthDay((Calendrical) null);
+        MonthDay.from((Calendrical) null);
     }
 
     //-----------------------------------------------------------------------
@@ -216,7 +216,7 @@ public class TestMonthDay {
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
-        MonthDay test = MonthDay.monthDay(6, 12);
+        MonthDay test = MonthDay.of(6, 12);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
         assertEquals(test.get(ISOChronology.monthOfQuarterRule()), (Integer) 3);
         assertEquals(test.get(ISOChronology.dayOfMonthRule()), (Integer) 12);
@@ -224,12 +224,12 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class )
     public void test_get_CalendricalRule_null() {
-        MonthDay test = MonthDay.monthDay(6, 12);
+        MonthDay test = MonthDay.of(6, 12);
         test.get((CalendricalRule<?>) null);
     }
 
     public void test_get_unsupported() {
-        MonthDay test = MonthDay.monthDay(6, 12);
+        MonthDay test = MonthDay.of(6, 12);
         assertEquals(test.get(MockRuleNoValue.INSTANCE), null);
     }
 
@@ -251,8 +251,8 @@ public class TestMonthDay {
 
     @Test(dataProvider="sampleDates")
     public void test_get(int m, int d) {
-        MonthDay a = MonthDay.monthDay(m, d);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        MonthDay a = MonthDay.of(m, d);
+        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
@@ -260,51 +260,51 @@ public class TestMonthDay {
     // with(MonthOfYear)
     //-----------------------------------------------------------------------
     public void test_with_MonthOfYear() {
-        assertEquals(MonthDay.monthDay(6, 30).with(MonthOfYear.JANUARY), MonthDay.monthDay(1, 30));
+        assertEquals(MonthDay.of(6, 30).with(MonthOfYear.JANUARY), MonthDay.of(1, 30));
     }
 
     public void test_with_MonthOfYear_adjustToValid() {
-        assertEquals(MonthDay.monthDay(7, 31).with(MonthOfYear.JUNE), MonthDay.monthDay(6, 30));
+        assertEquals(MonthDay.of(7, 31).with(MonthOfYear.JUNE), MonthDay.of(6, 30));
     }
 
     public void test_with_MonthOfYear_adjustToValidFeb() {
-        assertEquals(MonthDay.monthDay(7, 31).with(MonthOfYear.FEBRUARY), MonthDay.monthDay(2, 29));
+        assertEquals(MonthDay.of(7, 31).with(MonthOfYear.FEBRUARY), MonthDay.of(2, 29));
     }
 
     public void test_with_MonthOfYear_noChange() {
-        MonthDay test = MonthDay.monthDay(6, 30);
+        MonthDay test = MonthDay.of(6, 30);
         assertSame(test.with(MonthOfYear.JUNE), test);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_with_MonthOfYear_null() {
-        MonthDay.monthDay(6, 30).with((MonthOfYear) null);
+        MonthDay.of(6, 30).with((MonthOfYear) null);
     }
 
     //-----------------------------------------------------------------------
     // withMonthOfYear()
     //-----------------------------------------------------------------------
     public void test_withMonthOfYear() {
-        assertEquals(MonthDay.monthDay(6, 30).withMonthOfYear(1), MonthDay.monthDay(1, 30));
+        assertEquals(MonthDay.of(6, 30).withMonthOfYear(1), MonthDay.of(1, 30));
     }
 
     public void test_withMonthOfYear_adjustToValid() {
-        assertEquals(MonthDay.monthDay(7, 31).withMonthOfYear(6), MonthDay.monthDay(6, 30));
+        assertEquals(MonthDay.of(7, 31).withMonthOfYear(6), MonthDay.of(6, 30));
     }
 
     public void test_withMonthOfYear_adjustToValidFeb() {
-        assertEquals(MonthDay.monthDay(7, 31).withMonthOfYear(2), MonthDay.monthDay(2, 29));
+        assertEquals(MonthDay.of(7, 31).withMonthOfYear(2), MonthDay.of(2, 29));
     }
 
     public void test_withMonthOfYear_int_noChange() {
-        MonthDay test = MonthDay.monthDay(6, 30);
+        MonthDay test = MonthDay.of(6, 30);
         assertSame(test.withMonthOfYear(6), test);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withMonthOfYear_tooLow() {
         try {
-            MonthDay.monthDay(6, 30).withMonthOfYear(0);
+            MonthDay.of(6, 30).withMonthOfYear(0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
@@ -314,7 +314,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withMonthOfYear_tooHigh() {
         try {
-            MonthDay.monthDay(6, 30).withMonthOfYear(13);
+            MonthDay.of(6, 30).withMonthOfYear(13);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_MONTH);
             throw ex;
@@ -325,13 +325,13 @@ public class TestMonthDay {
     // withDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_withDayOfMonth() {
-        assertEquals(MonthDay.monthDay(6, 30).withDayOfMonth(1), MonthDay.monthDay(6, 1));
+        assertEquals(MonthDay.of(6, 30).withDayOfMonth(1), MonthDay.of(6, 1));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withDayOfMonth_invalid() {
         try {
-            MonthDay.monthDay(6, 30).withDayOfMonth(31);
+            MonthDay.of(6, 30).withDayOfMonth(31);
         } catch (InvalidCalendarFieldException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -339,18 +339,18 @@ public class TestMonthDay {
     }
 
     public void test_withDayOfMonth_adjustToValidFeb() {
-        assertEquals(MonthDay.monthDay(2, 1).withDayOfMonth(29), MonthDay.monthDay(2, 29));
+        assertEquals(MonthDay.of(2, 1).withDayOfMonth(29), MonthDay.of(2, 29));
     }
 
     public void test_withDayOfMonth_noChange() {
-        MonthDay test = MonthDay.monthDay(6, 30);
+        MonthDay test = MonthDay.of(6, 30);
         assertSame(test.withDayOfMonth(30), test);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDayOfMonth_tooLow() {
         try {
-            MonthDay.monthDay(6, 30).withDayOfMonth(0);
+            MonthDay.of(6, 30).withDayOfMonth(0);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -360,7 +360,7 @@ public class TestMonthDay {
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_withDayOfMonth_tooHigh() {
         try {
-            MonthDay.monthDay(6, 30).withDayOfMonth(32);
+            MonthDay.of(6, 30).withDayOfMonth(32);
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), RULE_DOM);
             throw ex;
@@ -371,75 +371,75 @@ public class TestMonthDay {
     // rollMonthOfYear()
     //-----------------------------------------------------------------------
     public void test_rollMonthOfYear() {
-        MonthDay base = MonthDay.monthDay(7, 31);
+        MonthDay base = MonthDay.of(7, 31);
         assertSame(base.rollMonthOfYear(0), base);
-        assertEquals(base.rollMonthOfYear(1), MonthDay.monthDay(8, 31));
-        assertEquals(base.rollMonthOfYear(2), MonthDay.monthDay(9, 30));
-        assertEquals(base.rollMonthOfYear(3), MonthDay.monthDay(10, 31));
-        assertEquals(base.rollMonthOfYear(4), MonthDay.monthDay(11, 30));
-        assertEquals(base.rollMonthOfYear(5), MonthDay.monthDay(12, 31));
-        assertEquals(base.rollMonthOfYear(6), MonthDay.monthDay(1, 31));
-        assertEquals(base.rollMonthOfYear(7), MonthDay.monthDay(2, 29));
-        assertEquals(base.rollMonthOfYear(8), MonthDay.monthDay(3, 31));
-        assertEquals(base.rollMonthOfYear(9), MonthDay.monthDay(4, 30));
-        assertEquals(base.rollMonthOfYear(10), MonthDay.monthDay(5, 31));
-        assertEquals(base.rollMonthOfYear(11), MonthDay.monthDay(6, 30));
-        assertEquals(base.rollMonthOfYear(12), MonthDay.monthDay(7, 31));
+        assertEquals(base.rollMonthOfYear(1), MonthDay.of(8, 31));
+        assertEquals(base.rollMonthOfYear(2), MonthDay.of(9, 30));
+        assertEquals(base.rollMonthOfYear(3), MonthDay.of(10, 31));
+        assertEquals(base.rollMonthOfYear(4), MonthDay.of(11, 30));
+        assertEquals(base.rollMonthOfYear(5), MonthDay.of(12, 31));
+        assertEquals(base.rollMonthOfYear(6), MonthDay.of(1, 31));
+        assertEquals(base.rollMonthOfYear(7), MonthDay.of(2, 29));
+        assertEquals(base.rollMonthOfYear(8), MonthDay.of(3, 31));
+        assertEquals(base.rollMonthOfYear(9), MonthDay.of(4, 30));
+        assertEquals(base.rollMonthOfYear(10), MonthDay.of(5, 31));
+        assertEquals(base.rollMonthOfYear(11), MonthDay.of(6, 30));
+        assertEquals(base.rollMonthOfYear(12), MonthDay.of(7, 31));
         
-        assertEquals(base.rollMonthOfYear(-1), MonthDay.monthDay(6, 30));
-        assertEquals(base.rollMonthOfYear(-2), MonthDay.monthDay(5, 31));
-        assertEquals(base.rollMonthOfYear(-3), MonthDay.monthDay(4, 30));
-        assertEquals(base.rollMonthOfYear(-4), MonthDay.monthDay(3, 31));
-        assertEquals(base.rollMonthOfYear(-5), MonthDay.monthDay(2, 29));
-        assertEquals(base.rollMonthOfYear(-6), MonthDay.monthDay(1, 31));
-        assertEquals(base.rollMonthOfYear(-7), MonthDay.monthDay(12, 31));
-        assertEquals(base.rollMonthOfYear(-8), MonthDay.monthDay(11, 30));
-        assertEquals(base.rollMonthOfYear(-9), MonthDay.monthDay(10, 31));
-        assertEquals(base.rollMonthOfYear(-10), MonthDay.monthDay(9, 30));
-        assertEquals(base.rollMonthOfYear(-11), MonthDay.monthDay(8, 31));
-        assertEquals(base.rollMonthOfYear(-12), MonthDay.monthDay(7, 31));
+        assertEquals(base.rollMonthOfYear(-1), MonthDay.of(6, 30));
+        assertEquals(base.rollMonthOfYear(-2), MonthDay.of(5, 31));
+        assertEquals(base.rollMonthOfYear(-3), MonthDay.of(4, 30));
+        assertEquals(base.rollMonthOfYear(-4), MonthDay.of(3, 31));
+        assertEquals(base.rollMonthOfYear(-5), MonthDay.of(2, 29));
+        assertEquals(base.rollMonthOfYear(-6), MonthDay.of(1, 31));
+        assertEquals(base.rollMonthOfYear(-7), MonthDay.of(12, 31));
+        assertEquals(base.rollMonthOfYear(-8), MonthDay.of(11, 30));
+        assertEquals(base.rollMonthOfYear(-9), MonthDay.of(10, 31));
+        assertEquals(base.rollMonthOfYear(-10), MonthDay.of(9, 30));
+        assertEquals(base.rollMonthOfYear(-11), MonthDay.of(8, 31));
+        assertEquals(base.rollMonthOfYear(-12), MonthDay.of(7, 31));
     }
 
     //-----------------------------------------------------------------------
     // rollDayOfMonth()
     //-----------------------------------------------------------------------
     public void test_rollDayOfMonth_july() {
-        MonthDay base = MonthDay.monthDay(7, 31);
-        assertEquals(base.rollDayOfMonth(-2), MonthDay.monthDay(7, 29));
-        assertEquals(base.rollDayOfMonth(-1), MonthDay.monthDay(7, 30));
+        MonthDay base = MonthDay.of(7, 31);
+        assertEquals(base.rollDayOfMonth(-2), MonthDay.of(7, 29));
+        assertEquals(base.rollDayOfMonth(-1), MonthDay.of(7, 30));
         assertSame(base.rollDayOfMonth(0), base);
-        assertEquals(base.rollDayOfMonth(1), MonthDay.monthDay(7, 1));
-        assertEquals(base.rollDayOfMonth(2), MonthDay.monthDay(7, 2));
+        assertEquals(base.rollDayOfMonth(1), MonthDay.of(7, 1));
+        assertEquals(base.rollDayOfMonth(2), MonthDay.of(7, 2));
     }
 
     public void test_rollDayOfMonth_feb() {
-        MonthDay base = MonthDay.monthDay(2, 29);
-        assertEquals(base.rollDayOfMonth(-2), MonthDay.monthDay(2, 27));
-        assertEquals(base.rollDayOfMonth(-1), MonthDay.monthDay(2, 28));
+        MonthDay base = MonthDay.of(2, 29);
+        assertEquals(base.rollDayOfMonth(-2), MonthDay.of(2, 27));
+        assertEquals(base.rollDayOfMonth(-1), MonthDay.of(2, 28));
         assertSame(base.rollDayOfMonth(0), base);
-        assertEquals(base.rollDayOfMonth(1), MonthDay.monthDay(2, 1));
-        assertEquals(base.rollDayOfMonth(2), MonthDay.monthDay(2, 2));
+        assertEquals(base.rollDayOfMonth(1), MonthDay.of(2, 1));
+        assertEquals(base.rollDayOfMonth(2), MonthDay.of(2, 2));
     }
 
     //-----------------------------------------------------------------------
     // adjustDate()
     //-----------------------------------------------------------------------
     public void test_adjustDate() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        assertEquals(test.adjustDate(date), LocalDate.date(2007, 6, 30));
+        MonthDay test = MonthDay.of(6, 30);
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        assertEquals(test.adjustDate(date), LocalDate.of(2007, 6, 30));
     }
 
     public void test_adjustDate_same() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        MonthDay test = MonthDay.of(6, 30);
+        LocalDate date = LocalDate.of(2007, 6, 30);
         assertSame(test.adjustDate(date), date);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_invalid() {
-        MonthDay test = MonthDay.monthDay(2, 29);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        MonthDay test = MonthDay.of(2, 29);
+        LocalDate date = LocalDate.of(2007, 6, 30);
         try {
             test.adjustDate(date);
         } catch (InvalidCalendarFieldException ex) {
@@ -455,27 +455,27 @@ public class TestMonthDay {
 
     //-----------------------------------------------------------------------
     public void test_adjustDate_DateResolver() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.date(2007, 6, 30));
+        MonthDay test = MonthDay.of(6, 30);
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2007, 6, 30));
     }
 
     public void test_adjustDate_DateResolver_same() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        MonthDay test = MonthDay.of(6, 30);
+        LocalDate date = LocalDate.of(2007, 6, 30);
         assertSame(test.adjustDate(date, DateResolvers.nextValid()), date);
     }
 
     public void test_adjustDate_DateResolver_resolve() {
-        MonthDay test = MonthDay.monthDay(2, 29);
-        LocalDate date = LocalDate.date(2007, 1, 1);
-        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.date(2007, 3, 1));
+        MonthDay test = MonthDay.of(2, 29);
+        LocalDate date = LocalDate.of(2007, 1, 1);
+        assertEquals(test.adjustDate(date, DateResolvers.nextValid()), LocalDate.of(2007, 3, 1));
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_DateResolver_invalid() {
-        MonthDay test = MonthDay.monthDay(2, 29);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        MonthDay test = MonthDay.of(2, 29);
+        LocalDate date = LocalDate.of(2007, 6, 30);
         try {
             test.adjustDate(date, DateResolvers.strict());
         } catch (InvalidCalendarFieldException ex) {
@@ -491,15 +491,15 @@ public class TestMonthDay {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_DateResolver_nullResolver() {
-        MonthDay test = MonthDay.monthDay(2, 29);
-        LocalDate date = LocalDate.date(2008, 2, 29);  // same date, but resolver should still NPE
+        MonthDay test = MonthDay.of(2, 29);
+        LocalDate date = LocalDate.of(2008, 2, 29);  // same date, but resolver should still NPE
         test.adjustDate(date, (DateResolver) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_DateResolver_badResolver() {
-        MonthDay test = MonthDay.monthDay(2, 29);
-        LocalDate date = LocalDate.date(2007, 6, 30);
+        MonthDay test = MonthDay.of(2, 29);
+        LocalDate date = LocalDate.of(2007, 6, 30);
         test.adjustDate(date, new MockDateResolverReturnsNull());
     }
 
@@ -507,11 +507,11 @@ public class TestMonthDay {
     // matchesDate()
     //-----------------------------------------------------------------------
     public void test_matchesDate() {
-        assertEquals(MonthDay.monthDay(1, 1).matchesCalendrical(LocalDate.date(2007, 1, 1)), true);
-        assertEquals(MonthDay.monthDay(1, 1).matchesCalendrical(LocalDate.date(2008, 1, 1)), true);
+        assertEquals(MonthDay.of(1, 1).matchesCalendrical(LocalDate.of(2007, 1, 1)), true);
+        assertEquals(MonthDay.of(1, 1).matchesCalendrical(LocalDate.of(2008, 1, 1)), true);
         
-        assertEquals(MonthDay.monthDay(2, 1).matchesCalendrical(LocalDate.date(2007, 1, 1)), false);
-        assertEquals(MonthDay.monthDay(1, 2).matchesCalendrical(LocalDate.date(2008, 1, 1)), false);
+        assertEquals(MonthDay.of(2, 1).matchesCalendrical(LocalDate.of(2007, 1, 1)), false);
+        assertEquals(MonthDay.of(1, 2).matchesCalendrical(LocalDate.of(2008, 1, 1)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -523,17 +523,17 @@ public class TestMonthDay {
     // isValidYear(int)
     //-----------------------------------------------------------------------
     public void test_isValidYear_june() {
-        MonthDay test = MonthDay.monthDay(6, 30);
+        MonthDay test = MonthDay.of(6, 30);
         assertEquals(test.isValidYear(2007), true);
     }
 
     public void test_isValidYear_febNonLeap() {
-        MonthDay test = MonthDay.monthDay(2, 29);
+        MonthDay test = MonthDay.of(2, 29);
         assertEquals(test.isValidYear(2007), false);
     }
 
     public void test_isValidYear_febLeap() {
-        MonthDay test = MonthDay.monthDay(2, 29);
+        MonthDay test = MonthDay.of(2, 29);
         assertEquals(test.isValidYear(2008), true);
     }
 
@@ -541,19 +541,19 @@ public class TestMonthDay {
     // atYear(int)
     //-----------------------------------------------------------------------
     public void test_atYear_int() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        assertEquals(test.atYear(2008), LocalDate.date(2008, 6, 30));
+        MonthDay test = MonthDay.of(6, 30);
+        assertEquals(test.atYear(2008), LocalDate.of(2008, 6, 30));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_atYear_int_invalidYear() {
-        MonthDay test = MonthDay.monthDay(6, 30);
+        MonthDay test = MonthDay.of(6, 30);
         test.atYear(Integer.MIN_VALUE);
     }
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_atYear_int_notLeapYear() {
-        MonthDay test = MonthDay.monthDay(2, 29);
+        MonthDay test = MonthDay.of(2, 29);
         try {
             test.atYear(2005);
         } catch (InvalidCalendarFieldException ex) {
@@ -567,12 +567,12 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     public void test_comparisons() {
         doTest_comparisons_MonthDay(
-            MonthDay.monthDay(1, 1),
-            MonthDay.monthDay(1, 31),
-            MonthDay.monthDay(2, 1),
-            MonthDay.monthDay(2, 29),
-            MonthDay.monthDay(3, 1),
-            MonthDay.monthDay(12, 31)
+            MonthDay.of(1, 1),
+            MonthDay.of(1, 31),
+            MonthDay.of(2, 1),
+            MonthDay.of(2, 29),
+            MonthDay.of(3, 1),
+            MonthDay.of(12, 31)
         );
     }
 
@@ -620,10 +620,10 @@ public class TestMonthDay {
     // equals()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        MonthDay a = MonthDay.monthDay(1, 1);
-        MonthDay b = MonthDay.monthDay(1, 1);
-        MonthDay c = MonthDay.monthDay(2, 1);
-        MonthDay d = MonthDay.monthDay(1, 2);
+        MonthDay a = MonthDay.of(1, 1);
+        MonthDay b = MonthDay.of(1, 1);
+        MonthDay c = MonthDay.of(2, 1);
+        MonthDay d = MonthDay.of(1, 2);
         
         assertEquals(a.equals(a), true);
         assertEquals(a.equals(b), true);
@@ -663,9 +663,9 @@ public class TestMonthDay {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_hashCode(int m, int d) {
-        MonthDay a = MonthDay.monthDay(m, d);
+        MonthDay a = MonthDay.of(m, d);
         assertEquals(a.hashCode(), a.hashCode());
-        MonthDay b = MonthDay.monthDay(m, d);
+        MonthDay b = MonthDay.of(m, d);
         assertEquals(a.hashCode(), b.hashCode());
     }
 
@@ -674,8 +674,8 @@ public class TestMonthDay {
         Set<Integer> uniques = new HashSet<Integer>(366);
         for (int i = 1; i <= 12; i++) {
             for (int j = 1; j <= 31; j++) {
-                if (YearMonth.yearMonth(leapYear, i).isValidDay(j)) {
-                    assertTrue(uniques.add(MonthDay.monthDay(i, j).hashCode()));
+                if (YearMonth.of(leapYear, i).isValidDay(j)) {
+                    assertTrue(uniques.add(MonthDay.of(i, j).hashCode()));
                 }
             }
         }
@@ -695,7 +695,7 @@ public class TestMonthDay {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int m, int d, String expected) {
-        MonthDay test = MonthDay.monthDay(m, d);
+        MonthDay test = MonthDay.of(m, d);
         String str = test.toString();
         assertEquals(str, expected);
     }
@@ -706,30 +706,30 @@ public class TestMonthDay {
     @DataProvider(name="goodParseData")
     Object[][] provider_goodParseData() {
     	return new Object[][] {
-    			{"--01-01", MonthDay.monthDay(1, 1)},
-    			{"--01-31", MonthDay.monthDay(1, 31)},
-    			{"--02-01", MonthDay.monthDay(2, 1)},
-    			{"--02-29", MonthDay.monthDay(2, 29)},
-    			{"--03-01", MonthDay.monthDay(3, 1)},
-    			{"--03-31", MonthDay.monthDay(3, 31)},
-    			{"--04-01", MonthDay.monthDay(4, 1)},
-    			{"--04-30", MonthDay.monthDay(4, 30)},
-    			{"--05-01", MonthDay.monthDay(5, 1)},
-    			{"--05-31", MonthDay.monthDay(5, 31)},
-    			{"--06-01", MonthDay.monthDay(6, 1)},
-    			{"--06-30", MonthDay.monthDay(6, 30)},
-    			{"--07-01", MonthDay.monthDay(7, 1)},
-    			{"--07-31", MonthDay.monthDay(7, 31)},
-    			{"--08-01", MonthDay.monthDay(8, 1)},
-    			{"--08-31", MonthDay.monthDay(8, 31)},
-    			{"--09-01", MonthDay.monthDay(9, 1)},
-    			{"--09-30", MonthDay.monthDay(9, 30)},
-    			{"--10-01", MonthDay.monthDay(10, 1)},
-    			{"--10-31", MonthDay.monthDay(10, 31)},
-    			{"--11-01", MonthDay.monthDay(11, 1)},
-    			{"--11-30", MonthDay.monthDay(11, 30)},
-    			{"--12-01", MonthDay.monthDay(12, 1)},
-    			{"--12-31", MonthDay.monthDay(12, 31)},
+    			{"--01-01", MonthDay.of(1, 1)},
+    			{"--01-31", MonthDay.of(1, 31)},
+    			{"--02-01", MonthDay.of(2, 1)},
+    			{"--02-29", MonthDay.of(2, 29)},
+    			{"--03-01", MonthDay.of(3, 1)},
+    			{"--03-31", MonthDay.of(3, 31)},
+    			{"--04-01", MonthDay.of(4, 1)},
+    			{"--04-30", MonthDay.of(4, 30)},
+    			{"--05-01", MonthDay.of(5, 1)},
+    			{"--05-31", MonthDay.of(5, 31)},
+    			{"--06-01", MonthDay.of(6, 1)},
+    			{"--06-30", MonthDay.of(6, 30)},
+    			{"--07-01", MonthDay.of(7, 1)},
+    			{"--07-31", MonthDay.of(7, 31)},
+    			{"--08-01", MonthDay.of(8, 1)},
+    			{"--08-31", MonthDay.of(8, 31)},
+    			{"--09-01", MonthDay.of(9, 1)},
+    			{"--09-30", MonthDay.of(9, 30)},
+    			{"--10-01", MonthDay.of(10, 1)},
+    			{"--10-31", MonthDay.of(10, 31)},
+    			{"--11-01", MonthDay.of(11, 1)},
+    			{"--11-30", MonthDay.of(11, 30)},
+    			{"--12-01", MonthDay.of(12, 1)},
+    			{"--12-31", MonthDay.of(12, 31)},
     	};
     }
 

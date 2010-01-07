@@ -96,23 +96,23 @@ public class TestCalendricalMatchers {
     }
 
     public void test_leapYear() {
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1999, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2000, 1, 1)), true);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2001, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2002, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2003, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2004, 1, 1)), true);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(2005, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1999, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2000, 1, 1)), true);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2001, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2002, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2003, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2004, 1, 1)), true);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(2005, 1, 1)), false);
         
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1500, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1600, 1, 1)), true);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1700, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1800, 1, 1)), false);
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.date(1900, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1500, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1600, 1, 1)), true);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1700, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1800, 1, 1)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalDate.of(1900, 1, 1)), false);
     }
 
     public void test_leapYear_noData() {
-        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.leapYear().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -154,7 +154,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_leapDay_noData() {
-        assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -200,7 +200,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_lastDayOfMonth_noData() {
-        assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.lastDayOfMonth().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -244,7 +244,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_lastDayOfYear_noData() {
-        assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.lastDayOfYear().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -328,7 +328,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_dayOfWeekInMonth_noData() {
-        assertEquals(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY).matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.dayOfWeekInMonth(1, MONDAY).matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -386,7 +386,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_firstInMonth_noData() {
-        assertEquals(CalendricalMatchers.firstInMonth(MONDAY).matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.firstInMonth(MONDAY).matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -424,7 +424,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_weekendDay_noData() {
-        assertEquals(CalendricalMatchers.weekendDay().matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.weekendDay().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     //-----------------------------------------------------------------------
@@ -462,11 +462,11 @@ public class TestCalendricalMatchers {
     }
 
     public void test_nonWeekendDay_noData() {
-        assertEquals(CalendricalMatchers.nonWeekendDay().matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(CalendricalMatchers.nonWeekendDay().matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     private LocalDate date(int year, MonthOfYear month, int day) {
-        return LocalDate.date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
 }

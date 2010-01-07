@@ -444,7 +444,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             Integer moyVal = merger.getValue(HijrahChronology.monthOfYearRule());
             Integer domVal = merger.getValue(HijrahChronology.dayOfMonthRule());
             if (moyVal != null && domVal != null) {
-                HijrahDate date = HijrahDate.hijrahDate(era, yoeVal, moyVal, domVal);
+                HijrahDate date = HijrahDate.of(era, yoeVal, moyVal, domVal);
                 merger.storeMerged(HijrahDate.rule(), date);
                 merger.removeProcessed(HijrahChronology.eraRule());
                 merger.removeProcessed(this);
@@ -454,7 +454,7 @@ public final class HijrahChronology extends Chronology implements Serializable {
             // era, year, day-of-year
             Integer doyVal = merger.getValue(HijrahChronology.dayOfYearRule());
             if (doyVal != null) {
-                HijrahDate date = HijrahDate.hijrahDate(era, yoeVal, 1, 1).plusDays(doyVal);
+                HijrahDate date = HijrahDate.of(era, yoeVal, 1, 1).plusDays(doyVal);
                 merger.storeMerged(HijrahDate.rule(), date);
                 merger.removeProcessed(HijrahChronology.eraRule());
                 merger.removeProcessed(this);

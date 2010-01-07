@@ -66,20 +66,20 @@ public class TestAmPmOfDay {
     //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 0; i <= 1; i++) {
-            AmPmOfDay test = AmPmOfDay.amPmOfDay(i);
+            AmPmOfDay test = AmPmOfDay.of(i);
             assertEquals(test.getValue(), i);
-            assertSame(AmPmOfDay.amPmOfDay(i), test);
+            assertSame(AmPmOfDay.of(i), test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooLow() {
-        AmPmOfDay.amPmOfDay(-1);
+        AmPmOfDay.of(-1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooHigh() {
-        AmPmOfDay.amPmOfDay(2);
+        AmPmOfDay.of(2);
     }
 
     //-----------------------------------------------------------------------

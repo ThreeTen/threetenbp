@@ -54,7 +54,7 @@ import org.testng.annotations.Test;
 @Test
 public class TestTimeSource_Fixed {
 
-    private static final Instant INSTANT = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, ZoneOffset.zoneOffset(2)).toInstant();
+    private static final Instant INSTANT = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, ZoneOffset.hours(2)).toInstant();
 
     //-----------------------------------------------------------------------
     public void test_fixed_isSerializable() throws IOException, ClassNotFoundException {

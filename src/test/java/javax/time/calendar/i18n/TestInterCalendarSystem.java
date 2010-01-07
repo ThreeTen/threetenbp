@@ -48,22 +48,22 @@ import org.testng.annotations.Test;
 public class TestInterCalendarSystem {
 
     public void test_factory_Coptic_with_Other() {
-        LocalDate baseDate = LocalDate.date(2009, 6, 30);
+        LocalDate baseDate = LocalDate.of(2009, 6, 30);
         MockOtherDate otherDate = new MockOtherDate(baseDate);
-        CopticDate test = CopticDate.copticDate(otherDate);
+        CopticDate test = CopticDate.from(otherDate);
         assertEquals(test.toLocalDate(), otherDate.toLocalDate());
     }
 
     public void test_get_Coptic_year_with_Other() {
-        LocalDate baseDate = LocalDate.date(2009, 6, 30);
+        LocalDate baseDate = LocalDate.of(2009, 6, 30);
         MockOtherDate otherDate = new MockOtherDate(baseDate);
         Integer test = otherDate.get(CopticChronology.yearRule());
-        assertEquals(test.intValue(), CopticDate.copticDate(baseDate).getYear());
+        assertEquals(test.intValue(), CopticDate.from(baseDate).getYear());
     }
 
     public void test_get_ISO_quarterOfYear_with_Coptic() {
-        LocalDate baseDate = LocalDate.date(2009, 6, 30);
-        CopticDate copticDate = CopticDate.copticDate(baseDate);
+        LocalDate baseDate = LocalDate.of(2009, 6, 30);
+        CopticDate copticDate = CopticDate.from(baseDate);
         QuarterOfYear test = copticDate.get(ISOChronology.quarterOfYearRule());
         assertEquals(test, QuarterOfYear.Q2);
     }

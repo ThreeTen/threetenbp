@@ -77,7 +77,7 @@ public class ZoneRulesBuilder {
     /**
      * The maximum date-time.
      */
-    private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.dateTime(Year.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
+    private static final LocalDateTime MAX_DATE_TIME = LocalDateTime.of(Year.MAX_YEAR, 12, 31, 23, 59, 59, 999999999);
 
     /**
      * The list of windows.
@@ -352,7 +352,7 @@ public class ZoneRulesBuilder {
             savings = firstWindow.fixedSavingAmount;
         }
         ZoneOffset firstWallOffset = deduplicate(standardOffset.plus(savings));
-        OffsetDateTime windowStart = deduplicate(OffsetDateTime.dateTime(Year.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
+        OffsetDateTime windowStart = deduplicate(OffsetDateTime.of(Year.MIN_YEAR, 1, 1, 0, 0, firstWallOffset));
         
         // build the windows and rules to interesting data
         for (TZWindow window : windowList) {
@@ -469,11 +469,11 @@ public class ZoneRulesBuilder {
         public OffsetDateTime createDateTime(LocalDateTime dateTime, ZoneOffset standardOffset, ZoneOffset wallOffset) {
             switch (this) {
                 case UTC:
-                    return OffsetDateTime.dateTime(dateTime, ZoneOffset.UTC).withOffsetSameInstant(wallOffset);
+                    return OffsetDateTime.from(dateTime, ZoneOffset.UTC).withOffsetSameInstant(wallOffset);
                 case STANDARD:
-                    return OffsetDateTime.dateTime(dateTime, standardOffset).withOffsetSameInstant(wallOffset);
+                    return OffsetDateTime.from(dateTime, standardOffset).withOffsetSameInstant(wallOffset);
                 default:  // WALL
-                    return OffsetDateTime.dateTime(dateTime, wallOffset);
+                    return OffsetDateTime.from(dateTime, wallOffset);
             }
         }
     }
@@ -707,18 +707,18 @@ public class ZoneRulesBuilder {
             ZoneOffset offsetAfter = standardOffset.plus(savingAmount);
             LocalDate date;
             if (dayOfMonth == -1) {
-                date = LocalDate.date(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)));
+                date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)));
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.previousOrCurrent(dayOfWeek));
                 }
             } else {
-                date = LocalDate.date(year, month, dayOfMonth);
+                date = LocalDate.of(year, month, dayOfMonth);
                 if (dayOfWeek != null) {
                     date = date.with(DateAdjusters.nextOrCurrent(dayOfWeek));
                 }
             }
             date = deduplicate(date);
-            LocalDateTime ldt = deduplicate(LocalDateTime.dateTime(date, time));
+            LocalDateTime ldt = deduplicate(LocalDateTime.from(date, time));
             ZoneOffset wallOffset = deduplicate(standardOffset.plus(savingsBefore));
             OffsetDateTime dt = deduplicate(timeDefinition.createDateTime(ldt, standardOffset, wallOffset));
             return new ZoneOffsetTransition(dt, offsetAfter);

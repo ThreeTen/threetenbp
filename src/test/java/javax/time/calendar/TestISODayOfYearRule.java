@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISODayOfYearRule() {
-        super(LocalDate.date(2009, 12, 26), 360, 360);
+        super(LocalDate.of(2009, 12, 26), 360, 360);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getID(), "ISO.DayOfYear");
         assertEquals(rule.getName(), "DayOfYear");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), 1);
+        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 366);
         assertEquals(rule.getSmallestMaximumValue(), 365);
@@ -74,12 +74,12 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
     // getMaximumValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_leap() {
-        Calendrical cal = LocalDate.date(2008, 1, 1);
+        Calendrical cal = LocalDate.of(2008, 1, 1);
         assertEquals(rule().getMaximumValue(cal), 366);
     }
 
     public void test_getMaximumValue_Calendrical_nonLeap() {
-        Calendrical cal = LocalDate.date(2007, 1, 1);
+        Calendrical cal = LocalDate.of(2007, 1, 1);
         assertEquals(rule().getMaximumValue(cal), 365);
     }
 
@@ -87,12 +87,12 @@ public class TestISODayOfYearRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
-        Calendrical cal = LocalDate.date(2007, 6, 20);
+        Calendrical cal = LocalDate.of(2007, 6, 20);
         assertEquals(rule().getValue(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
+        Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
         assertEquals(rule().getValue(cal), (Integer) (31 + 28 + 31 + 30 + 31 + 20));
     }
 

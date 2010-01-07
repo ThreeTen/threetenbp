@@ -74,7 +74,7 @@ public final class Days extends PeriodField implements Comparable<Days>, Seriali
      * @param days  the number of days the instance will represent
      * @return the created Days
      */
-    public static Days days(int days) {
+    public static Days of(int days) {
         if (days == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Days extends PeriodField implements Comparable<Days>, Seriali
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Days.days(days);
+        return Days.of(days);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Days extends PeriodField implements Comparable<Days>, Seriali
      */
     @Override
     public Days withAmount(int amount) {
-        return Days.days(amount);
+        return Days.of(amount);
     }
 
     //-----------------------------------------------------------------------

@@ -140,12 +140,12 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the TimeZone, never null
      * @throws IllegalArgumentException if the time zone cannot be found
      */
-    public static TimeZone timeZone(String timeZoneIdentifier, Map<String, TimeZone> aliasMap) {
+    public static TimeZone of(String timeZoneIdentifier, Map<String, TimeZone> aliasMap) {
         // TODO: review
         ISOChronology.checkNotNull(timeZoneIdentifier, "Time Zone ID must not be null");
         ISOChronology.checkNotNull(aliasMap, "Alias map must not be null");
         TimeZone zone = aliasMap.get(timeZoneIdentifier);
-        return zone == null ? timeZone(timeZoneIdentifier) : zone;
+        return zone == null ? of(timeZoneIdentifier) : zone;
     }
 
     /**
@@ -178,7 +178,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * It is intended that {@link ZoneOffset} and {@link OffsetDateTime} are used in preference,
      * however sometimes it is necessary to have a fixed time zone.
      * A fixed time zone is returned if the first three characters are 'UTC' or 'GMT'.
-     * The remainder of the ID must be a valid format for {@link ZoneOffset#zoneOffset(String)}.
+     * The remainder of the ID must be a valid format for {@link ZoneOffset#of(String)}.
      * Using 'UTCZ' or 'GMTZ' is invalid.
      * The normalized time zone ID is 'UTC&plusmn;hh:mm:ss', or just 'UTC' if the offset is zero.
      *
@@ -186,7 +186,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @return the TimeZone, never null
      * @throws CalendricalException if the time zone cannot be found
      */
-    public static TimeZone timeZone(String zoneID) {
+    public static TimeZone of(String zoneID) {
         ISOChronology.checkNotNull(zoneID, "Time zone ID must not be null");
         if (zoneID.equals("UTC") || zoneID.equals("GMT")) {
             return UTC;
@@ -196,7 +196,7 @@ public final class TimeZone implements Calendrical, Serializable {
             
         } else if (zoneID.startsWith("UTC") || zoneID.startsWith("GMT")) {  // not sure about GMT
             try {
-                return timeZone(ZoneOffset.zoneOffset(zoneID.substring(3)));
+                return of(ZoneOffset.of(zoneID.substring(3)));
             } catch (IllegalArgumentException ex) {
                 throw new CalendricalException("Invalid time zone ID: " + ex.toString(), ex);
             }
@@ -233,7 +233,7 @@ public final class TimeZone implements Calendrical, Serializable {
      * @param offset  the zone offset to create a fixed zone for, not null
      * @return the TimeZone for the offset, never null
      */
-    public static TimeZone timeZone(ZoneOffset offset) {
+    public static TimeZone of(ZoneOffset offset) {
         ISOChronology.checkNotNull(offset, "ZoneOffset must not be null");
         if (offset == ZoneOffset.UTC) {
             return UTC;
@@ -270,7 +270,7 @@ public final class TimeZone implements Calendrical, Serializable {
             if ("UTC".equals(regionID)) {
                 return UTC;
             } else {
-                return TimeZone.timeZone(getID());
+                return TimeZone.of(getID());
             }
         }
         return this;

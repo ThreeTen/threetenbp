@@ -53,10 +53,10 @@ import org.testng.annotations.Test;
 @Test
 public class TestClock_TimeSourceClock {
 
-    private static final ZoneOffset OFFSET = ZoneOffset.zoneOffset(2);
-    private static final OffsetDateTime DATE_TIME = OffsetDateTime.dateTime(2008, 6, 30, 11, 30, 10, 500, OFFSET);
+    private static final ZoneOffset OFFSET = ZoneOffset.hours(2);
+    private static final OffsetDateTime DATE_TIME = OffsetDateTime.of(2008, 6, 30, 11, 30, 10, 500, OFFSET);
     private static final TimeSource TIME_SOURCE = TimeSource.fixed(DATE_TIME);
-    private static final TimeZone ZONE = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE = TimeZone.of("Europe/Paris");
 
     //-----------------------------------------------------------------------
     public void test_isSerializable() throws IOException, ClassNotFoundException {
@@ -96,7 +96,7 @@ public class TestClock_TimeSourceClock {
 
     public void test_withZone() {
         Clock test = Clock.clock(TIME_SOURCE, ZONE);
-        TimeZone london = TimeZone.timeZone("Europe/London");
+        TimeZone london = TimeZone.of("Europe/London");
         Clock changed = test.withZone(london);
         assertEquals(test.getSource(), TIME_SOURCE);
         assertEquals(test.getZone(), ZONE);
@@ -128,7 +128,7 @@ public class TestClock_TimeSourceClock {
                 return ZONE;
             }
         }));
-        assertFalse(test.equals(Clock.system(TimeZone.timeZone(ZoneOffset.zoneOffset(1)))));
+        assertFalse(test.equals(Clock.system(TimeZone.of(ZoneOffset.hours(1)))));
     }
 
     public void test_hashCode() {

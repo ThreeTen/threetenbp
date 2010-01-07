@@ -191,8 +191,8 @@ public final class WeekBasedYear
      */
     public int lengthInWeeks() {
         // TODO: optimize
-        LocalDate start = LocalDate.date(weekyear, MonthOfYear.JANUARY, 4);
-        LocalDate end = LocalDate.date(weekyear, MonthOfYear.DECEMBER, 28);
+        LocalDate start = LocalDate.of(weekyear, MonthOfYear.JANUARY, 4);
+        LocalDate end = LocalDate.of(weekyear, MonthOfYear.DECEMBER, 28);
 
         long weeksAsLong = (end.toModifiedJulianDays() + (8 - end.getDayOfWeek().getValue()) -
                 start.toModifiedJulianDays() + start.getDayOfWeek().getValue() - 1) / 7;

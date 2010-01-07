@@ -84,7 +84,7 @@ public final class PeriodFields
      * @return the created period instance, never null
      * @throws NullPointerException if the period unit is null
      */
-    public static PeriodFields periodFields(long amount, PeriodUnit unit) {
+    public static PeriodFields of(long amount, PeriodUnit unit) {
         checkNotNull(unit, "PeriodUnit must not be null");
         TreeMap<PeriodUnit, Long> internalMap = createMap();
         internalMap.put(unit, amount);
@@ -103,7 +103,7 @@ public final class PeriodFields
      * @return the created period instance, never null
      * @throws NullPointerException if the map is null or contains nulls
      */
-    public static PeriodFields periodFields(Map<PeriodUnit, ? extends Number> unitAmountMap) {
+    public static PeriodFields of(Map<PeriodUnit, ? extends Number> unitAmountMap) {
         checkNotNull(unitAmountMap, "Unit-amount map must not be null");
         if (unitAmountMap.isEmpty()) {
             return ZERO;
@@ -129,8 +129,8 @@ public final class PeriodFields
      * @return the created period instance, never null
      * @throws NullPointerException if the period provider is null
      */
-    public static PeriodFields periodFields(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+    public static PeriodFields from(PeriodProvider periodProvider) {
+        Period period = Period.from(periodProvider);
         if (period.isZero()) {
             return ZERO;
         }
@@ -632,7 +632,7 @@ public final class PeriodFields
             throw new CalendarConversionException(
                     "Unable to convert to a Period as the following fields are incompatible: " + copy.keySet());
         }
-        return Period.period(
+        return Period.of(
                     years == null ? 0 : MathUtils.safeToInt(years),
                     months == null ? 0 : MathUtils.safeToInt(months),
                     days == null ? 0 : MathUtils.safeToInt(days),

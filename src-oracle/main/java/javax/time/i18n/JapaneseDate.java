@@ -71,8 +71,8 @@ public final class JapaneseDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static JapaneseDate japaneseDate(int yearOfJapaneseEra, MonthOfYear monthOfYear, int dayOfMonth) {
-        return JapaneseDate.japaneseDate(JapaneseEra.HEISEI, yearOfJapaneseEra, monthOfYear, dayOfMonth);
+    public static JapaneseDate of(int yearOfJapaneseEra, MonthOfYear monthOfYear, int dayOfMonth) {
+        return JapaneseDate.of(JapaneseEra.HEISEI, yearOfJapaneseEra, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -87,13 +87,13 @@ public final class JapaneseDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static JapaneseDate japaneseDate(JapaneseEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
+    public static JapaneseDate of(JapaneseEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "JapaneseEra must not be null");
         JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
         int year = yearOfEra + era.getYearOffset();
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new JapaneseDate(date);
     }
 
@@ -103,8 +103,8 @@ public final class JapaneseDate
      * @param dateProvider  the date provider to use, not null
      * @return the created JapaneseDate instance, never null
      */
-    public static JapaneseDate japaneseDate(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
+    public static JapaneseDate from(DateProvider dateProvider) {
+        LocalDate date = LocalDate.of(dateProvider);
         int yearOfEra = getYearOfEra(date);
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
@@ -155,7 +155,7 @@ public final class JapaneseDate
      * @return the era, never null
      */
     public JapaneseEra getEra() {
-        return JapaneseEra.japaneseEra(date);
+        return JapaneseEra.from(date);
     }
 
     /**
@@ -229,7 +229,7 @@ public final class JapaneseDate
     public JapaneseDate withYear(JapaneseEra era, int yearOfEra) {
         JapaneseChronology.yearOfEraRule().checkValue(yearOfEra);
         int year = yearOfEra + era.getYearOffset();
-        return JapaneseDate.japaneseDate(date.withYear(year));
+        return JapaneseDate.from(date.withYear(year));
     }
 
     /**
@@ -262,7 +262,7 @@ public final class JapaneseDate
      */
     public JapaneseDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return JapaneseDate.japaneseDate(date.with(monthOfYear));
+        return JapaneseDate.from(date.with(monthOfYear));
     }
 
     /**
@@ -277,7 +277,7 @@ public final class JapaneseDate
      */
     public JapaneseDate withDayOfMonth(int dayOfMonth) {
         JapaneseChronology.dayOfMonthRule().checkValue(dayOfMonth);
-        return JapaneseDate.japaneseDate(date.withDayOfMonth(dayOfMonth));
+        return JapaneseDate.from(date.withDayOfMonth(dayOfMonth));
     }
 
     /**
@@ -292,7 +292,7 @@ public final class JapaneseDate
      */
     public JapaneseDate withDayOfYear(int dayOfYear) {
         JapaneseChronology.dayOfYearRule().checkValue(dayOfYear);
-        return JapaneseDate.japaneseDate(date.withDayOfYear(dayOfYear));
+        return JapaneseDate.from(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------
@@ -312,7 +312,7 @@ public final class JapaneseDate
         if (years == 0) {
             return this;
         }
-        return JapaneseDate.japaneseDate(date.plusYears(years));
+        return JapaneseDate.from(date.plusYears(years));
     }
 
     /**
@@ -331,7 +331,7 @@ public final class JapaneseDate
         if (months == 0) {
             return this;
         }
-        return JapaneseDate.japaneseDate(date.plusMonths(months));
+        return JapaneseDate.from(date.plusMonths(months));
     }
 
     /**
@@ -360,7 +360,7 @@ public final class JapaneseDate
         if (days == 0) {
             return this;
         }
-        return JapaneseDate.japaneseDate(date.plusDays(days));
+        return JapaneseDate.from(date.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -380,7 +380,7 @@ public final class JapaneseDate
         if (years == 0) {
             return this;
         }
-        return JapaneseDate.japaneseDate(date.minusYears(years));
+        return JapaneseDate.from(date.minusYears(years));
     }
 
     /**
@@ -399,7 +399,7 @@ public final class JapaneseDate
         if (months == 0) {
             return this;
         }
-        return JapaneseDate.japaneseDate(date.minusMonths(months));
+        return JapaneseDate.from(date.minusMonths(months));
     }
 
     /**
@@ -428,7 +428,7 @@ public final class JapaneseDate
         if (days == 0) {
             return this;
         }
-        return JapaneseDate.japaneseDate(date.minusDays(days));
+        return JapaneseDate.from(date.minusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -534,7 +534,7 @@ public final class JapaneseDate
      * @return year of era
      */
     private static int getYearOfEra(LocalDate date) {
-        JapaneseEra era = JapaneseEra.japaneseEra(date);
+        JapaneseEra era = JapaneseEra.from(date);
         int yearOffset = era.getYearOffset();
         return date.getYear() - yearOffset;
     }
@@ -565,7 +565,7 @@ public final class JapaneseDate
         @Override
         protected JapaneseDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
-            return ld != null ? JapaneseDate.japaneseDate(ld) : null;
+            return ld != null ? JapaneseDate.from(ld) : null;
         }
         @Override
         protected void merge(CalendricalMerger merger) {

@@ -199,7 +199,7 @@ public abstract class PeriodField {
      * @return a period fields containing the amount and unit, never null
      */
     public PeriodFields toPeriodFields() {
-        return PeriodFields.periodFields(getAmount(), getUnit());
+        return PeriodFields.of(getAmount(), getUnit());
     }
 
     //-----------------------------------------------------------------------

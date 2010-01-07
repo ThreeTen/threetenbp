@@ -80,7 +80,7 @@ public final class DateResolvers {
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
-            return LocalDate.date(year, monthOfYear, dayOfMonth);
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
         }
     }
 
@@ -115,9 +115,9 @@ public final class DateResolvers {
         public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
             int lastDay = monthOfYear.getLastDayOfMonth(ISOChronology.isLeapYear(year));
             if (dayOfMonth > lastDay) {
-                return LocalDate.date(year, monthOfYear, lastDay);
+                return LocalDate.of(year, monthOfYear, lastDay);
             }
-            return LocalDate.date(year, monthOfYear, dayOfMonth);
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
         }
     }
 
@@ -152,9 +152,9 @@ public final class DateResolvers {
         public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
             int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
             if (dayOfMonth > len) {
-                return LocalDate.date(year, monthOfYear.next(), 1);
+                return LocalDate.of(year, monthOfYear.next(), 1);
             }
-            return LocalDate.date(year, monthOfYear, dayOfMonth);
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
         }
     }
 
@@ -190,9 +190,9 @@ public final class DateResolvers {
         public LocalDate resolveDate(int year, MonthOfYear monthOfYear, int dayOfMonth) {
             int len = monthOfYear.lengthInDays(ISOChronology.isLeapYear(year));
             if (dayOfMonth > len) {
-                return LocalDate.date(year, monthOfYear.next(), dayOfMonth - len);
+                return LocalDate.of(year, monthOfYear.next(), dayOfMonth - len);
             }
-            return LocalDate.date(year, monthOfYear, dayOfMonth);
+            return LocalDate.of(year, monthOfYear, dayOfMonth);
         }
     }
 

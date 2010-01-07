@@ -121,7 +121,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleOverlap(
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetBefore());
+            return OffsetDateTime.from(newDateTime, discontinuity.getOffsetBefore());
         }
     }
 
@@ -155,7 +155,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleOverlap(
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetAfter());
+            return OffsetDateTime.from(newDateTime, discontinuity.getOffsetAfter());
         }
     }
 
@@ -189,7 +189,7 @@ public final class ZoneResolvers {
         protected OffsetDateTime handleOverlap(
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetBefore());
+            return OffsetDateTime.from(newDateTime, discontinuity.getOffsetBefore());
         }
     }
 
@@ -232,9 +232,9 @@ public final class ZoneResolvers {
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             if (oldDateTime != null && discontinuity.isValidOffset(oldDateTime.getOffset())) {
-                return OffsetDateTime.dateTime(newDateTime, oldDateTime.getOffset());
+                return OffsetDateTime.from(newDateTime, oldDateTime.getOffset());
             }
-            return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetAfter());
+            return OffsetDateTime.from(newDateTime, discontinuity.getOffsetAfter());
         }
     }
 
@@ -270,14 +270,14 @@ public final class ZoneResolvers {
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
             LocalDateTime result = newDateTime.plus(discontinuity.getTransitionSize());
-            return OffsetDateTime.dateTime(result, discontinuity.getOffsetAfter());
+            return OffsetDateTime.from(result, discontinuity.getOffsetAfter());
         }
         /** {@inheritDoc} */
         @Override
         protected OffsetDateTime handleOverlap(
                 TimeZone zone, ZoneRules rules, ZoneOffsetTransition discontinuity,
                 LocalDateTime newDateTime, OffsetDateTime oldDateTime) {
-            return OffsetDateTime.dateTime(newDateTime, discontinuity.getOffsetAfter());
+            return OffsetDateTime.from(newDateTime, discontinuity.getOffsetAfter());
         }
     }
 

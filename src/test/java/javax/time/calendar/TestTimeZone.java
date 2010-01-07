@@ -98,7 +98,7 @@ public class TestTimeZone {
     }
 
     public void test_serialization_fixed() throws Exception {
-        TimeZone test = TimeZone.timeZone("UTC+01:30");
+        TimeZone test = TimeZone.of("UTC+01:30");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -113,7 +113,7 @@ public class TestTimeZone {
     }
 
     public void test_serialization_Europe() throws Exception {
-        TimeZone test = TimeZone.timeZone("Europe/London");
+        TimeZone test = TimeZone.of("Europe/London");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
         out.writeObject(test);
@@ -128,7 +128,7 @@ public class TestTimeZone {
     }
 
     public void test_serialization_America() throws Exception {
-        TimeZone test = TimeZone.timeZone("America/Chicago");
+        TimeZone test = TimeZone.of("America/Chicago");
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -156,14 +156,14 @@ public class TestTimeZone {
         assertEquals(test.getShortName(), "UTC");
         assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
-        assertEquals(test.getRules().getOffset(Instant.instant(0L)), ZoneOffset.UTC);
-        OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
+        assertEquals(test.getRules().getOffset(Instant.seconds(0L)), ZoneOffset.UTC);
+        OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 30));
         assertEquals(info.isDiscontinuity(), false);
         assertEquals(info.getDiscontinuity(), null);
         assertEquals(info.getOffset(), ZoneOffset.UTC);
         assertEquals(info.getEstimatedOffset(), ZoneOffset.UTC);
-        assertSame(test, TimeZone.timeZone("UTC"));
-        assertSame(test, TimeZone.timeZone(ZoneOffset.UTC));
+        assertSame(test, TimeZone.of("UTC"));
+        assertSame(test, TimeZone.of(ZoneOffset.UTC));
     }
 
     //-----------------------------------------------------------------------
@@ -178,7 +178,7 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_UTC")
     public void test_factory_string_UTC(String id) {
-        TimeZone test = TimeZone.timeZone("UTC" + id);
+        TimeZone test = TimeZone.of("UTC" + id);
         assertSame(test, TimeZone.UTC);
     }
 
@@ -201,7 +201,7 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_Fixed")
     public void test_factory_string_Fixed(String input, String id) {
-        TimeZone test = TimeZone.timeZone("UTC" + input);
+        TimeZone test = TimeZone.of("UTC" + input);
         assertEquals(test.getID(), id);
         assertEquals(test.getGroupID(), "");
         assertEquals(test.getRegionID(), id);
@@ -210,9 +210,9 @@ public class TestTimeZone {
         assertEquals(test.getShortName(), id);
         assertEquals(test.isFixed(), true);
         assertEquals(test.getRules().isFixedOffset(), true);
-        ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.zoneOffset(id.substring(3));
-        assertEquals(test.getRules().getOffset(Instant.instant(0L)), offset);
-        OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 30));
+        ZoneOffset offset = id.length() == 3 ? ZoneOffset.UTC : ZoneOffset.of(id.substring(3));
+        assertEquals(test.getRules().getOffset(Instant.seconds(0L)), offset);
+        OffsetInfo info = test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 30));
         assertEquals(info.isDiscontinuity(), false);
         assertEquals(info.getDiscontinuity(), null);
         assertEquals(info.getOffset(), offset);
@@ -241,12 +241,12 @@ public class TestTimeZone {
 
     @Test(dataProvider="String_UTC_Invalid", expectedExceptions=CalendricalException.class)
     public void test_factory_string_invalid(String id) {
-        TimeZone.timeZone("UTC" + id);
+        TimeZone.of("UTC" + id);
     }
 
     //-----------------------------------------------------------------------
     public void test_factory_string_floatingLondon() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
+        TimeZone test = TimeZone.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -257,7 +257,7 @@ public class TestTimeZone {
     }
 
     public void test_factory_string_versionedLondon() {
-        TimeZone test = TimeZone.timeZone("Europe/London#2008i");
+        TimeZone test = TimeZone.of("Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -268,7 +268,7 @@ public class TestTimeZone {
     }
 
     public void test_factory_string_groupLondon() {
-        TimeZone test = TimeZone.timeZone("TZDB:Europe/London");
+        TimeZone test = TimeZone.of("TZDB:Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -279,7 +279,7 @@ public class TestTimeZone {
     }
 
     public void test_factory_string_groupVersionedLondon() {
-        TimeZone test = TimeZone.timeZone("TZDB:Europe/London#2008i");
+        TimeZone test = TimeZone.of("TZDB:Europe/London#2008i");
         assertEquals(test.getID(), "Europe/London#2008i");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -292,27 +292,27 @@ public class TestTimeZone {
     //-----------------------------------------------------------------------
     @Test(expectedExceptions=NullPointerException.class)
     public void test_factory_string_null() {
-        TimeZone.timeZone((String) null);
+        TimeZone.of((String) null);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_simple() {
-        TimeZone.timeZone("Unknown");
+        TimeZone.of("Unknown");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_group() {
-        TimeZone.timeZone("Unknown:Europe/London");
+        TimeZone.of("Unknown:Europe/London");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_version() {
-        TimeZone.timeZone("TZDB:Europe/London#Unknown");
+        TimeZone.of("TZDB:Europe/London#Unknown");
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_factory_string_unknown_region() {
-        TimeZone.timeZone("TZDB:Unknown#2008i");
+        TimeZone.of("TZDB:Unknown#2008i");
     }
 
     //-----------------------------------------------------------------------
@@ -326,7 +326,7 @@ public class TestTimeZone {
     // Europe/London
     //-----------------------------------------------------------------------
     public void test_London() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
+        TimeZone test = TimeZone.of("Europe/London");
         assertEquals(test.getID(), "Europe/London");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/London");
@@ -337,122 +337,122 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffset() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 4, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 5, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 6, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 7, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 8, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 9, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 12, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
+        TimeZone test = TimeZone.of("Europe/London");
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 4, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 5, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 6, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 7, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 8, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 9, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 12, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
     }
 
     public void test_London_getOffset_toDST() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
+        TimeZone test = TimeZone.of("Europe/London");
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
         // cutover at 01:00Z
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 3, 30, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 3, 30, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
     }
 
     public void test_London_getOffset_fromDST() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
+        TimeZone test = TimeZone.of("Europe/London");
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
         // cutover at 01:00Z
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 10, 26, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(0));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 10, 26, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(0));
     }
 
     public void test_London_getOffsetInfo() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 1, 1)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 2, 1)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 1)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 4, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 5, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 7, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 8, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 9, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 1)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 12, 1)), ZoneOffset.zoneOffset(0));
+        TimeZone test = TimeZone.of("Europe/London");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 1, 1)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 2, 1)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 1)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 4, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 5, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 7, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 8, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 9, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 1)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 12, 1)), ZoneOffset.hours(0));
     }
 
     public void test_London_getOffsetInfo_toDST() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 24)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 25)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 26)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 27)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 28)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 29)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 30)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 31)), ZoneOffset.zoneOffset(1));
+        TimeZone test = TimeZone.of("Europe/London");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 24)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 25)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 26)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 27)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 28)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 29)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 30)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 31)), ZoneOffset.hours(1));
         // cutover at 01:00Z
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 3, 30, 0, 59, 59, 999999999)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 3, 30, 2, 0, 0, 0)), ZoneOffset.zoneOffset(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 3, 30, 0, 59, 59, 999999999)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0)), ZoneOffset.hours(1));
     }
 
     public void test_London_getOffsetInfo_fromDST() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 24)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 25)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 26)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 27)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 28)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 29)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 30)), ZoneOffset.zoneOffset(0));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 31)), ZoneOffset.zoneOffset(0));
+        TimeZone test = TimeZone.of("Europe/London");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 24)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 25)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 26)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 27)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 28)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 29)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 30)), ZoneOffset.hours(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 31)), ZoneOffset.hours(0));
         // cutover at 01:00Z
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 10, 26, 0, 59, 59, 999999999)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 10, 26, 2, 0, 0, 0)), ZoneOffset.zoneOffset(0));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 10, 26, 0, 59, 59, 999999999)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0)), ZoneOffset.hours(0));
     }
 
     public void test_London_getOffsetInfo_gap() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        final LocalDateTime dateTime = LocalDateTime.dateTime(2008, 3, 30, 1, 0, 0, 0);
+        TimeZone test = TimeZone.of("Europe/London");
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 1, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isDiscontinuity(), true);
         assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(1));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(1));
         ZoneOffsetTransition dis = info.getDiscontinuity();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
-        assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(0));
-        assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(1));
-        assertEquals(dis.getInstant(), OffsetDateTime.dateTime(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(dis.getDateTime(), OffsetDateTime.dateTime(2008, 3, 30, 1, 0, ZoneOffset.zoneOffset(0)));
-        assertEquals(dis.getDateTimeAfter(), OffsetDateTime.dateTime(2008, 3, 30, 2, 0, ZoneOffset.zoneOffset(1)));
+        assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(0));
+        assertEquals(dis.getOffsetAfter(), ZoneOffset.hours(1));
+        assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
+        assertEquals(dis.getDateTime(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.hours(0)));
+        assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 3, 30, 2, 0, ZoneOffset.hours(1)));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(0)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(0)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(1)), false);
         assertEquals(dis.toString(), "Transition[Gap at 2008-03-30T01:00Z to +01:00]");
 
         assertFalse(dis.equals(null));
-        assertFalse(dis.equals(ZoneOffset.zoneOffset(0)));
+        assertFalse(dis.equals(ZoneOffset.hours(0)));
         assertTrue(dis.equals(dis));
 
         final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
@@ -462,32 +462,32 @@ public class TestTimeZone {
     }
 
     public void test_London_getOffsetInfo_overlap() {
-        TimeZone test = TimeZone.timeZone("Europe/London");
-        final LocalDateTime dateTime = LocalDateTime.dateTime(2008, 10, 26, 1, 0, 0, 0);
+        TimeZone test = TimeZone.of("Europe/London");
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 1, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isDiscontinuity(), true);
         assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(0));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(0));
         ZoneOffsetTransition dis = info.getDiscontinuity();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
-        assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(1));
-        assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(0));
-        assertEquals(dis.getInstant(), OffsetDateTime.dateTime(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
-        assertEquals(dis.getDateTime(), OffsetDateTime.dateTime(2008, 10, 26, 2, 0, ZoneOffset.zoneOffset(1)));
-        assertEquals(dis.getDateTimeAfter(), OffsetDateTime.dateTime(2008, 10, 26, 1, 0, ZoneOffset.zoneOffset(0)));
+        assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(1));
+        assertEquals(dis.getOffsetAfter(), ZoneOffset.hours(0));
+        assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
+        assertEquals(dis.getDateTime(), OffsetDateTime.of(2008, 10, 26, 2, 0, ZoneOffset.hours(1)));
+        assertEquals(dis.getDateTimeAfter(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.hours(0)));
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-1)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(0)), true);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), true);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(-1)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(0)), true);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(1)), true);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(2)), false);
         assertEquals(dis.toString(), "Transition[Overlap at 2008-10-26T02:00+01:00 to Z]");
 
         assertFalse(dis.equals(null));
-        assertFalse(dis.equals(ZoneOffset.zoneOffset(1)));
+        assertFalse(dis.equals(ZoneOffset.hours(1)));
         assertTrue(dis.equals(dis));
 
         final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
@@ -500,7 +500,7 @@ public class TestTimeZone {
     // Europe/Paris
     //-----------------------------------------------------------------------
     public void test_Paris() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
+        TimeZone test = TimeZone.of("Europe/Paris");
         assertEquals(test.getID(), "Europe/Paris");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "Europe/Paris");
@@ -511,120 +511,120 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffset() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 4, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 5, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 6, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 7, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 8, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 9, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 12, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
+        TimeZone test = TimeZone.of("Europe/Paris");
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 1, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 2, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 4, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 5, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 6, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 7, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 8, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 9, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 12, 1, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
     }
 
     public void test_Paris_getOffset_toDST() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
+        TimeZone test = TimeZone.of("Europe/Paris");
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
         // cutover at 01:00Z
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 3, 30, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 3, 30, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 3, 30, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
     }
 
     public void test_Paris_getOffset_fromDST() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
+        TimeZone test = TimeZone.of("Europe/Paris");
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 24, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 25, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 26, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 27, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 28, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 29, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 30, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 31, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
         // cutover at 01:00Z
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 10, 26, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(2));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.zoneOffset(1));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 10, 26, 0, 59, 59, 999999999, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(2));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 10, 26, 1, 0, 0, 0, ZoneOffset.UTC).toInstant()), ZoneOffset.hours(1));
     }
 
     public void test_Paris_getOffsetInfo() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 1, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 2, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 4, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 5, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 7, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 8, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 9, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 1)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 1)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 12, 1)), ZoneOffset.zoneOffset(1));
+        TimeZone test = TimeZone.of("Europe/Paris");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 1, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 2, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 4, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 5, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 7, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 8, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 9, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 1)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 1)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 12, 1)), ZoneOffset.hours(1));
     }
 
     public void test_Paris_getOffsetInfo_toDST() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 24)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 25)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 26)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 27)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 28)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 29)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 30)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 31)), ZoneOffset.zoneOffset(2));
+        TimeZone test = TimeZone.of("Europe/Paris");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 24)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 25)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 26)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 27)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 28)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 29)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 30)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 31)), ZoneOffset.hours(2));
         // cutover at 01:00Z which is 02:00+01:00(local Paris time)
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 3, 30, 1, 59, 59, 999999999)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 3, 30, 3, 0, 0, 0)), ZoneOffset.zoneOffset(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 3, 30, 1, 59, 59, 999999999)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 3, 30, 3, 0, 0, 0)), ZoneOffset.hours(2));
     }
 
     public void test_Paris_getOffsetInfo_fromDST() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 24)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 25)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 26)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 27)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 28)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 29)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 30)), ZoneOffset.zoneOffset(1));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 31)), ZoneOffset.zoneOffset(1));
+        TimeZone test = TimeZone.of("Europe/Paris");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 24)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 25)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 26)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 27)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 28)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 29)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 30)), ZoneOffset.hours(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 31)), ZoneOffset.hours(1));
         // cutover at 01:00Z which is 02:00+01:00(local Paris time)
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 10, 26, 1, 59, 59, 999999999)), ZoneOffset.zoneOffset(2));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 10, 26, 3, 0, 0, 0)), ZoneOffset.zoneOffset(1));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 10, 26, 1, 59, 59, 999999999)), ZoneOffset.hours(2));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 10, 26, 3, 0, 0, 0)), ZoneOffset.hours(1));
     }
 
     public void test_Paris_getOffsetInfo_gap() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        final LocalDateTime dateTime = LocalDateTime.dateTime(2008, 3, 30, 2, 0, 0, 0);
+        TimeZone test = TimeZone.of("Europe/Paris");
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 30, 2, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isDiscontinuity(), true);
         assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(2));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(2));
         ZoneOffsetTransition dis = info.getDiscontinuity();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
-        assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(1));
-        assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(2));
-        assertEquals(dis.getInstant(), OffsetDateTime.dateTime(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
+        assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(1));
+        assertEquals(dis.getOffsetAfter(), ZoneOffset.hours(2));
+        assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 30, 1, 0, ZoneOffset.UTC).toInstant());
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(3)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(1)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(2)), false);
         assertEquals(dis.toString(), "Transition[Gap at 2008-03-30T02:00+01:00 to +02:00]");
 
         assertFalse(dis.equals(null));
-        assertFalse(dis.equals(ZoneOffset.zoneOffset(1)));
+        assertFalse(dis.equals(ZoneOffset.hours(1)));
         assertTrue(dis.equals(dis));
 
         final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
@@ -634,30 +634,30 @@ public class TestTimeZone {
     }
 
     public void test_Paris_getOffsetInfo_overlap() {
-        TimeZone test = TimeZone.timeZone("Europe/Paris");
-        final LocalDateTime dateTime = LocalDateTime.dateTime(2008, 10, 26, 2, 0, 0, 0);
+        TimeZone test = TimeZone.of("Europe/Paris");
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 10, 26, 2, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isDiscontinuity(), true);
         assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(1));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(1));
         ZoneOffsetTransition dis = info.getDiscontinuity();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
-        assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(2));
-        assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(1));
-        assertEquals(dis.getInstant(), OffsetDateTime.dateTime(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
+        assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(2));
+        assertEquals(dis.getOffsetAfter(), ZoneOffset.hours(1));
+        assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 10, 26, 1, 0, ZoneOffset.UTC).toInstant());
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(0)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(1)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(3)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(0)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(1)), true);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), true);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(3)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(0)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(1)), true);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(2)), true);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(3)), false);
         assertEquals(dis.toString(), "Transition[Overlap at 2008-10-26T03:00+02:00 to +01:00]");
 
         assertFalse(dis.equals(null));
-        assertFalse(dis.equals(ZoneOffset.zoneOffset(2)));
+        assertFalse(dis.equals(ZoneOffset.hours(2)));
         assertTrue(dis.equals(dis));
 
         final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
@@ -670,7 +670,7 @@ public class TestTimeZone {
     // America/New_York
     //-----------------------------------------------------------------------
     public void test_NewYork() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
+        TimeZone test = TimeZone.of("America/New_York");
         assertEquals(test.getID(), "America/New_York");
         assertEquals(test.getGroupID(), "TZDB");
         assertEquals(test.getRegionID(), "America/New_York");
@@ -681,143 +681,143 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffset() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        ZoneOffset offset = ZoneOffset.zoneOffset(-5);
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 1, 1, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 2, 1, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 1, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 4, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 5, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 6, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 7, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 8, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 9, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 12, 1, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 1, 28, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 2, 28, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 4, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 5, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 6, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 7, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 8, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 9, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 10, 28, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 28, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 12, 28, offset).toInstant()), ZoneOffset.zoneOffset(-5));
+        TimeZone test = TimeZone.of("America/New_York");
+        ZoneOffset offset = ZoneOffset.hours(-5);
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 1, 1, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 2, 1, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 1, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 4, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 5, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 6, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 7, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 8, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 9, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 12, 1, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 1, 28, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 2, 28, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 4, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 5, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 6, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 7, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 8, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 9, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 10, 28, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 28, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 12, 28, offset).toInstant()), ZoneOffset.hours(-5));
     }
 
     public void test_NewYork_getOffset_toDST() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        ZoneOffset offset = ZoneOffset.zoneOffset(-5);
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 8, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 9, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 10, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 11, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 12, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 13, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 3, 14, offset).toInstant()), ZoneOffset.zoneOffset(-4));
+        TimeZone test = TimeZone.of("America/New_York");
+        ZoneOffset offset = ZoneOffset.hours(-5);
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 8, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 9, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 10, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 11, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 12, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 13, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 3, 14, offset).toInstant()), ZoneOffset.hours(-4));
         // cutover at 02:00 local
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 3, 9, 1, 59, 59, 999999999, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 3, 9, 2, 0, 0, 0, offset).toInstant()), ZoneOffset.zoneOffset(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 3, 9, 1, 59, 59, 999999999, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 3, 9, 2, 0, 0, 0, offset).toInstant()), ZoneOffset.hours(-4));
     }
 
     public void test_NewYork_getOffset_fromDST() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        ZoneOffset offset = ZoneOffset.zoneOffset(-4);
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 1, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 2, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 3, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 4, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 5, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 6, offset).toInstant()), ZoneOffset.zoneOffset(-5));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateMidnight(2008, 11, 7, offset).toInstant()), ZoneOffset.zoneOffset(-5));
+        TimeZone test = TimeZone.of("America/New_York");
+        ZoneOffset offset = ZoneOffset.hours(-4);
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 1, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 2, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 3, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 4, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 5, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 6, offset).toInstant()), ZoneOffset.hours(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.midnight(2008, 11, 7, offset).toInstant()), ZoneOffset.hours(-5));
         // cutover at 02:00 local
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 11, 2, 1, 59, 59, 999999999, offset).toInstant()), ZoneOffset.zoneOffset(-4));
-        assertEquals(test.getRules().getOffset(OffsetDateTime.dateTime(2008, 11, 2, 2, 0, 0, 0, offset).toInstant()), ZoneOffset.zoneOffset(-5));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 11, 2, 1, 59, 59, 999999999, offset).toInstant()), ZoneOffset.hours(-4));
+        assertEquals(test.getRules().getOffset(OffsetDateTime.of(2008, 11, 2, 2, 0, 0, 0, offset).toInstant()), ZoneOffset.hours(-5));
     }
 
     public void test_NewYork_getOffsetInfo() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 1, 1)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 2, 1)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 1)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 4, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 5, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 7, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 8, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 9, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 12, 1)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 1, 28)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 2, 28)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 4, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 5, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 6, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 7, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 8, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 9, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 10, 28)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 28)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 12, 28)), ZoneOffset.zoneOffset(-5));
+        TimeZone test = TimeZone.of("America/New_York");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 1, 1)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 2, 1)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 1)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 4, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 5, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 7, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 8, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 9, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 12, 1)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 1, 28)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 2, 28)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 4, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 5, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 6, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 7, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 8, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 9, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 10, 28)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 28)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 12, 28)), ZoneOffset.hours(-5));
     }
 
     public void test_NewYork_getOffsetInfo_toDST() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 8)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 9)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 10)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 11)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 12)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 13)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 3, 14)), ZoneOffset.zoneOffset(-4));
+        TimeZone test = TimeZone.of("America/New_York");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 8)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 9)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 10)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 11)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 12)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 13)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 3, 14)), ZoneOffset.hours(-4));
         // cutover at 02:00 local
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 3, 9, 1, 59, 59, 999999999)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 3, 9, 3, 0, 0, 0)), ZoneOffset.zoneOffset(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 3, 9, 1, 59, 59, 999999999)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 3, 9, 3, 0, 0, 0)), ZoneOffset.hours(-4));
     }
 
     public void test_NewYork_getOffsetInfo_fromDST() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 1)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 2)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 3)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 4)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 5)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 6)), ZoneOffset.zoneOffset(-5));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateMidnight(2008, 11, 7)), ZoneOffset.zoneOffset(-5));
+        TimeZone test = TimeZone.of("America/New_York");
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 1)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 2)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 3)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 4)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 5)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 6)), ZoneOffset.hours(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.midnight(2008, 11, 7)), ZoneOffset.hours(-5));
         // cutover at 02:00 local
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 11, 2, 0, 59, 59, 999999999)), ZoneOffset.zoneOffset(-4));
-        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.dateTime(2008, 11, 2, 2, 0, 0, 0)), ZoneOffset.zoneOffset(-5));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 11, 2, 0, 59, 59, 999999999)), ZoneOffset.hours(-4));
+        checkOffset(test.getRules().getOffsetInfo(LocalDateTime.of(2008, 11, 2, 2, 0, 0, 0)), ZoneOffset.hours(-5));
     }
 
     public void test_NewYork_getOffsetInfo_gap() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        final LocalDateTime dateTime = LocalDateTime.dateTime(2008, 3, 9, 2, 0, 0, 0);
+        TimeZone test = TimeZone.of("America/New_York");
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 3, 9, 2, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isDiscontinuity(), true);
         assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(-4));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(-4));
         ZoneOffsetTransition dis = info.getDiscontinuity();
         assertEquals(dis.isGap(), true);
         assertEquals(dis.isOverlap(), false);
-        assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(-5));
-        assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(-4));
-        assertEquals(dis.getInstant(), OffsetDateTime.dateTime(2008, 3, 9, 2, 0, ZoneOffset.zoneOffset(-5)).toInstant());
+        assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(-5));
+        assertEquals(dis.getOffsetAfter(), ZoneOffset.hours(-4));
+        assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 3, 9, 2, 0, ZoneOffset.hours(-5)).toInstant());
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-5)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-4)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-5)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-4)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(-5)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(-4)), false);
         assertEquals(dis.toString(), "Transition[Gap at 2008-03-09T02:00-05:00 to -04:00]");
 
         assertFalse(dis.equals(null));
-        assertFalse(dis.equals(ZoneOffset.zoneOffset(-5)));
+        assertFalse(dis.equals(ZoneOffset.hours(-5)));
         assertTrue(dis.equals(dis));
 
         final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
@@ -827,30 +827,30 @@ public class TestTimeZone {
     }
 
     public void test_NewYork_getOffsetInfo_overlap() {
-        TimeZone test = TimeZone.timeZone("America/New_York");
-        final LocalDateTime dateTime = LocalDateTime.dateTime(2008, 11, 2, 1, 0, 0, 0);
+        TimeZone test = TimeZone.of("America/New_York");
+        final LocalDateTime dateTime = LocalDateTime.of(2008, 11, 2, 1, 0, 0, 0);
         OffsetInfo info = test.getRules().getOffsetInfo(dateTime);
         assertEquals(info.isDiscontinuity(), true);
         assertEquals(info.getOffset(), null);
-        assertEquals(info.getEstimatedOffset(), ZoneOffset.zoneOffset(-5));
+        assertEquals(info.getEstimatedOffset(), ZoneOffset.hours(-5));
         ZoneOffsetTransition dis = info.getDiscontinuity();
         assertEquals(dis.isGap(), false);
         assertEquals(dis.isOverlap(), true);
-        assertEquals(dis.getOffsetBefore(), ZoneOffset.zoneOffset(-4));
-        assertEquals(dis.getOffsetAfter(), ZoneOffset.zoneOffset(-5));
-        assertEquals(dis.getInstant(), OffsetDateTime.dateTime(2008, 11, 2, 2, 0, ZoneOffset.zoneOffset(-4)).toInstant());
+        assertEquals(dis.getOffsetBefore(), ZoneOffset.hours(-4));
+        assertEquals(dis.getOffsetAfter(), ZoneOffset.hours(-5));
+        assertEquals(dis.getInstant(), OffsetDateTime.of(2008, 11, 2, 2, 0, ZoneOffset.hours(-4)).toInstant());
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-1)), false);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-5)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(-4)), true);
 //        assertEquals(dis.containsOffset(ZoneOffset.zoneOffset(2)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-1)), false);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-5)), true);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(-4)), true);
-        assertEquals(dis.isValidOffset(ZoneOffset.zoneOffset(2)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(-1)), false);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(-5)), true);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(-4)), true);
+        assertEquals(dis.isValidOffset(ZoneOffset.hours(2)), false);
         assertEquals(dis.toString(), "Transition[Overlap at 2008-11-02T02:00-04:00 to -05:00]");
 
         assertFalse(dis.equals(null));
-        assertFalse(dis.equals(ZoneOffset.zoneOffset(-4)));
+        assertFalse(dis.equals(ZoneOffset.hours(-4)));
         assertTrue(dis.equals(dis));
 
         final ZoneOffsetTransition otherDis = test.getRules().getOffsetInfo(dateTime).getDiscontinuity();
@@ -883,9 +883,9 @@ public class TestTimeZone {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals() {
-        TimeZone test1 = TimeZone.timeZone("Europe/London");
-        TimeZone test2 = TimeZone.timeZone("Europe/Paris");
-        TimeZone test2b = TimeZone.timeZone("Europe/Paris");
+        TimeZone test1 = TimeZone.of("Europe/London");
+        TimeZone test2 = TimeZone.of("Europe/Paris");
+        TimeZone test2b = TimeZone.of("Europe/Paris");
         assertEquals(test1.equals(test2), false);
         assertEquals(test2.equals(test1), false);
         
@@ -899,11 +899,11 @@ public class TestTimeZone {
     }
 
     public void test_equals_null() {
-        assertEquals(TimeZone.timeZone("Europe/London").equals(null), false);
+        assertEquals(TimeZone.of("Europe/London").equals(null), false);
     }
 
     public void test_equals_notTimeZone() {
-        assertEquals(TimeZone.timeZone("Europe/London").equals("Europe/London"), false);
+        assertEquals(TimeZone.of("Europe/London").equals("Europe/London"), false);
     }
 
     //-----------------------------------------------------------------------
@@ -925,7 +925,7 @@ public class TestTimeZone {
 
     @Test(dataProvider="ToString")
     public void test_toString(String id, String expected) {
-        TimeZone test = TimeZone.timeZone(id);
+        TimeZone test = TimeZone.of(id);
         assertEquals(test.toString(), expected);
     }
 

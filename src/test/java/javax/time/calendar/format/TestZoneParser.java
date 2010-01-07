@@ -51,7 +51,7 @@ import org.testng.annotations.Test;
 public class TestZoneParser {
 
     private static final String AMERICA_DENVER = "America/Denver";
-    private static final TimeZone TIME_ZONE_DENVER = TimeZone.timeZone(AMERICA_DENVER);
+    private static final TimeZone TIME_ZONE_DENVER = TimeZone.of(AMERICA_DENVER);
     private DateTimeParseContext context;
 
     @BeforeMethod
@@ -66,7 +66,7 @@ public class TestZoneParser {
             int result = pp.parse((DateTimeParseContext) null, AMERICA_DENVER, 0);
             assertEquals(result, AMERICA_DENVER.length());
             assertEquals(context.toCalendricalMerger().getInputMap().size(), 0);
-            assertEquals(context.toCalendricalMerger().getInputMap().get(TimeZone.rule()), ZoneOffset.zoneOffset(1));
+            assertEquals(context.toCalendricalMerger().getInputMap().get(TimeZone.rule()), ZoneOffset.hours(1));
             // NPE is optional, but parse must still succeed
         } catch (NullPointerException ex) {
             // NPE is optional
@@ -134,7 +134,7 @@ public class TestZoneParser {
         Object[][] rtnval = new Object[ids.size()][];
         int i = 0;
         for (String id : ids) {
-            rtnval[i++] = new Object[] { id, TimeZone.timeZone(id) };
+            rtnval[i++] = new Object[] { id, TimeZone.of(id) };
         }
         return rtnval;
     }
@@ -159,7 +159,7 @@ public class TestZoneParser {
         ZonePrinterParser pp = new ZonePrinterParser();
         int result = pp.parse(context, "OTHERUTC+01:00", 5);
         assertEquals(result, 14);
-        assertParsed(TimeZone.timeZone("UTC+01:00"));
+        assertParsed(TimeZone.of("UTC+01:00"));
     }
 
     //-----------------------------------------------------------------------
@@ -174,7 +174,7 @@ public class TestZoneParser {
         ZonePrinterParser pp = new ZonePrinterParser();
         int result = pp.parse(context, "OTHERUTC+01:00OTHER", 5);
         assertEquals(result, 14);
-        assertParsed(TimeZone.timeZone("UTC+01:00"));
+        assertParsed(TimeZone.of("UTC+01:00"));
     }
 
     //-----------------------------------------------------------------------

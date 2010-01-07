@@ -63,20 +63,20 @@ public class TestQuarterOfYear {
     //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 1; i <= 4; i++) {
-            QuarterOfYear test = QuarterOfYear.quarterOfYear(i);
+            QuarterOfYear test = QuarterOfYear.of(i);
             assertEquals(test.getValue(), i);
-            assertSame(QuarterOfYear.quarterOfYear(i), test);
+            assertSame(QuarterOfYear.of(i), test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooLow() {
-        QuarterOfYear.quarterOfYear(0);
+        QuarterOfYear.of(0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooHigh() {
-        QuarterOfYear.quarterOfYear(5);
+        QuarterOfYear.of(5);
     }
 
     //-----------------------------------------------------------------------

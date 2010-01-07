@@ -3013,7 +3013,7 @@ public class GregorianCalendar
      */
     public LocalDate toLocalDate() {
         if (get(YEAR) > gregorianCutoverYear && getClass() == GregorianCalendar.class) {
-            return LocalDate.date(get(YEAR), get(MONTH) + 1, get(DATE));
+            return LocalDate.of(get(YEAR), get(MONTH) + 1, get(DATE));
         }
         return toOffsetDateTime().toLocalDate();
     }
@@ -3033,7 +3033,7 @@ public class GregorianCalendar
      */
     public LocalTime toLocalTime() {
         if (getClass() == GregorianCalendar.class) {
-            return LocalTime.time(get(HOUR_OF_DAY), get(MINUTE), get(SECOND), get(MILLISECOND));
+            return LocalTime.of(get(HOUR_OF_DAY), get(MINUTE), get(SECOND), get(MILLISECOND));
         }
         return toZonedDateTime().toLocalTime();
     }
@@ -3056,8 +3056,8 @@ public class GregorianCalendar
      */
     public OffsetDateTime toOffsetDateTime() {
         if (getClass() == GregorianCalendar.class) {
-            Instant instant = Instant.millisInstant(getTimeInMillis());
-            ZoneOffset offset = ZoneOffset.forTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
+            Instant instant = Instant.millis(getTimeInMillis());
+            ZoneOffset offset = ZoneOffset.fromTotalSeconds((zoneOffsets[0] + zoneOffsets[1]) / 1000);
             return OffsetDateTime.fromInstant(instant, offset);
         }
         return toZonedDateTime().toOffsetDateTime();
@@ -3115,8 +3115,8 @@ public class GregorianCalendar
      * @since ?
      */
     public ZonedDateTime toZonedDateTime() {
-        Instant instant = Instant.millisInstant(getTimeInMillis());
-        javax.time.calendar.TimeZone zone = javax.time.calendar.TimeZone.timeZone(getZone().getID());
+        Instant instant = Instant.millis(getTimeInMillis());
+        javax.time.calendar.TimeZone zone = javax.time.calendar.TimeZone.of(getZone().getID());
         return ZonedDateTime.fromInstant(instant, zone);
     }
 

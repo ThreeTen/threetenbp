@@ -72,7 +72,7 @@ public class TestCopticDate {
 
     @BeforeMethod
     public void setUp() {
-        TEST_1234_7_15 = CopticDate.copticDate(1234, 7, 15);
+        TEST_1234_7_15 = CopticDate.of(1234, 7, 15);
     }
 
     //-----------------------------------------------------------------------
@@ -113,13 +113,13 @@ public class TestCopticDate {
         for (int y = 1; y <= 9999; y++) {
             for (int m = 1; m <= 12; m++) {
                 for (int d = 1; d <= 30; d++) {
-                    assertCopticDate(CopticDate.copticDate(y, m, d), y, m, d);
+                    assertCopticDate(CopticDate.of(y, m, d), y, m, d);
                 }
             }
             int m = 13;
             for (int d = 1; d < 30; d++) {
                 if (d <= 5 || (d == 6 && isLeapYear(y))) {
-                    assertCopticDate(CopticDate.copticDate(y, m, d), y, m, d);
+                    assertCopticDate(CopticDate.of(y, m, d), y, m, d);
                 } else {
                     assertInvalidCopticDate(y, m, d);
                 }
@@ -154,18 +154,18 @@ public class TestCopticDate {
 
     //-----------------------------------------------------------------------
     public void factory_date_Calendrical() throws Exception {
-        assertEquals(CopticDate.copticDate(TEST_1234_7_15), TEST_1234_7_15);
-        assertCopticDate(CopticDate.copticDate(TEST_1234_7_15), 1234, 7, 15);
+        assertEquals(CopticDate.from(TEST_1234_7_15), TEST_1234_7_15);
+        assertCopticDate(CopticDate.from(TEST_1234_7_15), 1234, 7, 15);
     }
 
     @Test(expectedExceptions=UnsupportedRuleException.class)
     public void factory_date_Calendrical_noData() throws Exception {
-        CopticDate.copticDate(new MockSimpleCalendrical());
+        CopticDate.from(new MockSimpleCalendrical());
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_Calendrical_null() throws Exception {
-        CopticDate.copticDate(null);
+        CopticDate.from(null);
     }
 
     //-----------------------------------------------------------------------
@@ -195,18 +195,18 @@ public class TestCopticDate {
     // getDayOfWeek()
     //-----------------------------------------------------------------------
     public void test_getDayOfWeek() throws Exception {
-        assertEquals(CopticDate.copticDate(1662, 3, 3).getDayOfWeek(), DayOfWeek.MONDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 4).getDayOfWeek(), DayOfWeek.TUESDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 5).getDayOfWeek(), DayOfWeek.WEDNESDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 6).getDayOfWeek(), DayOfWeek.THURSDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 7).getDayOfWeek(), DayOfWeek.FRIDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 8).getDayOfWeek(), DayOfWeek.SATURDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 9).getDayOfWeek(), DayOfWeek.SUNDAY);
-        assertEquals(CopticDate.copticDate(1662, 3, 10).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(CopticDate.of(1662, 3, 3).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(CopticDate.of(1662, 3, 4).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(CopticDate.of(1662, 3, 5).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(CopticDate.of(1662, 3, 6).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(CopticDate.of(1662, 3, 7).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(CopticDate.of(1662, 3, 8).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(CopticDate.of(1662, 3, 9).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(CopticDate.of(1662, 3, 10).getDayOfWeek(), DayOfWeek.MONDAY);
     }
 
     public void test_getDayOfWeek_crossCheck() throws Exception {
-        CopticDate test = CopticDate.copticDate(1662, 3, 3);
+        CopticDate test = CopticDate.of(1662, 3, 3);
         assertEquals(test.getDayOfWeek(), test.toLocalDate().getDayOfWeek());
     }
 
@@ -215,7 +215,7 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_withYear_int() throws Exception {
         CopticDate test = TEST_1234_7_15.withYear(2008);
-        assertEquals(test, CopticDate.copticDate(2008, 7, 15));
+        assertEquals(test, CopticDate.of(2008, 7, 15));
     }
 
     public void test_withYear_int_invalid_tooSmall() throws Exception {
@@ -237,14 +237,14 @@ public class TestCopticDate {
     }
 
     public void test_withYear_int_adjustDay_nonLeap() throws Exception {
-        CopticDate test = CopticDate.copticDate(7, 13, 6).withYear(8);
-        CopticDate expected = CopticDate.copticDate(8, 13, 5);
+        CopticDate test = CopticDate.of(7, 13, 6).withYear(8);
+        CopticDate expected = CopticDate.of(8, 13, 5);
         assertEquals(test, expected);
     }
 
     public void test_withYear_int_adjustDay_leap() throws Exception {
-        CopticDate test = CopticDate.copticDate(11, 13, 6).withYear(7);
-        CopticDate expected = CopticDate.copticDate(7, 13, 6);
+        CopticDate test = CopticDate.of(11, 13, 6).withYear(7);
+        CopticDate expected = CopticDate.of(7, 13, 6);
         assertEquals(test, expected);
     }
 
@@ -253,7 +253,7 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_withMonthOfYear_int() throws Exception {
         CopticDate test = TEST_1234_7_15.withMonthOfYear(1);
-        assertEquals(test, CopticDate.copticDate(1234, 1, 15));
+        assertEquals(test, CopticDate.of(1234, 1, 15));
     }
 
     public void test_withMonthOfYear_int_invalid_tooSmall() throws Exception {
@@ -275,14 +275,14 @@ public class TestCopticDate {
     }
 
     public void test_withMonthOfYear_int_adjustDay_nonLeap() throws Exception {
-        CopticDate test = CopticDate.copticDate(8, 9, 30).withMonthOfYear(13);
-        CopticDate expected = CopticDate.copticDate(8, 13, 5);
+        CopticDate test = CopticDate.of(8, 9, 30).withMonthOfYear(13);
+        CopticDate expected = CopticDate.of(8, 13, 5);
         assertEquals(test, expected);
     }
 
     public void test_withMonthOfYear_int_adjustDay_leap() throws Exception {
-        CopticDate test = CopticDate.copticDate(7, 9, 30).withMonthOfYear(13);
-        CopticDate expected = CopticDate.copticDate(7, 13, 6);
+        CopticDate test = CopticDate.of(7, 9, 30).withMonthOfYear(13);
+        CopticDate expected = CopticDate.of(7, 13, 6);
         assertEquals(test, expected);
     }
 
@@ -291,16 +291,16 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_withDayOfMonth() throws Exception {
         CopticDate test = TEST_1234_7_15.withDayOfMonth(1);
-        assertEquals(test, CopticDate.copticDate(1234, 7, 1));
+        assertEquals(test, CopticDate.of(1234, 7, 1));
     }
 
     public void test_withDayOfMonth_13Leap() throws Exception {
-        CopticDate test = CopticDate.copticDate(7, 13, 1).withDayOfMonth(6);
-        assertEquals(test, CopticDate.copticDate(7, 13, 6));
+        CopticDate test = CopticDate.of(7, 13, 1).withDayOfMonth(6);
+        assertEquals(test, CopticDate.of(7, 13, 6));
     }
 
     public void test_withDayOfMonth_invalid_tooSmall() throws Exception {
-        CopticDate test = CopticDate.copticDate(1234, 11, 30);
+        CopticDate test = CopticDate.of(1234, 11, 30);
         try {
             test.withDayOfMonth(0);
             fail();
@@ -310,7 +310,7 @@ public class TestCopticDate {
     }
 
     public void test_withDayOfMonth_invalid_tooBig_normal() throws Exception {
-        CopticDate test = CopticDate.copticDate(1234, 11, 30);
+        CopticDate test = CopticDate.of(1234, 11, 30);
         try {
             test.withDayOfMonth(31);
             fail();
@@ -320,7 +320,7 @@ public class TestCopticDate {
     }
 
     public void test_withDayOfMonth_invalid_tooBig_13NonLeap() throws Exception {
-        CopticDate test = CopticDate.copticDate(8, 13, 1);
+        CopticDate test = CopticDate.of(8, 13, 1);
         try {
             test.withDayOfMonth(6);
             fail();
@@ -330,7 +330,7 @@ public class TestCopticDate {
     }
 
     public void test_withDayOfMonth_invalid_tooBig_13Leap() throws Exception {
-        CopticDate test = CopticDate.copticDate(7, 13, 1);
+        CopticDate test = CopticDate.of(7, 13, 1);
         try {
             test.withDayOfMonth(7);
             fail();
@@ -344,21 +344,21 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_withDayOfYear() throws Exception {
         CopticDate test = TEST_1234_7_15.withDayOfYear(1);
-        assertEquals(test, CopticDate.copticDate(1234, 1, 1));
+        assertEquals(test, CopticDate.of(1234, 1, 1));
     }
 
     public void test_withDayOfYear_31() throws Exception {
         CopticDate test = TEST_1234_7_15.withDayOfYear(31);
-        assertEquals(test, CopticDate.copticDate(1234, 2, 1));
+        assertEquals(test, CopticDate.of(1234, 2, 1));
     }
 
     public void test_withDayOfYear_leapDay() throws Exception {
-        CopticDate test = CopticDate.copticDate(7, 2, 3).withDayOfYear(366);
-        assertEquals(test, CopticDate.copticDate(7, 13, 6));
+        CopticDate test = CopticDate.of(7, 2, 3).withDayOfYear(366);
+        assertEquals(test, CopticDate.of(7, 13, 6));
     }
 
     public void test_withDayOfYear_invalid_tooSmall() throws Exception {
-        CopticDate test = CopticDate.copticDate(1234, 11, 30);
+        CopticDate test = CopticDate.of(1234, 11, 30);
         try {
             test.withDayOfYear(0);
             fail();
@@ -368,7 +368,7 @@ public class TestCopticDate {
     }
 
     public void test_withDayOfYear_invalid_tooBig_nonLeap() throws Exception {
-        CopticDate test = CopticDate.copticDate(8, 13, 1);
+        CopticDate test = CopticDate.of(8, 13, 1);
         try {
             test.withDayOfYear(366);
             fail();
@@ -378,7 +378,7 @@ public class TestCopticDate {
     }
 
     public void test_withDayOfYear_invalid_tooBig_leap() throws Exception {
-        CopticDate test = CopticDate.copticDate(7, 13, 1);
+        CopticDate test = CopticDate.of(7, 13, 1);
         try {
             test.withDayOfYear(367);
             fail();
@@ -398,8 +398,8 @@ public class TestCopticDate {
     }
 
     private void doTest_plusYears(int y, int m, int d, int plus, int ey, int em, int ed) throws Exception {
-        CopticDate test = CopticDate.copticDate(y, m, d);
-        CopticDate expected = CopticDate.copticDate(ey, em, ed);
+        CopticDate test = CopticDate.of(y, m, d);
+        CopticDate expected = CopticDate.of(ey, em, ed);
         assertEquals(test.plusYears(plus), expected);
     }
 
@@ -414,7 +414,7 @@ public class TestCopticDate {
     }
 
     private void test_plusYearsOverflow(int y, int m, int d, int plus) throws Exception {
-        CopticDate test = CopticDate.copticDate(y, m, d);
+        CopticDate test = CopticDate.of(y, m, d);
         try {
             test.plusYears(plus);
             fail();
@@ -438,8 +438,8 @@ public class TestCopticDate {
     }
 
     private void doTest_plusMonths(int y, int m, int d, int plus, int ey, int em, int ed) throws Exception {
-        CopticDate test = CopticDate.copticDate(y, m, d);
-        CopticDate expected = CopticDate.copticDate(ey, em, ed);
+        CopticDate test = CopticDate.of(y, m, d);
+        CopticDate expected = CopticDate.of(ey, em, ed);
         assertEquals(test.plusMonths(plus), expected);
     }
 
@@ -454,7 +454,7 @@ public class TestCopticDate {
     }
 
     private void doTest_plusMonthsOverflow(int y, int m, int d, int plus) throws Exception {
-        CopticDate test = CopticDate.copticDate(y, m, d);
+        CopticDate test = CopticDate.of(y, m, d);
         try {
             test.plusMonths(plus);
             fail();
@@ -474,8 +474,8 @@ public class TestCopticDate {
     }
 
     private void doTest_plusDays(int y, int m, int d, int plus, int ey, int em, int ed) throws Exception {
-        CopticDate test = CopticDate.copticDate(y, m, d);
-        CopticDate expected = CopticDate.copticDate(ey, em, ed);
+        CopticDate test = CopticDate.of(y, m, d);
+        CopticDate expected = CopticDate.of(ey, em, ed);
         assertEquals(test.plusDays(plus), expected);
     }
 
@@ -490,7 +490,7 @@ public class TestCopticDate {
     }
 
     private void doTest_plusDaysOverflow(int y, int m, int d, int plus) throws Exception {
-        CopticDate test = CopticDate.copticDate(y, m, d);
+        CopticDate test = CopticDate.of(y, m, d);
         try {
             test.plusDays(plus);
             fail();
@@ -503,8 +503,8 @@ public class TestCopticDate {
     // toLocalDate()
     //-----------------------------------------------------------------------
     public void test_toLocalDate() throws Exception {
-        assertEquals(CopticDate.copticDate(1,1,1).toLocalDate(), LocalDate.date(284, 8, 29));
-        assertEquals(CopticDate.copticDate(1662, 3,3).toLocalDate(), LocalDate.date(1945, 11, 12));
+        assertEquals(CopticDate.of(1,1,1).toLocalDate(), LocalDate.of(284, 8, 29));
+        assertEquals(CopticDate.of(1662, 3,3).toLocalDate(), LocalDate.of(1945, 11, 12));
     }
 
     //-----------------------------------------------------------------------
@@ -512,23 +512,23 @@ public class TestCopticDate {
     //-----------------------------------------------------------------------
     public void test_comparisons() throws Exception {
         doTest_comparisons_CopticDate(
-            CopticDate.copticDate(1, 1, 1),
-            CopticDate.copticDate(1, 1, 2),
-            CopticDate.copticDate(1, 1, 30),
-            CopticDate.copticDate(1, 2, 1),
-            CopticDate.copticDate(1, 2, 30),
-            CopticDate.copticDate(1, 12, 30),
-            CopticDate.copticDate(1, 13, 1),
-            CopticDate.copticDate(1, 13, 5),
-            CopticDate.copticDate(2, 1, 1),
-            CopticDate.copticDate(2, 12, 30),
-            CopticDate.copticDate(2, 13, 5),
-            CopticDate.copticDate(3, 1, 1),
-            CopticDate.copticDate(3, 12, 30),
-            CopticDate.copticDate(3, 13, 6),
-            CopticDate.copticDate(CopticDate.MAX_YEAR, 1, 1),
-            CopticDate.copticDate(CopticDate.MAX_YEAR, 12, 30),
-            CopticDate.copticDate(CopticDate.MAX_YEAR, 13, 5)
+            CopticDate.of(1, 1, 1),
+            CopticDate.of(1, 1, 2),
+            CopticDate.of(1, 1, 30),
+            CopticDate.of(1, 2, 1),
+            CopticDate.of(1, 2, 30),
+            CopticDate.of(1, 12, 30),
+            CopticDate.of(1, 13, 1),
+            CopticDate.of(1, 13, 5),
+            CopticDate.of(2, 1, 1),
+            CopticDate.of(2, 12, 30),
+            CopticDate.of(2, 13, 5),
+            CopticDate.of(3, 1, 1),
+            CopticDate.of(3, 12, 30),
+            CopticDate.of(3, 13, 6),
+            CopticDate.of(CopticDate.MAX_YEAR, 1, 1),
+            CopticDate.of(CopticDate.MAX_YEAR, 12, 30),
+            CopticDate.of(CopticDate.MAX_YEAR, 13, 5)
         );
     }
 
@@ -583,8 +583,8 @@ public class TestCopticDate {
     // equals() / hashCode()
     //-----------------------------------------------------------------------
     public void test_equals_equal() throws Exception {
-        CopticDate a = CopticDate.copticDate(1, 1, 1);
-        CopticDate b = CopticDate.copticDate(1, 1, 1);
+        CopticDate a = CopticDate.of(1, 1, 1);
+        CopticDate b = CopticDate.of(1, 1, 1);
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(a.equals(a), true);
@@ -592,8 +592,8 @@ public class TestCopticDate {
     }
 
     public void test_equals_notEqualDay() throws Exception {
-        CopticDate a = CopticDate.copticDate(1, 1, 1);
-        CopticDate b = CopticDate.copticDate(1, 1, 2);
+        CopticDate a = CopticDate.of(1, 1, 1);
+        CopticDate b = CopticDate.of(1, 1, 2);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -601,8 +601,8 @@ public class TestCopticDate {
     }
 
     public void test_equals_notEqualMonth() throws Exception {
-        CopticDate a = CopticDate.copticDate(1, 1, 1);
-        CopticDate b = CopticDate.copticDate(1, 2, 1);
+        CopticDate a = CopticDate.of(1, 1, 1);
+        CopticDate b = CopticDate.of(1, 2, 1);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -610,8 +610,8 @@ public class TestCopticDate {
     }
 
     public void test_equals_notEqualYear() throws Exception {
-        CopticDate a = CopticDate.copticDate(1, 1, 1);
-        CopticDate b = CopticDate.copticDate(2, 1, 1);
+        CopticDate a = CopticDate.of(1, 1, 1);
+        CopticDate b = CopticDate.of(2, 1, 1);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -627,8 +627,8 @@ public class TestCopticDate {
     }
 
     public void test_hashCode() throws Exception {
-        CopticDate a = CopticDate.copticDate(1, 1, 1);
-        CopticDate b = CopticDate.copticDate(1, 1, 1);
+        CopticDate a = CopticDate.of(1, 1, 1);
+        CopticDate b = CopticDate.of(1, 1, 1);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(b.hashCode(), b.hashCode());
@@ -653,7 +653,7 @@ public class TestCopticDate {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int y, int m, int d, String expected) {
-        CopticDate test = CopticDate.copticDate(y, m, d);
+        CopticDate test = CopticDate.of(y, m, d);
         String str = test.toString();
         assertEquals(str, expected);
     }
@@ -669,7 +669,7 @@ public class TestCopticDate {
 
     private void assertInvalidCopticDate(int year, int month, int day) throws Exception {
         try {
-            CopticDate.copticDate(year, month, day);
+            CopticDate.of(year, month, day);
             fail();
         } catch (InvalidCalendarFieldException ex) {
             if (year < 1 || year > 9999 || month < 1 || month > 13 || day < 1 || day > 30) {

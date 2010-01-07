@@ -334,7 +334,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                 MonthOfYear moy = merger.getValue(JapaneseChronology.monthOfYearRule());
                 Integer domVal = merger.getValue(JapaneseChronology.dayOfMonthRule());
                 if (moy != null && domVal != null) {
-                    JapaneseDate date = JapaneseDate.japaneseDate(era, yoeVal, moy, domVal);
+                    JapaneseDate date = JapaneseDate.of(era, yoeVal, moy, domVal);
                     merger.storeMerged(JapaneseDate.rule(), date);
                     merger.removeProcessed(this);
                     merger.removeProcessed(JapaneseChronology.yearOfEraRule());
@@ -344,7 +344,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
                 // era, year, day-of-year
                 Integer doyVal = merger.getValue(JapaneseChronology.dayOfYearRule());
                 if (doyVal != null) {
-                    JapaneseDate date = JapaneseDate.japaneseDate(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
+                    JapaneseDate date = JapaneseDate.of(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
                     merger.storeMerged(JapaneseDate.rule(), date);
                     merger.removeProcessed(this);
                     merger.removeProcessed(JapaneseChronology.yearOfEraRule());
@@ -496,7 +496,7 @@ public final class JapaneseChronology extends Chronology implements Serializable
             Integer yoeVal = calendrical.get(JapaneseChronology.yearOfEraRule());
             if (era != null && yoeVal != null) {
                 int isoYear = era.getYearOffset() + yoeVal;
-                Year year = Year.isoYear(isoYear);
+                Year year = Year.of(isoYear);
                 return year.lengthInDays();
             }
             return getMaximumValue();

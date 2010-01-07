@@ -133,18 +133,18 @@ public final class CalendricalContext
         if (dateResolver != null) {
             ISOChronology.yearRule().checkValue(year);  // TODO: make resolver handle this
             ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);  // TODO: make resolver handle this
-            return dateResolver.resolveDate(year, MonthOfYear.monthOfYear(month), dayOfMonth);
+            return dateResolver.resolveDate(year, MonthOfYear.of(month), dayOfMonth);
         }
         if (strict) {
-            return LocalDate.date(year, month, dayOfMonth);
+            return LocalDate.of(year, month, dayOfMonth);
         }
         if (month >= 1 && month <= 12) {
             if (dayOfMonth >= 1 && dayOfMonth <= 28) {  // range is valid for all months
-                return LocalDate.date(year, month, dayOfMonth);
+                return LocalDate.of(year, month, dayOfMonth);
             }
-            return LocalDate.date(year, month, 1).plusDays(((long) dayOfMonth) - 1);  // MIN/MAX handled ok
+            return LocalDate.of(year, month, 1).plusDays(((long) dayOfMonth) - 1);  // MIN/MAX handled ok
         }
-        return LocalDate.date(year, 1, 1).plusMonths(month).plusMonths(-1)
+        return LocalDate.of(year, 1, 1).plusMonths(month).plusMonths(-1)
                                 .plusDays(((long) dayOfMonth) - 1);  // MIN/MAX handled ok
     }
 

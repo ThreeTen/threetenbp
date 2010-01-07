@@ -74,7 +74,7 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
      * @param seconds  the number of seconds the instance will represent
      * @return the created Seconds
      */
-    public static Seconds seconds(int seconds) {
+    public static Seconds of(int seconds) {
         if (seconds == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Seconds.seconds(seconds);
+        return Seconds.of(seconds);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
      */
     @Override
     public Seconds withAmount(int amount) {
-        return Seconds.seconds(amount);
+        return Seconds.of(amount);
     }
 
     //-----------------------------------------------------------------------

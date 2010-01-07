@@ -61,19 +61,19 @@ public class TestHours {
 
     //-----------------------------------------------------------------------
     public void test_factoryZeroSingleton() {
-        assertSame(Hours.ZERO, Hours.hours(0));
-        assertSame(Hours.ZERO, Hours.hours(0));
+        assertSame(Hours.ZERO, Hours.of(0));
+        assertSame(Hours.ZERO, Hours.of(0));
         assertEquals(0, Hours.ZERO.getAmount());
     }
 
     //-----------------------------------------------------------------------
     public void test_factoryGetHours() {
-        assertEquals(1,  Hours.hours(1).getAmount());
-        assertEquals(2,  Hours.hours(2).getAmount());
-        assertEquals(Integer.MAX_VALUE,  Hours.hours(Integer.MAX_VALUE).getAmount());
-        assertEquals(-1,  Hours.hours(-1).getAmount());
-        assertEquals(-2,  Hours.hours(-2).getAmount());
-        assertEquals(Integer.MIN_VALUE,  Hours.hours(Integer.MIN_VALUE).getAmount());
+        assertEquals(1,  Hours.of(1).getAmount());
+        assertEquals(2,  Hours.of(2).getAmount());
+        assertEquals(Integer.MAX_VALUE,  Hours.of(Integer.MAX_VALUE).getAmount());
+        assertEquals(-1,  Hours.of(-1).getAmount());
+        assertEquals(-2,  Hours.of(-2).getAmount());
+        assertEquals(Integer.MIN_VALUE,  Hours.of(Integer.MIN_VALUE).getAmount());
     }
 
     //-----------------------------------------------------------------------
@@ -91,8 +91,8 @@ public class TestHours {
 
     //-----------------------------------------------------------------------
     public void test_compareTo() {
-        Hours test5 = Hours.hours(5);
-        Hours test6 = Hours.hours(6);
+        Hours test5 = Hours.of(5);
+        Hours test6 = Hours.of(6);
         assertEquals(0, test5.compareTo(test5));
         assertEquals(-1, test5.compareTo(test6));
         assertEquals(1, test6.compareTo(test5));
@@ -100,14 +100,14 @@ public class TestHours {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_compareTo_null() {
-        Hours test5 = Hours.hours(5);
+        Hours test5 = Hours.of(5);
         test5.compareTo(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isGreaterThan() {
-        Hours test5 = Hours.hours(5);
-        Hours test6 = Hours.hours(6);
+        Hours test5 = Hours.of(5);
+        Hours test6 = Hours.of(6);
         assertEquals(false, test5.isGreaterThan(test5));
         assertEquals(false, test5.isGreaterThan(test6));
         assertEquals(true, test6.isGreaterThan(test5));
@@ -115,14 +115,14 @@ public class TestHours {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isGreaterThan_null() {
-        Hours test5 = Hours.hours(5);
+        Hours test5 = Hours.of(5);
         test5.isGreaterThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_isLessThan() {
-        Hours test5 = Hours.hours(5);
-        Hours test6 = Hours.hours(6);
+        Hours test5 = Hours.of(5);
+        Hours test6 = Hours.of(6);
         assertEquals(false, test5.isLessThan(test5));
         assertEquals(true, test5.isLessThan(test6));
         assertEquals(false, test6.isLessThan(test5));
@@ -130,209 +130,209 @@ public class TestHours {
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_isLessThan_null() {
-        Hours test5 = Hours.hours(5);
+        Hours test5 = Hours.of(5);
         test5.isLessThan(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_equals() {
-        Hours test5 = Hours.hours(5);
-        Hours test6 = Hours.hours(6);
+        Hours test5 = Hours.of(5);
+        Hours test6 = Hours.of(6);
         assertEquals(true, test5.equals(test5));
         assertEquals(false, test5.equals(test6));
         assertEquals(false, test6.equals(test5));
     }
 
     public void test_equals_null() {
-        Hours test5 = Hours.hours(5);
+        Hours test5 = Hours.of(5);
         assertEquals(false, test5.equals(null));
     }
 
     public void test_equals_otherClass() {
-        Hours test5 = Hours.hours(5);
+        Hours test5 = Hours.of(5);
         assertEquals(false, test5.equals(""));
     }
 
     //-----------------------------------------------------------------------
     public void test_hashCode() {
-        Hours test5 = Hours.hours(5);
-        Hours test6 = Hours.hours(6);
+        Hours test5 = Hours.of(5);
+        Hours test6 = Hours.of(6);
         assertEquals(true, test5.hashCode() == test5.hashCode());
         assertEquals(false, test5.hashCode() == test6.hashCode());
     }
 
     //-----------------------------------------------------------------------
     public void test_getUnit() {
-        PeriodUnit unit = Hours.hours(5).getUnit();
+        PeriodUnit unit = Hours.of(5).getUnit();
         assertNotNull(unit);
         assertEquals(unit, HOURS);
     }
 
     //-----------------------------------------------------------------------
     public void test_plus() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(Hours.hours(5), test5.plus(0));
-        assertEquals(Hours.hours(7), test5.plus(2));
-        assertEquals(Hours.hours(3), test5.plus(-2));
-        assertEquals(Hours.hours(Integer.MAX_VALUE), Hours.hours(Integer.MAX_VALUE - 1).plus(1));
-        assertEquals(Hours.hours(Integer.MIN_VALUE), Hours.hours(Integer.MIN_VALUE + 1).plus(-1));
+        Hours test5 = Hours.of(5);
+        assertEquals(Hours.of(5), test5.plus(0));
+        assertEquals(Hours.of(7), test5.plus(2));
+        assertEquals(Hours.of(3), test5.plus(-2));
+        assertEquals(Hours.of(Integer.MAX_VALUE), Hours.of(Integer.MAX_VALUE - 1).plus(1));
+        assertEquals(Hours.of(Integer.MIN_VALUE), Hours.of(Integer.MIN_VALUE + 1).plus(-1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooBig() {
-        Hours.hours(Integer.MAX_VALUE - 1).plus(2);
+        Hours.of(Integer.MAX_VALUE - 1).plus(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_overflowTooSmall() {
-        Hours.hours(Integer.MIN_VALUE + 1).plus(-2);
+        Hours.of(Integer.MIN_VALUE + 1).plus(-2);
     }
 
     //-----------------------------------------------------------------------
     public void test_plus_Hours() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(Hours.hours(5), test5.plus(Hours.hours(0)));
-        assertEquals(Hours.hours(7), test5.plus(Hours.hours(2)));
-        assertEquals(Hours.hours(3), test5.plus(Hours.hours(-2)));
-        assertEquals(Hours.hours(Integer.MAX_VALUE),
-                Hours.hours(Integer.MAX_VALUE - 1).plus(Hours.hours(1)));
-        assertEquals(Hours.hours(Integer.MIN_VALUE),
-                Hours.hours(Integer.MIN_VALUE + 1).plus(Hours.hours(-1)));
+        Hours test5 = Hours.of(5);
+        assertEquals(Hours.of(5), test5.plus(Hours.of(0)));
+        assertEquals(Hours.of(7), test5.plus(Hours.of(2)));
+        assertEquals(Hours.of(3), test5.plus(Hours.of(-2)));
+        assertEquals(Hours.of(Integer.MAX_VALUE),
+                Hours.of(Integer.MAX_VALUE - 1).plus(Hours.of(1)));
+        assertEquals(Hours.of(Integer.MIN_VALUE),
+                Hours.of(Integer.MIN_VALUE + 1).plus(Hours.of(-1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_Hours_overflowTooBig() {
-        Hours.hours(Integer.MAX_VALUE - 1).plus(Hours.hours(2));
+        Hours.of(Integer.MAX_VALUE - 1).plus(Hours.of(2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_plus_Hours_overflowTooSmall() {
-        Hours.hours(Integer.MIN_VALUE + 1).plus(Hours.hours(-2));
+        Hours.of(Integer.MIN_VALUE + 1).plus(Hours.of(-2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_plus_Hours_null() {
-        Hours.hours(Integer.MIN_VALUE + 1).plus(null);
+        Hours.of(Integer.MIN_VALUE + 1).plus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_minus() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(Hours.hours(5), test5.minus(0));
-        assertEquals(Hours.hours(3), test5.minus(2));
-        assertEquals(Hours.hours(7), test5.minus(-2));
-        assertEquals(Hours.hours(Integer.MAX_VALUE), Hours.hours(Integer.MAX_VALUE - 1).minus(-1));
-        assertEquals(Hours.hours(Integer.MIN_VALUE), Hours.hours(Integer.MIN_VALUE + 1).minus(1));
+        Hours test5 = Hours.of(5);
+        assertEquals(Hours.of(5), test5.minus(0));
+        assertEquals(Hours.of(3), test5.minus(2));
+        assertEquals(Hours.of(7), test5.minus(-2));
+        assertEquals(Hours.of(Integer.MAX_VALUE), Hours.of(Integer.MAX_VALUE - 1).minus(-1));
+        assertEquals(Hours.of(Integer.MIN_VALUE), Hours.of(Integer.MIN_VALUE + 1).minus(1));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooBig() {
-        Hours.hours(Integer.MAX_VALUE - 1).minus(-2);
+        Hours.of(Integer.MAX_VALUE - 1).minus(-2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_overflowTooSmall() {
-        Hours.hours(Integer.MIN_VALUE + 1).minus(2);
+        Hours.of(Integer.MIN_VALUE + 1).minus(2);
     }
 
     //-----------------------------------------------------------------------
     public void test_minus_Hours() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(Hours.hours(5), test5.minus(Hours.hours(0)));
-        assertEquals(Hours.hours(3), test5.minus(Hours.hours(2)));
-        assertEquals(Hours.hours(7), test5.minus(Hours.hours(-2)));
-        assertEquals(Hours.hours(Integer.MAX_VALUE),
-                Hours.hours(Integer.MAX_VALUE - 1).minus(Hours.hours(-1)));
-        assertEquals(Hours.hours(Integer.MIN_VALUE),
-                Hours.hours(Integer.MIN_VALUE + 1).minus(Hours.hours(1)));
+        Hours test5 = Hours.of(5);
+        assertEquals(Hours.of(5), test5.minus(Hours.of(0)));
+        assertEquals(Hours.of(3), test5.minus(Hours.of(2)));
+        assertEquals(Hours.of(7), test5.minus(Hours.of(-2)));
+        assertEquals(Hours.of(Integer.MAX_VALUE),
+                Hours.of(Integer.MAX_VALUE - 1).minus(Hours.of(-1)));
+        assertEquals(Hours.of(Integer.MIN_VALUE),
+                Hours.of(Integer.MIN_VALUE + 1).minus(Hours.of(1)));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_Hours_overflowTooBig() {
-        Hours.hours(Integer.MAX_VALUE - 1).minus(Hours.hours(-2));
+        Hours.of(Integer.MAX_VALUE - 1).minus(Hours.of(-2));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_minus_Hours_overflowTooSmall() {
-        Hours.hours(Integer.MIN_VALUE + 1).minus(Hours.hours(2));
+        Hours.of(Integer.MIN_VALUE + 1).minus(Hours.of(2));
     }
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void test_minus_Hours_null() {
-        Hours.hours(Integer.MIN_VALUE + 1).minus(null);
+        Hours.of(Integer.MIN_VALUE + 1).minus(null);
     }
 
     //-----------------------------------------------------------------------
     public void test_multipliedBy() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(Hours.hours(0), test5.multipliedBy(0));
-        assertEquals(Hours.hours(5), test5.multipliedBy(1));
-        assertEquals(Hours.hours(10), test5.multipliedBy(2));
-        assertEquals(Hours.hours(15), test5.multipliedBy(3));
-        assertEquals(Hours.hours(-15), test5.multipliedBy(-3));
+        Hours test5 = Hours.of(5);
+        assertEquals(Hours.of(0), test5.multipliedBy(0));
+        assertEquals(Hours.of(5), test5.multipliedBy(1));
+        assertEquals(Hours.of(10), test5.multipliedBy(2));
+        assertEquals(Hours.of(15), test5.multipliedBy(3));
+        assertEquals(Hours.of(-15), test5.multipliedBy(-3));
     }
 
     public void test_multipliedBy_negate() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(Hours.hours(-15), test5.multipliedBy(-3));
+        Hours test5 = Hours.of(5);
+        assertEquals(Hours.of(-15), test5.multipliedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooBig() {
-        Hours.hours(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
+        Hours.of(Integer.MAX_VALUE / 2 + 1).multipliedBy(2);
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_multipliedBy_overflowTooSmall() {
-        Hours.hours(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
+        Hours.of(Integer.MIN_VALUE / 2 - 1).multipliedBy(2);
     }
 
     //-----------------------------------------------------------------------
     public void test_dividedBy() {
-        Hours test12 = Hours.hours(12);
-        assertEquals(Hours.hours(12), test12.dividedBy(1));
-        assertEquals(Hours.hours(6), test12.dividedBy(2));
-        assertEquals(Hours.hours(4), test12.dividedBy(3));
-        assertEquals(Hours.hours(3), test12.dividedBy(4));
-        assertEquals(Hours.hours(2), test12.dividedBy(5));
-        assertEquals(Hours.hours(2), test12.dividedBy(6));
-        assertEquals(Hours.hours(-4), test12.dividedBy(-3));
+        Hours test12 = Hours.of(12);
+        assertEquals(Hours.of(12), test12.dividedBy(1));
+        assertEquals(Hours.of(6), test12.dividedBy(2));
+        assertEquals(Hours.of(4), test12.dividedBy(3));
+        assertEquals(Hours.of(3), test12.dividedBy(4));
+        assertEquals(Hours.of(2), test12.dividedBy(5));
+        assertEquals(Hours.of(2), test12.dividedBy(6));
+        assertEquals(Hours.of(-4), test12.dividedBy(-3));
     }
 
     public void test_dividedBy_negate() {
-        Hours test12 = Hours.hours(12);
-        assertEquals(Hours.hours(-4), test12.dividedBy(-3));
+        Hours test12 = Hours.of(12);
+        assertEquals(Hours.of(-4), test12.dividedBy(-3));
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_dividedBy_divideByZero() {
-        Hours.hours(1).dividedBy(0);
+        Hours.of(1).dividedBy(0);
     }
 
     //-----------------------------------------------------------------------
     public void test_negated() {
-        assertEquals(Hours.hours(0), Hours.hours(0).negated());
-        assertEquals(Hours.hours(-12), Hours.hours(12).negated());
-        assertEquals(Hours.hours(12), Hours.hours(-12).negated());
-        assertEquals(Hours.hours(-Integer.MAX_VALUE), Hours.hours(Integer.MAX_VALUE).negated());
+        assertEquals(Hours.of(0), Hours.of(0).negated());
+        assertEquals(Hours.of(-12), Hours.of(12).negated());
+        assertEquals(Hours.of(12), Hours.of(-12).negated());
+        assertEquals(Hours.of(-Integer.MAX_VALUE), Hours.of(Integer.MAX_VALUE).negated());
     }
 
     @Test(expectedExceptions = {ArithmeticException.class})
     public void test_negated_overflow() {
-        Hours.hours(Integer.MIN_VALUE).negated();
+        Hours.of(Integer.MIN_VALUE).negated();
     }
 
     //-----------------------------------------------------------------------
     public void test_toPeriodFields() {
-        Hours test5 = Hours.hours(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.periodFields(5, HOURS));
+        Hours test5 = Hours.of(5);
+        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, HOURS));
     }
 
     //-----------------------------------------------------------------------
     public void test_toString() {
-        Hours test5 = Hours.hours(5);
+        Hours test5 = Hours.of(5);
         assertEquals("PT5H", test5.toString());
-        Hours testM1 = Hours.hours(-1);
+        Hours testM1 = Hours.of(-1);
         assertEquals("PT-1H", testM1.toString());
     }
 

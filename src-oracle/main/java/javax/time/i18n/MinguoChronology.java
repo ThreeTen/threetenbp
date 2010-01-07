@@ -373,7 +373,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             MonthOfYear moy = merger.getValue(MinguoChronology.monthOfYearRule());
             Integer domVal = merger.getValue(MinguoChronology.dayOfMonthRule());
             if (moy != null && domVal != null) {
-                MinguoDate date = MinguoDate.minguoDate(era, yoeVal, moy, domVal);
+                MinguoDate date = MinguoDate.of(era, yoeVal, moy, domVal);
                 merger.storeMerged(MinguoDate.rule(), date);
                 merger.removeProcessed(MinguoChronology.eraRule());
                 merger.removeProcessed(this);
@@ -383,7 +383,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             // era, year, day-of-year
             Integer doyVal = merger.getValue(MinguoChronology.dayOfYearRule());
             if (doyVal != null) {
-                MinguoDate date = MinguoDate.minguoDate(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
+                MinguoDate date = MinguoDate.of(era, yoeVal, MonthOfYear.JANUARY, 1).plusDays(doyVal);
                 merger.storeMerged(MinguoDate.rule(), date);
                 merger.removeProcessed(MinguoChronology.eraRule());
                 merger.removeProcessed(this);
@@ -484,7 +484,7 @@ public final class MinguoChronology extends Chronology implements Serializable {
             Integer yoeVal = calendrical.get(MinguoChronology.yearOfEraRule());
             if (era != null && yoeVal != null) {
                 int isoYear = (era == MinguoEra.BEFORE_MINGUO ? 1 - yoeVal : yoeVal) + YEAR_OFFSET;
-                Year year = Year.isoYear(isoYear);
+                Year year = Year.of(isoYear);
                 return year.lengthInDays();
             }
             return getMaximumValue();

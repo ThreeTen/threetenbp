@@ -140,7 +140,7 @@ public class TestDayOfMonth {
 
     //-----------------------------------------------------------------------
     public void test_factory_Calendrical_notLeapYear() {
-        LocalDate date = LocalDate.date(2007, 1, 1);
+        LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
             date = date.plusDays(1);
@@ -192,7 +192,7 @@ public class TestDayOfMonth {
     }
 
     public void test_factory_Calendrical_leapYear() {
-        LocalDate date = LocalDate.date(2008, 1, 1);
+        LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= 31; i++) {  // Jan
             assertEquals(DayOfMonth.dayOfMonth(date).getValue(), i);
             date = date.plusDays(1);
@@ -221,7 +221,7 @@ public class TestDayOfMonth {
     // adjustDate(LocalDate)
     //-----------------------------------------------------------------------
     public void test_adjustDate() {
-        LocalDate base = LocalDate.date(2007, 1, 1);
+        LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
             LocalDate result = DayOfMonth.dayOfMonth(i).adjustDate(base);
@@ -232,7 +232,7 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_april31() {
-        LocalDate base = LocalDate.date(2007, 4, 1);
+        LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
         try {
             test.adjustDate(base);
@@ -244,7 +244,7 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_february29_notLeapYear() {
-        LocalDate base = LocalDate.date(2007, 2, 1);
+        LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(29);
         try {
             test.adjustDate(base);
@@ -265,7 +265,7 @@ public class TestDayOfMonth {
     // adjustDate(LocalDate,DateResolver)
     //-----------------------------------------------------------------------
     public void test_adjustDate_strictResolver() {
-        LocalDate base = LocalDate.date(2007, 1, 1);
+        LocalDate base = LocalDate.of(2007, 1, 1);
         LocalDate expected = base;
         for (int i = 1; i <= MAX_LENGTH; i++) {  // Jan
             LocalDate result = DayOfMonth.dayOfMonth(i).adjustDate(base, DateResolvers.strict());
@@ -276,7 +276,7 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_strictResolver_april31() {
-        LocalDate base = LocalDate.date(2007, 4, 1);
+        LocalDate base = LocalDate.of(2007, 4, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
         try {
             test.adjustDate(base, DateResolvers.strict());
@@ -288,7 +288,7 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_adjustDate_strictResolver_february29_notLeapYear() {
-        LocalDate base = LocalDate.date(2007, 2, 1);
+        LocalDate base = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(29);
         try {
             test.adjustDate(base, DateResolvers.strict());
@@ -306,14 +306,14 @@ public class TestDayOfMonth {
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_resolver_nullResolver() {
-        LocalDate date = LocalDate.date(2007, 1, 1);
+        LocalDate date = LocalDate.of(2007, 1, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
         test.adjustDate(date, (DateResolver) null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_adjustDate_resolver_badResolver() {
-        LocalDate date = LocalDate.date(2007, 2, 1);
+        LocalDate date = LocalDate.of(2007, 2, 1);
         DayOfMonth test = DayOfMonth.dayOfMonth(31);
         test.adjustDate(date, new MockDateResolverReturnsNull());
     }
@@ -322,7 +322,7 @@ public class TestDayOfMonth {
     // matchesCalendrical(Calendrical)
     //-----------------------------------------------------------------------
     public void test_matchesCalendrical_notLeapYear() {
-        LocalDate work = LocalDate.date(2007, 1, 1);
+        LocalDate work = LocalDate.of(2007, 1, 1);
         for (int i = 1; i <= STANDARD_YEAR_LENGTH; i++) {
             for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
@@ -333,7 +333,7 @@ public class TestDayOfMonth {
     }
 
     public void test_matchesCalendrical_leapYear() {
-        LocalDate work = LocalDate.date(2008, 1, 1);
+        LocalDate work = LocalDate.of(2008, 1, 1);
         for (int i = 1; i <= LEAP_YEAR_LENGTH; i++) {
             for (int j = 1; j <= MAX_LENGTH; j++) {
                 DayOfMonth test = DayOfMonth.dayOfMonth(j);
@@ -344,7 +344,7 @@ public class TestDayOfMonth {
     }
 
     public void test_matchesCalendrical_noData() {
-        assertEquals(DayOfMonth.dayOfMonth(20).matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(DayOfMonth.dayOfMonth(20).matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

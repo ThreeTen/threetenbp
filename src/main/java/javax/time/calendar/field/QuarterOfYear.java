@@ -94,7 +94,7 @@ public enum QuarterOfYear {
      * @return the QuarterOfYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the quarter-of-year is invalid
      */
-    public static QuarterOfYear quarterOfYear(int quarterOfYear) {
+    public static QuarterOfYear of(int quarterOfYear) {
         switch (quarterOfYear) {
             case 1:
                 return Q1;

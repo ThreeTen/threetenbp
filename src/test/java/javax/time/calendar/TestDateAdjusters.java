@@ -391,13 +391,13 @@ public class TestDateAdjusters {
     }
 
     public void test_nextNonWeekendDay_yearChange() {
-        LocalDate friday = LocalDate.date(2010, MonthOfYear.DECEMBER, 31);
+        LocalDate friday = LocalDate.of(2010, MonthOfYear.DECEMBER, 31);
         LocalDate monday = DateAdjusters.nextNonWeekendDay().adjustDate(friday);
-        assertEquals(LocalDate.date(2011, MonthOfYear.JANUARY, 3), monday);
+        assertEquals(LocalDate.of(2011, MonthOfYear.JANUARY, 3), monday);
 
-        LocalDate saturday = LocalDate.date(2011, MonthOfYear.DECEMBER, 31);
+        LocalDate saturday = LocalDate.of(2011, MonthOfYear.DECEMBER, 31);
         monday = DateAdjusters.nextNonWeekendDay().adjustDate(saturday);
-        assertEquals(LocalDate.date(2012, MonthOfYear.JANUARY, 2), monday);
+        assertEquals(LocalDate.of(2012, MonthOfYear.JANUARY, 2), monday);
     }
 
 //    //-----------------------------------------------------------------------
@@ -732,7 +732,7 @@ public class TestDateAdjusters {
     }
 
     private LocalDate date(int year, MonthOfYear month, int day) {
-        return LocalDate.date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
 }

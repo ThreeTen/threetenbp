@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOWeekOfYearRule() {
-        super(LocalDate.date(2009, 12, 26), 52, 52);
+        super(LocalDate.of(2009, 12, 26), 52, 52);
     }
 
     @Override
@@ -61,10 +61,10 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getID(), "ISO.WeekOfYear");
         assertEquals(rule.getName(), "WeekOfYear");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), 1);
+        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 53);
-        assertEquals(rule.getMaximumValue(LocalDate.date(2007, 6, 20)), 53);
+        assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), 53);
         assertEquals(rule.getSmallestMaximumValue(), 53);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodWeeks());
@@ -75,7 +75,7 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date_nonLeap() {
-        LocalDate date = LocalDate.date(2007, 1, 1);
+        LocalDate date = LocalDate.of(2007, 1, 1);
         for (int i = 0; i < 365; i++) {
             int week = (i / 7) + 1;
             assertEquals(rule().getValue(date), (Integer) week);
@@ -84,7 +84,7 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_date_leap() {
-        LocalDate date = LocalDate.date(2008, 1, 1);
+        LocalDate date = LocalDate.of(2008, 1, 1);
         for (int i = 0; i < 366; i++) {
             int week = (i / 7) + 1;
             assertEquals(rule().getValue(date), (Integer) week);
@@ -93,7 +93,7 @@ public class TestISOWeekOfYearRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 1, 20, 12, 30)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), (Integer) 3);
     }
 
 }

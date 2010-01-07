@@ -170,8 +170,8 @@ public class TestWeekBasedYear {
                     i++;
                     final Integer[] line = data[i];
                     weekyear = line[0];
-                    start = LocalDate.date(line[1], line[2], line[3]);
-                    end = LocalDate.date(line[4], line[5], line[6]);
+                    start = LocalDate.of(line[1], line[2], line[3]);
+                    end = LocalDate.of(line[4], line[5], line[6]);
                     current = start.minusDays(offset + 1);
                 }
 
@@ -205,8 +205,8 @@ public class TestWeekBasedYear {
     }
 
     public void test_factory_Calendrical_simple_weekyear() {
-        LocalDate date = LocalDate.date(2008, 1, 4);
-        LocalDate end = LocalDate.date(2008, 12, 28);
+        LocalDate date = LocalDate.of(2008, 1, 4);
+        LocalDate end = LocalDate.of(2008, 12, 28);
 
         while (!date.isAfter(end)) {
             assertEquals(WeekBasedYear.weekBasedYear(date).getValue(), 2008);
@@ -231,7 +231,7 @@ public class TestWeekBasedYear {
     @DataProvider(name="matchesCalendrical")
     Iterator<Object[]> matchesCalendrical() {
         return new Iterator<Object[]>() {
-            private LocalDate date = LocalDate.date(2008, 1, 1);
+            private LocalDate date = LocalDate.of(2008, 1, 1);
 
             public boolean hasNext() {
                 return date.getYear() != 2009;
@@ -260,7 +260,7 @@ public class TestWeekBasedYear {
     }
 
     public void test_matchesCalendrical_noData() {
-        assertEquals(WeekBasedYear.weekBasedYear(12).matchesCalendrical(LocalTime.time(12, 30)), false);
+        assertEquals(WeekBasedYear.weekBasedYear(12).matchesCalendrical(LocalTime.of(12, 30)), false);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

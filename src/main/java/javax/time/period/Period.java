@@ -121,7 +121,7 @@ public final class Period
      * @param periodProvider  a provider of period information, not null
      * @return the created period instance, never null
      */
-    public static Period period(PeriodProvider periodProvider) {
+    public static Period from(PeriodProvider periodProvider) {
         if (periodProvider == null) {
             throw new NullPointerException("Period provider must not be null");
         }
@@ -143,7 +143,7 @@ public final class Period
      * @param seconds  the amount of seconds
      * @return the created period instance, never null
      */
-    public static Period period(int years, int months, int days, int hours, int minutes, int seconds) {
+    public static Period of(int years, int months, int days, int hours, int minutes, int seconds) {
         if ((years | months | days | hours | minutes | seconds) == 0) {
             return ZERO;
         }
@@ -162,7 +162,7 @@ public final class Period
      * @param nanos  the amount of nanos
      * @return the created period instance, never null
      */
-    public static Period period(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
+    public static Period of(int years, int months, int days, int hours, int minutes, int seconds, long nanos) {
         if ((years | months | days | hours | minutes | seconds | nanos) == 0) {
             return ZERO;
         }
@@ -468,7 +468,7 @@ public final class Period
         if (years == this.years) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -486,7 +486,7 @@ public final class Period
         if (months == this.months) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -504,7 +504,7 @@ public final class Period
         if (days == this.days) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -522,7 +522,7 @@ public final class Period
         if (hours == this.hours) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -540,7 +540,7 @@ public final class Period
         if (minutes == this.minutes) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -558,7 +558,7 @@ public final class Period
         if (seconds == this.seconds) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -576,7 +576,7 @@ public final class Period
         if (nanos == this.nanos) {
             return this;
         }
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -591,8 +591,8 @@ public final class Period
      * @throws ArithmeticException if the calculation result overflows
      */
     public Period plus(PeriodProvider periodProvider) {
-        Period other = period(periodProvider);
-        return period(
+        Period other = from(periodProvider);
+        return of(
                 MathUtils.safeAdd(years, other.years),
                 MathUtils.safeAdd(months, other.months),
                 MathUtils.safeAdd(days, other.days),
@@ -727,8 +727,8 @@ public final class Period
      * @throws ArithmeticException if the calculation result overflows
      */
     public Period minus(PeriodProvider periodProvider) {
-        Period other = period(periodProvider);
-        return period(
+        Period other = from(periodProvider);
+        return of(
                 MathUtils.safeSubtract(years, other.years),
                 MathUtils.safeSubtract(months, other.months),
                 MathUtils.safeSubtract(days, other.days),
@@ -864,7 +864,7 @@ public final class Period
         if (this == ZERO || scalar == 1) {
             return this;
         }
-        return period(
+        return of(
                 MathUtils.safeMultiply(years, scalar),
                 MathUtils.safeMultiply(months, scalar),
                 MathUtils.safeMultiply(days, scalar),
@@ -892,7 +892,7 @@ public final class Period
         if (this == ZERO || divisor == 1) {
             return this;
         }
-        return period(
+        return of(
                 years / divisor, months / divisor, days / divisor,
                 hours / divisor, minutes / divisor, seconds / divisor, nanos / divisor);
     }
@@ -951,7 +951,7 @@ public final class Period
         int minutes = (int) (total % 60);
         total /= 60;
         int hours = MathUtils.safeToInt(total);
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     /**
@@ -1002,7 +1002,7 @@ public final class Period
         int hours = (int) (total % 24);
         total /= 24;
         int days = MathUtils.safeToInt(total);
-        return period(years, months, days, hours, minutes, seconds, nanos);
+        return of(years, months, days, hours, minutes, seconds, nanos);
     }
 
     //-----------------------------------------------------------------------
@@ -1274,7 +1274,7 @@ public final class Period
      */
     public PeriodFields toPeriodFields() {
         // TODO: Maybe remove?
-        return PeriodFields.periodFields(this);
+        return PeriodFields.from(this);
     }
 
     //-----------------------------------------------------------------------

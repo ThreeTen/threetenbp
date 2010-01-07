@@ -151,7 +151,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
                 context.setParsed(TimeZone.rule(), TimeZone.UTC);
                 return startPos;
             }
-            TimeZone zone = TimeZone.timeZone((ZoneOffset) newContext.getParsed(ZoneOffset.rule()));
+            TimeZone zone = TimeZone.of((ZoneOffset) newContext.getParsed(ZoneOffset.rule()));
             context.setParsed(TimeZone.rule(), zone);
             return endPos;
         }
@@ -170,7 +170,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
         }
         
         if (parsedZoneId != null && preparedIDs.contains(parsedZoneId)) {
-            TimeZone zone = TimeZone.timeZone(parsedZoneId);
+            TimeZone zone = TimeZone.of(parsedZoneId);
             context.setParsed(TimeZone.rule(), zone);
             return position + parsedZoneId.length();
         } else {

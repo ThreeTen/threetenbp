@@ -94,25 +94,12 @@ public final class YearMonth
     /**
      * Obtains an instance of <code>YearMonth</code>.
      *
-     * @param year  the year to represent, not null
-     * @param monthOfYear  the month-of-year to represent, not null
-     * @return the year-month, never null
-     */
-    public static YearMonth yearMonth(Year year, MonthOfYear monthOfYear) {
-        ISOChronology.checkNotNull(year, "Year must not be null");
-        ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return yearMonth(year.getValue(), monthOfYear);
-    }
-
-    /**
-     * Obtains an instance of <code>YearMonth</code>.
-     *
      * @param year  the year to represent, from MIN_YEAR to MAX_YEAR
      * @param monthOfYear  the month-of-year to represent, not null
      * @return the year-month, never null
      * @throws IllegalCalendarFieldValueException if the year value is invalid
      */
-    public static YearMonth yearMonth(int year, MonthOfYear monthOfYear) {
+    public static YearMonth of(int year, MonthOfYear monthOfYear) {
         ISOChronology.yearRule().checkValue(year);
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         return new YearMonth(year, monthOfYear);
@@ -126,8 +113,8 @@ public final class YearMonth
      * @return the year-month, never null
      * @throws IllegalCalendarFieldValueException if either field value is invalid
      */
-    public static YearMonth yearMonth(int year, int monthOfYear) {
-        return yearMonth(year, MonthOfYear.monthOfYear(monthOfYear));
+    public static YearMonth of(int year, int monthOfYear) {
+        return of(year, MonthOfYear.of(monthOfYear));
     }
 
     /**
@@ -141,10 +128,10 @@ public final class YearMonth
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
-    public static YearMonth yearMonth(Calendrical calendrical) {
+    public static YearMonth from(Calendrical calendrical) {
         Integer year = ISOChronology.yearRule().getValueChecked(calendrical);
         MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
-        return yearMonth(year, month);
+        return of(year, month);
     }
 
     /**
@@ -314,7 +301,7 @@ public final class YearMonth
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public YearMonth withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.monthOfYear(monthOfYear));
+        return with(MonthOfYear.of(monthOfYear));
     }
 
     //-----------------------------------------------------------------------
@@ -331,7 +318,7 @@ public final class YearMonth
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth plus(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         return plusYears(period.getYears()).plusMonths(period.getMonths());
     }
 
@@ -375,7 +362,7 @@ public final class YearMonth
             years--;
         }
         int newYear = ISOChronology.addYears(year, years);
-        MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
+        MonthOfYear newMonth = MonthOfYear.of((int) ++newMonth0);
         return with(newYear, newMonth);
     }
 
@@ -393,7 +380,7 @@ public final class YearMonth
      * @throws CalendricalException if the result exceeds the supported date range
      */
     public YearMonth minus(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         return minusYears(period.getYears()).minusMonths(period.getMonths());
     }
 
@@ -437,7 +424,7 @@ public final class YearMonth
             years--;
         }
         int newYear = ISOChronology.subtractYears(year, -years);
-        MonthOfYear newMonth = MonthOfYear.monthOfYear((int) ++newMonth0);
+        MonthOfYear newMonth = MonthOfYear.of((int) ++newMonth0);
         return with(newYear, newMonth);
     }
 
@@ -553,7 +540,7 @@ public final class YearMonth
      * @see #isValidDay(int)
      */
     public LocalDate atDay(int dayOfMonth) {
-        return LocalDate.date(year, month, dayOfMonth);
+        return LocalDate.of(year, month, dayOfMonth);
     }
 
     //-----------------------------------------------------------------------
@@ -566,7 +553,7 @@ public final class YearMonth
      * @return the year, never null
      */
     public Year toYear() {
-        return Year.isoYear(year);
+        return Year.of(year);
     }
 
     //-----------------------------------------------------------------------
@@ -691,7 +678,7 @@ public final class YearMonth
         protected YearMonth derive(Calendrical calendrical) {
             Integer year = calendrical.get(ISOChronology.yearRule());
             MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
-            return year != null && moy != null ? YearMonth.yearMonth(year, moy) : null;
+            return year != null && moy != null ? YearMonth.of(year, moy) : null;
         }
     }
 

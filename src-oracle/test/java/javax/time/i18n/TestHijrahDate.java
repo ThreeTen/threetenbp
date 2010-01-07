@@ -37,7 +37,7 @@ public class TestHijrahDate {
 
     @BeforeTest
     public void setUp() throws Exception {
-        testDate = HijrahDate.hijrahDate(testEra, testYear, testMonthOfYear, testDayOfMonth);
+        testDate = HijrahDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
@@ -77,31 +77,31 @@ public class TestHijrahDate {
 
     @Test
     public void testHijrahDateDateProvider() throws Exception {
-        assertEquals(HijrahDate.hijrahDate(testDate), testDate);
+        assertEquals(HijrahDate.from(testDate), testDate);
         assertHijrahDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test(expectedExceptions=NullPointerException.class)
     public void testHijrahDateDateProviderNull() throws Exception {
-        HijrahDate.hijrahDate(null);
+        HijrahDate.from(null);
     }
 
     @Test
     public void testHijrahDateIntIntInt() throws Exception{
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth), testDate);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertHijrahDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
     public void testHijrahDateIntIntIntInt() throws Exception{
-        assertEquals(HijrahDate.hijrahDate(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
+        assertEquals(HijrahDate.of(testEra, testYear, testMonthOfYear, testDayOfMonth), testDate);
         assertHijrahDate(testDate, testEra, testYear, testMonthOfYear, testDayOfMonth);
     }
     
     @Test
     public void testHijrahDateInvalidYear() throws Exception{
         try {
-            HijrahDate.hijrahDate(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
+            HijrahDate.of(10000, testMonthOfYear, testDayOfMonth);// Invalid year.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), HijrahChronology.yearOfEraRule());
@@ -111,7 +111,7 @@ public class TestHijrahDate {
     @Test
     public void testHijrahDateInvalidMonth() throws Exception{
         try {
-            HijrahDate.hijrahDate(testYear, 13, testDayOfMonth);// Invalid month of year
+            HijrahDate.of(testYear, 13, testDayOfMonth);// Invalid month of year
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), HijrahChronology.monthOfYearRule());
@@ -121,7 +121,7 @@ public class TestHijrahDate {
     @Test
     public void testHijrahDateInvalidDay() throws Exception{
         try {
-            HijrahDate.hijrahDate(testYear, testMonthOfYear, 40);// Invalid day of month.
+            HijrahDate.of(testYear, testMonthOfYear, 40);// Invalid day of month.
             fail();
         } catch (IllegalCalendarFieldValueException ex) {
             assertEquals(ex.getRule(), HijrahChronology.dayOfMonthRule());
@@ -182,19 +182,19 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testGetDayOfWeek() {
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.MONDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.TUESDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.WEDNESDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.THURSDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.FRIDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 10).getDayOfWeek(), DayOfWeek.SATURDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 11).getDayOfWeek(), DayOfWeek.SUNDAY);
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, 12).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 5).getDayOfWeek(), DayOfWeek.MONDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 6).getDayOfWeek(), DayOfWeek.TUESDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 7).getDayOfWeek(), DayOfWeek.WEDNESDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 8).getDayOfWeek(), DayOfWeek.THURSDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 9).getDayOfWeek(), DayOfWeek.FRIDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 10).getDayOfWeek(), DayOfWeek.SATURDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 11).getDayOfWeek(), DayOfWeek.SUNDAY);
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, 12).getDayOfWeek(), DayOfWeek.MONDAY);
     }
     
     @Test
     public void testGetDayOfWeekCrossCheck() throws Exception {
-        HijrahDate date = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
+        HijrahDate date = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth);
         assertEquals(date.getDayOfWeek(), date.toLocalDate().getDayOfWeek());
     }
 
@@ -209,7 +209,7 @@ public class TestHijrahDate {
     @Test
     public void testWithYearOfEra() {
         HijrahDate date = testDate.withYearOfEra(1545);
-        assertEquals(date, HijrahDate.hijrahDate(1545, testMonthOfYear, testDayOfMonth));
+        assertEquals(date, HijrahDate.of(1545, testMonthOfYear, testDayOfMonth));
     }
     
     @Test
@@ -238,7 +238,7 @@ public class TestHijrahDate {
     @Test
     public void testWithYear() {
         HijrahDate date = testDate.withYear(HijrahEra.BEFORE_HIJRAH, 1540);
-        assertEquals(date, HijrahDate.hijrahDate(HijrahEra.BEFORE_HIJRAH, 1540, testMonthOfYear, testDayOfMonth));
+        assertEquals(date, HijrahDate.of(HijrahEra.BEFORE_HIJRAH, 1540, testMonthOfYear, testDayOfMonth));
     }
     
     @Test
@@ -267,7 +267,7 @@ public class TestHijrahDate {
     @Test
     public void testWithMonthOfYear() {
         HijrahDate date = testDate.withMonthOfYear(4);
-        assertEquals(date, HijrahDate.hijrahDate(testYear, 4, testDayOfMonth));
+        assertEquals(date, HijrahDate.of(testYear, 4, testDayOfMonth));
     }
     
     @Test
@@ -296,7 +296,7 @@ public class TestHijrahDate {
     @Test
     public void testWithDayOfMonth() {
         HijrahDate date = testDate.withDayOfMonth(4);
-        assertEquals(date, HijrahDate.hijrahDate(testYear, testMonthOfYear, 4));
+        assertEquals(date, HijrahDate.of(testYear, testMonthOfYear, 4));
     }
     
     @Test
@@ -325,7 +325,7 @@ public class TestHijrahDate {
     @Test
     public void testWithDayOfYear() {
         HijrahDate date = testDate.withDayOfYear(15);
-        assertEquals(date, HijrahDate.hijrahDate(testYear, 1, 15));
+        assertEquals(date, HijrahDate.of(testYear, 1, 15));
     }
     
     @Test
@@ -340,7 +340,7 @@ public class TestHijrahDate {
     
     @Test
     public void testWithDayOfYearInvalidTooBig() throws Exception {
-        HijrahDate date = HijrahDate.hijrahDate(2008, 2, 1);
+        HijrahDate date = HijrahDate.of(2008, 2, 1);
         try {
             date.withDayOfYear(367);
             fail();
@@ -354,7 +354,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusYears() {
-        assertEquals(testDate.plusYears(10), HijrahDate.hijrahDate(testYear+10, testMonthOfYear, testDayOfMonth));
+        assertEquals(testDate.plusYears(10), HijrahDate.of(testYear+10, testMonthOfYear, testDayOfMonth));
     }
     
     @Test (expectedExceptions=CalendricalException.class)
@@ -367,7 +367,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusMonths() {
-        assertEquals(testDate.plusMonths(5), HijrahDate.hijrahDate(testYear, testMonthOfYear+5, testDayOfMonth));
+        assertEquals(testDate.plusMonths(5), HijrahDate.of(testYear, testMonthOfYear+5, testDayOfMonth));
     }
     
     @Test
@@ -385,7 +385,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusDays() {
-        assertEquals(testDate.plusDays(2), HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth+2));
+        assertEquals(testDate.plusDays(2), HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth+2));
     }
     
     @Test
@@ -403,7 +403,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testPlusWeeks() {
-        assertEquals(testDate.plusWeeks(2), HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth+(2*7)));
+        assertEquals(testDate.plusWeeks(2), HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth+(2*7)));
     }
     
     @Test
@@ -421,7 +421,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusYears() {
-        assertEquals(testDate.minusYears(10), HijrahDate.hijrahDate(testYear-10, testMonthOfYear, testDayOfMonth));
+        assertEquals(testDate.minusYears(10), HijrahDate.of(testYear-10, testMonthOfYear, testDayOfMonth));
     }
     
     @Test (expectedExceptions=CalendricalException.class)
@@ -434,7 +434,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusMonths() {
-        assertEquals(testDate.minusMonths(1), HijrahDate.hijrahDate(testYear, testMonthOfYear-1, testDayOfMonth));
+        assertEquals(testDate.minusMonths(1), HijrahDate.of(testYear, testMonthOfYear-1, testDayOfMonth));
     }
     
     @Test
@@ -452,7 +452,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusDays() {
-        assertEquals(testDate.minusDays(2), HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth-2));
+        assertEquals(testDate.minusDays(2), HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth-2));
     }
     
     @Test
@@ -470,7 +470,7 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testMinusWeeks() {
-        assertEquals(testDate.minusWeeks(2), HijrahDate.hijrahDate(testYear, testMonthOfYear-1, 29+testDayOfMonth-(2*7)));
+        assertEquals(testDate.minusWeeks(2), HijrahDate.of(testYear, testMonthOfYear-1, 29+testDayOfMonth-(2*7)));
     }
     
     @Test
@@ -488,8 +488,8 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testToLocalDate() {
-        assertEquals(HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth).toLocalDate(),
-                LocalDate.date(testGregorianYear, testGregorianMonthOfYear, testGregorianDayOfMonth));
+        assertEquals(HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth).toLocalDate(),
+                LocalDate.of(testGregorianYear, testGregorianMonthOfYear, testGregorianDayOfMonth));
     }
 
     //-----------------------------------------------------------------------
@@ -498,18 +498,18 @@ public class TestHijrahDate {
     @Test
     public void testCompareTo() throws Exception {
         doTestComparisons(
-            HijrahDate.hijrahDate(1, 1, 1),
-            HijrahDate.hijrahDate(1, 1, 2),
-            HijrahDate.hijrahDate(1, 1, 30),
-            HijrahDate.hijrahDate(1, 2, 1),
-            HijrahDate.hijrahDate(1, 2, 29),
-            HijrahDate.hijrahDate(1, 12, 29),
-            HijrahDate.hijrahDate(2, 1, 1),
-            HijrahDate.hijrahDate(2, 12, 29),
-            HijrahDate.hijrahDate(3, 1, 1),
-            HijrahDate.hijrahDate(3, 12, 29),
-            HijrahDate.hijrahDate(4500, 1, 1),
-            HijrahDate.hijrahDate(4500, 12, 29)
+            HijrahDate.of(1, 1, 1),
+            HijrahDate.of(1, 1, 2),
+            HijrahDate.of(1, 1, 30),
+            HijrahDate.of(1, 2, 1),
+            HijrahDate.of(1, 2, 29),
+            HijrahDate.of(1, 12, 29),
+            HijrahDate.of(2, 1, 1),
+            HijrahDate.of(2, 12, 29),
+            HijrahDate.of(3, 1, 1),
+            HijrahDate.of(3, 12, 29),
+            HijrahDate.of(4500, 1, 1),
+            HijrahDate.of(4500, 12, 29)
         );
     }
 
@@ -565,8 +565,8 @@ public class TestHijrahDate {
     //-----------------------------------------------------------------------
     @Test
     public void testEqualsEaual() throws Exception {
-        HijrahDate a = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
-        HijrahDate b = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
+        HijrahDate a = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        HijrahDate b = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth);
         assertEquals(a.equals(b), true);
         assertEquals(b.equals(a), true);
         assertEquals(a.equals(a), true);
@@ -575,8 +575,8 @@ public class TestHijrahDate {
     
     @Test
     public void testEqualsNotEqualDay() throws Exception {
-        HijrahDate a = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
-        HijrahDate b = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth+1);
+        HijrahDate a = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        HijrahDate b = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth+1);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -585,8 +585,8 @@ public class TestHijrahDate {
 
     @Test
     public void testEqualsNotEqualMonth() throws Exception {
-        HijrahDate a = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
-        HijrahDate b = HijrahDate.hijrahDate(testYear, testMonthOfYear+1, testDayOfMonth);
+        HijrahDate a = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        HijrahDate b = HijrahDate.of(testYear, testMonthOfYear+1, testDayOfMonth);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -595,8 +595,8 @@ public class TestHijrahDate {
 
     @Test
     public void testEqualsNotEqualYear() throws Exception {
-        HijrahDate a = HijrahDate.hijrahDate(testYear, testMonthOfYear, testDayOfMonth);
-        HijrahDate b = HijrahDate.hijrahDate(testYear+1, testMonthOfYear, testDayOfMonth);
+        HijrahDate a = HijrahDate.of(testYear, testMonthOfYear, testDayOfMonth);
+        HijrahDate b = HijrahDate.of(testYear+1, testMonthOfYear, testDayOfMonth);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
         assertEquals(a.equals(a), true);
@@ -619,8 +619,8 @@ public class TestHijrahDate {
 
     @Test
     public void testHashCode() throws Exception {
-        HijrahDate a = HijrahDate.hijrahDate(1, 1, 1);
-        HijrahDate b = HijrahDate.hijrahDate(1, 1, 1);
+        HijrahDate a = HijrahDate.of(1, 1, 1);
+        HijrahDate b = HijrahDate.of(1, 1, 1);
         assertEquals(a.hashCode(), a.hashCode());
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(b.hashCode(), b.hashCode());

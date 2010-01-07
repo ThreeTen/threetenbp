@@ -301,7 +301,7 @@ class PeriodParser {
         }
         
         Period toPeriod() {
-            return Period.period(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
+            return Period.of(years, months, days, hours, minutes, seconds, negativeSecs || seconds < 0 ? -nanos : nanos);
         }
     }
 

@@ -134,7 +134,7 @@ public final class LocalTime
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static LocalTime time(int hourOfDay, int minuteOfHour) {
+    public static LocalTime of(int hourOfDay, int minuteOfHour) {
         ISOChronology.hourOfDayRule().checkValue(hourOfDay);
         if (minuteOfHour == 0) {
             return HOURS[hourOfDay];  // for performance
@@ -156,7 +156,7 @@ public final class LocalTime
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute) {
+    public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute) {
         ISOChronology.hourOfDayRule().checkValue(hourOfDay);
         if ((minuteOfHour | secondOfMinute) == 0) {
             return HOURS[hourOfDay];  // for performance
@@ -199,7 +199,7 @@ public final class LocalTime
      * @return the local time, never null
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      */
-    public static LocalTime time(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
+    public static LocalTime of(int hourOfDay, int minuteOfHour, int secondOfMinute, int nanoOfSecond) {
         ISOChronology.hourOfDayRule().checkValue(hourOfDay);
         ISOChronology.minuteOfHourRule().checkValue(minuteOfHour);
         ISOChronology.secondOfMinuteRule().checkValue(secondOfMinute);
@@ -220,7 +220,7 @@ public final class LocalTime
      * @param timeProvider  the time provider to use, not null
      * @return the local time, never null
      */
-    public static LocalTime time(TimeProvider timeProvider) {
+    public static LocalTime from(TimeProvider timeProvider) {
         ISOChronology.checkNotNull(timeProvider, "TimeProvider must not be null");
         LocalTime result = timeProvider.toLocalTime();
         ISOChronology.checkNotNull(result, "TimeProvider implementation must not return null");
@@ -480,7 +480,7 @@ public final class LocalTime
         if (hourOfDay == hour) {
             return this;
         }
-        return time(hourOfDay, minute, second, nano);
+        return of(hourOfDay, minute, second, nano);
     }
 
     /**
@@ -496,7 +496,7 @@ public final class LocalTime
         if (minuteOfHour == minute) {
             return this;
         }
-        return time(hour, minuteOfHour, second, nano);
+        return of(hour, minuteOfHour, second, nano);
     }
 
     /**
@@ -512,7 +512,7 @@ public final class LocalTime
         if (secondOfMinute == second) {
             return this;
         }
-        return time(hour, minute, secondOfMinute, nano);
+        return of(hour, minute, secondOfMinute, nano);
     }
 
     /**
@@ -528,7 +528,7 @@ public final class LocalTime
         if (nanoOfSecond == nano) {
             return this;
         }
-        return time(hour, minute, second, nanoOfSecond);
+        return of(hour, minute, second, nanoOfSecond);
     }
 
     //-----------------------------------------------------------------------
@@ -544,7 +544,7 @@ public final class LocalTime
      * @return a new updated LocalTime, never null
      */
     public LocalTime plus(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         // safe from overflow
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
@@ -594,7 +594,7 @@ public final class LocalTime
         }
         int newHour = newMofd / MINUTES_PER_HOUR;
         int newMinute = newMofd % MINUTES_PER_HOUR;
-        return time(newHour, newMinute, second, nano);
+        return of(newHour, newMinute, second, nano);
     }
 
     /**
@@ -621,7 +621,7 @@ public final class LocalTime
         int newHour = newSofd / SECONDS_PER_HOUR;
         int newMinute = (newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
         int newSecond = newSofd % SECONDS_PER_MINUTE;
-        return time(newHour, newMinute, newSecond, nano);
+        return of(newHour, newMinute, newSecond, nano);
     }
 
     /**
@@ -648,7 +648,7 @@ public final class LocalTime
         int newMinute = (int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR);
         int newSecond = (int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE);
         int newNano = (int) (newNofd % NANOS_PER_SECOND);
-        return time(newHour, newMinute, newSecond, newNano);
+        return of(newHour, newMinute, newSecond, newNano);
     }
 
     //-----------------------------------------------------------------------
@@ -664,7 +664,7 @@ public final class LocalTime
      * @return a new updated LocalTime, never null
      */
     public LocalTime minus(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         // safe from overflow
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
@@ -714,7 +714,7 @@ public final class LocalTime
         }
         int newHour = newMofd / MINUTES_PER_HOUR;
         int newMinute = newMofd % MINUTES_PER_HOUR;
-        return time(newHour, newMinute, second, nano);
+        return of(newHour, newMinute, second, nano);
     }
 
     /**
@@ -741,7 +741,7 @@ public final class LocalTime
         int newHour = newSofd / SECONDS_PER_HOUR;
         int newMinute = (newSofd / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
         int newSecond = newSofd % SECONDS_PER_MINUTE;
-        return time(newHour, newMinute, newSecond, nano);
+        return of(newHour, newMinute, newSecond, nano);
     }
 
     /**
@@ -768,7 +768,7 @@ public final class LocalTime
         int newMinute = (int) ((newNofd / NANOS_PER_MINUTE) % MINUTES_PER_HOUR);
         int newSecond = (int) ((newNofd / NANOS_PER_SECOND) % SECONDS_PER_MINUTE);
         int newNano = (int) (newNofd % NANOS_PER_SECOND);
-        return time(newHour, newMinute, newSecond, newNano);
+        return of(newHour, newMinute, newSecond, newNano);
     }
 
     //-----------------------------------------------------------------------
@@ -821,7 +821,7 @@ public final class LocalTime
      * @return the offset time formed from this time and the specified offset, never null
      */
     public OffsetTime atOffset(ZoneOffset offset) {
-        return OffsetTime.time(this, offset);
+        return OffsetTime.from(this, offset);
     }
 
     //-----------------------------------------------------------------------
@@ -1023,7 +1023,7 @@ public final class LocalTime
      * @return an Overflow instance with the resulting time and overflow, never null
      */
     Overflow plusWithOverflow(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         // safe from overflow
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
@@ -1103,7 +1103,7 @@ public final class LocalTime
      * @return an Overflow instance with the resulting time and overflow, never null
      */
     Overflow minusWithOverflow(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         // safe from overflow
         long totalNanos = period.getHours() * NANOS_PER_HOUR +
                 period.getMinutes() * NANOS_PER_MINUTE +
@@ -1237,7 +1237,7 @@ public final class LocalTime
          * @return the combination of the date, time and overflow in days, never null
          */
         public LocalDateTime toLocalDateTime(LocalDate date) {
-            return LocalDateTime.dateTime(date.plusDays(getOverflowDays()), time);
+            return LocalDateTime.from(date.plusDays(getOverflowDays()), time);
         }
 
         /**

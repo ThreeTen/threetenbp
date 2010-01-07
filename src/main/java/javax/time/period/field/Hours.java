@@ -74,7 +74,7 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
      * @param hours  the number of hours the instance will represent
      * @return the created Hours
      */
-    public static Hours hours(int hours) {
+    public static Hours of(int hours) {
         if (hours == 0) {
             return ZERO;
         }
@@ -98,7 +98,7 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
      * @return the singleton instance
      */
     private Object readResolve() {
-        return Hours.hours(hours);
+        return Hours.of(hours);
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public final class Hours extends PeriodField implements Comparable<Hours>, Seria
      */
     @Override
     public Hours withAmount(int amount) {
-        return Hours.hours(amount);
+        return Hours.of(amount);
     }
 
     //-----------------------------------------------------------------------

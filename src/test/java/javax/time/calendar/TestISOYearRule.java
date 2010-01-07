@@ -47,7 +47,7 @@ import org.testng.annotations.Test;
 public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOYearRule() {
-        super(LocalDate.date(2009, 12, 26), 2009, 2009);
+        super(LocalDate.of(2009, 12, 26), 2009, 2009);
     }
 
     @Override
@@ -78,17 +78,17 @@ public class TestISOYearRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
-        Calendrical cal = LocalDate.date(2007, 6, 20);
+        Calendrical cal = LocalDate.of(2007, 6, 20);
         assertEquals(rule().getValue(cal), (Integer) 2007);
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
+        Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
         assertEquals(rule().getValue(cal), (Integer) 2007);
     }
 
     public void test_getValue_Calendrical_yearMonth() {
-        Calendrical cal = YearMonth.yearMonth(2007, 6);
+        Calendrical cal = YearMonth.of(2007, 6);
         assertEquals(rule().getValue(cal), (Integer) 2007);
     }
 

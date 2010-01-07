@@ -107,7 +107,7 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
-    public static MonthDay monthDay(MonthOfYear monthOfYear, int dayOfMonth) {
+    public static MonthDay of(MonthOfYear monthOfYear, int dayOfMonth) {
         ISOChronology.checkNotNull(monthOfYear, "MonthOfYear must not be null");
         ISOChronology.dayOfMonthRule().checkValue(dayOfMonth);
         if (dayOfMonth > monthOfYear.maxLengthInDays()) {
@@ -133,8 +133,8 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month
      */
-    public static MonthDay monthDay(int monthOfYear, int dayOfMonth) {
-        return monthDay(MonthOfYear.monthOfYear(monthOfYear), dayOfMonth);
+    public static MonthDay of(int monthOfYear, int dayOfMonth) {
+        return of(MonthOfYear.of(monthOfYear), dayOfMonth);
     }
 
     /**
@@ -148,10 +148,10 @@ public final class MonthDay
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
      */
-    public static MonthDay monthDay(Calendrical calendrical) {
+    public static MonthDay from(Calendrical calendrical) {
         MonthOfYear month = ISOChronology.monthOfYearRule().getValueChecked(calendrical);
         Integer dom = ISOChronology.dayOfMonthRule().getValueChecked(calendrical);
-        return monthDay(month, dom);
+        return of(month, dom);
     }
 
     /**
@@ -303,7 +303,7 @@ public final class MonthDay
      * @throws IllegalCalendarFieldValueException if the month-of-year value is invalid
      */
     public MonthDay withMonthOfYear(int monthOfYear) {
-        return with(MonthOfYear.monthOfYear(monthOfYear));
+        return with(MonthOfYear.of(monthOfYear));
     }
 
     /**
@@ -451,7 +451,7 @@ public final class MonthDay
      * @see Year#atMonthDay(MonthDay)
      */
     public LocalDate atYear(int year) {
-        return LocalDate.date(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     //-----------------------------------------------------------------------
@@ -566,7 +566,7 @@ public final class MonthDay
         protected MonthDay derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(ISOChronology.monthOfYearRule());
             Integer dom = calendrical.get(ISOChronology.dayOfMonthRule());
-            return moy != null && dom != null ? MonthDay.monthDay(moy, dom) : null;
+            return moy != null && dom != null ? MonthDay.of(moy, dom) : null;
         }
     }
 

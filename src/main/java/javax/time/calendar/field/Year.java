@@ -130,7 +130,7 @@ public final class Year
      * @return the created Year, never null
      * @throws IllegalCalendarFieldValueException if the field is invalid
      */
-    public static Year isoYear(int isoYear) {
+    public static Year of(int isoYear) {
         rule().checkValue(isoYear);
         return new Year(isoYear);
     }
@@ -145,8 +145,8 @@ public final class Year
      * @return the Year instance, never null
      * @throws UnsupportedRuleException if the year cannot be obtained
      */
-    public static Year year(Calendrical calendrical) {
-        return Year.isoYear(rule().getInt(calendrical));
+    public static Year from(Calendrical calendrical) {
+        return Year.of(rule().getInt(calendrical));
     }
 
     //-----------------------------------------------------------------------
@@ -218,7 +218,7 @@ public final class Year
         if (year == MAX_YEAR) {
             throw new CalendricalException("Year is already at the maximum value");
         }
-        return isoYear(year + 1);
+        return of(year + 1);
     }
 
     /**
@@ -246,7 +246,7 @@ public final class Year
         if (year == MIN_YEAR) {
             throw new CalendricalException("Year is already at the minimum value");
         }
-        return isoYear(year - 1);
+        return of(year - 1);
     }
 
     /**
@@ -278,7 +278,7 @@ public final class Year
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year plus(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         return plusYears(period.getYears());
     }
 
@@ -299,7 +299,7 @@ public final class Year
         if (((year ^ result) < 0 && (year ^ years) >= 0) || rule().isValidValue(result) == false) {
             throw new CalendricalException("Addition exceeds the supported year range: " + year + " + " + years);
         }
-        return isoYear(result);
+        return of(result);
     }
 
     //-----------------------------------------------------------------------
@@ -316,7 +316,7 @@ public final class Year
      * @throws CalendricalException if the result exceeds the supported year range
      */
     public Year minus(PeriodProvider periodProvider) {
-        Period period = Period.period(periodProvider);
+        Period period = Period.from(periodProvider);
         return minusYears(period.getYears());
     }
 
@@ -337,7 +337,7 @@ public final class Year
         if (((year ^ result) < 0 && (year ^ years) < 0) || rule().isValidValue(result) == false) {
             throw new CalendricalException("Subtraction exceeds the supported year range: " + year + " + " + years);
         }
-        return isoYear(result);
+        return of(result);
     }
 
     //-----------------------------------------------------------------------
@@ -506,7 +506,7 @@ public final class Year
      * @return the year-month formed from this year and the specified month, never null
      */
     public YearMonth atMonth(MonthOfYear monthOfYear) {
-        return YearMonth.yearMonth(year, monthOfYear);
+        return YearMonth.of(year, monthOfYear);
     }
 
     /**
@@ -525,7 +525,7 @@ public final class Year
      * @return the year-month formed from this year and the specified month, never null
      */
     public YearMonth atMonth(int monthOfYear) {
-        return YearMonth.yearMonth(year, monthOfYear);
+        return YearMonth.of(year, monthOfYear);
     }
 
     /**
@@ -544,7 +544,7 @@ public final class Year
      * @throws InvalidCalendarFieldException if the month-day is February 29th and this is not a leap year
      */
     public LocalDate atMonthDay(MonthDay monthDay) {
-        return LocalDate.date(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
+        return LocalDate.of(year, monthDay.getMonthOfYear(), monthDay.getDayOfMonth());
     }
 
     //-----------------------------------------------------------------------

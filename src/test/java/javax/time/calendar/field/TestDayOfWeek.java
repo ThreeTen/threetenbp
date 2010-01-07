@@ -67,20 +67,20 @@ public class TestDayOfWeek {
     //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 1; i <= 7; i++) {
-            DayOfWeek test = DayOfWeek.dayOfWeek(i);
+            DayOfWeek test = DayOfWeek.of(i);
             assertEquals(test.getValue(), i);
-            assertSame(DayOfWeek.dayOfWeek(i), test);
+            assertSame(DayOfWeek.of(i), test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooLow() {
-        DayOfWeek.dayOfWeek(0);
+        DayOfWeek.of(0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_valueTooHigh() {
-        DayOfWeek.dayOfWeek(8);
+        DayOfWeek.of(8);
     }
 
     //-----------------------------------------------------------------------

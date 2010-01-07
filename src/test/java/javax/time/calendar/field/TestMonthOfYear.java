@@ -50,8 +50,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestMonthOfYear {
 
-    private static final Year YEAR_STANDARD = Year.isoYear(2007);
-    private static final Year YEAR_LEAP = Year.isoYear(2008);
     private static final int MAX_LENGTH = 12;
 
     @BeforeMethod
@@ -68,20 +66,20 @@ public class TestMonthOfYear {
     //-----------------------------------------------------------------------
     public void test_factory_int_singleton() {
         for (int i = 1; i <= MAX_LENGTH; i++) {
-            MonthOfYear test = MonthOfYear.monthOfYear(i);
+            MonthOfYear test = MonthOfYear.of(i);
             assertEquals(test.getValue(), i);
-            assertSame(MonthOfYear.monthOfYear(i), test);
+            assertSame(MonthOfYear.of(i), test);
         }
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooLow() {
-        MonthOfYear.monthOfYear(0);
+        MonthOfYear.of(0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void test_factory_int_tooHigh() {
-        MonthOfYear.monthOfYear(13);
+        MonthOfYear.of(13);
     }
 
     //-----------------------------------------------------------------------

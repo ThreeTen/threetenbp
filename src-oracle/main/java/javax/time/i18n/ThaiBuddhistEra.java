@@ -56,7 +56,7 @@ public enum ThaiBuddhistEra implements Calendrical {
      * @return the ThaiBuddhistEra singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
-    public static ThaiBuddhistEra thaiBuddhistEra(int thaiBuddhistEra) {
+    public static ThaiBuddhistEra of(int thaiBuddhistEra) {
         switch (thaiBuddhistEra) {
             case 0:
                 return BEFORE_BUDDHIST;
@@ -78,7 +78,7 @@ public enum ThaiBuddhistEra implements Calendrical {
      * @return the ThaiBuddhistEra enum instance, never null
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
-    public static ThaiBuddhistEra thaiBuddhistEra(Calendrical calendrical) {
+    public static ThaiBuddhistEra from(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
     }
 

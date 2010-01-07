@@ -255,17 +255,17 @@ public final class ZoneOffsetTransitionRule implements Serializable {
     public ZoneOffsetTransition createTransition(int year) {
         LocalDate date;
         if (dom < 0) {
-            date = LocalDate.date(year, month, month.lengthInDays(ISOChronology.isLeapYear(year)) + 1 + dom);
+            date = LocalDate.of(year, month, month.getLastDayOfMonth(ISOChronology.isLeapYear(year)) + 1 + dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.previousOrCurrent(dow));
             }
         } else {
-            date = LocalDate.date(year, month, dom);
+            date = LocalDate.of(year, month, dom);
             if (dow != null) {
                 date = date.with(DateAdjusters.nextOrCurrent(dow));
             }
         }
-        LocalDateTime localDT = LocalDateTime.dateTime(date, time);
+        LocalDateTime localDT = LocalDateTime.from(date, time);
         OffsetDateTime transition = timeDefinition.createDateTime(localDT, standardOffset, offsetBefore);
         return new ZoneOffsetTransition(transition, offsetAfter);
     }

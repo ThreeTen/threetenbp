@@ -71,8 +71,8 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ThaiBuddhistDate thaiBuddhistDate(int yearOfThaiBuddhistEra, MonthOfYear monthOfYear, int dayOfMonth) {
-        return ThaiBuddhistDate.thaiBuddhistDate(ThaiBuddhistEra.BUDDHIST, yearOfThaiBuddhistEra, monthOfYear, dayOfMonth);
+    public static ThaiBuddhistDate of(int yearOfThaiBuddhistEra, MonthOfYear monthOfYear, int dayOfMonth) {
+        return ThaiBuddhistDate.of(ThaiBuddhistEra.BUDDHIST, yearOfThaiBuddhistEra, monthOfYear, dayOfMonth);
     }
 
     /**
@@ -87,7 +87,7 @@ public final class ThaiBuddhistDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static ThaiBuddhistDate thaiBuddhistDate(ThaiBuddhistEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
+    public static ThaiBuddhistDate of(ThaiBuddhistEra era, int yearOfEra, MonthOfYear monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "ThaiBuddhistEra must not be null");
         ThaiBuddhistChronology.yearOfEraRule().checkValue(yearOfEra);
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
@@ -97,7 +97,7 @@ public final class ThaiBuddhistDate
             year = 1 - yearOfEra;
         }
         year += ThaiBuddhistChronology.YEAR_OFFSET;
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new ThaiBuddhistDate(date);
     }
 
@@ -107,8 +107,8 @@ public final class ThaiBuddhistDate
      * @param dateProvider  the date provider to use, not null
      * @return the created ThaiBuddhistDate instance, never null
      */
-    public static ThaiBuddhistDate thaiBuddhistDate(DateProvider dateProvider) {
-        LocalDate date = LocalDate.date(dateProvider);
+    public static ThaiBuddhistDate from(DateProvider dateProvider) {
+        LocalDate date = LocalDate.of(dateProvider);
         int yearOfEra = date.getYear() - ThaiBuddhistChronology.YEAR_OFFSET;
         if (yearOfEra < 0) {
             yearOfEra = 1 - yearOfEra;
@@ -239,7 +239,7 @@ public final class ThaiBuddhistDate
             year = 1 - yearOfEra;
         }
         year += ThaiBuddhistChronology.YEAR_OFFSET;
-        return ThaiBuddhistDate.thaiBuddhistDate(date.withYear(year));
+        return ThaiBuddhistDate.from(date.withYear(year));
     }
 
     /**
@@ -271,7 +271,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withMonthOfYear(MonthOfYear monthOfYear) {
         I18NUtil.checkNotNull(monthOfYear, "MonthOfYear must not be null");
-        return ThaiBuddhistDate.thaiBuddhistDate(date.with(monthOfYear));
+        return ThaiBuddhistDate.from(date.with(monthOfYear));
     }
 
     /**
@@ -286,7 +286,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withDayOfMonth(int dayOfMonth) {
         ThaiBuddhistChronology.dayOfMonthRule().checkValue(dayOfMonth);
-        return ThaiBuddhistDate.thaiBuddhistDate(date.withDayOfMonth(dayOfMonth));
+        return ThaiBuddhistDate.from(date.withDayOfMonth(dayOfMonth));
     }
 
     /**
@@ -301,7 +301,7 @@ public final class ThaiBuddhistDate
      */
     public ThaiBuddhistDate withDayOfYear(int dayOfYear) {
         ThaiBuddhistChronology.dayOfYearRule().checkValue(dayOfYear);
-        return ThaiBuddhistDate.thaiBuddhistDate(date.withDayOfYear(dayOfYear));
+        return ThaiBuddhistDate.from(date.withDayOfYear(dayOfYear));
     }
 
     //-----------------------------------------------------------------------
@@ -321,7 +321,7 @@ public final class ThaiBuddhistDate
         if (years == 0) {
             return this;
         }
-        return ThaiBuddhistDate.thaiBuddhistDate(date.plusYears(years));
+        return ThaiBuddhistDate.from(date.plusYears(years));
     }
 
     /**
@@ -340,7 +340,7 @@ public final class ThaiBuddhistDate
         if (months == 0) {
             return this;
         }
-        return ThaiBuddhistDate.thaiBuddhistDate(date.plusMonths(months));
+        return ThaiBuddhistDate.from(date.plusMonths(months));
     }
 
     /**
@@ -369,7 +369,7 @@ public final class ThaiBuddhistDate
         if (days == 0) {
             return this;
         }
-        return ThaiBuddhistDate.thaiBuddhistDate(date.plusDays(days));
+        return ThaiBuddhistDate.from(date.plusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -389,7 +389,7 @@ public final class ThaiBuddhistDate
         if (years == 0) {
             return this;
         }
-        return ThaiBuddhistDate.thaiBuddhistDate(date.minusYears(years));
+        return ThaiBuddhistDate.from(date.minusYears(years));
     }
 
     /**
@@ -408,7 +408,7 @@ public final class ThaiBuddhistDate
         if (months == 0) {
             return this;
         }
-        return ThaiBuddhistDate.thaiBuddhistDate(date.minusMonths(months));
+        return ThaiBuddhistDate.from(date.minusMonths(months));
     }
 
     /**
@@ -437,7 +437,7 @@ public final class ThaiBuddhistDate
         if (days == 0) {
             return this;
         }
-        return ThaiBuddhistDate.thaiBuddhistDate(date.minusDays(days));
+        return ThaiBuddhistDate.from(date.minusDays(days));
     }
 
     //-----------------------------------------------------------------------
@@ -564,7 +564,7 @@ public final class ThaiBuddhistDate
         @Override
         protected ThaiBuddhistDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
-            return ld != null ? ThaiBuddhistDate.thaiBuddhistDate(ld) : null;
+            return ld != null ? ThaiBuddhistDate.from(ld) : null;
         }
         @Override
         protected void merge(CalendricalMerger merger) {

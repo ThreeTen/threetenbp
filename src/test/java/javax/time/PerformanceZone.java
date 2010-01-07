@@ -64,7 +64,7 @@ public class PerformanceZone {
      * @param args  the arguments
      */
     public static void main(String[] args) {
-        LocalTime time = LocalTime.time(12, 30, 20);
+        LocalTime time = LocalTime.of(12, 30, 20);
         System.out.println(time);
         
         jsrLocalGetOffset();
@@ -76,8 +76,8 @@ public class PerformanceZone {
 
     //-----------------------------------------------------------------------
     private static void jsrLocalGetOffset() {
-        LocalDateTime dt = LocalDateTime.dateTime(YEAR, 6, 1, 12, 0);
-        TimeZone tz = TimeZone.timeZone("Europe/London");
+        LocalDateTime dt = LocalDateTime.of(YEAR, 6, 1, 12, 0);
+        TimeZone tz = TimeZone.of("Europe/London");
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {
@@ -89,9 +89,9 @@ public class PerformanceZone {
 
     //-----------------------------------------------------------------------
     private static void jsrInstantGetOffset() {
-        OffsetDateTime dt = OffsetDateTime.dateTime(YEAR, 6, 1, 12, 0, ZoneOffset.zoneOffset(1));
+        OffsetDateTime dt = OffsetDateTime.of(YEAR, 6, 1, 12, 0, ZoneOffset.hours(1));
         Instant instant = dt.toInstant();
-        TimeZone tz = TimeZone.timeZone("Europe/London");
+        TimeZone tz = TimeZone.of("Europe/London");
         ZoneOffset[] list = new ZoneOffset[SIZE];
         long start = System.nanoTime();
         for (int i = 0; i < SIZE; i++) {

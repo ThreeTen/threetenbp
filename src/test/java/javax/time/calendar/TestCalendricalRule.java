@@ -126,11 +126,11 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     public void test_comparator() {
         List<Calendrical> list = new ArrayList<Calendrical>();
-        LocalDate ld = LocalDate.date(2009, 6, 30);
+        LocalDate ld = LocalDate.of(2009, 6, 30);
         list.add(ld);
-        LocalDateTime ldt = LocalDateTime.dateTime(2007, 1, 1, 12, 30);
+        LocalDateTime ldt = LocalDateTime.of(2007, 1, 1, 12, 30);
         list.add(ldt);
-        OffsetDate od = OffsetDate.date(2008, 6, 30, ZoneOffset.zoneOffset("+01:00"));
+        OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
         list.add(od);
         
         Collections.sort(list, new MockBigYearRule());
@@ -141,11 +141,11 @@ public class TestCalendricalRule {
 
     public void test_comparator_noValueSortedLast() {
         List<Calendrical> list = new ArrayList<Calendrical>();
-        LocalTime lt = LocalTime.time(12, 30);
+        LocalTime lt = LocalTime.of(12, 30);
         list.add(lt);
-        LocalDateTime ldt = LocalDateTime.dateTime(2007, 1, 1, 12, 30);
+        LocalDateTime ldt = LocalDateTime.of(2007, 1, 1, 12, 30);
         list.add(ldt);
-        OffsetDate od = OffsetDate.date(2008, 6, 30, ZoneOffset.zoneOffset("+01:00"));
+        OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
         list.add(od);
         
         Collections.sort(list, new MockBigYearRule());
@@ -155,8 +155,8 @@ public class TestCalendricalRule {
     }
 
     public void test_comparator_combinations() {
-        Year year2008 = Year.isoYear(2008);
-        Year year2009 = Year.isoYear(2009);
+        Year year2008 = Year.of(2008);
+        Year year2009 = Year.of(2009);
         assertEquals(new MockBigYearRule().compare(year2008, year2008), 0);
         assertEquals(new MockBigYearRule().compare(year2008, year2009), -1);
         assertEquals(new MockBigYearRule().compare(year2009, year2008), 1);
@@ -164,7 +164,7 @@ public class TestCalendricalRule {
     }
 
     public void test_comparator_combinations_noValue() {
-        Year year2008 = Year.isoYear(2008);
+        Year year2008 = Year.of(2008);
         assertEquals(new MockBigYearRule().compare(year2008, new MockSimpleCalendrical()), -1);
         assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), year2008), 1);
         assertEquals(new MockBigYearRule().compare(new MockSimpleCalendrical(), new MockSimpleCalendrical()), 0);
@@ -175,11 +175,11 @@ public class TestCalendricalRule {
     //-----------------------------------------------------------------------
     public void test_compareTo() {
         List<Calendrical> list = new ArrayList<Calendrical>();
-        LocalDate ld = LocalDate.date(2009, 6, 30);
+        LocalDate ld = LocalDate.of(2009, 6, 30);
         list.add(ld);
-        LocalDateTime ldt = LocalDateTime.dateTime(2007, 1, 1, 12, 30);
+        LocalDateTime ldt = LocalDateTime.of(2007, 1, 1, 12, 30);
         list.add(ldt);
-        OffsetDate od = OffsetDate.date(2008, 6, 30, ZoneOffset.zoneOffset("+01:00"));
+        OffsetDate od = OffsetDate.of(2008, 6, 30, ZoneOffset.of("+01:00"));
         list.add(od);
         
         Collections.sort(list, new MockBigYearRule());

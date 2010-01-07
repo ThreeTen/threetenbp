@@ -83,7 +83,7 @@ public enum MinguoEra implements Calendrical {
      * @return the MinguoEra singleton, never null
      * @throws IllegalCalendarFieldValueException if the era is invalid
      */
-    public static MinguoEra minguoEra(int minguoEra) {
+    public static MinguoEra of(int minguoEra) {
         switch (minguoEra) {
             case 0:
                 return BEFORE_MINGUO;
@@ -105,7 +105,7 @@ public enum MinguoEra implements Calendrical {
      * @return the MinguoEra enum instance, never null
      * @throws UnsupportedRuleException if the era cannot be obtained
      */
-    public static MinguoEra minguoEra(Calendrical calendrical) {
+    public static MinguoEra from(Calendrical calendrical) {
         return rule().getValueChecked(calendrical);
     }
 

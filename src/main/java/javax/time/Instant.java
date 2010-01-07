@@ -126,7 +126,7 @@ public final class Instant
      * @param epochSeconds  the number of seconds from the epoch of 1970-01-01T00:00:00Z
      * @return the created instant, never null
      */
-    public static Instant instant(long epochSeconds) {
+    public static Instant seconds(long epochSeconds) {
         if (epochSeconds == 0) {
             return EPOCH;
         }
@@ -154,7 +154,7 @@ public final class Instant
      * @return the created instant, never null
      * @throws IllegalArgumentException if nanoOfSecond is out of range
      */
-    public static Instant instant(long epochSeconds, int nanoOfSecond) {
+    public static Instant seconds(long epochSeconds, int nanoOfSecond) {
         if (nanoOfSecond >= NANOS_PER_SECOND) {
             throw new IllegalArgumentException("Nanosecond fraction must not be more than 999,999,999 but was " + nanoOfSecond);
         }
@@ -180,7 +180,7 @@ public final class Instant
      * @return the created instant, never null
      * @throws IllegalArgumentException if fractionOfSecond is out of range
      */
-    public static Instant instant(long epochSeconds, double fractionOfSecond) {
+    public static Instant seconds(long epochSeconds, double fractionOfSecond) {
         if (fractionOfSecond <= -1 || fractionOfSecond >= 1) {
             throw new IllegalArgumentException("Fraction of second must be between -1 and 1 exclusive but was " + fractionOfSecond);
         }
@@ -203,7 +203,7 @@ public final class Instant
      * @param epochMillis  the number of milliseconds from the epoch of 1970-01-01T00:00:00Z
      * @return the created instant, never null
      */
-    public static Instant millisInstant(long epochMillis) {
+    public static Instant millis(long epochMillis) {
         if (epochMillis < 0) {
             epochMillis++;
             long epochSeconds = epochMillis / 1000;
@@ -226,7 +226,7 @@ public final class Instant
      * @return the created instant, never null
      * @throws IllegalArgumentException if nanoOfMillisecond is not in the range 0 to 999,999
      */
-    public static Instant millisInstant(long epochMillis, int nanoOfMillisecond) {
+    public static Instant millis(long epochMillis, int nanoOfMillisecond) {
         if (nanoOfMillisecond < 0) {
             throw new IllegalArgumentException("NanoOfMillisecond must be positive but was " + nanoOfMillisecond);
         }

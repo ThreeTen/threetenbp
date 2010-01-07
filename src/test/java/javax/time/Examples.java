@@ -73,10 +73,10 @@ public class Examples {
         ZonedDateTime zdt = clock.zonedDateTime();
         System.out.println("Current date-time: " + zdt);
         
-        ZonedDateTime zdtNewYork = Clock.system(TimeZone.timeZone("America/New_York")).zonedDateTime();
+        ZonedDateTime zdtNewYork = Clock.system(TimeZone.of("America/New_York")).zonedDateTime();
         System.out.println("Current date-time in New York: " + zdtNewYork);
         
-        ZonedDateTime zdtParis = Clock.system(TimeZone.timeZone("Europe/Paris")).zonedDateTime();
+        ZonedDateTime zdtParis = Clock.system(TimeZone.of("Europe/Paris")).zonedDateTime();
         System.out.println("Current date-time in Paris: " + zdtParis);
         
         LocalDateTime ldt = clock.dateTime();
@@ -116,10 +116,10 @@ public class Examples {
         boolean fri13 = tempDate.matches(fri13matcher);
         System.out.println("Is Friday the Thirteenth: " + fri13);
         
-        LocalDateTime dt = LocalDateTime.dateTime(2008, 3, 30, 1, 30);
+        LocalDateTime dt = LocalDateTime.of(2008, 3, 30, 1, 30);
         System.out.println("Local date-time in Spring DST gap: " + dt);
         
-        ZonedDateTime resolved = ZonedDateTime.dateTime(dt, TimeZone.timeZone("Europe/London"), ZoneResolvers.postTransition());
+        ZonedDateTime resolved = ZonedDateTime.from(dt, TimeZone.of("Europe/London"), ZoneResolvers.postTransition());
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
         
         String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);
@@ -140,7 +140,7 @@ public class Examples {
         String formatted = f.print(resolved);
         System.out.println("...printed using complex format: " + formatted);
         
-        MonthDay bday = MonthDay.monthDay(DECEMBER, 3);
+        MonthDay bday = MonthDay.of(DECEMBER, 3);
         System.out.println("Brazillian birthday (no year): " + bday);
     }
 

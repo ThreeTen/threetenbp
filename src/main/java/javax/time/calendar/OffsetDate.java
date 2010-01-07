@@ -89,8 +89,8 @@ public final class OffsetDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static OffsetDate date(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+    public static OffsetDate of(int year, MonthOfYear monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new OffsetDate(date, offset);
     }
 
@@ -105,8 +105,8 @@ public final class OffsetDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static OffsetDate date(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
-        LocalDate date = LocalDate.date(year, monthOfYear, dayOfMonth);
+    public static OffsetDate of(int year, int monthOfYear, int dayOfMonth, ZoneOffset offset) {
+        LocalDate date = LocalDate.of(year, monthOfYear, dayOfMonth);
         return new OffsetDate(date, offset);
     }
 
@@ -117,8 +117,8 @@ public final class OffsetDate
      * @param offset  the zone offset, not null
      * @return the offset date, never null
      */
-    public static OffsetDate date(DateProvider dateProvider, ZoneOffset offset) {
-        LocalDate date = LocalDate.date(dateProvider);
+    public static OffsetDate from(DateProvider dateProvider, ZoneOffset offset) {
+        LocalDate date = LocalDate.of(dateProvider);
         return new OffsetDate(date, offset);
     }
 
@@ -361,7 +361,7 @@ public final class OffsetDate
      * @return a new updated OffsetDate, never null
      */
     public OffsetDate withDate(DateProvider dateProvider) {
-        LocalDate newDate = LocalDate.date(dateProvider);
+        LocalDate newDate = LocalDate.of(dateProvider);
         if (newDate.equals(date)) {  // need .equals() for this case
             return this;
         }
@@ -866,7 +866,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the specified time, never null
      */
     public OffsetDateTime atTime(LocalTime time) {
-        return OffsetDateTime.dateTime(this, time, getOffset());
+        return OffsetDateTime.from(this, time, getOffset());
     }
 
     /**
@@ -880,7 +880,7 @@ public final class OffsetDate
      * @return the offset date-time formed from this date and the time of midnight, never null
      */
     public OffsetDateTime atMidnight() {
-        return OffsetDateTime.dateTime(this, LocalTime.MIDNIGHT, getOffset());
+        return OffsetDateTime.from(this, LocalTime.MIDNIGHT, getOffset());
     }
 
     /**
@@ -907,7 +907,7 @@ public final class OffsetDate
      * @return the zoned date-time formed from this date and the earliest valid time for the zone, never null
      */
     public ZonedDateTime atStartOfDayInZone(TimeZone zone) {
-        return ZonedDateTime.dateTime(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
+        return ZonedDateTime.from(this, LocalTime.MIDNIGHT, zone, ZoneResolvers.postGapPreOverlap());
     }
 
     //-----------------------------------------------------------------------
@@ -958,8 +958,8 @@ public final class OffsetDate
         if (offset.equals(other.offset)) {
             return date.compareTo(other.date);
         }
-        LocalDateTime thisDT = LocalDateTime.dateMidnight(getYear(), getMonthOfYear(), getDayOfMonth());
-        LocalDateTime otherDT = LocalDateTime.dateMidnight(other.getYear(), other.getMonthOfYear(), other.getDayOfMonth());
+        LocalDateTime thisDT = LocalDateTime.midnight(getYear(), getMonthOfYear(), getDayOfMonth());
+        LocalDateTime otherDT = LocalDateTime.midnight(other.getYear(), other.getMonthOfYear(), other.getDayOfMonth());
         LocalDateTime thisUTC = thisDT.plusSeconds(-offset.getAmountSeconds());
         LocalDateTime otherUTC = otherDT.plusSeconds(-other.offset.getAmountSeconds());
         int compare = thisUTC.compareTo(otherUTC);

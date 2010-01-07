@@ -309,7 +309,7 @@ public final class DayOfYear
         if (dayOfYear == 366 && leap == false) {
             throw new InvalidCalendarFieldException("DayOfYear 366 is invalid for year " + year, rule());
         }
-        return LocalDate.date(year, 1, 1).plusDays(dayOfYear - 1);
+        return LocalDate.of(year, 1, 1).plusDays(dayOfYear - 1);
     }
 
     //-----------------------------------------------------------------------

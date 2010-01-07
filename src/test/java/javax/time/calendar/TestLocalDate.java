@@ -67,9 +67,9 @@ public class TestLocalDate {
 
 //    private static final String MIN_YEAR_STR = Integer.toString(Year.MIN_YEAR);
 //    private static final String MAX_YEAR_STR = Integer.toString(Year.MAX_YEAR);
-    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.zoneOffset(2);
-    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
-    private static final TimeZone ZONE_GAZA = TimeZone.timeZone("Asia/Gaza");
+    private static final ZoneOffset OFFSET_PTWO = ZoneOffset.hours(2);
+    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
+    private static final TimeZone ZONE_GAZA = TimeZone.of("Asia/Gaza");
     
     private LocalDate TEST_2007_07_15;
     private long MAX_VALID_EPOCHDAYS;
@@ -79,10 +79,10 @@ public class TestLocalDate {
 
     @BeforeMethod
     public void setUp() {
-        TEST_2007_07_15 = LocalDate.date(2007, 7, 15);
+        TEST_2007_07_15 = LocalDate.of(2007, 7, 15);
         
-        LocalDate max = LocalDate.date(Year.MAX_YEAR, 12, 31);
-        LocalDate min = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        LocalDate max = LocalDate.of(Year.MAX_YEAR, 12, 31);
+        LocalDate min = LocalDate.of(Year.MIN_YEAR, 1, 1);
         MAX_VALID_EPOCHDAYS = max.toEpochDays();
         MIN_VALID_EPOCHDAYS = min.toEpochDays();
         MAX_VALID_MJDAYS = max.toModifiedJulianDays();
@@ -130,27 +130,27 @@ public class TestLocalDate {
 
     //-----------------------------------------------------------------------
     public void factory_date_intsMonth() {
-        assertEquals(TEST_2007_07_15, LocalDate.date(2007, MonthOfYear.JULY, 15));
+        assertEquals(TEST_2007_07_15, LocalDate.of(2007, MonthOfYear.JULY, 15));
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_intsMonth_dayTooLow() {
-        LocalDate.date(2007, MonthOfYear.JANUARY, 0);
+        LocalDate.of(2007, MonthOfYear.JANUARY, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_intsMonth_dayTooHigh() {
-        LocalDate.date(2007, MonthOfYear.JANUARY, 32);
+        LocalDate.of(2007, MonthOfYear.JANUARY, 32);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_intsMonth_nullMonth() {
-        LocalDate.date(2007, null, 30);
+        LocalDate.of(2007, null, 30);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_intsMonth_yearTooLow() {
-        LocalDate.date(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);
+        LocalDate.of(Integer.MIN_VALUE, MonthOfYear.JANUARY, 1);
     }
 
     //-----------------------------------------------------------------------
@@ -160,49 +160,49 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_ints_dayTooLow() {
-        LocalDate.date(2007, 1, 0);
+        LocalDate.of(2007, 1, 0);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_ints_dayTooHigh() {
-        LocalDate.date(2007, 1, 32);
+        LocalDate.of(2007, 1, 32);
     }
 
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_ints_monthTooLow() {
-        LocalDate.date(2007, 0, 1);
+        LocalDate.of(2007, 0, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_ints_monthTooHigh() {
-        LocalDate.date(2007, 13, 1);
+        LocalDate.of(2007, 13, 1);
     }
 
     @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
     public void factory_date_ints_yearTooLow() {
-        LocalDate.date(Integer.MIN_VALUE, 1, 1);
+        LocalDate.of(Integer.MIN_VALUE, 1, 1);
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_DateProvider() {
-        assertSame(LocalDate.date(TEST_2007_07_15), TEST_2007_07_15);
+        assertSame(LocalDate.of(TEST_2007_07_15), TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateProvider_null() {
-        LocalDate.date(null);
+        LocalDate.of(null);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void factory_date_DateProvider_null_toLocalDate() {
-        LocalDate.date(new MockDateProviderReturnsNull());
+        LocalDate.of(new MockDateProviderReturnsNull());
     }
 
     //-----------------------------------------------------------------------
     public void factory_date_multiProvider_checkAmbiguous() {
         MockMultiProvider mmp = new MockMultiProvider(2008, 6, 30, 11, 30, 10, 500);
-        LocalDate test = LocalDate.date(mmp);
+        LocalDate test = LocalDate.of(mmp);
         check(test, 2008, 6, 30);
     }
 
@@ -237,18 +237,18 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void factory_fromEpochDays() {
         long date_0000_01_01 = -678941 - 40587;
-        assertEquals(LocalDate.fromEpochDays(0), LocalDate.date(1970, 1, 1));
-        assertEquals(LocalDate.fromEpochDays(date_0000_01_01), LocalDate.date(0, 1, 1));
-        assertEquals(LocalDate.fromEpochDays(date_0000_01_01 - 1), LocalDate.date(-1, 12, 31));
-        assertEquals(LocalDate.fromEpochDays(MAX_VALID_EPOCHDAYS), LocalDate.date(Year.MAX_YEAR, 12, 31));
-        assertEquals(LocalDate.fromEpochDays(MIN_VALID_EPOCHDAYS), LocalDate.date(Year.MIN_YEAR, 1, 1));
+        assertEquals(LocalDate.fromEpochDays(0), LocalDate.of(1970, 1, 1));
+        assertEquals(LocalDate.fromEpochDays(date_0000_01_01), LocalDate.of(0, 1, 1));
+        assertEquals(LocalDate.fromEpochDays(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
+        assertEquals(LocalDate.fromEpochDays(MAX_VALID_EPOCHDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
+        assertEquals(LocalDate.fromEpochDays(MIN_VALID_EPOCHDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
         
-        LocalDate test = LocalDate.date(0, 1, 1);
+        LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(LocalDate.fromEpochDays(i), test);
             test = next(test);
         }
-        test = LocalDate.date(0, 1, 1);
+        test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
             assertEquals(LocalDate.fromEpochDays(i), test);
             test = previous(test);
@@ -270,18 +270,18 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void factory_fromModifiedJulianDays() {
         long date_0000_01_01 = -678941;
-        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.date(1970, 1, 1));
-        assertEquals(LocalDate.fromModifiedJulianDays(date_0000_01_01), LocalDate.date(0, 1, 1));
-        assertEquals(LocalDate.fromModifiedJulianDays(date_0000_01_01 - 1), LocalDate.date(-1, 12, 31));
-        assertEquals(LocalDate.fromModifiedJulianDays(MAX_VALID_MJDAYS), LocalDate.date(Year.MAX_YEAR, 12, 31));
-        assertEquals(LocalDate.fromModifiedJulianDays(MIN_VALID_MJDAYS), LocalDate.date(Year.MIN_YEAR, 1, 1));
+        assertEquals(LocalDate.fromModifiedJulianDays(40587), LocalDate.of(1970, 1, 1));
+        assertEquals(LocalDate.fromModifiedJulianDays(date_0000_01_01), LocalDate.of(0, 1, 1));
+        assertEquals(LocalDate.fromModifiedJulianDays(date_0000_01_01 - 1), LocalDate.of(-1, 12, 31));
+        assertEquals(LocalDate.fromModifiedJulianDays(MAX_VALID_MJDAYS), LocalDate.of(Year.MAX_YEAR, 12, 31));
+        assertEquals(LocalDate.fromModifiedJulianDays(MIN_VALID_MJDAYS), LocalDate.of(Year.MIN_YEAR, 1, 1));
         
-        LocalDate test = LocalDate.date(0, 1, 1);
+        LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(LocalDate.fromModifiedJulianDays(i), test);
             test = next(test);
         }
-        test = LocalDate.date(0, 1, 1);
+        test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
             assertEquals(LocalDate.fromModifiedJulianDays(i), test);
             test = previous(test);
@@ -358,7 +358,7 @@ public class TestLocalDate {
     // get(CalendricalRule)
     //-----------------------------------------------------------------------
     public void test_get_CalendricalRule() {
-        LocalDate test = LocalDate.date(2008, 6, 30);
+        LocalDate test = LocalDate.of(2008, 6, 30);
         assertEquals(test.get(ISOChronology.yearRule()), (Integer) 2008);
         assertEquals(test.get(ISOChronology.quarterOfYearRule()), QuarterOfYear.Q2);
         assertEquals(test.get(ISOChronology.monthOfYearRule()), MonthOfYear.JUNE);
@@ -385,8 +385,8 @@ public class TestLocalDate {
         assertEquals(test.get(ZonedDateTime.rule()), null);
         assertEquals(test.get(ZoneOffset.rule()), null);
         assertEquals(test.get(TimeZone.rule()), null);
-        assertEquals(test.get(YearMonth.rule()), YearMonth.yearMonth(2008, 6));
-        assertEquals(test.get(MonthDay.rule()), MonthDay.monthDay(6, 30));
+        assertEquals(test.get(YearMonth.rule()), YearMonth.of(2008, 6));
+        assertEquals(test.get(MonthDay.rule()), MonthDay.of(6, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class )
@@ -416,18 +416,18 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_get(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate a = LocalDate.of(y, m, d);
         assertEquals(a.getYear(), y);
-        assertEquals(a.getMonthOfYear(), MonthOfYear.monthOfYear(m));
+        assertEquals(a.getMonthOfYear(), MonthOfYear.of(m));
         assertEquals(a.getDayOfMonth(), d);
     }
 
     @Test(dataProvider="sampleDates")
     public void test_getDOY(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate a = LocalDate.of(y, m, d);
         int total = 0;
         for (int i = 1; i < m; i++) {
-            total += MonthOfYear.monthOfYear(i).lengthInDays(ISOChronology.isLeapYear(y));
+            total += MonthOfYear.of(i).lengthInDays(ISOChronology.isLeapYear(y));
         }
         int doy = total + d;
         assertEquals(a.getDayOfYear(), doy);
@@ -438,7 +438,7 @@ public class TestLocalDate {
         for (MonthOfYear month : MonthOfYear.values()) {
             int length = month.lengthInDays(false);
             for (int i = 1; i <= length; i++) {
-                LocalDate d = LocalDate.date(2007, month, i);
+                LocalDate d = LocalDate.of(2007, month, i);
                 assertSame(d.getDayOfWeek(), dow);
                 dow = dow.next();
             }
@@ -487,7 +487,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_withYear_int_normal() {
         LocalDate t = TEST_2007_07_15.withYear(2008);
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_withYear_int_noChange() {
@@ -501,14 +501,14 @@ public class TestLocalDate {
     }
 
     public void test_withYear_int_adjustDay() {
-        LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007);
-        LocalDate expected = LocalDate.date(2007, 2, 28);
+        LocalDate t = LocalDate.of(2008, 2, 29).withYear(2007);
+        LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
     public void test_withYear_int_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.withYear(2008, DateResolvers.strict());
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_withYear_int_DateResolver_noChange() {
@@ -522,8 +522,8 @@ public class TestLocalDate {
     }
 
     public void test_withYear_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2007, 3, 1);
+        LocalDate t = LocalDate.of(2008, 2, 29).withYear(2007, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
@@ -534,7 +534,7 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withYear_int_DateResolver_adjustDay_invalid() {
-        LocalDate.date(2008, 2, 29).withYear(2007, DateResolvers.strict());
+        LocalDate.of(2008, 2, 29).withYear(2007, DateResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -542,7 +542,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_withMonthOfYear_int_normal() {
         LocalDate t = TEST_2007_07_15.withMonthOfYear(1);
-        assertEquals(t, LocalDate.date(2007, 1, 15));
+        assertEquals(t, LocalDate.of(2007, 1, 15));
     }
 
     public void test_withMonthOfYear_int_noChange() {
@@ -556,14 +556,14 @@ public class TestLocalDate {
     }
 
     public void test_withMonthOfYear_int_adjustDay() {
-        LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11);
-        LocalDate expected = LocalDate.date(2007, 11, 30);
+        LocalDate t = LocalDate.of(2007, 12, 31).withMonthOfYear(11);
+        LocalDate expected = LocalDate.of(2007, 11, 30);
         assertEquals(t, expected);
     }
 
     public void test_withMonthOfYear_int_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.withMonthOfYear(1, DateResolvers.strict());
-        assertEquals(t, LocalDate.date(2007, 1, 15));
+        assertEquals(t, LocalDate.of(2007, 1, 15));
     }
 
     public void test_withMonthOfYear_int_DateResolver_noChange() {
@@ -577,8 +577,8 @@ public class TestLocalDate {
     }
 
     public void test_withMonthOfYear_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2007, 12, 1);
+        LocalDate t = LocalDate.of(2007, 12, 31).withMonthOfYear(11, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 12, 1);
         assertEquals(t, expected);
     }
 
@@ -589,7 +589,7 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withMonthOfYear_int_DateResolver_adjustDay_invalid() {
-        LocalDate.date(2007, 12, 31).withMonthOfYear(11, DateResolvers.strict());
+        LocalDate.of(2007, 12, 31).withMonthOfYear(11, DateResolvers.strict());
     }
 
     //-----------------------------------------------------------------------
@@ -597,7 +597,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_withDayOfMonth_normal() {
         LocalDate t = TEST_2007_07_15.withDayOfMonth(1);
-        assertEquals(t, LocalDate.date(2007, 7, 1));
+        assertEquals(t, LocalDate.of(2007, 7, 1));
     }
 
     public void test_withDayOfMonth_noChange() {
@@ -612,7 +612,7 @@ public class TestLocalDate {
 
     @Test(expectedExceptions=InvalidCalendarFieldException.class)
     public void test_withDayOfMonth_invalid() {
-        LocalDate.date(2007, 11, 30).withDayOfMonth(31);
+        LocalDate.of(2007, 11, 30).withDayOfMonth(31);
     }
 
     //-----------------------------------------------------------------------
@@ -620,7 +620,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_withDayOfYear_normal() {
         LocalDate t = TEST_2007_07_15.withDayOfYear(33);
-        assertEquals(t, LocalDate.date(2007, 2, 2));
+        assertEquals(t, LocalDate.of(2007, 2, 2));
     }
 
     public void test_withDayOfYear_noChange() {
@@ -642,15 +642,15 @@ public class TestLocalDate {
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         LocalDate t = TEST_2007_07_15.plus(provider);
-        assertEquals(t, LocalDate.date(2008, 9, 18));
+        assertEquals(t, LocalDate.of(2008, 9, 18));
     }
 
     public void test_plus_PeriodProvider_timeIgnored() {
-        PeriodProvider provider = Period.period(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
         LocalDate t = TEST_2007_07_15.plus(provider);
-        assertEquals(t, LocalDate.date(2008, 9, 18));
+        assertEquals(t, LocalDate.of(2008, 9, 18));
     }
 
     public void test_plus_PeriodProvider_zero() {
@@ -660,14 +660,14 @@ public class TestLocalDate {
 
     public void test_plus_PeriodProvider_previousValidResolver_oneMonth() {
         PeriodProvider provider = Period.months(1);
-        LocalDate t = LocalDate.date(2008, 1, 31).plus(provider);
-        assertEquals(t, LocalDate.date(2008, 2, 29));
+        LocalDate t = LocalDate.of(2008, 1, 31).plus(provider);
+        assertEquals(t, LocalDate.of(2008, 2, 29));
     }
 
     public void test_plus_PeriodProvider_previousValidResolver_oneMonthOneDay() {
         PeriodProvider provider = Period.yearsMonthsDays(0, 1, 1);
-        LocalDate t = LocalDate.date(2008, 1, 31).plus(provider);
-        assertEquals(t, LocalDate.date(2008, 3, 1));
+        LocalDate t = LocalDate.of(2008, 1, 31).plus(provider);
+        assertEquals(t, LocalDate.of(2008, 3, 1));
     }
 
 //    public void test_plus_PeriodProvider_previousValidResolver_oneMonthMinusOneDay() {
@@ -689,13 +689,13 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooLarge() {
         PeriodProvider provider = Period.years(1);
-        LocalDate.date(Year.MAX_YEAR, 1, 1).plus(provider);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).plus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plus_PeriodProvider_invalidTooSmall() {
         PeriodProvider provider = Period.years(-1);
-        LocalDate.date(Year.MIN_YEAR, 1, 1).plus(provider);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plus(provider);
     }
 
     //-----------------------------------------------------------------------
@@ -703,7 +703,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_plusYears_int_normal() {
         LocalDate t = TEST_2007_07_15.plusYears(1);
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_plusYears_int_noChange() {
@@ -713,19 +713,19 @@ public class TestLocalDate {
 
     public void test_plusYears_int_negative() {
         LocalDate t = TEST_2007_07_15.plusYears(-1);
-        assertEquals(t, LocalDate.date(2006, 7, 15));
+        assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
     public void test_plusYears_int_adjustDay() {
-        LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1);
-        LocalDate expected = LocalDate.date(2009, 2, 28);
+        LocalDate t = LocalDate.of(2008, 2, 29).plusYears(1);
+        LocalDate expected = LocalDate.of(2009, 2, 28);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooLarge() {
         try {
-            LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1);
+            LocalDate.of(Year.MAX_YEAR, 1, 1).plusYears(1);
             fail();
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
@@ -736,7 +736,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooSmall_validInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1);
+            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1);
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -746,7 +746,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_invalidTooSmall_invalidInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-10);
+            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10);
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -756,7 +756,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_plusYears_int_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.plusYears(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_plusYears_int_DateResolver_noChange() {
@@ -766,12 +766,12 @@ public class TestLocalDate {
 
     public void test_plusYears_int_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.plusYears(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2006, 7, 15));
+        assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
     public void test_plusYears_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.date(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2009, 3, 1);
+        LocalDate t = LocalDate.of(2008, 2, 29).plusYears(1, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2009, 3, 1);
         assertEquals(t, expected);
     }
 
@@ -783,7 +783,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooLarge() {
         try {
-            LocalDate.date(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
+            LocalDate.of(Year.MAX_YEAR, 1, 1).plusYears(1, DateResolvers.nextValid());
             fail();
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
@@ -794,7 +794,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooSmall_validInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
+            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-1, DateResolvers.nextValid());
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -804,7 +804,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusYears_int_DateResolver_invalidTooSmall_invalidInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).plusYears(-10, DateResolvers.nextValid());
+            LocalDate.of(Year.MIN_YEAR, 1, 1).plusYears(-10, DateResolvers.nextValid());
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -816,7 +816,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_plusMonths_int_normal() {
         LocalDate t = TEST_2007_07_15.plusMonths(1);
-        assertEquals(t, LocalDate.date(2007, 8, 15));
+        assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
     public void test_plusMonths_int_noChange() {
@@ -826,49 +826,49 @@ public class TestLocalDate {
 
     public void test_plusMonths_int_overYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(25);
-        assertEquals(t, LocalDate.date(2009, 8, 15));
+        assertEquals(t, LocalDate.of(2009, 8, 15));
     }
 
     public void test_plusMonths_int_negative() {
         LocalDate t = TEST_2007_07_15.plusMonths(-1);
-        assertEquals(t, LocalDate.date(2007, 6, 15));
+        assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
     public void test_plusMonths_int_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusMonths(-7);
-        assertEquals(t, LocalDate.date(2006, 12, 15));
+        assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
     public void test_plusMonths_int_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(-31);
-        assertEquals(t, LocalDate.date(2004, 12, 15));
+        assertEquals(t, LocalDate.of(2004, 12, 15));
     }
 
     public void test_plusMonths_int_adjustDayFromLeapYear() {
-        LocalDate t = LocalDate.date(2008, 2, 29).plusMonths(12);
-        LocalDate expected = LocalDate.date(2009, 2, 28);
+        LocalDate t = LocalDate.of(2008, 2, 29).plusMonths(12);
+        LocalDate expected = LocalDate.of(2009, 2, 28);
         assertEquals(t, expected);
     }
 
     public void test_plusMonths_int_adjustDayFromMonthLength() {
-        LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1);
-        LocalDate expected = LocalDate.date(2007, 4, 30);
+        LocalDate t = LocalDate.of(2007, 3, 31).plusMonths(1);
+        LocalDate expected = LocalDate.of(2007, 4, 30);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 1).plusMonths(1);
+        LocalDate.of(Year.MAX_YEAR, 12, 1).plusMonths(1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).plusMonths(-1);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1);
     }
 
     public void test_plusMonths_int_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.plusMonths(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 8, 15));
+        assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
     public void test_plusMonths_int_DateResolver_noChange() {
@@ -878,33 +878,33 @@ public class TestLocalDate {
 
     public void test_plusMonths_int_DateResolver_overYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(25, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2009, 8, 15));
+        assertEquals(t, LocalDate.of(2009, 8, 15));
     }
 
     public void test_plusMonths_int_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.plusMonths(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 6, 15));
+        assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
     public void test_plusMonths_int_DateResolver_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusMonths(-7, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2006, 12, 15));
+        assertEquals(t, LocalDate.of(2006, 12, 15));
     }
 
     public void test_plusMonths_int_DateResolver_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.plusMonths(-31, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2004, 12, 15));
+        assertEquals(t, LocalDate.of(2004, 12, 15));
     }
 
     public void test_plusMonths_int_DateResolver_adjustDayFromLeapYear() {
-        LocalDate t = LocalDate.date(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2009, 3, 1);
+        LocalDate t = LocalDate.of(2008, 2, 29).plusMonths(12, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2009, 3, 1);
         assertEquals(t, expected);
     }
 
     public void test_plusMonths_int_DateResolver_adjustDayFromMonthLength() {
-        LocalDate t = LocalDate.date(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2007, 5, 1);
+        LocalDate t = LocalDate.of(2007, 3, 31).plusMonths(1, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 5, 1);
         assertEquals(t, expected);
     }
 
@@ -915,12 +915,12 @@ public class TestLocalDate {
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_DateResolver_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
+        LocalDate.of(Year.MAX_YEAR, 12, 1).plusMonths(1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusMonths_int_DateResolver_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusMonths(-1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -929,32 +929,32 @@ public class TestLocalDate {
     @DataProvider(name="samplePlusWeeksSymmetry")
     Object[][] provider_samplePlusWeeksSymmetry() {
         return new Object[][] {
-            {LocalDate.date(-1, 1, 1)},
-            {LocalDate.date(-1, 2, 28)},
-            {LocalDate.date(-1, 3, 1)},
-            {LocalDate.date(-1, 12, 31)},
-            {LocalDate.date(0, 1, 1)},
-            {LocalDate.date(0, 2, 28)},
-            {LocalDate.date(0, 2, 29)},
-            {LocalDate.date(0, 3, 1)},
-            {LocalDate.date(0, 12, 31)},
-            {LocalDate.date(2007, 1, 1)},
-            {LocalDate.date(2007, 2, 28)},
-            {LocalDate.date(2007, 3, 1)},
-            {LocalDate.date(2007, 12, 31)},
-            {LocalDate.date(2008, 1, 1)},
-            {LocalDate.date(2008, 2, 28)},
-            {LocalDate.date(2008, 2, 29)},
-            {LocalDate.date(2008, 3, 1)},
-            {LocalDate.date(2008, 12, 31)},
-            {LocalDate.date(2099, 1, 1)},
-            {LocalDate.date(2099, 2, 28)},
-            {LocalDate.date(2099, 3, 1)},
-            {LocalDate.date(2099, 12, 31)},
-            {LocalDate.date(2100, 1, 1)},
-            {LocalDate.date(2100, 2, 28)},
-            {LocalDate.date(2100, 3, 1)},
-            {LocalDate.date(2100, 12, 31)},
+            {LocalDate.of(-1, 1, 1)},
+            {LocalDate.of(-1, 2, 28)},
+            {LocalDate.of(-1, 3, 1)},
+            {LocalDate.of(-1, 12, 31)},
+            {LocalDate.of(0, 1, 1)},
+            {LocalDate.of(0, 2, 28)},
+            {LocalDate.of(0, 2, 29)},
+            {LocalDate.of(0, 3, 1)},
+            {LocalDate.of(0, 12, 31)},
+            {LocalDate.of(2007, 1, 1)},
+            {LocalDate.of(2007, 2, 28)},
+            {LocalDate.of(2007, 3, 1)},
+            {LocalDate.of(2007, 12, 31)},
+            {LocalDate.of(2008, 1, 1)},
+            {LocalDate.of(2008, 2, 28)},
+            {LocalDate.of(2008, 2, 29)},
+            {LocalDate.of(2008, 3, 1)},
+            {LocalDate.of(2008, 12, 31)},
+            {LocalDate.of(2099, 1, 1)},
+            {LocalDate.of(2099, 2, 28)},
+            {LocalDate.of(2099, 3, 1)},
+            {LocalDate.of(2099, 12, 31)},
+            {LocalDate.of(2100, 1, 1)},
+            {LocalDate.of(2100, 2, 28)},
+            {LocalDate.of(2100, 3, 1)},
+            {LocalDate.of(2100, 12, 31)},
         };
     }
     
@@ -971,7 +971,7 @@ public class TestLocalDate {
 
     public void test_plusWeeks_normal() {
         LocalDate t = TEST_2007_07_15.plusWeeks(1);
-        assertEquals(t, LocalDate.date(2007, 7, 22));
+        assertEquals(t, LocalDate.of(2007, 7, 22));
     }
 
     public void test_plusWeeks_noChange() {
@@ -981,54 +981,54 @@ public class TestLocalDate {
 
     public void test_plusWeeks_overMonths() {
         LocalDate t = TEST_2007_07_15.plusWeeks(9);
-        assertEquals(t, LocalDate.date(2007, 9, 16));
+        assertEquals(t, LocalDate.of(2007, 9, 16));
     }
 
     public void test_plusWeeks_overYears() {
-        LocalDate t = LocalDate.date(2006, 7, 16).plusWeeks(52);
+        LocalDate t = LocalDate.of(2006, 7, 16).plusWeeks(52);
         assertEquals(t, TEST_2007_07_15);
     }
 
     public void test_plusWeeks_overLeapYears() {
         LocalDate t = TEST_2007_07_15.plusYears(-1).plusWeeks(104);
-        assertEquals(t, LocalDate.date(2008, 7, 12));
+        assertEquals(t, LocalDate.of(2008, 7, 12));
     }
 
     public void test_plusWeeks_negative() {
         LocalDate t = TEST_2007_07_15.plusWeeks(-1);
-        assertEquals(t, LocalDate.date(2007, 7, 8));
+        assertEquals(t, LocalDate.of(2007, 7, 8));
     }
 
     public void test_plusWeeks_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusWeeks(-28);
-        assertEquals(t, LocalDate.date(2006, 12, 31));
+        assertEquals(t, LocalDate.of(2006, 12, 31));
     }
 
     public void test_plusWeeks_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.plusWeeks(-104);
-        assertEquals(t, LocalDate.date(2005, 7, 17));
+        assertEquals(t, LocalDate.of(2005, 7, 17));
     }
 
     public void test_plusWeeks_maximum() {
-        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 24).plusWeeks(1);
-        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 24).plusWeeks(1);
+        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
         assertEquals(t, expected);
     }
 
     public void test_plusWeeks_minimum() {
-        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
-        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 8).plusWeeks(-1);
+        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusWeeks_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 25).plusWeeks(1);
+        LocalDate.of(Year.MAX_YEAR, 12, 25).plusWeeks(1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusWeeks_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
+        LocalDate.of(Year.MIN_YEAR, 1, 7).plusWeeks(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -1037,32 +1037,32 @@ public class TestLocalDate {
     @DataProvider(name="samplePlusDaysSymmetry")
     Object[][] provider_samplePlusDaysSymmetry() {
         return new Object[][] {
-            {LocalDate.date(-1, 1, 1)},
-            {LocalDate.date(-1, 2, 28)},
-            {LocalDate.date(-1, 3, 1)},
-            {LocalDate.date(-1, 12, 31)},
-            {LocalDate.date(0, 1, 1)},
-            {LocalDate.date(0, 2, 28)},
-            {LocalDate.date(0, 2, 29)},
-            {LocalDate.date(0, 3, 1)},
-            {LocalDate.date(0, 12, 31)},
-            {LocalDate.date(2007, 1, 1)},
-            {LocalDate.date(2007, 2, 28)},
-            {LocalDate.date(2007, 3, 1)},
-            {LocalDate.date(2007, 12, 31)},
-            {LocalDate.date(2008, 1, 1)},
-            {LocalDate.date(2008, 2, 28)},
-            {LocalDate.date(2008, 2, 29)},
-            {LocalDate.date(2008, 3, 1)},
-            {LocalDate.date(2008, 12, 31)},
-            {LocalDate.date(2099, 1, 1)},
-            {LocalDate.date(2099, 2, 28)},
-            {LocalDate.date(2099, 3, 1)},
-            {LocalDate.date(2099, 12, 31)},
-            {LocalDate.date(2100, 1, 1)},
-            {LocalDate.date(2100, 2, 28)},
-            {LocalDate.date(2100, 3, 1)},
-            {LocalDate.date(2100, 12, 31)},
+            {LocalDate.of(-1, 1, 1)},
+            {LocalDate.of(-1, 2, 28)},
+            {LocalDate.of(-1, 3, 1)},
+            {LocalDate.of(-1, 12, 31)},
+            {LocalDate.of(0, 1, 1)},
+            {LocalDate.of(0, 2, 28)},
+            {LocalDate.of(0, 2, 29)},
+            {LocalDate.of(0, 3, 1)},
+            {LocalDate.of(0, 12, 31)},
+            {LocalDate.of(2007, 1, 1)},
+            {LocalDate.of(2007, 2, 28)},
+            {LocalDate.of(2007, 3, 1)},
+            {LocalDate.of(2007, 12, 31)},
+            {LocalDate.of(2008, 1, 1)},
+            {LocalDate.of(2008, 2, 28)},
+            {LocalDate.of(2008, 2, 29)},
+            {LocalDate.of(2008, 3, 1)},
+            {LocalDate.of(2008, 12, 31)},
+            {LocalDate.of(2099, 1, 1)},
+            {LocalDate.of(2099, 2, 28)},
+            {LocalDate.of(2099, 3, 1)},
+            {LocalDate.of(2099, 12, 31)},
+            {LocalDate.of(2100, 1, 1)},
+            {LocalDate.of(2100, 2, 28)},
+            {LocalDate.of(2100, 3, 1)},
+            {LocalDate.of(2100, 12, 31)},
         };
     }
     
@@ -1079,7 +1079,7 @@ public class TestLocalDate {
 
     public void test_plusDays_normal() {
         LocalDate t = TEST_2007_07_15.plusDays(1);
-        assertEquals(t, LocalDate.date(2007, 7, 16));
+        assertEquals(t, LocalDate.of(2007, 7, 16));
     }
 
     public void test_plusDays_noChange() {
@@ -1089,79 +1089,79 @@ public class TestLocalDate {
 
     public void test_plusDays_overMonths() {
         LocalDate t = TEST_2007_07_15.plusDays(62);
-        assertEquals(t, LocalDate.date(2007, 9, 15));
+        assertEquals(t, LocalDate.of(2007, 9, 15));
     }
 
     public void test_plusDays_overYears() {
-        LocalDate t = LocalDate.date(2006, 7, 14).plusDays(366);
+        LocalDate t = LocalDate.of(2006, 7, 14).plusDays(366);
         assertEquals(t, TEST_2007_07_15);
     }
 
     public void test_plusDays_overLeapYears() {
         LocalDate t = TEST_2007_07_15.plusYears(-1).plusDays(365 + 366);
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_plusDays_negative() {
         LocalDate t = TEST_2007_07_15.plusDays(-1);
-        assertEquals(t, LocalDate.date(2007, 7, 14));
+        assertEquals(t, LocalDate.of(2007, 7, 14));
     }
 
     public void test_plusDays_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.plusDays(-196);
-        assertEquals(t, LocalDate.date(2006, 12, 31));
+        assertEquals(t, LocalDate.of(2006, 12, 31));
     }
 
     public void test_plusDays_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.plusDays(-730);
-        assertEquals(t, LocalDate.date(2005, 7, 15));
+        assertEquals(t, LocalDate.of(2005, 7, 15));
     }
 
     public void test_plusDays_maximum() {
-        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 30).plusDays(1);
-        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 30).plusDays(1);
+        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
         assertEquals(t, expected);
     }
 
     public void test_plusDays_minimum() {
-        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 2).plusDays(-1);
-        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 2).plusDays(-1);
+        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusDays_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 31).plusDays(1);
+        LocalDate.of(Year.MAX_YEAR, 12, 31).plusDays(1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_plusDays_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(-1);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusDays(-1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_overflowTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
+        LocalDate.of(Year.MAX_YEAR, 12, 31).plusDays(Long.MAX_VALUE);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_plusDays_overflowTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).plusDays(Long.MIN_VALUE);
     }
 
     //-----------------------------------------------------------------------
     // minus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_minus_PeriodProvider() {
-        PeriodProvider provider = Period.period(1, 2, 3, 4, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         LocalDate t = TEST_2007_07_15.minus(provider);
-        assertEquals(t, LocalDate.date(2006, 5, 12));
+        assertEquals(t, LocalDate.of(2006, 5, 12));
     }
 
     public void test_minus_PeriodProvider_timeIgnored() {
-        PeriodProvider provider = Period.period(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
+        PeriodProvider provider = Period.of(1, 2, 3, Integer.MAX_VALUE, 5, 6, 7);
         LocalDate t = TEST_2007_07_15.minus(provider);
-        assertEquals(t, LocalDate.date(2006, 5, 12));
+        assertEquals(t, LocalDate.of(2006, 5, 12));
     }
 
     public void test_minus_PeriodProvider_zero() {
@@ -1171,8 +1171,8 @@ public class TestLocalDate {
 
     public void test_minus_PeriodProvider_previousValidResolver_oneMonth() {
         PeriodProvider provider = Period.months(1);
-        LocalDate t = LocalDate.date(2008, 3, 31).minus(provider);
-        assertEquals(t, LocalDate.date(2008, 2, 29));
+        LocalDate t = LocalDate.of(2008, 3, 31).minus(provider);
+        assertEquals(t, LocalDate.of(2008, 2, 29));
     }
 
 //    public void test_minus_PeriodProvider_previousValidResolver_oneMonthOneDay() {
@@ -1194,13 +1194,13 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooLarge() {
         PeriodProvider provider = Period.years(-1);
-        LocalDate.date(Year.MAX_YEAR, 1, 1).minus(provider);
+        LocalDate.of(Year.MAX_YEAR, 1, 1).minus(provider);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minus_PeriodProvider_invalidTooSmall() {
         PeriodProvider provider = Period.years(1);
-        LocalDate.date(Year.MIN_YEAR, 1, 1).minus(provider);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minus(provider);
     }
 
     //-----------------------------------------------------------------------
@@ -1208,7 +1208,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_minusYears_int_normal() {
         LocalDate t = TEST_2007_07_15.minusYears(1);
-        assertEquals(t, LocalDate.date(2006, 7, 15));
+        assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
     public void test_minusYears_int_noChange() {
@@ -1218,19 +1218,19 @@ public class TestLocalDate {
 
     public void test_minusYears_int_negative() {
         LocalDate t = TEST_2007_07_15.minusYears(-1);
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_minusYears_int_adjustDay() {
-        LocalDate t = LocalDate.date(2008, 2, 29).minusYears(1);
-        LocalDate expected = LocalDate.date(2007, 2, 28);
+        LocalDate t = LocalDate.of(2008, 2, 29).minusYears(1);
+        LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooLarge() {
         try {
-            LocalDate.date(Year.MAX_YEAR, 1, 1).minusYears(-1);
+            LocalDate.of(Year.MAX_YEAR, 1, 1).minusYears(-1);
             fail();
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
@@ -1241,7 +1241,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooSmall_validInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).minusYears(1);
+            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1);
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -1251,7 +1251,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_invalidTooSmall_invalidInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).minusYears(10);
+            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(10);
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -1261,7 +1261,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_minusYears_int_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.minusYears(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2006, 7, 15));
+        assertEquals(t, LocalDate.of(2006, 7, 15));
     }
 
     public void test_minusYears_int_DateResolver_noChange() {
@@ -1271,12 +1271,12 @@ public class TestLocalDate {
 
     public void test_minusYears_int_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.minusYears(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2008, 7, 15));
+        assertEquals(t, LocalDate.of(2008, 7, 15));
     }
 
     public void test_minusYears_int_DateResolver_adjustDay() {
-        LocalDate t = LocalDate.date(2008, 2, 29).minusYears(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2007, 3, 1);
+        LocalDate t = LocalDate.of(2008, 2, 29).minusYears(1, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
@@ -1288,7 +1288,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_DateResolver_invalidTooLarge() {
         try {
-            LocalDate.date(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
+            LocalDate.of(Year.MAX_YEAR, 1, 1).minusYears(-1, DateResolvers.nextValid());
             fail();
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
@@ -1299,7 +1299,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_DateResolver_invalidTooSmall_validInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
+            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(1, DateResolvers.nextValid());
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -1309,7 +1309,7 @@ public class TestLocalDate {
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusYears_int_DateResolver_invalidTooSmall_invalidInt() {
         try {
-            LocalDate.date(Year.MIN_YEAR, 1, 1).minusYears(10, DateResolvers.nextValid());
+            LocalDate.of(Year.MIN_YEAR, 1, 1).minusYears(10, DateResolvers.nextValid());
         } catch (CalendricalException ex) {
             assertTrue(ex.getMessage().contains("exceeds the supported year range"));
             throw ex;
@@ -1321,7 +1321,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_minusMonths_int_normal() {
         LocalDate t = TEST_2007_07_15.minusMonths(1);
-        assertEquals(t, LocalDate.date(2007, 6, 15));
+        assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
     public void test_minusMonths_int_noChange() {
@@ -1331,49 +1331,49 @@ public class TestLocalDate {
 
     public void test_minusMonths_int_overYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(25);
-        assertEquals(t, LocalDate.date(2005, 6, 15));
+        assertEquals(t, LocalDate.of(2005, 6, 15));
     }
 
     public void test_minusMonths_int_negative() {
         LocalDate t = TEST_2007_07_15.minusMonths(-1);
-        assertEquals(t, LocalDate.date(2007, 8, 15));
+        assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
     public void test_minusMonths_int_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.minusMonths(-7);
-        assertEquals(t, LocalDate.date(2008, 2, 15));
+        assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     public void test_minusMonths_int_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(-31);
-        assertEquals(t, LocalDate.date(2010, 2, 15));
+        assertEquals(t, LocalDate.of(2010, 2, 15));
     }
 
     public void test_minusMonths_int_adjustDayFromLeapYear() {
-        LocalDate t = LocalDate.date(2008, 2, 29).minusMonths(12);
-        LocalDate expected = LocalDate.date(2007, 2, 28);
+        LocalDate t = LocalDate.of(2008, 2, 29).minusMonths(12);
+        LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
     public void test_minusMonths_int_adjustDayFromMonthLength() {
-        LocalDate t = LocalDate.date(2007, 3, 31).minusMonths(1);
-        LocalDate expected = LocalDate.date(2007, 2, 28);
+        LocalDate t = LocalDate.of(2007, 3, 31).minusMonths(1);
+        LocalDate expected = LocalDate.of(2007, 2, 28);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 1).minusMonths(-1);
+        LocalDate.of(Year.MAX_YEAR, 12, 1).minusMonths(-1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).minusMonths(1);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1);
     }
 
     public void test_minusMonths_int_DateResolver_normal() {
         LocalDate t = TEST_2007_07_15.minusMonths(1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 6, 15));
+        assertEquals(t, LocalDate.of(2007, 6, 15));
     }
 
     public void test_minusMonths_int_DateResolver_noChange() {
@@ -1383,33 +1383,33 @@ public class TestLocalDate {
 
     public void test_minusMonths_int_DateResolver_overYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(25, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2005, 6, 15));
+        assertEquals(t, LocalDate.of(2005, 6, 15));
     }
 
     public void test_minusMonths_int_DateResolver_negative() {
         LocalDate t = TEST_2007_07_15.minusMonths(-1, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2007, 8, 15));
+        assertEquals(t, LocalDate.of(2007, 8, 15));
     }
 
     public void test_minusMonths_int_DateResolver_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.minusMonths(-7, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2008, 2, 15));
+        assertEquals(t, LocalDate.of(2008, 2, 15));
     }
 
     public void test_minusMonths_int_DateResolver_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.minusMonths(-31, DateResolvers.nextValid());
-        assertEquals(t, LocalDate.date(2010, 2, 15));
+        assertEquals(t, LocalDate.of(2010, 2, 15));
     }
 
     public void test_minusMonths_int_DateResolver_adjustDayFromLeapYear() {
-        LocalDate t = LocalDate.date(2008, 2, 29).minusMonths(12, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2007, 3, 1);
+        LocalDate t = LocalDate.of(2008, 2, 29).minusMonths(12, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
     public void test_minusMonths_int_DateResolver_adjustDayFromMonthLength() {
-        LocalDate t = LocalDate.date(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
-        LocalDate expected = LocalDate.date(2007, 3, 1);
+        LocalDate t = LocalDate.of(2007, 3, 31).minusMonths(1, DateResolvers.nextValid());
+        LocalDate expected = LocalDate.of(2007, 3, 1);
         assertEquals(t, expected);
     }
 
@@ -1420,12 +1420,12 @@ public class TestLocalDate {
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_DateResolver_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
+        LocalDate.of(Year.MAX_YEAR, 12, 1).minusMonths(-1, DateResolvers.nextValid());
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusMonths_int_DateResolver_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusMonths(1, DateResolvers.nextValid());
     }
 
     //-----------------------------------------------------------------------
@@ -1434,32 +1434,32 @@ public class TestLocalDate {
     @DataProvider(name="sampleMinusWeeksSymmetry")
     Object[][] provider_sampleMinusWeeksSymmetry() {
         return new Object[][] {
-            {LocalDate.date(-1, 1, 1)},
-            {LocalDate.date(-1, 2, 28)},
-            {LocalDate.date(-1, 3, 1)},
-            {LocalDate.date(-1, 12, 31)},
-            {LocalDate.date(0, 1, 1)},
-            {LocalDate.date(0, 2, 28)},
-            {LocalDate.date(0, 2, 29)},
-            {LocalDate.date(0, 3, 1)},
-            {LocalDate.date(0, 12, 31)},
-            {LocalDate.date(2007, 1, 1)},
-            {LocalDate.date(2007, 2, 28)},
-            {LocalDate.date(2007, 3, 1)},
-            {LocalDate.date(2007, 12, 31)},
-            {LocalDate.date(2008, 1, 1)},
-            {LocalDate.date(2008, 2, 28)},
-            {LocalDate.date(2008, 2, 29)},
-            {LocalDate.date(2008, 3, 1)},
-            {LocalDate.date(2008, 12, 31)},
-            {LocalDate.date(2099, 1, 1)},
-            {LocalDate.date(2099, 2, 28)},
-            {LocalDate.date(2099, 3, 1)},
-            {LocalDate.date(2099, 12, 31)},
-            {LocalDate.date(2100, 1, 1)},
-            {LocalDate.date(2100, 2, 28)},
-            {LocalDate.date(2100, 3, 1)},
-            {LocalDate.date(2100, 12, 31)},
+            {LocalDate.of(-1, 1, 1)},
+            {LocalDate.of(-1, 2, 28)},
+            {LocalDate.of(-1, 3, 1)},
+            {LocalDate.of(-1, 12, 31)},
+            {LocalDate.of(0, 1, 1)},
+            {LocalDate.of(0, 2, 28)},
+            {LocalDate.of(0, 2, 29)},
+            {LocalDate.of(0, 3, 1)},
+            {LocalDate.of(0, 12, 31)},
+            {LocalDate.of(2007, 1, 1)},
+            {LocalDate.of(2007, 2, 28)},
+            {LocalDate.of(2007, 3, 1)},
+            {LocalDate.of(2007, 12, 31)},
+            {LocalDate.of(2008, 1, 1)},
+            {LocalDate.of(2008, 2, 28)},
+            {LocalDate.of(2008, 2, 29)},
+            {LocalDate.of(2008, 3, 1)},
+            {LocalDate.of(2008, 12, 31)},
+            {LocalDate.of(2099, 1, 1)},
+            {LocalDate.of(2099, 2, 28)},
+            {LocalDate.of(2099, 3, 1)},
+            {LocalDate.of(2099, 12, 31)},
+            {LocalDate.of(2100, 1, 1)},
+            {LocalDate.of(2100, 2, 28)},
+            {LocalDate.of(2100, 3, 1)},
+            {LocalDate.of(2100, 12, 31)},
         };
     }
     
@@ -1476,7 +1476,7 @@ public class TestLocalDate {
 
     public void test_minusWeeks_normal() {
         LocalDate t = TEST_2007_07_15.minusWeeks(1);
-        assertEquals(t, LocalDate.date(2007, 7, 8));
+        assertEquals(t, LocalDate.of(2007, 7, 8));
     }
 
     public void test_minusWeeks_noChange() {
@@ -1486,54 +1486,54 @@ public class TestLocalDate {
 
     public void test_minusWeeks_overMonths() {
         LocalDate t = TEST_2007_07_15.minusWeeks(9);
-        assertEquals(t, LocalDate.date(2007, 5, 13));
+        assertEquals(t, LocalDate.of(2007, 5, 13));
     }
 
     public void test_minusWeeks_overYears() {
-        LocalDate t = LocalDate.date(2008, 7, 13).minusWeeks(52);
+        LocalDate t = LocalDate.of(2008, 7, 13).minusWeeks(52);
         assertEquals(t, TEST_2007_07_15);
     }
 
     public void test_minusWeeks_overLeapYears() {
         LocalDate t = TEST_2007_07_15.minusYears(-1).minusWeeks(104);
-        assertEquals(t, LocalDate.date(2006, 7, 18));
+        assertEquals(t, LocalDate.of(2006, 7, 18));
     }
 
     public void test_minusWeeks_negative() {
         LocalDate t = TEST_2007_07_15.minusWeeks(-1);
-        assertEquals(t, LocalDate.date(2007, 7, 22));
+        assertEquals(t, LocalDate.of(2007, 7, 22));
     }
 
     public void test_minusWeeks_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.minusWeeks(-28);
-        assertEquals(t, LocalDate.date(2008, 1, 27));
+        assertEquals(t, LocalDate.of(2008, 1, 27));
     }
 
     public void test_minusWeeks_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.minusWeeks(-104);
-        assertEquals(t, LocalDate.date(2009, 7, 12));
+        assertEquals(t, LocalDate.of(2009, 7, 12));
     }
 
     public void test_minusWeeks_maximum() {
-        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
-        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 24).minusWeeks(-1);
+        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
         assertEquals(t, expected);
     }
 
     public void test_minusWeeks_minimum() {
-        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 8).minusWeeks(1);
-        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 8).minusWeeks(1);
+        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusWeeks_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
+        LocalDate.of(Year.MAX_YEAR, 12, 25).minusWeeks(-1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusWeeks_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 7).minusWeeks(1);
+        LocalDate.of(Year.MIN_YEAR, 1, 7).minusWeeks(1);
     }
 
     //-----------------------------------------------------------------------
@@ -1542,32 +1542,32 @@ public class TestLocalDate {
     @DataProvider(name="sampleMinusDaysSymmetry")
     Object[][] provider_sampleMinusDaysSymmetry() {
         return new Object[][] {
-            {LocalDate.date(-1, 1, 1)},
-            {LocalDate.date(-1, 2, 28)},
-            {LocalDate.date(-1, 3, 1)},
-            {LocalDate.date(-1, 12, 31)},
-            {LocalDate.date(0, 1, 1)},
-            {LocalDate.date(0, 2, 28)},
-            {LocalDate.date(0, 2, 29)},
-            {LocalDate.date(0, 3, 1)},
-            {LocalDate.date(0, 12, 31)},
-            {LocalDate.date(2007, 1, 1)},
-            {LocalDate.date(2007, 2, 28)},
-            {LocalDate.date(2007, 3, 1)},
-            {LocalDate.date(2007, 12, 31)},
-            {LocalDate.date(2008, 1, 1)},
-            {LocalDate.date(2008, 2, 28)},
-            {LocalDate.date(2008, 2, 29)},
-            {LocalDate.date(2008, 3, 1)},
-            {LocalDate.date(2008, 12, 31)},
-            {LocalDate.date(2099, 1, 1)},
-            {LocalDate.date(2099, 2, 28)},
-            {LocalDate.date(2099, 3, 1)},
-            {LocalDate.date(2099, 12, 31)},
-            {LocalDate.date(2100, 1, 1)},
-            {LocalDate.date(2100, 2, 28)},
-            {LocalDate.date(2100, 3, 1)},
-            {LocalDate.date(2100, 12, 31)},
+            {LocalDate.of(-1, 1, 1)},
+            {LocalDate.of(-1, 2, 28)},
+            {LocalDate.of(-1, 3, 1)},
+            {LocalDate.of(-1, 12, 31)},
+            {LocalDate.of(0, 1, 1)},
+            {LocalDate.of(0, 2, 28)},
+            {LocalDate.of(0, 2, 29)},
+            {LocalDate.of(0, 3, 1)},
+            {LocalDate.of(0, 12, 31)},
+            {LocalDate.of(2007, 1, 1)},
+            {LocalDate.of(2007, 2, 28)},
+            {LocalDate.of(2007, 3, 1)},
+            {LocalDate.of(2007, 12, 31)},
+            {LocalDate.of(2008, 1, 1)},
+            {LocalDate.of(2008, 2, 28)},
+            {LocalDate.of(2008, 2, 29)},
+            {LocalDate.of(2008, 3, 1)},
+            {LocalDate.of(2008, 12, 31)},
+            {LocalDate.of(2099, 1, 1)},
+            {LocalDate.of(2099, 2, 28)},
+            {LocalDate.of(2099, 3, 1)},
+            {LocalDate.of(2099, 12, 31)},
+            {LocalDate.of(2100, 1, 1)},
+            {LocalDate.of(2100, 2, 28)},
+            {LocalDate.of(2100, 3, 1)},
+            {LocalDate.of(2100, 12, 31)},
         };
     }
     
@@ -1584,7 +1584,7 @@ public class TestLocalDate {
 
     public void test_minusDays_normal() {
         LocalDate t = TEST_2007_07_15.minusDays(1);
-        assertEquals(t, LocalDate.date(2007, 7, 14));
+        assertEquals(t, LocalDate.of(2007, 7, 14));
     }
 
     public void test_minusDays_noChange() {
@@ -1594,11 +1594,11 @@ public class TestLocalDate {
 
     public void test_minusDays_overMonths() {
         LocalDate t = TEST_2007_07_15.minusDays(62);
-        assertEquals(t, LocalDate.date(2007, 5, 14));
+        assertEquals(t, LocalDate.of(2007, 5, 14));
     }
 
     public void test_minusDays_overYears() {
-        LocalDate t = LocalDate.date(2008, 7, 16).minusDays(367);
+        LocalDate t = LocalDate.of(2008, 7, 16).minusDays(367);
         assertEquals(t, TEST_2007_07_15);
     }
 
@@ -1609,49 +1609,49 @@ public class TestLocalDate {
 
     public void test_minusDays_negative() {
         LocalDate t = TEST_2007_07_15.minusDays(-1);
-        assertEquals(t, LocalDate.date(2007, 7, 16));
+        assertEquals(t, LocalDate.of(2007, 7, 16));
     }
 
     public void test_minusDays_negativeAcrossYear() {
         LocalDate t = TEST_2007_07_15.minusDays(-169);
-        assertEquals(t, LocalDate.date(2007, 12, 31));
+        assertEquals(t, LocalDate.of(2007, 12, 31));
     }
 
     public void test_minusDays_negativeOverYears() {
         LocalDate t = TEST_2007_07_15.minusDays(-731);
-        assertEquals(t, LocalDate.date(2009, 7, 15));
+        assertEquals(t, LocalDate.of(2009, 7, 15));
     }
 
     public void test_minusDays_maximum() {
-        LocalDate t = LocalDate.date(Year.MAX_YEAR, 12, 30).minusDays(-1);
-        LocalDate expected = LocalDate.date(Year.MAX_YEAR, 12, 31);
+        LocalDate t = LocalDate.of(Year.MAX_YEAR, 12, 30).minusDays(-1);
+        LocalDate expected = LocalDate.of(Year.MAX_YEAR, 12, 31);
         assertEquals(t, expected);
     }
 
     public void test_minusDays_minimum() {
-        LocalDate t = LocalDate.date(Year.MIN_YEAR, 1, 2).minusDays(1);
-        LocalDate expected = LocalDate.date(Year.MIN_YEAR, 1, 1);
+        LocalDate t = LocalDate.of(Year.MIN_YEAR, 1, 2).minusDays(1);
+        LocalDate expected = LocalDate.of(Year.MIN_YEAR, 1, 1);
         assertEquals(t, expected);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusDays_invalidTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 31).minusDays(-1);
+        LocalDate.of(Year.MAX_YEAR, 12, 31).minusDays(-1);
     }
 
     @Test(expectedExceptions={CalendricalException.class})
     public void test_minusDays_invalidTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).minusDays(1);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusDays(1);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusDays_overflowTooLarge() {
-        LocalDate.date(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
+        LocalDate.of(Year.MAX_YEAR, 12, 31).minusDays(Long.MIN_VALUE);
     }
 
     @Test(expectedExceptions=CalendricalException.class)
     public void test_minusDays_overflowTooSmall() {
-        LocalDate.date(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
+        LocalDate.of(Year.MIN_YEAR, 1, 1).minusDays(Long.MAX_VALUE);
     }
 
     //-----------------------------------------------------------------------
@@ -1679,13 +1679,13 @@ public class TestLocalDate {
     // atTime()
     //-----------------------------------------------------------------------
     public void test_atTime() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
-        assertEquals(t.atTime(LocalTime.time(11, 30)), LocalDateTime.dateTime(2008, 6, 30, 11, 30));
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atTime(LocalTime.of(11, 30)), LocalDateTime.of(2008, 6, 30, 11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atTime_nullLocalTime() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
+        LocalDate t = LocalDate.of(2008, 6, 30);
         t.atTime((LocalTime) null);
     }
 
@@ -1693,21 +1693,21 @@ public class TestLocalDate {
     // atMidnight()
     //-----------------------------------------------------------------------
     public void test_atMidnight() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
-        assertEquals(t.atMidnight(), LocalDateTime.dateTime(2008, 6, 30, 0, 0));
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atMidnight(), LocalDateTime.of(2008, 6, 30, 0, 0));
     }
 
     //-----------------------------------------------------------------------
     // atOffset()
     //-----------------------------------------------------------------------
     public void test_atOffset() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
-        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDate.date(2008, 6, 30, OFFSET_PTWO));
+        LocalDate t = LocalDate.of(2008, 6, 30);
+        assertEquals(t.atOffset(OFFSET_PTWO), OffsetDate.of(2008, 6, 30, OFFSET_PTWO));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atOffset_nullZoneOffset() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
+        LocalDate t = LocalDate.of(2008, 6, 30);
         t.atOffset((ZoneOffset) null);
     }
 
@@ -1715,20 +1715,20 @@ public class TestLocalDate {
     // atStartOfDayInZone()
     //-----------------------------------------------------------------------
     public void test_atStartOfDayInZone() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
+        LocalDate t = LocalDate.of(2008, 6, 30);
         assertEquals(t.atStartOfDayInZone(ZONE_PARIS),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2008, 6, 30, 0, 0), ZONE_PARIS));
+                ZonedDateTime.from(LocalDateTime.of(2008, 6, 30, 0, 0), ZONE_PARIS));
     }
 
     public void test_atStartOfDayInZone_dstGap() {
-        LocalDate t = LocalDate.date(2007, 4, 1);
+        LocalDate t = LocalDate.of(2007, 4, 1);
         assertEquals(t.atStartOfDayInZone(ZONE_GAZA),
-                ZonedDateTime.dateTime(LocalDateTime.dateTime(2007, 4, 1, 1, 0), ZONE_GAZA));
+                ZonedDateTime.from(LocalDateTime.of(2007, 4, 1, 1, 0), ZONE_GAZA));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
     public void test_atStartOfDayInZone_nullTimeZone() {
-        LocalDate t = LocalDate.date(2008, 6, 30);
+        LocalDate t = LocalDate.of(2008, 6, 30);
         t.atStartOfDayInZone((TimeZone) null);
     }
 
@@ -1737,7 +1737,7 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_toLocalDate(int year, int month, int day) {
-        LocalDate t = LocalDate.date(year, month, day);
+        LocalDate t = LocalDate.of(year, month, day);
         assertSame(t.toLocalDate(), t);
     }
 
@@ -1746,8 +1746,8 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_toYear(int year, int month, int day) {
-        LocalDate t = LocalDate.date(year, month, day);
-        assertEquals(t.toYear(), Year.isoYear(year));
+        LocalDate t = LocalDate.of(year, month, day);
+        assertEquals(t.toYear(), Year.of(year));
     }
 
     //-----------------------------------------------------------------------
@@ -1756,33 +1756,33 @@ public class TestLocalDate {
     public void test_toEpochDays() {
         long date_0000_01_01 = -678941 - 40587;
         
-        LocalDate test = LocalDate.date(0, 1, 1);
+        LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(test.toEpochDays(), i);
             test = next(test);
         }
-        test = LocalDate.date(0, 1, 1);
+        test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
             assertEquals(test.toEpochDays(), i);
             test = previous(test);
         }
         
-        assertEquals(LocalDate.date(1858, 11, 17).toEpochDays(), -40587);
-        assertEquals(LocalDate.date(1, 1, 1).toEpochDays(), -678575 - 40587);
-        assertEquals(LocalDate.date(1995, 9, 27).toEpochDays(), 49987 - 40587);
-        assertEquals(LocalDate.date(1970, 1, 1).toEpochDays(), 0);
-        assertEquals(LocalDate.date(-1, 12, 31).toEpochDays(), -678942 - 40587);
+        assertEquals(LocalDate.of(1858, 11, 17).toEpochDays(), -40587);
+        assertEquals(LocalDate.of(1, 1, 1).toEpochDays(), -678575 - 40587);
+        assertEquals(LocalDate.of(1995, 9, 27).toEpochDays(), 49987 - 40587);
+        assertEquals(LocalDate.of(1970, 1, 1).toEpochDays(), 0);
+        assertEquals(LocalDate.of(-1, 12, 31).toEpochDays(), -678942 - 40587);
     }
 
     public void test_toEpochDays_fromMJDays_symmetry() {
         long date_0000_01_01 = -678941 - 40587;
         
-        LocalDate test = LocalDate.date(0, 1, 1);
+        LocalDate test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i < 700000; i++) {
             assertEquals(LocalDate.fromEpochDays(test.toEpochDays()), test);
             test = next(test);
         }
-        test = LocalDate.date(0, 1, 1);
+        test = LocalDate.of(0, 1, 1);
         for (long i = date_0000_01_01; i > -2000000; i--) {
             assertEquals(LocalDate.fromEpochDays(test.toEpochDays()), test);
             test = previous(test);
@@ -1793,33 +1793,33 @@ public class TestLocalDate {
     // toModifiedJulianDays()
     //-----------------------------------------------------------------------
     public void test_toModifiedJulianDays() {
-        LocalDate test = LocalDate.date(0, 1, 1);
+        LocalDate test = LocalDate.of(0, 1, 1);
         for (int i = -678941; i < 700000; i++) {
             assertEquals(test.toModifiedJulianDays(), i);
             test = next(test);
         }
         
-        test = LocalDate.date(0, 1, 1);
+        test = LocalDate.of(0, 1, 1);
         for (int i = -678941; i > -2000000; i--) {
             assertEquals(test.toModifiedJulianDays(), i);
             test = previous(test);
         }
         
-        assertEquals(LocalDate.date(1858, 11, 17).toModifiedJulianDays(), 0);
-        assertEquals(LocalDate.date(1, 1, 1).toModifiedJulianDays(), -678575);
-        assertEquals(LocalDate.date(1995, 9, 27).toModifiedJulianDays(), 49987);
-        assertEquals(LocalDate.date(1970, 1, 1).toModifiedJulianDays(), 40587);
-        assertEquals(LocalDate.date(-1, 12, 31).toModifiedJulianDays(), -678942);
+        assertEquals(LocalDate.of(1858, 11, 17).toModifiedJulianDays(), 0);
+        assertEquals(LocalDate.of(1, 1, 1).toModifiedJulianDays(), -678575);
+        assertEquals(LocalDate.of(1995, 9, 27).toModifiedJulianDays(), 49987);
+        assertEquals(LocalDate.of(1970, 1, 1).toModifiedJulianDays(), 40587);
+        assertEquals(LocalDate.of(-1, 12, 31).toModifiedJulianDays(), -678942);
     }
 
     public void test_toModifiedJulianDays_fromMJDays_symmetry() {
-        LocalDate test = LocalDate.date(0, 1, 1);
+        LocalDate test = LocalDate.of(0, 1, 1);
         for (int i = -678941; i < 700000; i++) {
             assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
             test = next(test);
         }
 
-        test = LocalDate.date(0, 1, 1);
+        test = LocalDate.of(0, 1, 1);
         for (int i = -678941; i > -2000000; i--) {
             assertEquals(LocalDate.fromModifiedJulianDays(test.toModifiedJulianDays()), test);
             test = previous(test);
@@ -1831,23 +1831,23 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     public void test_comparisons() {
         doTest_comparisons_LocalDate(
-            LocalDate.date(Year.MIN_YEAR, 1, 1),
-            LocalDate.date(Year.MIN_YEAR, 12, 31),
-            LocalDate.date(-1, 1, 1),
-            LocalDate.date(-1, 12, 31),
-            LocalDate.date(0, 1, 1),
-            LocalDate.date(0, 12, 31),
-            LocalDate.date(1, 1, 1),
-            LocalDate.date(1, 12, 31),
-            LocalDate.date(2006, 1, 1),
-            LocalDate.date(2006, 12, 31),
-            LocalDate.date(2007, 1, 1),
-            LocalDate.date(2007, 12, 31),
-            LocalDate.date(2008, 1, 1),
-            LocalDate.date(2008, 2, 29),
-            LocalDate.date(2008, 12, 31),
-            LocalDate.date(Year.MAX_YEAR, 1, 1),
-            LocalDate.date(Year.MAX_YEAR, 12, 31)
+            LocalDate.of(Year.MIN_YEAR, 1, 1),
+            LocalDate.of(Year.MIN_YEAR, 12, 31),
+            LocalDate.of(-1, 1, 1),
+            LocalDate.of(-1, 12, 31),
+            LocalDate.of(0, 1, 1),
+            LocalDate.of(0, 12, 31),
+            LocalDate.of(1, 1, 1),
+            LocalDate.of(1, 12, 31),
+            LocalDate.of(2006, 1, 1),
+            LocalDate.of(2006, 12, 31),
+            LocalDate.of(2007, 1, 1),
+            LocalDate.of(2007, 12, 31),
+            LocalDate.of(2008, 1, 1),
+            LocalDate.of(2008, 2, 29),
+            LocalDate.of(2008, 12, 31),
+            LocalDate.of(Year.MAX_YEAR, 1, 1),
+            LocalDate.of(Year.MAX_YEAR, 12, 31)
         );
     }
 
@@ -1903,26 +1903,26 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_equals_true(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
-        LocalDate b = LocalDate.date(y, m, d);
+        LocalDate a = LocalDate.of(y, m, d);
+        LocalDate b = LocalDate.of(y, m, d);
         assertEquals(a.equals(b), true);
     }
     @Test(dataProvider="sampleDates")
     public void test_equals_false_year_differs(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
-        LocalDate b = LocalDate.date(y + 1, m, d);
+        LocalDate a = LocalDate.of(y, m, d);
+        LocalDate b = LocalDate.of(y + 1, m, d);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleDates")
     public void test_equals_false_month_differs(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
-        LocalDate b = LocalDate.date(y, m + 1, d);
+        LocalDate a = LocalDate.of(y, m, d);
+        LocalDate b = LocalDate.of(y, m + 1, d);
         assertEquals(a.equals(b), false);
     }
     @Test(dataProvider="sampleDates")
     public void test_equals_false_day_differs(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
-        LocalDate b = LocalDate.date(y, m, d + 1);
+        LocalDate a = LocalDate.of(y, m, d);
+        LocalDate b = LocalDate.of(y, m, d + 1);
         assertEquals(a.equals(b), false);
     }
 
@@ -1943,9 +1943,9 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_hashCode(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate a = LocalDate.of(y, m, d);
         assertEquals(a.hashCode(), a.hashCode());
-        LocalDate b = LocalDate.date(y, m, d);
+        LocalDate b = LocalDate.of(y, m, d);
         assertEquals(a.hashCode(), b.hashCode());
     }
 
@@ -1970,7 +1970,7 @@ public class TestLocalDate {
 
     @Test(dataProvider="sampleToString")
     public void test_toString(int y, int m, int d, String expected) {
-        LocalDate t = LocalDate.date(y, m, d);
+        LocalDate t = LocalDate.of(y, m, d);
         String str = t.toString();
         assertEquals(str, expected);
     }
@@ -2004,13 +2004,13 @@ public class TestLocalDate {
     //-----------------------------------------------------------------------
     @Test(dataProvider="sampleDates")
     public void test_adjustDate(int y, int m, int d) {
-        LocalDate a = LocalDate.date(y, m, d);
+        LocalDate a = LocalDate.of(y, m, d);
         assertSame(a.adjustDate(TEST_2007_07_15), a);
         assertSame(TEST_2007_07_15.adjustDate(a), TEST_2007_07_15);
     }
 
     public void test_adjustDate_same() {
-        assertSame(LocalDate.date(2007, 7, 15).adjustDate(TEST_2007_07_15), TEST_2007_07_15);
+        assertSame(LocalDate.of(2007, 7, 15).adjustDate(TEST_2007_07_15), TEST_2007_07_15);
     }
 
     @Test(expectedExceptions=NullPointerException.class)

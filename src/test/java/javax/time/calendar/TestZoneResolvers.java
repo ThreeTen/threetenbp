@@ -49,10 +49,10 @@ import org.testng.annotations.Test;
 @Test
 public class TestZoneResolvers {
 
-    private static final TimeZone ZONE_PARIS = TimeZone.timeZone("Europe/Paris");
+    private static final TimeZone ZONE_PARIS = TimeZone.of("Europe/Paris");
 //    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
-    private static final ZoneOffset OFFSET_0100 = ZoneOffset.zoneOffset(1);
-    private static final ZoneOffset OFFSET_0200 = ZoneOffset.zoneOffset(2);
+    private static final ZoneOffset OFFSET_0100 = ZoneOffset.hours(1);
+    private static final ZoneOffset OFFSET_0200 = ZoneOffset.hours(2);
     private static final LocalDateTime DT_PARIS_OVERLAP = dateTime(2008, 10, 26, 2, 30, 0, 0);
     private static final LocalDateTime DT_PARIS_GAP = dateTime(2008, 3, 30, 2, 30, 0, 0);
     private static final LocalDateTime DT_WINTER = dateTime(2008, 1, 1, 2, 30, 0, 0);
@@ -234,14 +234,14 @@ public class TestZoneResolvers {
     }
 
     public void retainOffset_gap_oldEarlierOffset() {
-        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 1, 1, 0, 0, OFFSET_0100), ZONE_PARIS);
+        ZonedDateTime old = ZonedDateTime.of(OffsetDateTime.of(2008, 1, 1, 0, 0, OFFSET_0100), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
         assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
     }
 
     public void retainOffset_gap_oldLaterOffset() {
-        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 6, 1, 0, 0, OFFSET_0200), ZONE_PARIS);
+        ZonedDateTime old = ZonedDateTime.of(OffsetDateTime.of(2008, 6, 1, 0, 0, OFFSET_0200), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_GAP, old);
         assertEquals(resolved.toLocalDateTime(), dateTime(2008, 3, 30, 3, 0, 0, 0));
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses post transition
@@ -261,14 +261,14 @@ public class TestZoneResolvers {
     }
 
     public void retainOffset_overlap_oldEarlierOffset() {
-        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 6, 1, 0, 0, OFFSET_0200), ZONE_PARIS);
+        ZonedDateTime old = ZonedDateTime.of(OffsetDateTime.of(2008, 6, 1, 0, 0, OFFSET_0200), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
         assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0200);  // chooses same as input
     }
 
     public void retainOffset_overlap_oldLaterOffset() {
-        ZonedDateTime old = ZonedDateTime.dateTime(OffsetDateTime.dateTime(2008, 11, 1, 0, 0, OFFSET_0100), ZONE_PARIS);
+        ZonedDateTime old = ZonedDateTime.of(OffsetDateTime.of(2008, 11, 1, 0, 0, OFFSET_0100), ZONE_PARIS);
         OffsetDateTime resolved = ZoneResolvers.retainOffset().resolve(ZONE_PARIS, DT_PARIS_OVERLAP, old);
         assertEquals(resolved.toLocalDateTime(), DT_PARIS_OVERLAP);
         assertEquals(resolved.getOffset(), OFFSET_0100);  // chooses same as input
@@ -393,7 +393,7 @@ public class TestZoneResolvers {
 
     //-----------------------------------------------------------------------
     private static LocalDateTime dateTime(int year, int month, int day, int h, int m, int s, int n) {
-        return LocalDateTime.dateTime(year, month, day, h, m, s, n);
+        return LocalDateTime.of(year, month, day, h, m, s, n);
     }
 
 }

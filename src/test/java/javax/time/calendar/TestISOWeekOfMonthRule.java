@@ -44,7 +44,7 @@ import org.testng.annotations.Test;
 public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOWeekOfMonthRule() {
-        super(LocalDate.date(2009, 12, 26), 4, 4);
+        super(LocalDate.of(2009, 12, 26), 4, 4);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getID(), "ISO.WeekOfMonth");
         assertEquals(rule.getName(), "WeekOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), 1);
+        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 5);
         assertEquals(rule.getSmallestMaximumValue(), 4);
@@ -74,22 +74,22 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     // getMaximumValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_nonLeapFeb() {
-        Calendrical cal = LocalDate.date(2007, 2, 1);
+        Calendrical cal = LocalDate.of(2007, 2, 1);
         assertEquals(rule().getMaximumValue(cal), 4);
     }
 
     public void test_getMaximumValue_Calendrical_leapFeb() {
-        Calendrical cal = LocalDate.date(2008, 2, 1);
+        Calendrical cal = LocalDate.of(2008, 2, 1);
         assertEquals(rule().getMaximumValue(cal), 5);
     }
 
     public void test_getMaximumValue_Calendrical_nonLeapJune() {
-        Calendrical cal = LocalDate.date(2007, 6, 1);
+        Calendrical cal = LocalDate.of(2007, 6, 1);
         assertEquals(rule().getMaximumValue(cal), 5);
     }
 
     public void test_getMaximumValue_Calendrical_leapJune() {
-        Calendrical cal = LocalDate.date(2008, 6, 1);
+        Calendrical cal = LocalDate.of(2008, 6, 1);
         assertEquals(rule().getMaximumValue(cal), 5);
     }
 
@@ -97,7 +97,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date_nonLeapFeb() {
-        LocalDate date = LocalDate.date(2007, 2, 1);
+        LocalDate date = LocalDate.of(2007, 2, 1);
         for (int i = 0; i < 28; i++) {
             int week = (i / 7) + 1;
             assertEquals(rule().getValue(date), (Integer) week);
@@ -106,7 +106,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_date_leapFeb() {
-        LocalDate date = LocalDate.date(2008, 2, 1);
+        LocalDate date = LocalDate.of(2008, 2, 1);
         for (int i = 0; i < 29; i++) {
             int week = (i / 7) + 1;
             assertEquals(rule().getValue(date), (Integer) week);
@@ -115,7 +115,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_date_nonLeapJune() {
-        LocalDate date = LocalDate.date(2007, 6, 1);
+        LocalDate date = LocalDate.of(2007, 6, 1);
         for (int i = 0; i < 30; i++) {
             int week = (i / 7) + 1;
             assertEquals(rule().getValue(date), (Integer) week);
@@ -124,7 +124,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_date_leapJune() {
-        LocalDate date = LocalDate.date(2008, 6, 1);
+        LocalDate date = LocalDate.of(2008, 6, 1);
         for (int i = 0; i < 30; i++) {
             int week = (i / 7) + 1;
             assertEquals(rule().getValue(date), (Integer) week);
@@ -133,7 +133,7 @@ public class TestISOWeekOfMonthRule extends AbstractTestDateTimeFieldRule {
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 2, 20, 12, 30)), (Integer) 3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 2, 20, 12, 30)), (Integer) 3);
     }
 
 }

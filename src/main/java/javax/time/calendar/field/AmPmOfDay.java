@@ -88,7 +88,7 @@ public enum AmPmOfDay {
      * @return the AmPmOfDay singleton, never null
      * @throws IllegalCalendarFieldValueException if the value is invalid
      */
-    public static AmPmOfDay amPmOfDay(int amPmOfDay) {
+    public static AmPmOfDay of(int amPmOfDay) {
         switch (amPmOfDay) {
             case 0:
                 return AM;

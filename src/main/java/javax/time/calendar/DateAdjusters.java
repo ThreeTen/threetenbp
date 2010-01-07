@@ -110,7 +110,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_YEAR {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                return LocalDate.date(date.getYear(), MonthOfYear.DECEMBER, 31);
+                return LocalDate.of(date.getYear(), MonthOfYear.DECEMBER, 31);
             }
         },
         /** Next non weekend day adjuster. */

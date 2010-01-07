@@ -428,8 +428,8 @@ public final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static HijrahDate hijrahDate(int yearOfHijrahEra, int monthOfYear, int dayOfMonth) {
-        return HijrahDate.hijrahDate(HijrahEra.HIJRAH, yearOfHijrahEra, monthOfYear,
+    public static HijrahDate of(int yearOfHijrahEra, int monthOfYear, int dayOfMonth) {
+        return HijrahDate.of(HijrahEra.HIJRAH, yearOfHijrahEra, monthOfYear,
                 dayOfMonth);
     }
     
@@ -445,7 +445,7 @@ public final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month-year
      */
-    public static HijrahDate hijrahDate(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
+    public static HijrahDate of(HijrahEra era, int yearOfEra, int monthOfYear, int dayOfMonth) {
         I18NUtil.checkNotNull(era, "HijrahEra must not be null");
         HijrahChronology.yearOfEraRule().checkValue(yearOfEra);
         HijrahChronology.monthOfYearRule().checkValue(monthOfYear);
@@ -460,7 +460,7 @@ public final class HijrahDate
      * @param dateProvider  the date provider to use, not null
      * @return the created HijrahDate instance, never null
      */
-    public static HijrahDate hijrahDate(DateProvider dateProvider) {
+    public static HijrahDate from(DateProvider dateProvider) {
         long gregorianDays = dateProvider.toLocalDate().toEpochDays();
         return new HijrahDate(gregorianDays);
     }
@@ -481,12 +481,12 @@ public final class HijrahDate
         HijrahChronology.dayOfYearRule().checkValue(dateInfo[4]);
         HijrahChronology.dayOfWeekRule().checkValue(dateInfo[5]);
         
-        this.era = HijrahEra.hijrahEra(dateInfo[0]);
+        this.era = HijrahEra.of(dateInfo[0]);
         this.yearOfEra = dateInfo[1];
         this.monthOfYear = dateInfo[2];
         this.dayOfMonth = dateInfo[3];
         this.dayOfYear = dateInfo[4];
-        this.dayOfWeek = DayOfWeek.dayOfWeek(dateInfo[5]);
+        this.dayOfWeek = DayOfWeek.of(dateInfo[5]);
         this.gregorianEpochDays = gregorianDay;
         this.isLeapYear = isLeapYear(this.yearOfEra);
     }
@@ -602,7 +602,7 @@ public final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the year is out of range
      */
     public HijrahDate withYear(HijrahEra era, int yearOfEra) {
-        return HijrahDate.hijrahDate(era, yearOfEra, this.monthOfYear, this.dayOfMonth);
+        return HijrahDate.of(era, yearOfEra, this.monthOfYear, this.dayOfMonth);
     }
 
     /**
@@ -628,7 +628,7 @@ public final class HijrahDate
      * @throws IllegalCalendarFieldValueException if the month is out of range
      */
     public HijrahDate withMonthOfYear(int monthOfYear) {
-        return HijrahDate.hijrahDate(this.era, this.yearOfEra, monthOfYear, this.dayOfMonth);
+        return HijrahDate.of(this.era, this.yearOfEra, monthOfYear, this.dayOfMonth);
     }
 
     /**
@@ -642,7 +642,7 @@ public final class HijrahDate
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the year and month
      */
     public HijrahDate withDayOfMonth(int dayOfMonth) {
-        return HijrahDate.hijrahDate(this.era, this.yearOfEra, this.monthOfYear, dayOfMonth);
+        return HijrahDate.of(this.era, this.yearOfEra, this.monthOfYear, dayOfMonth);
     }
 
     /**
@@ -657,7 +657,7 @@ public final class HijrahDate
      */
     public HijrahDate withDayOfYear(int dayOfYear) {
         HijrahChronology.dayOfYearRule().checkValue(dayOfYear);
-        return HijrahDate.hijrahDate(this.era, this.yearOfEra, 1, 1).plusDays(dayOfYear).plusDays(-1);
+        return HijrahDate.of(this.era, this.yearOfEra, 1, 1).plusDays(dayOfYear).plusDays(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -678,7 +678,7 @@ public final class HijrahDate
         int newYear = 0;
         try {
             newYear = MathUtils.safeAdd(this.yearOfEra, years);
-            return HijrahDate.hijrahDate(this.era, newYear, this.monthOfYear, this.dayOfMonth);
+            return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
         } catch (ArithmeticException ae) {
             throw new CalendricalException("Year "
                     + (((long) this.yearOfEra) + years)
@@ -713,7 +713,7 @@ public final class HijrahDate
             years = MathUtils.safeDecrement(years);
         }
         int newYear = MathUtils.safeAdd(this.yearOfEra, years);
-        return HijrahDate.hijrahDate(this.era, newYear, newMonth + 1, this.dayOfMonth);
+        return HijrahDate.of(this.era, newYear, newMonth + 1, this.dayOfMonth);
     }
 
     /**
@@ -762,7 +762,7 @@ public final class HijrahDate
         int newYear = 0;
         try {
             newYear = MathUtils.safeSubtract(this.yearOfEra, years);
-            return HijrahDate.hijrahDate(this.era, newYear, this.monthOfYear, this.dayOfMonth);
+            return HijrahDate.of(this.era, newYear, this.monthOfYear, this.dayOfMonth);
         } catch (ArithmeticException ae) {
             throw new CalendricalException("Year "
                     + (((long) this.yearOfEra) + years)
@@ -799,7 +799,7 @@ public final class HijrahDate
             years = MathUtils.safeIncrement(years);
         }
         int newYear = MathUtils.safeAdd(this.yearOfEra, years);
-        return HijrahDate.hijrahDate(this.era, newYear, (newMonth + 1), this.dayOfMonth);
+        return HijrahDate.of(this.era, newYear, (newMonth + 1), this.dayOfMonth);
     }
 
     /**
@@ -1931,7 +1931,7 @@ public final class HijrahDate
         @Override
         protected HijrahDate derive(Calendrical calendrical) {
             LocalDate ld = calendrical.get(LocalDate.rule());
-            return ld != null ? HijrahDate.hijrahDate(ld) : null;
+            return ld != null ? HijrahDate.from(ld) : null;
         }
         @Override
         protected void merge(CalendricalMerger merger) {

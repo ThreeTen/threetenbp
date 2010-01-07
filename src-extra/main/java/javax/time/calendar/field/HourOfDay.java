@@ -221,7 +221,7 @@ public final class HourOfDay
      * @return true is the time is in the morning
      */
     public AmPmOfDay getAmPm() {
-        return AmPmOfDay.amPmOfDay(hourOfDay / 12);
+        return AmPmOfDay.of(hourOfDay / 12);
     }
 
     /**

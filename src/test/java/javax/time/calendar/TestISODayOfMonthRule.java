@@ -47,7 +47,7 @@ import org.testng.annotations.Test;
 public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
 
     public TestISODayOfMonthRule() {
-        super(LocalDate.date(2009, 12, 26), 26, 26);
+        super(LocalDate.of(2009, 12, 26), 26, 26);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getID(), "ISO.DayOfMonth");
         assertEquals(rule.getName(), "DayOfMonth");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), 1);
+        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 31);
         assertEquals(rule.getSmallestMaximumValue(), 28);
@@ -77,22 +77,22 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     // getMaximumValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getMaximumValue_Calendrical_june() {
-        Calendrical cal = YearMonth.yearMonth(2007, MonthOfYear.JUNE);
+        Calendrical cal = YearMonth.of(2007, MonthOfYear.JUNE);
         assertEquals(rule().getMaximumValue(cal), 30);
     }
 
     public void test_getMaximumValue_Calendrical_july() {
-        Calendrical cal = YearMonth.yearMonth(2007, MonthOfYear.JULY);
+        Calendrical cal = YearMonth.of(2007, MonthOfYear.JULY);
         assertEquals(rule().getMaximumValue(cal), 31);
     }
 
     public void test_getMaximumValue_Calendrical_febLeap() {
-        Calendrical cal = YearMonth.yearMonth(2008, MonthOfYear.FEBRUARY);
+        Calendrical cal = YearMonth.of(2008, MonthOfYear.FEBRUARY);
         assertEquals(rule().getMaximumValue(cal), 29);
     }
 
     public void test_getMaximumValue_Calendrical_febNonLeap() {
-        Calendrical cal = YearMonth.yearMonth(2007, MonthOfYear.FEBRUARY);
+        Calendrical cal = YearMonth.of(2007, MonthOfYear.FEBRUARY);
         assertEquals(rule().getMaximumValue(cal), 28);
     }
 
@@ -115,17 +115,17 @@ public class TestISODayOfMonthRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
-        Calendrical cal = LocalDate.date(2007, 6, 20);
+        Calendrical cal = LocalDate.of(2007, 6, 20);
         assertEquals(rule().getValue(cal), (Integer) 20);
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        Calendrical cal = LocalDateTime.dateTime(2007, 6, 20, 12, 30);
+        Calendrical cal = LocalDateTime.of(2007, 6, 20, 12, 30);
         assertEquals(rule().getValue(cal), (Integer) 20);
     }
 
     public void test_getValue_Calendrical_monthDay() {
-        Calendrical cal = MonthDay.monthDay(6, 20);
+        Calendrical cal = MonthDay.of(6, 20);
         assertEquals(rule().getValue(cal), (Integer) 20);
     }
 

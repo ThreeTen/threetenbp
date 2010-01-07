@@ -206,7 +206,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             mjd += (-weeks + 1) * 7;
         }
         int dow0 = (int) ((mjd + 2) % 7);
-        return DayOfWeek.dayOfWeek(dow0 + 1);
+        return DayOfWeek.of(dow0 + 1);
     }
 
     //-----------------------------------------------------------------------
@@ -246,9 +246,9 @@ public final class ISOChronology extends Chronology implements Serializable {
                 break;
             }
         }
-        MonthOfYear moy = MonthOfYear.monthOfYear(month);
+        MonthOfYear moy = MonthOfYear.of(month);
         int dom = dayOfYear - array[month - 1];
-        return LocalDate.date(year, moy, dom);
+        return LocalDate.of(year, moy, dom);
     }
 
     //-----------------------------------------------------------------------
@@ -288,7 +288,7 @@ public final class ISOChronology extends Chronology implements Serializable {
      */
     static int getWeekOfWeekBasedYearFromDate(LocalDate date) {
         int wby = getWeekBasedYearFromDate(date);
-        LocalDate yearStart = LocalDate.date(wby, MonthOfYear.JANUARY, 4);
+        LocalDate yearStart = LocalDate.of(wby, MonthOfYear.JANUARY, 4);
         return MathUtils.safeToInt((date.toModifiedJulianDays() - yearStart.toModifiedJulianDays() +
                 yearStart.getDayOfWeek().getValue() - 1) / 7 + 1);
     }
@@ -938,28 +938,28 @@ public final class ISOChronology extends Chronology implements Serializable {
             Integer mosVal = merger.getValue(ISOChronology.milliOfSecondRule());
             Integer nanoVal = merger.getValue(ISOChronology.nanoOfSecondRule());
             if (minuteVal != null && secondVal != null && nanoVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, secondVal, nanoVal));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal, minuteVal, secondVal, nanoVal));
                 merger.removeProcessed(ISOChronology.hourOfDayRule());
                 merger.removeProcessed(ISOChronology.minuteOfHourRule());
                 merger.removeProcessed(ISOChronology.secondOfMinuteRule());
                 merger.removeProcessed(ISOChronology.nanoOfSecondRule());
             } else if (minuteVal != null && secondVal != null && mosVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, secondVal, mosVal * 1000000));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal, minuteVal, secondVal, mosVal * 1000000));
                 merger.removeProcessed(ISOChronology.hourOfDayRule());
                 merger.removeProcessed(ISOChronology.minuteOfHourRule());
                 merger.removeProcessed(ISOChronology.secondOfMinuteRule());
                 merger.removeProcessed(ISOChronology.milliOfSecondRule());
             } else if (minuteVal != null && secondVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, secondVal, 0));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal, minuteVal, secondVal, 0));
                 merger.removeProcessed(ISOChronology.hourOfDayRule());
                 merger.removeProcessed(ISOChronology.minuteOfHourRule());
                 merger.removeProcessed(ISOChronology.secondOfMinuteRule());
             } else if (minuteVal != null) {
-                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, minuteVal, 0, 0));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal, minuteVal, 0, 0));
                 merger.removeProcessed(ISOChronology.hourOfDayRule());
                 merger.removeProcessed(ISOChronology.minuteOfHourRule());
             } else {
-                merger.storeMerged(LocalTime.rule(), LocalTime.time(hourVal, 0));
+                merger.storeMerged(LocalTime.rule(), LocalTime.of(hourVal, 0));
                 merger.removeProcessed(ISOChronology.hourOfDayRule());
             }
         }
@@ -968,7 +968,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         QuarterOfYear qoy = merger.getValue(ISOChronology.quarterOfYearRule());
         Integer moqVal = merger.getValue(ISOChronology.monthOfQuarterRule());
         if (qoy != null && moqVal != null) {
-            MonthOfYear moy = MonthOfYear.monthOfYear(qoy.getFirstMonthOfQuarter().ordinal() + moqVal);
+            MonthOfYear moy = MonthOfYear.of(qoy.getFirstMonthOfQuarter().ordinal() + moqVal);
             merger.storeMerged(ISOChronology.monthOfYearRule(), moy);
             merger.removeProcessed(ISOChronology.quarterOfYearRule());
             merger.removeProcessed(ISOChronology.monthOfQuarterRule());
@@ -998,7 +998,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             Integer woyVal = merger.getValue(ISOChronology.weekOfYearRule());
             DayOfWeek dow = merger.getValue(ISOChronology.dayOfWeekRule());
             if (woyVal != null && dow != null) {
-                LocalDate date = LocalDate.date(yearVal, 1, 1).plusWeeks(woyVal - 1);
+                LocalDate date = LocalDate.of(yearVal, 1, 1).plusWeeks(woyVal - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(dow));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(ISOChronology.yearRule());
@@ -1008,7 +1008,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             // year-month-week-day
             Integer womVal = merger.getValue(ISOChronology.weekOfMonthRule());
             if (moy != null && womVal != null && dow != null) {
-                LocalDate date = LocalDate.date(yearVal, moy, 1).plusWeeks(womVal - 1);
+                LocalDate date = LocalDate.of(yearVal, moy, 1).plusWeeks(womVal - 1);
                 date = date.with(DateAdjusters.nextOrCurrent(dow));
                 merger.storeMerged(LocalDate.rule(), date);
                 merger.removeProcessed(ISOChronology.yearRule());
@@ -1037,21 +1037,21 @@ public final class ISOChronology extends Chronology implements Serializable {
         ZoneOffset offset = merger.getValue(ZoneOffset.rule());
         TimeZone zone = merger.getValue(TimeZone.rule());
         if (date != null && time != null) {
-            merger.storeMerged(LocalDateTime.rule(), LocalDateTime.dateTime(date, time));
+            merger.storeMerged(LocalDateTime.rule(), LocalDateTime.from(date, time));
             merger.removeProcessed(LocalDate.rule());
             merger.removeProcessed(LocalTime.rule());
         }
         
         // OffsetDate
         if (date != null && offset != null) {
-            merger.storeMerged(OffsetDate.rule(), OffsetDate.date(date, offset));
+            merger.storeMerged(OffsetDate.rule(), OffsetDate.from(date, offset));
             merger.removeProcessed(LocalDate.rule());
             merger.removeProcessed(ZoneOffset.rule());
         }
         
         // OffsetTime
         if (time != null && offset != null) {
-            merger.storeMerged(OffsetTime.rule(), OffsetTime.time(time, offset));
+            merger.storeMerged(OffsetTime.rule(), OffsetTime.from(time, offset));
             merger.removeProcessed(LocalTime.rule());
             merger.removeProcessed(ZoneOffset.rule());
         }
@@ -1059,7 +1059,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         // OffsetDateTime
         LocalDateTime ldt = merger.getValue(LocalDateTime.rule());
         if (ldt != null && offset != null) {
-            merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.dateTime(ldt, offset));
+            merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.from(ldt, offset));
             merger.removeProcessed(LocalDateTime.rule());
             merger.removeProcessed(ZoneOffset.rule());
         } else {
@@ -1074,7 +1074,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                         ot = ot.adjustLocalTime(od.getOffset());
                     }
                 }
-                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.dateTime(od, ot, od.getOffset()));
+                merger.storeMerged(OffsetDateTime.rule(), OffsetDateTime.from(od, ot, od.getOffset()));
                 merger.removeProcessed(OffsetDate.rule());
                 merger.removeProcessed(OffsetTime.rule());
             }
@@ -1084,7 +1084,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         OffsetDateTime odt = merger.getValue(OffsetDateTime.rule());
         if (odt != null && zone != null) {
             if (merger.getContext().isStrict()) {
-                merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.dateTime(odt, zone));
+                merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.of(odt, zone));
             } else {
                 merger.storeMerged(ZonedDateTime.rule(), ZonedDateTime.fromInstant(odt, zone));
             }
@@ -1178,7 +1178,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public MonthOfYear convertIntToValue(int value) {
-            return MonthOfYear.monthOfYear(value);
+            return MonthOfYear.of(value);
         }
         @Override
         protected MonthOfYear interpret(CalendricalMerger merger, Object value) {
@@ -1188,7 +1188,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                     merger.addToOverflow(Period.months(val - 1));  // TODO: MIN_VALUE overflow
                     val = 1;
                 }
-                return MonthOfYear.monthOfYear(val);
+                return MonthOfYear.of(val);
             }
             return null;
         }
@@ -1387,7 +1387,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public DayOfWeek convertIntToValue(int value) {
-            return DayOfWeek.dayOfWeek(value);
+            return DayOfWeek.of(value);
         }
         @Override
         protected DayOfWeek interpret(CalendricalMerger merger, Object value) {
@@ -1397,7 +1397,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                     merger.addToOverflow(Period.days(val - 1));  // TODO: MIN_VALUE overflow
                     val = 1;
                 }
-                return DayOfWeek.dayOfWeek(val);
+                return DayOfWeek.of(val);
             }
             return null;
         }
@@ -1469,7 +1469,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         @Override
         protected QuarterOfYear derive(Calendrical calendrical) {
             MonthOfYear moy = calendrical.get(monthOfYearRule());
-            return moy != null ? QuarterOfYear.quarterOfYear(moy.ordinal() / 3 + 1) : null;
+            return moy != null ? QuarterOfYear.of(moy.ordinal() / 3 + 1) : null;
         }
         @Override
         public int convertValueToInt(QuarterOfYear value) {
@@ -1477,7 +1477,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public QuarterOfYear convertIntToValue(int value) {
-            return QuarterOfYear.quarterOfYear(value);
+            return QuarterOfYear.of(value);
         }
     }
 
@@ -1529,7 +1529,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             Integer year = calendrical.get(yearRule());
             MonthOfYear moy = calendrical.get(monthOfYearRule());
             if (year != null && moy == MonthOfYear.FEBRUARY) {
-                return Year.isoYear(year).isLeap() ? 5 : 4;
+                return Year.of(year).isLeap() ? 5 : 4;
             }
             return getMaximumValue();
         }
@@ -1725,7 +1725,7 @@ public final class ISOChronology extends Chronology implements Serializable {
             }
             int hour = hourVal;
             hour = (hour < 0 ? 1073741832 + hour + 1073741832 : hour);  // add multiple of 24 to make positive
-            return AmPmOfDay.amPmOfDay((hour % 24) / 12);
+            return AmPmOfDay.of((hour % 24) / 12);
         }
         @Override
         public int convertValueToInt(AmPmOfDay value) {
@@ -1733,7 +1733,7 @@ public final class ISOChronology extends Chronology implements Serializable {
         }
         @Override
         public AmPmOfDay convertIntToValue(int value) {
-            return AmPmOfDay.amPmOfDay(value);
+            return AmPmOfDay.of(value);
         }
         @Override
         protected AmPmOfDay interpret(CalendricalMerger merger, Object value) {
@@ -1744,7 +1744,7 @@ public final class ISOChronology extends Chronology implements Serializable {
                     merger.addToOverflow(Period.days(days));
                     val = (val > 0 ? val % 2 : -(val % 2));
                 }
-                return AmPmOfDay.amPmOfDay(val);
+                return AmPmOfDay.of(val);
             }
             return null;
         }

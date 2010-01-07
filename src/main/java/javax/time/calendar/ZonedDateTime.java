@@ -167,8 +167,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time zone
      */
-    public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
-        return dateTime(dateProvider, timeProvider, zone, ZoneResolvers.strict());
+    public static ZonedDateTime from(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone) {
+        return from(dateProvider, timeProvider, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -187,8 +187,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime dateTime(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.dateTime(dateProvider, timeProvider);
+    public static ZonedDateTime from(DateProvider dateProvider, TimeProvider timeProvider, TimeZone zone, ZoneResolver resolver) {
+        LocalDateTime dt = LocalDateTime.from(dateProvider, timeProvider);
         return resolve(dt, null, zone, resolver);
     }
 
@@ -205,8 +205,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the local date-time is invalid for the time zone
      */
-    public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone) {
-        return dateTime(dateTimeProvider, zone, ZoneResolvers.strict());
+    public static ZonedDateTime from(DateTimeProvider dateTimeProvider, TimeZone zone) {
+        return from(dateTimeProvider, zone, ZoneResolvers.strict());
     }
 
     /**
@@ -224,8 +224,8 @@ public final class ZonedDateTime
      * @return the zoned date-time, never null
      * @throws CalendricalException if the resolver cannot resolve an invalid local date-time
      */
-    public static ZonedDateTime dateTime(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
-        LocalDateTime dt = LocalDateTime.dateTime(dateTimeProvider);
+    public static ZonedDateTime from(DateTimeProvider dateTimeProvider, TimeZone zone, ZoneResolver resolver) {
+        LocalDateTime dt = LocalDateTime.from(dateTimeProvider);
         return resolve(dt, null, zone, resolver);
     }
 
@@ -252,7 +252,7 @@ public final class ZonedDateTime
      * @throws CalendricalException if the date-time is invalid due to a gap in the local time-line
      * @throws CalendricalException if the offset is invalid for the time zone at the date-time
      */
-    public static ZonedDateTime dateTime(OffsetDateTime dateTime, TimeZone zone) {
+    public static ZonedDateTime of(OffsetDateTime dateTime, TimeZone zone) {
         ISOChronology.checkNotNull(dateTime, "OffsetDateTime must not be null");
         ISOChronology.checkNotNull(zone, "TimeZone must not be null");
         ZoneOffset inputOffset = dateTime.getOffset();
@@ -305,7 +305,7 @@ public final class ZonedDateTime
      * <p>
      * If the time zone has a floating version, then this conversion will use the latest time zone rules.
      * <p>
-     * An alternative to this method is {@link #dateTime(OffsetDateTime, TimeZone)}.
+     * An alternative to this method is {@link #of(OffsetDateTime, TimeZone)}.
      * The <code>fromInstant</code> method will change the date and time if necessary to
      * retain the same instant. The <code>dateTime</code> method will retain the date and
      * time and throw an exception if the offset is invalid.
@@ -432,7 +432,7 @@ public final class ZonedDateTime
      * @return a new updated ZonedDateTime, never null
      */
     public ZonedDateTime withDateTime(DateTimeProvider dateTimeProvider) {
-        LocalDateTime localDateTime = LocalDateTime.dateTime(dateTimeProvider);
+        LocalDateTime localDateTime = LocalDateTime.from(dateTimeProvider);
         return localDateTime.equals(this.dateTime.toLocalDateTime()) ?
                 this : ZonedDateTime.resolve(localDateTime, this, zone, ZoneResolvers.retainOffset());
     }

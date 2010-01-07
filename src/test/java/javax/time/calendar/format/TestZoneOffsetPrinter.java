@@ -51,9 +51,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestZoneOffsetPrinter {
 
-    private static final ZoneOffset OFFSET_0130 = ZoneOffset.zoneOffset("+01:30");
-    private static final ZoneOffset OFFSET_M0245 = ZoneOffset.zoneOffset("-02:45");
-    private static final ZoneOffset OFFSET_123456 = ZoneOffset.zoneOffset("+12:34:56");
+    private static final ZoneOffset OFFSET_0130 = ZoneOffset.of("+01:30");
+    private static final ZoneOffset OFFSET_M0245 = ZoneOffset.of("-02:45");
+    private static final ZoneOffset OFFSET_123456 = ZoneOffset.of("+12:34:56");
     private StringBuilder buf;
     private Appendable exceptionAppenable;
     private Calendrical emptyCalendrical;

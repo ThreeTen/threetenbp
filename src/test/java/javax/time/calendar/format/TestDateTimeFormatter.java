@@ -148,14 +148,14 @@ public class TestDateTimeFormatter {
     //-----------------------------------------------------------------------
     public void test_print_Calendrical() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        String result = test.print(LocalDate.date(2008, 6, 30));
+        String result = test.print(LocalDate.of(2008, 6, 30));
         assertEquals(result, "ONE30");
     }
 
     @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_Calendrical_noSuchField() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        test.print(LocalTime.time(11, 30));
+        test.print(LocalTime.of(11, 30));
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -169,14 +169,14 @@ public class TestDateTimeFormatter {
         printers.set(0, null);
         compPP = new CompositePrinterParser(printers, parsers, false);
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        test.print(LocalDate.date(2008, 6, 30));
+        test.print(LocalDate.of(2008, 6, 30));
     }
 
     //-----------------------------------------------------------------------
     public void test_print_CalendricalAppendable() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
-        test.print(LocalDate.date(2008, 6, 30), buf);
+        test.print(LocalDate.of(2008, 6, 30), buf);
         assertEquals(buf.toString(), "ONE30");
     }
 
@@ -184,7 +184,7 @@ public class TestDateTimeFormatter {
     public void test_print_CalendricalAppendable_noSuchField() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
-        test.print(LocalTime.time(11, 30), buf);
+        test.print(LocalTime.of(11, 30), buf);
     }
 
     @Test(expectedExceptions=NullPointerException.class)
@@ -197,7 +197,7 @@ public class TestDateTimeFormatter {
     @Test(expectedExceptions=NullPointerException.class)
     public void test_print_CalendricalAppendable_nullAppendable() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        test.print(LocalDate.date(2008, 6, 30), (Appendable) null);
+        test.print(LocalDate.of(2008, 6, 30), (Appendable) null);
     }
 
     @Test(expectedExceptions=UnsupportedOperationException.class)
@@ -205,14 +205,14 @@ public class TestDateTimeFormatter {
         printers.set(0, null);
         compPP = new CompositePrinterParser(printers, parsers, false);
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
-        test.print(LocalDate.date(2008, 6, 30), new StringBuilder());
+        test.print(LocalDate.of(2008, 6, 30), new StringBuilder());
     }
 
     @Test(expectedExceptions=IOException.class)  // IOException
     public void test_print_CalendricalAppendable_ioError() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         try {
-            test.print(LocalDate.date(2008, 6, 30), new MockIOExceptionAppendable());
+            test.print(LocalDate.of(2008, 6, 30), new MockIOExceptionAppendable());
         } catch (CalendricalPrintException ex) {
             assertEquals(ex.getCause() instanceof IOException, true);
             ex.rethrowIOException();
@@ -332,7 +332,7 @@ public class TestDateTimeFormatter {
     public void test_toFormat_format() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
-        String result = format.format(LocalDate.date(2008, 6, 30));
+        String result = format.format(LocalDate.of(2008, 6, 30));
         assertEquals(result, "ONE30");
     }
 
@@ -356,7 +356,7 @@ public class TestDateTimeFormatter {
         compPP = new CompositePrinterParser(printers, parsers, false);
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         Format format = test.toFormat();
-        format.format(LocalDate.date(2008, 6, 30));
+        format.format(LocalDate.of(2008, 6, 30));
     }
 
     //-----------------------------------------------------------------------

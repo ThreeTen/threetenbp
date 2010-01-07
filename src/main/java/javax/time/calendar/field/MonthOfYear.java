@@ -130,7 +130,7 @@ public enum MonthOfYear {
      * @return the MonthOfYear singleton, never null
      * @throws IllegalCalendarFieldValueException if the month-of-year is invalid
      */
-    public static MonthOfYear monthOfYear(int monthOfYear) {
+    public static MonthOfYear of(int monthOfYear) {
         switch (monthOfYear) {
             case 1:
                 return JANUARY;

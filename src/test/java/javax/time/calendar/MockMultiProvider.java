@@ -55,15 +55,15 @@ public class MockMultiProvider
     /** Constructor. */
     public MockMultiProvider(int y, int mon, int d, int h, int min, ZoneOffset offset) {
         super();
-        dateTime = OffsetDateTime.dateTime(y, mon, d, h, min, offset);
+        dateTime = OffsetDateTime.of(y, mon, d, h, min, offset);
     }
     public MockMultiProvider(int y, int mon, int d, int h, int min, int s, ZoneOffset offset) {
         super();
-        dateTime = OffsetDateTime.dateTime(y, mon, d, h, min, s, offset);
+        dateTime = OffsetDateTime.of(y, mon, d, h, min, s, offset);
     }
     public MockMultiProvider(int y, int mon, int d, int h, int min, int s, int n, ZoneOffset offset) {
         super();
-        dateTime = OffsetDateTime.dateTime(y, mon, d, h, min, s, n, offset);
+        dateTime = OffsetDateTime.of(y, mon, d, h, min, s, n, offset);
     }
     public Instant toInstant() {
         return dateTime.toInstant();
@@ -87,7 +87,7 @@ public class MockMultiProvider
         return dateTime.toOffsetTime();
     }
     public ZonedDateTime toZonedDateTime() {
-        return ZonedDateTime.dateTime(dateTime, TimeZone.timeZone("Europe/Paris"));
+        return ZonedDateTime.of(dateTime, TimeZone.of("Europe/Paris"));
     }
     public <T> T get(CalendricalRule<T> rule) {
         return null;

@@ -55,8 +55,8 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDateResolvers {
-    private static final Year YEAR_2007 = Year.isoYear(2007);
-    private static final Year YEAR_2008 = Year.isoYear(2008);
+    private static final Year YEAR_2007 = Year.of(2007);
+    private static final Year YEAR_2008 = Year.of(2008);
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {

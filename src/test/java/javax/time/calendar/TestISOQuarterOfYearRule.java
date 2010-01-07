@@ -46,7 +46,7 @@ import org.testng.annotations.Test;
 public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
 
     public TestISOQuarterOfYearRule() {
-        super(LocalDate.date(2009, 12, 26), QuarterOfYear.Q4, 4);
+        super(LocalDate.of(2009, 12, 26), QuarterOfYear.Q4, 4);
     }
 
     @Override
@@ -63,10 +63,10 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
         assertEquals(rule.getID(), "ISO.QuarterOfYear");
         assertEquals(rule.getName(), "QuarterOfYear");
         assertEquals(rule.getMinimumValue(), 1);
-        assertEquals(rule.getMinimumValue(LocalDate.date(2007, 6, 20)), 1);
+        assertEquals(rule.getMinimumValue(LocalDate.of(2007, 6, 20)), 1);
         assertEquals(rule.getLargestMinimumValue(), 1);
         assertEquals(rule.getMaximumValue(), 4);
-        assertEquals(rule.getMaximumValue(LocalDate.date(2007, 6, 20)), 4);
+        assertEquals(rule.getMaximumValue(LocalDate.of(2007, 6, 20)), 4);
         assertEquals(rule.getSmallestMaximumValue(), 4);
         assertEquals(rule.isFixedValueSet(), true);
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodQuarters());
@@ -95,33 +95,33 @@ public class TestISOQuarterOfYearRule extends AbstractTestDateTimeFieldRule {
     // getValue(Calendrical)
     //-----------------------------------------------------------------------
     public void test_getValue_Calendrical_date() {
-        assertEquals(rule().getValue(LocalDate.date(2007, 1, 20)), QuarterOfYear.Q1);
-        assertEquals(rule().getValue(LocalDate.date(2007, 2, 20)), QuarterOfYear.Q1);
-        assertEquals(rule().getValue(LocalDate.date(2007, 3, 20)), QuarterOfYear.Q1);
-        assertEquals(rule().getValue(LocalDate.date(2007, 4, 20)), QuarterOfYear.Q2);
-        assertEquals(rule().getValue(LocalDate.date(2007, 5, 20)), QuarterOfYear.Q2);
-        assertEquals(rule().getValue(LocalDate.date(2007, 6, 20)), QuarterOfYear.Q2);
-        assertEquals(rule().getValue(LocalDate.date(2007, 7, 20)), QuarterOfYear.Q3);
-        assertEquals(rule().getValue(LocalDate.date(2007, 8, 20)), QuarterOfYear.Q3);
-        assertEquals(rule().getValue(LocalDate.date(2007, 9, 20)), QuarterOfYear.Q3);
-        assertEquals(rule().getValue(LocalDate.date(2007, 10, 20)), QuarterOfYear.Q4);
-        assertEquals(rule().getValue(LocalDate.date(2007, 11, 20)), QuarterOfYear.Q4);
-        assertEquals(rule().getValue(LocalDate.date(2007, 12, 20)), QuarterOfYear.Q4);
+        assertEquals(rule().getValue(LocalDate.of(2007, 1, 20)), QuarterOfYear.Q1);
+        assertEquals(rule().getValue(LocalDate.of(2007, 2, 20)), QuarterOfYear.Q1);
+        assertEquals(rule().getValue(LocalDate.of(2007, 3, 20)), QuarterOfYear.Q1);
+        assertEquals(rule().getValue(LocalDate.of(2007, 4, 20)), QuarterOfYear.Q2);
+        assertEquals(rule().getValue(LocalDate.of(2007, 5, 20)), QuarterOfYear.Q2);
+        assertEquals(rule().getValue(LocalDate.of(2007, 6, 20)), QuarterOfYear.Q2);
+        assertEquals(rule().getValue(LocalDate.of(2007, 7, 20)), QuarterOfYear.Q3);
+        assertEquals(rule().getValue(LocalDate.of(2007, 8, 20)), QuarterOfYear.Q3);
+        assertEquals(rule().getValue(LocalDate.of(2007, 9, 20)), QuarterOfYear.Q3);
+        assertEquals(rule().getValue(LocalDate.of(2007, 10, 20)), QuarterOfYear.Q4);
+        assertEquals(rule().getValue(LocalDate.of(2007, 11, 20)), QuarterOfYear.Q4);
+        assertEquals(rule().getValue(LocalDate.of(2007, 12, 20)), QuarterOfYear.Q4);
     }
 
     public void test_getValue_Calendrical_dateTime() {
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 1, 20, 12, 30)), QuarterOfYear.Q1);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 2, 20, 12, 30)), QuarterOfYear.Q1);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 3, 20, 12, 30)), QuarterOfYear.Q1);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 4, 20, 12, 30)), QuarterOfYear.Q2);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 5, 20, 12, 30)), QuarterOfYear.Q2);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 6, 20, 12, 30)), QuarterOfYear.Q2);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 7, 20, 12, 30)), QuarterOfYear.Q3);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 8, 20, 12, 30)), QuarterOfYear.Q3);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 9, 20, 12, 30)), QuarterOfYear.Q3);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 10, 20, 12, 30)), QuarterOfYear.Q4);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 11, 20, 12, 30)), QuarterOfYear.Q4);
-        assertEquals(rule().getValue(LocalDateTime.dateTime(2007, 12, 20, 12, 30)), QuarterOfYear.Q4);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 1, 20, 12, 30)), QuarterOfYear.Q1);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 2, 20, 12, 30)), QuarterOfYear.Q1);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 3, 20, 12, 30)), QuarterOfYear.Q1);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 4, 20, 12, 30)), QuarterOfYear.Q2);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 5, 20, 12, 30)), QuarterOfYear.Q2);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 6, 20, 12, 30)), QuarterOfYear.Q2);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 7, 20, 12, 30)), QuarterOfYear.Q3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 8, 20, 12, 30)), QuarterOfYear.Q3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 9, 20, 12, 30)), QuarterOfYear.Q3);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 10, 20, 12, 30)), QuarterOfYear.Q4);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 11, 20, 12, 30)), QuarterOfYear.Q4);
+        assertEquals(rule().getValue(LocalDateTime.of(2007, 12, 20, 12, 30)), QuarterOfYear.Q4);
     }
 
 }
