@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -41,7 +41,7 @@ public class UnsupportedRuleException extends CalendricalRuleException {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 8274857567L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs a new unsupported field exception creating a standard error message.
@@ -53,12 +53,12 @@ public class UnsupportedRuleException extends CalendricalRuleException {
     }
 
     /**
-     * Constructs a new unsupported field exception creating a standard error message.
+     * Constructs a new unsupported field exception using the specified error message.
      *
-     * @param rule  the rule that is not supported, may be null
      * @param message  the error message, not null
+     * @param rule  the rule that is not supported, may be null
      */
-    public UnsupportedRuleException(CalendricalRule<?> rule, String message) {
+    public UnsupportedRuleException(String message, CalendricalRule<?> rule) {
         super(message, rule);
     }
 

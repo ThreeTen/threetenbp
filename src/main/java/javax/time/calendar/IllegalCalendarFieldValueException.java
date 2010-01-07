@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,11 @@
  */
 package javax.time.calendar;
 
-
 /**
- * An exception used when a value specified for a calendar field is invalid.
+ * An exception used when a value specified for a calendrical field is out of range.
+ * <p>
+ * Most calendrical fields have a valid range of values. This exception is used
+ * when a value outside that range is passed in.
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
@@ -43,10 +45,10 @@ public class IllegalCalendarFieldValueException extends CalendricalRuleException
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 2873672756L;
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new illegal field value exception with no message.
+     * Constructs a new illegal field value exception with a standard message.
      *
      * @param fieldRule  the field rule, not null
      * @param actual  the actual invalid value
@@ -67,25 +69,5 @@ public class IllegalCalendarFieldValueException extends CalendricalRuleException
     public IllegalCalendarFieldValueException(String message, DateTimeFieldRule<?> fieldRule) {
         super(message, fieldRule);
     }
-
-//    /**
-//     * Constructs a new illegal field value exception with the specified message and cause.
-//     *
-//     * @param message  the message to use for this exception, may be null
-//     * @param cause  the underlying cause of this exception, may be null
-//     */
-//    public IllegalCalendarFieldValueException(String message, Throwable cause) {
-//        super(message, cause);
-//    }
-//
-//    /**
-//     * Constructs a new illegal field value exception with the specified cause,
-//     * extracting the message from the cause if possible.
-//     *
-//     * @param cause  the underlying cause of this exception, may be null
-//     */
-//    public IllegalCalendarFieldValueException(Throwable cause) {
-//        super(cause);
-//    }
 
 }

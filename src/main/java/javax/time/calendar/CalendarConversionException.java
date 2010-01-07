@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,7 +43,7 @@ public class CalendarConversionException extends CalendricalException {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 36572682L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs a new conversion exception with the specified message.

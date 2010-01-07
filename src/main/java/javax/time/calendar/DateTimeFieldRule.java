@@ -559,12 +559,12 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      */
     public BigDecimal convertIntToFraction(int value) {
         if (isFixedValueSet() == false) {
-            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
-                    " cannot be obtained as the range is not fixed");
+            throw new UnsupportedRuleException("The fractional value of " + getName() +
+                    " cannot be obtained as the range is not fixed", this);
         }
         if (getMinimumValue() != 0) {
-            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
-                    " cannot be obtained as the minimum field value is not zero");
+            throw new UnsupportedRuleException("The fractional value of " + getName() +
+                    " cannot be obtained as the minimum field value is not zero", this);
         }
         checkValue(value);
         long range = getMaximumValue();
@@ -592,12 +592,12 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      */
     public int convertFractionToInt(BigDecimal fraction) {
         if (isFixedValueSet() == false) {
-            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
-                    " cannot be converted as the range is not fixed");
+            throw new UnsupportedRuleException("The fractional value of " + getName() +
+                    " cannot be converted as the range is not fixed", this);
         }
         if (getMinimumValue() != 0) {
-            throw new UnsupportedRuleException(this, "The fractional value of " + getName() +
-                    " cannot be converted as the minimum field value is not zero");
+            throw new UnsupportedRuleException("The fractional value of " + getName() +
+                    " cannot be converted as the minimum field value is not zero", this);
         }
         long range = getMaximumValue();
         range++;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,7 +32,11 @@
 package javax.time.calendar;
 
 /**
- * An exception used when a field is invalid.
+ * An exception used when a calendrical field is invalid.
+ * <p>
+ * Some combinations of calendrical fields are not allowed, such as a month-of-year
+ * of April and a day-of-month of 31. This exception is used when an attempt is
+ * made to create such an invalid combination.
  *
  * @author Stephen Colebourne
  */
@@ -41,7 +45,7 @@ public class InvalidCalendarFieldException extends CalendricalRuleException {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 6278674L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs a new invalid field exception.

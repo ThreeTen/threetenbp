@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -43,7 +43,7 @@ public class CalendricalRuleException extends CalendricalException {
     /**
      * A serialization identifier for this class.
      */
-    private static final long serialVersionUID = 2876487267826L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The rule that caused the exception
@@ -51,7 +51,7 @@ public class CalendricalRuleException extends CalendricalException {
     private final CalendricalRule<?> rule;
 
     /**
-     * Constructs a new unsupported field exception creating a standard error message.
+     * Constructs a new exception with a message and optional rule.
      *
      * @param message  the message describing the problem, should not be null
      * @param fieldRule  the rule of the field that is not supported, may be null
