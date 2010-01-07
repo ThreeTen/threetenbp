@@ -42,16 +42,23 @@ import javax.time.calendar.format.DateTimeFormatter;
 import javax.time.calendar.format.DateTimeFormatterBuilder;
 
 /**
- * A month-day without a time zone in the ISO-8601 calendar system,
- * such as '3rd December'.
+ * A month-day in the ISO-8601 calendar system, such as '--12-03'.
  * <p>
- * MonthDay is an immutable calendrical that represents a month-day combination.
+ * <code>MonthDay</code> is an immutable calendrical that represents the combination
+ * of a year and month. Any field that can be derived from a month and day, such as
+ * quarter-of-year, can be obtained.
+ * <p>
  * This class does not store or represent a year, time or time zone.
- * Thus, for example, the value "2nd October" can be stored in a MonthDay.
+ * Thus, for example, the value "3rd December" can be stored in a <code>MonthDay</code>.
  * <p>
- * A MonthDay does not possess a year, thus the 29th of February is considered valid.
+ * Since a <code>MonthDay</code> does not possess a year, the leap day of
+ * 29th of February is considered valid.
  * <p>
- * Static factory methods allow you to construct instances.
+ * The ISO-8601 calendar system is the modern civil calendar system used today
+ * in most of the world. It is equivalent to the proleptic Gregorian calendar
+ * system, in which todays's rules for leap years are applied for all time.
+ * For most applications written today, the ISO-8601 rules are entirely suitable.
+ * Any application that uses historical dates should consider using <code>HistoricDate</code>.
  * <p>
  * MonthDay is immutable and thread-safe.
  *
@@ -181,7 +188,7 @@ public final class MonthDay
      * The day-of-month has 2 digits with values from 1 to 31 appropriate to the month.
      *
      * @param text  the text to parse such as '--12-03', not null
-     * @return the parsed year-month, never null
+     * @return the parsed month-day, never null
      * @throws CalendricalParseException if the text cannot be parsed to MonthDay
      * @throws IllegalCalendarFieldValueException if the value of any field is out of range
      * @throws InvalidCalendarFieldException if the day-of-month is invalid for the month

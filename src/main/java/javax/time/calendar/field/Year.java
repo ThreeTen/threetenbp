@@ -53,19 +53,27 @@ import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
- * A representation of a year without a time zone in the ISO-8601 calendar system.
+ * A year in the ISO-8601 calendar system, such as '2007'.
  * <p>
- * Year is an immutable calendrical that represents a year.
- * This class does not store or represent a month, day, time or time zone.
- * Thus, for example, the value "2007" can be stored in a Year.
+ * <code>Year</code> is an immutable calendrical that represents a year.
+ * Any field that can be derived from a year can be obtained.
  * <p>
- * This class uses the proleptic numbering system for years.
- * The year 1 is preceded by year 0, then by year -1.
- * <p>
- * Note that years in the ISO chronology only align with years in the
+ * <b>Note that years in the ISO chronology only align with years in the
  * Gregorian-Julian system for modern years. Parts of Russia did not switch to the
  * modern Gregorian/ISO rules until 1920.
- * As such, historical years must be treated with caution.
+ * As such, historical years must be treated with caution.</b>
+ * <p>
+ * This class does not store or represent a month, day, time or time zone.
+ * Thus, for example, the value "2007" can be stored in a <code>Year</code>.
+ * <p>
+ * Years represented by this class follow the ISO-8601 standard and use
+ * the proleptic numbering system. Year 1 is preceded by year 0, then by year -1.
+ * <p>
+ * The ISO-8601 calendar system is the modern civil calendar system used today
+ * in most of the world. It is equivalent to the proleptic Gregorian calendar
+ * system, in which todays's rules for leap years are applied for all time.
+ * For most applications written today, the ISO-8601 rules are entirely suitable.
+ * Any application that uses historical dates should consider using <code>HistoricDate</code>.
  * <p>
  * Year is immutable and thread-safe.
  *

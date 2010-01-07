@@ -45,14 +45,20 @@ import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
- * A year-month without a time zone in the ISO-8601 calendar system,
- * such as '2007-12'.
+ * A year-month in the ISO-8601 calendar system, such as '2007-12'.
  * <p>
- * YearMonth is an immutable calendrical that represents a year-month combination.
+ * <code>YearMonth</code> is an immutable calendrical that represents the combination
+ * of a year and month. Any field that can be derived from a year and month, such as
+ * quarter-of-year, can be obtained.
+ * <p>
  * This class does not store or represent a day, time or time zone.
- * Thus, for example, the value "October 2007" can be stored in a YearMonth.
+ * Thus, for example, the value "October 2007" can be stored in a <code>YearMonth</code>.
  * <p>
- * Static factory methods allow you to construct instances.
+ * The ISO-8601 calendar system is the modern civil calendar system used today
+ * in most of the world. It is equivalent to the proleptic Gregorian calendar
+ * system, in which todays's rules for leap years are applied for all time.
+ * For most applications written today, the ISO-8601 rules are entirely suitable.
+ * Any application that uses historical dates should consider using <code>HistoricDate</code>.
  * <p>
  * YearMonth is immutable and thread-safe.
  *
