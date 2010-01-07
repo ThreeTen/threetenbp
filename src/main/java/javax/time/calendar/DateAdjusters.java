@@ -103,7 +103,7 @@ public final class DateAdjusters {
         LAST_DAY_OF_MONTH {
             /** {@inheritDoc} */
             public LocalDate adjustDate(LocalDate date) {
-                int dom = date.getMonthOfYear().getLastDayOfMonth(date.toYear().isLeap());
+                int dom = date.getMonthOfYear().getLastDayOfMonth(ISOChronology.isLeapYear(date.getYear()));
                 return date.withDayOfMonth(dom);
             }
         },
