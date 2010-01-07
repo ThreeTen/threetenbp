@@ -33,12 +33,14 @@ package javax.time.calendar.format;
 
 import java.io.IOException;
 
+import javax.time.CalendricalException;
+
 /**
  * An exception thrown when an error occurs during printing.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalPrintException extends RuntimeException {
+public class CalendricalPrintException extends CalendricalException {
 
     /**
      * A serialization identifier for this class.

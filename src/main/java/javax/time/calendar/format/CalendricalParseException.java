@@ -31,12 +31,14 @@
  */
 package javax.time.calendar.format;
 
+import javax.time.CalendricalException;
+
 /**
  * An exception thrown when an error occurs during parsing.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalParseException extends RuntimeException {
+public class CalendricalParseException extends CalendricalException {
 
     /**
      * A serialization identifier for this class.
