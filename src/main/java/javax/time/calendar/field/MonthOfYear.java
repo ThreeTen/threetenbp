@@ -361,32 +361,6 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the length of this month in days using the ISO year.
-     * <p>
-     * The year specified is the year from the {@link ISOChronology}.
-     * Other chronologies should use {@link #lengthInDays(boolean)}.
-     *
-     * @param year  the year to obtain the length for, not null
-     * @return the length of this month in days, from 28 to 31
-     */
-    public int lengthInDays(Year year) {
-        if (year == null) {
-            throw new NullPointerException("The year must not be null");
-        }
-        switch (this) {
-            case FEBRUARY:
-                return (year.isLeap() ? 29 : 28);
-            case APRIL:
-            case JUNE:
-            case SEPTEMBER:
-            case NOVEMBER:
-                return 30;
-            default:
-                return 31;
-        }
-    }
-
-    /**
      * Gets the length of this month in days.
      * <p>
      * This takes a flag to determine whether to return the length for a leap year or not.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,17 +31,15 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.calendar.Calendrical;
+import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.DateAdjuster;
-import javax.time.calendar.CalendricalMatcher;
 import javax.time.calendar.DateResolver;
 import javax.time.calendar.DateResolvers;
 import javax.time.calendar.DateTimeFieldRule;
@@ -520,7 +518,7 @@ public class TestYear {
     //-----------------------------------------------------------------------
     // lengthInDays()
     //-----------------------------------------------------------------------
-    public void test_lengthInDays_notLeapYear() {
+    public void test_lengthInDays() {
         assertEquals(Year.isoYear(1999).lengthInDays(), 365);
         assertEquals(Year.isoYear(2000).lengthInDays(), 366);
         assertEquals(Year.isoYear(2001).lengthInDays(), 365);
@@ -555,6 +553,46 @@ public class TestYear {
         assertEquals(Year.isoYear(300).lengthInDays(), 365);
         assertEquals(Year.isoYear(400).lengthInDays(), 366);
         assertEquals(Year.isoYear(500).lengthInDays(), 365);
+    }
+
+    //-----------------------------------------------------------------------
+    // monthLengthInDays(MonthOfYear)
+    //-----------------------------------------------------------------------
+    public void test_monthLengthInDays_notLeapYear() {
+        Year year = Year.isoYear(2007);
+        assertEquals(year.monthLengthInDays(MonthOfYear.JANUARY), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.FEBRUARY), 28);
+        assertEquals(year.monthLengthInDays(MonthOfYear.MARCH), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.APRIL), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.MAY), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.JUNE), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.JULY), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.AUGUST), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.SEPTEMBER), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.OCTOBER), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.NOVEMBER), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.DECEMBER), 31);
+    }
+
+    public void test_monthLengthInDays_leapYear() {
+        Year year = Year.isoYear(2008);
+        assertEquals(year.monthLengthInDays(MonthOfYear.JANUARY), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.FEBRUARY), 29);
+        assertEquals(year.monthLengthInDays(MonthOfYear.MARCH), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.APRIL), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.MAY), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.JUNE), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.JULY), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.AUGUST), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.SEPTEMBER), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.OCTOBER), 31);
+        assertEquals(year.monthLengthInDays(MonthOfYear.NOVEMBER), 30);
+        assertEquals(year.monthLengthInDays(MonthOfYear.DECEMBER), 31);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_monthLengthInDays_nullMonth() {
+        Year.isoYear(2007).monthLengthInDays((MonthOfYear) null);
     }
 
 //    //-----------------------------------------------------------------------

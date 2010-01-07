@@ -431,46 +431,6 @@ public class TestMonthOfYear {
     }
 
     //-----------------------------------------------------------------------
-    // lengthInDays(Year)
-    //-----------------------------------------------------------------------
-    public void test_lengthInDays_notLeapYear() {
-        Year year = YEAR_STANDARD;
-        assertEquals(MonthOfYear.JANUARY.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(year), 28);
-        assertEquals(MonthOfYear.MARCH.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.APRIL.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.MAY.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.JUNE.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.JULY.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.AUGUST.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.OCTOBER.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.DECEMBER.lengthInDays(year), 31);
-    }
-
-    public void test_lengthInDays_leapYear() {
-        Year year = YEAR_LEAP;
-        assertEquals(MonthOfYear.JANUARY.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.FEBRUARY.lengthInDays(year), 29);
-        assertEquals(MonthOfYear.MARCH.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.APRIL.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.MAY.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.JUNE.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.JULY.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.AUGUST.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.SEPTEMBER.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.OCTOBER.lengthInDays(year), 31);
-        assertEquals(MonthOfYear.NOVEMBER.lengthInDays(year), 30);
-        assertEquals(MonthOfYear.DECEMBER.lengthInDays(year), 31);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_lengthInDays_nullYear() {
-        MonthOfYear.JANUARY.lengthInDays((Year) null);
-    }
-
-    //-----------------------------------------------------------------------
     // lengthInDays(boolean)
     //-----------------------------------------------------------------------
     public void test_lengthInDays_boolean_notLeapYear() {

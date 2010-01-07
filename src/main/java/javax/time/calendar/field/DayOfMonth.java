@@ -231,7 +231,7 @@ public final class DayOfMonth
         if (monthOfYear == null) {
             throw new NullPointerException("MonthOfYear must not be null");
         }
-        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(year));
+        return (dayOfMonth <= 28 || dayOfMonth <= year.monthLengthInDays(monthOfYear));
     }
 
     /**

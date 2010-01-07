@@ -386,6 +386,22 @@ public final class Year
         return isLeap() ? 366 : 365;
     }
 
+    /**
+     * Gets the length of this month in days using the ISO year.
+     * <p>
+     * The year specified is the year from the {@link ISOChronology}.
+     * Other chronologies should use {@link #lengthInDays(boolean)}.
+     *
+     * @param year  the year to obtain the length for, not null
+     * @return the length of this month in days, from 28 to 31
+     */
+    public int monthLengthInDays(MonthOfYear monthOfYear) {
+        if (monthOfYear == null) {
+            throw new NullPointerException("MonthOfYear must not be null");
+        }
+        return monthOfYear.lengthInDays(isLeap());
+    }
+
 //    //-----------------------------------------------------------------------
 //    /**
 //     * Gets the ISO proleptic year, from MIN_YEAR to MAX_YEAR.
