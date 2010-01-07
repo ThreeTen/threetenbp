@@ -114,7 +114,7 @@ public final class DateResolvers {
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-            int len = year.monthLengthInDays(monthOfYear);
+            int len = monthOfYear.lengthInDays(year.isLeap());
             if (dayOfMonth.getValue() > len) {
                 return LocalDate.date(year, monthOfYear, DayOfMonth.dayOfMonth(len));
             }
@@ -151,7 +151,7 @@ public final class DateResolvers {
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-            int len = year.monthLengthInDays(monthOfYear);
+            int len = monthOfYear.lengthInDays(year.isLeap());
             if (dayOfMonth.getValue() > len) {
                 return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(1));
             }
@@ -189,7 +189,7 @@ public final class DateResolvers {
 
         /** {@inheritDoc} */
         public LocalDate resolveDate(Year year, MonthOfYear monthOfYear, DayOfMonth dayOfMonth) {
-            int len = year.monthLengthInDays(monthOfYear);
+            int len = monthOfYear.lengthInDays(year.isLeap());
             if (dayOfMonth.getValue() > len) {
                 return LocalDate.date(year, monthOfYear.next(), DayOfMonth.dayOfMonth(dayOfMonth.getValue() - len));
             }

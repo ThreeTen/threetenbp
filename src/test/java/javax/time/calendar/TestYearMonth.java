@@ -31,10 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +45,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.time.CalendricalException;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
@@ -769,28 +765,57 @@ public class TestYearMonth {
     }
 
     //-----------------------------------------------------------------------
-    // atDay(DayOfMonth)
+    // lengthInDays()
     //-----------------------------------------------------------------------
-    public void test_atDay() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        assertEquals(test.atDay(DayOfMonth.dayOfMonth(30)), LocalDate.date(2008, 6, 30));
+    public void test_lengthInDays_june() {
+        YearMonth test = YearMonth.yearMonth(2007, 6);
+        assertEquals(test.lengthInDays(), 30);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_atDay_nullYear() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        test.atDay((DayOfMonth) null);
+    public void test_lengthInDays_febNonLeap() {
+        YearMonth test = YearMonth.yearMonth(2007, 2);
+        assertEquals(test.lengthInDays(), 28);
     }
 
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_atDay_invalidDay() {
-        YearMonth test = YearMonth.yearMonth(2008, 6);
-        try {
-            test.atDay(DayOfMonth.dayOfMonth(31));
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
-            throw ex;
-        }
+    public void test_lengthInDays_febLeap() {
+        YearMonth test = YearMonth.yearMonth(2008, 2);
+        assertEquals(test.lengthInDays(), 29);
+    }
+
+    //-----------------------------------------------------------------------
+    // isValidDay(int)
+    //-----------------------------------------------------------------------
+    public void test_isValidDay_int_june() {
+        YearMonth test = YearMonth.yearMonth(2007, 6);
+        assertEquals(test.isValidDay(1), true);
+        assertEquals(test.isValidDay(30), true);
+        
+        assertEquals(test.isValidDay(-1), false);
+        assertEquals(test.isValidDay(0), false);
+        assertEquals(test.isValidDay(31), false);
+        assertEquals(test.isValidDay(32), false);
+    }
+
+    public void test_isValidDay_int_febNonLeap() {
+        YearMonth test = YearMonth.yearMonth(2007, 2);
+        assertEquals(test.isValidDay(1), true);
+        assertEquals(test.isValidDay(28), true);
+        
+        assertEquals(test.isValidDay(-1), false);
+        assertEquals(test.isValidDay(0), false);
+        assertEquals(test.isValidDay(29), false);
+        assertEquals(test.isValidDay(32), false);
+    }
+
+    public void test_isValidDay_int_febLeap() {
+        YearMonth test = YearMonth.yearMonth(2008, 2);
+        assertEquals(test.isValidDay(1), true);
+        assertEquals(test.isValidDay(29), true);
+        
+        assertEquals(test.isValidDay(-1), false);
+        assertEquals(test.isValidDay(0), false);
+        assertEquals(test.isValidDay(30), false);
+        assertEquals(test.isValidDay(32), false);
     }
 
     //-----------------------------------------------------------------------

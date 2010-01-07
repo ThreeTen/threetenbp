@@ -31,10 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,7 +46,6 @@ import java.util.Set;
 
 import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
-import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
 import javax.time.calendar.format.MockSimpleCalendrical;
 
@@ -585,28 +581,21 @@ public class TestMonthDay {
     }
 
     //-----------------------------------------------------------------------
-    // atYear(Year)
+    // isValidYear(int)
     //-----------------------------------------------------------------------
-    public void test_atYear() {
+    public void test_isValidYear_june() {
         MonthDay test = MonthDay.monthDay(6, 30);
-        assertEquals(test.atYear(Year.isoYear(2008)), LocalDate.date(2008, 6, 30));
+        assertEquals(test.isValidYear(2007), true);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_atYear_nullYear() {
-        MonthDay test = MonthDay.monthDay(6, 30);
-        test.atYear((Year) null);
-    }
-
-    @Test(expectedExceptions=InvalidCalendarFieldException.class)
-    public void test_atYear_notLeapYear() {
+    public void test_isValidYear_febNonLeap() {
         MonthDay test = MonthDay.monthDay(2, 29);
-        try {
-            test.atYear(Year.isoYear(2005));
-        } catch (InvalidCalendarFieldException ex) {
-            assertEquals(ex.getRule(), ISOChronology.dayOfMonthRule());
-            throw ex;
-        }
+        assertEquals(test.isValidYear(2007), false);
+    }
+
+    public void test_isValidYear_febLeap() {
+        MonthDay test = MonthDay.monthDay(2, 29);
+        assertEquals(test.isValidYear(2008), true);
     }
 
     //-----------------------------------------------------------------------
@@ -742,11 +731,11 @@ public class TestMonthDay {
     }
 
     public void test_hashCode_unique() {
-        Year leapYear = Year.isoYear(2008);
+        int leapYear = 2008;
         Set<Integer> uniques = new HashSet<Integer>(366);
         for (int i = 1; i <= 12; i++) {
             for (int j = 1; j <= 31; j++) {
-                if (DayOfMonth.dayOfMonth(j).isValid(leapYear, MonthOfYear.monthOfYear(i))) {
+                if (YearMonth.yearMonth(leapYear, i).isValidDay(j)) {
                     assertTrue(uniques.add(MonthDay.monthDay(i, j).hashCode()));
                 }
             }

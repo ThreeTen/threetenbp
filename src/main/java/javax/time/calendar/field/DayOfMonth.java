@@ -218,40 +218,6 @@ public final class DayOfMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if this day-of-month is valid for the specified year and month.
-     *
-     * @param year  the year to validate against, not null
-     * @param monthOfYear  the month-of-year to validate against, not null
-     * @return true if this day-of-month is valid for the month and year
-     */
-    public boolean isValid(Year year, MonthOfYear monthOfYear) {
-        if (year == null) {
-            throw new NullPointerException("Year must not be null");
-        }
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        return (dayOfMonth <= 28 || dayOfMonth <= year.monthLengthInDays(monthOfYear));
-    }
-
-    /**
-     * Checks if this day-of-month is valid for the specified year and month.
-     *
-     * @param year  the year to validate against, from MIN_YEAR to MAX_YEAR
-     * @param monthOfYear  the month-of-year to validate against, not null
-     * @return true if this day-of-month is valid for the month and year
-     * @throws IllegalCalendarFieldValueException if the year value is invalid
-     */
-    public boolean isValid(int year, MonthOfYear monthOfYear) {
-        ISOChronology.yearRule().checkValue(year);
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        return (dayOfMonth <= 28 || dayOfMonth <= monthOfYear.lengthInDays(ISOChronology.isLeapYear(year)));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Compares this day-of-month instance to another.
      *
      * @param otherDayOfMonth  the other day-of-month instance, not null

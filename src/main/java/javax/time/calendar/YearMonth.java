@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import javax.time.CalendricalException;
 import javax.time.MathUtils;
-import javax.time.calendar.field.DayOfMonth;
 import javax.time.calendar.field.MonthOfYear;
 import javax.time.calendar.field.Year;
 import javax.time.calendar.format.CalendricalParseException;
@@ -532,32 +531,48 @@ public final class YearMonth
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this year-month at the specified day-of-month.
+     * Gets the length of this month in days.
      * <p>
-     * This merges the two objects - <code>this</code> and the specified day -
-     * to form an instance of <code>LocalDate</code>.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * This returns the length in days of the month.
+     * The year is used to determine the correct length of February.
      *
-     * @param dayOfMonth  the day-of-month to use, not null
-     * @return the local date formed from this year-month and the specified day, never null
-     * @throws InvalidCalendarFieldException when the day is invalid for the year-month
+     * @return the length of the month in days, from 28 to 31
      */
-    public LocalDate atDay(DayOfMonth dayOfMonth) {
-        return atDay(dayOfMonth.getValue());
+    public int lengthInDays() {
+        return month.lengthInDays(ISOChronology.isLeapYear(year));
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the day-of-month is valid for this year-month.
+     * <p>
+     * This method checks whether this year and month and the input day form
+     * a valid date.
+     *
+     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
+     * @return true if the day is valid for this year-month
+     */
+    public boolean isValidDay(int dayOfMonth) {
+        return dayOfMonth >= 1 && dayOfMonth <= lengthInDays();
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Returns a date formed from this year-month at the specified day-of-month.
      * <p>
      * This method merges <code>this</code> and the specified day to form an
      * instance of <code>LocalDate</code>.
+     * This method can be used as part of a chain to produce a date:
+     * <pre>
+     * LocalDate date = year.atMonth(month).atDay(day);
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param dayOfMonth  the day-of-month to use, from 1 to 31
-     * @return the local date formed from this year-month and the specified day, never null
+     * @return the date formed from this year-month and the specified day, never null
      * @throws InvalidCalendarFieldException when the day is invalid for the year-month
+     * @see #isValidDay(int)
      */
     public LocalDate atDay(int dayOfMonth) {
         return LocalDate.date(year, month, dayOfMonth);

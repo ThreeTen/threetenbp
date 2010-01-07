@@ -480,30 +480,34 @@ public final class MonthDay
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a date formed from this month-day at the specified year.
+     * Checks if the year is valid for this month-day.
      * <p>
-     * This merges the two objects - <code>this</code> and the specified year -
-     * to form an instance of <code>LocalDate</code>.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
+     * This method checks whether this month and day and the input year form
+     * a valid date.
      *
-     * @param year  the year to use, not null
-     * @return the local date formed from this month-day and the specified year, never null
+     * @param year  the year to validate, an out of range value returns false
+     * @return true if the year is valid for this month-day
+     * @see Year#isValidMonthDay(MonthDay)
      */
-    public LocalDate atYear(Year year) {
-        return atYear(year.getValue());
+    public boolean isValidYear(int year) {
+        return (day == 29 && month.isFebruary() && ISOChronology.isLeapYear(year) == false) == false;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a date formed from this month-day at the specified year.
      * <p>
      * This method merges <code>this</code> and the specified year to form an
      * instance of <code>LocalDate</code>.
+     * <pre>
+     * LocalDate date = monthDay.atYear(year);
+     * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
      * @param year  the year to use, from MIN_YEAR to MAX_YEAR
      * @return the local date formed from this month-day and the specified year, never null
+     * @see Year#atMonthDay(MonthDay)
      */
     public LocalDate atYear(int year) {
         return LocalDate.date(year, month, day);

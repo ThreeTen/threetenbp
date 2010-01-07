@@ -556,43 +556,29 @@ public class TestYear {
     }
 
     //-----------------------------------------------------------------------
-    // monthLengthInDays(MonthOfYear)
+    // isValidMonthDay(MonthOfYear)
     //-----------------------------------------------------------------------
-    public void test_monthLengthInDays_notLeapYear() {
-        Year year = Year.isoYear(2007);
-        assertEquals(year.monthLengthInDays(MonthOfYear.JANUARY), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.FEBRUARY), 28);
-        assertEquals(year.monthLengthInDays(MonthOfYear.MARCH), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.APRIL), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.MAY), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.JUNE), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.JULY), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.AUGUST), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.SEPTEMBER), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.OCTOBER), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.NOVEMBER), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.DECEMBER), 31);
+    public void test_isValidMonthDay_june() {
+        Year test = Year.isoYear(2007);
+        MonthDay monthDay = MonthDay.monthDay(6, 30);
+        assertEquals(test.isValidMonthDay(monthDay), true);
     }
 
-    public void test_monthLengthInDays_leapYear() {
-        Year year = Year.isoYear(2008);
-        assertEquals(year.monthLengthInDays(MonthOfYear.JANUARY), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.FEBRUARY), 29);
-        assertEquals(year.monthLengthInDays(MonthOfYear.MARCH), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.APRIL), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.MAY), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.JUNE), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.JULY), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.AUGUST), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.SEPTEMBER), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.OCTOBER), 31);
-        assertEquals(year.monthLengthInDays(MonthOfYear.NOVEMBER), 30);
-        assertEquals(year.monthLengthInDays(MonthOfYear.DECEMBER), 31);
+    public void test_isValidMonthDay_febNonLeap() {
+        Year test = Year.isoYear(2007);
+        MonthDay monthDay = MonthDay.monthDay(2, 29);
+        assertEquals(test.isValidMonthDay(monthDay), false);
     }
 
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_monthLengthInDays_nullMonth() {
-        Year.isoYear(2007).monthLengthInDays((MonthOfYear) null);
+    public void test_isValidMonthDay_febLeap() {
+        Year test = Year.isoYear(2008);
+        MonthDay monthDay = MonthDay.monthDay(2, 29);
+        assertEquals(test.isValidMonthDay(monthDay), true);
+    }
+
+    public void test_isValidMonthDay_null() {
+        Year test = Year.isoYear(2008);
+        assertEquals(test.isValidMonthDay(null), false);
     }
 
 //    //-----------------------------------------------------------------------

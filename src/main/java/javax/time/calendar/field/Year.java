@@ -386,17 +386,47 @@ public final class Year
         return isLeap() ? 366 : 365;
     }
 
+    //-----------------------------------------------------------------------
+//    /**
+//     * Checks if the month and day are valid for this year.
+//     * <p>
+//     * This method checks whether this year and the input month and day form
+//     * a valid date.
+//     *
+//     * @param monthOfYear  the month-of-year to validate, null returns false
+//     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
+//     * @return true if the month and day are valid for this year
+//     */
+//    public boolean isValidMonthDay(MonthOfYear monthOfYear, int dayOfMonth) {
+//        return monthOfYear != null && dayOfMonth >= 1 && dayOfMonth <= monthOfYear.lengthInDays(isLeap());
+//    }
+//
+//    /**
+//     * Checks if the month and day are valid for this year.
+//     * <p>
+//     * This method checks whether this year and the input month and day form
+//     * a valid date.
+//     *
+//     * @param monthOfYear  the month-of-year to validate, from 1 to 12, invalid value returns false
+//     * @param dayOfMonth  the day-of-month to validate, from 1 to 31, invalid value returns false
+//     * @return true if the month and day are valid for this year
+//     */
+//    public boolean isValidMonthDay(int monthOfYear, int dayOfMonth) {
+//        return monthOfYear >= 1 && monthOfYear <= 12 &&
+//                isValidMonthDay(MonthOfYear.monthOfYear(monthOfYear), dayOfMonth);
+//    }
+
     /**
-     * Gets the length of the specified month in days.
+     * Checks if the month-day is valid for this year.
+     * <p>
+     * This method checks whether this year and the input month and day form
+     * a valid date.
      *
-     * @param monthOfYear  the month-of-year to obtain the length for, not null
-     * @return the length of the month in days, from 28 to 31
+     * @param monthDay  the month-day to validate, null returns false
+     * @return true if the month and day are valid for this year
      */
-    public int monthLengthInDays(MonthOfYear monthOfYear) {
-        if (monthOfYear == null) {
-            throw new NullPointerException("MonthOfYear must not be null");
-        }
-        return monthOfYear.lengthInDays(isLeap());
+    public boolean isValidMonthDay(MonthDay monthDay) {
+        return monthDay != null && monthDay.isValidYear(year);
     }
 
 //    //-----------------------------------------------------------------------
@@ -486,7 +516,6 @@ public final class Year
      * <p>
      * This method merges <code>this</code> and the specified month to form an
      * instance of <code>YearMonth</code>.
-     * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      * LocalDate date = year.atMonth(month).atDay(day);
@@ -506,7 +535,6 @@ public final class Year
      * <p>
      * This method merges <code>this</code> and the specified month to form an
      * instance of <code>YearMonth</code>.
-     * <p>
      * This method can be used as part of a chain to produce a date:
      * <pre>
      * LocalDate date = year.atMonth(month).atDay(day);
@@ -526,11 +554,8 @@ public final class Year
      * <p>
      * This merges the two objects - <code>this</code> and the specified day -
      * to form an instance of <code>LocalDate</code>.
-     * <p>
-     * As an alternative to this method if you only have separate values for
-     * the month and day-of-month you can chain using <code>atMonth</code>:
      * <pre>
-     * LocalDate date = year.atMonth(month).atDay(day);
+     * LocalDate date = year.atMonthDay(monthDay);
      * </pre>
      * <p>
      * This instance is immutable and unaffected by this method call.

@@ -31,9 +31,7 @@
  */
 package javax.time.calendar.field;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -72,8 +70,6 @@ import org.testng.annotations.Test;
 public class TestDayOfMonth {
 
     private static final DateTimeFieldRule<Integer> RULE = ISOChronology.dayOfMonthRule();
-    private static final Year YEAR_STANDARD = Year.isoYear(2007);
-    private static final Year YEAR_LEAP = Year.isoYear(2008);
     private static final int STANDARD_YEAR_LENGTH = 365;
     private static final int LEAP_YEAR_LENGTH = 366;
     private static final int MAX_LENGTH = 31;
@@ -355,132 +351,6 @@ public class TestDayOfMonth {
     public void test_matchesCalendrical_null() {
         DayOfMonth test = DayOfMonth.dayOfMonth(1);
         test.matchesCalendrical(null);
-    }
-
-    //-----------------------------------------------------------------------
-    // isValid(Year,MonthOfYear)
-    //-----------------------------------------------------------------------
-    public void test_isValid_jan() {
-        MonthOfYear moy = MonthOfYear.JANUARY;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(YEAR_STANDARD, moy), true);
-        }
-    }
-
-    public void test_isValid_apr() {
-        MonthOfYear moy = MonthOfYear.APRIL;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(YEAR_STANDARD, moy), i <= 30);
-        }
-    }
-
-    public void test_isValid_febNotLeapYear() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(YEAR_STANDARD, moy), i <= 28);
-        }
-    }
-
-    public void test_isValid_febLeapYear() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(YEAR_LEAP, moy), i <= 29);
-        }
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isValid_nullYear_day1() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.isValid((Year) null, moy);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isValid_nullYear_day31() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.isValid((Year) null, moy);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isValid_nullMonthOfYear_day1() {
-        MonthOfYear moy = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.isValid(YEAR_STANDARD, moy);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isValid_nullMonthOfYear_day31() {
-        MonthOfYear moy = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.isValid(YEAR_STANDARD, moy);
-    }
-
-    //-----------------------------------------------------------------------
-    // isValid(int,MonthOfYear)
-    //-----------------------------------------------------------------------
-    public void test_isValid_intMonthOfYear_jan() {
-        MonthOfYear moy = MonthOfYear.JANUARY;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(2007, moy), true);
-        }
-    }
-
-    public void test_isValid_intMonthOfYear_apr() {
-        MonthOfYear moy = MonthOfYear.APRIL;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(2007, moy), i <= 30);
-        }
-    }
-
-    public void test_isValid_intMonthOfYear_febNotLeapYear() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(2007, moy), i <= 28);
-        }
-    }
-
-    public void test_isValid_intMonthOfYear_febLeapYear() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        for (int i = 1; i <= MAX_LENGTH; i++) {
-            DayOfMonth test = DayOfMonth.dayOfMonth(i);
-            assertEquals(test.isValid(2008, moy), i <= 29);
-        }
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_isValid_intMonthOfYear_invalidYear_day1() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.isValid(Integer.MIN_VALUE, moy);
-    }
-
-    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
-    public void test_isValid_intMonthOfYear_invalidYear_day31() {
-        MonthOfYear moy = MonthOfYear.FEBRUARY;
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.isValid(Integer.MIN_VALUE, moy);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isValid_intMonthOfYear_nullMonthOfYear_day1() {
-        MonthOfYear moy = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(1);
-        test.isValid(2007, moy);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_isValid_intMonthOfYear_nullMonthOfYear_day31() {
-        MonthOfYear moy = null;
-        DayOfMonth test = DayOfMonth.dayOfMonth(31);
-        test.isValid(2007, moy);
     }
 
     //-----------------------------------------------------------------------
