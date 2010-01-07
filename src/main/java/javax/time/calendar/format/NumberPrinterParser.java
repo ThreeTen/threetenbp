@@ -136,7 +136,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         if (str.length() > maxWidth) {
             throw new CalendricalPrintFieldException(rule, value, maxWidth);
         }
-        str = FormatUtil.convertToI18N(str, symbols);
+        str = symbols.convertNumberToI18N(str);
         
         if (value >= 0) {
             switch (signStyle) {

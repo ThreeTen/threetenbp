@@ -32,12 +32,7 @@
 package javax.time.calendar.format;
 
 import java.text.DateFormatSymbols;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-
-import javax.time.calendar.DateTimeFieldRule.TextStore;
-import javax.time.calendar.format.DateTimeFormatterBuilder.TextStyle;
 
 /**
  * Symbols used for date and time formatting.
@@ -66,10 +61,6 @@ public final class DateTimeFormatSymbols {
      * The decimal point character.
      */
     private final char decimalPointChar = '.';
-    /**
-     * The date format symbols.
-     */
-    private final Map<String, Map<TextStyle, TextStore>> textMap;
 
     //-----------------------------------------------------------------------
     /**
@@ -134,6 +125,7 @@ public final class DateTimeFormatSymbols {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
         DateFormatSymbols symbols = new DateFormatSymbols(locale);
         return new DateTimeFormatSymbols(locale, symbols);
+        // TODO extract localized values
     }
 
     //-----------------------------------------------------------------------
@@ -145,7 +137,6 @@ public final class DateTimeFormatSymbols {
     private DateTimeFormatSymbols(Locale locale) {
         DateTimeFormatter.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
-        textMap = new HashMap<String, Map<TextStyle, TextStore>>();
     }
 
     /**
@@ -157,86 +148,6 @@ public final class DateTimeFormatSymbols {
     private DateTimeFormatSymbols(Locale locale, DateFormatSymbols oldSymbols) {
         this(locale);
         DateTimeFormatter.checkNotNull(oldSymbols, "Symbols to convert must not be null");
-        
-//        Map<Integer, String> map = new HashMap<Integer, String>();
-//        String[] array = null;
-//        String id = null;
-//        
-////        // eras
-////        id = ISOChronology.eraRule().getID();
-////        textMap.put(id, new HashMap<TextStyle, TextStore>());
-////        map.clear();
-////        array = oldSymbols.getEras();
-////        // TODO
-////        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
-//        
-//        // months
-//        id = ISOChronology.monthOfYearRule().getID();
-//        textMap.put(id, new HashMap<TextStyle, TextStore>());
-//        map.clear();
-//        array = oldSymbols.getMonths();
-//        map.put(MonthOfYear.JANUARY.getValue(), array[Calendar.JANUARY]);
-//        map.put(MonthOfYear.FEBRUARY.getValue(), array[Calendar.FEBRUARY]);
-//        map.put(MonthOfYear.MARCH.getValue(), array[Calendar.MARCH]);
-//        map.put(MonthOfYear.APRIL.getValue(), array[Calendar.APRIL]);
-//        map.put(MonthOfYear.MAY.getValue(), array[Calendar.MAY]);
-//        map.put(MonthOfYear.JUNE.getValue(), array[Calendar.JUNE]);
-//        map.put(MonthOfYear.JULY.getValue(), array[Calendar.JULY]);
-//        map.put(MonthOfYear.AUGUST.getValue(), array[Calendar.AUGUST]);
-//        map.put(MonthOfYear.SEPTEMBER.getValue(), array[Calendar.SEPTEMBER]);
-//        map.put(MonthOfYear.OCTOBER.getValue(), array[Calendar.OCTOBER]);
-//        map.put(MonthOfYear.NOVEMBER.getValue(), array[Calendar.NOVEMBER]);
-//        map.put(MonthOfYear.DECEMBER.getValue(), array[Calendar.DECEMBER]);
-//        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
-//        map.clear();
-//        array = oldSymbols.getShortMonths();
-//        map.put(MonthOfYear.JANUARY.getValue(), array[Calendar.JANUARY]);
-//        map.put(MonthOfYear.FEBRUARY.getValue(), array[Calendar.FEBRUARY]);
-//        map.put(MonthOfYear.MARCH.getValue(), array[Calendar.MARCH]);
-//        map.put(MonthOfYear.APRIL.getValue(), array[Calendar.APRIL]);
-//        map.put(MonthOfYear.MAY.getValue(), array[Calendar.MAY]);
-//        map.put(MonthOfYear.JUNE.getValue(), array[Calendar.JUNE]);
-//        map.put(MonthOfYear.JULY.getValue(), array[Calendar.JULY]);
-//        map.put(MonthOfYear.AUGUST.getValue(), array[Calendar.AUGUST]);
-//        map.put(MonthOfYear.SEPTEMBER.getValue(), array[Calendar.SEPTEMBER]);
-//        map.put(MonthOfYear.OCTOBER.getValue(), array[Calendar.OCTOBER]);
-//        map.put(MonthOfYear.NOVEMBER.getValue(), array[Calendar.NOVEMBER]);
-//        map.put(MonthOfYear.DECEMBER.getValue(), array[Calendar.DECEMBER]);
-//        textMap.get(id).put(TextStyle.SHORT, new TextStore(map));
-//        
-//        // day-of-week
-//        id = ISOChronology.dayOfWeekRule().getID();
-//        textMap.put(id, new HashMap<TextStyle, TextStore>());
-//        map.clear();
-//        array = oldSymbols.getWeekdays();
-//        map.put(DayOfWeek.MONDAY.getValue(), array[Calendar.MONDAY]);
-//        map.put(DayOfWeek.TUESDAY.getValue(), array[Calendar.TUESDAY]);
-//        map.put(DayOfWeek.WEDNESDAY.getValue(), array[Calendar.WEDNESDAY]);
-//        map.put(DayOfWeek.THURSDAY.getValue(), array[Calendar.THURSDAY]);
-//        map.put(DayOfWeek.FRIDAY.getValue(), array[Calendar.FRIDAY]);
-//        map.put(DayOfWeek.SATURDAY.getValue(), array[Calendar.SATURDAY]);
-//        map.put(DayOfWeek.SUNDAY.getValue(), array[Calendar.SUNDAY]);
-//        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
-//        map.clear();
-//        array = oldSymbols.getShortWeekdays();
-//        map.put(DayOfWeek.MONDAY.getValue(), array[Calendar.MONDAY]);
-//        map.put(DayOfWeek.TUESDAY.getValue(), array[Calendar.TUESDAY]);
-//        map.put(DayOfWeek.WEDNESDAY.getValue(), array[Calendar.WEDNESDAY]);
-//        map.put(DayOfWeek.THURSDAY.getValue(), array[Calendar.THURSDAY]);
-//        map.put(DayOfWeek.FRIDAY.getValue(), array[Calendar.FRIDAY]);
-//        map.put(DayOfWeek.SATURDAY.getValue(), array[Calendar.SATURDAY]);
-//        map.put(DayOfWeek.SUNDAY.getValue(), array[Calendar.SUNDAY]);
-//        textMap.get(id).put(TextStyle.SHORT, new TextStore(map));
-//        
-//        // am pm
-//        id = ISOChronology.amPmOfDayRule().getID();
-//        textMap.put(id, new HashMap<TextStyle, TextStore>());
-//        map.clear();
-//        array = oldSymbols.getAmPmStrings();
-//        map.put(AmPmOfDay.AM.getValue(), array[Calendar.AM]);
-//        map.put(AmPmOfDay.PM.getValue(), array[Calendar.PM]);
-//        textMap.get(id).put(TextStyle.FULL, new TextStore(map));
-//        textMap.get(id).put(TextStyle.SHORT, new TextStore(map));  // no data for short so reuse full
     }
 
     //-----------------------------------------------------------------------
@@ -323,180 +234,24 @@ public final class DateTimeFormatSymbols {
         return decimalPointChar;
     }
 
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the map of text for each value of the specified field.
-//     * <p>
-//     * The map of integer value to text is returned for the specified field
-//     * and text style. There may be no text defined for the given input, in
-//     * which case <code>null</code> is returned. The returned map is immutable.
-//     *
-//     * @param fieldRule  the field to get text for, not null
-//     * @param textStyle  the text style, not null
-//     * @return the map of value to text for the field rule and style, null if no text defined
-//     */
-//    public Map<Integer, String> getFieldValueTextMap(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-//        TextStore store = getTextStore(fieldRule, textStyle);
-//        return store == null ? null : store.valueTextMap;
-//    }
-//
-//    /**
-//     * Gets the text for the specified field.
-//     * <p>
-//     * The text associated with the style, field and value is returned. For example,
-//     * the full text for the month field value 3 in English is 'March'.
-//     * <p>
-//     * The value returned should be valid, however no exception will be thrown
-//     * if it is invalid.
-//     *
-//     * @param fieldRule  the field to get text for, not null
-//     * @param textStyle  the text style, not null
-//     * @param value  the value to get text for
-//     * @return the text for the field value, null if no text found
-//     */
-//    public String getFieldValueText(DateTimeFieldRule fieldRule, TextStyle textStyle, int value) {
-//        Map<Integer, String> valueTextMap = getFieldValueTextMap(fieldRule, textStyle);
-//        return valueTextMap == null ? null : valueTextMap.get(value);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * Gets the map of the value for the text representation of the specified field.
-//     * <p>
-//     * The map of text to integer value is returned for the specified field
-//     * and text style. There may be no text defined for the given input, in
-//     * which case <code>null</code> is returned. The returned map is immutable.
-//     *
-//     * @param fieldRule  the field to get text for, not null
-//     * @param textStyle  the text style, not null
-//     * @return the map of value to text for the field rule and style, null if
-//     *  no text defined or parsing is not supported
-//     */
-//    public Map<String, Integer> getFieldTextValueMap(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-//        TextStore store = getTextStore(fieldRule, textStyle);
-//        return store == null ? null : store.textValueMap;
-//    }
-//
-//    /**
-//     * Matches the specified text against the known symbols returning the
-//     * matching text length and value.
-//     * <p>
-//     * This method is intended for use during parsing, and matches the start of
-//     * specified search text against the known symbols, optionally ignoring case.
-//     *
-//     * @param fieldRule  the field to get text for, not null
-//     * @param textStyle  the text style, not null
-//     * @param ignoreCase  true to ignore case during the matching
-//     * @param searchText  the text to match against
-//     * @return an array of size two consisting of the matched length and the matched value,
-//     *  null if there are no text symbols for the field and text style
-//     */
-//    public int[] matchFieldText(DateTimeFieldRule fieldRule, TextStyle textStyle, boolean ignoreCase, String searchText) {
-//        TextStore store = getTextStore(fieldRule, textStyle);
-//        DateTimeFormatter.checkNotNull(searchText, "Search text must not be null");
-//        if (store == null) {
-//            return null;
-//        }
-//        if (ignoreCase) {
-//            int maxLength = store.insensitiveMaxLength;
-//            Map<String, Integer> textValueMap = store.insensitiveTextValueMap;
-//            searchText = searchText.toUpperCase(locale);
-//            for (int i = Math.min(maxLength, searchText.length()); i > 0; i--) {
-//                Integer value = textValueMap.get(searchText.substring(0, i));
-//                if (value != null) {
-//                    return new int[] {i, value};
-//                }
-//            }
-//            searchText = searchText.toLowerCase(locale);
-//            for (int i = Math.min(maxLength, searchText.length()); i > 0; i--) {
-//                Integer value = textValueMap.get(searchText.substring(0, i));
-//                if (value != null) {
-//                    return new int[] {i, value};
-//                }
-//            }
-//        } else {
-//            int maxLength = store.maxLength;
-//            Map<String, Integer> textValueMap = store.textValueMap;
-//            for (int i = Math.min(maxLength, searchText.length()); i > 0; i--) {
-//                Integer value = textValueMap.get(searchText.substring(0, i));
-//                if (value != null) {
-//                    return new int[] {i, value};
-//                }
-//            }
-//        }
-//        return new int[] {0, 0};
-//    }
-//
-//    /**
-//     * Gets the text store.
-//     *
-//     * @param fieldRule  the field to get text for, not null
-//     * @param textStyle  the text style, not null
-//     * @return the text store, null if no text defined
-//     */
-//    private TextStore getTextStore(DateTimeFieldRule fieldRule, TextStyle textStyle) {
-//        DateTimeFormatter.checkNotNull(fieldRule, "DateTimeFieldRule must not be null");
-//        DateTimeFormatter.checkNotNull(textStyle, "TextStyle must not be null");
-//        String id = fieldRule.getID();
-//        Map<TextStyle, TextStore> styleMap = textMap.get(id);
-//        return styleMap == null ? null : styleMap.get(textStyle);
-//    }
-//
-//    //-----------------------------------------------------------------------
-//    /**
-//     * The internal store of text/value.
-//     */
-//    private class TextStore {
-//        /** Map of value to text. */
-//        private final Map<Integer, String> valueTextMap;
-//        /** Map of text to value. */
-//        private final Map<String, Integer> textValueMap;
-//        /** The maximum length of any text item. */
-//        private final int maxLength;
-//        /** Map of case insensitive text to value. */
-//        private final Map<String, Integer> insensitiveTextValueMap;
-//        /** The maximum length of any text item in the insensitive map. */
-//        private final int insensitiveMaxLength;
-//        
-//        /**
-//         * Constructor.
-//         *
-//         * @param map  the map of value to text, not null
-//         * @throws IllegalArgumentException if the map contains null or empty text
-//         */
-//        private TextStore(Map<Integer, String> map) {
-//            DateTimeFormatter.checkNotNull(map, "Text map must not be null");
-//            if (map.containsKey(null) || map.containsValue(null) || map.containsValue("")) {
-//                throw new IllegalArgumentException("The map must not contain null or empty text");
-//            }
-//            Map<Integer, String> copy = new HashMap<Integer, String>(map);
-//            Map<String, Integer> reverse = new HashMap<String, Integer>();
-//            int maxLength = 0;
-//            Map<String, Integer> insensitive = new HashMap<String, Integer>();
-//            int insensitiveMaxLength = 0;
-//            for (Entry<Integer, String> entry : copy.entrySet()) {
-//                String text = entry.getValue();
-//                Integer value = entry.getKey();
-//                reverse.put(text, value);
-//                maxLength = Math.max(maxLength, text.length());
-//                insensitive.put(text.toLowerCase(locale), value);
-//                insensitive.put(text.toUpperCase(locale), value);
-//                insensitiveMaxLength = Math.max(maxLength, text.length());
-//            }
-//            if (reverse.size() < copy.size()) {
-//                // duplicate text for a given value, so parsing is not supported
-//                this.textValueMap = null;
-//                maxLength = 0;
-//                this.insensitiveTextValueMap = null;
-//                insensitiveMaxLength = 0;
-//            } else {
-//                textValueMap = Collections.unmodifiableMap(reverse);
-//                insensitiveTextValueMap = Collections.unmodifiableMap(insensitive);
-//            }
-//            this.valueTextMap = Collections.unmodifiableMap(copy);
-//            this.maxLength = maxLength;
-//            this.insensitiveMaxLength = insensitiveMaxLength;
-//        }
-//    }
+    //-----------------------------------------------------------------------
+    /**
+     * Converts the input numeric text to the internationalized form using the
+     * zero character.
+     *
+     * @param numericText  the text, consisting of digits 0 to 9, to convert, not null
+     * @return the internationalized text, never null
+     */
+    String convertNumberToI18N(String numericText) {
+        if (getZeroChar() == '0') {
+            return numericText;
+        }
+        int diff = getZeroChar() - '0';
+        char[] array = numericText.toCharArray();
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (char) (array[i] + diff);
+        }
+        return new String(array);
+    }
 
 }

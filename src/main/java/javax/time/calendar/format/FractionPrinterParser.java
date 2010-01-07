@@ -90,7 +90,7 @@ final class FractionPrinterParser implements DateTimePrinter, DateTimeParser {
             int outputScale = Math.min(Math.max(fraction.scale(), minWidth), maxWidth);
             fraction = fraction.setScale(outputScale, RoundingMode.FLOOR);
             String str = fraction.toPlainString().substring(2);
-            str = FormatUtil.convertToI18N(str, symbols);
+            str = symbols.convertNumberToI18N(str);
             appendable.append(symbols.getDecimalPointChar());
             appendable.append(str);
         }
