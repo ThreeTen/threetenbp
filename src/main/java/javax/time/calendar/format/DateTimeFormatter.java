@@ -44,13 +44,22 @@ import javax.time.calendar.CalendricalRule;
 import javax.time.calendar.UnsupportedRuleException;
 
 /**
- * Formatter for dates and times.
+ * Formatter for printing and parsing calendricals.
  * <p>
- * This class provides the main application entry point for performing formatting.
- * Formatting consists of printing and parsing.
- * <p>
+ * This class provides the main application entry point for printing and parsing.
  * Instances of DateTimeFormatter are constructed using DateTimeFormatterBuilder
  * or by using one of the predefined constants on DateTimeFormatters.
+ * <p>
+ * Some aspects of printing and parsing are dependent on the locale.
+ * The locale can be changed using the {@link #withLocale(Locale)} method
+ * which returns a new formatter in the requested locale.
+ * <p>
+ * Not all formatters can print and parse. Some can only print, while others can only parse.
+ * The {@link #isPrintSupported()} and {@link #isParseSupported()} methods determine
+ * which operations are available.
+ * <p>
+ * Some applications may need to use the older {@link Format} class for formatting.
+ * The {@link #toFormat()} method returns an implementation of the old API.
  * <p>
  * DateTimeFormatter is immutable and thread-safe.
  *
@@ -63,7 +72,7 @@ public final class DateTimeFormatter {
      */
     private final DateTimeFormatSymbols symbols;
     /**
-     * The list of printers that will be used, treated as immutable.
+     * The printer and/or parser to use, not null.
      */
     private final CompositePrinterParser printerParser;
 

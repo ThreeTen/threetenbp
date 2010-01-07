@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -36,7 +36,7 @@ import java.io.IOException;
 import javax.time.calendar.Calendrical;
 
 /**
- * Enumeration to set the strict/lenient parse style.
+ * Enumeration printer/parser to set the strict/lenient parse style.
  *
  * @author Stephen Colebourne
  */
