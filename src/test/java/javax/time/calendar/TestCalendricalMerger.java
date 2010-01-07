@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,9 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDate.date;
-import static javax.time.calendar.LocalDateTime.dateTime;
-import static javax.time.calendar.LocalTime.time;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -1076,4 +1073,21 @@ public class TestCalendricalMerger {
         // this is used to allow a human to inspect the error messages to see if they are understandable
         System.out.println(ex.getMessage());
     }
+
+    private LocalDate date(int year, int month, int day) {
+        return LocalDate.date(year, month, day);
+    }
+
+    private LocalTime time(int hour, int minute) {
+        return LocalTime.time(hour, minute);
+    }
+
+    private LocalTime time(int hour, int minute, int second, int nano) {
+        return LocalTime.time(hour, minute, second, nano);
+    }
+
+    private LocalDateTime dateTime(int year, int month, int day, int hour, int minute) {
+        return LocalDateTime.dateTime(year, month, day, hour, minute);
+    }
+
 }

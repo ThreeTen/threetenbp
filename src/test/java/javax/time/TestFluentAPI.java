@@ -33,10 +33,8 @@ package javax.time;
 
 import static javax.time.calendar.DateAdjusters.*;
 import static javax.time.calendar.ISOChronology.*;
-import static javax.time.calendar.LocalDate.date;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.calendar.field.MonthOfYear.*;
-import static javax.time.calendar.field.Year.isoYear;
 import static javax.time.period.Period.*;
 
 import javax.time.calendar.Clock;
@@ -80,8 +78,8 @@ public class TestFluentAPI {
         date = clock.today().plus(days(3));
 //        date = Clock.system().today().plus(Days.days(3));
         
-        date = date(2007, 3, 20);
-        date = date(2007, MARCH, 20);
+        date = LocalDate.date(2007, 3, 20);
+        date = LocalDate.date(2007, MARCH, 20);
         date = Year.isoYear(2007).atMonth(3).atDay(20);
         date = Year.isoYear(2007).atMonth(MARCH).atDay(20);
         
@@ -102,7 +100,7 @@ public class TestFluentAPI {
         date = date.with(nextOrCurrent(MONDAY));
         date = date.with(dayOfWeekInMonth(2, TUESDAY));
         date = date.with(firstInMonth(MONDAY));
-        date = date.with(isoYear(2009));
+        date = date.with(Year.isoYear(2009));
         date = date.with(monthOfYear(6));
         date = date.with(MonthOfYear.AUGUST);
         date.with(MonthOfYear.DECEMBER, DateResolvers.strict());

@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.field.Year.isoYear;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -56,8 +55,8 @@ import org.testng.annotations.Test;
  */
 @Test
 public class TestDateResolvers {
-    private static final Year YEAR_2007 = isoYear(2007);
-    private static final Year YEAR_2008 = isoYear(2008);
+    private static final Year YEAR_2007 = Year.isoYear(2007);
+    private static final Year YEAR_2008 = Year.isoYear(2008);
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {

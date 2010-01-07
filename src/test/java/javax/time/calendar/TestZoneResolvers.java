@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDateTime.*;
 import static org.testng.Assert.*;
 
 import java.lang.reflect.Constructor;
@@ -54,10 +53,10 @@ public class TestZoneResolvers {
 //    private static final ZoneOffset OFFSET_UTC = ZoneOffset.UTC;
     private static final ZoneOffset OFFSET_0100 = ZoneOffset.zoneOffset(1);
     private static final ZoneOffset OFFSET_0200 = ZoneOffset.zoneOffset(2);
-    private static final LocalDateTime DT_PARIS_OVERLAP = dateTime(2008, 10, 26, 2, 30);
-    private static final LocalDateTime DT_PARIS_GAP = dateTime(2008, 3, 30, 2, 30);
-    private static final LocalDateTime DT_WINTER = dateTime(2008, 1, 1, 2, 30);
-    private static final LocalDateTime DT_SUMMER = dateTime(2008, 6, 1, 2, 30);
+    private static final LocalDateTime DT_PARIS_OVERLAP = dateTime(2008, 10, 26, 2, 30, 0, 0);
+    private static final LocalDateTime DT_PARIS_GAP = dateTime(2008, 3, 30, 2, 30, 0, 0);
+    private static final LocalDateTime DT_WINTER = dateTime(2008, 1, 1, 2, 30, 0, 0);
+    private static final LocalDateTime DT_SUMMER = dateTime(2008, 6, 1, 2, 30, 0, 0);
 
     @SuppressWarnings("unchecked")
     public void test_constructor() throws Exception {
@@ -390,6 +389,11 @@ public class TestZoneResolvers {
     public void combination_nullOverlap_overlap() {
         ZoneResolver combo = ZoneResolvers.combination(ZoneResolvers.preTransition(), null);
         combo.resolve(ZONE_PARIS, DT_PARIS_OVERLAP, null);
+    }
+
+    //-----------------------------------------------------------------------
+    private static LocalDateTime dateTime(int year, int month, int day, int h, int m, int s, int n) {
+        return LocalDateTime.dateTime(year, month, day, h, m, s, n);
     }
 
 }

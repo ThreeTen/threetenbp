@@ -31,11 +31,10 @@
  */
 package javax.time.period.field;
 
-import static javax.time.period.PeriodUnits.*;
-
 import java.io.Serializable;
 
 import javax.time.period.PeriodUnit;
+import javax.time.period.PeriodUnits;
 
 /**
  * A period representing a number of days.
@@ -43,7 +42,7 @@ import javax.time.period.PeriodUnit;
  * Days is an immutable period that can only store days.
  * It is a type-safe way of representing a number of days in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The number of days may be queried using getDays().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
@@ -132,7 +131,7 @@ public final class Days extends PeriodField implements Comparable<Days>, Seriali
      */
     @Override
     public PeriodUnit getUnit() {
-        return DAYS;
+        return PeriodUnits.DAYS;
     }
 
     //-----------------------------------------------------------------------

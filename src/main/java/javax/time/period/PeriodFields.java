@@ -31,14 +31,6 @@
  */
 package javax.time.period;
 
-import static javax.time.period.PeriodUnits.DAYS;
-import static javax.time.period.PeriodUnits.HOURS;
-import static javax.time.period.PeriodUnits.MINUTES;
-import static javax.time.period.PeriodUnits.MONTHS;
-import static javax.time.period.PeriodUnits.NANOS;
-import static javax.time.period.PeriodUnits.SECONDS;
-import static javax.time.period.PeriodUnits.YEARS;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
@@ -144,25 +136,25 @@ public final class PeriodFields
         }
         TreeMap<PeriodUnit, Long> map = createMap();
         if (period.getYears() != 0) {
-            map.put(YEARS, Long.valueOf(period.getYears()));
+            map.put(PeriodUnits.YEARS, Long.valueOf(period.getYears()));
         }
         if (period.getMonths() != 0) {
-            map.put(MONTHS, Long.valueOf(period.getMonths()));
+            map.put(PeriodUnits.MONTHS, Long.valueOf(period.getMonths()));
         }
         if (period.getDays() != 0) {
-            map.put(DAYS, Long.valueOf(period.getDays()));
+            map.put(PeriodUnits.DAYS, Long.valueOf(period.getDays()));
         }
         if (period.getHours() != 0) {
-            map.put(HOURS, Long.valueOf(period.getHours()));
+            map.put(PeriodUnits.HOURS, Long.valueOf(period.getHours()));
         }
         if (period.getMinutes() != 0) {
-            map.put(MINUTES, Long.valueOf(period.getMinutes()));
+            map.put(PeriodUnits.MINUTES, Long.valueOf(period.getMinutes()));
         }
         if (period.getSeconds() != 0) {
-            map.put(SECONDS, Long.valueOf(period.getSeconds()));
+            map.put(PeriodUnits.SECONDS, Long.valueOf(period.getSeconds()));
         }
         if (period.getNanos() != 0) {
-            map.put(NANOS, Long.valueOf(period.getNanos()));
+            map.put(PeriodUnits.NANOS, Long.valueOf(period.getNanos()));
         }
         return create(map);
     }
@@ -629,13 +621,13 @@ public final class PeriodFields
             return Period.ZERO;
         }
         Map<PeriodUnit, Long> copy = clonedMap();
-        Long years = copy.remove(YEARS);
-        Long months = copy.remove(MONTHS);
-        Long days = copy.remove(DAYS);
-        Long hours = copy.remove(HOURS);
-        Long minutes = copy.remove(MINUTES);
-        Long seconds = copy.remove(SECONDS);
-        Long nanos = copy.remove(NANOS);
+        Long years = copy.remove(PeriodUnits.YEARS);
+        Long months = copy.remove(PeriodUnits.MONTHS);
+        Long days = copy.remove(PeriodUnits.DAYS);
+        Long hours = copy.remove(PeriodUnits.HOURS);
+        Long minutes = copy.remove(PeriodUnits.MINUTES);
+        Long seconds = copy.remove(PeriodUnits.SECONDS);
+        Long nanos = copy.remove(PeriodUnits.NANOS);
         if (copy.size() > 0) {
             throw new CalendarConversionException(
                     "Unable to convert to a Period as the following fields are incompatible: " + copy.keySet());

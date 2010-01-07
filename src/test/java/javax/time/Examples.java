@@ -32,12 +32,7 @@
 package javax.time;
 
 import static javax.time.calendar.DateAdjusters.lastDayOfMonth;
-import static javax.time.calendar.ISOChronology.dayOfMonthRule;
-import static javax.time.calendar.ISOChronology.monthOfYearRule;
-import static javax.time.calendar.ISOChronology.quarterOfYearRule;
-import static javax.time.calendar.ISOChronology.yearRule;
-import static javax.time.calendar.LocalDateTime.dateTime;
-import static javax.time.calendar.TimeZone.timeZone;
+import static javax.time.calendar.ISOChronology.*;
 import static javax.time.calendar.field.DayOfWeek.FRIDAY;
 import static javax.time.calendar.field.MonthOfYear.DECEMBER;
 import static javax.time.period.Period.yearsMonthsDays;
@@ -51,6 +46,7 @@ import javax.time.calendar.LocalDate;
 import javax.time.calendar.LocalDateTime;
 import javax.time.calendar.LocalTime;
 import javax.time.calendar.MonthDay;
+import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneResolvers;
 import javax.time.calendar.ZonedDateTime;
 import javax.time.calendar.field.Year;
@@ -77,10 +73,10 @@ public class Examples {
         ZonedDateTime zdt = clock.zonedDateTime();
         System.out.println("Current date-time: " + zdt);
         
-        ZonedDateTime zdtNewYork = Clock.system(timeZone("America/New_York")).zonedDateTime();
+        ZonedDateTime zdtNewYork = Clock.system(TimeZone.timeZone("America/New_York")).zonedDateTime();
         System.out.println("Current date-time in New York: " + zdtNewYork);
         
-        ZonedDateTime zdtParis = Clock.system(timeZone("Europe/Paris")).zonedDateTime();
+        ZonedDateTime zdtParis = Clock.system(TimeZone.timeZone("Europe/Paris")).zonedDateTime();
         System.out.println("Current date-time in Paris: " + zdtParis);
         
         LocalDateTime ldt = clock.dateTime();
@@ -120,10 +116,10 @@ public class Examples {
         boolean fri13 = tempDate.matches(fri13matcher);
         System.out.println("Is Friday the Thirteenth: " + fri13);
         
-        LocalDateTime dt = dateTime(2008, 3, 30, 1, 30);
+        LocalDateTime dt = LocalDateTime.dateTime(2008, 3, 30, 1, 30);
         System.out.println("Local date-time in Spring DST gap: " + dt);
         
-        ZonedDateTime resolved = ZonedDateTime.dateTime(dt, timeZone("Europe/London"), ZoneResolvers.postTransition());
+        ZonedDateTime resolved = ZonedDateTime.dateTime(dt, TimeZone.timeZone("Europe/London"), ZoneResolvers.postTransition());
         System.out.println("...resolved to valid date-time in Europe/London: " + resolved);
         
         String formattedRFC = DateTimeFormatters.rfc1123().print(resolved);

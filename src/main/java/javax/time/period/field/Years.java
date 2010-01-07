@@ -31,11 +31,10 @@
  */
 package javax.time.period.field;
 
-import static javax.time.period.PeriodUnits.*;
-
 import java.io.Serializable;
 
 import javax.time.period.PeriodUnit;
+import javax.time.period.PeriodUnits;
 
 /**
  * A period representing a number of years.
@@ -43,7 +42,7 @@ import javax.time.period.PeriodUnit;
  * Years is an immutable period that can only store years.
  * It is a type-safe way of representing a number of years in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The number of years may be queried using getYears().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
@@ -132,7 +131,7 @@ public final class Years extends PeriodField implements Comparable<Years>, Seria
      */
     @Override
     public PeriodUnit getUnit() {
-        return YEARS;
+        return PeriodUnits.YEARS;
     }
 
     //-----------------------------------------------------------------------

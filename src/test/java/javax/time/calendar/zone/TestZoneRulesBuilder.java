@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2009-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,12 +31,10 @@
  */
 package javax.time.calendar.zone;
 
-import static javax.time.calendar.LocalDateTime.*;
-import static javax.time.calendar.LocalTime.*;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static javax.time.calendar.field.MonthOfYear.*;
 import static javax.time.calendar.zone.ZoneRulesBuilder.TimeDefinition.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import javax.time.calendar.IllegalCalendarFieldValueException;
 import javax.time.calendar.LocalDateTime;
@@ -947,6 +945,19 @@ public class TestZoneRulesBuilder {
         assertEquals(offsetInfo.getDiscontinuity().isOverlap(), true);
         assertEquals(offsetInfo.getDiscontinuity().getOffsetBefore(), before);
         assertEquals(offsetInfo.getDiscontinuity().getOffsetAfter(), after);
+    }
+
+    //-----------------------------------------------------------------------
+    private static LocalTime time(int h, int m) {
+        return LocalTime.time(h, m);
+    }
+
+    private static LocalDateTime dateTime(int year, int month, int day, int h, int m) {
+        return LocalDateTime.dateTime(year, month, day, h, m);
+    }
+
+    private static LocalDateTime dateTime(int year, MonthOfYear month, int day, int h, int m) {
+        return LocalDateTime.dateTime(year, month, day, h, m);
     }
 
 }

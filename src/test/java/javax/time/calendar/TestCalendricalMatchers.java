@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDate.date;
 import static javax.time.calendar.field.DayOfWeek.MONDAY;
 import static javax.time.calendar.field.DayOfWeek.SUNDAY;
 import static javax.time.calendar.field.DayOfWeek.TUESDAY;
@@ -139,7 +138,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_leapDay_nonLeap() {
-        LocalDate date = date(2007, 1, 1);
+        LocalDate date = date(2007, MonthOfYear.JANUARY, 1);
         for (int i = 1; i <= 365; i++) {
             assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(date), false);
             date = date.plusDays(1);
@@ -147,7 +146,7 @@ public class TestCalendricalMatchers {
     }
 
     public void test_leapDay_leap() {
-        LocalDate date = date(2008, 1, 1);
+        LocalDate date = date(2008, MonthOfYear.JANUARY, 1);
         for (int i = 1; i <= 366; i++) {
             assertEquals(CalendricalMatchers.leapDay().matchesCalendrical(date), i == 60);
             date = date.plusDays(1);
@@ -464,6 +463,10 @@ public class TestCalendricalMatchers {
 
     public void test_nonWeekendDay_noData() {
         assertEquals(CalendricalMatchers.nonWeekendDay().matchesCalendrical(LocalTime.time(12, 30)), false);
+    }
+
+    private LocalDate date(int year, MonthOfYear month, int day) {
+        return LocalDate.date(year, month, day);
     }
 
 }

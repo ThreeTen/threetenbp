@@ -31,11 +31,10 @@
  */
 package javax.time.period.field;
 
-import static javax.time.period.PeriodUnits.*;
-
 import java.io.Serializable;
 
 import javax.time.period.PeriodUnit;
+import javax.time.period.PeriodUnits;
 
 /**
  * A period representing a number of minutes.
@@ -43,7 +42,7 @@ import javax.time.period.PeriodUnit;
  * Minutes is an immutable period that can only store minutes.
  * It is a type-safe way of representing a number of minutes in an application.
  * <p>
- * Static factory methods allow you to constuct instances.
+ * Static factory methods allow you to construct instances.
  * The number of minutes may be queried using getMinutes().
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
@@ -132,7 +131,7 @@ public final class Minutes extends PeriodField implements Comparable<Minutes>, S
      */
     @Override
     public PeriodUnit getUnit() {
-        return MINUTES;
+        return PeriodUnits.MINUTES;
     }
 
     //-----------------------------------------------------------------------

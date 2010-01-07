@@ -31,7 +31,6 @@
  */
 package javax.time.calendar;
 
-import static javax.time.calendar.LocalDate.date;
 import static javax.time.calendar.field.DayOfWeek.*;
 import static org.testng.Assert.*;
 
@@ -731,4 +730,9 @@ public class TestDateAdjusters {
             }
         }
     }
+
+    private LocalDate date(int year, MonthOfYear month, int day) {
+        return LocalDate.date(year, month, day);
+    }
+
 }
