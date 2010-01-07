@@ -6,8 +6,8 @@
 	<classpathentry kind="src" output="build/test" path="src-openjdk/test/java"/>
 	<classpathentry kind="src" path="src-oracle/main/java"/>
 	<classpathentry kind="src" output="build/test" path="src-oracle/test/java"/>
-	<classpathentry kind="src" path="src-extra/main/java"/>
 	<classpathentry kind="src" output="build/test" path="src-extra/test/java"/>
+	<classpathentry kind="src" path="src-extra/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/test/testng-5.8-jdk15.jar"/>
 	<classpathentry kind="lib" path="src/main/tzdata/2008i/ZoneRuleInfo-TZDB-2008i.jar"/>

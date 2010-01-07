@@ -98,13 +98,6 @@ import javax.time.period.TestPeriod;
 import javax.time.period.TestPeriodFields;
 import javax.time.period.TestPeriodParser;
 import javax.time.period.TestPeriodUnits;
-import javax.time.period.field.TestDays;
-import javax.time.period.field.TestHours;
-import javax.time.period.field.TestMinutes;
-import javax.time.period.field.TestMonths;
-import javax.time.period.field.TestSeconds;
-import javax.time.period.field.TestWeeks;
-import javax.time.period.field.TestYears;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -202,14 +195,6 @@ public class AllTest {
             TestPeriodParser.class,
             TestPeriodFields.class,
             TestPeriodUnits.class,
-            // period fields
-            TestDays.class,
-            TestHours.class,
-            TestMinutes.class,
-            TestMonths.class,
-            TestSeconds.class,
-            TestWeeks.class,
-            TestYears.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));
