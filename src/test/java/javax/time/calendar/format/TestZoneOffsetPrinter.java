@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -89,7 +89,7 @@ public class TestZoneOffsetPrinter {
 //    }
 
     //-----------------------------------------------------------------------
-    @Test(expectedExceptions=CalendricalFormatException.class)
+    @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_emptyCalendrical() throws Exception {
         ZoneOffsetPrinterParser pp = new ZoneOffsetPrinterParser("Z", true, true);
         pp.print(emptyCalendrical, buf, symbols);

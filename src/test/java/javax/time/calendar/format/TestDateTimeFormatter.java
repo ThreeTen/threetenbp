@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -152,7 +152,7 @@ public class TestDateTimeFormatter {
         assertEquals(result, "ONE30");
     }
 
-    @Test(expectedExceptions=CalendricalFormatException.class)
+    @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_Calendrical_noSuchField() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         test.print(LocalTime.time(11, 30));
@@ -180,7 +180,7 @@ public class TestDateTimeFormatter {
         assertEquals(buf.toString(), "ONE30");
     }
 
-    @Test(expectedExceptions=CalendricalFormatException.class)
+    @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_CalendricalAppendable_noSuchField() throws Exception {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         StringBuilder buf = new StringBuilder();
@@ -213,7 +213,7 @@ public class TestDateTimeFormatter {
         DateTimeFormatter test = new DateTimeFormatter(Locale.ENGLISH, compPP);
         try {
             test.print(LocalDate.date(2008, 6, 30), new MockIOExceptionAppendable());
-        } catch (CalendricalFormatException ex) {
+        } catch (CalendricalPrintException ex) {
             assertEquals(ex.getCause() instanceof IOException, true);
             ex.rethrowIOException();
         }

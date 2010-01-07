@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -56,7 +56,7 @@ public interface DateTimePrinter {
      * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to add to, not null
      * @param symbols  the formatting symbols to use, not null
-     * @throws CalendricalFormatException if the date time cannot be printed successfully
+     * @throws CalendricalPrintException if the date time cannot be printed successfully
      * @throws IOException if the append throws an exception
      */
     void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException;

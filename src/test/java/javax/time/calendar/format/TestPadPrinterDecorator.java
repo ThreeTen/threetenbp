@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -140,7 +140,7 @@ public class TestPadPrinterDecorator {
         assertEquals(buf.toString(), "-WXYZ");
     }
 
-    @Test(expectedExceptions=CalendricalFormatException.class)
+    @Test(expectedExceptions=CalendricalPrintException.class)
     public void test_print_overPad() throws Exception {
         PadPrinterParserDecorator pp = new PadPrinterParserDecorator(new StringLiteralPrinterParser("WXYZ"), null, 3, '-');
         pp.print(emptyCalendrical, buf, symbols);

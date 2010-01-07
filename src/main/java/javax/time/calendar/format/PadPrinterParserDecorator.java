@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -84,7 +84,7 @@ final class PadPrinterParserDecorator implements DateTimePrinter, DateTimeParser
         printer.print(calendrical, buf, symbols);
         int len = buf.length();
         if (len > padWidth) {
-            throw new CalendricalFormatException("Output of " + len + " characters exceeds pad width of " + padWidth);
+            throw new CalendricalPrintException("Output of " + len + " characters exceeds pad width of " + padWidth);
         }
         for (int i = 0; i < padWidth - len; i++) {
             appendable.append(padChar);

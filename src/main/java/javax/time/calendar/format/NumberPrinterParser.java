@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -134,7 +134,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
         int value = rule.getInt(calendrical);
         String str = (value == Integer.MIN_VALUE ? "2147483648" : Integer.toString(Math.abs(value)));
         if (str.length() > maxWidth) {
-            throw new CalendricalFormatFieldException(rule, value, maxWidth);
+            throw new CalendricalPrintFieldException(rule, value, maxWidth);
         }
         str = FormatUtil.convertToI18N(str, symbols);
         
@@ -157,7 +157,7 @@ final class NumberPrinterParser implements DateTimePrinter, DateTimeParser {
                     appendable.append(symbols.getNegativeSignChar());
                     break;
                 case NOT_NEGATIVE:
-                    throw new CalendricalFormatFieldException(rule, value);
+                    throw new CalendricalPrintFieldException(rule, value);
             }
         }
         for (int i = 0; i < minWidth - str.length(); i++) {

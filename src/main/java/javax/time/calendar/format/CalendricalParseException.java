@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -32,7 +32,7 @@
 package javax.time.calendar.format;
 
 /**
- * An exception thrown when an error occurs during parsing of calendricals.
+ * An exception thrown when an error occurs during parsing.
  *
  * @author Stephen Colebourne
  */
@@ -66,7 +66,7 @@ public class CalendricalParseException extends RuntimeException {
     }
 
     /**
-     * Constructs a new exception with the specified message.
+     * Constructs a new exception with the specified message and cause.
      *
      * @param message  the message to use for this exception, may be null
      * @param parsedString  the parsed text, should not be null

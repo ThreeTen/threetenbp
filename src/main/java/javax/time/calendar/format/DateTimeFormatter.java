@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -159,7 +159,7 @@ public final class DateTimeFormatter {
      * @return the printed string, never null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws NullPointerException if the calendrical is null
-     * @throws CalendricalFormatException if an error occurs during printing
+     * @throws CalendricalPrintException if an error occurs during printing
      */
     public String print(Calendrical calendrical) {
         StringBuilder buf = new StringBuilder(32);
@@ -178,14 +178,14 @@ public final class DateTimeFormatter {
      * <p>
      * Although Appendable methods throw an IOException, this method does not.
      * Instead, any IOException is wrapped in a runtime exception.
-     * See {@link CalendricalFormatException#rethrowIOException()} for a means
+     * See {@link CalendricalPrintException#rethrowIOException()} for a means
      * to extract the IOException.
      *
      * @param calendrical  the calendrical to print, not null
      * @param appendable  the appendable to print to, not null
      * @throws UnsupportedOperationException if this formatter cannot print
      * @throws NullPointerException if the calendrical or appendable is null
-     * @throws CalendricalFormatException if an error occurs during printing
+     * @throws CalendricalPrintException if an error occurs during printing
      */
     public void print(Calendrical calendrical, Appendable appendable) {
         DateTimeFormatter.checkNotNull(calendrical, "Calendrical must not be null");
@@ -193,9 +193,9 @@ public final class DateTimeFormatter {
         try {
             printerParser.print(calendrical, appendable, symbols);
         } catch (UnsupportedRuleException ex) {
-            throw new CalendricalFormatFieldException(ex);
+            throw new CalendricalPrintFieldException(ex);
         } catch (IOException ex) {
-            throw new CalendricalFormatException(ex.getMessage(), ex);
+            throw new CalendricalPrintException(ex.getMessage(), ex);
         }
     }
 

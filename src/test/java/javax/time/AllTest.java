@@ -68,7 +68,7 @@ import javax.time.calendar.field.TestDayOfWeek;
 import javax.time.calendar.field.TestMonthOfYear;
 import javax.time.calendar.field.TestQuarterOfYear;
 import javax.time.calendar.field.TestYear;
-import javax.time.calendar.format.TestCalendricalFormatException;
+import javax.time.calendar.format.TestCalendricalPrintException;
 import javax.time.calendar.format.TestCaseSensitivePrinterParser;
 import javax.time.calendar.format.TestCharLiteralParser;
 import javax.time.calendar.format.TestCharLiteralPrinter;
@@ -169,7 +169,7 @@ public class AllTest {
             TestQuarterOfYear.class,
             TestYear.class,
             // format
-            TestCalendricalFormatException.class,
+            TestCalendricalPrintException.class,
             TestCaseSensitivePrinterParser.class,
             TestCharLiteralParser.class,
             TestCharLiteralPrinter.class,

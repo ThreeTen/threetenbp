@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,28 +31,29 @@
  */
 package javax.time.calendar.format;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 
 import java.io.IOException;
 
 import org.testng.annotations.Test;
 
 /**
- * Test CalendricalFormatException.
+ * Test CalendricalPrintException.
  *
  * @author Stephen Colebourne
  */
 @Test
-public class TestCalendricalFormatException {
+public class TestCalendricalPrintException {
 
     public void test_constructor_String() throws Exception {
-        CalendricalFormatException ex = new CalendricalFormatException("TEST");
+        CalendricalPrintException ex = new CalendricalPrintException("TEST");
         assertEquals(ex.getMessage(), "TEST");
     }
 
     public void test_constructor_StringThrowable_notIOException() throws Exception {
         IllegalArgumentException iaex = new IllegalArgumentException("INNER");
-        CalendricalFormatException ex = new CalendricalFormatException("TEST", iaex);
+        CalendricalPrintException ex = new CalendricalPrintException("TEST", iaex);
         assertEquals(ex.getMessage(), "TEST");
         assertSame(ex.getCause(), iaex);
         ex.rethrowIOException();  // no effect
@@ -61,7 +62,7 @@ public class TestCalendricalFormatException {
     @Test(expectedExceptions=IOException.class)
     public void test_constructor_StringThrowable_IOException() throws Exception {
         IOException ioex = new IOException("INNER");
-        CalendricalFormatException ex = new CalendricalFormatException("TEST", ioex);
+        CalendricalPrintException ex = new CalendricalPrintException("TEST", ioex);
         assertEquals(ex.getMessage(), "TEST");
         assertSame(ex.getCause(), ioex);
         ex.rethrowIOException();  // rethrows

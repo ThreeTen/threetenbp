@@ -214,7 +214,7 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalFormatFieldException ex) {
+        } catch (CalendricalPrintFieldException ex) {
             if (result == null || value < 0) {
                 assertEquals(ex.getRule(), dayOfMonthRule());
                 assertEquals(ex.getValue(), (Integer) value);
@@ -234,7 +234,7 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalFormatFieldException ex) {
+        } catch (CalendricalPrintFieldException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -253,7 +253,7 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : result));
-        } catch (CalendricalFormatFieldException ex) {
+        } catch (CalendricalPrintFieldException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -272,7 +272,7 @@ public class TestNumberPrinter {
                 fail("Expected exception");
             }
             assertEquals(buf.toString(), (value < 0 ? "-" + result : "+" + result));
-        } catch (CalendricalFormatFieldException ex) {
+        } catch (CalendricalPrintFieldException ex) {
             if (result != null) {
                 throw ex;
             }
@@ -294,7 +294,7 @@ public class TestNumberPrinter {
                 result = (value < 0 ? "-" + result : "+" + result);
             }
             assertEquals(buf.toString(), result);
-        } catch (CalendricalFormatFieldException ex) {
+        } catch (CalendricalPrintFieldException ex) {
             if (result != null) {
                 throw ex;
             }

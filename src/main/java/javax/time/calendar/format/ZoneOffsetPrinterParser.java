@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -77,7 +77,7 @@ final class ZoneOffsetPrinterParser implements DateTimePrinter, DateTimeParser {
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         ZoneOffset offset = calendrical.get(ZoneOffset.rule());
         if (offset == null) {
-            throw new CalendricalFormatException("Unable to print ZoneOffset");
+            throw new CalendricalPrintException("Unable to print ZoneOffset");
         }
         int totalSecs = offset.getAmountSeconds();
         if (totalSecs == 0) {

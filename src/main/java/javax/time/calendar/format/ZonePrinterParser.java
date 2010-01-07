@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -83,7 +83,7 @@ final class ZonePrinterParser implements DateTimePrinter, DateTimeParser {
     public void print(Calendrical calendrical, Appendable appendable, DateTimeFormatSymbols symbols) throws IOException {
         TimeZone zone = calendrical.get(TimeZone.rule());
         if (zone == null) {
-            throw new CalendricalFormatException("Unable to print TimeZone");
+            throw new CalendricalPrintException("Unable to print TimeZone");
         }
         if (textStyle == null) {
             appendable.append(zone.getID());

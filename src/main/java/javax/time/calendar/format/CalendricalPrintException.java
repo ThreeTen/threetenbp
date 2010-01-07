@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -34,11 +34,11 @@ package javax.time.calendar.format;
 import java.io.IOException;
 
 /**
- * An exception thrown when an error occurs during formatting of calendricals.
+ * An exception thrown when an error occurs during printing.
  *
  * @author Stephen Colebourne
  */
-public class CalendricalFormatException extends RuntimeException {
+public class CalendricalPrintException extends RuntimeException {
 
     /**
      * A serialization identifier for this class.
@@ -50,7 +50,7 @@ public class CalendricalFormatException extends RuntimeException {
      *
      * @param message  the message to use for this exception, may be null
      */
-    public CalendricalFormatException(String message) {
+    public CalendricalPrintException(String message) {
         super(message);
     }
 
@@ -60,7 +60,7 @@ public class CalendricalFormatException extends RuntimeException {
      * @param message  the message to use for this exception, may be null
      * @param throwable  the throwable to store as the cause, may be null
      */
-    public CalendricalFormatException(String message, Throwable throwable) {
+    public CalendricalPrintException(String message, Throwable throwable) {
         super(message, throwable);
     }
 
