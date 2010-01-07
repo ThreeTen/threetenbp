@@ -732,6 +732,29 @@ public class TestOffsetDate {
     }
 
     //-----------------------------------------------------------------------
+    // withDayOfYear(int)
+    //-----------------------------------------------------------------------
+    public void test_withDayOfYear_normal() {
+        OffsetDate t = TEST_2007_07_15_PONE.withDayOfYear(33);
+        assertEquals(t, OffsetDate.date(2007, 2, 2, OFFSET_PONE));
+    }
+
+    public void test_withDayOfYear_noChange() {
+        OffsetDate t = TEST_2007_07_15_PONE.withDayOfYear(31 + 28 + 31 + 30 + 31 + 30 + 15);
+        assertSame(t, TEST_2007_07_15_PONE);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDayOfYear_illegal() {
+        TEST_2007_07_15_PONE.withDayOfYear(367);
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_withDayOfYear_invalid() {
+        TEST_2007_07_15_PONE.withDayOfYear(366);
+    }
+
+    //-----------------------------------------------------------------------
     // plus(PeriodProvider)
     //-----------------------------------------------------------------------
     public void test_plus_PeriodProvider() {

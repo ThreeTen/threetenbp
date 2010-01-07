@@ -1018,7 +1018,7 @@ public class TestZonedDateTime {
     //-----------------------------------------------------------------------
     // withDayOfMonth()
     //-----------------------------------------------------------------------
-    public void test_withDayOfMonthr_normal() {
+    public void test_withDayOfMonth_normal() {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         ZonedDateTime test = base.withDayOfMonth(15);
@@ -1029,6 +1029,23 @@ public class TestZonedDateTime {
         LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
         ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
         ZonedDateTime test = base.withDayOfMonth(30);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    // withDayOfYear()
+    //-----------------------------------------------------------------------
+    public void test_withDayOfYear_normal() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.withDayOfYear(33);
+        assertEquals(test, ZonedDateTime.dateTime(ldt.withDayOfYear(33), ZONE_0100));
+    }
+
+    public void test_withDayOfYear_noChange() {
+        LocalDateTime ldt = LocalDateTime.dateTime(2008, 6, 30, 23, 30, 59, 0);
+        ZonedDateTime base = ZonedDateTime.dateTime(ldt, ZONE_0100);
+        ZonedDateTime test = base.withDayOfYear(31 + 29 + 31 + 30 + 31 + 30);
         assertSame(test, base);
     }
 

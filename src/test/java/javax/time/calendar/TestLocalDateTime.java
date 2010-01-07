@@ -938,6 +938,29 @@ public class TestLocalDateTime {
     }
 
     //-----------------------------------------------------------------------
+    // withDayOfYear(int)
+    //-----------------------------------------------------------------------
+    public void test_withDayOfYear_normal() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDayOfYear(33);
+        assertEquals(t, LocalDateTime.dateTime(2007, 2, 2, 12, 30, 40, 987654321));
+    }
+
+    public void test_withDayOfYear_noChange() {
+        LocalDateTime t = TEST_2007_07_15_12_30_40_987654321.withDayOfYear(31 + 28 + 31 + 30 + 31 + 30 + 15);
+        assertSame(t, TEST_2007_07_15_12_30_40_987654321);
+    }
+
+    @Test(expectedExceptions=IllegalCalendarFieldValueException.class)
+    public void test_withDayOfYear_illegal() {
+        TEST_2007_07_15_12_30_40_987654321.withDayOfYear(367);
+    }
+
+    @Test(expectedExceptions=InvalidCalendarFieldException.class)
+    public void test_withDayOfYear_invalid() {
+        TEST_2007_07_15_12_30_40_987654321.withDayOfYear(366);
+    }
+
+    //-----------------------------------------------------------------------
     // withDate(int,MonthOfYear,int)
     //-----------------------------------------------------------------------
     public void test_withDate_iMi() {

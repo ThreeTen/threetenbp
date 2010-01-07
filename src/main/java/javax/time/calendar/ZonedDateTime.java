@@ -877,6 +877,25 @@ public final class ZonedDateTime
             resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
     }
 
+    /**
+     * Returns a copy of this ZonedDateTime with the day-of-year altered.
+     * <p>
+     * If the adjustment results in a date-time that is invalid, then the
+     * {@link ZoneResolvers#retainOffset()} resolver is used.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @return a <code>ZonedDateTime</code> based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     */
+    public ZonedDateTime withDayOfYear(int dayOfYear) {
+        LocalDateTime newDT = dateTime.toLocalDateTime().withDayOfYear(dayOfYear);
+        return (newDT == dateTime.toLocalDateTime() ? this :
+            resolve(newDT, this, zone, ZoneResolvers.retainOffset()));
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this ZonedDateTime with the date values altered.

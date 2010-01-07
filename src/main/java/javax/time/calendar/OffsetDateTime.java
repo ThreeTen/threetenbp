@@ -785,6 +785,21 @@ public final class OffsetDateTime
         return with(dateTime.withDayOfMonth(dayOfMonth, dateResolver), offset);
     }
 
+    /**
+     * Returns a copy of this OffsetDateTime with the day-of-year altered.
+     * If the resulting <code>OffsetDateTime</code> is invalid, an exception is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @return an <code>OffsetDateTime</code> based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     */
+    public OffsetDateTime withDayOfYear(int dayOfYear) {
+        return with(dateTime.withDayOfYear(dayOfYear), offset);
+    }
+
 //    //-----------------------------------------------------------------------
 //    /**
 //     * Returns a copy of this OffsetDateTime with a different local date.

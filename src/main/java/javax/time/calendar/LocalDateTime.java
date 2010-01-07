@@ -666,6 +666,21 @@ public final class LocalDateTime
         return with(date.withDayOfMonth(dayOfMonth, dateResolver), time);
     }
 
+    /**
+     * Returns a copy of this LocalDateTime with the day-of-year altered.
+     * If the resulting <code>LocalDateTime</code> is invalid, an exception is thrown.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param dayOfYear  the day-of-year to set in the returned date, from 1 to 365-366
+     * @return a <code>LocalDateTime</code> based on this date with the requested day, never null
+     * @throws IllegalCalendarFieldValueException if the day-of-year value is invalid
+     * @throws InvalidCalendarFieldException if the day-of-year is invalid for the year
+     */
+    public LocalDateTime withDayOfYear(int dayOfYear) {
+        return with(date.withDayOfYear(dayOfYear), time);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this LocalDateTime with the date values altered.

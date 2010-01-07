@@ -422,7 +422,7 @@ public enum MonthOfYear {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the last day of the month.
+     * Gets the day-of-month for last day of this month.
      * <p>
      * This is a synonym for {@link #lengthInDays(boolean)} and exists to provide
      * a more meaningful API.
@@ -433,6 +433,32 @@ public enum MonthOfYear {
     public int getLastDayOfMonth(boolean leapYear) {
         return lengthInDays(leapYear);
     }
+
+//    /**
+//     * Gets the day-of-year for the first day of this month.
+//     * <p>
+//     * This returns the day-of-year that this month begins on, using the leap
+//     * year flag to determine the length of February.
+//     *
+//     * @param leapYear  true if the length is required for a leap year
+//     * @return the last day of this month, from 1 to 335
+//     */
+//    public int getMonthStartDayOfYear(boolean leapYear) {
+//        return 0;  // TODO
+//    }
+//
+//    /**
+//     * Gets the day-of-year for the first day of this month.
+//     * <p>
+//     * This returns the day-of-year that this month ends on, using the leap
+//     * year flag to determine the length of February.
+//     *
+//     * @param leapYear  true if the length is required for a leap year
+//     * @return the last day of this month, from 31 to 366
+//     */
+//    public int getMonthEndDayOfYear(boolean leapYear) {
+//        return 0;  // TODO
+//    }
 
     //-----------------------------------------------------------------------
     /**
