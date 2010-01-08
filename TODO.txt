@@ -49,7 +49,6 @@ Date/Time classes
 - factories from Calendrical... ?
 - getChronology()
 - getMonthOfYear() -> getMonth(), etc?
-- withDayOfYear() tests and everywhere, plus factory?
 - Year.atDayOfYear()
 - LocalDate.atTime(int...), also OffsetDate
 - getAmPm()
@@ -82,7 +81,6 @@ Time zones
 - versions of zone data files
 
 Periods
-- toDays() etc, if we keep those classes
 - construct fields without period units (what does this mean?)
 - formatting (defer? but need parse factory)
 
@@ -91,7 +89,6 @@ Matchers/Adjusters
 - weekend?
 
 Calendars
-- period units in chronologies?
 - GJCalendar
 - more calendar systems
 
@@ -101,6 +98,7 @@ General
 - get rule by name
 - get chrono by name
 - OffsetDateTime.fromEpochSeconds()
+- serialization formats
 
 Possible items
 - Rename DateProvider to LocalDateProvider?
@@ -111,6 +109,7 @@ Possible items
 - nano of day rule - Long
 - ModJulDays rule - BigDecimal
 - IntValue interface, implemented by Number/Integer
+- public factory for LocalDate.fromDayOfYear(year, doy)
 
 
 DONE
@@ -124,6 +123,9 @@ DONE
 - isJanuary() ?
 - isMonday() ?
 - Period rules?
+- period units in chronologies?
 - Year.of() Duration.of() plus big static class?
 - parse optional needs to store and drop back Calendrical properly
+- withDayOfYear() tests and everywhere
+- toDays() etc, if we keep those classes
 
