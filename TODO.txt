@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -47,26 +47,32 @@ Intervals
 
 Date/Time classes
 - factories from Calendrical... ?
-- parse factories
 - getChronology()
+- getMonthOfYear() -> getMonth(), etc?
+- withDayOfYear() tests and everywhere, plus factory?
+- Year.atDayOfYear()
+- LocalDate.atTime(int...), also OffsetDate
+- getAmPm()
 
-Date/Time fields
-- isJanuary()
-- isMonday()
-- parse factories
+Rules
+- parse() ?
+- merge -> normalize ?
+- merge MonthDay and Year
+- deriveInt for fields ?
+- test min/max year for week-based-year
+- ISO era?
 
 Date/Time formatting
-- format patterns - yyyy-MM-dd
+- format patterns - yyyy-MM-dd, check details
 - strict/lenient parse
 - upper/lower case
-- substitute text (replacing built in text for Months/DOW etc)
+- substitute text (replacing built in text for Months/DOW etc)?
 - only ASCII numbers
 - parse zone
-- parse optional needs to store and drop back Calendrical properly
-- parse API is too complex to parse Date/Time due to merge
 - Arabic numbers have negative sign after number
 - parseInto(Calendrical)
 - default calendrical to pre-define era for example
+- isPrintDataAvailable() causes get of field value twice, can we drop method?
 
 Time zones
 - public access to transitions and transition rules?
@@ -81,8 +87,8 @@ Periods
 - formatting (defer? but need parse factory)
 
 Matchers/Adjusters
-- DateTimeMatcher
 - DateTimeAdjuster
+- weekend?
 
 Calendars
 - period units in chronologies?
@@ -90,13 +96,10 @@ Calendars
 - more calendar systems
 
 General
-- test separable comparators for providers
-- Year.of() Duration.of() plus big static class?
 - first day of week
 - get month/weekday text
 - get rule by name
 - get chrono by name
-- create formatter using SimpleDateFormat type string
 - OffsetDateTime.fromEpochSeconds()
 
 Possible items
@@ -104,10 +107,23 @@ Possible items
 - roll()
 - round()
 - iteration
+- era in the hash codes
+- nano of day rule - Long
+- ModJulDays rule - BigDecimal
+- IntValue interface, implemented by Number/Integer
 
 
 DONE
 - getYearMonth(), getMonthDay()
 - withXxx() taking Year, MonthOfYear - with(Adjuster)
 - zone prev/next transition
+- parse API is too complex to parse Date/Time due to merge
+- Date/Time parse factories
+- DateTimeMatcher -> CalendricalMatcher
+- test separable comparators for providers -> CalendricalRule implements Comparator
+- isJanuary() ?
+- isMonday() ?
+- Period rules?
+- Year.of() Duration.of() plus big static class?
+- parse optional needs to store and drop back Calendrical properly
 
