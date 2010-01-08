@@ -36,7 +36,7 @@ import java.io.IOException;
 import javax.time.calendar.Calendrical;
 
 /**
- * Strategy for printing a date to an appendable.
+ * Strategy for printing a calendrical to an appendable.
  * <p>
  * The printer may print any part, or the whole, of the input Calendrical.
  * Typically, a complete print is constructed from a number of smaller

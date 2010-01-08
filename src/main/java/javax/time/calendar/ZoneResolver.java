@@ -37,8 +37,8 @@ import javax.time.calendar.zone.ZoneRules;
 import javax.time.calendar.zone.ZoneRules.OffsetInfo;
 
 /**
- * Strategy for resolving a local date-time to an offset date-time using the
- * rules of the time zone.
+ * Strategy for resolving a <code>LocalDateTime</code> to an <code>OffsetDateTime</code>
+ * using the rules of the time zone.
  * <p>
  * A time zone provides rules for when and by how much the offset changes for
  * a given location. These rules can result in 'missing hours', such as at the

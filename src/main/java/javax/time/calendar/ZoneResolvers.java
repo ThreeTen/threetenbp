@@ -37,7 +37,11 @@ import javax.time.calendar.zone.ZoneOffsetTransition;
 import javax.time.calendar.zone.ZoneRules;
 
 /**
- * Provides implementations of {@link ZoneResolver}.
+ * Provides common implementations of <code>ZoneResolver</code>.
+ * <p>
+ * A {@link ZoneResolver} provides a strategy for handling the gaps and overlaps
+ * on the time-line that occur due to changes in the offset from UTC, usually
+ * caused by Daylight Savings Time.
  * <p>
  * ZoneResolvers is a utility class.
  * All resolvers returned are immutable and thread-safe.

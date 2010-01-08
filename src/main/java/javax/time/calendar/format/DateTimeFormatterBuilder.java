@@ -45,14 +45,14 @@ import javax.time.calendar.TimeZone;
 import javax.time.calendar.ZoneOffset;
 
 /**
- * Builder to create formats for dates and times.
+ * Builder to create formatters for calendricals.
  * <p>
- * All date-time formats are created ultimately using this builder.
+ * All date-time formatters are created ultimately using this builder.
  * Each consists of two halves a {@link DateTimePrinter printer} and a {@link DateTimeParser parser}.
  * Most of the methods will create both a printer and a parser automatically, however
  * it is possible to create a formatter that only prints or only parses.
  * <p>
- * The basic elements of date-time can all be added:
+ * The basic elements of calendricals can all be added:
  * <ul>
  * <li>Value - a numeric value</li>
  * <li>Fraction - a fractional value including the decimal place. Always use this when
@@ -67,7 +67,8 @@ import javax.time.calendar.ZoneOffset;
  * </ul>
  * In addition, any of the elements may be decorated by padding, either with spaces or any other character.
  * <p>
- * Finally, a shorthand pattern, mostly compatible with <code>SimpleDateFormat</code> can be used.
+ * Finally, a shorthand pattern, mostly compatible with <code>SimpleDateFormat</code>
+ * can be used, see {@link #appendPattern(String)}.
  * In practice, this simply parses the pattern and calls other methods on the builder.
  *
  * @author Stephen Colebourne

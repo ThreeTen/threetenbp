@@ -41,7 +41,7 @@ import javax.time.period.Period;
 import javax.time.period.PeriodProvider;
 
 /**
- * A time zone offset, such as '+02:00'.
+ * A time zone offset from UTC, such as '+02:00'.
  * <p>
  * A time zone offset is the period of time that a time zone differs from UTC.
  * This is usually a fixed number of hours and minutes.
