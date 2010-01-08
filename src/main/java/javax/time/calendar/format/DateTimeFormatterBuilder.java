@@ -363,8 +363,7 @@ public final class DateTimeFormatterBuilder {
      * <p>
      * The fractional value of the field will be output including the
      * preceeding decimal point. The preceeding value is not output.
-     * The raw value for this field is obtained from
-     * {@link DateTimeFieldRule#getFractionalValue getFractionalValue}.
+     * The fraction is obtained using {@link DateTimeFieldRule#convertIntToFraction}.
      * <p>
      * The width of the output fraction can be controlled. Setting the
      * minimum width to zero will cause no output to be generated.

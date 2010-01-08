@@ -77,7 +77,7 @@ public interface ZoneRulesDataProvider {
     /**
      * Gets the zone rules for the specified time zone ID.
      * <p>
-     * The combined time zone ID must be one of those returned by {@link #getZoneIDs()}.
+     * The combined time zone ID must be one of those returned by {@link #getIDs()}.
      *
      * @param regionID  the time zone region ID, not null
      * @param versionID  the time zone version ID, not null

@@ -608,7 +608,7 @@ public final class ZonedDateTime
      * <p>
      * The rules provide the information on how the zone offset changes over time.
      * This usually includes historical and future information.
-     * The rules are determined using {@link TimeZone#getRules(OffsetDateTime)}
+     * The rules are determined using {@link TimeZone#getRulesValidFor(OffsetDateTime)}
      * which finds the best matching set of rules for this date-time.
      * <p>
      * This method can throw an exception if time zone is invalid for this JVM.
@@ -627,7 +627,7 @@ public final class ZonedDateTime
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from {@link Year#toYear}.
+     * Additional information about the year can be obtained via {@link #toYear}.
      * This returns a <code>Year</code> object which includes information on whether
      * this is a leap year and its length in days.
      *

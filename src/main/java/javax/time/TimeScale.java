@@ -83,7 +83,7 @@ public interface TimeScale {
      * <p>
      * The resulting instant will have this time-scale.
      * 
-     * @param tsInstant  the time-scale based instant to convert, not null
+     * @param instantProvider  the instant provider, not null
      * @return the scaled instant, never null
      * @throws CalendarConversionException if the conversion cannot be performed
      */

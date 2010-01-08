@@ -259,7 +259,7 @@ public final class OffsetDate
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from {@link Year#toYear}.
+     * Additional information about the year can be obtained via {@link #toYear}.
      * This returns a <code>Year</code> object which includes information on whether
      * this is a leap year and its length in days.
      *
@@ -891,9 +891,9 @@ public final class OffsetDate
      * achieved using the {@link ZoneResolvers#postGapPreOverlap() zone resolver}.
      * <p>
      * To convert to a specific time in a given time-zone call {@link #atTime(LocalTime)}
-     * followed by {@link OffsetDateTime#atZone(TimeZone)}. Note that the resolver used
-     * by <code>atZone()</code> is different to that used here (it chooses the later
-     * offset in an overlap, whereas this method chooses the earlier offset).
+     * followed by {@link OffsetDateTime#atZoneSimilarLocal(TimeZone)}. Note that the resolver
+     * used by <code>atZoneSimilarLocal()</code> is different to that used here (it chooses
+     * the later offset in an overlap, whereas this method chooses the earlier offset).
      * <p>
      * The offset from this date is ignored during the conversion.
      * This ensures that the resultant date-time has the same date as this.

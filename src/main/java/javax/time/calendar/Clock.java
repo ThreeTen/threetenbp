@@ -66,7 +66,7 @@ import javax.time.TimeSource;
  * }
  * </pre>
  * This approach allows alternate time-source implementations, such as
- * {@link TimeSource#fixed(Instant)} to be used during testing.
+ * {@link TimeSource#fixed} to be used during testing.
  *
  * <h4>Implementation notes</h4>
  * <code>Clock</code> is designed to be subclassed, however this will rarely be necessary.
@@ -243,7 +243,7 @@ public abstract class Clock {
      * Gets the current instant.
      * <p>
      * The instant returned by this method will vary according to the implementation.
-     * For example, the time-source returned by {@link #system()} will return
+     * For example, the time-source returned by {@link #system(TimeZone)} will return
      * an instant based on {@link System#currentTimeMillis()}.
      * <p>
      * Normally, this method will not throw an exception.

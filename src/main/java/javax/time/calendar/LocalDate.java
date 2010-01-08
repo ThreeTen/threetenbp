@@ -308,7 +308,7 @@ public final class LocalDate
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from {@link Year#toYear}.
+     * Additional information about the year can be obtained via {@link #toYear}.
      * This returns a <code>Year</code> object which includes information on whether
      * this is a leap year and its length in days.
      *

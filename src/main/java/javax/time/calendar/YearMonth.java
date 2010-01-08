@@ -121,7 +121,7 @@ public final class YearMonth
      * This method will create a YearMonth from the Calendrical by extracting
      * the year and month-of-year fields.
      *
-     * @param calendricalProvider  the calendrical to use, not null
+     * @param calendrical  the calendrical to use, not null
      * @return the year-month, never null
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
@@ -219,7 +219,7 @@ public final class YearMonth
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from {@link Year#toYear}.
+     * Additional information about the year can be obtained via {@link #toYear}.
      * This returns a <code>Year</code> object which includes information on whether
      * this is a leap year and its length in days.
      *

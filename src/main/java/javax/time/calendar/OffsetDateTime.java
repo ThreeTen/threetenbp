@@ -509,7 +509,7 @@ public final class OffsetDateTime
      * <p>
      * This method returns the primitive <code>int</code> value for the year.
      * <p>
-     * Additional information about the year can be obtained from {@link Year#toYear}.
+     * Additional information about the year can be obtained via {@link #toYear}.
      * This returns a <code>Year</code> object which includes information on whether
      * this is a leap year and its length in days.
      *
@@ -1476,7 +1476,7 @@ public final class OffsetDateTime
      * Finer control over gaps and overlaps is available in two ways.
      * If you simply want to use the earlier offset at overlaps then call
      * {@link ZonedDateTime#withEarlierOffsetAtOverlap()} immediately after this method.
-     * Alternately, pass a specific resolver to {@link #atZone(TimeZone, ZoneResolver)}.
+     * Alternately, pass a specific resolver to {@link #atZoneSimilarLocal(TimeZone, ZoneResolver)}.
      * <p>
      * To create a zoned date-time at the same instant irrespective of the local time-line,
      * use {@link #atZoneSameInstant(TimeZone)}.

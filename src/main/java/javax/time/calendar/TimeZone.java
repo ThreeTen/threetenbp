@@ -593,8 +593,8 @@ public final class TimeZone implements Calendrical, Serializable {
      * <p>
      * This will return true if the rules are available for the group, region
      * and version ID combination that are valid for the specified date-time.
-     * If this method returns true, then {@link #getRules(OffsetDateTime)} will
-     * return a valid rules instance.
+     * If this method returns true, then {@link #getRulesValidFor(OffsetDateTime)}
+     * will return a valid rules instance.
      * <p>
      * A time zone can be invalid if it is deserialized in a JVM which does not
      * have the same rules loaded as the JVM that stored it.
@@ -736,11 +736,11 @@ public final class TimeZone implements Calendrical, Serializable {
      * @param rule  the rule to use, not null
      * @return the value for the rule, null if the value cannot be returned
      */
-    public <T> T get(CalendricalRule<T> fieldRule) {
-        if (fieldRule.equals(ZoneOffset.rule()) && isFixed()) {
-            return fieldRule.reify(getRules().getOffset(Instant.EPOCH));
+    public <T> T get(CalendricalRule<T> rule) {
+        if (rule.equals(ZoneOffset.rule()) && isFixed()) {
+            return rule.reify(getRules().getOffset(Instant.EPOCH));
         }
-        return rule().deriveValueFor(fieldRule, this, this);
+        return rule().deriveValueFor(rule, this, this);
     }
 
     //-----------------------------------------------------------------------

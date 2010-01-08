@@ -469,7 +469,7 @@ public abstract class DateTimeFieldRule<T> extends CalendricalRule<T> {
      * month-of-year. The text store provides details of those textual representations.
      * <p>
      * To supply text, subclasses should pass true in the constructor and
-     * override {@link #createTextStore}. This method is not normally overridden.
+     * override {@link #createTextStores}. This method is not normally overridden.
      *
      * @param locale  the locale to use, not null
      * @param textStyle  the text style, not null

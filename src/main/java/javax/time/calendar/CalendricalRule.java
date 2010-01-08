@@ -212,9 +212,7 @@ public abstract class CalendricalRule<T>
      * Gets the value of this rule from the specified calendrical returning
      * <code>null</code> if the value cannot be returned.
      * <p>
-     * This method queries the calendrical to determine if it provides the rule
-     * value directly. If not, an attempt is made to {@link #deriveValue derive}
-     * the value from the value of other fields in the map.
+     * This method simply queries the calendrical.
      *
      * @param calendrical  the calendrical to get the field value from, not null
      * @return the value of the field, null if unable to extract the field

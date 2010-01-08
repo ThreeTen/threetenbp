@@ -61,8 +61,8 @@ import java.io.Serializable;
  *   }
  * }
  * </pre>
- * This approach allows alternate time-source implementations, such as {@link #fixed(Instant)}
- * or {@link #offsetSystemMillis(Duration)} to be used during testing.
+ * This approach allows alternate time-source implementations, such as {@link #fixed}
+ * or {@link #offsetSystem} to be used during testing.
  * <p>
  * TimeSource is an abstract class and must be implemented with care
  * to ensure other classes in the framework operate correctly.

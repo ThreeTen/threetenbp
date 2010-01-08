@@ -230,9 +230,6 @@ public final class ThaiBuddhistChronology extends Chronology implements Serializ
      * <p>
      * The period rule defines the concept of a period of a week.
      * This is equivalent to the ISO weeks period rule.
-     * <p>
-     * See {@link #weekOfWeekBasedYearRule()} and {@link #weekOfYearRule()} for
-     * the main date-time fields.
      *
      * @return the period rule for weeks, never null
      */

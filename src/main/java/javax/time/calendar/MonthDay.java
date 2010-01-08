@@ -141,7 +141,7 @@ public final class MonthDay
      * This method will create a MonthDay from the Calendrical by extracting the
      * month-of-year and day-of-month fields.
      *
-     * @param calendricalProvider  the calendrical provider to use, not null
+     * @param calendrical  the calendrical to use, not null
      * @return the month-day, never null
      * @throws UnsupportedRuleException if either field cannot be found
      * @throws InvalidCalendarFieldException if the value for either field is invalid
@@ -255,10 +255,6 @@ public final class MonthDay
      * Gets the day-of-month field.
      * <p>
      * This method returns the primitive <code>int</code> value for the day-of-month.
-     * <p>
-     * Additional information about the day-of-month can be obtained from via {@link #toDayOfMonth()}.
-     * This returns a <code>DayOfMonth</code> object which can be used as a {@link CalendricalMatcher}
-     * and a {@link DateAdjuster}.
      *
      * @return the day-of-month, from 1 to 31
      */

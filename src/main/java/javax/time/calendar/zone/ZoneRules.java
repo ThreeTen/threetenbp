@@ -524,7 +524,7 @@ public abstract class ZoneRules {
          * Gets an estimated offset for the local date-time.
          * <p>
          * The result will be the same as {@link #getOffset()} except during a discontinuity.
-         * During a discontinuity, the value of {@link Discontinuity#getOffsetAfter()} will
+         * During a discontinuity, the value of {@link ZoneOffsetTransition#getOffsetAfter()} will
          * be returned. How meaningful that offset is depends on your application.
          *
          * @return a suitable estimated offset, never null
