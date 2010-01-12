@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,6 +31,10 @@
  */
 package javax.time.period;
 
+import java.util.Set;
+
+import javax.time.calendar.PeriodRule;
+
 /**
  * Mock PeriodProvider that returns null.
  *
@@ -38,9 +42,12 @@ package javax.time.period;
  */
 public class MockPeriodProviderReturnsNull implements PeriodProvider {
 
-    /** {@inheritDoc} */
-    public Period toPeriod() {
+    public Set<PeriodRule> periodRules() {
         return null;
+    }
+
+    public long periodAmount(PeriodRule rule) {
+        return 0;
     }
 
 }

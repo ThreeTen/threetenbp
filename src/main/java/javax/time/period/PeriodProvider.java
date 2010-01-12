@@ -31,7 +31,9 @@
  */
 package javax.time.period;
 
-import javax.time.CalendricalException;
+import java.util.Set;
+
+import javax.time.calendar.PeriodRule;
 
 /**
  * Provides access to a period of time, such as '2 years and 5 months'.
@@ -40,7 +42,6 @@ import javax.time.CalendricalException;
  * any object that can provide access to a period.
  * <p>
  * The implementation of <code>PeriodProvider</code> may be mutable.
- * The result of {@link #toPeriod()}, however, is immutable.
  * <p>
  * PeriodProvider makes no guarantees about the thread-safety or
  * immutability of implementations.
@@ -48,17 +49,33 @@ import javax.time.CalendricalException;
  * @author Stephen Colebourne
  */
 public interface PeriodProvider {
+    // TODO: alternate representation, for better thread safety?
+    // PeriodFields
+    // Set<PeriodField>
+    // Map<PeriodRule, Long>
 
     /**
-     * Returns an instance of <code>Period</code> initialized from the
-     * state of this object.
+     * Gets the complete set of rules which have amounts stored.
      * <p>
-     * This method will take the period information represented by this
-     * object and return the best matching {@link Period}.
+     * The amount stored for a rule may be zero.
+     * <p>
+     * Implementations must ensure that this method is thread-safe, and that
+     * the returned set is either unmodifiable or independent from the implementation.
      *
-     * @return the <code>Period</code> equivalent to this object, never null
-     * @throws CalendricalException if the period cannot be converted
+     * @return the set of rules for which an amount is stored in this period
      */
-    Period toPeriod();
+    Set<PeriodRule> periodRules();
+
+    /**
+     * Gets the amount of time stored for the specified rule.
+     * <p>
+     * Zero is returned if no amount is stored for the rule.
+     * <p>
+     * Implementations must ensure that this method is thread-safe.
+     *
+     * @param rule  the rule to get, not null
+     * @return the amount of time stored in this period for the rule
+     */
+    long periodAmount(PeriodRule rule);
 
 }

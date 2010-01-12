@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2008-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,15 +31,7 @@
  */
 package javax.time.period;
 
-import static javax.time.period.PeriodUnits.DAYS;
-import static javax.time.period.PeriodUnits.HOURS;
-import static javax.time.period.PeriodUnits.MINUTES;
-import static javax.time.period.PeriodUnits.MONTHS;
-import static javax.time.period.PeriodUnits.SECONDS;
-import static javax.time.period.PeriodUnits.YEARS;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,6 +47,7 @@ import java.util.HashMap;
 
 import javax.time.CalendricalException;
 import javax.time.Duration;
+import javax.time.calendar.PeriodRule;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -139,7 +132,7 @@ public class TestPeriod {
         assertSame(Period.hoursMinutesSeconds(0, 0, 0), Period.ZERO);
         assertSame(Period.of(0, 0, 0, 0, 0, 0), Period.ZERO);
         assertSame(Period.of(0, 0, 0, 0, 0, 0, 0), Period.ZERO);
-        assertSame(Period.from(PeriodFields.of(new HashMap<PeriodUnit, Integer>())), Period.ZERO);
+        assertSame(Period.from(PeriodFields.of(new HashMap<PeriodRule, Integer>())), Period.ZERO);
     }
 
     //-----------------------------------------------------------------------
@@ -1534,48 +1527,48 @@ public class TestPeriod {
         assertEquals(test.totalNanosWith24HourDays(), n);
     }
 
-    //-----------------------------------------------------------------------
-    // toPeriod()
-    //-----------------------------------------------------------------------
-    public void test_toPeriod() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6);
-        assertSame(test.toPeriod(), test);
-    }
+//    //-----------------------------------------------------------------------
+//    // toPeriod()
+//    //-----------------------------------------------------------------------
+//    public void test_toPeriod() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6);
+//        assertSame(test.toPeriod(), test);
+//    }
+//
+//    public void test_toPeriod_zero() {
+//        assertSame(Period.ZERO.toPeriod(), Period.ZERO);
+//    }
 
-    public void test_toPeriod_zero() {
-        assertSame(Period.ZERO.toPeriod(), Period.ZERO);
-    }
-
-    //-----------------------------------------------------------------------
-    // toPeriodFields()
-    //-----------------------------------------------------------------------
-    public void test_toPeriodFields() {
-        Period test = Period.of(1, 2, 3, 4, 5, 6);
-        PeriodFields fields = test.toPeriodFields();
-        assertEquals(fields.size(), 6);
-        assertEquals(fields.get(YEARS), 1);
-        assertEquals(fields.get(MONTHS), 2);
-        assertEquals(fields.get(DAYS), 3);
-        assertEquals(fields.get(HOURS), 4);
-        assertEquals(fields.get(MINUTES), 5);
-        assertEquals(fields.get(SECONDS), 6);
-    }
-
-    public void test_toPeriodFields_zeroRemoved() {
-        Period test = Period.of(1, 0, 3, 0, 5, 0);
-        PeriodFields fields = test.toPeriodFields();
-        assertEquals(fields.size(), 3);
-        assertEquals(fields.get(YEARS), 1);
-        assertEquals(fields.get(DAYS), 3);
-        assertEquals(fields.get(MINUTES), 5);
-        assertEquals(fields.contains(MONTHS), false);
-        assertEquals(fields.contains(HOURS), false);
-        assertEquals(fields.contains(SECONDS), false);
-    }
-
-    public void test_toPeriodFields_zero() {
-        assertSame(Period.ZERO.toPeriodFields(), PeriodFields.ZERO);
-    }
+//    //-----------------------------------------------------------------------
+//    // toPeriodFields()
+//    //-----------------------------------------------------------------------
+//    public void test_toPeriodFields() {
+//        Period test = Period.of(1, 2, 3, 4, 5, 6);
+//        PeriodFields fields = test.toPeriodFields();
+//        assertEquals(fields.size(), 6);
+//        assertEquals(fields.get(YEARS), 1);
+//        assertEquals(fields.get(MONTHS), 2);
+//        assertEquals(fields.get(DAYS), 3);
+//        assertEquals(fields.get(HOURS), 4);
+//        assertEquals(fields.get(MINUTES), 5);
+//        assertEquals(fields.get(SECONDS), 6);
+//    }
+//
+//    public void test_toPeriodFields_zeroRemoved() {
+//        Period test = Period.of(1, 0, 3, 0, 5, 0);
+//        PeriodFields fields = test.toPeriodFields();
+//        assertEquals(fields.size(), 3);
+//        assertEquals(fields.get(YEARS), 1);
+//        assertEquals(fields.get(DAYS), 3);
+//        assertEquals(fields.get(MINUTES), 5);
+//        assertEquals(fields.contains(MONTHS), false);
+//        assertEquals(fields.contains(HOURS), false);
+//        assertEquals(fields.contains(SECONDS), false);
+//    }
+//
+//    public void test_toPeriodFields_zero() {
+//        assertSame(Period.ZERO.toPeriodFields(), PeriodFields.ZERO);
+//    }
 
     //-----------------------------------------------------------------------
     // toDuration()
