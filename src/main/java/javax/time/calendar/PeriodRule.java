@@ -34,6 +34,7 @@ package javax.time.calendar;
 import java.io.Serializable;
 
 import javax.time.Duration;
+import javax.time.period.PeriodFields;
 
 /**
  * The rule defining how a single calendrical period operates.
@@ -58,15 +59,20 @@ public final class PeriodRule
     private final String id;
     /** The name of the rule, not null. */
     private final String name;
+    /** The alternate period equivalent to this. */
+    private final PeriodFields alternatePeriod;
     /** The estimated duration of the rule, not null. */
     private final Duration estimatedDuration;
 
     /**
-     * Constructor used to create a rule.
+     * Constructor used to create a base rule that cannot be derived.
+     * <p>
+     * A base rule cannot be derived from any smaller duration rule.
+     * For example, an ISO month period cannot be derived from any other smaller period.
      *
      * @param chronology  the chronology, not null
      * @param name  the name of the type, not null
-     * @param estimatedDuration  the estimated duration, not null
+     * @param estimatedDuration  the estimated duration of one unit of this period, not null
      */
     public PeriodRule(
             Chronology chronology,
@@ -82,9 +88,73 @@ public final class PeriodRule
         if (estimatedDuration == null) {
             throw new NullPointerException("Estimated duration must not be null");
         }
+        if (estimatedDuration.isNegative() || estimatedDuration.isZero()) {
+            throw new IllegalArgumentException("Alternate period must be positive and non-zero");
+        }
         this.chronology = chronology;
         this.id = chronology.getName() + '.' + name;
         this.name = name;
+        this.alternatePeriod = null;
+        this.estimatedDuration = estimatedDuration;
+    }
+
+    /**
+     * Constructor used to create a derived rule.
+     * <p>
+     * A derived rule is created as a multiple of a smaller duration rule.
+     * For example, an ISO year period can be derived as 12 ISO month periods.
+     *
+     * @param chronology  the chronology, not null
+     * @param name  the name of the type, not null
+     * @param alternatePeriod  the alternate period equal to this, not null
+     * @throws ArithmeticException if the estimated duration is too large
+     */
+    public PeriodRule(
+            Chronology chronology,
+            String name,
+            PeriodFields alternatePeriod) {
+        // avoid possible circular references by using inline NPE checks
+        if (chronology == null) {
+            throw new NullPointerException("Chronology must not be null");
+        }
+        if (name == null) {
+            throw new NullPointerException("Name must not be null");
+        }
+        if (alternatePeriod == null) {
+            throw new NullPointerException("Alternate period must not be null");
+        }
+        if (alternatePeriod.isPositive() == false || alternatePeriod.isZero()) {
+            throw new IllegalArgumentException("Alternate period must be positive and non-zero");
+        }
+        this.chronology = chronology;
+        this.id = chronology.getName() + '.' + name;
+        this.name = name;
+        this.alternatePeriod = alternatePeriod;
+        Duration dur = Duration.ZERO;
+        for (PeriodRule rule : alternatePeriod) {
+            dur = dur.plus(rule.getEstimatedDuration().multipliedBy(alternatePeriod.get(rule)));
+        }
+        this.estimatedDuration = dur;
+    }
+
+    /**
+     * Package private constructor used for to enhance system startup performance.
+     *
+     * @param chronology  the chronology, not null
+     * @param name  the name of the type, not null
+     * @param alternatePeriod  the alternate period equal to this, null if no equivalent
+     * @param estimatedDuration  the estimated duration of one unit of this period, not null
+     */
+    PeriodRule(
+            Chronology chronology,
+            String name,
+            PeriodFields alternatePeriod,
+            Duration estimatedDuration) {
+        // input known to be valid, don't call this by reflection!
+        this.chronology = chronology;
+        this.id = chronology.getName() + '.' + name;
+        this.name = name;
+        this.alternatePeriod = alternatePeriod;
         this.estimatedDuration = estimatedDuration;
     }
 
@@ -123,6 +193,19 @@ public final class PeriodRule
     }
 
     //-----------------------------------------------------------------------
+    /**
+     * Gets the alternate period that this field can be expressed as.
+     * <p>
+     * Most period rules are related to other rules.
+     * For example, an hour might be represented as 60 minutes.
+     * Thus, if this is the hour rule, then this method would return 60 minutes.
+     *
+     * @return the alternate period, null if none
+     */
+    public PeriodFields getAlternatePeriod() {
+        return alternatePeriod;
+    }
+
     /**
      * Gets an estimate of the duration of the unit in seconds.
      * This is used for comparing period rules.

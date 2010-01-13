@@ -31,9 +31,7 @@
  */
 package javax.time.calendar;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +42,12 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import javax.time.Duration;
+import javax.time.period.PeriodFields;
 
 import org.testng.annotations.Test;
 
@@ -255,6 +258,226 @@ public class TestISOChronology {
         assertEquals(rule.getPeriodUnit(), ISOChronology.periodHours());
         assertEquals(rule.getPeriodRange(), ISOChronology.periodTwelveHours());
         serialize(rule);
+    }
+
+    //-----------------------------------------------------------------------
+    // eras
+    //-----------------------------------------------------------------------
+    public void test_eras() {
+        PeriodRule rule = ISOChronology.periodEras();
+        assertSame(ISOChronology.periodEras(), rule);
+        assertEquals(rule.getName(), "Eras");
+        assertEquals(rule.getAlternatePeriod(), null);
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds((long) (365.2425 * (2000000000L * 24 * 60 * 60L))));
+    }
+
+    //-----------------------------------------------------------------------
+    // millenia
+    //-----------------------------------------------------------------------
+    public void test_millenia() {
+        PeriodRule rule = ISOChronology.periodMillenia();
+        assertSame(ISOChronology.periodMillenia(), rule);
+        assertEquals(rule.getName(), "Millenia");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(10, ISOChronology.periodCenturies()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds((long) (365.2425 * (1000L * 24 * 60 * 60L))));
+    }
+
+    //-----------------------------------------------------------------------
+    // centuries
+    //-----------------------------------------------------------------------
+    public void test_centuries() {
+        PeriodRule rule = ISOChronology.periodCenturies();
+        assertSame(ISOChronology.periodCenturies(), rule);
+        assertEquals(rule.getName(), "Centuries");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(10, ISOChronology.periodDecades()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds((long) (365.2425 * (100L * 24 * 60 * 60L))));
+    }
+
+    //-----------------------------------------------------------------------
+    // decades
+    //-----------------------------------------------------------------------
+    public void test_decades() {
+        PeriodRule rule = ISOChronology.periodDecades();
+        assertSame(ISOChronology.periodDecades(), rule);
+        assertEquals(rule.getName(), "Decades");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(10, ISOChronology.periodYears()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds((long) (365.2425 * (10L * 24 * 60 * 60L))));
+    }
+
+    //-----------------------------------------------------------------------
+    // years
+    //-----------------------------------------------------------------------
+    public void test_years() {
+        PeriodRule rule = ISOChronology.periodYears();
+        assertSame(ISOChronology.periodYears(), rule);
+        assertEquals(rule.getName(), "Years");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(4, ISOChronology.periodQuarters()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds((long) (365.2425 * (24 * 60 * 60L))));
+    }
+
+    //-----------------------------------------------------------------------
+    // weekBasedYears
+    //-----------------------------------------------------------------------
+    public void test_weekyears() {
+        PeriodRule rule = ISOChronology.periodWeekBasedYears();
+        assertSame(ISOChronology.periodWeekBasedYears(), rule);
+        assertEquals(rule.getName(), "WeekBasedYears");
+        assertEquals(rule.getAlternatePeriod(), null);
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds((long) ((52 * 7 + 0.5) * (24 * 60 * 60L))));
+    }
+
+    //-----------------------------------------------------------------------
+    // quarters
+    //-----------------------------------------------------------------------
+    public void test_quarters() {
+        PeriodRule rule = ISOChronology.periodQuarters();
+        assertSame(ISOChronology.periodQuarters(), rule);
+        assertEquals(rule.getName(), "Quarters");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(3, ISOChronology.periodMonths()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(((long) (365.2425 * (24 * 60 * 60L)) / 4)));
+    }
+
+    //-----------------------------------------------------------------------
+    // months
+    //-----------------------------------------------------------------------
+    public void test_months() {
+        PeriodRule rule = ISOChronology.periodMonths();
+        assertSame(ISOChronology.periodMonths(), rule);
+        assertEquals(rule.getName(), "Months");
+        assertEquals(rule.getAlternatePeriod(), null);
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(((long) (365.2425 * (24 * 60 * 60L)) / 12)));
+    }
+
+    //-----------------------------------------------------------------------
+    // weeks
+    //-----------------------------------------------------------------------
+    public void test_weeks() {
+        PeriodRule rule = ISOChronology.periodWeeks();
+        assertSame(ISOChronology.periodWeeks(), rule);
+        assertEquals(rule.getName(), "Weeks");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(7, ISOChronology.periodDays()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(7 * 24 * 60 * 60L));
+    }
+
+    //-----------------------------------------------------------------------
+    // days
+    //-----------------------------------------------------------------------
+    public void test_days() {
+        PeriodRule rule = ISOChronology.periodDays();
+        assertSame(ISOChronology.periodDays(), rule);
+        assertEquals(rule.getName(), "Days");
+        assertEquals(rule.getAlternatePeriod(), null);
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(24 * 60 * 60L));
+    }
+
+    //-----------------------------------------------------------------------
+    // twelveHours
+    //-----------------------------------------------------------------------
+    public void test_twelveHours() {
+        PeriodRule rule = ISOChronology.periodTwelveHours();
+        assertSame(ISOChronology.periodTwelveHours(), rule);
+        assertEquals(rule.getName(), "TwelveHours");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(12, ISOChronology.periodHours()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(12 * 60 * 60L));
+    }
+
+    //-----------------------------------------------------------------------
+    // hours
+    //-----------------------------------------------------------------------
+    public void test_hours() {
+        PeriodRule rule = ISOChronology.periodHours();
+        assertSame(ISOChronology.periodHours(), rule);
+        assertEquals(rule.getName(), "Hours");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(60, ISOChronology.periodMinutes()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(60 * 60L));
+    }
+
+    //-----------------------------------------------------------------------
+    // minutes
+    //-----------------------------------------------------------------------
+    public void test_minutes() {
+        PeriodRule rule = ISOChronology.periodMinutes();
+        assertSame(ISOChronology.periodMinutes(), rule);
+        assertEquals(rule.getName(), "Minutes");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(60, ISOChronology.periodSeconds()));
+        assertEquals(rule.getEstimatedDuration(), Duration.seconds(60L));
+    }
+
+    //-----------------------------------------------------------------------
+    // seconds
+    //-----------------------------------------------------------------------
+    public void test_seconds() {
+        PeriodRule rule = ISOChronology.periodSeconds();
+        assertSame(ISOChronology.periodSeconds(), rule);
+        assertEquals(rule.getName(), "Seconds");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(1000, ISOChronology.periodMillis()));
+        assertEquals(rule.getEstimatedDuration(), Duration.nanos(1000000000L));
+    }
+
+    //-----------------------------------------------------------------------
+    // millis
+    //-----------------------------------------------------------------------
+    public void test_millis() {
+        PeriodRule rule = ISOChronology.periodMillis();
+        assertSame(ISOChronology.periodMillis(), rule);
+        assertEquals(rule.getName(), "Millis");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(1000, ISOChronology.periodMicros()));
+        assertEquals(rule.getEstimatedDuration(), Duration.nanos(1000000L));
+    }
+
+    //-----------------------------------------------------------------------
+    // micros
+    //-----------------------------------------------------------------------
+    public void test_micros() {
+        PeriodRule rule = ISOChronology.periodMicros();
+        assertSame(ISOChronology.periodMicros(), rule);
+        assertEquals(rule.getName(), "Micros");
+        assertEquals(rule.getAlternatePeriod(), PeriodFields.of(1000, ISOChronology.periodNanos()));
+        assertEquals(rule.getEstimatedDuration(), Duration.nanos(1000L));
+    }
+
+    //-----------------------------------------------------------------------
+    // nanos
+    //-----------------------------------------------------------------------
+    public void test_nanos() {
+        PeriodRule rule = ISOChronology.periodNanos();
+        assertSame(ISOChronology.periodNanos(), rule);
+        assertEquals(rule.getName(), "Nanos");
+        assertEquals(rule.getAlternatePeriod(), null);
+        assertEquals(rule.getEstimatedDuration(), Duration.nanos(1L));
+    }
+
+    //-----------------------------------------------------------------------
+    // compareTo
+    //-----------------------------------------------------------------------
+    public void test_compareTo() {
+        List<PeriodRule> list = new ArrayList<PeriodRule>();
+        list.add(ISOChronology.periodNanos());
+        list.add(ISOChronology.periodMicros());
+        list.add(ISOChronology.periodMillis());
+        list.add(ISOChronology.periodSeconds());
+        list.add(ISOChronology.periodMinutes());
+        list.add(ISOChronology.periodHours());
+        list.add(ISOChronology.periodTwelveHours());
+        list.add(ISOChronology.periodDays());
+        list.add(ISOChronology.periodWeeks());
+        list.add(ISOChronology.periodMonths());
+        list.add(ISOChronology.periodQuarters());
+        list.add(ISOChronology.periodWeekBasedYears());
+        list.add(ISOChronology.periodYears());
+        list.add(ISOChronology.periodDecades());
+        list.add(ISOChronology.periodCenturies());
+        list.add(ISOChronology.periodMillenia());
+        list.add(ISOChronology.periodEras());
+        
+        List<PeriodRule> test = new ArrayList<PeriodRule>(list);
+        Collections.shuffle(test);
+        Collections.sort(test);
+        assertEquals(test, list);
+        // repeat for more randomness
+        Collections.shuffle(test);
+        Collections.sort(test);
+        assertEquals(test, list);
     }
 
     //-----------------------------------------------------------------------

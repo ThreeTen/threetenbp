@@ -97,7 +97,6 @@ import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.period.TestPeriod;
 import javax.time.period.TestPeriodFields;
 import javax.time.period.TestPeriodParser;
-import javax.time.period.TestPeriodUnits;
 
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
@@ -194,7 +193,6 @@ public class AllTest {
             TestPeriod.class,
             TestPeriodParser.class,
             TestPeriodFields.class,
-            TestPeriodUnits.class,
         });
 //        testng.addListener(new DotTestListener());
 //        testng.addListener(new TextReporter("All", 2));
