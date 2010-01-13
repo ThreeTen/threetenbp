@@ -35,27 +35,31 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.PeriodRule;
 
 /**
- * An period of time measured using a single period rule, such as '3 days' or '65 seconds'.
+ * A period of time measured using a single period rule, such as '3 days' or '65 seconds'.
  * <p>
- * PeriodField is an immutable period that stores an amount of human-scale
- * time for a single rule. For example, humans measure periods of time in years,
- * months, days, hours, minutes and seconds. These concepts are defined by period
- * rules in the chronology classes, and this class allows an amount to be specified
+ * <code>PeriodField</code> is an immutable period that stores an amount of human-scale
+ * time for a number of rules. For example, humans typically measure periods of time
+ * in years, months, days, hours, minutes and seconds. These concepts are defined by
+ * period rules in the chronology classes, and this class allows an amount to be specified
  * for one of the rules, such as '3 days' or '65 seconds'.
  * <p>
  * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
  * dividedBy() and negated(), all of which return a new instance
+ * <p>
+ * <code>PeriodField</code> can store rules of any kind which makes it usable with
+ * any calendar system.
  * <p>
  * PeriodField is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
 public final class PeriodField
-        implements PeriodProvider, Serializable {
+        implements PeriodProvider, Comparable<PeriodField>, Serializable {
 
     /**
      * The serialization version.
@@ -63,11 +67,11 @@ public final class PeriodField
     private static final long serialVersionUID = 1L;
 
     /**
-     *  The amount of the period of time.
+     *  The amount of the period.
      */
     private final long amount;
     /**
-     * The rule defining the period of time.
+     * The rule defining the period.
      */
     private final PeriodRule rule;
 
@@ -158,7 +162,9 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the amount of time in this period.
+     * Gets the amount of this period.
+     * <p>
+     * For example, in the period '5 days', the amount is '5'.
      *
      * @return the amount of time of this period, may be negative
      */
@@ -167,7 +173,20 @@ public final class PeriodField
     }
 
     /**
-     * Gets the rule defining the what the period represents.
+     * Gets the amount of this period, converted to an <code>int</code>.
+     * <p>
+     * For example, in the period '5 days', the amount is '5'.
+     *
+     * @return the amount of time of this period, may be negative
+     */
+    public int getAmountInt() {
+        return MathUtils.safeToInt(amount);
+    }
+
+    /**
+     * Gets the rule of this period.
+     * <p>
+     * For example, in the period '5 days', the rule is 'days'.
      *
      * @return the period rule, never null
      */
@@ -205,11 +224,29 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this field with the specified amount of time added.
+     * Returns a copy of this field with the specified period added.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount of time to add, may be negative
+     * @param field  the period to add, may be negative
+     * @return the new period field plus the specified amount of time, never null
+     * @throws IllegalArgumetException if the specified field has a different rule
+     * @throws ArithmeticException if the result overflows a <code>long</code>
+     */
+    public PeriodField plus(PeriodField field) {
+        PeriodFields.checkNotNull(field, "PeriodField must not be null");
+        if (field.getRule().equals(rule) == false) {
+            throw new IllegalArgumentException("Cannot add periods, rules differ");
+        }
+        return plus(field.getAmount());
+    }
+
+    /**
+     * Returns a copy of this field with the specified period added.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the period to add, may be negative
      * @return the new period field plus the specified amount of time, never null
      * @throws ArithmeticException if the result overflows a <code>long</code>
      */
@@ -220,12 +257,31 @@ public final class PeriodField
         return withAmount(MathUtils.safeAdd(this.amount, amount));
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this field with the specified amount of time subtracted.
+     * Returns a copy of this field with the specified period subtracted.
      * <p>
      * This instance is immutable and unaffected by this method call.
      *
-     * @param amount  the amount of time to take away, may be negative
+     * @param field  the period to subtract, may be negative
+     * @return the new period minus the specified amount of time, never null
+     * @throws IllegalArgumetException if the specified field has a different rule
+     * @throws ArithmeticException if the result overflows a <code>long</code>
+     */
+    public PeriodField minus(PeriodField field) {
+        PeriodFields.checkNotNull(field, "PeriodField must not be null");
+        if (field.getRule().equals(rule) == false) {
+            throw new IllegalArgumentException("Cannot add periods, rules differ");
+        }
+        return minus(field.getAmount());
+    }
+
+    /**
+     * Returns a copy of this field with the specified period subtracted.
+     * <p>
+     * This instance is immutable and unaffected by this method call.
+     *
+     * @param amount  the period to subtract, may be negative
      * @return the new period minus the specified amount of time, never null
      * @throws ArithmeticException if the result overflows a <code>long</code>
      */
@@ -296,9 +352,44 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
-     * Is this instance equal to that specified.
+     * Converts this period to an estimated duration.
+     * <p>
+     * Each {@link PeriodRule} contains an estimated duration for that rule.
+     * This method uses that estimate to calculate an estimated duration for
+     * this period field.
      *
-     * @param obj  the other amount of time, null returns false
+     * @return the estimated duration of this period, may be negative
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public Duration toEstimatedDuration() {
+        return rule.getEstimatedDuration().multipliedBy(amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Compares this period field to another.
+     * <p>
+     * The comparison orders first by the rule, then by the amount.
+     *
+     * @param otherPeriod  the other period to compare to, not null
+     * @return the comparator value, negative if less, positive if greater
+     * @throws NullPointerException if otherPeriod is null
+     */
+    public int compareTo(PeriodField otherPeriod) {
+        int cmp = rule.compareTo(otherPeriod.rule);
+        if (cmp != 0) {
+            return cmp;
+        }
+        return MathUtils.safeCompare(amount, otherPeriod.amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if this instance equal to the object specified.
+     * <p>
+     * Two <code>PeriodField</code> instances are equal if the rule and amount are equal.
+     *
+     * @param obj  the object to check, null returns false
      * @return true if this amount of time is the same as that specified
      */
     @Override

@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.calendar.ISOChronology;
 import javax.time.calendar.PeriodRule;
 
@@ -206,13 +207,13 @@ public class TestPeriodFields {
         PeriodProvider provider = Period.of(1, 2, 3, 4, 5, 6, 7);
         PeriodFields test = PeriodFields.from(provider);
         assertEquals(test.size(), 7);
-        assertEquals(test.get(YEARS), 1);
-        assertEquals(test.get(MONTHS), 2);
-        assertEquals(test.get(DAYS), 3);
-        assertEquals(test.get(HOURS), 4);
-        assertEquals(test.get(MINUTES), 5);
-        assertEquals(test.get(SECONDS), 6);
-        assertEquals(test.get(NANOS), 7);
+        assertEquals(test.getAmount(YEARS), 1);
+        assertEquals(test.getAmount(MONTHS), 2);
+        assertEquals(test.getAmount(DAYS), 3);
+        assertEquals(test.getAmount(HOURS), 4);
+        assertEquals(test.getAmount(MINUTES), 5);
+        assertEquals(test.getAmount(SECONDS), 6);
+        assertEquals(test.getAmount(NANOS), 7);
     }
 
     public void factory_period_provider_zeroesRemoved() {
@@ -252,106 +253,39 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // get(PeriodRule)
+    // isPositive()
     //-----------------------------------------------------------------------
-    public void test_get() {
-        assertEquals(fixtureP2Y5D.get(YEARS), 2L);
-        assertEquals(fixtureP2Y5D.get(DAYS), 5L);
-        assertEquals(fixtureZeroYears.get(YEARS), 0L);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_null() {
-        fixtureP2Y5D.get((PeriodRule) null);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_get_notPresent() {
-        fixtureP2Y5D.get(MONTHS);
+    public void test_isPositive() {
+        assertEquals(fixtureZeroYears.isPositive(), true);
+        assertEquals(PeriodFields.of(1, YEARS).isPositive(), true);
+        assertEquals(PeriodFields.of(-1, YEARS).isPositive(), false);
+        
+        assertEquals(PeriodFields.of(1, YEARS).with(2, DAYS).isPositive(), true);
+        assertEquals(PeriodFields.of(1, YEARS).with(-2, DAYS).isPositive(), false);
+        assertEquals(PeriodFields.of(-1, YEARS).with(2, DAYS).isPositive(), false);
+        assertEquals(PeriodFields.of(-1, YEARS).with(-2, DAYS).isPositive(), false);
     }
 
     //-----------------------------------------------------------------------
-    // getInt(PeriodRule)
+    // size()
     //-----------------------------------------------------------------------
-    public void test_getInt() {
-        assertEquals(fixtureP2Y5D.getInt(YEARS), 2);
-        assertEquals(fixtureP2Y5D.getInt(DAYS), 5);
-        assertEquals(fixtureZeroYears.getInt(YEARS), 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getInt_null() {
-        fixtureP2Y5D.getInt((PeriodRule) null);
-    }
-
-    @Test(expectedExceptions=CalendricalException.class)
-    public void test_getInt_notPresent() {
-        fixtureP2Y5D.getInt(MONTHS);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_getInt_tooBig() {
-        PeriodFields.of(Integer.MAX_VALUE + 1L, MONTHS).getInt(MONTHS);
+    public void test_size() {
+        assertEquals(PeriodFields.ZERO.size(), 0);
+        assertEquals(PeriodFields.of(2, YEARS).size(), 1);
+        assertEquals(fixtureP2Y5D.size(), 2);
+        assertEquals(fixtureZeroYears.size(), 1);
     }
 
     //-----------------------------------------------------------------------
-    // get(PeriodRule,long)
+    // iterator()
     //-----------------------------------------------------------------------
-    public void test_get_long() {
-        assertEquals(fixtureP2Y5D.get(YEARS, 0), 2L);
-        assertEquals(fixtureP2Y5D.get(DAYS, 0), 5L);
-        assertEquals(fixtureZeroYears.get(YEARS, 1), 0L);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_get_long_null() {
-        fixtureP2Y5D.get((PeriodRule) null, 0L);
-    }
-
-    public void test_get_long_notPresent() {
-        assertEquals(fixtureP2Y5D.get(MONTHS, 0L), 0L);
-        assertEquals(fixtureP2Y5D.get(MONTHS, 101L), 101L);
-    }
-
-    //-----------------------------------------------------------------------
-    // getInt(PeriodRule, int)
-    //-----------------------------------------------------------------------
-    public void test_getInt_int() {
-        assertEquals(fixtureP2Y5D.getInt(YEARS), 2);
-        assertEquals(fixtureP2Y5D.getInt(DAYS), 5);
-        assertEquals(fixtureZeroYears.getInt(YEARS), 0);
-    }
-
-    @Test(expectedExceptions=NullPointerException.class)
-    public void test_getInt_int_null() {
-        fixtureP2Y5D.getInt((PeriodRule) null);
-    }
-
-    public void test_getInt_int_notPresent() {
-        assertEquals(fixtureP2Y5D.getInt(MONTHS, 0), 0);
-        assertEquals(fixtureP2Y5D.getInt(MONTHS, 101), 101);
-    }
-
-    @Test(expectedExceptions=ArithmeticException.class)
-    public void test_getInt_int_tooBig() {
-        PeriodFields.of(Integer.MAX_VALUE + 1L, MONTHS).getInt(MONTHS);
-    }
-
-    //-----------------------------------------------------------------------
-    // getQuiet(PeriodRule)
-    //-----------------------------------------------------------------------
-    public void test_getQuiet() {
-        assertEquals(fixtureP2Y5D.getQuiet(YEARS), Long.valueOf(2));
-        assertEquals(fixtureP2Y5D.getQuiet(DAYS), Long.valueOf(5));
-        assertEquals(fixtureZeroYears.getQuiet(YEARS), Long.valueOf(0));
-    }
-
-    public void test_getQuiet_null() {
-        assertEquals(fixtureP2Y5D.getQuiet((PeriodRule) null), null);
-    }
-
-    public void test_getQuiet_notPresent() {
-        assertEquals(fixtureP2Y5D.getQuiet(MONTHS), null);
+    public void test_iterator() {
+        Iterator<PeriodField> iterator = fixtureP2Y5D.iterator();
+        assertEquals(iterator.hasNext(), true);
+        assertEquals(iterator.next(), PeriodField.of(2, YEARS));
+        assertEquals(iterator.hasNext(), true);
+        assertEquals(iterator.next(), PeriodField.of(5, DAYS));
+        assertEquals(iterator.hasNext(), false);
     }
 
     //-----------------------------------------------------------------------
@@ -370,26 +304,108 @@ public class TestPeriodFields {
     }
 
     //-----------------------------------------------------------------------
-    // size()
+    // get(PeriodRule)
     //-----------------------------------------------------------------------
-    public void test_size() {
-        assertEquals(PeriodFields.ZERO.size(), 0);
-        assertEquals(PeriodFields.of(2, YEARS).size(), 1);
-        assertEquals(fixtureP2Y5D.size(), 2);
-        assertEquals(fixtureZeroYears.size(), 1);
+    public void test_get() {
+        assertEquals(fixtureP2Y5D.get(YEARS), PeriodField.of(2L, YEARS));
+        assertEquals(fixtureP2Y5D.get(DAYS), PeriodField.of(5L, DAYS));
+        assertEquals(fixtureZeroYears.get(YEARS), PeriodField.of(0L, YEARS));
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_get_null() {
+        fixtureP2Y5D.get((PeriodRule) null);
+    }
+
+    public void test_get_notPresent() {
+        assertEquals(fixtureP2Y5D.get(MONTHS), null);
     }
 
     //-----------------------------------------------------------------------
-    // iterator()
+    // getAmount(PeriodRule)
     //-----------------------------------------------------------------------
-    public void test_iterator() {
-        Iterator<PeriodRule> iterator = fixtureP2Y5D.iterator();
-        assertEquals(iterator.hasNext(), true);
-        assertEquals(iterator.next(), YEARS);
-        assertEquals(iterator.hasNext(), true);
-        assertEquals(iterator.next(), DAYS);
-        assertEquals(iterator.hasNext(), false);
+    public void test_getAmount() {
+        assertEquals(fixtureP2Y5D.getAmount(YEARS), 2);
+        assertEquals(fixtureP2Y5D.getAmount(DAYS), 5);
+        assertEquals(fixtureZeroYears.getAmount(YEARS), 0);
     }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getAmount_null() {
+        fixtureP2Y5D.getAmount((PeriodRule) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_getAmount_notPresent() {
+        fixtureP2Y5D.getAmount(MONTHS);
+    }
+
+    //-----------------------------------------------------------------------
+    // getAmountInt(PeriodRule)
+    //-----------------------------------------------------------------------
+    public void test_getAmountInt() {
+        assertEquals(fixtureP2Y5D.getAmountInt(YEARS), 2);
+        assertEquals(fixtureP2Y5D.getAmountInt(DAYS), 5);
+        assertEquals(fixtureZeroYears.getAmountInt(YEARS), 0);
+    }
+
+    @Test(expectedExceptions=NullPointerException.class)
+    public void test_getAmountInt_null() {
+        fixtureP2Y5D.getAmountInt((PeriodRule) null);
+    }
+
+    @Test(expectedExceptions=CalendricalException.class)
+    public void test_getAmountInt_notPresent() {
+        fixtureP2Y5D.getAmountInt(MONTHS);
+    }
+
+    @Test(expectedExceptions=ArithmeticException.class)
+    public void test_getAmountInt_tooBig() {
+        PeriodFields.of(Integer.MAX_VALUE + 1L, MONTHS).getAmountInt(MONTHS);
+    }
+
+//    //-----------------------------------------------------------------------
+//    // get(PeriodRule,long)
+//    //-----------------------------------------------------------------------
+//    public void test_get_long() {
+//        assertEquals(fixtureP2Y5D.get(YEARS, 0), 2L);
+//        assertEquals(fixtureP2Y5D.get(DAYS, 0), 5L);
+//        assertEquals(fixtureZeroYears.get(YEARS, 1), 0L);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_get_long_null() {
+//        fixtureP2Y5D.get((PeriodRule) null, 0L);
+//    }
+//
+//    public void test_get_long_notPresent() {
+//        assertEquals(fixtureP2Y5D.get(MONTHS, 0L), 0L);
+//        assertEquals(fixtureP2Y5D.get(MONTHS, 101L), 101L);
+//    }
+//
+//    //-----------------------------------------------------------------------
+//    // getInt(PeriodRule, int)
+//    //-----------------------------------------------------------------------
+//    public void test_getInt_int() {
+//        assertEquals(fixtureP2Y5D.getInt(YEARS), 2);
+//        assertEquals(fixtureP2Y5D.getInt(DAYS), 5);
+//        assertEquals(fixtureZeroYears.getInt(YEARS), 0);
+//    }
+//
+//    @Test(expectedExceptions=NullPointerException.class)
+//    public void test_getInt_int_null() {
+//        fixtureP2Y5D.getInt((PeriodRule) null);
+//    }
+//
+//    public void test_getInt_int_notPresent() {
+//        assertEquals(fixtureP2Y5D.getInt(MONTHS, 0), 0);
+//        assertEquals(fixtureP2Y5D.getInt(MONTHS, 101), 101);
+//    }
+//
+//    @Test(expectedExceptions=ArithmeticException.class)
+//    public void test_getInt_int_tooBig() {
+//        PeriodFields.of(Integer.MAX_VALUE + 1L, MONTHS).getInt(MONTHS);
+//    }
 
     //-----------------------------------------------------------------------
     // withZeroesRemoved()
@@ -687,12 +703,22 @@ public class TestPeriodFields {
     // toRuleAmountMap()
     //-----------------------------------------------------------------------
     public void test_toRuleAmountMap() {
-        SortedMap<PeriodRule, Long> map = fixtureP2Y5D.toRuleAmountMap();
-        assertEquals(map.size(), 2);
-        assertEquals(map.get(YEARS), Long.valueOf(2));
-        assertEquals(map.get(DAYS), Long.valueOf(5));
-        map.clear();
+        SortedMap<PeriodRule, Long> test = fixtureP2Y5D.toRuleAmountMap();
+        assertEquals(test.size(), 2);
+        assertEquals(test.get(YEARS), Long.valueOf(2));
+        assertEquals(test.get(DAYS), Long.valueOf(5));
+        test.clear();
         assertPeriodFields(fixtureP2Y5D, 2, YEARS, 5, DAYS);
+    }
+
+    //-----------------------------------------------------------------------
+    // toEstimatedDuration()
+    //-----------------------------------------------------------------------
+    public void test_toEstimatedDuration() {
+        Duration test = fixtureP2Y5D.toEstimatedDuration();
+        Duration twoYears = ISOChronology.periodYears().getEstimatedDuration().multipliedBy(2);
+        Duration fiveDays = ISOChronology.periodDays().getEstimatedDuration().multipliedBy(5);
+        assertEquals(test, twoYears.plus(fiveDays));
     }
 
 //    //-----------------------------------------------------------------------
@@ -805,11 +831,11 @@ public class TestPeriodFields {
     @DataProvider(name="toString")
     Object[][] data_toString() {
         return new Object[][] {
-            {PeriodFields.ZERO, "{}"},
-            {fixtureZeroYears, "{ISO.Years=0}"},
-            {fixtureP2Y5D, "{ISO.Years=2, ISO.Days=5}"},
-            {PeriodFields.of(1, MONTHS), "{ISO.Months=1}"},
-            {PeriodFields.of(-1, DAYS), "{ISO.Days=-1}"},
+            {PeriodFields.ZERO, "[]"},
+            {fixtureZeroYears, "[0 Years]"},
+            {fixtureP2Y5D, "[2 Years, 5 Days]"},
+            {PeriodFields.of(1, MONTHS), "[1 Months]"},
+            {PeriodFields.of(-1, DAYS), "[-1 Days]"},
         };
     }
 
@@ -822,10 +848,10 @@ public class TestPeriodFields {
     private void assertPeriodFields(PeriodFields test, long amount1, PeriodRule unit1) {
         assertEquals(test.size(), 1);
         assertEquals(test.contains(unit1), true);
-        assertEquals(test.get(unit1), amount1);
-        assertEquals(test.get(unit1, -100), amount1);
-        assertEquals(test.getQuiet(unit1), Long.valueOf(amount1));
+        assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(test.getAmount(unit1), amount1);
         assertEquals(test.isZero(), amount1 == 0);
+        assertEquals(test.isPositive(), amount1 >= 0);
         SortedMap<PeriodRule, Long> map = test.toRuleAmountMap();
         assertEquals(map.size(), 1);
         assertEquals(map.get(unit1), Long.valueOf(amount1));
@@ -835,13 +861,12 @@ public class TestPeriodFields {
         assertEquals(test.size(), 2);
         assertEquals(test.contains(unit1), true);
         assertEquals(test.contains(unit2), true);
-        assertEquals(test.get(unit1), amount1);
-        assertEquals(test.get(unit2), amount2);
-        assertEquals(test.get(unit1, -100), amount1);
-        assertEquals(test.get(unit2, -100), amount2);
-        assertEquals(test.getQuiet(unit1), Long.valueOf(amount1));
-        assertEquals(test.getQuiet(unit2), Long.valueOf(amount2));
+        assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(test.get(unit2), PeriodField.of(amount2, unit2));
+        assertEquals(test.getAmount(unit1), amount1);
+        assertEquals(test.getAmount(unit2), amount2);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0);
+        assertEquals(test.isPositive(), amount1 >= 0 && amount2 >= 0);
         SortedMap<PeriodRule, Long> map = test.toRuleAmountMap();
         assertEquals(map.size(), 2);
         assertEquals(map.get(unit1), Long.valueOf(amount1));
@@ -853,16 +878,14 @@ public class TestPeriodFields {
         assertEquals(test.contains(unit1), true);
         assertEquals(test.contains(unit2), true);
         assertEquals(test.contains(unit3), true);
-        assertEquals(test.get(unit1), amount1);
-        assertEquals(test.get(unit2), amount2);
-        assertEquals(test.get(unit3), amount3);
-        assertEquals(test.get(unit1, -100), amount1);
-        assertEquals(test.get(unit2, -100), amount2);
-        assertEquals(test.get(unit3, -100), amount3);
-        assertEquals(test.getQuiet(unit1), Long.valueOf(amount1));
-        assertEquals(test.getQuiet(unit2), Long.valueOf(amount2));
-        assertEquals(test.getQuiet(unit3), Long.valueOf(amount3));
+        assertEquals(test.get(unit1), PeriodField.of(amount1, unit1));
+        assertEquals(test.get(unit2), PeriodField.of(amount2, unit2));
+        assertEquals(test.get(unit3), PeriodField.of(amount3, unit3));
+        assertEquals(test.getAmount(unit1), amount1);
+        assertEquals(test.getAmount(unit2), amount2);
+        assertEquals(test.getAmount(unit3), amount3);
         assertEquals(test.isZero(), amount1 == 0 && amount2 == 0 && amount3 == 0);
+        assertEquals(test.isPositive(), amount1 >= 0 && amount2 >= 0 && amount3 >= 0);
         SortedMap<PeriodRule, Long> map = test.toRuleAmountMap();
         assertEquals(map.size(), 3);
         assertEquals(map.get(unit1), Long.valueOf(amount1));

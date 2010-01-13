@@ -95,6 +95,7 @@ import javax.time.calendar.i18n.TestInterCalendarSystem;
 import javax.time.calendar.zone.TestStandardZoneRules;
 import javax.time.calendar.zone.TestZoneRulesBuilder;
 import javax.time.period.TestPeriod;
+import javax.time.period.TestPeriodField;
 import javax.time.period.TestPeriodFields;
 import javax.time.period.TestPeriodParser;
 
@@ -192,6 +193,7 @@ public class AllTest {
             // periods
             TestPeriod.class,
             TestPeriodParser.class,
+            TestPeriodField.class,
             TestPeriodFields.class,
         });
 //        testng.addListener(new DotTestListener());

@@ -53,15 +53,25 @@ public final class PeriodRule
     /** The serialization version. */
     private static final long serialVersionUID = 1L;
 
-    /** The chronology of the rule, not null. */
+    /**
+     * The chronology of the rule, not null.
+     */
     private final Chronology chronology;
-    /** The id of the rule, not null. */
+    /**
+     * The id of the rule, not null.
+     */
     private final String id;
-    /** The name of the rule, not null. */
+    /**
+     * The name of the rule, not null.
+     */
     private final String name;
-    /** The alternate period equivalent to this. */
+    /**
+     * The alternate period equivalent to this.
+     */
     private final PeriodFields alternatePeriod;
-    /** The estimated duration of the rule, not null. */
+    /**
+     * The estimated duration of the rule, not null.
+     */
     private final Duration estimatedDuration;
 
     /**
@@ -130,11 +140,7 @@ public final class PeriodRule
         this.id = chronology.getName() + '.' + name;
         this.name = name;
         this.alternatePeriod = alternatePeriod;
-        Duration dur = Duration.ZERO;
-        for (PeriodRule rule : alternatePeriod) {
-            dur = dur.plus(rule.getEstimatedDuration().multipliedBy(alternatePeriod.get(rule)));
-        }
-        this.estimatedDuration = dur;
+        this.estimatedDuration = alternatePeriod.toEstimatedDuration();
     }
 
     /**

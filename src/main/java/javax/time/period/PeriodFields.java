@@ -41,31 +41,41 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import javax.time.CalendricalException;
+import javax.time.Duration;
 import javax.time.MathUtils;
 import javax.time.calendar.PeriodRule;
 
 /**
- * An immutable period formed by the storage of a map of rule-amount pairs.
+ * A period of time measured as the combination of a number of separate fields,
+ * such as '3 months, 4 days and 7 hours'.
  * <p>
- * As an example, the period "3 months, 4 days and 7 hours" can be stored.
+ * <code>PeriodFields</code> is an immutable period that stores an amount of human-scale
+ * time for a number of rules. For example, humans typically measure periods of time
+ * in years, months, days, hours, minutes and seconds. These concepts are defined by
+ * period rules in the chronology classes, and this class allows an amount to be specified
+ * for a number of the rules, such as '3 days and 65 seconds'.
+ * <p>
+ * Basic mathematical operations are provided - plus(), minus(), multipliedBy(),
+ * dividedBy() and negated(), all of which return a new instance
  * <p>
  * A value of zero can also be stored for any rule. This means that a
  * period of zero hours is not equal to a period of zero minutes.
  * The {@link #withZeroesRemoved()} method removes zero values.
  * <p>
- * PeriodFields can store rules of any kind which makes it usable with any calendar system.
+ * <code>PeriodFields</code> can store rules of any kind which makes it usable with
+ * any calendar system.
  * <p>
  * PeriodFields is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */
 public final class PeriodFields
-        implements PeriodProvider, Iterable<PeriodRule>, Serializable {
+        implements PeriodProvider, Iterable<PeriodField>, Serializable {
 
     /**
      * A constant for a period of zero.
      */
-    public static final PeriodFields ZERO = new PeriodFields(new TreeMap<PeriodRule, Long>());
+    public static final PeriodFields ZERO = new PeriodFields(new TreeMap<PeriodRule, PeriodField>());
     /**
      * The serialization version.
      */
@@ -74,7 +84,7 @@ public final class PeriodFields
     /**
      * The map of period fields.
      */
-    private final TreeMap<PeriodRule, Long> ruleAmountMap;
+    private final TreeMap<PeriodRule, PeriodField> ruleFieldMap;
 
     //-----------------------------------------------------------------------
     /**
@@ -87,8 +97,8 @@ public final class PeriodFields
      */
     public static PeriodFields of(long amount, PeriodRule rule) {
         checkNotNull(rule, "PeriodUnit must not be null");
-        TreeMap<PeriodRule, Long> internalMap = createMap();
-        internalMap.put(rule, amount);
+        TreeMap<PeriodRule, PeriodField> internalMap = createMap();
+        internalMap.put(rule, PeriodField.of(amount, rule));
         return create(internalMap);
     }
 
@@ -107,13 +117,13 @@ public final class PeriodFields
     public static PeriodFields of(Map<PeriodRule, ? extends Number> ruleAmountMap) {
         checkNotNull(ruleAmountMap, "Map must not be null");
         // don't use contains() as tree map and others can throw NPE
-        TreeMap<PeriodRule, Long> internalMap = createMap();
+        TreeMap<PeriodRule, PeriodField> internalMap = createMap();
         for (Entry<PeriodRule, ? extends Number> entry : ruleAmountMap.entrySet()) {
-            PeriodRule fieldRule = entry.getKey();
-            Number value = entry.getValue();
-            checkNotNull(fieldRule, "Null keys are not permitted in rule-amount map");
-            checkNotNull(value, "Null values are not permitted in rule-amount map");
-            internalMap.put(fieldRule, (value instanceof Long ? (Long) value : value.longValue()));
+            PeriodRule rule = entry.getKey();
+            Number amount = entry.getValue();
+            checkNotNull(rule, "Null keys are not permitted in rule-amount map");
+            checkNotNull(amount, "Null amounts are not permitted in rule-amount map");
+            internalMap.put(rule, PeriodField.of(amount.longValue(), rule));
         }
         return create(internalMap);
     }
@@ -133,10 +143,15 @@ public final class PeriodFields
         if (periodProvider instanceof PeriodFields) {
             return (PeriodFields) periodProvider;
         }
-        TreeMap<PeriodRule, Long> map = createMap();
-        for (PeriodRule rule : periodProvider.periodRules()) {
-            long amount = periodProvider.periodAmount(rule);
-            map.put(rule, amount);
+        TreeMap<PeriodRule, PeriodField> map = createMap();
+        if (periodProvider instanceof PeriodField) {
+            PeriodField providedField = (PeriodField) periodProvider;
+            map.put(providedField.getRule(), providedField);
+        } else {
+            for (PeriodRule rule : periodProvider.periodRules()) {
+                long amount = periodProvider.periodAmount(rule);
+                map.put(rule, PeriodField.of(amount, rule));
+            }
         }
         return create(map);
     }
@@ -158,12 +173,20 @@ public final class PeriodFields
         if (periodProviders.length == 1 && periodProviders[0] instanceof PeriodFields) {
             return (PeriodFields) periodProviders[0];
         }
-        TreeMap<PeriodRule, Long> map = createMap();
+        TreeMap<PeriodRule, PeriodField> map = createMap();
         for (PeriodProvider periodProvider : periodProviders) {
-            for (PeriodRule rule : periodProvider.periodRules()) {
-                long amount = periodProvider.periodAmount(rule);
-                Long oldAmount = map.get(rule);
-                map.put(rule, oldAmount != null ? MathUtils.safeAdd(oldAmount, amount) : amount);
+            if (periodProvider instanceof PeriodField) {
+                PeriodField providedField = (PeriodField) periodProvider;
+                PeriodField field = map.get(providedField.getRule());
+                field = (field != null ? field.plus(providedField.getAmount()) : providedField);
+                map.put(providedField.getRule(), field);
+            } else {
+                for (PeriodRule rule : periodProvider.periodRules()) {
+                    long amount = periodProvider.periodAmount(rule);
+                    PeriodField field = map.get(rule);
+                    field = (field != null ? field.plus(amount) : PeriodField.of(amount, rule));
+                    map.put(rule, field);
+                }
             }
         }
         return create(map);
@@ -175,8 +198,8 @@ public final class PeriodFields
      *
      * @return ordered representation of internal map
      */
-    private static TreeMap<PeriodRule, Long> createMap() {
-        return new TreeMap<PeriodRule, Long>(Collections.reverseOrder());
+    private static TreeMap<PeriodRule, PeriodField> createMap() {
+        return new TreeMap<PeriodRule, PeriodField>(Collections.reverseOrder());
     }
 
     /**
@@ -186,7 +209,7 @@ public final class PeriodFields
      * @param periodMap  the rule-amount map, not null, assigned not cloned
      * @return the created period, never null
      */
-    private static PeriodFields create(TreeMap<PeriodRule, Long> periodMap) {
+    private static PeriodFields create(TreeMap<PeriodRule, PeriodField> periodMap) {
         if (periodMap.isEmpty()) {
             return ZERO;
         }
@@ -213,8 +236,8 @@ public final class PeriodFields
      *
      * @param periodMap  the map of periods to represent, not null and safe to assign
      */
-    private PeriodFields(TreeMap<PeriodRule, Long> periodMap) {
-        this.ruleAmountMap = periodMap;
+    private PeriodFields(TreeMap<PeriodRule, PeriodField> periodMap) {
+        this.ruleFieldMap = periodMap;
     }
 
     /**
@@ -223,20 +246,28 @@ public final class PeriodFields
      * @return the resolved instance
      */
     private Object readResolve() {
-        if (ruleAmountMap.size() == 0) {
+        if (ruleFieldMap.size() == 0) {
             return ZERO;
         }
         return this;
     }
 
     //-----------------------------------------------------------------------
+//    /**
+//     * Gets the complete set of fields.
+//     *
+//     * @return the period rule as an unmodifiable set, never null
+//     */
+//    public PeriodField[] periodFields() {
+//        return ruleFieldMap.values().toArray(new PeriodField[ruleFieldMap.size()]);
+//    }
     /**
      * Gets the complete set of rules which have amounts stored.
      *
      * @return the period rule as an unmodifiable set, never null
      */
     public Set<PeriodRule> periodRules() {
-        return Collections.unmodifiableSet(ruleAmountMap.keySet());
+        return Collections.unmodifiableSet(ruleFieldMap.keySet());
     }
 
     /**
@@ -249,8 +280,8 @@ public final class PeriodFields
      */
     public long periodAmount(PeriodRule rule) {
         PeriodFields.checkNotNull(rule, "PeriodRule must not be null");
-        Long amount = ruleAmountMap.get(rule);
-        return (amount != null ? amount : 0);
+        PeriodField field = ruleFieldMap.get(rule);
+        return (field != null ? field.getAmount() : 0);
     }
 
     //-----------------------------------------------------------------------
@@ -262,8 +293,8 @@ public final class PeriodFields
      * @return true if this period is zero-length
      */
     public boolean isZero() {
-        for (Long amount : ruleAmountMap.values()) {
-            if (amount != 0) {
+        for (PeriodField field : ruleFieldMap.values()) {
+            if (field.isZero() == false) {
                 return false;
             }
         }
@@ -279,8 +310,8 @@ public final class PeriodFields
      * @return true if this period is fully positive
      */
     public boolean isPositive() {
-        for (Long amount : ruleAmountMap.values()) {
-            if (amount < 0) {
+        for (PeriodField field : ruleFieldMap.values()) {
+            if (field.isNegative()) {
                 return false;
             }
         }
@@ -294,20 +325,19 @@ public final class PeriodFields
      * @return number of rule-amount pairs
      */
     public int size() {
-        return ruleAmountMap.size();
+        return ruleFieldMap.size();
     }
 
     /**
      * Iterates through all the rules in the period.
      * <p>
      * This method fulfills the {@link Iterable} interface and allows looping
-     * around the fields using the for-each loop. The values can be obtained
-     * using {@link #get(PeriodRule)}.
+     * around the fields using the for-each loop.
      *
      * @return an iterator over the fields in this object, never null
      */
-    public Iterator<PeriodRule> iterator() {
-        return ruleAmountMap.keySet().iterator();
+    public Iterator<PeriodField> iterator() {
+        return ruleFieldMap.values().iterator();
     }
 
     /**
@@ -317,86 +347,100 @@ public final class PeriodFields
      * @return true if the map contains an amount for the rule
      */
     public boolean contains(PeriodRule rule) {
-        return ruleAmountMap.containsKey(rule);
+        return ruleFieldMap.containsKey(rule);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the amount of the period for the specified rule, throwing an
-     * exception if this period does have an amount for the rule.
+     * Gets the field for the specified rule.
+     * <p>
+     * This method allows the field to be queried by the rule, like a map.
+     * If the rule is not found then <code>null</code> is returned.
+     *
+     * @param rule  the rule to query, not null
+     * @return the period field, null if no field for the rule
+     */
+    public PeriodField get(PeriodRule rule) {
+        checkNotNull(rule, "PeriodRule must not be null");
+        return ruleFieldMap.get(rule);
+    }
+
+    /**
+     * Gets the amount of this period for the specified rule.
+     * <p>
+     * This method allows the amount to be queried by the rule, like a map.
+     * If the rule is not found then an exception is thrown.
      *
      * @param rule  the rule to query, not null
      * @return the period amount
-     * @throws NullPointerException if the period rule is null
      * @throws CalendricalException if there is no amount for the rule
      */
-    public long get(PeriodRule rule) {
-        checkNotNull(rule, "PeriodRule must not be null");
-        Long amount = ruleAmountMap.get(rule);
-        if (amount == null) {
+    public long getAmount(PeriodRule rule) {
+        PeriodField field = get(rule);
+        if (field == null) {
             throw new CalendricalException("No amount for rule: " + rule);
         }
-        return amount;
+        return field.getAmount();
     }
 
     /**
-     * Gets the amount of the period for the specified rule, throwing an
-     * exception if this period does have an amount for the rule.
+     * Gets the amount of this period for the specified rule converted
+     * to an <code>int</code>.
      * <p>
-     * The amount is safely converted to an <code>int</code>.
+     * This method allows the amount to be queried by the rule, like a map.
+     * If the rule is not found then an exception is thrown.
      *
      * @param rule  the rule to query, not null
      * @return the period amount
-     * @throws NullPointerException if the period rule is null
      * @throws CalendricalException if there is no amount for the rule
      * @throws ArithmeticException if the amount is too large to be returned in an int
      */
-    public int getInt(PeriodRule rule) {
-        return MathUtils.safeToInt(get(rule));
+    public int getAmountInt(PeriodRule rule) {
+        return MathUtils.safeToInt(getAmount(rule));
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the amount of the period for the specified rule, returning
-     * the default value if this period does have an amount for the rule.
-     *
-     * @param rule  the rule to query, not null
-     * @param defaultValue  the default value to return if the rule is not present
-     * @return the period amount
-     * @throws NullPointerException if the period rule is null
-     */
-    public long get(PeriodRule rule, long defaultValue) {
-        checkNotNull(rule, "PeriodRule must not be null");
-        Long amount = ruleAmountMap.get(rule);
-        return amount == null ? defaultValue : amount;
-    }
-
-    /**
-     * Gets the amount of the period for the specified rule, returning
-     * the default value if this period does have an amount for the rule.
-     * <p>
-     * The amount is safely converted to an <code>int</code>.
-     *
-     * @param rule  the rule to query, not null
-     * @param defaultValue  the default value to return if the rule is not present
-     * @return the period amount
-     * @throws NullPointerException if the period rule is null
-     * @throws ArithmeticException if the amount is too large to be returned in an int
-     */
-    public int getInt(PeriodRule rule, int defaultValue) {
-        return MathUtils.safeToInt(get(rule, defaultValue));
-    }
-
-    /**
-     * Gets the amount of the period for the specified rule quietly returning
-     * null if this period does have an amount for the rule.
-     *
-     * @param rule  the rule to query, null returns null
-     * @return the period amount, null if rule not present
-     */
-    public Long getQuiet(PeriodRule rule) {
-        return rule == null ? null : ruleAmountMap.get(rule);
-    }
+//    //-----------------------------------------------------------------------
+//    /**
+//     * Gets the amount of the period for the specified rule, returning
+//     * the default value if this period does have an amount for the rule.
+//     *
+//     * @param rule  the rule to query, not null
+//     * @param defaultValue  the default value to return if the rule is not present
+//     * @return the period amount
+//     * @throws NullPointerException if the period rule is null
+//     */
+//    public long get(PeriodRule rule, long defaultValue) {
+//        checkNotNull(rule, "PeriodRule must not be null");
+//        Long amount = ruleAmountMap.get(rule);
+//        return amount == null ? defaultValue : amount;
+//    }
+//
+//    /**
+//     * Gets the amount of the period for the specified rule, returning
+//     * the default value if this period does have an amount for the rule.
+//     * <p>
+//     * The amount is safely converted to an <code>int</code>.
+//     *
+//     * @param rule  the rule to query, not null
+//     * @param defaultValue  the default value to return if the rule is not present
+//     * @return the period amount
+//     * @throws NullPointerException if the period rule is null
+//     * @throws ArithmeticException if the amount is too large to be returned in an int
+//     */
+//    public int getInt(PeriodRule rule, int defaultValue) {
+//        return MathUtils.safeToInt(get(rule, defaultValue));
+//    }
+//
+//    /**
+//     * Gets the amount of the period for the specified rule quietly returning
+//     * null if this period does have an amount for the rule.
+//     *
+//     * @param rule  the rule to query, null returns null
+//     * @return the period amount, null if rule not present
+//     */
+//    public Long getQuiet(PeriodRule rule) {
+//        return rule == null ? null : ruleAmountMap.get(rule);
+//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -410,8 +454,12 @@ public final class PeriodFields
         if (isZero()) {
             return ZERO;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        copy.values().removeAll(Collections.singleton(Long.valueOf(0)));
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
+        for (Iterator<PeriodField> it = copy.values().iterator(); it.hasNext(); ) {
+            if (it.next().isZero()) {
+                it.remove();
+            }
+        }
         return create(copy);
     }
 
@@ -427,15 +475,14 @@ public final class PeriodFields
      * @param amount  the amount to update the new instance with, may be negative
      * @param rule  the rule to update, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period rule is null
      */
     public PeriodFields with(long amount, PeriodRule rule) {
-        Long existing = getQuiet(rule);
-        if (existing != null && existing == amount) {
+        PeriodField existing = get(rule);
+        if (existing != null && existing.getAmount() == amount) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        copy.put(rule, amount);
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
+        copy.put(rule, PeriodField.of(amount, rule));
         return create(copy);
     }
 
@@ -479,7 +526,6 @@ public final class PeriodFields
      *
      * @param period  the period field to update, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period is null
      */
     public PeriodFields with(PeriodFields period) {
         if (this == ZERO) {
@@ -488,8 +534,8 @@ public final class PeriodFields
         if (period == ZERO) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        copy.putAll(period.ruleAmountMap);
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
+        copy.putAll(period.ruleFieldMap);
         return create(copy);
     }
 
@@ -503,14 +549,13 @@ public final class PeriodFields
      *
      * @param rule  the rule to remove, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period rule is null
      */
     public PeriodFields withRuleRemoved(PeriodRule rule) {
         checkNotNull(rule, "PeriodRule must not be null");
-        if (ruleAmountMap.containsKey(rule) == false) {
+        if (ruleFieldMap.containsKey(rule) == false) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
         copy.remove(rule);
         return create(copy);
     }
@@ -529,19 +574,19 @@ public final class PeriodFields
      *
      * @param periodProvider  the period to add, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period to add is null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(PeriodProvider periodProvider) {
         checkNotNull(periodProvider, "PeriodProvider must not be null");
         if (this == ZERO && periodProvider instanceof PeriodFields) {
             return (PeriodFields) periodProvider;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
         for (PeriodRule rule : periodProvider.periodRules()) {
             long amount = periodProvider.periodAmount(rule);
-            Long oldAmountVal = copy.get(rule);
-            long oldAmount = (oldAmountVal != null ? oldAmountVal : 0);
-            copy.put(rule, MathUtils.safeAdd(oldAmount, amount));
+            PeriodField old = copy.get(rule);
+            PeriodField field = (old != null ? old.plus(amount) : PeriodField.of(amount, rule));
+            copy.put(rule, field);
         }
         return create(copy);
     }
@@ -557,16 +602,17 @@ public final class PeriodFields
      * @param amount  the amount to add in the new instance, may be negative
      * @param rule  the rule defining the period, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period rule is null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields plus(long amount, PeriodRule rule) {
         checkNotNull(rule, "PeiodRule must not be null");
         if (amount == 0) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        Long oldAmount = copy.get(rule);
-        copy.put(rule, oldAmount != null ? MathUtils.safeAdd(oldAmount, amount) : amount);
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
+        PeriodField old = copy.get(rule);
+        PeriodField field = (old != null ? old.plus(amount) : PeriodField.of(amount, rule));
+        copy.put(rule, field);
         return create(copy);
     }
 
@@ -584,19 +630,19 @@ public final class PeriodFields
      *
      * @param period  the period to subtract, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period to subtract is null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(PeriodProvider periodProvider) {
         checkNotNull(periodProvider, "PeriodProvider must not be null");
         if (this == ZERO && periodProvider instanceof PeriodFields) {
             return (PeriodFields) periodProvider;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
         for (PeriodRule rule : periodProvider.periodRules()) {
             long amount = periodProvider.periodAmount(rule);
-            Long oldAmountVal = copy.get(rule);
-            long oldAmount = (oldAmountVal != null ? oldAmountVal : 0);
-            copy.put(rule, MathUtils.safeSubtract(oldAmount, amount));
+            PeriodField old = copy.get(rule);
+            PeriodField field = (old != null ? old.minus(amount) : PeriodField.of(amount, rule).negated());
+            copy.put(rule, field);
         }
         return create(copy);
     }
@@ -612,16 +658,16 @@ public final class PeriodFields
      * @param amount  the amount to subtract to create the new instance, may be negative
      * @param rule  the rule defining the period, not null
      * @return a new updated period instance, never null
-     * @throws NullPointerException if the period rule is null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields minus(long amount, PeriodRule rule) {
         checkNotNull(rule, "PeiodRule must not be null");
         if (amount == 0) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        Long oldAmount = copy.get(rule);
-        copy.put(rule, oldAmount != null ? MathUtils.safeSubtract(oldAmount, amount) : amount);
+        TreeMap<PeriodRule, PeriodField> copy = clonedMap();
+        PeriodField old = copy.get(rule);
+        copy.put(rule, old != null ? old.minus(amount) : PeriodField.of(amount, rule).negated());
         return create(copy);
     }
 
@@ -632,16 +678,15 @@ public final class PeriodFields
      *
      * @param scalar  the scalar to multiply by, not null
      * @return a new updated period instance, never null
-     * @throws ArithmeticException if the calculation result overflows
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields multipliedBy(int scalar) {
         if (scalar == 1 || isZero()) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        for (PeriodRule rule : this) {
-            long current = ruleAmountMap.get(rule);
-            copy.put(rule, MathUtils.safeMultiply(current, scalar));
+        TreeMap<PeriodRule, PeriodField> copy = createMap();
+        for (PeriodField field : this) {
+            copy.put(field.getRule(), field.multipliedBy(scalar));
         }
         return create(copy);
     }
@@ -661,10 +706,9 @@ public final class PeriodFields
         if (divisor == 1 || isZero()) {
             return this;
         }
-        TreeMap<PeriodRule, Long> copy = clonedMap();
-        for (PeriodRule rule : this) {
-            long current = ruleAmountMap.get(rule);
-            copy.put(rule, current / divisor);
+        TreeMap<PeriodRule, PeriodField> copy = createMap();
+        for (PeriodField field : this) {
+            copy.put(field.getRule(), field.dividedBy(divisor));
         }
         return create(copy);
     }
@@ -673,6 +717,7 @@ public final class PeriodFields
      * Returns a new instance with each amount in this period negated.
      *
      * @return a new updated period instance, never null
+     * @throws ArithmeticException if the calculation overflows
      */
     public PeriodFields negated() {
         return multipliedBy(-1);
@@ -685,8 +730,8 @@ public final class PeriodFields
      * @return the cloned map, never null
      */
     @SuppressWarnings("unchecked")
-    private TreeMap<PeriodRule, Long> clonedMap() {
-        return (TreeMap) ruleAmountMap.clone();
+    private TreeMap<PeriodRule, PeriodField> clonedMap() {
+        return (TreeMap) ruleFieldMap.clone();
     }
 
     //-----------------------------------------------------------------------
@@ -697,15 +742,40 @@ public final class PeriodFields
      * It is sorted by the rule, returning the largest first.
      * It is independent of this object - changes will not be reflected back.
      *
-     * @return the independent, modifiable map of period amounts, never null, never contains null
+     * @return the independent, modifiable map of periods, never null, never contains null
      */
     public SortedMap<PeriodRule, Long> toRuleAmountMap() {
-        return clonedMap();
+        SortedMap<PeriodRule, Long> map = new TreeMap<PeriodRule, Long>(Collections.reverseOrder());
+        for (PeriodField field : this) {
+            map.put(field.getRule(), field.getAmount());
+        }
+        return map;
+    }
+
+    /**
+     * Converts this period to an estimated duration.
+     * <p>
+     * Each {@link PeriodRule} contains an estimated duration for that rule.
+     * This method uses that estimate to calculate a total estimated duration for
+     * this period.
+     *
+     * @return the estimated duration of this period, may be negative
+     * @throws ArithmeticException if the calculation overflows
+     */
+    public Duration toEstimatedDuration() {
+        Duration dur = Duration.ZERO;
+        for (PeriodField field : this) {
+            dur = dur.plus(field.toEstimatedDuration());
+        }
+        return dur;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Is this period equal to the specified period.
+     * Checks if this instance equal to the object specified.
+     * <p>
+     * Two <code>PeriodFields</code> instances are equal if all the contained
+     * <code>PeriodField</code> instances are equal.
      *
      * @param obj  the other period to compare to, null returns false
      * @return true if this instance is equal to the specified period
@@ -717,7 +787,7 @@ public final class PeriodFields
         }
         if (obj instanceof PeriodFields) {
             PeriodFields other = (PeriodFields) obj;
-            return ruleAmountMap.equals(other.ruleAmountMap);
+            return ruleFieldMap.equals(other.ruleFieldMap);
         }
         return false;
     }
@@ -729,7 +799,7 @@ public final class PeriodFields
      */
     @Override
     public int hashCode() {
-        return ruleAmountMap.hashCode();
+        return ruleFieldMap.hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -740,7 +810,17 @@ public final class PeriodFields
      */
     @Override
     public String toString() {
-        return ruleAmountMap.toString();
+        if (ruleFieldMap.size() == 0) {
+            return "[]";
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        for (PeriodField field : this) {
+            buf.append(field.toString()).append(',').append(' '); 
+        }
+        buf.setLength(buf.length() - 2);
+        buf.append(']');
+        return buf.toString();
     }
 
 }
