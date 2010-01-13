@@ -53,6 +53,9 @@ import javax.time.CalendricalException;
  *
  * @author Michael Nascimento Santos
  * @author Stephen Colebourne
+ * 
+ * @param <T> the underlying type representing the data, typically a subclass of
+ *  <code>Number</code> or <code>Enum</code>, must be immutable
  */
 public abstract class CalendricalRule<T>
         implements Comparable<CalendricalRule<T>>, Comparator<Calendrical>, Serializable {
