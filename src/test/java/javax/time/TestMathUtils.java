@@ -243,6 +243,8 @@ public class TestMathUtils {
             {Integer.MIN_VALUE / 2 - 1, 2},
             {Integer.MAX_VALUE, 2},
             {Integer.MAX_VALUE / 2 + 1, 2},
+            {Integer.MIN_VALUE, -1},
+            {-1, Integer.MIN_VALUE},
         };
     }
 
@@ -251,6 +253,7 @@ public class TestMathUtils {
         MathUtils.safeMultiply(a, b);
     }
 
+    //-----------------------------------------------------------------------
     @DataProvider(name="safeMultiplyLongProvider")
     Object[][] safeMultiplyLongProvider() {
         return new Object[][] {
@@ -265,6 +268,7 @@ public class TestMathUtils {
             {1, 1, 1},
             {Long.MAX_VALUE / 2, 2, Long.MAX_VALUE - 1},
             {Long.MAX_VALUE, -1, Long.MIN_VALUE + 1},
+            {-1, Integer.MIN_VALUE, -((long) Integer.MIN_VALUE)},
         };
     }
 
@@ -280,11 +284,52 @@ public class TestMathUtils {
             {Long.MIN_VALUE / 2 - 1, 2},
             {Long.MAX_VALUE, 2},
             {Long.MAX_VALUE / 2 + 1, 2},
+            {Long.MIN_VALUE, -1},
         };
     }
 
     @Test(dataProvider="safeMultiplyLongProviderOverflow", expectedExceptions=ArithmeticException.class)
     public void test_safeMultiplyLong_overflow(long a, int b) {
+        MathUtils.safeMultiply(a, b);
+    }
+    
+    //-----------------------------------------------------------------------
+    @DataProvider(name="safeMultiplyLongLongProvider")
+    Object[][] safeMultiplyLongLongProvider() {
+        return new Object[][] {
+            {Long.MIN_VALUE, 1, Long.MIN_VALUE},
+            {Long.MIN_VALUE / 2, 2, Long.MIN_VALUE},
+            {-1, -1, 1},
+            {-1, 1, -1},
+            {0, -1, 0},
+            {0, 0, 0},
+            {0, 1, 0},
+            {1, -1, -1},
+            {1, 1, 1},
+            {Long.MAX_VALUE / 2, 2, Long.MAX_VALUE - 1},
+            {Long.MAX_VALUE, -1, Long.MIN_VALUE + 1},
+        };
+    }
+
+    @Test(dataProvider="safeMultiplyLongLongProvider")
+    public void test_safeMultiplyLongLong(long a, long b, long expected) {
+        assertEquals(MathUtils.safeMultiply(a, b), expected);
+    }
+
+    @DataProvider(name="safeMultiplyLongLongProviderOverflow")
+    Object[][] safeMultiplyLongLongProviderOverflow() {
+        return new Object[][] {
+            {Long.MIN_VALUE, 2},
+            {Long.MIN_VALUE / 2 - 1, 2},
+            {Long.MAX_VALUE, 2},
+            {Long.MAX_VALUE / 2 + 1, 2},
+            {Long.MIN_VALUE, -1},
+            {-1, Long.MIN_VALUE},
+        };
+    }
+
+    @Test(dataProvider="safeMultiplyLongLongProviderOverflow", expectedExceptions=ArithmeticException.class)
+    public void test_safeMultiplyLongLong_overflow(long a, long b) {
         MathUtils.safeMultiply(a, b);
     }
     

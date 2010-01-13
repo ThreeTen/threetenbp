@@ -204,7 +204,7 @@ public final class MathUtils {
             return 0;
         }
         long total = a * b;
-        if (total / b != a) {
+        if (total / b != a || a == Long.MIN_VALUE && b == -1 || b == Long.MIN_VALUE && a == -1) {
             throw new ArithmeticException("Multiplication overflows a long: " + a + " * " + b);
         }
         return total;
