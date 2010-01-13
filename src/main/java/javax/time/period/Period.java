@@ -474,6 +474,18 @@ public final class Period
         return (this == ZERO);
     }
 
+    /**
+     * Checks if the period is fully positive, including zero.
+     * <p>
+     * This checks whether all the amounts in the period are positive,
+     * defined as greater than or equal to zero.
+     *
+     * @return true if this period is fully positive
+     */
+    public boolean isPositive() {
+        return ((years | months | days | hours | minutes | seconds | nanos) >= 0);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the amount of years of the overall period, if any.

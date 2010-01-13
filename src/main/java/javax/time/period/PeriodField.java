@@ -126,6 +126,38 @@ public final class PeriodField
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this period is zero length.
+     *
+     * @return true if this period is zero length
+     */
+    public boolean isZero() {
+        return amount == 0;
+    }
+
+    /**
+     * Checks if this period is positive, including zero.
+     * <p>
+     * Periods are allowed to be negative, so this method checks if this period is positive.
+     *
+     * @return true if this period is positive or zero
+     */
+    public boolean isPositive() {
+        return amount >= 0;
+    }
+
+    /**
+     * Checks if this period is negative, excluding zero.
+     * <p>
+     * Periods are allowed to be negative, so this method checks if this period is negative.
+     *
+     * @return true if this period is negative
+     */
+    public boolean isNegative() {
+        return amount < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the amount of time in this period.
      *
      * @return the amount of time of this period, may be negative
@@ -134,6 +166,16 @@ public final class PeriodField
         return amount;
     }
 
+    /**
+     * Gets the rule defining the what the period represents.
+     *
+     * @return the period rule, never null
+     */
+    public PeriodRule getRule() {
+        return rule;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this field with a different amount of time.
      *
@@ -145,16 +187,6 @@ public final class PeriodField
             return this;
         }
         return new PeriodField(amount, rule);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the rule defining the what the period represents.
-     *
-     * @return the period rule, never null
-     */
-    public PeriodRule getRule() {
-        return rule;
     }
 
     /**

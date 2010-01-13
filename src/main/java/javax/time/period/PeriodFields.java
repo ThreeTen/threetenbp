@@ -256,12 +256,31 @@ public final class PeriodFields
     //-----------------------------------------------------------------------
     /**
      * Checks if the period is zero-length.
+     * <p>
+     * This checks whether all the amounts in the period are zero.
      *
      * @return true if this period is zero-length
      */
     public boolean isZero() {
         for (Long amount : ruleAmountMap.values()) {
             if (amount != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the period is fully positive, including zero.
+     * <p>
+     * This checks whether all the amounts in the period are positive,
+     * defined as greater than or equal to zero.
+     *
+     * @return true if this period is fully positive
+     */
+    public boolean isPositive() {
+        for (Long amount : ruleAmountMap.values()) {
+            if (amount < 0) {
                 return false;
             }
         }

@@ -425,6 +425,38 @@ public final class Duration implements Comparable<Duration>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Checks if this duration is zero length.
+     *
+     * @return true if this duration is zero length
+     */
+    public boolean isZero() {
+        return seconds == 0 && nanoAdjustment == 0;
+    }
+
+    /**
+     * Checks if this duration is positive, including zero.
+     * <p>
+     * Periods are allowed to be negative, so this method checks if this period is positive.
+     *
+     * @return true if this duration is positive or zero
+     */
+    public boolean isPositive() {
+        return seconds >= 0;
+    }
+
+    /**
+     * Checks if this duration is negative, excluding zero.
+     * <p>
+     * Periods are allowed to be negative, so this method checks if this period is negative.
+     *
+     * @return true if this duration is negative
+     */
+    public boolean isNegative() {
+        return seconds < 0;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Gets the number of seconds in this duration.
      * <p>
      * The length of the duration is expressed using two fields - seconds and
