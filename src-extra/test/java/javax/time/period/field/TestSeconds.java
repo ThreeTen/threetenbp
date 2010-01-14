@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Stephen Colebourne & Michael Nascimento Santos
+ * Copyright (c) 2007-2010, Stephen Colebourne & Michael Nascimento Santos
  *
  * All rights reserved.
  *
@@ -31,7 +31,6 @@
  */
 package javax.time.period.field;
 
-import static javax.time.period.PeriodUnits.*;
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -40,8 +39,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.PeriodUnit;
 import javax.time.period.PeriodFields;
-import javax.time.period.PeriodUnit;
 
 import org.testng.annotations.Test;
 
@@ -165,7 +165,7 @@ public class TestSeconds {
     public void test_getUnit() {
         PeriodUnit unit = Seconds.of(5).getUnit();
         assertNotNull(unit);
-        assertEquals(unit, SECONDS);
+        assertEquals(unit, ISOChronology.periodSeconds());
     }
 
     //-----------------------------------------------------------------------
@@ -325,7 +325,7 @@ public class TestSeconds {
     //-----------------------------------------------------------------------
     public void test_toPeriodFields() {
         Seconds test5 = Seconds.of(5);
-        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, SECONDS));
+        assertEquals(test5.toPeriodFields(), PeriodFields.of(5, ISOChronology.periodSeconds()));
     }
 
     //-----------------------------------------------------------------------

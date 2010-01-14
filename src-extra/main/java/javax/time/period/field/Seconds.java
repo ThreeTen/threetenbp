@@ -33,8 +33,8 @@ package javax.time.period.field;
 
 import java.io.Serializable;
 
-import javax.time.period.PeriodUnit;
-import javax.time.period.PeriodUnits;
+import javax.time.calendar.ISOChronology;
+import javax.time.calendar.PeriodUnit;
 
 /**
  * A period representing a number of seconds.
@@ -131,7 +131,7 @@ public final class Seconds extends PeriodField implements Comparable<Seconds>, S
      */
     @Override
     public PeriodUnit getUnit() {
-        return PeriodUnits.SECONDS;
+        return ISOChronology.periodSeconds();
     }
 
     //-----------------------------------------------------------------------

@@ -32,8 +32,8 @@
 package javax.time.period.field;
 
 import javax.time.MathUtils;
+import javax.time.calendar.PeriodUnit;
 import javax.time.period.PeriodFields;
-import javax.time.period.PeriodUnit;
 
 /**
  * An abstract period measured in terms of a single field, such as days or seconds.
