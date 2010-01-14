@@ -54,6 +54,7 @@ import javax.time.calendar.CalendarConversionException;
  * All instantiable implementations must be final, immutable and thread-safe.
  *
  * @author Stephen Colebourne
+ * @author Mark Thornton
  */
 public interface TimeScale {
 
@@ -64,15 +65,16 @@ public interface TimeScale {
     // isCompleteTimeLine() ?
     
     /** Does the instant exist.
-     * 
+     * Time scales which are not continuous give rise to periods which do not correspond to a genuine instant (invalid),
+     * or which have more than one corresponding real instant (ambiguous).
      * @param instant
-     * @return
+     * @return validity of the instant
      */
     TimeScaleInstant.Validity getValidity(TimeScaleInstant instant);
 
     /** Does the time scale support leap seconds.
      *
-     * @return
+     * @return true if leap seconds are represented in this time scale
      */
     boolean supportsLeapSecond();
 
@@ -106,14 +108,14 @@ public interface TimeScale {
     /** Convert an instant to TAI.
      *
      * @param src instant on this time scale
-     * @return
+     * @return instant converted to TAI
      */
     TimeScaleInstant toTAI(TimeScaleInstant src);
 
     /** Convert instant to this time scale.
      *
      * @param src instant on another time scale.
-     * @return
+     * @return corresponding instant on this time scale
      */
     TimeScaleInstant toTimeScaleInstant(TimeScaleInstant src);
 
