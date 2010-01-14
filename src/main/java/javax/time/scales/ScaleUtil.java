@@ -81,9 +81,14 @@ public class ScaleUtil {
     private static TimeScaleInstant fromEarlyInstant(long utcEpochSeconds, int nanoOfSecond) {
         EarlyUTC_TAI.Entry e = EarlyUTC_TAI.list().entryFromUTC(utcEpochSeconds);
         long nanos = nanoOfSecond + e.getUTCDeltaNanoseconds(utcEpochSeconds, nanoOfSecond);
-        return TimeScaleInstant.seconds(TAI.INSTANCE,
+        TimeScaleInstant ts =  TimeScaleInstant.seconds(TAI.INSTANCE,
            MathUtils.safeAdd(utcEpochSeconds, nanos/ScaleUtil.NANOS_PER_SECOND),
            (int)(nanos%ScaleUtil.NANOS_PER_SECOND));
+        if (e.getNext() != null && ts.isAfter(e.getNext().getStartTAI())) {
+            // The source instant lies within a non existant range
+            ts = e.getNext().getStartTAI();
+        }
+        return ts;
     }
 
     private static TimeScaleInstant fromModernInstant(long utcEpochSeconds, int leapSecond, int nanoOfSecond) {

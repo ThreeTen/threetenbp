@@ -93,6 +93,8 @@ public class EarlyUTC_TAI {
         private long originEpochSeconds;
         private double utcRate;
         private double taiRate;
+        private int utcGapNanoseconds;
+        private int taiGapNanoseconds;
 
         Entry(int startYear, int startMonth, int deltaMicroseconds)
         {
@@ -170,10 +172,35 @@ public class EarlyUTC_TAI {
             return deltaNanoseconds + Math.round(taiRate*((taiEpochSeconds-originEpochSeconds) + 1e-9*(nanoOfSecond-deltaNanoseconds)));
         }
 
+        /** Repeated period in UTC at end of period.
+         * If negative indicates the size of the invalid interval
+         * @return
+         */
+        public int getUTCGapNanoseconds() {
+            return utcGapNanoseconds;
+        }
+
+        public int getTaiGapNanoseconds() {
+            return taiGapNanoseconds;
+        }
     }
 
     static {
         entries.get(entries.size()-1).endEpochSeconds = END_EPOCH_SECONDS;
+        long nextDelta = 10L*ScaleUtil.NANOS_PER_SECOND;
+        for (int i=entries.size(); --i >= 0;) {
+            Entry e = entries.get(i);
+            long delta = e.getUTCDeltaNanoseconds(e.getEndEpochSeconds(), 0);
+            long step = nextDelta-delta;
+            if (step != 0) {
+                e.taiGapNanoseconds = (int)step;
+                // the step is in TAI nanoseconds, must convert to UTC nanoseconds
+                // for e small, x/(1+e) = x - e*x
+                step -= Math.round(e.utcRate*1e-9*step);
+                e.utcGapNanoseconds = (int)step;
+            }
+            nextDelta = e.getUTCDeltaNanoseconds(e.getStartEpochSeconds(), 0);
+        }
     }
 
     public static UTC_TAI<Entry> list() {

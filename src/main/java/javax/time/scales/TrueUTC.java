@@ -160,8 +160,16 @@ public class TrueUTC implements TimeScale, Serializable {
         long s = MathUtils.safeAdd(tsInstant.getEpochSeconds(), nanos/ScaleUtil.NANOS_PER_SECOND);
         nanos = nanos % ScaleUtil.NANOS_PER_SECOND;
         if (nanos < 0) {
-            s = MathUtils.safeDecrement(s);
+            s--;
             nanos += ScaleUtil.NANOS_PER_SECOND;
+        }
+        if (s == e.getEndEpochSeconds()) {
+            // need to adjust result for step at end of period
+            nanos -= e.getUTCGapNanoseconds();
+            if (nanos < 0) {
+                s--;
+                nanos += ScaleUtil.NANOS_PER_SECOND;
+            }
         }
         return TimeScaleInstant.seconds(this, s, (int)nanos);
     }

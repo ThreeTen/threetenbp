@@ -75,7 +75,7 @@ public class LeapSeconds {
         @Override
         void initialise(UTCPeriod previous) {
             deltaSeconds = previous == null ? 10 : ((Entry)previous).deltaSeconds+1;
-            deltaNanoseconds = deltaSeconds * ScaleUtil.NANOS_PER_SECOND;
+            deltaNanoseconds = deltaSeconds * (long)ScaleUtil.NANOS_PER_SECOND;
             super.initialise(previous);
         }
 

@@ -34,8 +34,6 @@ package javax.time;
 import java.io.Serializable;
 
 import javax.time.calendar.CalendarConversionException;
-import javax.time.calendar.OffsetDateTime;
-import javax.time.calendar.ZoneOffset;
 import javax.time.scales.TimeScaleInstantFormat;
 
 /**
@@ -480,7 +478,7 @@ public final class TimeScaleInstant
             return MathUtils.safeCompare(nanoOfSecond, otherInstant.nanoOfSecond);
         } else {
             // TODO: normalize time and compare. Normalize to TAI scale?
-            return 0;
+            throw new UnsupportedOperationException("Comparison of instants on different time scales not supported yet");
         }
     }
 

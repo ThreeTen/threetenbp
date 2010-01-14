@@ -77,7 +77,12 @@ public class TAI implements TimeScale, Serializable {
 
     private Instant toModernInstant(TimeScaleInstant tsInstant) {
         LeapSeconds.Entry e = LeapSeconds.list().entryFromTAI(tsInstant);
-        return Instant.seconds(MathUtils.safeSubtract(tsInstant.getEpochSeconds(), e.getDeltaSeconds()), tsInstant.getNanoOfSecond());
+        long s = MathUtils.safeSubtract(tsInstant.getEpochSeconds(), e.getDeltaSeconds());
+        if (e.getNext() != null && s == e.getNext().getStartEpochSeconds()) {
+            // repeat the last second
+            s--;
+        }
+        return Instant.seconds(s, tsInstant.getNanoOfSecond());
     }
 
     private Instant toEarlyInstant(TimeScaleInstant tsInstant) {
@@ -86,8 +91,16 @@ public class TAI implements TimeScale, Serializable {
         long s = MathUtils.safeAdd(tsInstant.getEpochSeconds(), nanos/ScaleUtil.NANOS_PER_SECOND);
         nanos = nanos % ScaleUtil.NANOS_PER_SECOND;
         if (nanos < 0) {
-            s = MathUtils.safeDecrement(s);
+            s--;    // safe because the range is known
             nanos += ScaleUtil.NANOS_PER_SECOND;
+        }
+        if (s == e.getEndEpochSeconds()) {
+            // need to adjust result for step at end of period
+            nanos -= e.getUTCGapNanoseconds();
+            if (nanos < 0) {
+                s--;
+                nanos += ScaleUtil.NANOS_PER_SECOND;
+            }
         }
         return Instant.seconds(s, (int)nanos);
     }
