@@ -1,8 +1,9 @@
 <!--
   @author Fabio Kung (fabio.kung@gmail.com)
+  @author Michael Nascimento Santos
   @author Oliver Fischer (o.b.fischer@swe-blog.net)
 -->
-<project name="jsr-310-ri" default="compileOpenJDK">
+<project name="jsr-310-ri" default="dist">
     <description>
         Reference Implementation for the JSR 310 - Date and Time API
     </description>
@@ -11,6 +12,7 @@
     <property file="version.properties"/>
 
     <property name="jarCoreName" value="jsr-310-ri-core-${version.full}.jar" />
+    <property name="jarExtraName" value="jsr-310-ri-extra-${version.full}.jar" />
     <property name="jarOpenJDKName" value="jsr-310-ri-openjdk-${version.full}.jar" />
     <property name="jarOracleName" value="jsr-310-ri-oracle-${version.full}.jar" />
     <property name="jarAllName" value="jsr-310-ri-${version.full}.jar" />
@@ -33,6 +35,7 @@
 
     <path id="main.path">
         <pathelement location="${core.classes}" />
+        <pathelement location="${extra.classes}" />
         <pathelement location="${oracle.classes}" />
         <pathelement location="${ojdk.classes}" />
         <fileset dir="lib/main">
@@ -79,28 +82,35 @@
 
     <target name="compileCore" depends="init">
         <mkdir  dir="${core.classes}"/>
-        <javac srcdir="${core.main}" destdir="${core.classes}">
+        <javac srcdir="${core.main}" destdir="${core.classes}" debug="true">
             <classpath refid="main.path"/>
+        </javac>
+    </target>
+
+    <target name="compileExtra" depends="compileCore">
+        <mkdir  dir="${extra.classes}"/>
+        <javac srcdir="${extra.main}" destdir="${extra.classes}">
+            <classpath location="${core.classes}"/>
+            <classpath refid="main.path"/>            
         </javac>
     </target>
 
     <target name="compileOpenJDK" depends="compileCore">
         <mkdir  dir="${ojdk.classes}"/>
         <javac srcdir="${ojdk.main}" destdir="${ojdk.classes}" nowarn="true">
-            <classpath refid="main.path"/>            
+            <classpath refid="main.path"/>
         </javac>
     </target>
 
     <target name="compileOracle" depends="compileCore">
         <mkdir dir="${oracle.classes}"/>
-        <javac  srcdir="${oracle.main}" destdir="${oracle.classes}" verbose="yes">
+        <javac  srcdir="${oracle.main}" destdir="${oracle.classes}">
             <classpath location="${core.classes}"/>
             <classpath refid="main.path"/>
         </javac>
     </target>
 
-    <target name="compileAll" depends="compileCore, compileOracle, compileOpenJDK" description="compile all sources">
-    </target>
+    <target name="compileAll" depends="compileCore, compileExtra, compileOracle, compileOpenJDK" description="compile all sources" />
 
     <target name="javadoc" depends="init" description="generates javadoc for the api">
       <mkdir dir="${build.javadoc}"/>
@@ -138,7 +148,7 @@
         <mkdir dir="${coverage}" />
            <emmajava libclasspathref="emma.lib"
                    fullmetadata="yes"
-                   sourcepath="${core.test}"
+                   sourcepath="${core.main}"
                    classname="javax.time.AllTest"
                 classpathref="test.path">
                <jvmarg value="-Xmx512M" />
@@ -150,6 +160,7 @@
 
     <target  name="jarOracle" depends="compileOracle">
         <mkdir dir="${dist}" />        
+        <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarOracleName}">
           <fileset dir="${oracle.classes}"/>
         </jar>
@@ -160,6 +171,14 @@
         <mkdir dir="${dist}/lib" />
         <jar jarfile="${dist}/lib/${jarOpenJDKName}">
           <fileset dir="${ojdk.classes}"/>
+        </jar>
+    </target>
+
+    <target  name="jarExtra" depends="compileExtra">
+        <mkdir dir="${dist}" />
+        <mkdir dir="${dist}/lib" />
+        <jar jarfile="${dist}/lib/${jarExtraName}">
+          <fileset dir="${extra.classes}"/>
         </jar>
     </target>
 
@@ -178,6 +197,7 @@
         <jar jarfile="${dist}/lib/${jarAllName}">
           <fileset dir="${ojdk.classes}"/>
           <fileset dir="${oracle.classes}"/>
+          <fileset dir="${extra.classes}"/>
           <fileset dir="${core.classes}"/>
         </jar>
     </target>
@@ -188,7 +208,7 @@
         <jar jarfile="${dist}/${ant.project.name}-${DSTAMP}.jar" basedir="${build.main}" />
     </target>
 
-    <target name="dist" depends="jarAll, jarCore, jarOpenJDK, jarOracle" description="generate the distribution">
+    <target name="dist" depends="jarAll, jarCore, jarExtra, jarOpenJDK, jarOracle" description="generate the distribution">
         <mkdir dir="${dist}/${src}" />
         <copy todir="${dist}/${src}">
             <fileset dir="${src}"/>
